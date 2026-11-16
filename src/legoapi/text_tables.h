@@ -180,11 +180,6 @@ typedef struct CLOUDCITY_LEVEL_FLAG_VIEW {
     u8 started;
 } CLOUDCITY_LEVEL_FLAG_VIEW;
 
-typedef struct CREATURE_RESET_PACKET_VIEW { // size 0xe4c
-    u8 unknown_000[0x6c4];                  // 0x000
-    u8 packet[0x788];                       // 0x6c4
-} CREATURE_RESET_PACKET_VIEW;
-
 typedef struct GAME_STATE_MENU_READER { // size 0x7c1a
     u8 reserved[0x7c18];                // 0x0000
     u16 completion;                     // 0x7c18
@@ -342,18 +337,6 @@ struct cut_load_character_instance_s { // size 0x18
     u8 unknown_17;                     // 0x17
 };
 
-typedef struct force_glow_packet_s { // size 0x6d0
-    u8 unknown_000[0x650];           // 0x000
-    void *object;                    // 0x650
-    void *candidate;                 // 0x654
-    u8 unknown_658[0x6bc - 0x658];   // 0x658
-    f32 alpha;                       // 0x6bc
-    f32 target;                      // 0x6c0
-    f32 recovery;                    // 0x6c4
-    f32 unknown_6c8;                 // 0x6c8
-    f32 hold;                        // 0x6cc
-} FORCE_GLOW_PACKET;
-
 typedef struct game_save_score_s { // size 0x7c18
     u8 unknown_0000[0x7c14];       // 0x0000
     u32 coins;                     // 0x7c14
@@ -394,9 +377,7 @@ typedef struct pod_merge_packet_reader_s { // size 0x48
 } POD_MERGE_PACKET_READER;
 
 typedef struct reaction_fields_s { // size 0x77c
-    u8 unknown_00[0x6c4];          // 0x000
-    u8 reset_contexts;             // 0x6c4
-    u8 unknown_6c5[0x750 - 0x6c5]; // 0x6c5
+    u8 unknown_000[0x750];         // 0x000
     f32 animation_speed;           // 0x750
     u8 unknown_754[0x778 - 0x754]; // 0x754
     f32 reaction_duration;         // 0x778

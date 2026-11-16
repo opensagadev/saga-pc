@@ -42,7 +42,7 @@ void CharShadows_Update(void) {
         if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
             object->dead != 0 || (object->character_data->model_flags & CHARACTER_MODEL_COMPLEX_SHADOW) != 0 ||
             object->use_model_origin == 0 || object->character_data->game_character->shadow_locators == 0 ||
-            object->model_draw_result == 0 || (U64_PAIR(&CInfo[object->character_context].flags) & 0x20000) != 0 ||
+            object->model_draw_result == 0 || (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x20000) != 0 ||
             object->shadow_opacity <= 0.0f) {
             continue;
         }
@@ -52,7 +52,7 @@ void CharShadows_Update(void) {
         } else {
             object->shadow_radius = object->character_data->collision_radius;
         }
-        packet = (CHARACTER_SHADOW_PACKET *)object->ai_player_packet;
+        packet = &object->player.shadows;
         count = 0;
         for (locator = 0; locator < 16; ++locator) {
             if (count >= 5) {
@@ -62,7 +62,7 @@ void CharShadows_Update(void) {
                 continue;
             }
             slot = &packet->shadows[count];
-            locator_position = (NUVEC *)&object->locator_matrices[locator].m30;
+            locator_position = (NUVEC *)&object->player.locator_matrices[locator].m30;
             slot->position.x = locator_position->x;
             slot->position.z = locator_position->z;
             if ((object->flags_1fc_word & 0x10) != 0) {
@@ -121,12 +121,12 @@ void CharShadows_Draw(void) {
             object->dead != 0) {
             continue;
         }
-        if ((object->flags_e20 & 0x20) != 0 && (U64_PAIR(&CInfo[object->character_context].flags) & 0x40000) == 0) {
+        if ((object->player.flags_e20 & 0x20) != 0 && (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x40000) == 0) {
             continue;
         }
         if ((object->character_data->model_flags & CHARACTER_MODEL_COMPLEX_SHADOW) != 0 || !(object->shadow_opacity > 0.0f) ||
             object->model_draw_result == 0 || object->shadow_joint_mask == 0 || (object->flags_ef0 & 0x4000000) != 0 ||
-            (U64_PAIR(&CInfo[object->character_context].flags) & 0x20000) != 0) {
+            (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x20000) != 0) {
             continue;
         }
         if (object->character_data->game_character->blob_shadow_alpha < 255) {
@@ -144,7 +144,7 @@ void CharShadows_Draw(void) {
         alpha = (f32)level_alpha * object->shadow_opacity;
         radius *= object->origin_scale;
         radius *= DropInOutScale(object);
-        packet = (CHARACTER_SHADOW_PACKET *)object->ai_player_packet;
+        packet = &object->player.shadows;
         slot = packet->shadows;
         count = 0;
         for (locator = 0; locator < 16; ++locator) {
@@ -155,7 +155,7 @@ void CharShadows_Draw(void) {
                 continue;
             }
             if ((f64)slot->position.y != 2000000.0 && slot->opacity > 0.0f &&
-                (f64)slot->position.y <= (f64)object->locator_matrices[locator].m31 + (f64)0.025f) {
+                (f64)slot->position.y <= (f64)object->player.locator_matrices[locator].m31 + (f64)0.025f) {
                 position.x = slot->position.x;
                 position.y = (f32)((f64)slot->position.y + (f64)0.005f);
                 position.z = slot->position.z;

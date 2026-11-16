@@ -43,36 +43,36 @@ static void RotateTargetMatrix(NUMTX *matrix, i32 angle) {
 
 void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     GIZMOBLOWUP *target;
-    ResetForceGlow(object->ai_player_packet);
-    if (object->character_context == CHARACTER_CONTEXT_TRANSFORM) {
+    ResetForceGlow(&object->player);
+    if (object->player.character_context == CHARACTER_CONTEXT_TRANSFORM) {
         i32 trigger;
         f32 *frame = NULL;
-        if (object->character_model->model_data_b[object->unknown_7aa] != NULL) {
-            frame = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
+        if (object->character_model->model_data_b[object->player.unknown_7aa] != NULL) {
+            frame = AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0);
             if (frame == NULL) {
                 return;
             }
         }
-        target = object->grapple;
+        target = object->player.grapple;
         trigger = 0;
         object->movement_facing_angle =
             NuAtan2D(target->mid_position.x - object->collision_position.x, target->mid_position.z - object->collision_position.z);
-        if (frame != NULL && !(object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE)) {
-            f32 marker = AnimListFrame(object->character_model, object->unknown_7aa, 0);
+        if (frame != NULL && !(object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE)) {
+            f32 marker = AnimListFrame(object->character_model, object->player.unknown_7aa, 0);
             if (marker >= 1.0f && *frame >= marker) {
                 trigger = 1;
             }
         }
-        object->context_timer += FRAMETIME;
-        if (object->context_timer >= object->context_duration) {
-            object->character_context = CHARACTER_CONTEXT_NONE;
-            if (!(object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE)) {
+        object->player.context_timer += FRAMETIME;
+        if (object->player.context_timer >= object->player.context_duration) {
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
+            if (!(object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE)) {
                 trigger = 1;
             }
         }
         if (trigger) {
-            object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
-            GizmoBlowupBlowup(object->grapple, 1, BLOWUP_HIT_TRANSFORM, 1, NULL, 1);
+            object->player.context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
+            GizmoBlowupBlowup(object->player.grapple, 1, BLOWUP_HIT_TRANSFORM, 1, NULL, 1);
         }
     } else {
         GIZMOBLOWUP *candidate;
@@ -121,22 +121,22 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             }
         }
         if (nearest != NULL) {
-            object->glow_kind = 4;
-            object->glow_object = nearest;
-            object->glow_position = nearest->mid_position;
-            object->glow_radius = nearest->target_scale;
-            object->glow_alpha = 1.0f;
-            if (object->pad->buttons_held & GAMEPAD_SPECIAL) {
-                object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
-                object->context_timer = 0.0f;
-                object->character_context = CHARACTER_CONTEXT_TRANSFORM;
-                object->grapple = nearest;
-                object->unknown_7aa = ACTION_TRANSFORM;
-                object->context_duration = AnimDuration((i16)object->id, 160, 0.0f, 0.0f, 1);
-                if (object->context_duration <= 0.0f) {
-                    object->context_duration = 1.0f;
+            object->player.glow_kind = 4;
+            object->player.glow_object = nearest;
+            object->player.glow_position = nearest->mid_position;
+            object->player.glow_radius = nearest->target_scale;
+            object->player.glow_alpha = 1.0f;
+            if (object->player.pad->buttons_held & GAMEPAD_SPECIAL) {
+                object->player.context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
+                object->player.context_timer = 0.0f;
+                object->player.character_context = CHARACTER_CONTEXT_TRANSFORM;
+                object->player.grapple = nearest;
+                object->player.unknown_7aa = ACTION_TRANSFORM;
+                object->player.context_duration = AnimDuration((i16)object->id, 160, 0.0f, 0.0f, 1);
+                if (object->player.context_duration <= 0.0f) {
+                    object->player.context_duration = 1.0f;
                 }
-                target = object->grapple;
+                target = object->player.grapple;
                 object->movement_facing_angle =
                     NuAtan2D(target->mid_position.x - object->collision_position.x, target->mid_position.z - object->collision_position.z);
             }
@@ -192,8 +192,8 @@ GAMEOBJECT *Transform_TargettedByObj(void *target) {
     i32 index;
     for (index = 0; index < count; ++index, ++object) {
         if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) && object->dead == 0 &&
-            (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TRANSFORMATRON) != 0 && object->glow_alpha > 0.0f &&
-            object->glow_radius > 0.0f && object->glow_object == target) {
+            (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TRANSFORMATRON) != 0 &&
+            object->player.glow_alpha > 0.0f && object->player.glow_radius > 0.0f && object->player.glow_object == target) {
             return object;
         }
     }

@@ -263,15 +263,15 @@ extern "C" {
 }
 
 #define GAME_PUBLISHER_ASSERT(expression) typedef char SAGA_JOIN(game_publisher_static_assert_, __COUNTER__)[(expression) ? 1 : -1]
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, suit) == 0xcbc);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.suit) == 0xcbc);
 GAME_PUBLISHER_ASSERT(offsetof(SUIT_LAYERS, flags) == 0xc);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
 GAME_PUBLISHER_ASSERT(offsetof(CHARACTERDATA, game_character) == 0x24);
 GAME_PUBLISHER_ASSERT(offsetof(CHARACTERDATA, model_flags) == 4);
 GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG, flags_090) == 0x90);
 GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG, variant) == 0x116);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, unknown_e33) == 0xe33);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.flags_e20) == 0xe20);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.unknown_e33) == 0xe33);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
 GAME_PUBLISHER_ASSERT(sizeof(CUT_PLAYER_CLIP_CONFIG) == 0x44);
 GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, level_id) == 0);
@@ -283,8 +283,8 @@ GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA, area_index) == 0xa3);
 GAME_PUBLISHER_ASSERT(offsetof(AREA_DATA, index) == 0x7c);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_model) == 0x50);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, unknown_7aa) == 0x7aa);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.character_context) == 0x7b5);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.unknown_7aa) == 0x7aa);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, lower_position) == 0x19c);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
@@ -292,8 +292,8 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, bounds_radius) == 0x1dc);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, unknown_280) == 0x280);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, rider) == 0xcd0);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, locator_matrices) == 0x804);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.rider) == 0xcd0);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.locator_matrices) == 0x804);
 GAME_PUBLISHER_ASSERT(offsetof(NUMTX, translation) == 0x30);
 
 typedef struct buck_rotation_reader_s {
@@ -302,7 +302,7 @@ typedef struct buck_rotation_reader_s {
 } BUCK_ROTATION_READER;
 
 GAME_PUBLISHER_ASSERT(offsetof(BUCK_ROTATION_READER, rotation) == 0x27a);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.pad) == 0xca4);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEPAD, bound_pad) == 0);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 
@@ -317,7 +317,7 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, floor_height) == 0x21c);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, unknown_283) == 0x283);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, jump_animation_state) == 0x285);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, suit) == 0xcbc);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.suit) == 0xcbc);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, surface_normal) + offsetof(NUVEC, y) == 0xf28);
 GAME_PUBLISHER_ASSERT(sizeof(SUIT_INITIALIZER_RECORD) == 0x18);
 GAME_PUBLISHER_ASSERT(offsetof(SUIT_INITIALIZER_RECORD, character_id) == 0x14);
@@ -331,7 +331,7 @@ GAME_PUBLISHER_ASSERT(offsetof(LEVEL_PROGRESS, giz_flow_progress) == 0x2c24);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, progress_flag_5174) == 0x5170);
 GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA, callbacks) + 2 * sizeof(void *) == 0x70);
 GAME_PUBLISHER_ASSERT(offsetof(AREA_GLOBALS, area_phase) == 0xc);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, saved_hitpoints) == 0xe39);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.saved_hitpoints) == 0xe39);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, spawn_protection_timer) == 0x1000);
 extern "C" {
     void Bolts_Reset(void);
@@ -404,7 +404,7 @@ GAME_PUBLISHER_ASSERT(sizeof(MISSION_MENU_PACKET) == 0xa);
 GAME_PUBLISHER_ASSERT(offsetof(MISSION_MENU_PACKET, player_model) == 0);
 GAME_PUBLISHER_ASSERT(offsetof(MISSION_MENU_PACKET, active_player) == 4);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, unknown_7b3) == 0x7b3);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.unknown_7b3) == 0x7b3);
 
 /* Local minimum reader; no GAMECAMERA size or backing claim. */
 typedef struct GAME_GIZMO_SFX_CAMERA_READER {
@@ -420,14 +420,14 @@ GAME_PUBLISHER_ASSERT(offsetof(GAME_GIZMO_SFX_CAMERA_READER, sock_distance) == 0
 GAME_PUBLISHER_ASSERT(sizeof(TAG_CHARACTER_DATA_READER) == 0x4c);
 GAME_PUBLISHER_ASSERT(offsetof(TAG_CHARACTER_DATA_READER, icon_model) == 0x42);
 GAME_PUBLISHER_ASSERT(offsetof(APICHARSYS, char_data) == 0x20);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, hud_icon_timer) == 0xd60);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.hud_icon_timer) == 0xd60);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_top) == 0xff4);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, origin_scale) == 0xa8);
 GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG, hover_fall_mode) == 0x116);
 /* Reuse TAG_CHARACTER_DATA_READER from the LSW callback contract. */
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, pause_context_state) == 0xee8);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, upper_position) == 0x190);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_e24) == 0xe24);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.flags_e24) == 0xe24);
 GAME_PUBLISHER_ASSERT(offsetof(CHARACTER_MODEL_LAYERS, points_of_interest) == 0x14);
 GAME_PUBLISHER_ASSERT(offsetof(NUMTX, m30) == 0x30);
 GAME_PUBLISHER_ASSERT(offsetof(NUMTX, m31) == 0x34);
@@ -935,7 +935,7 @@ static void GoThroughDoor_ExtraCode(WORLDINFO *world, GAME_DOOR_CALLBACK *door) 
 }
 
 static i32 CanMagnetClimb_Game(GAMEOBJECT *object) {
-    return object->suit != NULL && (object->suit->flags & SUIT_MAGNET) != 0;
+    return object->player.suit != NULL && (object->player.suit->flags & SUIT_MAGNET) != 0;
 }
 
 static u32 CanPushObstacles_Game(GAMEOBJECT *object) {
@@ -963,11 +963,11 @@ static u32 CanPushBlocks_Game(GAMEOBJECT *object) {
 }
 
 static i32 CanGlide_Game(GAMEOBJECT *object) {
-    return object->suit != NULL && (object->suit->flags & SUIT_GLIDE) != 0;
+    return object->player.suit != NULL && (object->player.suit->flags & SUIT_GLIDE) != 0;
 }
 
 static i32 UsingExtraActions_Game(GAMEOBJECT *object) {
-    return object->id == (u16)id_GRIEVOUS && (((u8)(object->flags_e20 >> 16) & 1) == 0 || object->unknown_e33 == 2);
+    return object->id == (u16)id_GRIEVOUS && (((u8)(object->player.flags_e20 >> 16) & 1) == 0 || object->player.unknown_e33 == 2);
 }
 
 static i32 CanStartHold_Game(GAMEOBJECT *object) {
@@ -996,7 +996,7 @@ static i32 Slam_GetDebris_Game(GAMEOBJECT *object, i32 effect) {
 }
 
 static i32 IsWearingBackPack_Game(GAMEOBJECT *object) {
-    return object->suit != NULL && (object->suit->flags & 0x100) != 0;
+    return object->player.suit != NULL && (object->player.suit->flags & 0x100) != 0;
 }
 
 static void Player_ClearContext_Game(GAMEOBJECT *object, i32 release_takeover) {
@@ -1063,8 +1063,8 @@ static void GameMsg_EndDelay_Game(GAME_MESSAGE *message) {
 static i32 Player_ToggleSubCharacter_Game(GAMEOBJECT *object, i32 left, i32 sound) {
     i32 previous;
     i32 selected;
-    if (object->suit != NULL) {
-        selected = Suit_GetIndex(object->suit);
+    if (object->player.suit != NULL) {
+        selected = Suit_GetIndex(object->player.suit);
         previous = selected;
         for (;;) {
             if (left != 0) {
@@ -1088,7 +1088,7 @@ static i32 Player_ToggleSubCharacter_Game(GAMEOBJECT *object, i32 left, i32 soun
                     GameAudio_PlaySfx(0x24, &object->collision_position, 0, 0);
                 }
             }
-            object->suit = (SUIT_LAYERS *)&SuitRecordInit[selected];
+            object->player.suit = (SUIT_LAYERS *)&SuitRecordInit[selected];
             InitPlayerAI(object);
             return 1;
         }
@@ -1097,18 +1097,18 @@ static i32 Player_ToggleSubCharacter_Game(GAMEOBJECT *object, i32 left, i32 soun
 }
 
 static void Player_ToggledCharacter_Game(GAMEOBJECT *object, i32 owned) {
-    SUIT_LAYERS *previous = object->suit;
+    SUIT_LAYERS *previous = object->player.suit;
     if ((i16)object->id != ID_DEFAULTCHARACTER_A && (i16)object->id != ID_DEFAULTCHARACTER_B) {
-        object->suit = NULL;
+        object->player.suit = NULL;
     } else if (owned != 0) {
-        object->suit = Suit_GetLast((i16)object->id, 1);
-        if (object->suit == NULL) {
-            object->suit = Suit_GetDefault((i16)object->id);
+        object->player.suit = Suit_GetLast((i16)object->id, 1);
+        if (object->player.suit == NULL) {
+            object->player.suit = Suit_GetDefault((i16)object->id);
         }
     } else {
-        object->suit = Suit_GetDefault((i16)object->id);
+        object->player.suit = Suit_GetDefault((i16)object->id);
     }
-    if (previous != object->suit) {
+    if (previous != object->player.suit) {
         u32 toggled = object->character_toggled;
         u8 next_route = object->ai_packet.next_route;
         u32 current_route = object->ai_packet.current_route;
@@ -1128,7 +1128,7 @@ static void Player_ToggledCharacter_Game(GAMEOBJECT *object, i32 owned) {
 }
 
 static void Punch_HitExtraCode_alternate(GAMEOBJECT *object, NUVEC *position) {
-    if ((AnimMiscFlags(object->character_model, object->unknown_7aa) & 4) != 0) {
+    if ((AnimMiscFlags(object->character_model, object->player.unknown_7aa) & 4) != 0) {
         if (position != NULL) {
             PlaySfx("WhipHit", position);
         } else {
@@ -1139,13 +1139,13 @@ static void Punch_HitExtraCode_alternate(GAMEOBJECT *object, NUVEC *position) {
 
 static void Punch_HitExtraCode_LSW(GAMEOBJECT *object, NUVEC *position) {
     if (object->id == (u16)id_GAMORREANGUARD &&
-        ((object->character_context == CHARACTER_CONTEXT_PUNCH && object->unknown_7aa == ACTION_PUNCH3) ||
-         object->character_context == CHARACTER_CONTEXT_LAND_LUNGE)) {
+        ((object->player.character_context == CHARACTER_CONTEXT_PUNCH && object->player.unknown_7aa == ACTION_PUNCH3) ||
+         object->player.character_context == CHARACTER_CONTEXT_LAND_LUNGE)) {
         NewRumbleAllPlayers(0.4f, 0.0f, 1, 0);
-        NewRumble(object->pad->bound_pad, 0.7f, 0);
+        NewRumble(object->player.pad->bound_pad, 0.7f, 0);
         GameCam_Judder(GameCam, 0.25f, 0, &object->collision_position);
         PlaySfx("fs_gamorr_land", &object->lower_position);
-    } else if ((AnimMiscFlags(object->character_model, object->unknown_7aa) & 4) != 0) {
+    } else if ((AnimMiscFlags(object->character_model, object->player.unknown_7aa) & 4) != 0) {
         if (position != NULL) {
             PlaySfx("WhipHit", position);
         } else {
@@ -1161,7 +1161,7 @@ static i32 Punch_GetDamage_LSW(GAMEOBJECT *attacker, GAMEOBJECT *target) {
         return -1;
     }
     if (target != NULL && (target->id == (u16)id_IMPERIALGUARD || target->id == (u16)id_GAMORREANGUARD) &&
-        (target->character_context == CHARACTER_CONTEXT_BLOCK || target->character_context == CHARACTER_CONTEXT_HOLD)) {
+        (target->player.character_context == CHARACTER_CONTEXT_BLOCK || target->player.character_context == CHARACTER_CONTEXT_HOLD)) {
         GameAudio_PlaySfx(0x4a, &target->collision_position, 0, 0);
     }
     return 1;
@@ -1280,11 +1280,11 @@ static void BuckStartExtra_LSW(GAMEOBJECT *object) {
     for (i32 i = 0; i < 8; ++i) {
         GAMEOBJECT *player = Player[i];
         if (player == NULL || !(player->flags_1fc_word & APIOBJECT_FLAG_IN_USE) || !(player->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) ||
-            player->dead != 0 || player->rider != NULL) {
+            player->dead != 0 || player->player.rider != NULL) {
             continue;
         }
         NUVEC delta;
-        NuVecSub(&delta, &player->lower_position, &object->locator_matrices[1].translation);
+        NuVecSub(&delta, &player->lower_position, &object->player.locator_matrices[1].translation);
         if (delta.y > BuckSnowmobMinY && delta.y < BuckSnowmobMaxY) {
             f32 radius = BuckSnowmobRadius;
             f32 distance = delta.x * delta.x + delta.z * delta.z;
@@ -1311,8 +1311,8 @@ static i32 BoltInitSfx_LSW(GAMEOBJECT *object) {
 }
 
 static void GameObjectDimensionsExtra_LSW(GAMEOBJECT *object) {
-    if (object->id == (u16)id_ATAT && object->character_context == CHARACTER_CONTEXT_DEACTIVATED &&
-        object->unknown_7aa == ACTION_DEACTIVATED) {
+    if (object->id == (u16)id_ATAT && object->player.character_context == CHARACTER_CONTEXT_DEACTIVATED &&
+        object->player.unknown_7aa == ACTION_DEACTIVATED) {
         object->bounds_radius += object->bounds_radius;
     }
 }
@@ -1702,16 +1702,16 @@ static nuhspecial_s *GameMsg_GetExtraObj(GAME_MESSAGE *message) {
 
 static void Jump_EndOfLandContext(GAMEOBJECT *object) {
     GAME_CALLBACK_WEAPON_FLAGS *weapon = (GAME_CALLBACK_WEAPON_FLAGS *)object;
-    if ((i16)object->id == id_THEEMPEROR && object->character_context == LEGOCONTEXT_LAND_COMBOJUMP && BigJumpLandPreferred != -1 &&
-        object->unknown_7aa == BigJumpLandPreferred && ((weapon->weapon_flags & 1) == 0 || object->unknown_e33 == 2)) {
+    if ((i16)object->id == id_THEEMPEROR && object->player.character_context == LEGOCONTEXT_LAND_COMBOJUMP && BigJumpLandPreferred != -1 &&
+        object->player.unknown_7aa == BigJumpLandPreferred && ((weapon->weapon_flags & 1) == 0 || object->player.unknown_e33 == 2)) {
         ResetAnimPacket(&object->anim_packet, -1);
     }
 }
 
 static void BigJump_EndOfLand(GAMEOBJECT *object) {
     GAME_CALLBACK_WEAPON_FLAGS *weapon = (GAME_CALLBACK_WEAPON_FLAGS *)object;
-    if ((i16)object->id == id_THEEMPEROR && BigJumpLandPreferred != -1 && object->unknown_7aa == BigJumpLandPreferred &&
-        ((weapon->weapon_flags & 1) == 0 || object->unknown_e33 == 2)) {
+    if ((i16)object->id == id_THEEMPEROR && BigJumpLandPreferred != -1 && object->player.unknown_7aa == BigJumpLandPreferred &&
+        ((weapon->weapon_flags & 1) == 0 || object->player.unknown_e33 == 2)) {
         ResetAnimPacket(&object->anim_packet, -1);
     }
 }
@@ -2140,11 +2140,11 @@ extern "C" void InitGameMode(void) {
     NewLData = NULL;
     NewMode = 0;
     for (i = 0; i < 2; ++i) {
-        if (players[i] != NULL && players[i]->coin_packet != NULL) {
+        if (players[i] != NULL && players[i]->player.coin_packet != NULL) {
             type = &GizmoPickupType[GetRandomCoinType()];
-            players[i]->coin_packet->last_coin = type->first_model_id;
+            players[i]->player.coin_packet->last_coin = type->first_model_id;
             if (type->random_model_count > 0) {
-                players[i]->coin_packet->last_coin += (i16)(qrand() / (0xffff / type->random_model_count + 1));
+                players[i]->player.coin_packet->last_coin += (i16)(qrand() / (0xffff / type->random_model_count + 1));
             }
         }
     }
@@ -2318,7 +2318,7 @@ extern "C" void CheckResetBits(void) {
             }
             AIScriptProcessorInit(WORLD->ai_sys, &(*player_slot)->ai_packet, &(*player_slot)->ai_packet.script_processor, NULL, script_name,
                                   NULL, 1, NULL, NULL);
-            if (FreePlay == 0 && Mission_Active(NULL) == NULL && (*player_slot)->rider == NULL &&
+            if (FreePlay == 0 && Mission_Active(NULL) == NULL && (*player_slot)->player.rider == NULL &&
                 AIScriptSetBaseScriptStateByName(&(*player_slot)->ai_packet.script_processor, "InActive") != 0) {
                 (*player_slot)->flags_1fc_word &= ~APIOBJECT_FLAG_CHARACTER;
             }
@@ -2332,7 +2332,7 @@ extern "C" void CheckResetBits(void) {
     if ((ResetBits & 2) != 0) {
         for (i = 0; i < 8; ++i) {
             if (Player[i] != NULL) {
-                Player[i]->saved_hitpoints = 4;
+                Player[i]->player.saved_hitpoints = 4;
             }
         }
     }
@@ -2481,10 +2481,10 @@ extern "C" {
             }
         }
         if (object != NULL) {
-            if (object->character_context == CHARACTER_CONTEXT_HOLD) {
+            if (object->player.character_context == CHARACTER_CONTEXT_HOLD) {
                 NewBlockAction(object);
             }
-            NewRumble(object->pad->bound_pad, 0.75f, 0);
+            NewRumble(object->player.pad->bound_pad, 0.75f, 0);
             GameCam_Judder(GameCam, -0.2f, 0, NULL);
             if (debris != -1) {
                 LightSabreDebris(object);
@@ -2523,8 +2523,8 @@ extern "C" {
                 api->dead != 0) {
                 continue;
             }
-            context = object->character_context;
-            if ((U64_PAIR(&CInfo[context].flags) & 0x8000) != 0 || (object->flags_e20 & 0x20) != 0) {
+            context = object->player.character_context;
+            if ((U64_PAIR(&CInfo[context].flags) & 0x8000) != 0 || (object->player.flags_e20 & 0x20) != 0) {
                 continue;
             }
             if (part->unknown_206 == 0) {
@@ -2574,13 +2574,13 @@ extern "C" {
                 if ((part->flags & PART_FLAG_DAMAGE_CHARACTERS) != 0 &&
                     !((part->flags & 0x1000000) != 0 && (part->active & PART_STATE_STOPPED) != 0) &&
                     ((api->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || (part->flags & 0x800000) == 0)) {
-                    flags = U64_PAIR(&CInfo[(object->character_context)].flags);
+                    flags = U64_PAIR(&CInfo[(object->player.character_context)].flags);
                     if ((flags & 0x4000000) != 0 ||
-                        ((flags & 0x8000000) != 0 && (object->context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE) != 0)) {
+                        ((flags & 0x8000000) != 0 && (object->player.context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE) != 0)) {
                         if (object->id == (u16)id_BOB) {
                             effect = (object->flags_ef0 & 0x200) != 0 ? 2 : 3;
-                        } else if (object->blade_index != -1) {
-                            effect = BladeTab[object->blade_index].hit_effect;
+                        } else if (object->player.blade_index != -1) {
+                            effect = BladeTab[object->player.blade_index].hit_effect;
                         } else {
                             effect = -1;
                         }
@@ -2589,11 +2589,11 @@ extern "C" {
                         GameCam_Judder(GameCam, 0.2f, 0, NULL);
                         ReleaseBuildIt(object, 0);
                         ReleasePush(object);
-                        if (object->origin_scale_override >= 1.0f) {
-                            ObjHitShield(part->owner, object, object->shield_hitpoints, NULL);
+                        if (object->player.origin_scale_override >= 1.0f) {
+                            ObjHitShield(part->owner, object, object->player.shield_hitpoints, NULL);
                         } else if (CannotKill(object)) {
-                            NewRumble(part->owner->pad->bound_pad, 0.5f, 0);
-                            NewRumble(object->pad->bound_pad, 0.5f, 0);
+                            NewRumble(part->owner->player.pad->bound_pad, 0.5f, 0);
+                            NewRumble(object->player.pad->bound_pad, 0.5f, 0);
                         } else {
                             ObjHitObj((part->flags & PART_FLAG_CAN_DAMAGE_OWNER) != 0 ? NULL : part->owner, object, part->unknown_204,
                                       (u16)(part->force_flags), 0, 1);
@@ -2645,18 +2645,18 @@ extern "C" {
                     if ((api->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0) {
                         continue;
                     }
-                    if (object->torpedo == NULL) {
+                    if (object->player.torpedo == NULL) {
                         continue;
                     }
-                    count = object->torpedo->count;
-                    packet = object->torpedo;
+                    count = object->player.torpedo->count;
+                    packet = object->player.torpedo;
                     if (count < getMaxTorpedos(object)) {
                         packet->pickup_positions[count] = part->position;
-                        object->torpedo->pickup_data[object->torpedo->count] = part->unknown_10c[0];
-                        object->torpedo->pickup_flags[object->torpedo->count] = part->unknown_10c[1];
-                        ++object->torpedo->count;
-                        object->torpedo->steal_timer = 0.0f;
-                        object->torpedo->pickup_state = 0;
+                        object->player.torpedo->pickup_data[object->player.torpedo->count] = part->unknown_10c[0];
+                        object->player.torpedo->pickup_flags[object->player.torpedo->count] = part->unknown_10c[1];
+                        ++object->player.torpedo->count;
+                        object->player.torpedo->steal_timer = 0.0f;
+                        object->player.torpedo->pickup_state = 0;
                         KillPart(part, 2);
                     }
                 } else {
@@ -2679,12 +2679,12 @@ extern "C" {
     void Game_KillPart(PART *part, i32 reason) {
         if (reason == 1 && part->unknown_206 != -1) {
             if ((part->unknown_206 & 1) != 0 && Player[0] != NULL) {
-                NewBuzz(Player[0]->pad->bound_pad, 0.2f, 0);
-                NewRumble(Player[0]->pad->bound_pad, 0.8f, 0);
+                NewBuzz(Player[0]->player.pad->bound_pad, 0.2f, 0);
+                NewRumble(Player[0]->player.pad->bound_pad, 0.8f, 0);
             }
             if ((part->unknown_206 & 2) != 0 && Player[1] != NULL) {
-                NewBuzz(Player[1]->pad->bound_pad, 0.2f, 0);
-                NewRumble(Player[1]->pad->bound_pad, 0.8f, 0);
+                NewBuzz(Player[1]->player.pad->bound_pad, 0.2f, 0);
+                NewRumble(Player[1]->player.pad->bound_pad, 0.8f, 0);
             }
         }
     }

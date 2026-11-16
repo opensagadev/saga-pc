@@ -104,8 +104,8 @@ void RemoveGameObject(GAMEOBJECT *object, i32 unused) {
         other->seen_opponents &= ~((u64)1 << object->hostility_group);
         other->excluded_opponents &= ~((u64)1 << object->hostility_group);
     }
-    if (object->pad != NULL) {
-        object->pad->runtime_flags &= ~1u;
+    if (object->player.pad != NULL) {
+        object->player.pad->runtime_flags &= ~1u;
     }
     DestroySnakeBody(object);
     APIObjectDestroy(WORLD->object_sys, object);
@@ -122,7 +122,7 @@ void (*GameObjectDimensionsExtraFn)(GAMEOBJECT *) = 0;
 
 void GameObjectDimensions(GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG *config;
-    if (object->use_model_origin > 0 && object->origin_scale_override == 1.0f) {
+    if (object->use_model_origin > 0 && object->player.origin_scale_override == 1.0f) {
         config = object->character_data->game_character;
         if (config->collision_origin_joint != -1 && object->character_model->points_of_interest[config->collision_origin_joint] != NULL &&
             object->origin_joint_ready != 0) {
@@ -170,7 +170,7 @@ i32 UnderPlayerControl(GAMEOBJECT *object) {
     if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         return 1;
     }
-    if (object->takeover_source != NULL && (object->takeover_source->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
+    if (object->player.takeover_source != NULL && (object->player.takeover_source->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         return 1;
     }
     return 0;
@@ -192,7 +192,7 @@ GAMEOBJECT *FindGameObject(i32 character_id, u32 required_flags, i32 alive_only,
         if (character_id != -1 && (i16)object->id != character_id) {
             continue;
         }
-        if (alive_only != 0 && (object->dead != 0 || (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) != 0)) {
+        if (alive_only != 0 && (object->dead != 0 || (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x8000) != 0)) {
             continue;
         }
         if (non_level_only != 0 && object->level_object_index != -1) {
@@ -217,7 +217,7 @@ GAMEOBJECT *FindNearestGameObject(NUVEC *position, GAMEOBJECT *exclude, u32 requ
         f32 z;
         f32 distance;
         if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
-            object->dead != 0 || (object->flags_e20 & 0x20) || (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000)) {
+            object->dead != 0 || (object->player.flags_e20 & 0x20) || (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x8000)) {
             continue;
         }
         if (character_id != -1 && (i16)object->id != character_id) {
@@ -331,11 +331,12 @@ void GameObjectOrigin(GAMEOBJECT *object) {
     object->flags_1f8 |= 0x100;
     if (object->use_model_origin > 0 && (joint = object->character_data->game_character->model_origin_joint) != -1 &&
         object->character_model != NULL && object->character_model->points_of_interest[joint] != NULL) {
-        if ((object->flags_e24 & APIOBJECT_LOCATORS_VALID) != 0) {
-            object->collision_position.x = object->locator_matrices[joint].m30 + object->previous_velocity.x * FRAMETIME;
-            object->collision_position.y = (f32)((f64)(object->locator_matrices[joint].m31 + object->previous_velocity.y * FRAMETIME) +
-                                                 (f64)((object->character_bottom + object->character_top) * object->origin_scale) * 0.5);
-            object->collision_position.z = object->locator_matrices[joint].m32 + object->previous_velocity.z * FRAMETIME;
+        if ((object->player.flags_e24 & APIOBJECT_LOCATORS_VALID) != 0) {
+            object->collision_position.x = object->player.locator_matrices[joint].m30 + object->previous_velocity.x * FRAMETIME;
+            object->collision_position.y =
+                (f32)((f64)(object->player.locator_matrices[joint].m31 + object->previous_velocity.y * FRAMETIME) +
+                      (f64)((object->character_bottom + object->character_top) * object->origin_scale) * 0.5);
+            object->collision_position.z = object->player.locator_matrices[joint].m32 + object->previous_velocity.z * FRAMETIME;
         } else {
             object->collision_position.x = 0.0f;
             object->collision_position.y = -object->character_bottom;
@@ -346,12 +347,12 @@ void GameObjectOrigin(GAMEOBJECT *object) {
         object->collision_position.x += object->previous_velocity.x * FRAMETIME;
         object->collision_position.y += object->previous_velocity.y * FRAMETIME;
         object->collision_position.z += object->previous_velocity.z * FRAMETIME;
-    } else if (object->use_model_origin > 0 && object->origin_scale_override == 1.0f &&
+    } else if (object->use_model_origin > 0 && object->player.origin_scale_override == 1.0f &&
                object->character_data->game_character->collision_origin_joint != -1 &&
                object->character_model->points_of_interest[object->character_data->game_character->collision_origin_joint] != NULL &&
                object->origin_joint_ready != 0) {
         object->collision_position =
-            *(NUVEC *)&object->locator_matrices[object->character_data->game_character->collision_origin_joint].m30;
+            *(NUVEC *)&object->player.locator_matrices[object->character_data->game_character->collision_origin_joint].m30;
     } else {
         object->flags_1f8 ^= 0x100;
         object->collision_position.x = object->position.x + object->previous_velocity.x * FRAMETIME;
@@ -375,13 +376,13 @@ void GameObjectOrigin(GAMEOBJECT *object) {
     object->collision_origin.y = object->previous_velocity.y * FRAMETIME + min_y;
     object->collision_origin.z = object->position.z + object->previous_velocity.z * FRAMETIME;
     object->ai_terrain_origin = object->collision_origin;
-    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x80000) != 0 && (object->context_variant_flags & 0x800) != 0) {
+    if ((U64_PAIR(&CInfo[object->player.character_context].flags) & 0x80000) != 0 && (object->player.context_variant_flags & 0x800) != 0) {
         height = max_y - min_y;
         object->ai_terrain_origin.y += height;
-    } else if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x100000) != 0) {
+    } else if ((U64_PAIR(&CInfo[object->player.character_context].flags) & 0x100000) != 0) {
         object->ai_terrain_origin = object->position;
     } else {
-        object->ai_terrain_origin.y -= object->terrain_origin_floor_offset;
+        object->ai_terrain_origin.y -= object->player.terrain_origin_floor_offset;
         if (object->ai_terrain_origin.y < object->floor_height &&
             object->floor_height < object->collision_origin.y + object->scaled_height) {
             object->ai_terrain_origin.y = object->floor_height;
@@ -420,8 +421,8 @@ void SnapCreaturePos(GAMEOBJECT *object, NUVEC *position, i32 angle, AIPATHINFO 
     object->respawn_position = object->position;
     object->last_safe_position = object->position;
     object->ai_update_position = object->position;
-    object->reset_velocity = v000;
-    object->velocity = object->reset_velocity;
+    object->player.reset_velocity = v000;
+    object->velocity = object->player.reset_velocity;
     InitSurfaceInfo(object);
     if (set_on_surface != 0) {
         SetObjOnSurface(object, 0);
@@ -446,12 +447,13 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
     u32 model_flags;
 
     object->flags_ef4 &= ~0x400000;
-    if (!object->dead && (LEGOCONTEXT_DOOMED == -1 || object->character_context != LEGOCONTEXT_DOOMED) && (object->flags_1fc & 4) == 0) {
+    if (!object->dead && (LEGOCONTEXT_DOOMED == -1 || object->player.character_context != LEGOCONTEXT_DOOMED) &&
+        (object->flags_1fc & 4) == 0) {
         object->previous_position = object->position;
-        terrain_object =
-            object->takeover_source != NULL && LEGOCONTEXT_BEENTAKENOVER != -1 && object->character_context == LEGOCONTEXT_BEENTAKENOVER
-                ? object->takeover_source
-                : object;
+        terrain_object = object->player.takeover_source != NULL && LEGOCONTEXT_BEENTAKENOVER != -1 &&
+                                 object->player.character_context == LEGOCONTEXT_BEENTAKENOVER
+                             ? object->player.takeover_source
+                             : object;
         surface = terrain_object->jump_animation_state;
         if ((surface != -1 && (TerSurface[surface].flags & 0xc041) != 0) ||
             ((layer = terrain_object->unknown_283) != -1 && ((TerLayer[layer].flags & 1) != 0 || layer == 9))) {
@@ -466,7 +468,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
             if ((object->flags_ef4 & 4) != 0) {
                 break;
             }
-            context = object->character_context;
+            context = object->player.character_context;
             if ((U64_PAIR(&CInfo[context].flags) & 0x800000000ULL) != 0) {
                 break;
             }
@@ -476,7 +478,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
                 !VehicleArea) {
                 model_flags = object->character_data->model_flags;
                 if (((model_flags & CHARACTER_MODEL_VEHICLE) == 0 || !(object->character_data->game_character->unknown_028 > 0.0f)) &&
-                    ((model_flags & CHARACTER_MODEL_JETPACK) == 0 || object->jump_variant_state != 1)) {
+                    ((model_flags & CHARACTER_MODEL_JETPACK) == 0 || object->player.jump_variant_state != 1)) {
                     break;
                 }
             }
@@ -495,35 +497,37 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
             }
             object->flags_ef4 |= 0x400000;
             object->last_safe_position = object->position;
-            object->fall_recovery_timer = 0.0f;
+            object->player.fall_recovery_timer = 0.0f;
             if ((object->ai_packet.path_info.flags & AIPATHINFO_FLAG_ON_PATH) != 0 &&
                 (object->ai_packet.path_info.connection->traversal_flags[1] | object->ai_packet.path_info.connection->traversal_flags[0]) ==
                     0) {
-                if (object->takeover_owner != NULL && (LEGOCONTEXT_GETIN == -1 || object->character_context != LEGOCONTEXT_GETIN) &&
-                    (LEGOCONTEXT_BEENTAKENOVER == -1 || object->character_context != LEGOCONTEXT_BEENTAKENOVER)) {
-                    object->takeover_owner = NULL;
+                if (object->player.takeover_owner != NULL &&
+                    (LEGOCONTEXT_GETIN == -1 || object->player.character_context != LEGOCONTEXT_GETIN) &&
+                    (LEGOCONTEXT_BEENTAKENOVER == -1 || object->player.character_context != LEGOCONTEXT_BEENTAKENOVER)) {
+                    object->player.takeover_owner = NULL;
                 }
                 object->respawn_position = object->last_safe_position;
                 object->flags_1fc_word |= 0x2000;
             }
-            if ((object->unknown_280 == 0 || object->unknown_280 == 1) && object->unknown_da8 <= 0.0f &&
+            if ((object->unknown_280 == 0 || object->unknown_280 == 1) && object->player.unknown_da8 <= 0.0f &&
                 GameCam->blend_time >= GameCam->blend_duration && object->sock_index != 0xff) {
-                if (object->takeover_owner != NULL && (LEGOCONTEXT_GETIN == -1 || object->character_context != LEGOCONTEXT_GETIN) &&
-                    (LEGOCONTEXT_BEENTAKENOVER == -1 || object->character_context != LEGOCONTEXT_BEENTAKENOVER)) {
-                    object->takeover_owner = NULL;
+                if (object->player.takeover_owner != NULL &&
+                    (LEGOCONTEXT_GETIN == -1 || object->player.character_context != LEGOCONTEXT_GETIN) &&
+                    (LEGOCONTEXT_BEENTAKENOVER == -1 || object->player.character_context != LEGOCONTEXT_BEENTAKENOVER)) {
+                    object->player.takeover_owner = NULL;
                 }
-                object->camera_saved_position = object->last_safe_position;
+                object->player.camera_saved_position = object->last_safe_position;
             }
             goto safe_position_done;
         } while (0);
         if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && (layer = object->unknown_283) != -1 &&
             (TerLayer[layer].flags & 1) != 0 && !NoLayerKill(object)) {
-            if (object->fall_recovery_timer <= 0.0f) {
-                object->fall_hover_height = object->position.y;
+            if (object->player.fall_recovery_timer <= 0.0f) {
+                object->player.fall_hover_height = object->position.y;
             }
-            object->fall_recovery_timer = FRAMETIME + object->fall_recovery_timer;
+            object->player.fall_recovery_timer = FRAMETIME + object->player.fall_recovery_timer;
         } else {
-            object->fall_recovery_timer = 0.0f;
+            object->player.fall_recovery_timer = 0.0f;
         }
         if ((WORLD->current_level->flags & LEVEL_IN_SPACE) != 0) {
             object->last_safe_position = object->position;
@@ -531,11 +535,12 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
     }
 safe_position_done:
     if ((object->flags_ef4 & APIOBJECT_IGNORE_LAST_SAFE_PATH_POS) == 0 && (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 &&
-        (LEGOCONTEXT_EATEN == -1 || object->character_context != LEGOCONTEXT_EATEN) && (object->flags_1fc_word & 0x2000) != 0) {
+        (LEGOCONTEXT_EATEN == -1 || object->player.character_context != LEGOCONTEXT_EATEN) && (object->flags_1fc_word & 0x2000) != 0) {
         if ((object->ai_packet.path_info.flags & AIPATHINFO_FLAG_ON_PATH) != 0) {
-            if (object->takeover_owner != NULL && (LEGOCONTEXT_GETIN == -1 || object->character_context != LEGOCONTEXT_GETIN) &&
-                (LEGOCONTEXT_BEENTAKENOVER == -1 || object->character_context != LEGOCONTEXT_BEENTAKENOVER)) {
-                object->takeover_owner = NULL;
+            if (object->player.takeover_owner != NULL &&
+                (LEGOCONTEXT_GETIN == -1 || object->player.character_context != LEGOCONTEXT_GETIN) &&
+                (LEGOCONTEXT_BEENTAKENOVER == -1 || object->player.character_context != LEGOCONTEXT_BEENTAKENOVER)) {
+                object->player.takeover_owner = NULL;
             }
         }
         object->last_safe_position = object->respawn_position;

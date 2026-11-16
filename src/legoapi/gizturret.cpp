@@ -520,9 +520,9 @@ extern "C" {
                                 i32 desired_yaw = static_cast<i16>(home_yaw);
                                 if (turret->controller != NULL) {
                                     GAMEOBJECT *controller = turret->controller;
-                                    if (controller->takeover_source != NULL &&
+                                    if (controller->player.takeover_source != NULL &&
                                         (controller->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-                                        GAMEPAD *pad = controller->pad;
+                                        GAMEPAD *pad = controller->player.pad;
                                         f32 pitch_rate = -pad->input_direction_x * turret->pitch_turn_speed;
                                         if (pitch_rate < 0.0f) {
                                             desired_pitch = turret->pitch_upper;
@@ -543,14 +543,16 @@ extern "C" {
                                         }
                                         turret->pitch = SeekRot(turret->pitch, desired_pitch, pitch_rate);
                                         turret->yaw = SeekRot(turret->yaw, desired_yaw, yaw_rate);
-                                        if (turret->fire_cooldown > 0.0f && (turret->controller->pad->buttons_pressed & GAMEPAD_ACTION)) {
+                                        if (turret->fire_cooldown > 0.0f &&
+                                            (turret->controller->player.pad->buttons_pressed & GAMEPAD_ACTION)) {
                                             if (turret->fire_cooldown > turret->fire_interval * gizturret_rapid_fire_rate) {
                                                 turret->fire_cooldown = turret->fire_interval * gizturret_rapid_fire_rate;
                                             }
                                             turret->rapid_fire_pending = 1;
                                         }
                                         if (turret->fire_cooldown == 0.0f &&
-                                            ((turret->controller->pad->buttons_held & GAMEPAD_ACTION) || (turret->rapid_fire_pending))) {
+                                            ((turret->controller->player.pad->buttons_held & GAMEPAD_ACTION) ||
+                                             (turret->rapid_fire_pending))) {
                                             should_fire = 1;
                                             if (turret->rapid_fire_pending) {
                                                 turret->fire_cooldown = turret->fire_interval * gizturret_rapid_fire_rate;
@@ -893,7 +895,7 @@ extern "C" {
             if (!(flags & TURRET_CAMERA) && (candidate->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE)) {
                 continue;
             }
-            if ((flags & TURRET_TARGETS_RIDERS) && candidate->rider == NULL) {
+            if ((flags & TURRET_TARGETS_RIDERS) && candidate->player.rider == NULL) {
                 continue;
             }
             distance = NuVecDistSqr(&candidate->collision_position, &turret->opponent_origin, NULL);
@@ -1192,7 +1194,7 @@ extern "C" {
                     Hint_SetComplete(LEGOHINT_SHOOTCAMERAS);
                 }
             } else if (player != -1 && (Player[player]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-                NewBuzz(Player[player]->pad->bound_pad, 0.1f, 0);
+                NewBuzz(Player[player]->player.pad->bound_pad, 0.1f, 0);
             }
             return 1;
         }
@@ -1224,7 +1226,7 @@ extern "C" {
                     if (((TURRET_ANIM_DATA *)animation->object_data)->platform_id == bolt->hit_platform) {
                         type = BoltType_FindByID(bolt->type_id, world);
                         owner = bolt->owner;
-                        if (owner != NULL && (turret->behavior_flags & TURRET_RIDER_BOLTS_ONLY) != 0 && owner->rider == NULL) {
+                        if (owner != NULL && (turret->behavior_flags & TURRET_RIDER_BOLTS_ONLY) != 0 && owner->player.rider == NULL) {
                             damage = 0;
                         } else if (owner != NULL && (turret->behavior_flags & TURRET_PLAYER_BOLTS_ONLY) != 0 &&
                                    (owner->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
@@ -1325,7 +1327,7 @@ extern "C" {
                 if (!(dot > NuTrigTable[((target_angle + 0x4000) >> 1) & 0x7fff]) || !(best_distance > distance)) {
                     continue;
                 }
-                if (object != NULL && (void *)gizmo == (void *)object->collision_target) {
+                if (object != NULL && (void *)gizmo == (void *)object->player.collision_target) {
                     previous = gizmo;
                     previous_position = position;
                 } else {
@@ -1421,7 +1423,7 @@ extern "C" {
             player = owner != NULL ? owner->player_index : -1;
             if (GizTurrets_Hit(world, best, &bolt->position, player, type->unknown_3c) != 0) {
                 if (object != NULL) {
-                    NewRumble(object->pad->bound_pad, 0.4f, 0);
+                    NewRumble(object->player.pad->bound_pad, 0.4f, 0);
                     GameCam_HitJudder();
                 }
             } else {

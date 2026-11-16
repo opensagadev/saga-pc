@@ -138,11 +138,11 @@ static void ReleaseCable(CABLE_s *cable, i32 snapped) {
 static void CableAtstToppled(GAMEOBJECT *target) {
     GAMEOBJECT *object;
     i32 i;
-    target->character_context = CHARACTER_CONTEXT_FLATTEN;
-    target->unknown_7aa = ACTION_SPLAT;
-    target->context_duration = AnimDuration((i16)target->id, 0x85, 0.0f, 0.0f, 1);
+    target->player.character_context = CHARACTER_CONTEXT_FLATTEN;
+    target->player.unknown_7aa = ACTION_SPLAT;
+    target->player.context_duration = AnimDuration((i16)target->id, 0x85, 0.0f, 0.0f, 1);
     target->flags_ef4 |= 0x800000;
-    target->context_timer = 0.0f;
+    target->player.context_timer = 0.0f;
     IncrementMinikitCounter(target);
     object = Obj;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
@@ -229,9 +229,10 @@ void UpdateCables(void) {
             release = 1;
         }
         source = cable->source;
-        if (source == NULL || !(source->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) || source->dead != 0 || (source->unknown_e20 & 0x20) ||
-            (target != NULL && target->character_context == CHARACTER_CONTEXT_DEACTIVATED) ||
-            ((flags & 2) && source->pad->bound_pad != NULL && (source->pad->bound_pad->digital_buttons_pressed & GAMEPAD_SPECIAL))) {
+        if (source == NULL || !(source->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) || source->dead != 0 ||
+            (source->player.unknown_e20 & 0x20) || (target != NULL && target->player.character_context == CHARACTER_CONTEXT_DEACTIVATED) ||
+            ((flags & 2) && source->player.pad->bound_pad != NULL &&
+             (source->player.pad->bound_pad->digital_buttons_pressed & GAMEPAD_SPECIAL))) {
             release = 1;
         } else {
             flags |= 2;
@@ -248,8 +249,8 @@ void UpdateCables(void) {
                         f32 nearest = AIPositionUnset;
                         i32 selected = 0;
                         for (i = 0; i < 4; ++i) {
-                            f32 distance =
-                                NuVecDistSqr(&path[0], NUMTX_GET_ROW_VEC(&cable->target->locator_matrices[atat_locators[i]], 3), &delta);
+                            f32 distance = NuVecDistSqr(
+                                &path[0], NUMTX_GET_ROW_VEC(&cable->target->player.locator_matrices[atat_locators[i]], 3), &delta);
                             if (distance < nearest) {
                                 nearest = distance;
                                 selected = i;
@@ -259,7 +260,7 @@ void UpdateCables(void) {
                     }
                     target = cable->target;
                     last = cable->wrap_indices[cable->wrap_count - 1];
-                    last_position = NUMTX_GET_ROW_VEC(&target->locator_matrices[atat_locators[last]], 3);
+                    last_position = NUMTX_GET_ROW_VEC(&target->player.locator_matrices[atat_locators[last]], 3);
                     if (cable->wrap_count > 1) {
                         i32 previous = cable->wrap_indices[cable->wrap_count - 2];
                         i32 next = (last + 1) % 4;
@@ -275,8 +276,8 @@ void UpdateCables(void) {
                         } else {
                             direction = 1;
                         }
-                        next_position = NUMTX_GET_ROW_VEC(&target->locator_matrices[atat_locators[next]], 3);
-                        previous_position = NUMTX_GET_ROW_VEC(&target->locator_matrices[atat_locators[previous]], 3);
+                        next_position = NUMTX_GET_ROW_VEC(&target->player.locator_matrices[atat_locators[next]], 3);
+                        previous_position = NUMTX_GET_ROW_VEC(&target->player.locator_matrices[atat_locators[previous]], 3);
                         NuVecSub(&delta, &path[0], last_position);
                         angle = NuAtan2D(delta.x, delta.z);
                         NuVecSub(&delta, next_position, last_position);
@@ -304,12 +305,12 @@ void UpdateCables(void) {
                         }
                     } else {
                         i32 next = (last + 1) % 4;
-                        NUVEC *next_position = NUMTX_GET_ROW_VEC(&target->locator_matrices[atat_locators[next]], 3);
-                        NUVEC *opposite_position = NUMTX_GET_ROW_VEC(&target->locator_matrices[atat_locators[(last + 2) % 4]], 3);
+                        NUVEC *next_position = NUMTX_GET_ROW_VEC(&target->player.locator_matrices[atat_locators[next]], 3);
+                        NUVEC *opposite_position = NUMTX_GET_ROW_VEC(&target->player.locator_matrices[atat_locators[(last + 2) % 4]], 3);
                         i32 previous = (last + 3) % 4;
-                        NUVEC *previous_position = NUMTX_GET_ROW_VEC(&target->locator_matrices[atat_locators[previous]], 3);
+                        NUVEC *previous_position = NUMTX_GET_ROW_VEC(&target->player.locator_matrices[atat_locators[previous]], 3);
                         NUVEC *previous_opposite_position =
-                            NUMTX_GET_ROW_VEC(&target->locator_matrices[atat_locators[(previous + 3) % 4]], 3);
+                            NUMTX_GET_ROW_VEC(&target->player.locator_matrices[atat_locators[(previous + 3) % 4]], 3);
                         if (XZLinesIntersect(&path[0], last_position, next_position, opposite_position, &along0, &along1)) {
                             cable->wrap_indices[cable->wrap_count++] = (u8)next;
                         } else if (XZLinesIntersect(&path[0], last_position, previous_position, previous_opposite_position, &along0,
@@ -318,14 +319,14 @@ void UpdateCables(void) {
                         }
                     }
                 } else if (target->id == id_DRAGBOMB) {
-                    target->character_context = CHARACTER_CONTEXT_BEEN_DRAGGED;
-                    cable->target->context_timer = 0.0f;
+                    target->player.character_context = CHARACTER_CONTEXT_BEEN_DRAGGED;
+                    cable->target->player.context_timer = 0.0f;
                 }
                 if (cable->wrap_count != 0) {
                     for (i = cable->wrap_count - 1; i >= 0; --i) {
                         i32 locator = cable->wrap_indices[i];
                         if (cable->target->character_model->points_of_interest[locator] != NULL) {
-                            path[count++] = *NUMTX_GET_ROW_VEC(&cable->target->locator_matrices[atat_locators[locator]], 3);
+                            path[count++] = *NUMTX_GET_ROW_VEC(&cable->target->player.locator_matrices[atat_locators[locator]], 3);
                         }
                     }
                 } else {
@@ -348,7 +349,7 @@ void UpdateCables(void) {
                                 f32 squared;
                                 if (!(object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) ||
                                     !(object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) || object->dead != 0 ||
-                                    (object->unknown_e20 & 0x20) || (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
+                                    (object->player.unknown_e20 & 0x20) || (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
                                     continue;
                                 }
                                 if (WORLD->area != NULL && WORLD->area == HOTHBATTLE_ADATA && object->id != (u16)id_ATAT &&
@@ -390,7 +391,7 @@ void UpdateCables(void) {
                                         FaceOpponent(cable->target, &cable->source->collision_position);
                                         target = cable->target;
                                         if ((target->flags_ef0 & APIOBJECT_WALK_BACKWARDS) &&
-                                            !(((CABLE_CONTEXT_INFO *)CInfo)[target->character_context].flags & 1)) {
+                                            !(((CABLE_CONTEXT_INFO *)CInfo)[target->player.character_context].flags & 1)) {
                                             target->movement_facing_angle += 0x8000;
                                         }
                                         cable->target->ai_packet.goal_speed_mode = 1;
@@ -640,7 +641,7 @@ GAMEOBJECT *CableTargetGameObject(GAMEOBJECT *source, NUVEC *position, f32 radiu
             candidate == Player[1]) {
             continue;
         }
-        context = candidate->character_context;
+        context = candidate->player.character_context;
         if ((U64_PAIR(&CInfo[context].flags) & 0x8000) || context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER ||
             context == CHARACTER_CONTEXT_DEACTIVATED || context == CHARACTER_CONTEXT_ACTIVATE || context == CHARACTER_CONTEXT_FLATTEN) {
             continue;

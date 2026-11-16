@@ -215,7 +215,7 @@ void HubGoneThroughDoor(WORLDINFO *world) {
             continue;
         }
         object->tag_object_callback = NULL;
-        FreeTorpedoPacket(&object->torpedo);
+        FreeTorpedoPacket(&object->player.torpedo);
         RemoveGameObject(object, 1);
     }
     HubAiMusicState.door_state = 0;

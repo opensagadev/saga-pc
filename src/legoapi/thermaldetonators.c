@@ -222,13 +222,13 @@ void ThermalDetonator_Throw(GAMEOBJECT *object) {
     locator = object->character_data->game_character->throw_locator;
     blocked = 0;
     if (locator != -1 && object->character_model->points_of_interest[locator] != NULL) {
-        if (object->id == (u16)id_JANGOFETT && object->unknown_7aa == ACTION_THROW2) {
+        if (object->id == (u16)id_JANGOFETT && object->player.unknown_7aa == ACTION_THROW2) {
             NuMtxSetRotationY(&matrix, qrand());
             NuMtxRotateZ(&matrix, qrand());
             NuMtxRotateX(&matrix, qrand());
-            NuMtxTranslate(&matrix, &object->locator_matrices[locator].translation);
+            NuMtxTranslate(&matrix, &object->player.locator_matrices[locator].translation);
         } else {
-            matrix = object->locator_matrices[locator];
+            matrix = object->player.locator_matrices[locator];
             NuVecNorm((NUVEC *)&matrix.m00, (NUVEC *)&matrix.m00);
             NuVecNorm((NUVEC *)&matrix.m10, (NUVEC *)&matrix.m10);
             NuVecNorm((NUVEC *)&matrix.m20, (NUVEC *)&matrix.m20);
@@ -279,7 +279,7 @@ void ThermalDetonator_Throw(GAMEOBJECT *object) {
         part->active &= ~0x38000;
     }
     PlaySfx("ThrowDet", &object->collision_position);
-    NewBuzzFrames(object->pad->bound_pad, 2, 0);
+    NewBuzzFrames(object->player.pad->bound_pad, 2, 0);
 }
 
 void ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
@@ -295,13 +295,13 @@ void ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
     }
     locator = object->character_data->game_character->throw_locator;
     if (locator != -1 && object->character_model->points_of_interest[locator] != NULL) {
-        if (object->id == (u16)id_JANGOFETT && object->unknown_7aa == ACTION_THROW2) {
+        if (object->id == (u16)id_JANGOFETT && object->player.unknown_7aa == ACTION_THROW2) {
             NuMtxSetRotationY(&matrix, qrand());
             NuMtxRotateZ(&matrix, qrand());
             NuMtxRotateX(&matrix, qrand());
-            NuMtxTranslate(&matrix, &object->locator_matrices[locator].translation);
+            NuMtxTranslate(&matrix, &object->player.locator_matrices[locator].translation);
         } else {
-            matrix = object->locator_matrices[locator];
+            matrix = object->player.locator_matrices[locator];
             NuVecNorm((NUVEC *)&matrix.m00, (NUVEC *)&matrix.m00);
             NuVecNorm((NUVEC *)&matrix.m10, (NUVEC *)&matrix.m10);
             NuVecNorm((NUVEC *)&matrix.m20, (NUVEC *)&matrix.m20);
@@ -340,52 +340,53 @@ void ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
         part->active &= ~0x38000;
     }
     PlaySfx("ThrowDet", &object->collision_position);
-    NewBuzzFrames(object->pad->bound_pad, 2, 0);
+    NewBuzzFrames(object->player.pad->bound_pad, 2, 0);
 }
 
 i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
     f32 *frame = NULL;
     PART *part;
     f32 release_frame;
-    if (object->character_context == CHARACTER_CONTEXT_THROW_DETONATOR) {
-        if (object->character_model->action_animations[object->unknown_7aa] != NULL) {
-            frame = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
+    if (object->player.character_context == CHARACTER_CONTEXT_THROW_DETONATOR) {
+        if (object->character_model->action_animations[object->player.unknown_7aa] != NULL) {
+            frame = AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0);
             if (frame == NULL) {
                 return 0;
             }
         }
-        object->context_timer -= FRAMETIME;
-        if (object->context_timer <= 0.0f) {
-            object->character_context = CHARACTER_CONTEXT_NONE;
-            if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
-                object->flags_e24 |= APIOBJECT_DETONATOR_THROW;
+        object->player.context_timer -= FRAMETIME;
+        if (object->player.context_timer <= 0.0f) {
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
+            if ((object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
+                object->player.flags_e24 |= APIOBJECT_DETONATOR_THROW;
             }
-        } else if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
-            if (object->character_model->action_animations[object->unknown_7aa] != NULL) {
-                release_frame = AnimListFrame(object->character_model, object->unknown_7aa, 2);
+        } else if ((object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
+            if (object->character_model->action_animations[object->player.unknown_7aa] != NULL) {
+                release_frame = AnimListFrame(object->character_model, object->player.unknown_7aa, 2);
                 if (frame != NULL && *frame > 0.0f && *frame >= release_frame) {
-                    object->flags_e24 |= APIOBJECT_DETONATOR_THROW;
+                    object->player.flags_e24 |= APIOBJECT_DETONATOR_THROW;
                 }
-            } else if (object->context_timer < 0.5f) {
-                object->flags_e24 |= APIOBJECT_DETONATOR_THROW;
+            } else if (object->player.context_timer < 0.5f) {
+                object->player.flags_e24 |= APIOBJECT_DETONATOR_THROW;
             }
         }
-        if ((object->flags_e24 & APIOBJECT_DETONATOR_THROW) != 0) {
-            object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
+        if ((object->player.flags_e24 & APIOBJECT_DETONATOR_THROW) != 0) {
+            object->player.context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
         }
         return 0;
     }
     if (WORLD->level_objects[0xe9].active == 0 || (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
-        (object->pad->buttons_pressed & GAMEPAD_SPECIAL) == 0) {
+        (object->player.pad->buttons_pressed & GAMEPAD_SPECIAL) == 0) {
         return 0;
     }
     if (((object->character_data->model_flags & CHARACTER_MODEL_BOUNTY_HUNTER) == 0 && object->helmet != HELMET_BOUNTY_HUNTER &&
          !SuperWeirdo(object)) ||
-        (object->unknown_281 == 0 && object->jump_variant_state != 1)) {
+        (object->unknown_281 == 0 && object->player.jump_variant_state != 1)) {
         return 0;
     }
-    if (object->character_context != CHARACTER_CONTEXT_NONE && object->character_context != CHARACTER_CONTEXT_WEAPON_IN &&
-        object->character_context != CHARACTER_CONTEXT_WEAPON_OUT && (U64_PAIR(&CInfo[object->character_context].flags) & 4) == 0) {
+    if (object->player.character_context != CHARACTER_CONTEXT_NONE && object->player.character_context != CHARACTER_CONTEXT_WEAPON_IN &&
+        object->player.character_context != CHARACTER_CONTEXT_WEAPON_OUT &&
+        (U64_PAIR(&CInfo[object->player.character_context].flags) & 4) == 0) {
         return 0;
     }
     part = FindPart(NULL, 0, object);
@@ -396,24 +397,24 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
         KillPart(part, 0);
         return 1;
     }
-    object->character_context = CHARACTER_CONTEXT_THROW_DETONATOR;
-    if (object->jump_variant_state == 1) {
-        object->unknown_7aa = ACTION_THROW3;
-    } else if ((object->flags_e20 & APIOBJECT_WEAPON_OUT) != 0) {
-        object->unknown_7aa = ACTION_THROW2;
+    object->player.character_context = CHARACTER_CONTEXT_THROW_DETONATOR;
+    if (object->player.jump_variant_state == 1) {
+        object->player.unknown_7aa = ACTION_THROW3;
+    } else if ((object->player.flags_e20 & APIOBJECT_WEAPON_OUT) != 0) {
+        object->player.unknown_7aa = ACTION_THROW2;
     } else {
-        object->unknown_7aa = ACTION_THROW;
+        object->player.unknown_7aa = ACTION_THROW;
     }
-    if (object->character_model->action_animations[object->unknown_7aa] == NULL) {
-        object->unknown_7aa = ACTION_THROW;
+    if (object->character_model->action_animations[object->player.unknown_7aa] == NULL) {
+        object->player.unknown_7aa = ACTION_THROW;
     }
-    if (AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 1) != NULL) {
+    if (AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 1) != NULL) {
         ResetAnimPacket(&object->anim_packet, -1);
     }
-    object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
-    object->context_timer = object->character_model->action_animations[object->unknown_7aa] != NULL
-                                ? AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1)
-                                : 1.0f;
+    object->player.context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
+    object->player.context_timer = object->character_model->action_animations[object->player.unknown_7aa] != NULL
+                                       ? AnimDuration((i16)object->id, object->player.unknown_7aa, 0.0f, 0.0f, 1)
+                                       : 1.0f;
     return 0;
 }
 

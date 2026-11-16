@@ -362,7 +362,7 @@ void GizAction_ChangeTechnoTgt(GIZFLOW *unused0, FLOWBOX *unused1, char **params
         techno->complete = 0;
         techno->target_mode = 0;
         if (operator_object != NULL) {
-            operator_object->character_context = CHARACTER_CONTEXT_NONE;
+            operator_object->player.character_context = CHARACTER_CONTEXT_NONE;
         }
     }
     old_controlled = techno->controlled_object;

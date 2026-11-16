@@ -231,7 +231,7 @@ static i32 TriggerGizmoAvailable(GIZMO *gizmo) {
 }
 
 i32 GameObjectUsingLever(GAMEOBJECT *object, void *lever) {
-    return object->character_context == CHARACTER_CONTEXT_PULL_LEVER && object->grapple == lever;
+    return object->player.character_context == CHARACTER_CONTEXT_PULL_LEVER && object->player.grapple == lever;
 }
 
 void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
@@ -268,9 +268,10 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
             if (gizmo != NULL) {
                 if (gizmo->type_id == lever_gizmotype_id) {
                     TRIGGER_LEVER *lever = gizmo->object;
-                    if (player->character_context == CHARACTER_CONTEXT_PULL_LEVER && player->grapple == lever) {
+                    if (player->player.character_context == CHARACTER_CONTEXT_PULL_LEVER && player->player.grapple == lever) {
                         set->occupied |= 1 << index;
-                    } else if (player2 != NULL && player2->character_context == CHARACTER_CONTEXT_PULL_LEVER && player2->grapple == lever) {
+                    } else if (player2 != NULL && player2->player.character_context == CHARACTER_CONTEXT_PULL_LEVER &&
+                               player2->player.grapple == lever) {
                         set->occupied |= 1 << index;
                     } else if ((set->occupied & (1 << index)) != 0 && !Lever_BeingPulled(lever)) {
                         set->occupied &= ~(1 << index);
@@ -310,10 +311,10 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
                     if ((spinner->flags & 6) != 0 || ((spinner->flags & GIZSPINNER_FLAG_SHADOW_MODE_ONLY) != 0 && ShadowMode == 0) ||
                         spinner->progress == 1.0f || (spinner->state_flags & SPINNER_STATE_HALTED) != 0) {
                         set->occupied &= ~(1 << index);
-                    } else if (player->character_context == CHARACTER_CONTEXT_PUSH_SPINNER && player->grapple == spinner) {
+                    } else if (player->player.character_context == CHARACTER_CONTEXT_PUSH_SPINNER && player->player.grapple == spinner) {
                         set->occupied |= 1 << index;
-                    } else if (player2 != NULL && player2->character_context == CHARACTER_CONTEXT_PUSH_SPINNER &&
-                               player2->grapple == spinner) {
+                    } else if (player2 != NULL && player2->player.character_context == CHARACTER_CONTEXT_PUSH_SPINNER &&
+                               player2->player.grapple == spinner) {
                         set->occupied |= 1 << index;
                     } else if ((set->occupied & (1 << index)) != 0 && spinner->room_index == -1) {
                         set->occupied &= ~(1 << index);
@@ -336,9 +337,10 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
                 } else if (gizmo->type_id == grapple_gizmotype_id) {
                     void *grapple = gizmo->object;
                     object = assigned != -1 ? &Obj[assigned] : NULL;
-                    if (player->character_context == LEGOCONTEXT_GRAPPLE && player->grapple == grapple) {
+                    if (player->player.character_context == LEGOCONTEXT_GRAPPLE && player->player.grapple == grapple) {
                         set->occupied |= 1 << index;
-                    } else if (player2 != NULL && player2->character_context == LEGOCONTEXT_GRAPPLE && player2->grapple == grapple) {
+                    } else if (player2 != NULL && player2->player.character_context == LEGOCONTEXT_GRAPPLE &&
+                               player2->player.grapple == grapple) {
                         set->occupied |= 1 << index;
                     } else if ((set->occupied & (1 << index)) != 0) {
                         set->occupied &= ~(1 << index);

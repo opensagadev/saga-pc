@@ -168,7 +168,7 @@ extern "C" void Detonators_Update(void) {
         } else if (detonator->unknown_34 != NULL) {
             BATARANG_DETONATOR_HIT_VIEW *hit_data = static_cast<BATARANG_DETONATOR_HIT_VIEW *>(detonator->unknown_34);
             if (!(detonator->timer >= 10.0f) &&
-                (detonator->object == NULL || detonator->object->dead != 0 || !(detonator->object->unknown_de0 >= 0.3f))) {
+                (detonator->object == NULL || detonator->object->dead != 0 || !(detonator->object->player.unknown_de0 >= 0.3f))) {
                 hit_data->scale = DetonatorHitScaleIdle;
             } else {
                 hit_data->scale = DetonatorHitScaleArmed;
@@ -194,7 +194,7 @@ extern "C" void Detonators_Draw(void) {
         NuMtxTranslate(&matrix, &detonator->position);
         NuSpecialDrawAt(&WORLD->level_objects[0xec].special, &matrix);
         if (GameTimer.update_count % 6 < 3 && (detonator->timer >= 10.0f || (detonator->object != NULL && detonator->object->dead == 0 &&
-                                                                             detonator->object->unknown_de0 >= 0.3f))) {
+                                                                             detonator->object->player.unknown_de0 >= 0.3f))) {
             if (WORLD->level_objects[0xef].active) {
                 detonator->draw_result = (u8)NuSpecialDrawAt(&WORLD->level_objects[0xef].special, &matrix);
             }
@@ -207,137 +207,137 @@ extern "C" void Detonators_Draw(void) {
 }
 
 extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
-    if (object->character_context != CHARACTER_CONTEXT_PICK_UP_DETONATOR &&
-        object->character_context != CHARACTER_CONTEXT_PLACE_DETONATOR) {
+    if (object->player.character_context != CHARACTER_CONTEXT_PICK_UP_DETONATOR &&
+        object->player.character_context != CHARACTER_CONTEXT_PLACE_DETONATOR) {
         if (WORLD->level_objects[0xec].active == 0 || (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
-            (object->unknown_281 == 0 && object->jump_variant_state != 1) ||
-            (ObjLandReady(object) == 0 && (*(u64 *)&CInfo[object->character_context].flags & 0x2000) == 0)) {
-            object->flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
-            object->unknown_de0 = 0.0f;
+            (object->unknown_281 == 0 && object->player.jump_variant_state != 1) ||
+            (ObjLandReady(object) == 0 && (*(u64 *)&CInfo[object->player.character_context].flags & 0x2000) == 0)) {
+            object->player.flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
+            object->player.unknown_de0 = 0.0f;
             return;
         }
-        if ((object->pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
-            if (!(object->unknown_de0 > 0.0f) && (object->flags_e20 & APIOBJECT_DETONATOR_WAIT_RELEASE) != 0) {
+        if ((object->player.pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
+            if (!(object->player.unknown_de0 > 0.0f) && (object->player.flags_e20 & APIOBJECT_DETONATOR_WAIT_RELEASE) != 0) {
                 return;
             }
-            object->flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
-            object->unknown_de0 += FRAMETIME;
-            if (object->unknown_de0 >= 0.3f && object->unknown_de0 >= 1.0f) {
+            object->player.flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
+            object->player.unknown_de0 += FRAMETIME;
+            if (object->player.unknown_de0 >= 0.3f && object->player.unknown_de0 >= 1.0f) {
                 DETONATOR_s *oldest = Detonator_FindOldest();
                 if (oldest != NULL) {
                     Detonator_Detonate(oldest);
-                    object->unknown_de0 = 0.7f;
+                    object->player.unknown_de0 = 0.7f;
                 } else {
-                    object->unknown_de0 = 0.0f;
-                    object->flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
+                    object->player.unknown_de0 = 0.0f;
+                    object->player.flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
                 }
             }
             return;
         }
-        if (object->unknown_de0 > 0.0f && object->unknown_de0 < 0.3f) {
+        if (object->player.unknown_de0 > 0.0f && object->player.unknown_de0 < 0.3f) {
             DETONATOR_s *nearest = Detonator_FindNearest(&object->lower_position, object->bounds_radius + 0.0775f, object);
             if (nearest != NULL) {
-                object->unknown_7b3 = 0;
-                object->character_context = CHARACTER_CONTEXT_PICK_UP_DETONATOR;
+                object->player.unknown_7b3 = 0;
+                object->player.character_context = CHARACTER_CONTEXT_PICK_UP_DETONATOR;
                 FastWeaponIn(object, 0);
-                object->unknown_7aa = ACTION_PICKUP;
-                object->grapple = nearest;
+                object->player.unknown_7aa = ACTION_PICKUP;
+                object->player.grapple = nearest;
                 object->movement_facing_angle =
                     NuAtan2D(nearest->position.x - object->position.x, nearest->position.z - object->position.z);
-                nearest = object->detonator;
-                object->launch_origin.x = nearest->position.x - NU_SIN_LUT(object->movement_facing_angle) * 0.1684f;
-                object->launch_origin.z = nearest->position.z - NU_COS_LUT(object->movement_facing_angle) * 0.1684f;
-                object->takeover_start_angle = (u16)RotDiff(object->movement_facing_angle, nearest->rotation_y);
+                nearest = object->player.detonator;
+                object->player.launch_origin.x = nearest->position.x - NU_SIN_LUT(object->movement_facing_angle) * 0.1684f;
+                object->player.launch_origin.z = nearest->position.z - NU_COS_LUT(object->movement_facing_angle) * 0.1684f;
+                object->player.takeover_start_angle = (u16)RotDiff(object->movement_facing_angle, nearest->rotation_y);
             } else if (DetonatorPlacementSlot(object) != NULL && object->floor_height != GameObjectNearFloorNoFloorHeight &&
                        object->lower_position.y - object->floor_height < 0.155f) {
-                object->launch_origin.x = object->lower_position.x;
-                object->launch_origin.y = object->floor_height;
-                object->launch_origin.z = object->lower_position.z;
-                if (Detonator_FindNearest(&object->launch_origin, 0.155f, NULL) == NULL) {
-                    object->unknown_7b3 = 0;
-                    object->character_context = CHARACTER_CONTEXT_PLACE_DETONATOR;
+                object->player.launch_origin.x = object->lower_position.x;
+                object->player.launch_origin.y = object->floor_height;
+                object->player.launch_origin.z = object->lower_position.z;
+                if (Detonator_FindNearest(&object->player.launch_origin, 0.155f, NULL) == NULL) {
+                    object->player.unknown_7b3 = 0;
+                    object->player.character_context = CHARACTER_CONTEXT_PLACE_DETONATOR;
                     FastWeaponIn(object, 0);
-                    object->unknown_7aa = ACTION_PUTDOWN;
-                    object->unknown_7a4 = object->unknown_1056;
-                    object->takeover_start_angle = (u16)qrand();
-                    object->unknown_7a8 = object->unknown_1058;
+                    object->player.unknown_7aa = ACTION_PUTDOWN;
+                    object->player.unknown_7a4 = object->unknown_1056;
+                    object->player.takeover_start_angle = (u16)qrand();
+                    object->player.unknown_7a8 = object->unknown_1058;
                 } else {
                     GameAudio_PlaySfx(0x32, NULL, 0, 0);
                 }
             } else {
                 GameAudio_PlaySfx(0x32, NULL, 0, 0);
             }
-            if (object->character_context == CHARACTER_CONTEXT_PLACE_DETONATOR ||
-                object->character_context == CHARACTER_CONTEXT_PICK_UP_DETONATOR) {
+            if (object->player.character_context == CHARACTER_CONTEXT_PLACE_DETONATOR ||
+                object->player.character_context == CHARACTER_CONTEXT_PICK_UP_DETONATOR) {
                 object->velocity.z = 0.0f;
                 object->velocity.x = 0.0f;
-                if (AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 1) != NULL) {
+                if (AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 1) != NULL) {
                     ResetAnimPacket(&object->anim_packet, -1);
                 }
-                if (object->character_model->model_data_b[object->unknown_7aa] != NULL) {
-                    object->context_timer = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
+                if (object->character_model->model_data_b[object->player.unknown_7aa] != NULL) {
+                    object->player.context_timer = AnimDuration((i16)object->id, object->player.unknown_7aa, 0.0f, 0.0f, 1);
                 } else {
-                    object->context_timer = 1.0f;
+                    object->player.context_timer = 1.0f;
                 }
             }
         }
-        object->flags_e20 &= ~APIOBJECT_DETONATOR_WAIT_RELEASE;
-        object->unknown_de0 = 0.0f;
+        object->player.flags_e20 &= ~APIOBJECT_DETONATOR_WAIT_RELEASE;
+        object->player.unknown_de0 = 0.0f;
         return;
     }
 
-    object->flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
-    object->unknown_de0 = 0.0f;
+    object->player.flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
+    object->player.unknown_de0 = 0.0f;
     f32 *frame = NULL;
-    if (object->character_model->model_data_b[object->unknown_7aa] != NULL) {
-        frame = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
+    if (object->character_model->model_data_b[object->player.unknown_7aa] != NULL) {
+        frame = AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0);
         if (frame == NULL) {
             return;
         }
     }
-    object->context_timer -= FRAMETIME;
-    if (object->context_timer <= 0.0f) {
-        object->character_context = CHARACTER_CONTEXT_NONE;
-        if (object->unknown_7b3 != 0) {
+    object->player.context_timer -= FRAMETIME;
+    if (object->player.context_timer <= 0.0f) {
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
+        if (object->player.unknown_7b3 != 0) {
             return;
         }
     } else {
-        if (object->unknown_7b3 != 0) {
+        if (object->player.unknown_7b3 != 0) {
             return;
         }
-        if (object->character_model->model_data_b[object->unknown_7aa] != NULL) {
-            f32 marker = AnimListFrame(object->character_model, object->unknown_7aa,
-                                       object->character_context == CHARACTER_CONTEXT_PICK_UP_DETONATOR ? 0 : 2);
+        if (object->character_model->model_data_b[object->player.unknown_7aa] != NULL) {
+            f32 marker = AnimListFrame(object->character_model, object->player.unknown_7aa,
+                                       object->player.character_context == CHARACTER_CONTEXT_PICK_UP_DETONATOR ? 0 : 2);
             if (frame == NULL || !(*frame > 0.0f)) {
                 return;
             }
             if (!(*frame >= marker)) {
                 return;
             }
-        } else if (!(object->context_timer < 0.5f)) {
+        } else if (!(object->player.context_timer < 0.5f)) {
             return;
         }
     }
-    object->unknown_7b3 = 1;
-    if (object->character_context == CHARACTER_CONTEXT_PICK_UP_DETONATOR) {
-        DETONATOR_s *detonator = object->detonator;
+    object->player.unknown_7b3 = 1;
+    if (object->player.character_context == CHARACTER_CONTEXT_PICK_UP_DETONATOR) {
+        DETONATOR_s *detonator = object->player.detonator;
         if (detonator != NULL) {
             detonator->active = 0;
-            if (object->detonator->unknown_34 != NULL) {
-                GameAntinode_UnregisterAntiNode(WORLD->game_antinode_sys, object->detonator->unknown_34);
-                object->detonator->unknown_34 = NULL;
+            if (object->player.detonator->unknown_34 != NULL) {
+                GameAntinode_UnregisterAntiNode(WORLD->game_antinode_sys, object->player.detonator->unknown_34);
+                object->player.detonator->unknown_34 = NULL;
             }
         }
         return;
     }
     DETONATOR_s *detonator = DetonatorPlacementSlot(object);
     if (detonator != NULL) {
-        detonator->position = object->launch_origin;
+        detonator->position = object->player.launch_origin;
         detonator->active = 1;
         detonator->object = object;
-        detonator->rotation_x = object->unknown_7a4;
-        detonator->rotation_y = (u16)(object->takeover_start_angle + object->unknown_276);
-        detonator->rotation_z = object->unknown_7a8;
+        detonator->rotation_x = object->player.unknown_7a4;
+        detonator->rotation_y = (u16)(object->player.takeover_start_angle + object->unknown_276);
+        detonator->rotation_z = object->player.unknown_7a8;
         detonator->unknown_0c.z = 0.0f;
         detonator->unknown_0c.x = 0.0f;
         detonator->unknown_0c.y = 0.0775f;

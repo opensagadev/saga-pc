@@ -258,11 +258,11 @@ extern "C" {
                         /* The BuildUp counter names are swapped relative to their use. */
                         if (BuildUpTotal == 0) {
                             BuildUpDone = 0;
-                            if (Player[0] != NULL && Player[0]->coin_packet != NULL) {
-                                BuildUpDone = Player[0]->coin_packet->coins;
+                            if (Player[0] != NULL && Player[0]->player.coin_packet != NULL) {
+                                BuildUpDone = Player[0]->player.coin_packet->coins;
                             }
-                            if (Player[1] != NULL && Player[1]->coin_packet != NULL) {
-                                BuildUpDone += Player[1]->coin_packet->coins;
+                            if (Player[1] != NULL && Player[1]->player.coin_packet != NULL) {
+                                BuildUpDone += Player[1]->player.coin_packet->coins;
                             }
                             if ((u32)BuildUpDone >= maximum) {
                                 BuildUpScale = 2.5f;
@@ -302,7 +302,7 @@ extern "C" {
         }
         for (i = 0; i < 2; ++i) {
             target = 0.0f;
-            if (Paused == 0 && Player[i] != NULL && Player[i]->hud_icon_timer <= 0.0f) {
+            if (Paused == 0 && Player[i] != NULL && Player[i]->player.hud_icon_timer <= 0.0f) {
                 target = 1.0f;
             }
             PowerUp_PanelPosMul[i] = SeekLinearF(PowerUp_PanelPosMul[i], target, FRAMETIME + FRAMETIME);
@@ -570,7 +570,7 @@ extern "C" {
         } else {
             two_rows = 0;
         }
-        heart_object = object->takeover_source != NULL ? 0xcd : 0xcc;
+        heart_object = object->player.takeover_source != NULL ? 0xcd : 0xcc;
         if (WORLD->level_objects[heart_object].active == 0) {
             return;
         }
@@ -764,22 +764,22 @@ extern "C" {
             alpha = ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 ? 1.0f : MissionDropInAlpha) * base_alpha;
             icon_alpha = (i32)((f64)alpha * 128.0);
             drawcharicon_i_panel = player;
-            if (WORLD->current_level == dat_0087b268 && object->takeover_source != NULL &&
-                object->takeover_source->id == static_cast<u16>(id_YODA)) {
-                visible = object->hud_icon_timer <= 0.0f ||
-                          (object->hud_icon_timer < 2.0f && (f64)NuFmod(object->hud_icon_timer, 0.4f) < (f64)0.2f);
+            if (WORLD->current_level == dat_0087b268 && object->player.takeover_source != NULL &&
+                object->player.takeover_source->id == static_cast<u16>(id_YODA)) {
+                visible = object->player.hud_icon_timer <= 0.0f ||
+                          (object->player.hud_icon_timer < 2.0f && (f64)NuFmod(object->player.hud_icon_timer, 0.4f) < (f64)0.2f);
                 DrawCharIcon(static_cast<i16>(object->id), icon_x, status_y, 0.0f, MissionPlayerIconSize, frame_model, alpha, alpha,
                              visible, NULL);
             } else {
-                visible = object->hud_icon_timer <= 0.0f ||
-                          (object->hud_icon_timer < 2.0f && (f64)NuFmod(object->hud_icon_timer, 0.4f) < (f64)0.2f);
-                DrawCharIcon(static_cast<i16>(object->takeover_source != NULL ? object->takeover_source->id : object->id), icon_x, status_y,
-                             0.0f, MissionPlayerIconSize, frame_model, alpha, alpha, visible, NULL);
+                visible = object->player.hud_icon_timer <= 0.0f ||
+                          (object->player.hud_icon_timer < 2.0f && (f64)NuFmod(object->player.hud_icon_timer, 0.4f) < (f64)0.2f);
+                DrawCharIcon(static_cast<i16>(object->player.takeover_source != NULL ? object->player.takeover_source->id : object->id),
+                             icon_x, status_y, 0.0f, MissionPlayerIconSize, frame_model, alpha, alpha, visible, NULL);
             }
             name_x = player == 0 ? -(ICONX + HudNameOffsetX) : ICONX + HudNameOffsetX;
             if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->character_data->name_id != -1 &&
-                (paused != 0 || (object->hud_icon_timer > 0.0f && object->hud_icon_timer < 2.0f &&
-                                 (f64)NuFmod(object->hud_icon_timer, 0.4f) < (f64)0.2f))) {
+                (paused != 0 || (object->player.hud_icon_timer > 0.0f && object->player.hud_icon_timer < 2.0f &&
+                                 (f64)NuFmod(object->player.hud_icon_timer, 0.4f) < (f64)0.2f))) {
                 f32 name_y = status_y + HudNameOffsetY;
                 i32 name_alpha = (i32)((f64)base_alpha * 128.0);
                 f32 width = Game.options_save.widescreen != 0 ? HudNameWideWidth : HudNameWidth;
@@ -793,9 +793,9 @@ extern "C" {
                             0, flash_alpha);
             }
             if (StartupGameFlag1 != 0 && paused == 0 && FadeSys.fade == 0.0f && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-                if (ONEPLAYERPOWERUPS != 0 && object->powerup_time > 0.0f) {
+                if (ONEPLAYERPOWERUPS != 0 && object->player.powerup_time > 0.0f) {
                     if (FindGameMsgsWithID(7, 0, object->player_index, NULL) == 0 &&
-                        (object->powerup_time >= 3.0f || GameTimer.update_count % 6 < 3)) {
+                        (object->player.powerup_time >= 3.0f || GameTimer.update_count % 6 < 3)) {
                         DrawPanel3DObject(player == 0 ? -ICONX : ICONX, PowerUp_GetPanelY(player) + status_y, 1.0f, POWERUPOBJSIZE,
                                           POWERUPOBJSIZE, POWERUPOBJSIZE, 0, PowerUp_PanelYRot[player], 0,
                                           &WORLD->level_objects[208].special, 0, 1.0f);
@@ -839,26 +839,26 @@ extern "C" {
                     sprintf(text, "%i/%i", AreaGlobals.arcade_ai_kills[player], Arcade_Mode[ArcadeItem.mode].target);
                     score_x = player == 0 ? -HudScoreX : HudScoreX;
                     coin_x = player == 0 ? -PANEL_COINX : PANEL_COINX;
-                    scale = object->coin_packet->scale * HudScoreScale;
+                    scale = object->player.coin_packet->scale * HudScoreScale;
                     y = status_y + PANEL_COINY;
                     Text3DEx(text, score_x, y + HudCoinAdjustY, 1.0f, scale, scale, scale, alignment, 255, 191, 0, (u8)icon_alpha);
                     model = 53;
                     if (WORLD->level_objects[model].active != 0) {
-                        packet = object->coin_packet;
+                        packet = object->player.coin_packet;
                         scale = packet->scale * PANEL_COINSCALE_END;
                         DrawPanel3DObject(coin_x, y, 1.0f, scale, scale, scale, 0, 0, 0, &WORLD->level_objects[model].special, 0, alpha);
                     }
                 } else {
-                    if (object->coin_packet == NULL) {
+                    if (object->player.coin_packet == NULL) {
                         continue;
                     }
-                    Text_MakeScore(object->coin_packet->coins, text);
+                    Text_MakeScore(object->player.coin_packet->coins, text);
                     score_x = player == 0 ? -HudScoreX : HudScoreX;
                     coin_x = player == 0 ? -PANEL_COINX : PANEL_COINX;
-                    scale = object->coin_packet->scale * HudScoreScale;
+                    scale = object->player.coin_packet->scale * HudScoreScale;
                     y = status_y + PANEL_COINY;
                     Text3DEx(text, score_x, y + HudCoinAdjustY, 1.0f, scale, scale, scale, alignment, 255, 191, 0, (u8)icon_alpha);
-                    packet = object->coin_packet;
+                    packet = object->player.coin_packet;
                     model = packet->last_coin;
                     if (model >= 183 && model <= 186) {
                         model -= 4;
@@ -870,7 +870,7 @@ extern "C" {
                         model += 4;
                     }
                     if (WORLD->level_objects[model].active != 0) {
-                        packet = object->coin_packet;
+                        packet = object->player.coin_packet;
                         scale = packet->scale * PANEL_COINSCALE_END;
                         DrawPanel3DObject(coin_x, y, 1.0f, scale, scale, scale, 0, 0, 0, &WORLD->level_objects[model].special, 0, alpha);
                     }
@@ -1577,7 +1577,7 @@ void Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     position.x = object->upper_position.x;
     position.y = (f32)((f64)object->character_top * object->origin_scale + object->position.y + (f64)0.05f);
     position.z = object->upper_position.z;
-    if ((object->flags_e24 & APIOBJECT_LOCATORS_VALID) != 0) {
+    if ((object->player.flags_e24 & APIOBJECT_LOCATORS_VALID) != 0) {
         f32 x_sum = 0.0f;
         f32 z_sum = 0.0f;
         f32 max_y = object->collision_position.y;
@@ -1585,7 +1585,7 @@ void Tag_DrawIcon_Batman(GAMEOBJECT *object) {
         i32 index;
         for (index = 0; index < 16; ++index) {
             if (object->character_model->points_of_interest[index] != NULL) {
-                NUMTX *matrix = &object->locator_matrices[index];
+                NUMTX *matrix = &object->player.locator_matrices[index];
                 ++count;
                 x_sum += matrix->m30;
                 z_sum += matrix->m32;
@@ -1640,10 +1640,10 @@ void Tag_DrawIcon_LSW(GAMEOBJECT *object) {
         return;
     }
     if ((object->flags_ef0 & 0x100000) == 0) {
-        if (!(object->hud_icon_timer > 0.0f)) {
+        if (!(object->player.hud_icon_timer > 0.0f)) {
             return;
         }
-        if (!(object->hud_icon_timer >= 2.0f) && !(NuFmod(object->hud_icon_timer, 0.4f) >= (f64)0.2f)) {
+        if (!(object->player.hud_icon_timer >= 2.0f) && !(NuFmod(object->player.hud_icon_timer, 0.4f) >= (f64)0.2f)) {
             return;
         }
     }

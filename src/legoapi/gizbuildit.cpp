@@ -238,7 +238,7 @@ extern "C" {
         for (index = 0; index < 8; ++index) {
             GAMEOBJECT *player = Player[index];
             if (player != NULL && (player->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
-                player->character_context == LEGOCONTEXT_BUILDIT && player->grapple == buildit) {
+                player->player.character_context == LEGOCONTEXT_BUILDIT && player->player.grapple == buildit) {
                 return player;
             }
         }
@@ -287,7 +287,8 @@ extern "C" GIZBUILDIT *GizBuildIt_FindNearest(WORLDINFO *world, GAMEOBJECT *play
                 i32 p;
                 for (p = 0; p < 8; p++) {
                     GAMEOBJECT *object = Player[p];
-                    if (object != NULL && object->character_context == LEGOCONTEXT_BUILDIT && object->grapple == (void *)buildit) {
+                    if (object != NULL && object->player.character_context == LEGOCONTEXT_BUILDIT &&
+                        object->player.grapple == (void *)buildit) {
                         break;
                     }
                 }
@@ -403,7 +404,7 @@ extern "C" void GizMoveAttractoBuildItPiece(GIZBUILDIT_s *buildit_pointer, GAMEA
 }
 
 extern "C" void GizDrawBuildItPiece(GAMEOBJECT *object, i32 draw_reflection) {
-    GIZBUILDIT *buildit = static_cast<GIZBUILDIT *>(object->grapple);
+    GIZBUILDIT *buildit = static_cast<GIZBUILDIT *>(object->player.grapple);
     GAMEANIMOBJ *piece;
     GIZBUILDITANIMDATA_s *data;
     f32 progress;
@@ -455,7 +456,7 @@ extern "C" void GizDrawBuildItPiece(GAMEOBJECT *object, i32 draw_reflection) {
 
 extern "C" {
 
-#define PLAYER_BUILDIT(player) ((BUILDIT_MOVEMENT *)(player)->grapple)
+#define PLAYER_BUILDIT(player) ((BUILDIT_MOVEMENT *)(player)->player.grapple)
 
     void GizGetBuildItPlayerPos(GAMEOBJECT *player, NUVEC *position, NUVEC *target) {
         BUILDIT_MATRICES *data;
@@ -683,9 +684,9 @@ extern "C" {
         if ((player->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player_HasFastBuild(player)) {
             return 3.0f;
         }
-        buildit = (BUILDIT_MOVEMENT *)player->grapple;
-        completed = buildit->built_object_count - player->big_jump_animation;
-        amount = player->big_jump_animation;
+        buildit = (BUILDIT_MOVEMENT *)player->player.grapple;
+        completed = buildit->built_object_count - player->player.big_jump_animation;
+        amount = player->player.big_jump_animation;
         total = buildit->anim_object_count;
         if (completed + amount >= (total + completed) / 2) {
             amount = total - completed - amount;
@@ -700,10 +701,10 @@ extern "C" {
 
     void ReleaseBuildIt(GAMEOBJECT *player, i32 completed) {
         f32 completion_blend;
-        if (LEGOCONTEXT_BUILDIT == -1 || player->character_context != LEGOCONTEXT_BUILDIT) {
+        if (LEGOCONTEXT_BUILDIT == -1 || player->player.character_context != LEGOCONTEXT_BUILDIT) {
             return;
         }
-        player->character_context = CHARACTER_CONTEXT_NONE;
+        player->player.character_context = CHARACTER_CONTEXT_NONE;
         completion_blend = completed != 0 ? 0.6f : 0.0f;
         GameCam_Blend(GameCam, 0.5f, completion_blend, 1);
     }
@@ -1595,15 +1596,16 @@ extern "C" {
                         }
                         if (builder != NULL) {
                             if (buzz_time > 0.0f) {
-                                NewBuzz(builder->pad->bound_pad, buzz_time, 0);
+                                NewBuzz(builder->player.pad->bound_pad, buzz_time, 0);
                             } else if (buzz_frames != 0) {
-                                NewBuzzFrames(builder->pad->bound_pad, buzz_frames, 0);
+                                NewBuzzFrames(builder->player.pad->bound_pad, buzz_frames, 0);
                             }
                             if (buildit->build_state == 0 &&
-                                ((builder->pad->buttons_held & GAMEPAD_SPECIAL) != 0 || (builder->flags_1f8 & 0x40000) != 0)) {
-                                builder->flags_e20 = ((~builder->flags_e20 ^ builder->flags_e20) & 0x4000) ^ builder->flags_e20;
-                                if (builder->big_jump_animation < 10) {
-                                    ++builder->big_jump_animation;
+                                ((builder->player.pad->buttons_held & GAMEPAD_SPECIAL) != 0 || (builder->flags_1f8 & 0x40000) != 0)) {
+                                builder->player.flags_e20 =
+                                    ((~builder->player.flags_e20 ^ builder->player.flags_e20) & 0x4000) ^ builder->player.flags_e20;
+                                if (builder->player.big_jump_animation < 10) {
+                                    ++builder->player.big_jump_animation;
                                 }
                             } else {
                                 ReleaseBuildIt(builder, buildit->build_state);
@@ -1755,38 +1757,39 @@ extern "C" {
         if ((player->character_data->model_flags & (CHARACTER_MODEL_DROID | CHARACTER_MODEL_VEHICLE)) != 0) {
             return;
         }
-        if (player->character_context == LEGOCONTEXT_BUILDIT) {
+        if (player->player.character_context == LEGOCONTEXT_BUILDIT) {
             if (BoltSys->stop_targeting != NULL) {
                 BoltSys->stop_targeting(player, &player->collision_position);
             }
-            buildit = (GIZBUILDIT *)player->grapple;
+            buildit = (GIZBUILDIT *)player->player.grapple;
             if (buildit == NULL) {
                 return;
             }
             GizBuildIt_SetHeadTarget((GIZBUILDIT_s *)buildit, player);
-            buildit = (GIZBUILDIT *)player->grapple;
+            buildit = (GIZBUILDIT *)player->player.grapple;
             if ((buildit->state_flags & 0x80) != 0 && ShadowMode == 0) {
-                player->character_context = CHARACTER_CONTEXT_NONE;
+                player->player.character_context = CHARACTER_CONTEXT_NONE;
                 buildit->builders_active = 1;
-                ((GIZBUILDIT *)player->grapple)->availability_flags |= 4;
+                ((GIZBUILDIT *)player->player.grapple)->availability_flags |= 4;
             }
-            animation = player->unknown_7aa;
+            animation = player->player.unknown_7aa;
             if (player->character_model->model_data_b[animation] != NULL && AnimPlaying(&player->anim_packet, animation, 1, 0) == NULL) {
                 return;
             }
-            buildit = (GIZBUILDIT *)player->grapple;
-            if (buildit->build_state == 0 && (player->pad->buttons_held & GAMEPAD_SPECIAL) != 0 && (f64)player->context_timer < (f64)0.2f) {
-                player->context_timer = 0.2f;
+            buildit = (GIZBUILDIT *)player->player.grapple;
+            if (buildit->build_state == 0 && (player->player.pad->buttons_held & GAMEPAD_SPECIAL) != 0 &&
+                (f64)player->player.context_timer < (f64)0.2f) {
+                player->player.context_timer = 0.2f;
             } else {
-                timer = (f64)player->context_timer - FRAMETIME;
-                player->context_timer = timer;
+                timer = (f64)player->player.context_timer - FRAMETIME;
+                player->player.context_timer = timer;
                 if (timer <= 0.0f) {
-                    player->character_context = CHARACTER_CONTEXT_NONE;
+                    player->player.character_context = CHARACTER_CONTEXT_NONE;
                 }
             }
-            if (player->character_context != CHARACTER_CONTEXT_NONE) {
+            if (player->player.character_context != CHARACTER_CONTEXT_NONE) {
                 buildit->builders_active = 1;
-                ((GIZBUILDIT *)player->grapple)->availability_flags |= 4;
+                ((GIZBUILDIT *)player->player.grapple)->availability_flags |= 4;
             }
             return;
         }
@@ -1804,11 +1807,11 @@ extern "C" {
         }
         buildit = GizBuildIt_FindNearest(WORLD, player, 1, ShadowMode);
         if (objInNetWaitContext(player, LEGOCONTEXT_BUILDIT) != 0) {
-            timer = (f64)player->context_timer - FRAMETIME;
-            player->context_timer = timer;
+            timer = (f64)player->player.context_timer - FRAMETIME;
+            player->player.context_timer = timer;
             if (timer <= 0.0f) {
-                player->character_context = CHARACTER_CONTEXT_NONE;
-                player->panel_request_data = NULL;
+                player->player.character_context = CHARACTER_CONTEXT_NONE;
+                player->player.panel_request_data = NULL;
             }
         }
         if (buildit == NULL || (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
@@ -1819,17 +1822,17 @@ extern "C" {
         }
         GizBuildIt_SetHeadTarget((GIZBUILDIT_s *)buildit, player);
         buildit->availability_flags |= 4;
-        if ((player->pad->buttons_pressed & GAMEPAD_SPECIAL) != 0 ||
-            (objInNetWaitContext(player, LEGOCONTEXT_BUILDIT) != 0 && (player->pad->buttons_held & GAMEPAD_SPECIAL) != 0)) {
+        if ((player->player.pad->buttons_pressed & GAMEPAD_SPECIAL) != 0 ||
+            (objInNetWaitContext(player, LEGOCONTEXT_BUILDIT) != 0 && (player->player.pad->buttons_held & GAMEPAD_SPECIAL) != 0)) {
             if (GizBuildIt_CanStartBuildingFn != NULL && GizBuildIt_CanStartBuildingFn(buildit, player) == 0) {
                 return;
             }
-            player->character_context = (i8)LEGOCONTEXT_BUILDIT;
-            player->unknown_7aa = LEGOACT_BUILD;
-            player->context_timer = 0.4f;
-            player->flags_e20 &= ~0x4000;
-            player->grapple = buildit;
-            player->big_jump_animation = 0;
+            player->player.character_context = (i8)LEGOCONTEXT_BUILDIT;
+            player->player.unknown_7aa = LEGOACT_BUILD;
+            player->player.context_timer = 0.4f;
+            player->player.flags_e20 &= ~0x4000;
+            player->player.grapple = buildit;
+            player->player.big_jump_animation = 0;
             GizBuildIt_SetStepTime((GIZBUILDIT_s *)buildit, player);
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
             Hint_SetComplete(LEGOHINT_BUILD);

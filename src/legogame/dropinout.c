@@ -42,12 +42,13 @@ void CheckForPlayersTurnedOff(void) {
             i32 target_index;
             for (target_index = 2; target_index < 8; ++target_index) {
                 GAMEOBJECT *target = Player[target_index];
-                if (target == NULL || (target->tag_flags & APIOBJECT_TAG_DISABLED) || (target->portal_flags & APIOBJECT_CANNOT_DROP_IN) ||
-                    target->character_context == CHARACTER_CONTEXT_DROP_OUT || target->character_context == CHARACTER_CONTEXT_BIG_JUMP) {
+                if (target == NULL || (target->player.tag_flags & APIOBJECT_TAG_DISABLED) ||
+                    (target->portal_flags & APIOBJECT_CANNOT_DROP_IN) || target->player.character_context == CHARACTER_CONTEXT_DROP_OUT ||
+                    target->player.character_context == CHARACTER_CONTEXT_BIG_JUMP) {
                     continue;
                 }
                 if (target->unknown_281 != 0 ||
-                    (target->jump_variant_state == 1 && target->character_data->game_character->unknown_028 > 0.0f)) {
+                    (target->player.jump_variant_state == 1 && target->character_data->game_character->unknown_028 > 0.0f)) {
                     TagCharacter(Player[source_index], target, 1);
                 }
             }
@@ -72,9 +73,9 @@ i32 FreePlay_DropInToPlayerPos(GAMEOBJECT *object) {
         return 0;
     }
     if (player != NULL && FreePlay != 0 && drop_in_teleport >= 2 && VehicleArea == 0 && (Arcade != 0 || teleport_all_freeplay_modes != 0) &&
-        object->takeover_source == NULL && (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) == 0 &&
-        object->character_context != CHARACTER_CONTEXT_DOOMED && object->model_draw_result == 0 &&
-        (object->tag_flags & APIOBJECT_TAG_DISABLED) == 0) {
+        object->player.takeover_source == NULL && (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x8000) == 0 &&
+        object->player.character_context != CHARACTER_CONTEXT_DOOMED && object->model_draw_result == 0 &&
+        (object->player.tag_flags & APIOBJECT_TAG_DISABLED) == 0) {
         NUVEC position = player->last_safe_position;
         if (position.x == player->position.x && position.y == player->position.y && position.z == player->position.z) {
             position.z = (f32)((f64)position.z + (f64)0.01f);
@@ -82,7 +83,7 @@ i32 FreePlay_DropInToPlayerPos(GAMEOBJECT *object) {
         if (NuCameraClipTestSphere(&position, object->bounds_half_height, &NuMtxSetIdentityTemplate) == 0) {
             ResetPlayerMoves(object);
             Player_ClearContext(object, 1);
-            Player_ResetContexts(object->ai_player_packet);
+            Player_ResetContexts(&object->player);
             object->start_position = position;
             object->position = position;
             object->velocity = v000;
@@ -101,29 +102,29 @@ i32 FreePlay_DropInToPlayerPos(GAMEOBJECT *object) {
 
 /* Both calculated return paths end in an f32 store/reload. */
 f32 DropInOutScale(GAMEOBJECT *object) {
-    const u8 context = (u8)(object->character_context);
+    const u8 context = (u8)(object->player.character_context);
     if (context == CHARACTER_CONTEXT_DROP_IN) {
-        return NuTrigTable[((i32)(object->context_timer / object->context_duration * 16384.0f) >> 1) & 0x7fff];
+        return NuTrigTable[((i32)(object->player.context_timer / object->player.context_duration * 16384.0f) >> 1) & 0x7fff];
     }
     if (context == CHARACTER_CONTEXT_DROP_OUT) {
-        return NuTrigTable[((i32)(object->context_timer / object->context_duration * 16384.0f + 16384.0f) >> 1) & 0x7fff];
+        return NuTrigTable[((i32)(object->player.context_timer / object->player.context_duration * 16384.0f + 16384.0f) >> 1) & 0x7fff];
     }
     return 1.0f;
 }
 
 void DropInOutCode(GAMEOBJECT *object) {
-    u8 context = (u8)object->character_context;
+    u8 context = (u8)object->player.character_context;
     GAMEOBJECT *other;
     if (context != CHARACTER_CONTEXT_DROP_IN && context != CHARACTER_CONTEXT_DROP_OUT) {
         return;
     }
-    object->context_timer += FRAMETIME;
-    if (object->context_timer >= object->context_duration) {
+    object->player.context_timer += FRAMETIME;
+    if (object->player.context_timer >= object->player.context_duration) {
         if (context == CHARACTER_CONTEXT_DROP_OUT) {
             other = object == Player[0] ? Player[1] : Player[0];
             object->position = other->position;
         }
-        object->character_context = CHARACTER_CONTEXT_NONE;
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
         if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0) {
             object->unknown_281 = 0;
             object->velocity.y = -0.1f;
@@ -140,11 +141,11 @@ void StartDropIn(GAMEOBJECT *object) {
         return;
     }
 
-    object->character_context = CHARACTER_CONTEXT_DROP_IN;
+    object->player.character_context = CHARACTER_CONTEXT_DROP_IN;
     animation = (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0 ? 5 : 1;
-    object->context_timer = 0.0f;
-    object->context_duration = 0.5f;
-    object->unknown_7aa = animation;
+    object->player.context_timer = 0.0f;
+    object->player.context_duration = 0.5f;
+    object->player.unknown_7aa = animation;
 }
 
 void StartDropOut(GAMEOBJECT *object) {
@@ -153,11 +154,11 @@ void StartDropOut(GAMEOBJECT *object) {
         return;
     }
 
-    object->character_context = CHARACTER_CONTEXT_DROP_OUT;
+    object->player.character_context = CHARACTER_CONTEXT_DROP_OUT;
     animation = CurrentAnim(&object->anim_packet);
-    object->context_timer = 0.0f;
-    object->context_duration = 0.5f;
-    object->unknown_7aa = animation;
+    object->player.context_timer = 0.0f;
+    object->player.context_duration = 0.5f;
+    object->player.unknown_7aa = animation;
 }
 
 void DropOut(i32 player, i32 resume, i32 silent, i32 unused) {
@@ -170,34 +171,34 @@ void DropOut(i32 player, i32 resume, i32 silent, i32 unused) {
         return;
     }
     if (!silent) {
-        if (!object->rider) {
-            NuPadSetStatus((GAMEPAD_INIT_RECORD *)object->pad - GamePadStorage, 0);
+        if (!object->player.rider) {
+            NuPadSetStatus((GAMEPAD_INIT_RECORD *)object->player.pad - GamePadStorage, 0);
         }
         GameAudio_PlaySfx(0x20, &object->collision_position, 0, 0);
     }
     ReleaseTakeOver(object, 1);
     /* The lean angles are signed (loaded with movsx); the shared header has them as u16. */
-    secondary = object->secondary_lean_angle;
-    movement = object->movement_lean_angle;
-    tertiary = object->tertiary_lean_angle;
+    secondary = object->player.secondary_lean_angle;
+    movement = object->player.movement_lean_angle;
+    tertiary = object->player.tertiary_lean_angle;
     ReleaseEat(object);
     if (VehicleArea) {
-        ResetPlayerPacket(object->unknown_06c4, object->character_data);
-        object->secondary_lean_angle = secondary;
-        object->movement_lean_angle = movement;
-        object->tertiary_lean_angle = tertiary;
+        ResetPlayerPacket(&object->player, object->character_data);
+        object->player.secondary_lean_angle = secondary;
+        object->player.movement_lean_angle = movement;
+        object->player.tertiary_lean_angle = tertiary;
     }
     object->flags_1fc_word &= ~APIOBJECT_FLAG_PLAYER_ACTIVE;
     AICreatureResumeScript(object);
     if (VehicleArea) {
         StartDropOut(object);
     }
-    if (object->dead || object->character_context == CHARACTER_CONTEXT_DOOMED) {
+    if (object->dead || object->player.character_context == CHARACTER_CONTEXT_DOOMED) {
         PlayerProgress[player].hitpoints = object->unknown_107e;
     } else {
         PlayerProgress[player].hitpoints = object->current_hp;
     }
-    object->powerup_time = 0.0f;
+    object->player.powerup_time = 0.0f;
     if (!VehicleArea) {
         GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
     } else {
@@ -248,7 +249,7 @@ i32 PlayersDropInOut(void) {
                     continue;
                 }
                 if (object->flags_ef0 & 0x200000) {
-                    if (FreePlay_DropInToPlayerPos(object) || Player[index]->camera_screen_position.z < 1.0f) {
+                    if (FreePlay_DropInToPlayerPos(object) || Player[index]->player.camera_screen_position.z < 1.0f) {
                         force_join = 1;
                     }
                     break;
@@ -337,14 +338,16 @@ i32 PlayersDropInOut(void) {
             continue;
         }
         object->model_draw_result = 1;
-        join = VehicleArea != 0 && object->character_context != CHARACTER_CONTEXT_DROP_OUT;
-        if (!join && CUTSTOPGAME == 0 && MiniCutCam != 2 && !(object->tag_flags & APIOBJECT_TAG_DISABLED) &&
-            !(object->portal_flags & APIOBJECT_CANNOT_DROP_IN) && object->character_context != CHARACTER_CONTEXT_DROP_OUT &&
-            object->character_context != CHARACTER_CONTEXT_BIG_JUMP) {
-            if ((object->camera_screen_position.x > -0.8500000238418579 && object->camera_screen_position.x < 0.8500000238418579 &&
-                 object->camera_screen_position.y > -0.8500000238418579 && object->camera_screen_position.y < 0.8500000238418579) &&
+        join = VehicleArea != 0 && object->player.character_context != CHARACTER_CONTEXT_DROP_OUT;
+        if (!join && CUTSTOPGAME == 0 && MiniCutCam != 2 && !(object->player.tag_flags & APIOBJECT_TAG_DISABLED) &&
+            !(object->portal_flags & APIOBJECT_CANNOT_DROP_IN) && object->player.character_context != CHARACTER_CONTEXT_DROP_OUT &&
+            object->player.character_context != CHARACTER_CONTEXT_BIG_JUMP) {
+            if ((object->player.camera_screen_position.x > -0.8500000238418579 &&
+                 object->player.camera_screen_position.x < 0.8500000238418579 &&
+                 object->player.camera_screen_position.y > -0.8500000238418579 &&
+                 object->player.camera_screen_position.y < 0.8500000238418579) &&
                 (force_join || object->unknown_281 != 0 || object->id == (u16)id_SPEEDERBIKE ||
-                 (object->jump_variant_state == 1 && object->character_data->game_character->unknown_028 > 0.0f))) {
+                 (object->player.jump_variant_state == 1 && object->character_data->game_character->unknown_028 > 0.0f))) {
                 join = 1;
             } else if (force_join) {
                 join = 1;
@@ -358,14 +361,16 @@ i32 PlayersDropInOut(void) {
                 if (target == NULL) {
                     continue;
                 }
-                tag = VehicleArea != 0 && object->character_context != CHARACTER_CONTEXT_DROP_OUT;
-                if (!tag && CUTSTOPGAME == 0 && MiniCutCam != 2 && !(target->tag_flags & APIOBJECT_TAG_DISABLED) &&
-                    !(target->portal_flags & APIOBJECT_CANNOT_DROP_IN) && target->character_context != CHARACTER_CONTEXT_DROP_OUT &&
-                    target->character_context != CHARACTER_CONTEXT_BIG_JUMP && target->model_draw_result != 0 &&
+                tag = VehicleArea != 0 && object->player.character_context != CHARACTER_CONTEXT_DROP_OUT;
+                if (!tag && CUTSTOPGAME == 0 && MiniCutCam != 2 && !(target->player.tag_flags & APIOBJECT_TAG_DISABLED) &&
+                    !(target->portal_flags & APIOBJECT_CANNOT_DROP_IN) && target->player.character_context != CHARACTER_CONTEXT_DROP_OUT &&
+                    target->player.character_context != CHARACTER_CONTEXT_BIG_JUMP && target->model_draw_result != 0 &&
                     (target->unknown_281 != 0 ||
-                     (target->jump_variant_state == 1 && target->character_data->game_character->unknown_028 > 0.0f)) &&
-                    (target->camera_screen_position.x > -0.8500000238418579 && target->camera_screen_position.x < 0.8500000238418579 &&
-                     target->camera_screen_position.y > -0.8500000238418579 && target->camera_screen_position.y < 0.8500000238418579)) {
+                     (target->player.jump_variant_state == 1 && target->character_data->game_character->unknown_028 > 0.0f)) &&
+                    (target->player.camera_screen_position.x > -0.8500000238418579 &&
+                     target->player.camera_screen_position.x < 0.8500000238418579 &&
+                     target->player.camera_screen_position.y > -0.8500000238418579 &&
+                     target->player.camera_screen_position.y < 0.8500000238418579)) {
                     tag = 1;
                 }
                 if (tag && TagCharacter(object, target, 1)) {
@@ -385,8 +390,8 @@ i32 PlayersDropInOut(void) {
             }
         }
         object->flags_1fc_word |= APIOBJECT_FLAG_PLAYER_ACTIVE;
-        object->hud_icon_timer = 2.0f;
-        object->input_toggle_hold_time = TOGGLEHOLDTIME;
+        object->player.hud_icon_timer = 2.0f;
+        object->player.input_toggle_hold_time = TOGGLEHOLDTIME;
         NuSound3StopRumble();
         ResetTimer(&JoinInTimer, 0.0f);
         changed = 1;
@@ -400,7 +405,7 @@ i32 PlayersDropInOut(void) {
         if (MiniCutCam != 2 && VehicleArea == 0) {
             GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
         }
-        if (VehicleArea != 0 && object->character_context != CHARACTER_CONTEXT_DROP_OUT) {
+        if (VehicleArea != 0 && object->player.character_context != CHARACTER_CONTEXT_DROP_OUT) {
             StartDropIn(object);
         }
         object->flags_ef0 |= 0x80;
@@ -416,14 +421,17 @@ i32 PlayersDropInOut(void) {
     drop_index = -1;
     for (index = 0; index < 2; ++index) {
         object = Player[index];
-        if (object == NULL || object->dead != 0 || object->character_context == CHARACTER_CONTEXT_DOOMED ||
-            object->character_context == CHARACTER_CONTEXT_TECHNO || object->character_context == CHARACTER_CONTEXT_BIG_JUMP) {
+        if (object == NULL || object->dead != 0 || object->player.character_context == CHARACTER_CONTEXT_DOOMED ||
+            object->player.character_context == CHARACTER_CONTEXT_TECHNO ||
+            object->player.character_context == CHARACTER_CONTEXT_BIG_JUMP) {
             continue;
         }
         if (object->flags_ef0 & 0x200000) {
-            if ((object->camera_screen_position.x > -0.8500000238418579 && object->camera_screen_position.x < 0.8500000238418579 &&
-                 object->camera_screen_position.y > -0.8500000238418579 && object->camera_screen_position.y < 0.8500000238418579) &&
-                object->camera_screen_position.z < 1.0f) {
+            if ((object->player.camera_screen_position.x > -0.8500000238418579 &&
+                 object->player.camera_screen_position.x < 0.8500000238418579 &&
+                 object->player.camera_screen_position.y > -0.8500000238418579 &&
+                 object->player.camera_screen_position.y < 0.8500000238418579) &&
+                object->player.camera_screen_position.z < 1.0f) {
                 i32 clear_index;
                 for (clear_index = 0; clear_index < 8; ++clear_index) {
                     if (Player[clear_index] != NULL) {
@@ -432,19 +440,21 @@ i32 PlayersDropInOut(void) {
                 }
                 continue;
             }
-            if (object->unknown_da8 >= 2.0f) {
+            if (object->player.unknown_da8 >= 2.0f) {
                 continue;
             }
-            if ((object->model_draw_result != 0 || (object->camera_screen_position.x < -1.0f || object->camera_screen_position.x > 1.0f ||
-                                                    object->camera_screen_position.y < -1.0f || object->camera_screen_position.y > 1.0f)) &&
-                !(object->tag_flags & APIOBJECT_TAG_DISABLED) && !(object->portal_flags & APIOBJECT_CANNOT_DROP_IN)) {
+            if ((object->model_draw_result != 0 ||
+                 (object->player.camera_screen_position.x < -1.0f || object->player.camera_screen_position.x > 1.0f ||
+                  object->player.camera_screen_position.y < -1.0f || object->player.camera_screen_position.y > 1.0f)) &&
+                !(object->player.tag_flags & APIOBJECT_TAG_DISABLED) && !(object->portal_flags & APIOBJECT_CANNOT_DROP_IN)) {
                 drop_back_in_timer = 0.000001f;
             }
         } else if (Player[0] != NULL && (Player[0]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) && Player[1] != NULL &&
                    (Player[1]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
-            if (object->unknown_da8 >= 2.0f ||
-                (object->model_draw_result == 0 && (object->camera_screen_position.x < -1.0f || object->camera_screen_position.x > 1.0f ||
-                                                    object->camera_screen_position.y < -1.0f || object->camera_screen_position.y > 1.0f))) {
+            if (object->player.unknown_da8 >= 2.0f ||
+                (object->model_draw_result == 0 &&
+                 (object->player.camera_screen_position.x < -1.0f || object->player.camera_screen_position.x > 1.0f ||
+                  object->player.camera_screen_position.y < -1.0f || object->player.camera_screen_position.y > 1.0f))) {
                 drop_index = index;
             }
         }

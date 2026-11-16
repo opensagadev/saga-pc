@@ -20,7 +20,8 @@ void *SetLevelHack(i32 size) {
 }
 
 i32 objInNetWaitContext(GAMEOBJECT *object, i32 context) {
-    if (LegoContextNetWait != -1 && object != NULL && object->character_context == LegoContextNetWait && object->unknown_7aa == context) {
+    if (LegoContextNetWait != -1 && object != NULL && object->player.character_context == LegoContextNetWait &&
+        object->player.unknown_7aa == context) {
         return 1;
     }
     return 0;
@@ -28,8 +29,8 @@ i32 objInNetWaitContext(GAMEOBJECT *object, i32 context) {
 
 void fun_005787d0(GAMEOBJECT *object, i16 value) {
     if (object != NULL) {
-        object->character_context = LegoContextNetWait;
-        object->unknown_7aa = value;
+        object->player.character_context = LegoContextNetWait;
+        object->player.unknown_7aa = value;
     }
 }
 

@@ -122,7 +122,7 @@ void CollectPowerUp(GAMEOBJECT *object, NUVEC *position, u16 rotation, i32 flags
         target.x = object->player_index == 0 ? -ICONX : ICONX;
         target.y = PowerUp_GetPanelY(object->player_index) + STATSPOSY;
         target.z = 1.0f;
-        if (object->powerup_time > 0.0f) {
+        if (object->player.powerup_time > 0.0f) {
             PowerUp_ExistingIconPrivate(object->player_index);
         }
         message = AddGameMsg_Default;
@@ -147,8 +147,8 @@ void CollectPowerUp(GAMEOBJECT *object, NUVEC *position, u16 rotation, i32 flags
         }
     }
     Cheat_StartPowerUp(position, object);
-    NewRumble(object->pad->bound_pad, 1.0f, 0);
-    NewBuzz(object->pad->bound_pad, 0.2f, 0);
+    NewRumble(object->player.pad->bound_pad, 1.0f, 0);
+    NewBuzz(object->player.pad->bound_pad, 0.2f, 0);
 }
 
 void Pup_CollectPowerUp(WORLDINFO *world, GIZMOPICKUP *pickup, i32 type, GAMEOBJECT *object, i32 flags) {
@@ -158,9 +158,9 @@ void Pup_CollectPowerUp(WORLDINFO *world, GIZMOPICKUP *pickup, i32 type, GAMEOBJ
 }
 
 void PowerUp_Update(GAMEOBJECT *object) {
-    if (object->powerup_time > 0.0f) {
-        object->powerup_time -= FRAMETIME;
-        if (object->powerup_time <= 0.0f) {
+    if (object->player.powerup_time > 0.0f) {
+        object->player.powerup_time -= FRAMETIME;
+        if (object->player.powerup_time <= 0.0f) {
             GameAudio_PlaySfx(0x52, NULL, 0, 0);
         } else {
             GameAudio_PlaySfx(0x51, NULL, 0, 0);
@@ -177,7 +177,7 @@ void Pup_CollectCharKit(WORLDINFO *world, GIZMOPICKUP *pickup, i32 type, GAMEOBJ
     (void)world;
     (void)type;
     (void)flags;
-    NewBuzz(object->pad->bound_pad, 0.2f, 0);
+    NewBuzz(object->player.pad->bound_pad, 0.2f, 0);
     AddGameDebris(WORLD->game_debris_sys, 0x13, &pickup->position);
     objects = WORLD->level_objects;
     if (objects[0xcf].active == 0) {
@@ -288,24 +288,24 @@ void EndScoreMessage(GAME_MESSAGE *message) {
             goto counter_sound;
         }
         player = Player[message->player_index];
-        if (player == NULL || player->coin_packet == NULL) {
+        if (player == NULL || player->player.coin_packet == NULL) {
             goto counter_sound;
         }
-        old_coins = player->coin_packet->coins;
+        old_coins = player->player.coin_packet->coins;
         if ((i16)message->icon != -1) {
-            player->coin_packet->last_coin = (i16)message->icon;
+            player->player.coin_packet->last_coin = (i16)message->icon;
         }
         if (BonusWinner == -1) {
-            IncreaseScore(&player->coin_packet->coins, message->score, 1);
-            player->coin_packet->scale = 1.5f;
+            IncreaseScore(&player->player.coin_packet->coins, message->score, 1);
+            player->player.coin_packet->scale = 1.5f;
         }
         if (BuildUpTotal == 0) {
             BuildUpScale = 1.5f;
         }
         if (Arcade != 0) {
-            Arcade_CoinCollected(message->player_index, &player->coin_packet->coins, old_coins);
-        } else if (BonusArea != 0 && BonusWinner == -1 && player->coin_packet->coins >= 1000000u) {
-            player->coin_packet->coins = 1000000;
+            Arcade_CoinCollected(message->player_index, &player->player.coin_packet->coins, old_coins);
+        } else if (BonusArea != 0 && BonusWinner == -1 && player->player.coin_packet->coins >= 1000000u) {
+            player->player.coin_packet->coins = 1000000;
             SetBonusWinner(message->player_index);
             BonusWinFlag = 0;
             NewMenu(MENU_BONUS_WIN, -1, -1);
@@ -374,9 +374,9 @@ void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, 
         case 3:
             if (object != NULL) {
                 if (world->area != NULL && (world->area->flags & AREAFLAG_SUPER_BONUS_AREA) == 4) {
-                    NewBuzzFrames(object->pad->bound_pad, 1, 0);
+                    NewBuzzFrames(object->player.pad->bound_pad, 1, 0);
                 } else {
-                    NewBuzz(object->pad->bound_pad, 0.1f, 0);
+                    NewBuzz(object->player.pad->bound_pad, 0.1f, 0);
                 }
             }
             break;
@@ -411,23 +411,23 @@ void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, 
     message.player_index = (i8)player_index;
     message.score = score;
     multiplier = 0;
-    if (object != NULL && object->coin_packet != NULL) {
+    if (object != NULL && object->player.coin_packet != NULL) {
         if (DoubleScore & (1 << player_index)) {
             if (StartupGameFlag1) {
                 score += score;
                 message.score = score;
             } else {
-                multiplier = object->coin_packet->multiplier;
+                multiplier = object->player.coin_packet->multiplier;
                 score *= multiplier;
                 message.score = score;
-                if (object->coin_packet->multiplier < PLAYER_COIN_MAX_MULTIPLIER) {
-                    ++object->coin_packet->multiplier;
+                if (object->player.coin_packet->multiplier < PLAYER_COIN_MAX_MULTIPLIER) {
+                    ++object->player.coin_packet->multiplier;
                 }
-                object->coin_packet->multiplier_time = 0.5f;
+                object->player.coin_packet->multiplier_time = 0.5f;
                 score = message.score;
             }
         }
-        if (object->powerup_time > 0.0f) {
+        if (object->player.powerup_time > 0.0f) {
             score += score;
             message.score = score;
         }
@@ -865,8 +865,8 @@ void CollectHitPoint(GAMEOBJECT *object, NUVEC *position, i32 flags) {
         (object->current_hp > 0 && object->current_hp < object->unknown_107e)) {
         ++object->current_hp;
     }
-    if (object->saved_hitpoints < 4) {
-        ++object->saved_hitpoints;
+    if (object->player.saved_hitpoints < 4) {
+        ++object->player.saved_hitpoints;
     }
     if (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) {
         NuVecScale(&momentum, &object->velocity, 0.5f);
@@ -875,7 +875,7 @@ void CollectHitPoint(GAMEOBJECT *object, NUVEC *position, i32 flags) {
         AddGameDebris(WORLD->game_debris_sys, 15, position);
     }
     GameAudio_PlaySfx(0x27, position, 0, 0);
-    NewBuzz(object->pad->bound_pad, 0.1f, 0);
+    NewBuzz(object->player.pad->bound_pad, 0.1f, 0);
 }
 
 i32 ReleaseHearts(void) {
@@ -982,7 +982,7 @@ i32 LoseCoins(GAMEOBJECT *object, i32 cause) {
     if (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) {
         return 0;
     }
-    if (object->coin_packet == NULL) {
+    if (object->player.coin_packet == NULL) {
         return 0;
     }
     switch (cause) {
@@ -1004,11 +1004,11 @@ i32 LoseCoins(GAMEOBJECT *object, i32 cause) {
             lost >>= 1;
         }
     }
-    if (lost > object->coin_packet->coins) {
-        lost = object->coin_packet->coins;
-        object->coin_packet->coins = 0;
+    if (lost > object->player.coin_packet->coins) {
+        lost = object->player.coin_packet->coins;
+        object->player.coin_packet->coins = 0;
     } else if (lost > 0) {
-        object->coin_packet->coins -= lost;
+        object->player.coin_packet->coins -= lost;
     }
     if (Cheats_CheckFlags(CHEAT_SCORE_X2 | CHEAT_SCORE_X4 | CHEAT_SCORE_X6 | CHEAT_SCORE_X8 | CHEAT_SCORE_X10) || DoubleScoreTime > 0.0f) {
         lost = 0;
@@ -1054,7 +1054,7 @@ void Pup_CollectMinikit(WORLDINFO *world, GIZMOPICKUP *pickup, i32 type, GAMEOBJ
     (void)world;
     (void)type;
     CollectMinikit(&pickup->position, pickup->name, flags);
-    NewBuzz(object->pad->bound_pad, 0.2f, 0);
+    NewBuzz(object->player.pad->bound_pad, 0.2f, 0);
 }
 
 void Pup_CollectRedBrick(WORLDINFO *world, GIZMOPICKUP *pickup, i32 type, GAMEOBJECT *object, i32 flags) {
@@ -1062,7 +1062,7 @@ void Pup_CollectRedBrick(WORLDINFO *world, GIZMOPICKUP *pickup, i32 type, GAMEOB
     (void)type;
     (void)flags;
     CollectRedBrick(&pickup->position);
-    NewBuzz(object->pad->bound_pad, 0.2f, 0);
+    NewBuzz(object->player.pad->bound_pad, 0.2f, 0);
 }
 
 void Pup_CollectHeart(WORLDINFO *world, GIZMOPICKUP *pickup, i32 type, GAMEOBJECT *object, i32 flags) {

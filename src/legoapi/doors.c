@@ -636,8 +636,8 @@ void Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
             for (index = 0; index < 8; ++index) {
                 GAMEOBJECT *object = Player[index];
                 if (object != NULL) {
-                    PlayerProgress[index].field_b = object->jump_variant_state == 1;
-                    PlayerProgress[index].unknown_9 = object->dead != 0 ? 4 : object->saved_hitpoints;
+                    PlayerProgress[index].field_b = object->player.jump_variant_state == 1;
+                    PlayerProgress[index].unknown_9 = object->dead != 0 ? 4 : object->player.saved_hitpoints;
                 }
             }
             gone_through_door_to_new_mode = 1;
@@ -681,7 +681,7 @@ void Doors_Check(WORLDINFO *world, GAMEOBJECT *object) {
     i32 two_players;
     f32 previous_abs;
     f32 current_abs;
-    if (object->dead != 0 || (LEGOCONTEXT_DOOMED != -1 && object->character_context == LEGOCONTEXT_DOOMED) || NewLData != NULL) {
+    if (object->dead != 0 || (LEGOCONTEXT_DOOMED != -1 && object->player.character_context == LEGOCONTEXT_DOOMED) || NewLData != NULL) {
         return;
     }
     door = WORLD->doors;

@@ -299,8 +299,8 @@ void Pulses_Update(LEVEL_SFX_PULSE *system) {
             NUVEC offset;
             f32 distance;
             if (player == NULL || (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || player->dead != 0 ||
-                (LEGOCONTEXT_DOOMED != -1 && player->character_context == LEGOCONTEXT_DOOMED) || !(player->vehicle_hit_timer <= 0.0f) ||
-                player->spawn_protection_timer > 0.0f || (player->flags_ef0 & 0x400000) != 0) {
+                (LEGOCONTEXT_DOOMED != -1 && player->player.character_context == LEGOCONTEXT_DOOMED) ||
+                !(player->vehicle_hit_timer <= 0.0f) || player->spawn_protection_timer > 0.0f || (player->flags_ef0 & 0x400000) != 0) {
                 continue;
             }
             NuVecSub(&offset, &player->collision_position, position);
@@ -327,7 +327,7 @@ void Pulses_Update(LEVEL_SFX_PULSE *system) {
                 continue;
             }
             TakeHitRumble(player, 0.7f);
-            player->hit_side = distance < 0.0f ? 3 : 4;
+            player->player.hit_side = distance < 0.0f ? 3 : 4;
             player->velocity.x = 0.0f;
             player->velocity.z = 0.0f;
             handle = -1;

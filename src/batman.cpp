@@ -287,7 +287,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
                 for (i = 0; i < 2; ++i) {
                     object = Player[i];
                     if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-                        PauseGame((GAMEPAD_INIT_RECORD *)object->pad - GamePadStorage);
+                        PauseGame((GAMEPAD_INIT_RECORD *)object->player.pad - GamePadStorage);
                         break;
                     }
                 }
@@ -313,10 +313,10 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         UpdateLevelSfx(world, Paused);
         NuSound3SetRumblePads(
             Game.options_save.unknown_0000[0] != 0 && Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0
-                ? Player[0]->pad->bound_pad
+                ? Player[0]->player.pad->bound_pad
                 : NULL,
             Game.options_save.unknown_0000[1] != 0 && Player[1] != NULL && (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0
-                ? Player[1]->pad->bound_pad
+                ? Player[1]->player.pad->bound_pad
                 : NULL);
         NuSound3UpdateRumble(FRAMETIME);
         SoundUpdate(FRAMETIME);
@@ -341,7 +341,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         for (i = 0; i < 2; ++i) {
             object = Player[i];
             if (object != NULL) {
-                UpdateCoinPacket(object->coin_packet, (object->flags_1fc_word >> 7) & 1, object->player_index);
+                UpdateCoinPacket(object->player.coin_packet, (object->flags_1fc_word >> 7) & 1, object->player_index);
             }
         }
         Debris(1);
@@ -405,8 +405,8 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         } else {
             for (i = 0; i < 8; ++i) {
                 object = Player[i];
-                if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->pad->bound_pad != NULL) {
-                    UpdateRumble(&object->pad->rumble);
+                if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->player.pad->bound_pad != NULL) {
+                    UpdateRumble(&object->player.pad->rumble);
                 }
             }
         }

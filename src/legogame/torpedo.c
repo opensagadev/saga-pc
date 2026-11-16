@@ -134,7 +134,7 @@ typedef struct torpedo_obstacle_reader_s { // size 0x34
     NUVEC position;                        // 0x28
 } TORPEDO_OBSTACLE_READER;
 
-#define TORPEDO_PACKET(object) ((TORPEDO_RUNTIME *)(object)->torpedo)
+#define TORPEDO_PACKET(object) ((TORPEDO_RUNTIME *)(object)->player.torpedo)
 
 typedef struct torpedo_packet_alloc_s { // size 0x88
     u8 count;                           // 0x00
@@ -371,7 +371,7 @@ void Torpedo_UpdateJobbies(GAMEOBJECT *object) {
             target_y = (u16)TORPEDO_PACKET(object)->pickup_flags[index - 1];
         } else {
             target_z = NuAngAdd(object->unknown_276, 0x8000);
-            target_y = (u16)-object->secondary_lean_angle;
+            target_y = (u16)-object->player.secondary_lean_angle;
         }
         TORPEDO_PACKET(object)->pickup_data[index] = SeekRot((u16)TORPEDO_PACKET(object)->pickup_data[index], target_z, 5.0f);
         TORPEDO_PACKET(object)->pickup_flags[index] = SeekRot((u16)TORPEDO_PACKET(object)->pickup_flags[index], target_y, 5.0f);
@@ -393,7 +393,7 @@ void Torpedo_UpdateJobbies(GAMEOBJECT *object) {
     for (index = 0; index < 2; ++index) {
         player = Player[index];
         if (player == NULL || (player->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || player->dead != 0 ||
-            (player->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || (player->flags_e20 & 0x20) != 0) {
+            (player->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || (player->player.flags_e20 & 0x20) != 0) {
             continue;
         }
         if (TORPEDO_PACKET(player)->count >= 5 || TORPEDO_PACKET(player)->steal_timer != 0.0f) {
@@ -562,8 +562,8 @@ void HomeNearestTorpTarget(BOLT *bolt, TORPEDOPACKET *packet) {
 }
 
 void Torpedo_InitRicochet(BOLT *bolt, NUVEC *position) {
-    if (bolt != NULL && bolt->owner != NULL && bolt->owner->torpedo != NULL) {
-        TORPEDOPACKET *packet = bolt->owner->torpedo;
+    if (bolt != NULL && bolt->owner != NULL && bolt->owner->player.torpedo != NULL) {
+        TORPEDOPACKET *packet = bolt->owner->player.torpedo;
         if (packet->target != NULL) {
             if (packet->ricochet_count > 4) {
                 packet->flags |= 0x10;
@@ -621,17 +621,18 @@ void TorpedoHitTarget(BOLT *bolt) {
     NUVEC delta;
     f32 radius;
     i32 player;
-    if (bolt == NULL || bolt->owner == NULL || bolt->owner->torpedo == NULL) {
+    if (bolt == NULL || bolt->owner == NULL || bolt->owner->player.torpedo == NULL) {
         return;
     }
-    packet = bolt->owner->torpedo;
+    packet = bolt->owner->player.torpedo;
     if (packet->target != NULL) {
-        target_position = GetTorpTargetPositionAndRadius(bolt->owner->torpedo->target, bolt->owner->torpedo->target_type, &radius);
+        target_position =
+            GetTorpTargetPositionAndRadius(bolt->owner->player.torpedo->target, bolt->owner->player.torpedo->target_type, &radius);
         if (target_position != NULL) {
             NuVecSub(&delta, target_position, &bolt->position);
             if (NuVecMagSqr(&delta) < radius * radius) {
                 player = bolt->owner != NULL ? bolt->owner->player_index : -1;
-                TorpedoHitDispatch(bolt->owner->torpedo->target, &bolt->position, player, bolt->owner->torpedo->target_type);
+                TorpedoHitDispatch(bolt->owner->player.torpedo->target, &bolt->position, player, bolt->owner->player.torpedo->target_type);
             }
         }
     }
@@ -660,21 +661,22 @@ void fun_004d3450(void) {
 }
 
 void Torpedo_InitBolt(BOLT *bolt) {
-    if (bolt->owner != NULL && bolt->owner->torpedo != NULL) {
-        HomeNearestTorpTarget(bolt, bolt->owner->torpedo);
+    if (bolt->owner != NULL && bolt->owner->player.torpedo != NULL) {
+        HomeNearestTorpTarget(bolt, bolt->owner->player.torpedo);
         bolt->flags &= ~BOLT_NO_TERRAIN;
     }
 }
 
 void Torpedo_UpdateBolt(BOLT *bolt) {
-    if (bolt->owner == NULL || bolt->owner->torpedo == NULL) {
+    if (bolt->owner == NULL || bolt->owner->player.torpedo == NULL) {
         return;
     }
-    HomeNearestTorpTarget(bolt, bolt->owner->torpedo);
-    if (bolt->owner->torpedo->target != NULL) {
+    HomeNearestTorpTarget(bolt, bolt->owner->player.torpedo);
+    if (bolt->owner->player.torpedo->target != NULL) {
         NUVEC *target_position;
         f32 target_radius;
-        target_position = GetTorpTargetPositionAndRadius(bolt->owner->torpedo->target, bolt->owner->torpedo->target_type, &target_radius);
+        target_position =
+            GetTorpTargetPositionAndRadius(bolt->owner->player.torpedo->target, bolt->owner->player.torpedo->target_type, &target_radius);
         if (target_position != NULL) {
             NUVEC direction;
             NuVecSub(&direction, target_position, &bolt->position);
@@ -683,7 +685,7 @@ void Torpedo_UpdateBolt(BOLT *bolt) {
             }
         }
     }
-    if (bolt->time >= bolt->lifetime && bolt->owner->torpedo != NULL && (bolt->owner->torpedo->flags & 8) != 0) {
+    if (bolt->time >= bolt->lifetime && bolt->owner->player.torpedo != NULL && (bolt->owner->player.torpedo->flags & 8) != 0) {
         NUVEC offset;
         NUVEC points;
         offset.x = offset.y = 0.0f;
@@ -691,7 +693,7 @@ void Torpedo_UpdateBolt(BOLT *bolt) {
         NuVecMtxRotate(&offset, &offset, &bolt->orientation);
         NuVecSub(&points, &bolt->position, &offset);
         if (Bolt_HitGameObjects(bolt, &points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius, NULL) == 0) {
-            Torpedo_Ricochet(bolt, bolt->owner->torpedo);
+            Torpedo_Ricochet(bolt, bolt->owner->player.torpedo);
         }
     }
 }
@@ -713,7 +715,7 @@ void Torpedo_EndBolt(BOLT *bolt) {
 }
 
 void Torpedo_Shoot(GAMEOBJECT *object) {
-    NUVEC position = object->torpedo->pickup_positions[object->torpedo->count - 1];
+    NUVEC position = object->player.torpedo->pickup_positions[object->player.torpedo->count - 1];
     NUVEC direction;
     u16 angle = BoltSys->shoot_direction(object, &direction);
     NUMTX matrix;
@@ -723,8 +725,8 @@ void Torpedo_Shoot(GAMEOBJECT *object) {
     } else {
         Bolt_Add(object, &position, &matrix, 15, 0);
     }
-    --object->torpedo->count;
-    object->torpedo->flags |= 2;
+    --object->player.torpedo->count;
+    object->player.torpedo->flags |= 2;
     if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         Hint_SetComplete(0x289);
     }
@@ -741,7 +743,7 @@ i32 PartDraw_Torp(PART *part) {
 }
 
 void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
-    TORPEDO_RUNTIME *packet = (TORPEDO_RUNTIME *)object->torpedo;
+    TORPEDO_RUNTIME *packet = (TORPEDO_RUNTIME *)object->player.torpedo;
     TORPEDO_TIMERS *timers = (TORPEDO_TIMERS *)object;
     TORPEDO_MACHINE_READER *machine;
     BOLTTYPE *type;
@@ -772,13 +774,13 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
         TORPEDO_PACKET(object)->flags &= (u8)~2;
     }
     /* Tests the pickup timer twice before firing. */
-    if (fire != 0 && object->character_context == CHARACTER_CONTEXT_NONE && timers->fire_cooldown <= 0.0f && object->dead == 0 &&
+    if (fire != 0 && object->player.character_context == CHARACTER_CONTEXT_NONE && timers->fire_cooldown <= 0.0f && object->dead == 0 &&
         (TORPEDO_PACKET(object)->flags & 2) == 0 && TORPEDO_PACKET(object)->pickup_timer >= 0.8f && TORPEDO_PACKET(object)->count > 0 &&
         TORPEDO_PACKET(object)->pickup_timer >= 0.8f) {
         PlaySfx("XWing_Torpedo", &object->collision_position);
-        NewRumble(object->pad->bound_pad, 0.5f, 0);
-        NewBuzz(object->pad->bound_pad, 0.1f, 0);
-        object->flags_e20 |= 0x4000000;
+        NewRumble(object->player.pad->bound_pad, 0.5f, 0);
+        NewBuzz(object->player.pad->bound_pad, 0.1f, 0);
+        object->player.flags_e20 |= 0x4000000;
         object->portal_flags |= APIOBJECT_MADE_NOISE;
         timers->fire_cooldown = fire_cooldown;
         TORPEDO_PACKET(object)->fire_index = 0;
@@ -818,9 +820,9 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
         } else if (TORPEDO_PACKET(object)->count < maximum) {
             machine = GizTorpMachine_FindNearest(WORLD, &object->collision_position, &distance);
             if (machine != NULL && (machine->flags & 1) != 0 && distance < TorpedoGrabRangeSquared) {
-                NewRumble(object->pad->bound_pad, (f32)((f64)qrand() * PlayerRandomScale * (f64)0.4f), 0);
+                NewRumble(object->player.pad->bound_pad, (f32)((f64)qrand() * PlayerRandomScale * (f64)0.4f), 0);
                 if (TORPEDO_PACKET(object)->count < maximum) {
-                    NewBuzz(object->pad->bound_pad, 0.1f, 0);
+                    NewBuzz(object->player.pad->bound_pad, 0.1f, 0);
                     TORPEDO_PACKET(object)->pickup_positions[TORPEDO_PACKET(object)->count] = machine->position;
                     ++TORPEDO_PACKET(object)->count;
                     machine->activation_time = 0.0f;

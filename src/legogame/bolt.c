@@ -241,7 +241,7 @@ void Bolt_Debris_LSW(BOLT *bolt, NUVEC *points, i32 point, NUVEC *unused, i32 no
         (world->area == NULL || !(world->area->flags & AREAFLAG_VEHICLE_AREA))) {
         EXPLOSION *explosion;
         AddGameDebris(WORLD->game_debris_sys, 0x49, &bolt->position);
-        NewRumble(bolt->owner->pad->bound_pad, 0.3f, 0);
+        NewRumble(bolt->owner->player.pad->bound_pad, 0.3f, 0);
         PlaySfx("exp_thermalDet", points);
         GameCam_HitJudder();
         explosion = AddExplosion(&bolt->position, (f32)(AreaPickupScale * 0.5), 0.25f, NULL, -1,
@@ -275,18 +275,18 @@ i32 Bolt_AlternateFire_LSW(GAMEOBJECT *object, i32 index) {
     i16 id = object->id;
     if (id == id_XWING || id == id_MINIXWING || id == dat_007f1ad8 || id == id_MINIATAT || id == id_MINIROYALSTARSHIP ||
         id == dat_007f1aec) {
-        if (object->bolt_fire_phase == 0 && (index == 0 || index == 2)) {
+        if (object->player.bolt_fire_phase == 0 && (index == 0 || index == 2)) {
             return 0;
         }
-        if (object->bolt_fire_phase == 1 && (index == 1 || index == 3)) {
+        if (object->player.bolt_fire_phase == 1 && (index == 1 || index == 3)) {
             return 0;
         }
     } else if (id == dat_007f19a4 || id == dat_007f1af0) {
-        if (index != object->bolt_fire_phase) {
+        if (index != object->player.bolt_fire_phase) {
             return 0;
         }
     } else if (id == (i16)GameObjectRotationAtstId || id == dat_007f19e8 || id == id_JEDISTARFIGHTERYELLOWEP3) {
-        if (index != object->bolt_fire_phase) {
+        if (index != object->player.bolt_fire_phase) {
             return 0;
         }
     }

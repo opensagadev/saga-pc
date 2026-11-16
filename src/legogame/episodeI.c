@@ -839,8 +839,8 @@ static i32 PodRaceUpdatePod(RACEPOD_RESOURCE *pod, WORLDINFO *world) {
     }
     pod->matrix.m33 = 1.0f;
     if (pod->object != NULL) {
-        pod->object->vehicle_orientation = pod->matrix;
-        pod->object->position = pod->object->vehicle_orientation.translation;
+        pod->object->player.vehicle_orientation = pod->matrix;
+        pod->object->position = pod->object->player.vehicle_orientation.translation;
         pod->object->ai_update_position = pod->object->position;
     }
     return 1;
@@ -889,10 +889,10 @@ void PodRaceUpdate(WORLDINFO *world, f32 dt) {
         ActivePodRace->lap_display = ActivePodRace->previous_lap_display;
         avg_currentspeed_mul = 0.0f;
         if (Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-            Player[0]->current_speed_mul = 0.0f;
+            Player[0]->player.current_speed_mul = 0.0f;
         }
         if (Player[1] != NULL && (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-            Player[1]->current_speed_mul = 0.0f;
+            Player[1]->player.current_speed_mul = 0.0f;
         }
         if (netclient == 0 && FadeSys.fade == 0.0f) {
             ActivePodRace->lap_countdown -= dt;
@@ -1450,9 +1450,9 @@ void PodDust(WORLDINFO *world, GAMEOBJECT *object) {
         if (object->origin_joint_ready == 0 || object->character_model->points_of_interest[locator] == NULL) {
             continue;
         }
-        positions[count].x = object->locator_matrices[locator].m30;
+        positions[count].x = object->player.locator_matrices[locator].m30;
         positions[count].y = (f32)((f64)object->floor_height + (f64).1f);
-        positions[count].z = object->locator_matrices[locator].m32;
+        positions[count].z = object->player.locator_matrices[locator].m32;
         ++count;
         if (!(object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
             continue;
@@ -1461,22 +1461,22 @@ void PodDust(WORLDINFO *world, GAMEOBJECT *object) {
             continue;
         }
         key = object == Player[0] ? i : i + 4;
-        matrix.m00 = object->locator_matrices[locator].m00;
-        matrix.m01 = object->locator_matrices[locator].m01;
-        matrix.m02 = object->locator_matrices[locator].m02;
-        matrix.m03 = object->locator_matrices[locator].m03;
-        matrix.m10 = object->locator_matrices[locator].m20;
-        matrix.m11 = object->locator_matrices[locator].m21;
-        matrix.m12 = object->locator_matrices[locator].m22;
-        matrix.m13 = object->locator_matrices[locator].m23;
-        matrix.m20 = -object->locator_matrices[locator].m10;
-        matrix.m21 = -object->locator_matrices[locator].m11;
-        matrix.m22 = -object->locator_matrices[locator].m12;
-        matrix.m23 = -object->locator_matrices[locator].m13;
-        matrix.m30 = object->locator_matrices[locator].m30;
-        matrix.m31 = object->locator_matrices[locator].m31;
-        matrix.m32 = object->locator_matrices[locator].m32;
-        matrix.m33 = object->locator_matrices[locator].m33;
+        matrix.m00 = object->player.locator_matrices[locator].m00;
+        matrix.m01 = object->player.locator_matrices[locator].m01;
+        matrix.m02 = object->player.locator_matrices[locator].m02;
+        matrix.m03 = object->player.locator_matrices[locator].m03;
+        matrix.m10 = object->player.locator_matrices[locator].m20;
+        matrix.m11 = object->player.locator_matrices[locator].m21;
+        matrix.m12 = object->player.locator_matrices[locator].m22;
+        matrix.m13 = object->player.locator_matrices[locator].m23;
+        matrix.m20 = -object->player.locator_matrices[locator].m10;
+        matrix.m21 = -object->player.locator_matrices[locator].m11;
+        matrix.m22 = -object->player.locator_matrices[locator].m12;
+        matrix.m23 = -object->player.locator_matrices[locator].m13;
+        matrix.m30 = object->player.locator_matrices[locator].m30;
+        matrix.m31 = object->player.locator_matrices[locator].m31;
+        matrix.m32 = object->player.locator_matrices[locator].m32;
+        matrix.m33 = object->player.locator_matrices[locator].m33;
         if (PodRaceKey[key] == -1) {
             AddDebrisEffect(&PodRaceKey[key], world->game_debris_sys->entries[53].effect, 0, 0, 0);
         } else {
@@ -1619,7 +1619,7 @@ void PodSprintA_Reset(WORLDINFO *world) {
         for (i = 0; i < 2; i++) {
             object = i != 0 ? player2 : player;
             if (object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0) {
-                object->unknown_dc8 = 1.0f;
+                object->player.unknown_dc8 = 1.0f;
                 object->velocity.x = 0.0f;
                 object->velocity.y = 0.0f;
                 object->velocity.z = object->character_data->game_character->run_speed;
@@ -1682,7 +1682,7 @@ static i32 PodSprint_UpdateCountdown(void) {
         }
         if (Player[0] != NULL) {
             if (podsprint.countdown > 0.0f) {
-                Player[0]->unknown_dc8 = 0.0f;
+                Player[0]->player.unknown_dc8 = 0.0f;
                 Player[0]->velocity.z = 0.0f;
                 Player[0]->velocity.x = 0.0f;
                 Player[0]->run_speed_override = 0.0f;
@@ -1692,7 +1692,7 @@ static i32 PodSprint_UpdateCountdown(void) {
         }
         if (Player[1] != NULL) {
             if (podsprint.countdown > 0.0f) {
-                Player[1]->unknown_dc8 = 0.0f;
+                Player[1]->player.unknown_dc8 = 0.0f;
                 Player[1]->velocity.z = 0.0f;
                 Player[1]->velocity.x = 0.0f;
                 Player[1]->run_speed_override = 0.0f;

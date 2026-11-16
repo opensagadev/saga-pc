@@ -77,7 +77,7 @@ i32 StarWars_MidSpecialMove_Default(AISYS *system, AIPACKET *packet, APIOBJECT *
         (skip_inside == 0 &&
          owner->ai_packet.inside_path_node == owner->ai_packet.special_move_node - owner->ai_packet.path_info.path->nodes)) {
         ClearSpecialMove(owner);
-    } else if (owner->character_context != CHARACTER_CONTEXT_JUMP &&
+    } else if (owner->player.character_context != CHARACTER_CONTEXT_JUMP &&
                (owner->position.y < owner->ai_packet.special_move_node->min_height ||
                 (packet->path_info.connection->traversal_flags[packet->path_info.direction] & AIPATHCNX_TEMPORARY_BLOCK) != 0 ||
                 ((capabilities & 0x40) != 0 && owner->unknown_281 != 0))) {
@@ -87,13 +87,13 @@ i32 StarWars_MidSpecialMove_Default(AISYS *system, AIPACKET *packet, APIOBJECT *
         if ((capabilities & 0x40) == 0) {
             if ((capabilities & STARWARS_AIPATHCNX_R2D2GLIDE) != 0) {
                 if (packet->terrain_origin.y >= destination->min_height) {
-                    owner->pad->buttons_held |= GAMEPAD_JUMP;
-                    if (owner->jump_variant_state == 0 || owner->jump_variant_state == 3) {
-                        owner->pad->buttons_pressed |= GAMEPAD_JUMP;
+                    owner->player.pad->buttons_held |= GAMEPAD_JUMP;
+                    if (owner->player.jump_variant_state == 0 || owner->player.jump_variant_state == 3) {
+                        owner->player.pad->buttons_pressed |= GAMEPAD_JUMP;
                     }
                 }
             } else if ((owner->portal_flags & APIOBJECT_AI_DOUBLE_JUMP) != 0 && owner->velocity.y < 0.0f) {
-                owner->pad->buttons_pressed |= GAMEPAD_JUMP;
+                owner->player.pad->buttons_pressed |= GAMEPAD_JUMP;
                 owner->portal_flags &= ~APIOBJECT_AI_DOUBLE_JUMP;
             }
         }
@@ -107,12 +107,12 @@ i32 StarWars_MidSpecialMove_Default(AISYS *system, AIPACKET *packet, APIOBJECT *
 
 i32 StarWars_MidSpecialMove_StartJump(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
     GAMEOBJECT *owner = object->owner;
-    if (owner->character_context == CHARACTER_CONTEXT_JUMP) {
+    if (owner->player.character_context == CHARACTER_CONTEXT_JUMP) {
         SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
         owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
         owner->ai_packet.movement_stopping_distance = 0.0f;
     } else {
-        owner->pad->buttons_pressed |= GAMEPAD_JUMP;
+        owner->player.pad->buttons_pressed |= GAMEPAD_JUMP;
         ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
     }
     return 1;
@@ -157,13 +157,13 @@ i32 StarWars_PrepareR2D2Glide(AIPACKET *packet, APIOBJECT *object, i32 checks_un
     }
     packet->path_connection_state = 0;
     SetSpecialMove(owner, destination, source, 0);
-    owner->pad->buttons_held |= GAMEPAD_JUMP;
+    owner->player.pad->buttons_held |= GAMEPAD_JUMP;
     if (owner->id == (u16)id_GEONOSIAN) {
-        if (owner->jump_variant_state == 0 || owner->jump_variant_state == 3) {
-            owner->pad->buttons_pressed |= GAMEPAD_JUMP;
+        if (owner->player.jump_variant_state == 0 || owner->player.jump_variant_state == 3) {
+            owner->player.pad->buttons_pressed |= GAMEPAD_JUMP;
         }
     } else {
-        owner->pad->buttons_pressed |= GAMEPAD_JUMP;
+        owner->player.pad->buttons_pressed |= GAMEPAD_JUMP;
     }
     packet->movement_destination = packet->special_move_node->position;
     packet->movement_stopping_distance = 0.0f;
@@ -181,8 +181,8 @@ i32 StarWars_PrepareHatch(AIPACKET *packet, APIOBJECT *object, i32 checks_unused
     owner = object->owner;
     if (owner->special_move_timer <= 0.0f) {
         destination = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
-        if (owner->character_context == CHARACTER_CONTEXT_TELEPORT || owner->character_context == CHARACTER_CONTEXT_ZIP_UP ||
-            (owner->character_context == CHARACTER_CONTEXT_JUMP && owner->action_movement_state == JUMP_KIND_ZIPUP)) {
+        if (owner->player.character_context == CHARACTER_CONTEXT_TELEPORT || owner->player.character_context == CHARACTER_CONTEXT_ZIP_UP ||
+            (owner->player.character_context == CHARACTER_CONTEXT_JUMP && owner->player.action_movement_state == JUMP_KIND_ZIPUP)) {
             packet->movement_destination = destination->position;
             packet->movement_stopping_distance = 0.0f;
             SetSpecialMove(owner, destination, NULL, 2);
@@ -196,8 +196,8 @@ i32 StarWars_PrepareHatch(AIPACKET *packet, APIOBJECT *object, i32 checks_unused
         source = &packet->path_info.path->nodes[connection->node_indices[packet->path_info.direction]];
         packet->movement_destination = source->position;
         packet->movement_stopping_distance = 0.0f;
-        owner->pad->buttons_held |= GAMEPAD_SPECIAL;
-        owner->pad->buttons_pressed |= GAMEPAD_SPECIAL;
+        owner->player.pad->buttons_held |= GAMEPAD_SPECIAL;
+        owner->player.pad->buttons_pressed |= GAMEPAD_SPECIAL;
         capabilities = packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
         if ((capabilities & 0x10) != 0) {
             GameObjectSetCanUse(owner, NULL, 3, 1, 0.0f);
@@ -218,8 +218,9 @@ i32 StarWars_MidSpecialMove_UseHatch(AISYS *system, AIPACKET *packet, APIOBJECT 
     GAMEOBJECT *owner = object->owner;
     switch ((i8)owner->unknown_1087) {
         case 0:
-            if (owner->character_context == CHARACTER_CONTEXT_TELEPORT || owner->character_context == CHARACTER_CONTEXT_ZIP_UP ||
-                (owner->character_context == CHARACTER_CONTEXT_JUMP && owner->action_movement_state == JUMP_KIND_ZIPUP)) {
+            if (owner->player.character_context == CHARACTER_CONTEXT_TELEPORT ||
+                owner->player.character_context == CHARACTER_CONTEXT_ZIP_UP ||
+                (owner->player.character_context == CHARACTER_CONTEXT_JUMP && owner->player.action_movement_state == JUMP_KIND_ZIPUP)) {
                 owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
                 owner->ai_packet.movement_stopping_distance = 0.0f;
                 ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
@@ -273,7 +274,7 @@ i32 StarWars_PrepareHoverTube(AIPACKET *packet, APIOBJECT *apiobject, i32 checks
                 packet->path_connection_state = 1;
                 // Fall through.
             case 1:
-                if (ObjInTube(object) != 0 && !(object->collision_min.y > object->attached_tube->top && object->velocity.y > 0.0f)) {
+                if (ObjInTube(object) != 0 && !(object->collision_min.y > object->player.attached_tube->top && object->velocity.y > 0.0f)) {
                     break;
                 }
                 packet->path_connection_state = 2;
@@ -299,7 +300,7 @@ i32 StarWars_PrepareBigJump(AIPACKET *packet, APIOBJECT *object, i32 checks_unus
     owner = object->owner;
     destination_index = packet->path_info.connection->node_indices[packet->path_info.direction == 0];
     destination = &packet->path_info.path->nodes[destination_index];
-    if (owner->ai_packet.inside_path_node == destination_index || owner->character_context == CHARACTER_CONTEXT_DOOMED) {
+    if (owner->ai_packet.inside_path_node == destination_index || owner->player.character_context == CHARACTER_CONTEXT_DOOMED) {
         return 0;
     }
     if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & STARWARS_AIPATHCNX_DONT_JUMP_NOW) != 0) {
@@ -326,8 +327,8 @@ i32 StarWars_PrepareBigJump(AIPACKET *packet, APIOBJECT *object, i32 checks_unus
 
 i32 StarWars_MidSpecialMove_BigJump(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
     GAMEOBJECT *owner = object->owner;
-    if (owner->character_context == CHARACTER_CONTEXT_BIG_JUMP) {
-        owner->launch_origin = owner->ai_packet.special_move_node->position;
+    if (owner->player.character_context == CHARACTER_CONTEXT_BIG_JUMP) {
+        owner->player.launch_origin = owner->ai_packet.special_move_node->position;
         ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
         return 1;
     }
@@ -342,7 +343,7 @@ i32 StarWars_PrepareTakeOverJump(AIPACKET *packet, APIOBJECT *object, i32 checks
 
     owner = object->owner;
     if ((owner->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) != 0) {
-        participant = owner->takeover_source;
+        participant = owner->player.takeover_source;
         if (participant != NULL) {
             destination = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
             ReleaseTakeOver(participant, 1);
@@ -431,14 +432,15 @@ i32 StarWars_PreparingForSpecialMove(AIPACKET *packet, APIOBJECT *apiobject, i32
     u32 capabilities;
     STARWARS_PREPARE *entry;
 
-    if (owner->character_context == CHARACTER_CONTEXT_LEDGE) {
-        owner->pad->buttons_pressed |= GAMEPAD_JUMP;
+    if (owner->player.character_context == CHARACTER_CONTEXT_LEDGE) {
+        owner->player.pad->buttons_pressed |= GAMEPAD_JUMP;
     }
     flags = packet->path_info.connection->traversal_flags[packet->path_info.direction];
     if (flags != 0 && (flags & AIPATHCNX_PERMANENT_BLOCK) == 0) {
         capabilities = flags & packet->capabilities;
         if ((flags & 0x8000) != 0 && (owner->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) == 0 &&
-            owner->takeover_target == NULL && owner->character_context != CHARACTER_CONTEXT_GET_IN && (capabilities & 0xffff7fff) == 0) {
+            owner->takeover_target == NULL && owner->player.character_context != CHARACTER_CONTEXT_GET_IN &&
+            (capabilities & 0xffff7fff) == 0) {
             AIScriptSetBaseScriptStateByName(&apiobject->ai->script_processor, "TakeOverJump");
             return 1;
         }
@@ -458,7 +460,7 @@ i32 StarWars_PreparingForSpecialMove(AIPACKET *packet, APIOBJECT *apiobject, i32
             return 1;
         }
     }
-    if ((packet->flags & AIPACKET_SPECIAL_MOVE_AHEAD) != 0 && (owner->tag_flags & APIOBJECT_TAG_DISABLED) == 0 &&
+    if ((packet->flags & AIPACKET_SPECIAL_MOVE_AHEAD) != 0 && (owner->player.tag_flags & APIOBJECT_TAG_DISABLED) == 0 &&
         drop_back_in_timer > 0.0f &&
         (packet->path_info.connection->traversal_flags[packet->path_info.direction] &
          (AIPATHCNX_TOO_LONG | AIPATHCNX_HIDDEN | AIPATHCNX_PERMANENT_BLOCK | AIPATHCNX_TEMPORARY_BLOCK)) == 0) {
@@ -677,7 +679,7 @@ check:
         NuVecAdd(&packet->movement_destination, &source->position, &offset);
         distance = NuVecXZDistSqr(&object->position, &packet->movement_destination, &offset);
         if (checks != 0 && (distance < ai_moveradius * ai_moveradius || owner->respawn_timer > jump_stuck_time ||
-                            owner->character_context == CHARACTER_CONTEXT_TIGHTROPE)) {
+                            owner->player.character_context == CHARACTER_CONTEXT_TIGHTROPE)) {
             ready = 1;
             packet->movement_destination = object->position;
         }
@@ -748,7 +750,7 @@ check:
                 break;
             case AIJUMP_TAKE_OFF:
                 if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x22) != 0) {
-                    if (owner->jump_reentry_timer <= 0.0f) {
+                    if (owner->player.jump_reentry_timer <= 0.0f) {
                         packet->path_connection_state = AIJUMP_JUMP;
                         owner->portal_flags |= APIOBJECT_AI_DOUBLE_JUMP;
                     }
@@ -803,7 +805,7 @@ check:
                     }
                 }
                 SetSpecialMove(owner, destination, NULL, 1);
-                owner->pad->buttons_pressed |= GAMEPAD_JUMP;
+                owner->player.pad->buttons_pressed |= GAMEPAD_JUMP;
                 break;
         }
         ((GAMEOBJECT *)object)->ai_collision_priority |= 0x2000;

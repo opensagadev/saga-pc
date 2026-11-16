@@ -831,7 +831,7 @@ static GIZMOPICKUP *GizmoPickups_CollideList(GAMEOBJECT *object, GIZMOPICKUP *pi
             collide_2d = 1;
         }
     }
-    coin_magnet = Cheats_CheckFlags(CHEAT_STUD_MAGNET) != 0 || object->powerup_time > 0.0f;
+    coin_magnet = Cheats_CheckFlags(CHEAT_STUD_MAGNET) != 0 || object->player.powerup_time > 0.0f;
     normal_pickup = AreaPickupScale;
     scaled_pickup = normal_pickup;
     if (coin_magnet) {
@@ -875,7 +875,7 @@ static GIZMOPICKUP *GizmoPickups_CollideList(GAMEOBJECT *object, GIZMOPICKUP *pi
             if (object->collision_min.y > pickup->position.y + radius_y || object->collision_max.y < pickup->position.y - radius_y) {
                 continue;
             }
-            if (object->rider == NULL) {
+            if (object->player.rider == NULL) {
                 if (SphereSphereOverlapScaleY(&pickup->position, radius_x, radius_y, &object->collision_position, object->collision_radius,
                                               object->bounds_half_height)) {
                     return pickup;

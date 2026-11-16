@@ -136,7 +136,7 @@ i32 SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
     if (moves == NULL) {
         return -1;
     }
-    if ((attacker->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) && attacker->unknown_da8 > 0.0f) {
+    if ((attacker->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) && attacker->player.unknown_da8 > 0.0f) {
         return -1;
     }
     if (LEGOCONTEXT_SPECIALMOVE_ATTACKER == -1 || LEGOCONTEXT_SPECIALMOVE_VICTIM == -1) {
@@ -159,60 +159,63 @@ i32 SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
 }
 
 static void SpecialMove_KillVictim(GAMEOBJECT *victim) {
-    if (SpecialMove_GetFlags(victim->special_move, 0x10) != 0) {
+    if (SpecialMove_GetFlags(victim->player.special_move, 0x10) != 0) {
         objhitobj_throwkillpartsup = 1;
     }
-    ObjHitObj(victim->force_target, victim,
-              (victim->force_target->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) && Player_HasInvincibility(victim->force_target) ? 1
-                                                                                                                                     : -1,
+    ObjHitObj(victim->player.force_target, victim,
+              (victim->player.force_target->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) &&
+                      Player_HasInvincibility(victim->player.force_target)
+                  ? 1
+                  : -1,
               0x1000, 0, 1);
 }
 
 i32 SpecialMove_ReleaseVictim(GAMEOBJECT *object) {
     GAMEOBJECT *victim;
-    if (LEGOCONTEXT_SPECIALMOVE_ATTACKER == -1 || object->character_context != LEGOCONTEXT_SPECIALMOVE_ATTACKER ||
-        object->special_move == -1 || object->force_target == NULL) {
+    if (LEGOCONTEXT_SPECIALMOVE_ATTACKER == -1 || object->player.character_context != LEGOCONTEXT_SPECIALMOVE_ATTACKER ||
+        object->player.special_move == -1 || object->player.force_target == NULL) {
         return 0;
     }
-    victim = object->force_target;
-    if (LEGOCONTEXT_SPECIALMOVE_VICTIM == -1 || victim->character_context != LEGOCONTEXT_SPECIALMOVE_VICTIM) {
+    victim = object->player.force_target;
+    if (LEGOCONTEXT_SPECIALMOVE_VICTIM == -1 || victim->player.character_context != LEGOCONTEXT_SPECIALMOVE_VICTIM) {
         return 0;
     }
-    if (SpecialMove_GetFlags(object->special_move, 4) != 0) {
+    if (SpecialMove_GetFlags(object->player.special_move, 4) != 0) {
         SpecialMove_KillVictim(victim);
     }
-    victim = object->force_target;
+    victim = object->player.force_target;
     if (victim != NULL) {
-        victim->character_context = CHARACTER_CONTEXT_NONE;
+        victim->player.character_context = CHARACTER_CONTEXT_NONE;
     }
     return 1;
 }
 
 void SpecialMove_Cancel(GAMEOBJECT *object) {
     GAMEOBJECT *other;
-    if ((LEGOCONTEXT_SPECIALMOVE_ATTACKER != -1 && object->character_context == LEGOCONTEXT_SPECIALMOVE_ATTACKER &&
-         object->special_move != -1) ||
-        (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && object->character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM)) {
-        object->character_context = CHARACTER_CONTEXT_NONE;
-        other = object->force_target;
-        if (other != NULL && ((LEGOCONTEXT_SPECIALMOVE_ATTACKER != -1 && other->character_context == LEGOCONTEXT_SPECIALMOVE_ATTACKER &&
-                               other->special_move != -1) ||
-                              (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && other->character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM))) {
-            other->character_context = CHARACTER_CONTEXT_NONE;
+    if ((LEGOCONTEXT_SPECIALMOVE_ATTACKER != -1 && object->player.character_context == LEGOCONTEXT_SPECIALMOVE_ATTACKER &&
+         object->player.special_move != -1) ||
+        (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && object->player.character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM)) {
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
+        other = object->player.force_target;
+        if (other != NULL &&
+            ((LEGOCONTEXT_SPECIALMOVE_ATTACKER != -1 && other->player.character_context == LEGOCONTEXT_SPECIALMOVE_ATTACKER &&
+              other->player.special_move != -1) ||
+             (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && other->player.character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM))) {
+            other->player.character_context = CHARACTER_CONTEXT_NONE;
         }
     }
 }
 
 void SpecialMove_VictimCode(GAMEOBJECT *object) {
-    if (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && object->character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM) {
-        if (object->force_target == NULL) {
-            object->character_context = CHARACTER_CONTEXT_NONE;
+    if (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && object->player.character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM) {
+        if (object->player.force_target == NULL) {
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
             return;
         }
-        object->context_timer -= FRAMETIME;
-        if (object->context_timer <= 0.0f) {
-            object->character_context = CHARACTER_CONTEXT_NONE;
-            if (SpecialMove_GetFlags(object->special_move, 2) != 0) {
+        object->player.context_timer -= FRAMETIME;
+        if (object->player.context_timer <= 0.0f) {
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
+            if (SpecialMove_GetFlags(object->player.special_move, 2) != 0) {
                 SpecialMove_KillVictim(object);
             }
         }
@@ -220,11 +223,11 @@ void SpecialMove_VictimCode(GAMEOBJECT *object) {
 }
 
 void SpecialMove_Attacker_SetTargetMom(GAMEOBJECT *object) {
-    i32 move = object->special_move;
+    i32 move = object->player.special_move;
     f32 distance = move != -1 ? SpecialMove[move].distance_apart : 0.0f;
     NUVEC target;
-    target.x = object->force_target->position.x - NuTrigTable[object->movement_facing_angle >> 1] * distance;
-    target.z = object->force_target->position.z - NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * distance;
+    target.x = object->player.force_target->position.x - NuTrigTable[object->movement_facing_angle >> 1] * distance;
+    target.z = object->player.force_target->position.z - NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * distance;
     object->velocity.x = object->target_velocity.x = (target.x - object->position.x) * 10.0;
     object->velocity.z = object->target_velocity.z = (target.z - object->position.z) * 10.0;
 }

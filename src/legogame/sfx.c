@@ -622,7 +622,7 @@ void Shadow_SetMode(void) {
     ShadowMode = 0;
     for (i = 0; i < 8; ++i) {
         GAMEOBJECT *player = Player[i];
-        if (player != NULL && player->suit != NULL && (player->suit->flags & SUIT_SHADOW) != 0) {
+        if (player != NULL && player->player.suit != NULL && (player->player.suit->flags & SUIT_SHADOW) != 0) {
             ShadowMode = 1;
             return;
         }

@@ -85,8 +85,9 @@ void StoreStatusTakeOverObjectSys(void) {
         }
         takeoverobjects[index].last_safe_position = object->last_safe_position;
         takeoverobjects[index].heading = object->unknown_276;
-        if (object->rider != NULL && LEGOCONTEXT_BEENTAKENOVER != -1 && object->rider->character_context == LEGOCONTEXT_BEENTAKENOVER &&
-            object->player_index != -1 && Door_Last != NULL && ((struct DOOR_s *)Door_Last)->takeover_character_mask != 0 &&
+        if (object->player.rider != NULL && LEGOCONTEXT_BEENTAKENOVER != -1 &&
+            object->player.rider->player.character_context == LEGOCONTEXT_BEENTAKENOVER && object->player_index != -1 &&
+            Door_Last != NULL && ((struct DOOR_s *)Door_Last)->takeover_character_mask != 0 &&
             (((struct DOOR_s *)Door_Last)->takeover_character_mask == CharacterMaskAll ||
              ((character_index = (u8)Area_CharIDInCurrentList((i16)object->id)) < 63 &&
               (((struct DOOR_s *)Door_Last)->takeover_character_mask & ((u64)1 << character_index)) != 0))) {
@@ -279,12 +280,12 @@ void Buck_StartRiderJump(GAMEOBJECT *rider, GAMEOBJECT *mount) {
     rider->velocity.x = NuTrigTable[angle >> 1] * speed;
     rider->velocity.z = speed * NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     StartJump(rider, 0);
-    rider->airborne_collision_target = mount;
-    rider->tag_flags |= 1;
+    rider->player.airborne_collision_target = mount;
+    rider->player.tag_flags |= 1;
     rider->velocity.x = 0.0f;
     rider->velocity.z = 0.0f;
-    rider->pad->buttons_held = 0;
-    rider->pad->buttons_pressed = 0;
+    rider->player.pad->buttons_held = 0;
+    rider->player.pad->buttons_pressed = 0;
     clearance = mount->upper_position.y;
     if ((mount->character_data->game_character->flags_094 & CHARACTER_OPTION_BUCK_RIDER) != 0) {
         clearance += BUCK_RIDERJUMPCLEARANCE;
@@ -309,24 +310,24 @@ void Buck_Start(GAMEOBJECT *object, GAMEOBJECT *rider) {
         return;
     }
     if (rider != NULL) {
-        NewRumble(rider->pad->bound_pad, 0.6f, 0);
+        NewRumble(rider->player.pad->bound_pad, 0.6f, 0);
     }
-    object->character_context = (i8)LEGOCONTEXT_BUCK;
-    object->unknown_7aa = LEGOACT_BUCK;
-    object->context_timer = AnimDuration((i16)object->id, LEGOACT_BUCK, 0.0f, 0.0f, 1);
+    object->player.character_context = (i8)LEGOCONTEXT_BUCK;
+    object->player.unknown_7aa = LEGOACT_BUCK;
+    object->player.context_timer = AnimDuration((i16)object->id, LEGOACT_BUCK, 0.0f, 0.0f, 1);
     if (BuckStartExtraFn != NULL) {
         BuckStartExtraFn(object);
     }
 }
 
 void Buck_MoveCode(GAMEOBJECT *object, i32 start) {
-    if (LEGOCONTEXT_BUCK != -1 && object->character_context == LEGOCONTEXT_BUCK) {
-        object->context_timer -= FRAMETIME;
-        if (object->context_timer <= 0.0f) {
-            object->character_context = CHARACTER_CONTEXT_NONE;
+    if (LEGOCONTEXT_BUCK != -1 && object->player.character_context == LEGOCONTEXT_BUCK) {
+        object->player.context_timer -= FRAMETIME;
+        if (object->player.context_timer <= 0.0f) {
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
         }
-    } else if (object->character_context == CHARACTER_CONTEXT_NONE && start != 0) {
-        Buck_Start(object, object->takeover_source);
+    } else if (object->player.character_context == CHARACTER_CONTEXT_NONE && start != 0) {
+        Buck_Start(object, object->player.takeover_source);
     }
 }
 

@@ -163,8 +163,8 @@ void Cheat_StartPowerUp(NUVEC *position, GAMEOBJECT *object) {
         if (object == NULL) {
             return;
         }
-        object->powerup_time = CHEAT_POWERUPTIME;
-        NewRumble(object->pad->bound_pad, 0.7f, 0);
+        object->player.powerup_time = CHEAT_POWERUPTIME;
+        NewRumble(object->player.pad->bound_pad, 0.7f, 0);
         GameCam_HitRoll();
     } else {
         NewRumbleAllPlayers(0.7f, 0.0f, 0, 0);
@@ -191,7 +191,7 @@ i32 Cheat_PowerUpActive(i32 index) {
         }
         for (player = 0; player < 2; ++player) {
             GAMEOBJECT *object = Player[player];
-            if (object != NULL && object->powerup_time > 0.0f && (index == -1 || object->player_index == index)) {
+            if (object != NULL && object->player.powerup_time > 0.0f && (index == -1 || object->player_index == index)) {
                 return 1;
             }
         }

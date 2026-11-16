@@ -9,6 +9,7 @@
 struct CHARACTER_MODEL_LAYERS;
 struct GAMECHARACTERLAYER;
 struct PART;
+struct PLAYERPACKET;
 struct gameobject_s;
 struct level_data_s;
 
@@ -101,7 +102,7 @@ extern "C" {
     extern NUVEC PooPosition[2];
 
     extern AWKWARD_SHAPE_SPHERE AwkwardShapeSphere[14];
-    void ResetForceGlow(void *packet);
+    void ResetForceGlow(struct PLAYERPACKET *packet);
     i32 Dodge_UpdateHint(HINT *);
     extern i16 id_SNAKE;
     extern const f64 NuTimeBarColumnStep;

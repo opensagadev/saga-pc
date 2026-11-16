@@ -29,39 +29,39 @@ void Whip_MoveCode(GAMEOBJECT *object) {
     if (LEGOCONTEXT_WHIP == -1) {
         return;
     }
-    if (object->character_context == LEGOCONTEXT_WHIP) {
-        if (object->unknown_7b3 == WHIP_START) {
-            if (AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0) == NULL) {
+    if (object->player.character_context == LEGOCONTEXT_WHIP) {
+        if (object->player.unknown_7b3 == WHIP_START) {
+            if (AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0) == NULL) {
                 return;
             }
-            object->context_timer += FRAMETIME;
-            if (object->context_timer >= object->context_duration) {
-                switch (object->whip_action) {
+            object->player.context_timer += FRAMETIME;
+            if (object->player.context_timer >= object->player.context_duration) {
+                switch (object->player.whip_action) {
                     case WHIP_GRAB:
-                        target = object->grapple;
+                        target = object->player.grapple;
                         if (target != NULL && (target->status_flags & BLOWUP_STATUS_VISIBLE) &&
                             (target->status_flags & BLOWUP_STATUS_ACTIVE)) {
-                            object->unknown_7aa = LEGOACT_WHIP_GRAB;
-                            object->context_timer = 0.0f;
-                            object->unknown_7b3 = WHIP_GRAB;
-                            object->context_duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
-                            object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
-                            target = object->grapple;
+                            object->player.unknown_7aa = LEGOACT_WHIP_GRAB;
+                            object->player.context_timer = 0.0f;
+                            object->player.unknown_7b3 = WHIP_GRAB;
+                            object->player.context_duration = AnimDuration((i16)object->id, object->player.unknown_7aa, 0.0f, 0.0f, 1);
+                            object->player.context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
+                            target = object->player.grapple;
                             object->movement_facing_angle =
                                 NuAtan2D(target->position.x - object->position.x, target->position.z - object->position.z);
                             return;
                         }
                         break;
                     case WHIP_BREAK:
-                        target = object->grapple;
+                        target = object->player.grapple;
                         if (target != NULL && (target->status_flags & BLOWUP_STATUS_VISIBLE) &&
                             (target->status_flags & BLOWUP_STATUS_ACTIVE)) {
-                            object->unknown_7aa = LEGOACT_WHIP_BREAK;
-                            object->context_timer = 0.0f;
-                            object->unknown_7b3 = WHIP_BREAK;
-                            object->context_duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
-                            object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
-                            target = object->grapple;
+                            object->player.unknown_7aa = LEGOACT_WHIP_BREAK;
+                            object->player.context_timer = 0.0f;
+                            object->player.unknown_7b3 = WHIP_BREAK;
+                            object->player.context_duration = AnimDuration((i16)object->id, object->player.unknown_7aa, 0.0f, 0.0f, 1);
+                            object->player.context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
+                            target = object->player.grapple;
                             object->movement_facing_angle =
                                 NuAtan2D(target->position.x - object->position.x, target->position.z - object->position.z);
                             return;
@@ -70,54 +70,54 @@ void Whip_MoveCode(GAMEOBJECT *object) {
                     default:
                         break;
                 }
-                object->whip_action = WHIP_CRACK;
-                object->unknown_7aa = LEGOACT_WHIP_CRACK;
-                object->context_timer = 0.0f;
-                object->unknown_7b3 = WHIP_CRACK;
-                object->context_duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
-                object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
+                object->player.whip_action = WHIP_CRACK;
+                object->player.unknown_7aa = LEGOACT_WHIP_CRACK;
+                object->player.context_timer = 0.0f;
+                object->player.unknown_7b3 = WHIP_CRACK;
+                object->player.context_duration = AnimDuration((i16)object->id, object->player.unknown_7aa, 0.0f, 0.0f, 1);
+                object->player.context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
             }
             return;
         }
-        if (object->context_variant_flags & 0x100) {
+        if (object->player.context_variant_flags & 0x100) {
             NUVEC *target_position = NULL;
-            if (object->grapple != NULL) {
-                target_position = &((GIZMOBLOWUP *)object->grapple)->position;
-            } else if (object->force_target != NULL) {
-                target_position = &object->force_target->collision_position;
+            if (object->player.grapple != NULL) {
+                target_position = &((GIZMOBLOWUP *)object->player.grapple)->position;
+            } else if (object->player.force_target != NULL) {
+                target_position = &object->player.force_target->collision_position;
             }
             if (target_position != NULL) {
                 object->movement_facing_angle = NuAtan2D(target_position->x - object->position.x, target_position->z - object->position.z);
             }
         }
         activate = 0;
-        frame = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
+        frame = AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0);
         if (frame != NULL) {
-            object->context_timer += FRAMETIME;
-            if (!(object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE)) {
-                action_frame = AnimListFrame(object->character_model, object->unknown_7aa, 0);
+            object->player.context_timer += FRAMETIME;
+            if (!(object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE)) {
+                action_frame = AnimListFrame(object->character_model, object->player.unknown_7aa, 0);
                 if (action_frame >= 1.0f && *frame >= action_frame) {
-                    object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
+                    object->player.context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
                     activate = 1;
                 }
             }
-            if (object->context_timer >= object->context_duration) {
-                object->character_context = CHARACTER_CONTEXT_NONE;
-                if (!(object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE)) {
+            if (object->player.context_timer >= object->player.context_duration) {
+                object->player.character_context = CHARACTER_CONTEXT_NONE;
+                if (!(object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE)) {
                     activate = 1;
                 }
             }
             if (activate) {
-                switch (object->unknown_7b3) {
+                switch (object->player.unknown_7b3) {
                     case WHIP_GRAB:
-                        GizmoBlowupBlowup(object->grapple, 0, BLOWUP_HIT_CARRIED, -1, NULL, 1);
+                        GizmoBlowupBlowup(object->player.grapple, 0, BLOWUP_HIT_CARRIED, -1, NULL, 1);
                         activate = 2;
                         break;
                     case WHIP_BREAK:
-                        if (GizmoBlowupBlowup(object->grapple, 1, BLOWUP_HIT_PUNCH, 1, NULL, 1)) {
-                            NewBuzz(object->pad->bound_pad, 0.1f, 0);
+                        if (GizmoBlowupBlowup(object->player.grapple, 1, BLOWUP_HIT_PUNCH, 1, NULL, 1)) {
+                            NewBuzz(object->player.pad->bound_pad, 0.1f, 0);
                         }
-                        NewRumble(object->pad->bound_pad, 0.5f, 0);
+                        NewRumble(object->player.pad->bound_pad, 0.5f, 0);
                         activate = 2;
                         break;
                     default:
@@ -130,16 +130,17 @@ void Whip_MoveCode(GAMEOBJECT *object) {
                 }
             }
         }
-        if (object->character_context == CHARACTER_CONTEXT_NONE && object->unknown_7b3 == WHIP_GRAB && object->grapple != NULL) {
-            SuperCarry_Start(object, object->grapple, 1);
+        if (object->player.character_context == CHARACTER_CONTEXT_NONE && object->player.unknown_7b3 == WHIP_GRAB &&
+            object->player.grapple != NULL) {
+            SuperCarry_Start(object, object->player.grapple, 1);
         }
     } else {
         i32 action;
-        if (!(object->pad->buttons_pressed & GAMEPAD_SPECIAL) || object->unknown_281 == 0 || !ObjLandReady(object) ||
+        if (!(object->player.pad->buttons_pressed & GAMEPAD_SPECIAL) || object->unknown_281 == 0 || !ObjLandReady(object) ||
             LEGOACT_WHIP_START == -1 || object->character_model->model_data_b[LEGOACT_WHIP_START] == NULL) {
             return;
         }
-        object->whip_action = -1;
+        object->player.whip_action = -1;
         target = NULL;
         if (LEGOACT_WHIP_GRAB != -1 && object->character_model->model_data_b[LEGOACT_WHIP_GRAB] != NULL && SuperCarry_Possible(object, 0) &&
             (target = GizmoBlowUpOpponent(object, 2.0f, 0.75f, 0.25f, 5, 0, 0, 1)) != NULL) {
@@ -150,17 +151,17 @@ void Whip_MoveCode(GAMEOBJECT *object) {
         } else {
             action = WHIP_CRACK;
         }
-        object->character_context = (i8)LEGOCONTEXT_WHIP;
-        object->unknown_7aa = LEGOACT_WHIP_START;
-        object->context_timer = 0.0f;
-        object->context_variant_flags &= ~0x100u;
-        object->whip_action = (i8)action;
-        object->unknown_7b3 = WHIP_START;
-        object->context_duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 0);
+        object->player.character_context = (i8)LEGOCONTEXT_WHIP;
+        object->player.unknown_7aa = LEGOACT_WHIP_START;
+        object->player.context_timer = 0.0f;
+        object->player.context_variant_flags &= ~0x100u;
+        object->player.whip_action = (i8)action;
+        object->player.unknown_7b3 = WHIP_START;
+        object->player.context_duration = AnimDuration((i16)object->id, object->player.unknown_7aa, 0.0f, 0.0f, 0);
         GameAudio_PlaySfx(76, &object->collision_position, GameAudio_GetPlrSfxBits(object), 0);
         SetWeaponIn(object);
-        object->grapple = target;
-        object->force_target = NULL;
+        object->player.grapple = target;
+        object->player.force_target = NULL;
         if (target != NULL) {
             object->movement_facing_angle = NuAtan2D(target->position.x - object->position.x, target->position.z - object->position.z);
         }
@@ -172,7 +173,7 @@ NUVEC v010 = {0.0f, 1.0f, 0.0f};
 
 void Whip_Release(GAMEOBJECT *object) {
     WHIP_BASIS *view = (WHIP_BASIS *)object;
-    if (LEGOCONTEXT_WHIP != -1 && object->character_context == LEGOCONTEXT_WHIP && object->grapple != NULL) {
+    if (LEGOCONTEXT_WHIP != -1 && object->player.character_context == LEGOCONTEXT_WHIP && object->player.grapple != NULL) {
         view->basis[0] = v100;
         view->basis[1] = v010;
         view->basis[2] = v001;

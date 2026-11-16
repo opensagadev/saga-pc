@@ -313,7 +313,7 @@ void CustomiserDrawAccessories(CUSTOMISER_CONFIG *customiser, GAMEOBJECT *object
         if (matrices != NULL) {
             matrix = matrices[joint];
         } else {
-            matrix = object->locator_matrices[joint];
+            matrix = object->player.locator_matrices[joint];
         }
         NuSpecialDrawAt(&resource->special, &matrix);
         if ((u8)object->unknown_107c != 0 && MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
@@ -362,7 +362,7 @@ void Customiser_AddPartAccessories(CUSTOMISER_CONFIG *customiser, GAMEOBJECT *ob
         params.unknown_14 = 0.1f;
         params.unknown_18 = 0.1f;
         params.gravity = -5.0f;
-        params.matrix = &object->locator_matrices[joint];
+        params.matrix = &object->player.locator_matrices[joint];
         params.velocity = &momentum;
         params.special = special;
         params.lighting_data = Cheats_CheckFlags(CHEAT_ZERO_LIGHTING) ? ((PART_LIGHTING_DATA *)(&KillPartsZeroLighting))

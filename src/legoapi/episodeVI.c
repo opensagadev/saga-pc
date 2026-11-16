@@ -257,17 +257,17 @@ void DeathStar2BattleD_Update(WORLDINFO *world) {
     }
     for (i = 0; i < 8; ++i) {
         player = Player[i];
-        if (player == NULL || player->dynamic_light_id == -1) {
+        if (player == NULL || player->player.dynamic_light_id == -1) {
             continue;
         }
         blowup = DeathStar2BattleD_InZapRange(player);
         if (blowup == NULL) {
             continue;
         }
-        rtlDynamicEnable(Player[i]->dynamic_light_id, 1);
+        rtlDynamicEnable(Player[i]->player.dynamic_light_id, 1);
         mid = &blowup->mid_position;
         radius = (f64)NuVecDist(mid, &Player[i]->collision_position, &delta) * 0.5;
-        rtlDynamicSetRadii(Player[i]->dynamic_light_id, radius, (f32)((f64)radius + 5.0));
+        rtlDynamicSetRadii(Player[i]->player.dynamic_light_id, radius, (f32)((f64)radius + 5.0));
         qrand();
         colour.x = 0.0f;
         if (qrand() < 0x8000) {
@@ -276,18 +276,18 @@ void DeathStar2BattleD_Update(WORLDINFO *world) {
             colour.y = 0.25f;
         }
         colour.z = colour.y;
-        rtlDynamicSetColours(Player[i]->dynamic_light_id, &colour, NULL);
+        rtlDynamicSetColours(Player[i]->player.dynamic_light_id, &colour, NULL);
         player = Player[i];
         position.x = player->collision_position.x + (f64)delta.x * 0.5;
         position.y = player->collision_position.y + (f64)delta.y * 0.5;
         position.z = player->collision_position.z + (f64)delta.z * 0.5;
-        rtlDynamicSetPos(player->dynamic_light_id, &position);
+        rtlDynamicSetPos(player->player.dynamic_light_id, &position);
         length = NuVecDist(&Player[i]->collision_position, mid, &delta);
         NuLgtLaser(DeathStarZapLaserType, DeathStarZapSizeWidth, DeathStarZapSizeLength, DeathStarZapWidthBias, mid, &delta, 0xff808040,
                    DeathStarZapEndWidth, length);
-        NewRumble(Player[i]->pad->bound_pad, (f32)((f64)qrand() * (f64)0.000015259022f * (f64)0.3f), 0);
+        NewRumble(Player[i]->player.pad->bound_pad, (f32)((f64)qrand() * (f64)0.000015259022f * (f64)0.3f), 0);
         if (qrand() < 0x1000) {
-            NewBuzzFrames(Player[i]->pad->bound_pad, 1, 0);
+            NewBuzzFrames(Player[i]->player.pad->bound_pad, 1, 0);
         }
         PlaySfx("ForceLightningLp", &Player[i]->collision_position);
         DisorientateCode(Player[i], mid, 225.0f);
@@ -570,8 +570,8 @@ void EmperorFightA_Update(WORLDINFO *world) {
     for (i = 0; i < 2; ++i) {
         GAMEOBJECT *player;
         player = Player[i];
-        if (player != NULL && player->character_context == CHARACTER_CONTEXT_ZAPPED_BY_FLOOR) {
-            player->character_context = CHARACTER_CONTEXT_NONE;
+        if (player != NULL && player->player.character_context == CHARACTER_CONTEXT_ZAPPED_BY_FLOOR) {
+            player->player.character_context = CHARACTER_CONTEXT_NONE;
         }
     }
     if (netclient && EMPEROR_PACKET->zap && EMPEROR_PACKET->player_floor_mask && LevGameObject[0] != NULL) {
@@ -655,7 +655,7 @@ void EmperorFightA_Update(WORLDINFO *world) {
                 if (!(dz < radius && dz > negative_radius)) {
                     continue;
                 }
-                player->character_context = CHARACTER_CONTEXT_ZAPPED_BY_FLOOR;
+                player->player.character_context = CHARACTER_CONTEXT_ZAPPED_BY_FLOOR;
                 player = Player[i];
                 if (!(player->flags_1f8 & 0x40000)) {
                     ObjHitObj(NULL, player, 1, 0, 0, 1);
@@ -1416,14 +1416,14 @@ static f32 SarlaccRechargeTimer = 0;
 void SarlaccPitC_Update(WORLDINFO *world) {
     SARLACC_WORLD *script_world = (SARLACC_WORLD *)world;
     if (LevGameObject[0] != NULL && SarlaccBlowUpTargetCount == 4) {
-        if (LevGameObject[0]->rider != NULL) {
+        if (LevGameObject[0]->player.rider != NULL) {
             script_world->blowup_target_count = 4;
             script_world->blowup_targets = SarlaccBlowUpTargets;
             if (!SarlaccTakenOver) {
                 SarlaccTakenOver = 1;
             }
             if ((u32)SarlaccPower > 0) {
-                if (LevGameObject[0]->quick_shoot_bolt_id >= 0) {
+                if (LevGameObject[0]->player.quick_shoot_bolt_id >= 0) {
                     SARLACC_PANEL *panel;
                     --SarlaccPower;
                     NuSpecialSetVisibility(&LevHSpecial[SarlaccPower], 1);
@@ -1546,8 +1546,8 @@ void LegoCity_Update(WORLDINFO *world) {
     changedTownCar = 0;
     for (index = 0; index < 8; ++index) {
         object = Player[index];
-        if (!(object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->dead == 0 && object->rider != NULL &&
-              object->rider->character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER)) {
+        if (!(object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->dead == 0 &&
+              object->player.rider != NULL && object->player.rider->player.character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER)) {
             continue;
         }
         if (object->id == (u16)id_TRACTOR) {
@@ -1667,8 +1667,8 @@ void NewTown_Update(WORLDINFO *world) {
     changedLifeBoat = 0;
     for (index = 0; index < 8; ++index) {
         object = Player[index];
-        if (!(object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->dead == 0 && object->rider != NULL &&
-              object->rider->character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER)) {
+        if (!(object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->dead == 0 &&
+              object->player.rider != NULL && object->player.rider->player.character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER)) {
             continue;
         }
         if (object->id == (u16)id_TAUNTAUN) {
@@ -1796,7 +1796,7 @@ void DeathStar2BattleFire_Update(WORLDINFO *world) {
     }
 
     for (index = 0; index < 8; ++index) {
-        if (Player[index] != NULL && (Player[index]->unknown_e20 & 0x20) == 0) {
+        if (Player[index] != NULL && (Player[index]->player.unknown_e20 & 0x20) == 0) {
             NuVecSub(&difference, &Player[index]->position, &fireSplinePos.position);
             NuVecRotateY(&difference, &difference, -yaw);
             if (difference.z < nearest_distance) {

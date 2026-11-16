@@ -633,8 +633,8 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
         for (i = 0, object = Obj; i < HIGHGAMEOBJECT; ++i, ++object) {
             i8 player;
             if (!(object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) || !(object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) || object->dead ||
-                (LEGOCONTEXT_DOOMED != -1 && object->character_context == LEGOCONTEXT_DOOMED) || !(object->flags_1044 & 1) ||
-                (object->flags_e20 & 0x20)) {
+                (LEGOCONTEXT_DOOMED != -1 && object->player.character_context == LEGOCONTEXT_DOOMED) || !(object->flags_1044 & 1) ||
+                (object->player.flags_e20 & 0x20)) {
                 continue;
             }
             player = object->player_index;
@@ -646,8 +646,8 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
             }
             if (((obstacle->config_flags & GIZOBSTACLE_CONFIG_ACTIVE_PLAYERS_ONLY) &&
                  !(object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) ||
-                (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) ||
-                ((obstacle->config_flags & GIZOBSTACLE_CONFIG_RIDERS_ONLY) && !object->rider) ||
+                (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x8000) ||
+                ((obstacle->config_flags & GIZOBSTACLE_CONFIG_RIDERS_ONLY) && !object->player.rider) ||
                 ((obstacle->config_flags & GIZOBSTACLE_CONFIG_BADDIES_ONLY) &&
                  !(object->character_data->model_flags & CHARACTER_MODEL_BADDIE)) ||
                 ((obstacle->config_flags & GIZOBSTACLE_CONFIG_VEHICLES_ONLY) &&
@@ -656,7 +656,7 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
                 continue;
             }
             if ((obstacle->mode == OBSTACLE_TRIGGER_PROXIMITY_GROUND || obstacle->mode == OBSTACLE_TRIGGER_IN_BOX_AND_GROUND) &&
-                !object->unknown_281 && !(object->flags_ef4 & 0x20000000) && object->jump_variant_state != 1) {
+                !object->unknown_281 && !(object->flags_ef4 & 0x20000000) && object->player.jump_variant_state != 1) {
                 GAMEANIMOBJ *anim_object = obstacle->anim_set ? obstacle->anim_set->objects : NULL;
                 while (anim_object) {
                     i16 platform = ((GIZOBSTACLE_OBJECT_DATA *)anim_object->object_data)->platform_id;
@@ -943,7 +943,7 @@ i32 GizObstacles_Hit(void *world, GIZOBSTACLE *obstacle, NUVEC *position, i32 pl
     if (obstacle->config_flags & 0x800) {
         obstacle->runtime_flags |= GIZOBSTACLE_TRIGGER_LATCHED;
         if (player != -1 && (Player[player]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
-            NewBuzz(Player[player]->pad->bound_pad, 0.1f, 0);
+            NewBuzz(Player[player]->player.pad->bound_pad, 0.1f, 0);
         }
         return 1;
     }
@@ -968,7 +968,7 @@ i32 GizObstacles_Hit(void *world, GIZOBSTACLE *obstacle, NUVEC *position, i32 pl
     GameAnimSet_SetVisibility(obstacle->anim_set, 0);
     obstacle->runtime_flags |= GIZOBSTACLE_DESTROYED;
     if (player != -1 && (Player[player]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
-        NewBuzz(Player[player]->pad->bound_pad, 0.1f, 0);
+        NewBuzz(Player[player]->player.pad->bound_pad, 0.1f, 0);
     }
     return 1;
 }
@@ -1051,7 +1051,7 @@ GIZMO *GizObstacles_GetBestBoltTarget(GIZMOSET *set, f32 *result_distance, NUVEC
                 continue;
             }
             if (nearest_distance > distance) {
-                if (object && (void *)gizmo == object->collision_target) {
+                if (object && (void *)gizmo == object->player.collision_target) {
                     previous = gizmo;
                     previous_position = target;
                 } else {
@@ -1222,7 +1222,7 @@ static i32 GizObstacles_BoltHit(void *world, void *data, GAMEOBJECT *attacker, N
             player = owner ? owner->player_index : -1;
             if (GizObstacles_Hit(world, nearest, &bolt->position, player, type->unknown_3c)) {
                 if (attacker) {
-                    NewRumble(attacker->pad->bound_pad, 0.4f, 0);
+                    NewRumble(attacker->player.pad->bound_pad, 0.4f, 0);
                     GameCam_HitJudder();
                 }
             } else {

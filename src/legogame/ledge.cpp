@@ -42,10 +42,11 @@ static LEDGEPIECE LedgePiece[6] = {
 
 static void LedgeSetAttachPosition(GAMEOBJECT *object, NUVEC *position, u16 angle) {
     object->movement_facing_angle = angle;
-    object->external_force = *position;
-    object->launch_origin.x = object->external_force.x - NuTrigTable[angle >> 1] * object->bounds_radius;
-    object->launch_origin.y = object->external_force.y;
-    object->launch_origin.z = object->external_force.z - NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * object->bounds_radius;
+    object->player.external_force = *position;
+    object->player.launch_origin.x = object->player.external_force.x - NuTrigTable[angle >> 1] * object->bounds_radius;
+    object->player.launch_origin.y = object->player.external_force.y;
+    object->player.launch_origin.z =
+        object->player.external_force.z - NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * object->bounds_radius;
 }
 
 /* Takes these absolute values through the float's bit pattern. */
@@ -180,41 +181,41 @@ extern "C" void Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     NUVEC maximum;
     NUVEC position;
     u16 angle;
-    if (object->character_context == CHARACTER_CONTEXT_LEDGE) {
-        if (object->pad->buttons_pressed & GAMEPAD_JUMP) {
+    if (object->player.character_context == CHARACTER_CONTEXT_LEDGE) {
+        if (object->player.pad->buttons_pressed & GAMEPAD_JUMP) {
             StartJump(object, 0);
-            object->flags_e24 |= APIOBJECT_NO_JUMP;
-            f32 height = object->external_force.y + (f64)0.2f - object->jump_start_height;
+            object->player.flags_e24 |= APIOBJECT_NO_JUMP;
+            f32 height = object->player.external_force.y + (f64)0.2f - object->player.jump_start_height;
             if (height > 0.0f) {
                 object->velocity.y = NuFsqrt(object->character_data->game_character->gravity * -2.0 * height);
             }
             return;
         }
         if (object->unknown_281 & GROUND_NEAR) {
-            object->character_context = CHARACTER_CONTEXT_NONE;
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
             return;
         }
-        if (object->pad->input_magnitude > 0.0f) {
-            u16 input = GamePad_InputAngle(object, object->pad);
+        if (object->player.pad->input_magnitude > 0.0f) {
+            u16 input = GamePad_InputAngle(object, object->player.pad);
             angle = object->movement_facing_angle + 0x4000;
             f32 push = PushingTowardsAngle(input, angle);
             f32 speed;
             if (push > NuTrigTable[0x3555]) {
                 if (object->character_model->model_data_b[0x9f] != NULL) {
-                    object->unknown_7aa = ACTION_LEDGE_RIGHT;
+                    object->player.unknown_7aa = ACTION_LEDGE_RIGHT;
                     speed = AnimSpeed(object->character_model, ACTION_LEDGE_RIGHT);
                 } else {
                     speed = 0.5f;
                 }
             } else if (push < -NuTrigTable[0x3555]) {
                 if (object->character_model->model_data_b[0x9e] != NULL) {
-                    object->unknown_7aa = ACTION_LEDGE_LEFT;
+                    object->player.unknown_7aa = ACTION_LEDGE_LEFT;
                     speed = -AnimSpeed(object->character_model, ACTION_LEDGE_LEFT);
                 } else {
                     speed = -0.5f;
                 }
             } else {
-                object->unknown_7aa = ACTION_LEDGE_IDLE;
+                object->player.unknown_7aa = ACTION_LEDGE_IDLE;
                 return;
             }
             if (speed == 0.0f) {
@@ -222,7 +223,7 @@ extern "C" void Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             }
             NUVEC previous;
             minimum.x = object->collision_position.x - object->bounds_radius;
-            previous = object->external_force;
+            previous = object->player.external_force;
             maximum.x = object->bounds_radius + object->collision_position.x;
             minimum.y = object->collision_position.y;
             maximum.y = object->upper_position.y;
@@ -230,27 +231,27 @@ extern "C" void Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             maximum.z = object->bounds_radius + object->collision_position.z;
             NUVEC offset = {NuTrigTable[angle >> 1] * (FRAMETIME * speed), 0.0f,
                             NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * (FRAMETIME * speed)};
-            NuVecAdd(&position, &object->external_force, &offset);
+            NuVecAdd(&position, &object->player.external_force, &offset);
             if (LedgeAttachPoint(world, &position, &minimum, &maximum, &angle) == NULL) {
-                object->unknown_7aa = ACTION_LEDGE_IDLE;
+                object->player.unknown_7aa = ACTION_LEDGE_IDLE;
                 return;
             }
             LedgeSetAttachPosition(object, &position, angle + 0x8000);
-            if (object->external_force.x == previous.x && object->external_force.y == previous.y &&
-                object->external_force.z == previous.z) {
-                object->unknown_7aa = ACTION_LEDGE_IDLE;
+            if (object->player.external_force.x == previous.x && object->player.external_force.y == previous.y &&
+                object->player.external_force.z == previous.z) {
+                object->player.unknown_7aa = ACTION_LEDGE_IDLE;
             }
             return;
         }
-        object->unknown_7aa = ACTION_LEDGE_IDLE;
+        object->player.unknown_7aa = ACTION_LEDGE_IDLE;
         return;
     }
     if (object->unknown_281 != 0 || !(object->velocity.y <= 0.0f)) {
         return;
     }
 
-    if (object->character_context != CHARACTER_CONTEXT_NONE && object->character_context != CHARACTER_CONTEXT_CLIMB) {
-        if (object->character_context != CHARACTER_CONTEXT_JUMP || !(object->context_timer >= (f64)0.1f)) {
+    if (object->player.character_context != CHARACTER_CONTEXT_NONE && object->player.character_context != CHARACTER_CONTEXT_CLIMB) {
+        if (object->player.character_context != CHARACTER_CONTEXT_JUMP || !(object->player.context_timer >= (f64)0.1f)) {
             return;
         }
     }
@@ -270,8 +271,8 @@ extern "C" void Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     if (LedgeAttachPoint(world, &position, &minimum, &maximum, &angle) == NULL) {
         return;
     }
-    object->character_context = CHARACTER_CONTEXT_LEDGE;
-    object->unknown_7aa = ACTION_LEDGE_IDLE;
+    object->player.character_context = CHARACTER_CONTEXT_LEDGE;
+    object->player.unknown_7aa = ACTION_LEDGE_IDLE;
     object->velocity = v000;
     LedgeSetAttachPosition(object, &position, angle + 0x8000);
 }

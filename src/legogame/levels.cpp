@@ -1281,7 +1281,7 @@ extern "C" void ClearUpAreaData() {
 
     for (object_index = 0; object_index < HIGHGAMEOBJECT; object_index++) {
         if ((Obj[object_index].flags_1fc_half & APIOBJECT_FLAG_IN_USE) != 0) {
-            FreeTorpedoPacket(&Obj[object_index].torpedo);
+            FreeTorpedoPacket(&Obj[object_index].player.torpedo);
             RemoveGameObject(&Obj[object_index], 1);
         }
     }

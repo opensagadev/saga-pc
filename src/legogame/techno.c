@@ -38,12 +38,13 @@ i32 Techno_FindOperator(void *target, GAMEPAD **pad, GAMEOBJECT **operator_objec
     i32 index;
     TECHNO *techno;
     for (index = 0; index < 8; ++index) {
-        if (Player[index] != NULL && Player[index]->character_context == CHARACTER_CONTEXT_TECHNO && Player[index]->techno != NULL) {
-            techno = Player[index]->techno;
+        if (Player[index] != NULL && Player[index]->player.character_context == CHARACTER_CONTEXT_TECHNO &&
+            Player[index]->player.techno != NULL) {
+            techno = Player[index]->player.techno;
             if ((techno->target_mode == TECHNO_TARGET_SPECIAL && NuSpecialCompare(target, techno->controlled_object) != 0) ||
-                Player[index]->techno->controlled_object == target) {
+                Player[index]->player.techno->controlled_object == target) {
                 if (pad != NULL) {
-                    *pad = Player[index]->pad;
+                    *pad = Player[index]->player.pad;
                 }
                 if (operator_object != NULL) {
                     *operator_object = Player[index];
@@ -603,13 +604,13 @@ void Technos_MoveTarget(TECHNO *techno_pointer, GAMEOBJECT *object) {
     } else if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->unknown_f00 == 2) {
         speed = 1.0f;
     } else if ((techno->movement & TECHNO_MOVE_WAGGLE) != 0) {
-        speed = (object->pad->runtime_flags & GAMEPAD_WAGGLE) != 0 ? 1.0f : 0.0f;
+        speed = (object->player.pad->runtime_flags & GAMEPAD_WAGGLE) != 0 ? 1.0f : 0.0f;
     } else if ((techno->movement & TECHNO_MOVE_SPIN) != 0) {
-        speed = object->pad->waggle_magnitude;
+        speed = object->player.pad->waggle_magnitude;
     } else if ((techno->movement & TECHNO_MOVE_VERTICAL) != 0) {
-        speed = object->pad->input_direction_x;
+        speed = object->player.pad->input_direction_x;
     } else if ((techno->movement & TECHNO_MOVE_HORIZONTAL) != 0) {
-        speed = object->pad->input_direction_z;
+        speed = object->player.pad->input_direction_z;
     } else {
         speed = 0.0f;
     }
@@ -633,7 +634,7 @@ void Technos_MoveTarget(TECHNO *techno_pointer, GAMEOBJECT *object) {
     }
     obstacle = techno->controlled_gizmo->object;
     if ((techno->movement & TECHNO_MOVE_SPIN) != 0 && object != NULL && (object->unknown_280 == 0 || object->unknown_280 == 1)) {
-        rate = object->pad->waggle_magnitude != 0.0f ? (f32)(3.0 * FRAMETIME) : (f32)(2.0 * FRAMETIME);
+        rate = object->player.pad->waggle_magnitude != 0.0f ? (f32)(3.0 * FRAMETIME) : (f32)(2.0 * FRAMETIME);
         TechnoMoveSpeed[object->player_index] = SeekLinearF(TechnoMoveSpeed[object->player_index], speed, rate);
         GizObstacle_SetTechnoControlled(obstacle, TechnoMoveSpeed[object->player_index]);
     } else {
@@ -646,26 +647,26 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     f32 distance;
     f32 range;
     f32 hint_range;
-    if (object->character_context == CHARACTER_CONTEXT_TECHNO) {
-        object->techno->flags |= TECHNO_FLAG_USED_THIS_FRAME;
-        if (object->character_model->model_data_b[object->unknown_7aa] != NULL &&
-            AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0) == NULL) {
+    if (object->player.character_context == CHARACTER_CONTEXT_TECHNO) {
+        object->player.techno->flags |= TECHNO_FLAG_USED_THIS_FRAME;
+        if (object->character_model->model_data_b[object->player.unknown_7aa] != NULL &&
+            AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0) == NULL) {
             return;
         }
-        object->context_timer += FRAMETIME;
-        if ((object->pad->buttons_pressed & GAMEPAD_TAG) != 0 ||
+        object->player.context_timer += FRAMETIME;
+        if ((object->player.pad->buttons_pressed & GAMEPAD_TAG) != 0 ||
             ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->unknown_f00 != 2)) {
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
-            object->tag_flags |= 1;
+            object->player.tag_flags |= 1;
             object->movement_facing_angle += 0x8000;
-            object->character_context = CHARACTER_CONTEXT_NONE;
-            Technos_MoveTarget(object->techno, NULL);
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
+            Technos_MoveTarget(object->player.techno, NULL);
         } else {
-            Technos_MoveTarget(object->techno, object);
+            Technos_MoveTarget(object->player.techno, object);
         }
     } else {
-        if (!((((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || object->unknown_f00 == 2) && object->suit != NULL &&
-               (object->suit->flags & SUIT_TECHNOLOGY) != 0) ||
+        if (!((((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || object->unknown_f00 == 2) && object->player.suit != NULL &&
+               (object->player.suit->flags & SUIT_TECHNOLOGY) != 0) ||
               (StartupGameFlag1 != 0 && StartupGameFlag0 != 0))) {
             return;
         }
@@ -679,14 +680,14 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             techno->flags |= TECHNO_FLAG_USED_THIS_FRAME;
         }
         if (object->unknown_281 == 0 || ObjLandReady(object) == 0 || !(distance < (f64)range * range) ||
-            ((object->pad->buttons_pressed & GAMEPAD_SPECIAL) == 0 && object->unknown_f00 != 2)) {
+            ((object->player.pad->buttons_pressed & GAMEPAD_SPECIAL) == 0 && object->unknown_f00 != 2)) {
             return;
         }
         if (Techno_isReady(techno) != 0) {
-            object->character_context = CHARACTER_CONTEXT_TECHNO;
-            object->context_timer = 0.0f;
-            object->techno = techno;
-            object->unknown_7aa = ACTION_HACK;
+            object->player.character_context = CHARACTER_CONTEXT_TECHNO;
+            object->player.context_timer = 0.0f;
+            object->player.techno = techno;
+            object->player.unknown_7aa = ACTION_HACK;
             object->movement_facing_angle = techno->y_rotation + 0x8000;
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
             if (object->unknown_280 == 0 || object->unknown_280 == 1) {

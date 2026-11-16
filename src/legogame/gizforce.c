@@ -95,8 +95,8 @@ const f32 PlayerBuildItNegativeLimit = -1000000000.0f;
 const f64 PlayerSlideSpeed = 1.2000000476837158;
 
 void GizForce_ResetLOS(GAMEOBJECT *object) {
-    if (object->gizforce_los_info != NULL) {
-        memset(object->gizforce_los_info, 0, sizeof(*object->gizforce_los_info));
+    if (object->player.gizforce_los_info != NULL) {
+        memset(object->player.gizforce_los_info, 0, sizeof(*object->player.gizforce_los_info));
     }
 }
 
@@ -491,7 +491,7 @@ static f32 ForceUpdateSpeed(GIZFORCE *force, GAMEOBJECT *object) {
     if (force != NULL) {
         // MATCH-EXCEPTION: the original stores the default speed again once force is known (second fstp of 1.0).
         target = 1.0f;
-        if (object != NULL && (Cheats_CheckFlags(0x400000) != 0 || object->powerup_time > 0.0f)) {
+        if (object != NULL && (Cheats_CheckFlags(0x400000) != 0 || object->player.powerup_time > 0.0f)) {
             target = 3.0f;
         }
     }
@@ -606,8 +606,8 @@ i32 GizForce_UpdateHint(HINT *hint) {
     }
     for (index = 0; index < 2; ++index) {
         GAMEOBJECT *object = Player[index];
-        if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->glow_alpha > 0.0f &&
-            object->glow_object != NULL && object->glow_kind == 0) {
+        if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->player.glow_alpha > 0.0f &&
+            object->player.glow_object != NULL && object->player.glow_kind == 0) {
             return 1;
         }
     }
@@ -710,7 +710,8 @@ i32 GizForce_Complete(GIZFORCE *force) {
 }
 
 i32 GizForce_GameObjUsingForce(GAMEOBJECT *object, GIZFORCE *force) {
-    return force != NULL && object != NULL && object->character_context == CHARACTER_CONTEXT_FORCE && object->gizforce_target == force;
+    return force != NULL && object != NULL && object->player.character_context == CHARACTER_CONTEXT_FORCE &&
+           object->gizforce_target == force;
 }
 
 PART *GizForce_Throw(GAMEOBJECT *object, GIZFORCE *force, f32 speed, f32 gravity, i32 unused) {
@@ -728,10 +729,10 @@ PART *GizForce_Throw(GAMEOBJECT *object, GIZFORCE *force, f32 speed, f32 gravity
     } else {
         matrix = NuSpecialGetMtx(special);
     }
-    if (object == NULL || object->force_throw_target == NULL) {
+    if (object == NULL || object->player.force_throw_target == NULL) {
         return NULL;
     }
-    MakeThrowVector(&velocity, (NUVEC *)&matrix->m30, &object->force_throw_target->collision_position, &v000, speed, gravity);
+    MakeThrowVector(&velocity, (NUVEC *)&matrix->m30, &object->player.force_throw_target->collision_position, &v000, speed, gravity);
 
     params = Default_ADDPART;
     params.matrix = matrix;
@@ -749,7 +750,7 @@ PART *GizForce_Throw(GAMEOBJECT *object, GIZFORCE *force, f32 speed, f32 gravity
     params.kill_fn = PartKill_ForceThrow;
     params.time_step = FRAMETIME;
     part = AddPart(&params);
-    NewRumble(object->pad->bound_pad, 0.5f, 0);
+    NewRumble(object->player.pad->bound_pad, 0.5f, 0);
     PlaySfx("JForcePush", &object->collision_position);
     GameAnimSet_SetVisibility(force->anim_set, 0);
     force->runtime_flags |= GIZFORCE_DESTROYED;
@@ -947,7 +948,7 @@ static i32 GizForces_BoltHitPlat(GIZFORCE *force, WORLDINFO *world, i32 player_i
         if (player_index != -1) {
             player = Player[player_index];
             if ((player->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-                NewBuzz(player->pad->bound_pad, 0.1f, 0);
+                NewBuzz(player->player.pad->bound_pad, 0.1f, 0);
             }
         }
         return 1;
@@ -978,7 +979,7 @@ static i32 GizForces_BoltHitPlat(GIZFORCE *force, WORLDINFO *world, i32 player_i
     if (player_index != -1) {
         player = Player[player_index];
         if ((player->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-            NewBuzz(player->pad->bound_pad, 0.1f, 0);
+            NewBuzz(player->player.pad->bound_pad, 0.1f, 0);
         }
     }
     return 1;
@@ -1108,7 +1109,7 @@ GIZMO *GizForces_GetBestBoltTarget(GIZMOSET *set, f32 *output_distance, NUVEC *o
         if (!(best_distance > distance)) {
             continue;
         }
-        if (object != NULL && (void *)gizmo == (void *)object->collision_target) {
+        if (object != NULL && (void *)gizmo == (void *)object->player.collision_target) {
             previous = gizmo;
             previous_position = &force->position;
         } else {
@@ -1184,7 +1185,7 @@ i32 GizForces_BoltHit(WORLDINFO *world, void *system_pointer, GAMEOBJECT *object
         player_index = bolt->owner != NULL ? bolt->owner->player_index : -1;
         if (GizForces_BoltHitPlat(best, world, player_index) != 0) {
             if (object != NULL) {
-                NewRumble(object->pad->bound_pad, 0.4f, 0);
+                NewRumble(object->player.pad->bound_pad, 0.4f, 0);
                 GameCam_HitJudder();
             }
         } else {
@@ -1376,8 +1377,8 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
         GIZFORCEGROUP *group;
         if (force->using_object != NULL && force->group != NULL && (force->runtime_flags & GIZFORCE_IN_STACK) == 0 &&
             (force->group->runtime_flags & GIZFORCEGROUP_MOVING) != 0 &&
-            force->using_object->character_context == CHARACTER_CONTEXT_FORCE) {
-            force->using_object->character_context = CHARACTER_CONTEXT_NONE;
+            force->using_object->player.character_context == CHARACTER_CONTEXT_FORCE) {
+            force->using_object->player.character_context = CHARACTER_CONTEXT_NONE;
             force->using_object->gizforce_target = NULL;
             force->using_object = NULL;
         }
@@ -1744,7 +1745,7 @@ i32 GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
             ++count;
         }
     }
-    los = object->gizforce_los_info;
+    los = object->player.gizforce_los_info;
     if (los != NULL) {
         record = PossibleForceTargets;
         for (i = 0; i < count; ++i, ++record) {
@@ -1757,7 +1758,7 @@ i32 GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
         if (oldest != NULL) {
             los->queried_at[oldest->index] = LevelTimer.update_count;
             if (oldest->force->config_flags & GIZFORCE_CONFIG_LINE_OF_SIGHT) {
-                object->gizforce_los_info->clear_bits[oldest->index >> 5] &= ~(1u << (oldest->index & 31));
+                object->player.gizforce_los_info->clear_bits[oldest->index >> 5] &= ~(1u << (oldest->index & 31));
                 if (oldest->animation != NULL) {
                     NUVEC *draw_position = NuSpecialGetDrawPos(&oldest->animation->special);
                     NuVecSub(&direction, draw_position, &object->collision_position);
@@ -1790,11 +1791,11 @@ i32 GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
                     }
                 }
             }
-            object->gizforce_los_info->clear_bits[oldest->index >> 5] |= 1u << (oldest->index & 31);
+            object->player.gizforce_los_info->clear_bits[oldest->index >> 5] |= 1u << (oldest->index & 31);
         }
     }
 choose:
-    los = object->gizforce_los_info;
+    los = object->player.gizforce_los_info;
     record = PossibleForceTargets;
     for (i = 0; i < count; ++i, ++record) {
         if (los != NULL && record->index != -1 && !(los->clear_bits[record->index >> 5] & (1u << (record->index & 31)))) {

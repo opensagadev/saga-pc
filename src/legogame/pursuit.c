@@ -227,7 +227,7 @@ void BountyHunterPursuitD_Update(WORLDINFO *world) {
     GIZMOBLOWUP *generator;
     i32 i;
     NUVEC delta;
-    if (LevGameObject[0] == NULL || LevGameObject[0]->shield_hitpoints == 0) {
+    if (LevGameObject[0] == NULL || LevGameObject[0]->player.shield_hitpoints == 0) {
         return;
     }
     nearest_distance_sq = 1000000000.0f;
@@ -251,7 +251,7 @@ void BountyHunterPursuitD_Update(WORLDINFO *world) {
                        0xff808040, pursuit_laser_end_width, distance);
         }
     } else {
-        LevGameObject[0]->shield_hitpoints = 0;
+        LevGameObject[0]->player.shield_hitpoints = 0;
         DrawBossHitPoints(LevGameObject[0]);
     }
 }

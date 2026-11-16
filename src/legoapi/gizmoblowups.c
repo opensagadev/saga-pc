@@ -1699,7 +1699,7 @@ GIZMOBLOWUP *GizmoBlowUp_Hit(GAMEOBJECT *object, NUVEC *points, i32 point_count,
             continue;
         }
         if (bolt != NULL && (blowup->platform_id != -1 || (blowup->draw_flags & BLOWUP_OPTION_SHOOTABLE) == 0 ||
-                             ((blowup->draw_flags & BLOWUP_OPTION_RIDER_BOLTS_ONLY) && (object == NULL || object->rider == NULL)))) {
+                             ((blowup->draw_flags & BLOWUP_OPTION_RIDER_BOLTS_ONLY) && (object == NULL || object->player.rider == NULL)))) {
             continue;
         }
         if (hit_type == 0) {
@@ -1751,7 +1751,7 @@ GIZMOBLOWUP *GizmoBlowUp_Hit(GAMEOBJECT *object, NUVEC *points, i32 point_count,
         }
         if (GizmoBlowupBlowup(nearest, 1, cause, damage, NULL, 1)) {
             if (object != NULL) {
-                NewRumble(object->pad->bound_pad, 0.4f, 0);
+                NewRumble(object->player.pad->bound_pad, 0.4f, 0);
                 GameCam_HitJudder();
             }
         } else if (bolt != NULL) {
@@ -1772,7 +1772,7 @@ void GizmoBlowup_HitBlowup(GAMEOBJECT *object, GIZMOBLOWUP *blowup, i32 hit_type
     (void)unused;
     if (GizmoBlowupBlowup(blowup, 1, hit_type, 1, NULL, 1)) {
         if (object != NULL) {
-            NewRumble(object->pad->bound_pad, 0.4f, 0);
+            NewRumble(object->player.pad->bound_pad, 0.4f, 0);
             GameCam_HitJudder();
         }
     } else if (bolt != NULL) {
@@ -1788,7 +1788,7 @@ void GizmoBlowup_HitBlowup(GAMEOBJECT *object, GIZMOBLOWUP *blowup, i32 hit_type
         case 1:
             BoltSys->debris(bolt, position, -1, NULL, 0);
             if (bolt->owner != NULL) {
-                NewRumble(bolt->owner->pad->bound_pad, 0.6f, 0);
+                NewRumble(bolt->owner->player.pad->bound_pad, 0.6f, 0);
             }
             Bolt_End(bolt, 1);
             Bolt_PlayHitSfx(bolt);
@@ -1910,7 +1910,7 @@ GIZMOBLOWUP *GizmoBlowUp_Target(GAMEOBJECT *object, NUVEC *position, NUVEC *dire
         if (!(dot > NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff]) || !(nearest_distance > distance)) {
             continue;
         }
-        if (object != NULL && (GAMEOBJECT *)blowup == object->collision_target) {
+        if (object != NULL && (GAMEOBJECT *)blowup == object->player.collision_target) {
             fallback = blowup;
         } else {
             nearest_distance = distance;
@@ -1938,7 +1938,7 @@ i32 GizmoBlowupCheckProximity(WORLDINFO *world, GAMEOBJECT *object) {
     if (object == NULL || (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
         return 0;
     }
-    if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0 || object->takeover_source != NULL) {
+    if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0 || object->player.takeover_source != NULL) {
         special = 1;
     } else {
         normal = 1;

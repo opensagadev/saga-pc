@@ -221,7 +221,7 @@ extern "C" {
 
     void ChatterSfx(GAMEOBJECT *object, i32 sound, f32 interval) {
         if (TerrainChatterWait <= 0.0f && ParticlesPerSecond(2.0f, FRAMETIME) > 0 && object->dead == 0 &&
-            object->character_context == CHARACTER_CONTEXT_NONE) {
+            object->player.character_context == CHARACTER_CONTEXT_NONE) {
             if (sound != TerrainLastChatterSfx || !(interval > 0.0f)) {
                 PlaySfxById(sound, &object->collision_position);
                 TerrainChatterWait = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.0 + 3.0);
@@ -252,7 +252,7 @@ extern "C" {
         target = 0.0f;
         if (silent == 0) {
             if (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) {
-                target = AudioFabs(object->unknown_dc8);
+                target = AudioFabs(object->player.unknown_dc8);
             } else {
                 target = object->velocity_magnitude / character->run_speed;
             }
@@ -260,12 +260,12 @@ extern "C" {
                 target = 1.0f;
             }
         }
-        object->engine_level = SeekLinearF(object->engine_level, target, (f32)((f64)FRAMETIME * .5));
-        volume = (f32)((f64)object->engine_level * .5 + .5);
+        object->player.engine_level = SeekLinearF(object->player.engine_level, target, (f32)((f64)FRAMETIME * .5));
+        volume = (f32)((f64)object->player.engine_level * .5 + .5);
         if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
             volume = (f32)((f64)volume * (f64).6f);
         }
-        pitch = (f32)((f64)object->engine_level * (f64).4f + (f64).6f);
+        pitch = (f32)((f64)object->player.engine_level * (f64).4f + (f64).6f);
         pitch += (f32)(((f64)object->hostility_group / 63.0) * (f64).05f - (f64).025f);
         pitch = (f32)(((f64)qrand() * (f64)1.5259022e-5f * (f64).03f + (f64).985f) * (f64)pitch);
         PlaySfxByIdAndSetVolumeAndPitch(sfx_id, &object->collision_position, volume, pitch);

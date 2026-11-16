@@ -840,7 +840,7 @@ i32 CustomiserMenu_Update(void) {
         MissionMenuPacket.customise_other_player[active_index] = MissionMenuPacket.customise_other_player[active_index] == 0;
         GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
         object = Player[active_index];
-        NewBuzzFrames(object->pad->bound_pad, 1, 0);
+        NewBuzzFrames(object->player.pad->bound_pad, 1, 0);
     }
     return 0;
 }

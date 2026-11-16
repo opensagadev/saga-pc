@@ -134,7 +134,7 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
     NUVEC focus;
     NUVEC look;
     NUVEC *target;
-    if ((object->dead != 0 || object->character_context == CHARACTER_CONTEXT_DOOMED) &&
+    if ((object->dead != 0 || object->player.character_context == CHARACTER_CONTEXT_DOOMED) &&
         (WORLD->current_level->flags & LEVEL_IN_SPACE) == 0) {
         if (object->dead != 0) {
             *position = object->position;
@@ -155,9 +155,9 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
         return;
     }
     target = NULL;
-    if (object->character_context == CHARACTER_CONTEXT_TELEPORT && object->techno != NULL &&
-        (((CAMERA_CONTEXT_PATH *)object->techno)->flags & 0x10) != 0) {
-        NUVEC *points = ((CAMERA_CONTEXT_PATH *)object->techno)->path->pts;
+    if (object->player.character_context == CHARACTER_CONTEXT_TELEPORT && object->player.techno != NULL &&
+        (((CAMERA_CONTEXT_PATH *)object->player.techno)->flags & 0x10) != 0) {
+        NUVEC *points = ((CAMERA_CONTEXT_PATH *)object->player.techno)->path->pts;
         f32 scale;
         NuVecSub(&direction, &points[0], &points[3]);
         NuVecSub(&focus, &points[0], &object->position);
@@ -179,40 +179,40 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
     if (object->cable != NULL && object->cable->target != NULL) {
         target = &object->cable->target->collision_position;
     }
-    switch (object->character_context) {
+    switch (object->player.character_context) {
         case CHARACTER_CONTEXT_FORCE:
             if (object->gizforce_target != NULL) {
                 target = &object->gizforce_target->position;
             }
             break;
         case CHARACTER_CONTEXT_FORCE_PUSH:
-            if (object->force_target != NULL) {
-                target = &object->force_target->collision_position;
+            if (object->player.force_target != NULL) {
+                target = &object->player.force_target->collision_position;
             }
             break;
         case CHARACTER_CONTEXT_FORCE_DEFLECT:
-            if (object->force_part != NULL && (object->force_part->active & PART_IN_USE) != 0) {
-                target = &object->force_part->position;
+            if (object->player.force_part != NULL && (object->player.force_part->active & PART_IN_USE) != 0) {
+                target = &object->player.force_part->position;
             }
             break;
         case CHARACTER_CONTEXT_BUILD_IT:
-            if (object->techno != NULL) {
-                target = &((CAMERA_CONTEXT_BUILDIT *)object->techno)->position;
+            if (object->player.techno != NULL) {
+                target = &((CAMERA_CONTEXT_BUILDIT *)object->player.techno)->position;
             }
             break;
         case CHARACTER_CONTEXT_TECHNO:
-            target = Technos_TgtPos(object->techno);
+            target = Technos_TgtPos(object->player.techno);
             if (target != NULL) {
                 NuVecSub(&direction, target, &object->position);
-                NuVecScale(&direction, &direction, object->techno->scale);
+                NuVecScale(&direction, &direction, object->player.techno->scale);
                 NuVecAdd(&direction, &direction, &object->position);
                 *position = direction;
                 target = NULL;
             }
             break;
         case CHARACTER_CONTEXT_PUSH_OBSTACLE:
-            if (object->techno != NULL) {
-                target = &((CAMERA_CONTEXT_FOCUS *)object->techno)->focus;
+            if (object->player.techno != NULL) {
+                target = &((CAMERA_CONTEXT_FOCUS *)object->player.techno)->focus;
             }
             break;
         case CHARACTER_CONTEXT_GRAPPLE:
@@ -304,10 +304,11 @@ void UpdatePlayerCameraOcclusion(void) {
             if (object == NULL || (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
                 continue;
             }
-            if (FadeSys.fade != 0.0f || object->dead != 0 || object->character_context == CHARACTER_CONTEXT_DOOMED ||
-                object->hud_icon_timer > 0.0f || GetMenuID() != -1 || object->character_context == CHARACTER_CONTEXT_TELEPORT ||
-                object->rider != NULL || (object->unknown_e24 & 8) == 0 ||
-                ((object->character_data->model_flags & CHARACTER_MODEL_ASTROMECH) != 0 && object->communicate_blend > 0.0f)) {
+            if (FadeSys.fade != 0.0f || object->dead != 0 || object->player.character_context == CHARACTER_CONTEXT_DOOMED ||
+                object->player.hud_icon_timer > 0.0f || GetMenuID() != -1 ||
+                object->player.character_context == CHARACTER_CONTEXT_TELEPORT || object->player.rider != NULL ||
+                (object->player.unknown_e24 & 8) == 0 ||
+                ((object->character_data->model_flags & CHARACTER_MODEL_ASTROMECH) != 0 && object->player.communicate_blend > 0.0f)) {
                 object->tag_reset_timer = 0.0f;
                 object->pause_context_state = 0.0f;
                 object->flags_ef0 &= ~0x180000u;
@@ -468,9 +469,9 @@ void MoveGameCamera(GAMECAMERA *camera) {
                 for (i = 0; ObstacleCamHoldUntilPlayersMove && i < 2; i++) {
                     GAMEOBJECT *object = Player[i];
                     if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
-                        (object->model_draw_result == 0 || object->pad->input_magnitude > 0.0f ||
-                         (object->pad->buttons_held & (GAMEPAD_START | GAMEPAD_JUMP | GAMEPAD_ACTION | GAMEPAD_SPECIAL | GAMEPAD_TAG |
-                                                       GAMEPAD_TOGGLELEFT | GAMEPAD_TOGGLERIGHT)) != 0)) {
+                        (object->model_draw_result == 0 || object->player.pad->input_magnitude > 0.0f ||
+                         (object->player.pad->buttons_held & (GAMEPAD_START | GAMEPAD_JUMP | GAMEPAD_ACTION | GAMEPAD_SPECIAL |
+                                                              GAMEPAD_TAG | GAMEPAD_TOGGLELEFT | GAMEPAD_TOGGLERIGHT)) != 0)) {
                         ObstacleCamHoldUntilPlayersMove = 0;
                     }
                 }
@@ -630,10 +631,10 @@ mode_selected:
                     PlayerCamPos(object, &player_focus[player_count], &camera->position);
                 }
                 source_position = &object->position;
-                if (object->character_context == CHARACTER_CONTEXT_DOOMED && !object->dead) {
+                if (object->player.character_context == CHARACTER_CONTEXT_DOOMED && !object->dead) {
                     source_position = &object->previous_position;
-                } else if (object->character_context == CHARACTER_CONTEXT_TECHNO && object->techno != NULL) {
-                    NUVEC *techno_position = Technos_TgtPos(object->techno);
+                } else if (object->player.character_context == CHARACTER_CONTEXT_TECHNO && object->player.techno != NULL) {
+                    NUVEC *techno_position = Technos_TgtPos(object->player.techno);
                     if (techno_position != NULL) {
                         source_position = techno_position;
                     }
@@ -643,9 +644,9 @@ mode_selected:
                     if (PODRACE_ADATA != NULL && WORLD->area == PODRACE_ADATA) {
                         player_roll[player_count] = ((i32)(getPodRoll(i) * 8192.0f));
                     } else {
-                        player_roll[player_count] = RotDiff(0, object->movement_lean_angle);
+                        player_roll[player_count] = RotDiff(0, object->player.movement_lean_angle);
                     }
-                    RotDiff(0, object->tertiary_lean_angle);
+                    RotDiff(0, object->player.tertiary_lean_angle);
                 } else {
                     player_roll[player_count] = 0;
                 }
@@ -1282,11 +1283,11 @@ mode_selected:
         for (i = 0; i < 2; i++) {
             if (Player[i] != NULL && (Player[i]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player[i]->flags_107a == 4) {
                 NuVecAdd(NUMTX_GET_ROW_VEC(&orientation, 0), NUMTX_GET_ROW_VEC(&orientation, 0),
-                         NUMTX_GET_ROW_VEC(&(Player[i])->vehicle_orientation, 0));
+                         NUMTX_GET_ROW_VEC(&(Player[i])->player.vehicle_orientation, 0));
                 NuVecAdd(NUMTX_GET_ROW_VEC(&orientation, 1), NUMTX_GET_ROW_VEC(&orientation, 1),
-                         NUMTX_GET_ROW_VEC(&(Player[i])->vehicle_orientation, 1));
+                         NUMTX_GET_ROW_VEC(&(Player[i])->player.vehicle_orientation, 1));
                 NuVecAdd(NUMTX_GET_ROW_VEC(&orientation, 2), NUMTX_GET_ROW_VEC(&orientation, 2),
-                         NUMTX_GET_ROW_VEC(&(Player[i])->vehicle_orientation, 2));
+                         NUMTX_GET_ROW_VEC(&(Player[i])->player.vehicle_orientation, 2));
                 shared_count++;
             }
         }
@@ -1392,12 +1393,12 @@ void fun_0040e680(void) {
 
 i32 GoingForwardsAlongNarrowSock(GAMEOBJECT *object) {
     i32 forwards;
-    if (object->in_narrow_socket != 0) {
+    if (object->player.in_narrow_socket != 0) {
         i32 context;
         u16 heading = object->sock_heading;
         forwards = abs(RotDiff(heading, object->unknown_276)) < 0x4000;
-        context = object->character_context;
-        if (context == CHARACTER_CONTEXT_TURN && object->context_timer < object->context_duration * (f64)0.8f) {
+        context = object->player.character_context;
+        if (context == CHARACTER_CONTEXT_TURN && object->player.context_timer < object->player.context_duration * (f64)0.8f) {
             forwards = 1 - forwards;
         }
         return forwards;

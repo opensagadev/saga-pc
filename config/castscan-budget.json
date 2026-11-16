@@ -7,13 +7,13 @@
   "address-constant": 52,
   "raw-offset": 345,
   "embedded-base": 910,
-  "view-type": 168,
-  "duplicate-type": 972,
+  "view-type": 165,
+  "duplicate-type": 965,
   "declaration-type": 1014,
   "layout-compatible": 104,
   "function-pointer": 802,
   "field-address": 333,
-  "byte-pointer": 503,
+  "byte-pointer": 501,
   "record-pun": 702,
   "scalar-pun": 302,
   "int-pointer": 821,
@@ -30,5 +30,5 @@
   "widening": 176,
   "class-hierarchy": 17,
   "other": 4,
-  "size-literal": 4
+  "size-literal": 3
 }

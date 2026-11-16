@@ -1977,7 +1977,7 @@ void GunShip_DragBombSeekBlowUp(GAMEOBJECT *object) {
     f32 distance;
     f32 factor;
     i32 index;
-    if (object->character_context != CHARACTER_CONTEXT_BEEN_DRAGGED) {
+    if (object->player.character_context != CHARACTER_CONTEXT_BEEN_DRAGGED) {
         return;
     }
     nearest_distance = gunshipb_seekrange * gunshipb_seekrange;

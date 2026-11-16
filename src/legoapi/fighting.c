@@ -69,13 +69,14 @@ i32 ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 gap) {
     f32 dot;
     f32 radius;
     f32 radius_squared;
-    if (object->force_target == NULL) {
+    if (object->player.force_target == NULL) {
         return 0;
     }
     NuVecRotateY(&forward, &v001, object->unknown_276);
     distance = NuVecDistSqr(&opponent->position, &object->position, &difference);
     dot = forward.x * difference.x + forward.z * difference.z;
-    if ((!((object->context_variant_flags >> 7) & 1) && dot >= 0.0f) || (((object->context_variant_flags >> 7) & 1) && dot <= 0.0f)) {
+    if ((!((object->player.context_variant_flags >> 7) & 1) && dot >= 0.0f) ||
+        (((object->player.context_variant_flags >> 7) & 1) && dot <= 0.0f)) {
         radius = object->bounds_radius + opponent->bounds_radius;
         radius += gap;
         radius_squared = radius * radius;
@@ -87,24 +88,24 @@ i32 ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 gap) {
 }
 
 void SetWeaponOut(GAMEOBJECT *object) {
-    i8 context = object->character_context;
+    i8 context = object->player.character_context;
     if (context != CHARACTER_CONTEXT_NONE && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
-        object->character_context = CHARACTER_CONTEXT_NONE;
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
     }
-    object->weapon_scale = 1.0f;
-    object->flags_e20 |= APIOBJECT_WEAPON_OUT;
-    object->unknown_e33 = 0;
+    object->player.weapon_scale = 1.0f;
+    object->player.flags_e20 |= APIOBJECT_WEAPON_OUT;
+    object->player.unknown_e33 = 0;
 }
 
 i32 WeaponInOut_NoAIJediSfx = 0;
 
 void FastWeaponOut(GAMEOBJECT *object, i32 force_sound) {
-    i8 context = object->character_context;
+    i8 context = object->player.character_context;
     i32 animation;
     if (context != CHARACTER_CONTEXT_NONE && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
-        object->character_context = CHARACTER_CONTEXT_NONE;
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
     }
-    if (force_sound != 0 && object->weapon_scale == 0.0f && object->unknown_e33 != 1) {
+    if (force_sound != 0 && object->player.weapon_scale == 0.0f && object->player.unknown_e33 != 1) {
         animation = CurrentAnim(&object->anim_packet);
         if (animation == -1 || object->character_model->animation_configs[animation] == NULL ||
             (object->character_model->animation_configs[animation]->flags & CHARANIM_GUN_OFF) == 0) {
@@ -118,7 +119,7 @@ void FastWeaponOut(GAMEOBJECT *object, i32 force_sound) {
         }
     }
     ((WEAPON_RATE *)object)->weapon_scale_rate = 5.0f;
-    object->unknown_e33 = 1;
+    object->player.unknown_e33 = 1;
 }
 
 i32 (*Fighting_WeaponOutActionFn)(GAMEOBJECT *) = 0;
@@ -142,10 +143,10 @@ void SlowWeaponOut(GAMEOBJECT *object) {
                     end = finish;
                 }
                 if (end > start) {
-                    object->character_context = (i8)LEGOCONTEXT_WEAPONOUT;
-                    object->unknown_7aa = (i16)action;
-                    object->context_timer = AnimDuration((i16)object->id, (i16)action, 0.0f, 0.0f, 1);
-                    object->weapon_scale = 0.0f;
+                    object->player.character_context = (i8)LEGOCONTEXT_WEAPONOUT;
+                    object->player.unknown_7aa = (i16)action;
+                    object->player.context_timer = AnimDuration((i16)object->id, (i16)action, 0.0f, 0.0f, 1);
+                    object->player.weapon_scale = 0.0f;
                     return;
                 }
             }
@@ -158,31 +159,32 @@ void WeaponOutCode(GAMEOBJECT *object) {
     f32 start;
     f32 end;
     f32 *time;
-    if (LEGOCONTEXT_WEAPONOUT == -1 || object->character_context != LEGOCONTEXT_WEAPONOUT) {
+    if (LEGOCONTEXT_WEAPONOUT == -1 || object->player.character_context != LEGOCONTEXT_WEAPONOUT) {
         return;
     }
-    if (object->pad->input_magnitude > 0.0f &&
+    if (object->player.pad->input_magnitude > 0.0f &&
         (object->character_data->game_character->flags_094 & CHARACTER_OPTION_WAIT_FOR_WEAPON_IN_OUT) == 0) {
-        if (object->weapon_scale == 0.0f && object->unknown_e33 != 1) {
+        if (object->player.weapon_scale == 0.0f && object->player.unknown_e33 != 1) {
             FastWeaponOut(object, 0);
         }
-        object->character_context = CHARACTER_CONTEXT_NONE;
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
         return;
     }
-    if ((object->anim_packet.blending && object->anim_packet.blend_target_animation != object->unknown_7aa) ||
-        (!object->anim_packet.blending && object->anim_packet.animation_index != object->unknown_7aa)) {
-        object->weapon_scale = 0.0f;
+    if ((object->anim_packet.blending && object->anim_packet.blend_target_animation != object->player.unknown_7aa) ||
+        (!object->anim_packet.blending && object->anim_packet.animation_index != object->player.unknown_7aa)) {
+        object->player.weapon_scale = 0.0f;
         return;
     }
-    start = AnimListFrame(object->character_model, object->unknown_7aa, 0);
-    object->context_timer -= FRAMETIME;
-    if (object->context_timer <= 0.0f) {
-        object->character_context = CHARACTER_CONTEXT_NONE;
-        if (object->weapon_scale != 0.0f) {
+    start = AnimListFrame(object->character_model, object->player.unknown_7aa, 0);
+    object->player.context_timer -= FRAMETIME;
+    if (object->player.context_timer <= 0.0f) {
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
+        if (object->player.weapon_scale != 0.0f) {
             return;
         }
     } else {
-        if (object->weapon_scale != 0.0f || object->unknown_e33 == 1 || object->anim_packet.requested_animation != object->unknown_7aa) {
+        if (object->player.weapon_scale != 0.0f || object->player.unknown_e33 == 1 ||
+            object->anim_packet.requested_animation != object->player.unknown_7aa) {
             return;
         }
         time = object->anim_packet.blending ? &object->anim_packet.blend_target_time : &object->anim_packet.current_time;
@@ -190,9 +192,9 @@ void WeaponOutCode(GAMEOBJECT *object) {
             return;
         }
     }
-    end = AnimListFrame(object->character_model, object->unknown_7aa, 1);
-    object->unknown_e33 = 1;
-    ((WEAPON_RATE *)object)->weapon_scale_rate = 1.0f / AnimDuration((i16)object->id, object->unknown_7aa, start, end, 0);
+    end = AnimListFrame(object->character_model, object->player.unknown_7aa, 1);
+    object->player.unknown_e33 = 1;
+    ((WEAPON_RATE *)object)->weapon_scale_rate = 1.0f / AnimDuration((i16)object->id, object->player.unknown_7aa, start, end, 0);
     if ((object->character_data->model_flags & CHARACTER_MODEL_JEDI) != 0) {
         if (object->player_index != -1 || WeaponInOut_NoAIJediSfx == 0) {
             GameAudio_PlaySfx(0x3e, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
@@ -204,29 +206,29 @@ void WeaponOutCode(GAMEOBJECT *object) {
 }
 
 void KeepWeaponOut(GAMEOBJECT *object) {
-    object->weapon_scale = 1.0f;
-    object->flags_e20 |= APIOBJECT_WEAPON_OUT;
+    object->player.weapon_scale = 1.0f;
+    object->player.flags_e20 |= APIOBJECT_WEAPON_OUT;
     object->portal_flags |= APIOBJECT_KEEP_WEAPON_OUT;
-    object->unknown_e33 = 0;
+    object->player.unknown_e33 = 0;
 }
 
 void SetWeaponIn(GAMEOBJECT *object) {
-    i8 context = object->character_context;
+    i8 context = object->player.character_context;
     if (context != CHARACTER_CONTEXT_NONE && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
-        object->character_context = CHARACTER_CONTEXT_NONE;
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
     }
-    object->weapon_scale = 0.0f;
-    object->flags_e20 &= ~APIOBJECT_WEAPON_OUT;
-    object->unknown_e33 = 0;
+    object->player.weapon_scale = 0.0f;
+    object->player.flags_e20 &= ~APIOBJECT_WEAPON_OUT;
+    object->player.unknown_e33 = 0;
 }
 
 void FastWeaponIn(GAMEOBJECT *object, i32 force_sound) {
-    i8 context = object->character_context;
+    i8 context = object->player.character_context;
     i32 animation;
     if (context != CHARACTER_CONTEXT_NONE && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
-        object->character_context = CHARACTER_CONTEXT_NONE;
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
     }
-    if (force_sound != 0 && object->weapon_scale == 1.0f && object->unknown_e33 != 2) {
+    if (force_sound != 0 && object->player.weapon_scale == 1.0f && object->player.unknown_e33 != 2) {
         animation = CurrentAnim(&object->anim_packet);
         if (animation == -1 || object->character_model->animation_configs[animation] == NULL ||
             (object->character_model->animation_configs[animation]->flags & CHARANIM_GUN_ON) == 0) {
@@ -240,7 +242,7 @@ void FastWeaponIn(GAMEOBJECT *object, i32 force_sound) {
         }
     }
     ((WEAPON_RATE *)object)->weapon_scale_rate = 5.0f;
-    object->unknown_e33 = 2;
+    object->player.unknown_e33 = 2;
 }
 
 i32 (*Fighting_WeaponInActionFn)(GAMEOBJECT *) = 0;
@@ -267,10 +269,10 @@ void SlowWeaponIn(GAMEOBJECT *object) {
                     end = finish;
                 }
                 if (end > start) {
-                    object->character_context = (i8)LEGOCONTEXT_WEAPONIN;
-                    object->unknown_7aa = (i16)action;
-                    object->context_timer = AnimDuration((i16)object->id, (i16)action, 0.0f, 0.0f, 1);
-                    object->weapon_scale = 1.0f;
+                    object->player.character_context = (i8)LEGOCONTEXT_WEAPONIN;
+                    object->player.unknown_7aa = (i16)action;
+                    object->player.context_timer = AnimDuration((i16)object->id, (i16)action, 0.0f, 0.0f, 1);
+                    object->player.weapon_scale = 1.0f;
                     return;
                 }
             }
@@ -283,31 +285,32 @@ void WeaponInCode(GAMEOBJECT *object) {
     f32 start;
     f32 end;
     f32 *time;
-    if (LEGOCONTEXT_WEAPONIN == -1 || object->character_context != LEGOCONTEXT_WEAPONIN) {
+    if (LEGOCONTEXT_WEAPONIN == -1 || object->player.character_context != LEGOCONTEXT_WEAPONIN) {
         return;
     }
-    if (object->pad->input_magnitude > 0.0f &&
+    if (object->player.pad->input_magnitude > 0.0f &&
         (object->character_data->game_character->flags_094 & CHARACTER_OPTION_WAIT_FOR_WEAPON_IN_OUT) == 0) {
-        if (object->weapon_scale == 1.0f && object->unknown_e33 != 2) {
+        if (object->player.weapon_scale == 1.0f && object->player.unknown_e33 != 2) {
             FastWeaponIn(object, 0);
         }
-        object->character_context = CHARACTER_CONTEXT_NONE;
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
         return;
     }
-    if ((object->anim_packet.blending && object->anim_packet.blend_target_animation != object->unknown_7aa) ||
-        (!object->anim_packet.blending && object->anim_packet.animation_index != object->unknown_7aa)) {
-        object->weapon_scale = 1.0f;
+    if ((object->anim_packet.blending && object->anim_packet.blend_target_animation != object->player.unknown_7aa) ||
+        (!object->anim_packet.blending && object->anim_packet.animation_index != object->player.unknown_7aa)) {
+        object->player.weapon_scale = 1.0f;
         return;
     }
-    start = AnimListFrame(object->character_model, object->unknown_7aa, 0);
-    object->context_timer -= FRAMETIME;
-    if (object->context_timer <= 0.0f) {
-        object->character_context = CHARACTER_CONTEXT_NONE;
-        if (object->weapon_scale != 1.0f) {
+    start = AnimListFrame(object->character_model, object->player.unknown_7aa, 0);
+    object->player.context_timer -= FRAMETIME;
+    if (object->player.context_timer <= 0.0f) {
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
+        if (object->player.weapon_scale != 1.0f) {
             return;
         }
     } else {
-        if (object->weapon_scale != 1.0f || object->unknown_e33 == 2 || object->anim_packet.requested_animation != object->unknown_7aa) {
+        if (object->player.weapon_scale != 1.0f || object->player.unknown_e33 == 2 ||
+            object->anim_packet.requested_animation != object->player.unknown_7aa) {
             return;
         }
         time = object->anim_packet.blending ? &object->anim_packet.blend_target_time : &object->anim_packet.current_time;
@@ -315,9 +318,9 @@ void WeaponInCode(GAMEOBJECT *object) {
             return;
         }
     }
-    end = AnimListFrame(object->character_model, object->unknown_7aa, 1);
-    object->unknown_e33 = 2;
-    ((WEAPON_RATE *)object)->weapon_scale_rate = 1.0f / AnimDuration((i16)object->id, object->unknown_7aa, start, end, 0);
+    end = AnimListFrame(object->character_model, object->player.unknown_7aa, 1);
+    object->player.unknown_e33 = 2;
+    ((WEAPON_RATE *)object)->weapon_scale_rate = 1.0f / AnimDuration((i16)object->id, object->player.unknown_7aa, start, end, 0);
     if ((object->character_data->model_flags & CHARACTER_MODEL_JEDI) != 0) {
         if (object->player_index != -1 || WeaponInOut_NoAIJediSfx == 0) {
             GameAudio_PlaySfx(0x3d, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
@@ -329,16 +332,16 @@ void WeaponInCode(GAMEOBJECT *object) {
 }
 
 void KeepWeaponIn(GAMEOBJECT *object) {
-    object->flags_e20 &= ~APIOBJECT_WEAPON_OUT;
-    object->weapon_scale = 0.0f;
+    object->player.flags_e20 &= ~APIOBJECT_WEAPON_OUT;
+    object->player.weapon_scale = 0.0f;
     object->portal_flags &= ~APIOBJECT_KEEP_WEAPON_OUT;
-    object->unknown_e33 = 0;
+    object->player.unknown_e33 = 0;
 }
 
 void AutoWeaponOnOff(GAMEOBJECT *object) {
     i32 animation;
     u32 flags;
-    i8 context = object->character_context;
+    i8 context = object->player.character_context;
     if (context != CHARACTER_CONTEXT_NONE && (context == LEGOCONTEXT_WEAPONOUT || context == LEGOCONTEXT_WEAPONIN)) {
         return;
     }
@@ -348,44 +351,46 @@ void AutoWeaponOnOff(GAMEOBJECT *object) {
     }
     flags = object->character_model->animation_configs[animation]->flags;
     if ((flags & CHARANIM_GUN_OFF) != 0) {
-        if (object->weapon_scale > 0.0f) {
+        if (object->player.weapon_scale > 0.0f) {
             if ((object->anim_packet.flags & 4) != 0) {
                 if (object->anim_packet.blending != 0) {
                     FastWeaponIn(object, 0);
                 } else {
                     SetWeaponIn(object);
                 }
-            } else if (object->unknown_e33 != 2) {
+            } else if (object->player.unknown_e33 != 2) {
                 SetWeaponIn(object);
             }
         }
-    } else if ((flags & CHARANIM_GUN_ON) != 0 && object->weapon_scale < 1.0f) {
+    } else if ((flags & CHARANIM_GUN_ON) != 0 && object->player.weapon_scale < 1.0f) {
         if ((object->anim_packet.flags & 4) != 0) {
             if (object->anim_packet.blending != 0) {
                 FastWeaponOut(object, 0);
             } else {
                 SetWeaponOut(object);
             }
-        } else if (object->unknown_e33 != 1) {
+        } else if (object->player.unknown_e33 != 1) {
             SetWeaponOut(object);
         }
     }
 }
 
 void WeaponScalingCode(GAMEOBJECT *object) {
-    switch (object->unknown_e33) {
+    switch (object->player.unknown_e33) {
         case 1:
-            object->weapon_scale = SeekLinearF(object->weapon_scale, 1.0f, ((WEAPON_RATE *)object)->weapon_scale_rate * FRAMETIME);
-            if (object->weapon_scale >= 1.0f) {
-                object->unknown_e33 = 0;
-                object->flags_e20 |= APIOBJECT_WEAPON_OUT;
+            object->player.weapon_scale =
+                SeekLinearF(object->player.weapon_scale, 1.0f, ((WEAPON_RATE *)object)->weapon_scale_rate * FRAMETIME);
+            if (object->player.weapon_scale >= 1.0f) {
+                object->player.unknown_e33 = 0;
+                object->player.flags_e20 |= APIOBJECT_WEAPON_OUT;
             }
             break;
         case 2:
-            object->weapon_scale = SeekLinearF(object->weapon_scale, 0.0f, ((WEAPON_RATE *)object)->weapon_scale_rate * FRAMETIME);
-            if (object->weapon_scale <= 0.0f) {
-                object->unknown_e33 = 0;
-                object->flags_e20 &= ~APIOBJECT_WEAPON_OUT;
+            object->player.weapon_scale =
+                SeekLinearF(object->player.weapon_scale, 0.0f, ((WEAPON_RATE *)object)->weapon_scale_rate * FRAMETIME);
+            if (object->player.weapon_scale <= 0.0f) {
+                object->player.unknown_e33 = 0;
+                object->player.flags_e20 &= ~APIOBJECT_WEAPON_OUT;
             }
             break;
     }
@@ -406,32 +411,32 @@ i32 NewBlockAction(GAMEOBJECT *object) {
     if (count > 1) {
         do {
             action = actions[qrand() / (0xffff / count + 1)];
-        } while (action == object->previous_block_animation);
+        } while (action == object->player.previous_block_animation);
     } else {
         action = actions[0];
     }
-    object->previous_block_animation = (i16)action;
-    object->unknown_7aa = (i16)action;
+    object->player.previous_block_animation = (i16)action;
+    object->player.unknown_7aa = (i16)action;
     return 1;
 }
 
 void BlockSfx(GAMEOBJECT *object) {
-    GAMEOBJECT *target = object->force_target;
+    GAMEOBJECT *target = object->player.force_target;
     if (target != NULL) {
-        if ((U64_PAIR(&CInfo[target->character_context].flags) & 0x4000000) != 0 ||
-            ((U64_PAIR(&CInfo[target->character_context].flags) & 0x8000000) != 0 &&
-             (target->context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE) != 0)) {
+        if ((U64_PAIR(&CInfo[target->player.character_context].flags) & 0x4000000) != 0 ||
+            ((U64_PAIR(&CInfo[target->player.character_context].flags) & 0x8000000) != 0 &&
+             (target->player.context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE) != 0)) {
             GameAudio_PlaySfx(0x3f, &object->collision_position, GameAudio_GetPlrSfxBits(target), 0);
         }
     }
 }
 
 i32 CanStepBack(GAMEOBJECT *object) {
-    i8 context = object->character_context;
+    i8 context = object->player.character_context;
     if ((U64_PAIR(&CInfo[context].flags) & 0x10000) != 0) {
         return 1;
     }
-    if (LEGOCONTEXT_JUMP != -1 && context == LEGOCONTEXT_JUMP && object->action_movement_state == JUMP_KIND_LUNGE) {
+    if (LEGOCONTEXT_JUMP != -1 && context == LEGOCONTEXT_JUMP && object->player.action_movement_state == JUMP_KIND_LUNGE) {
         return 1;
     }
     if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) && LEGOCONTEXT_COMBO != 0 &&
@@ -446,7 +451,7 @@ const f64 PlayerStepOuterAction = 2.25;
 
 i32 StepBackFromTarget(GAMEOBJECT *object) {
     NUVEC *target_position;
-    BLOWUP_MOVEMENT *blowup = (BLOWUP_MOVEMENT *)object->blowup_target;
+    BLOWUP_MOVEMENT *blowup = (BLOWUP_MOVEMENT *)object->player.blowup_target;
     f32 inner_distance;
     f32 outer_distance;
     f32 speed;
@@ -454,8 +459,9 @@ i32 StepBackFromTarget(GAMEOBJECT *object) {
     f32 blend;
     if (blowup != NULL) {
         target_position = &blowup->mid_position;
-        if ((LEGOCONTEXT_COMBO != -1 && object->character_context == LEGOCONTEXT_COMBO) ||
-            (LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP && object->action_movement_state == JUMP_KIND_LUNGE)) {
+        if ((LEGOCONTEXT_COMBO != -1 && object->player.character_context == LEGOCONTEXT_COMBO) ||
+            (LEGOCONTEXT_JUMP != -1 && object->player.character_context == LEGOCONTEXT_JUMP &&
+             object->player.action_movement_state == JUMP_KIND_LUNGE)) {
             inner_distance = object->collision_radius * PlayerStepInnerAction + blowup->target_radius;
             outer_distance = object->collision_radius * PlayerStepOuterAction + blowup->target_radius;
         } else {
@@ -463,21 +469,22 @@ i32 StepBackFromTarget(GAMEOBJECT *object) {
             outer_distance = object->collision_radius * 1.25 + blowup->target_radius;
         }
     } else {
-        if (!(object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) || object->force_target == NULL) {
+        if (!(object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) || object->player.force_target == NULL) {
             return 0;
         }
-        if ((LEGOCONTEXT_COMBO == -1 || object->character_context != LEGOCONTEXT_COMBO) &&
-            (LEGOCONTEXT_JUMP == -1 || object->character_context != LEGOCONTEXT_JUMP || object->action_movement_state != JUMP_KIND_LUNGE)) {
+        if ((LEGOCONTEXT_COMBO == -1 || object->player.character_context != LEGOCONTEXT_COMBO) &&
+            (LEGOCONTEXT_JUMP == -1 || object->player.character_context != LEGOCONTEXT_JUMP ||
+             object->player.action_movement_state != JUMP_KIND_LUNGE)) {
             return 0;
         }
-        target_position = &object->force_target->collision_position;
-        inner_distance = object->bounds_radius * PlayerStepInnerAction + object->force_target->bounds_radius;
-        outer_distance = object->bounds_radius * PlayerStepOuterAction + object->force_target->bounds_radius;
+        target_position = &object->player.force_target->collision_position;
+        inner_distance = object->bounds_radius * PlayerStepInnerAction + object->player.force_target->bounds_radius;
+        outer_distance = object->bounds_radius * PlayerStepOuterAction + object->player.force_target->bounds_radius;
     }
     if (target_position == NULL) {
         return 0;
     }
-    speed = AnimSpeed(object->character_model, object->unknown_7aa);
+    speed = AnimSpeed(object->character_model, object->player.unknown_7aa);
     if (speed == 0.0f) {
         return 0;
     }
@@ -497,11 +504,11 @@ i32 StepBackFromTarget(GAMEOBJECT *object) {
 }
 
 void ComboHitFrame(GAMEOBJECT *object, i32 damage) {
-    object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
-    object->sabre_flags |= SABRE_PUSH | SABRE_DAMAGE;
-    object->sabre_damage = (u8)damage;
+    object->player.context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
+    object->player.sabre_flags |= SABRE_PUSH | SABRE_DAMAGE;
+    object->player.sabre_damage = (u8)damage;
     if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player_HasDoubleWeaponDamage(object)) {
-        object->sabre_damage = (u8)(object->sabre_damage + object->sabre_damage);
+        object->player.sabre_damage = (u8)(object->player.sabre_damage + object->player.sabre_damage);
     }
     BlockSfx(object);
 }
@@ -514,34 +521,34 @@ void StartHold(GAMEOBJECT *object) {
     }
     if (CanStartHoldFn(object) == 2) {
         ((HOLD_RUNTIME_VIEW *)object)->hold_timer = 0.0f;
-        object->character_context = CHARACTER_CONTEXT_NONE;
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
         return;
     }
     if (LEGOCONTEXT_HOLD != -1 && NewBlockAction(object)) {
-        object->character_context = (i8)LEGOCONTEXT_HOLD;
-        object->context_timer = 0.3f;
+        object->player.character_context = (i8)LEGOCONTEXT_HOLD;
+        object->player.context_timer = 0.3f;
         PlaySabreSfx(NULL, object, NULL, 1);
         return;
     }
-    object->character_context = CHARACTER_CONTEXT_NONE;
+    object->player.character_context = CHARACTER_CONTEXT_NONE;
 }
 
 void HoldCode(GAMEOBJECT *object) {
-    if (LEGOCONTEXT_HOLD != -1 && object->character_context == LEGOCONTEXT_HOLD) {
-        if (object->context_timer > 0.0f) {
-            object->context_timer -= FRAMETIME;
-        } else if ((object->pad->buttons_held & GAMEPAD_ACTION) == 0) {
-            object->character_context = CHARACTER_CONTEXT_NONE;
+    if (LEGOCONTEXT_HOLD != -1 && object->player.character_context == LEGOCONTEXT_HOLD) {
+        if (object->player.context_timer > 0.0f) {
+            object->player.context_timer -= FRAMETIME;
+        } else if ((object->player.pad->buttons_held & GAMEPAD_ACTION) == 0) {
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
         }
     }
 }
 
 void fun_0058e480(GAMEOBJECT *object) {
-    if (LEGOCONTEXT_HOLD != -1 && object->character_context == LEGOCONTEXT_HOLD) {
-        if (object->context_timer > 0.0f) {
-            object->context_timer -= FRAMETIME;
-        } else if ((object->pad->buttons_held & GAMEPAD_ACTION) == 0) {
-            object->character_context = CHARACTER_CONTEXT_NONE;
+    if (LEGOCONTEXT_HOLD != -1 && object->player.character_context == LEGOCONTEXT_HOLD) {
+        if (object->player.context_timer > 0.0f) {
+            object->player.context_timer -= FRAMETIME;
+        } else if ((object->player.pad->buttons_held & GAMEPAD_ACTION) == 0) {
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
         }
     }
 }
@@ -558,10 +565,10 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
     i32 damage;
     PUNCH_BLOWUP_VIEW *blowup;
     (void)unused;
-    attacker->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
-    if (LEGOCONTEXT_PUNCH != -1 && attacker->character_context == LEGOCONTEXT_PUNCH) {
-        if (attacker->character_model->animations[attacker->unknown_7aa] != NULL) {
-            attacker->debris_joint = attacker->character_model->animations[attacker->unknown_7aa]->locator;
+    attacker->player.context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
+    if (LEGOCONTEXT_PUNCH != -1 && attacker->player.character_context == LEGOCONTEXT_PUNCH) {
+        if (attacker->character_model->animations[attacker->player.unknown_7aa] != NULL) {
+            attacker->player.debris_joint = attacker->character_model->animations[attacker->player.unknown_7aa]->locator;
         }
     }
     if (target != NULL) {
@@ -570,7 +577,7 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
             attacker->collision_min.y > target->collision_max.y) {
             goto finish;
         }
-        if (LEGOCONTEXT_HOLD != -1 && target->character_context == LEGOCONTEXT_HOLD) {
+        if (LEGOCONTEXT_HOLD != -1 && target->player.character_context == LEGOCONTEXT_HOLD) {
             NewBlockAction(target);
             hit_position = &target->collision_position;
             if (Punch_HitHoldFn != NULL) {
@@ -578,11 +585,11 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
             }
         } else {
             if (target->player_controlled) {
-                if (LEGOCONTEXT_PUNCH != -1 && target->character_context == LEGOCONTEXT_PUNCH) {
+                if (LEGOCONTEXT_PUNCH != -1 && target->player.character_context == LEGOCONTEXT_PUNCH) {
                     goto finish;
                 }
-                if (LEGOCONTEXT_JUMP != -1 && target->character_context == LEGOCONTEXT_JUMP &&
-                    attacker->action_movement_state == JUMP_KIND_LUNGE) {
+                if (LEGOCONTEXT_JUMP != -1 && target->player.character_context == LEGOCONTEXT_JUMP &&
+                    attacker->player.action_movement_state == JUMP_KIND_LUNGE) {
                     goto finish;
                 }
             }
@@ -596,13 +603,14 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
             if (damage != -1 && Cheats_CheckFlags(CHEAT_DOUBLE_PUNCH_DAMAGE)) {
                 damage *= 2;
             }
-            flags = U64_PAIR(&CInfo[target->character_context].flags);
+            flags = U64_PAIR(&CInfo[target->player.character_context].flags);
             if (!(flags & 0x80)) {
-                if ((flags & 0x04000000) || ((flags & 0x08000000) && (target->context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE)) ||
+                if ((flags & 0x04000000) ||
+                    ((flags & 0x08000000) && (target->player.context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE)) ||
                     CannotKill(target)) {
-                    NewRumble(attacker->pad->bound_pad, 0.5f, 0);
-                    NewRumble(target->pad->bound_pad, 0.5f, 0);
-                    if (!(U64_PAIR(&CInfo[target->character_context].flags) & 0x80000000)) {
+                    NewRumble(attacker->player.pad->bound_pad, 0.5f, 0);
+                    NewRumble(target->player.pad->bound_pad, 0.5f, 0);
+                    if (!(U64_PAIR(&CInfo[target->player.character_context].flags) & 0x80000000)) {
                         target->movement_facing_angle = NuAtan2D(attacker->collision_position.x - target->collision_position.x,
                                                                  attacker->collision_position.z - target->collision_position.z);
                     }
@@ -617,7 +625,7 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
                     impulse /= attacker->scaled_radius;
                 }
                 angle = attacker->movement_facing_angle;
-                if (attacker->context_flags & 0x80) {
+                if (attacker->player.context_flags & 0x80) {
                     angle += 0x8000;
                 }
                 target->velocity.x += NuTrigTable[angle >> 1] * impulse;
@@ -625,27 +633,27 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
             }
         }
     } else {
-        blowup = (PUNCH_BLOWUP_VIEW *)attacker->blowup_target;
+        blowup = (PUNCH_BLOWUP_VIEW *)attacker->player.blowup_target;
         if (blowup == NULL || (blowup->status_flags & 1) || !(blowup->status_flags & 0x4000) || !(blowup->status_flags & 0x800000) ||
             attacker->collision_max.y < blowup->bounds_min.y || attacker->collision_min.y > blowup->bounds_max.y) {
             goto finish;
         }
         hit_position = &blowup->mid_position;
         if (GizmoBlowupBlowup((GIZMOBLOWUP *)blowup, 1, BLOWUP_HIT_PUNCH, 1, NULL, 1)) {
-            NewBuzz(attacker->pad->bound_pad, 0.1f, 0);
+            NewBuzz(attacker->player.pad->bound_pad, 0.1f, 0);
         }
-        NewRumble(attacker->pad->bound_pad, 0.5f, 0);
+        NewRumble(attacker->player.pad->bound_pad, 0.5f, 0);
     }
     if (hit_position == NULL) {
         goto finish;
     }
-    attacker->flags_e24 |= APIOBJECT_PUNCH_LANDED;
+    attacker->player.flags_e24 |= APIOBJECT_PUNCH_LANDED;
     if (attacker->player_controlled) {
         GameCam_HitJudder();
     }
     goto extra;
 finish:
-    attacker->flags_e24 &= ~APIOBJECT_PUNCH_LANDED;
+    attacker->player.flags_e24 &= ~APIOBJECT_PUNCH_LANDED;
 extra:
     if (Punch_HitExtraCodeFn != NULL) {
         Punch_HitExtraCodeFn(attacker, hit_position);

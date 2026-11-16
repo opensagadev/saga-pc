@@ -47,7 +47,7 @@ i32 GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJECT *objec
             if (target == NULL) {
                 continue;
             }
-            if (target == object->collision_target) {
+            if (target == object->player.collision_target) {
                 previous = target;
                 previous_position = target_position;
                 previous_velocity = target_velocity;
@@ -59,17 +59,17 @@ i32 GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJECT *objec
             }
         }
         if (best != NULL) {
-            object->attack_target_position = best_position;
-            object->attack_target_velocity = best_velocity;
-            object->flags_e20 |= APIOBJECT_ATTACK_TARGET_SET;
-            object->collision_target = VehicleArea != 0 ? NULL : (GAMEOBJECT *)best;
+            object->player.attack_target_position = best_position;
+            object->player.attack_target_velocity = best_velocity;
+            object->player.flags_e20 |= APIOBJECT_ATTACK_TARGET_SET;
+            object->player.collision_target = VehicleArea != 0 ? NULL : (GAMEOBJECT *)best;
             return 1;
         }
         if (previous != NULL) {
-            object->attack_target_position = previous_position;
-            object->attack_target_velocity = previous_velocity;
-            object->flags_e20 |= APIOBJECT_ATTACK_TARGET_SET;
-            object->collision_target = VehicleArea != 0 ? NULL : (GAMEOBJECT *)previous;
+            object->player.attack_target_position = previous_position;
+            object->player.attack_target_velocity = previous_velocity;
+            object->player.flags_e20 |= APIOBJECT_ATTACK_TARGET_SET;
+            object->player.collision_target = VehicleArea != 0 ? NULL : (GAMEOBJECT *)previous;
             return 1;
         }
     }
@@ -97,7 +97,7 @@ i32 GizmoSys_BoltHit(void *system, WORLDINFO *world, BOLT *bolt, NUVEC *points, 
                 type->fns.bolt_hit_fn(world, set->data, bolt->owner, hit_points, mode, radius, minimum, maximum, bolt, 1, hit_flags) != 0) {
                 BoltSys->debris(bolt, points, -1, NULL, 0);
                 if (bolt->owner != NULL) {
-                    NewRumble(bolt->owner->pad->bound_pad, .6f, 0);
+                    NewRumble(bolt->owner->player.pad->bound_pad, .6f, 0);
                 }
                 Bolt_End(bolt, 1);
                 Bolt_PlayHitSfx(bolt);

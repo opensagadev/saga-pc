@@ -323,9 +323,9 @@ extern "C" {
         rtlApplySetScale(set, &view->light_data, &object->collision_position, NULL, -1, 1.0f);
         surface_fade = object->floor_height != 2000000.0f && (TerSurface[view->floor_surface].flags & 8) != 0 ? 1.0f : 0.0f;
         if (object->flags_ef0 & 0x80) {
-            object->surface_flag8_scale = surface_fade;
+            object->player.surface_flag8_scale = surface_fade;
         } else {
-            object->surface_flag8_scale = SeekLinearF(object->surface_flag8_scale, surface_fade, (f32)((f64)FRAMETIME * 3.0));
+            object->player.surface_flag8_scale = SeekLinearF(object->player.surface_flag8_scale, surface_fade, (f32)((f64)FRAMETIME * 3.0));
         }
         if (object->flags_ef0 & 0x80) {
             view->lighting_state.ambient = view->light_data.ambient;
@@ -396,8 +396,9 @@ extern "C" {
             red = (f32)(((f64)Lighting_RedFlashRed - 1.0) * flash + 1.0);
             green = (f32)(((f64)Lighting_RedFlashGreen - 1.0) * flash + 1.0);
             blue = (f32)(((f64)Lighting_RedFlashBlue - 1.0) * flash + 1.0);
-        } else if (Lighting_HighlightFlash != 0 && (owner->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) && owner->hud_icon_timer > 0.0f &&
-                   (owner->hud_icon_timer >= 2.0f || (f64)NuFmod(owner->hud_icon_timer, 0.4f) >= (f64)0.2f)) {
+        } else if (Lighting_HighlightFlash != 0 && (owner->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) &&
+                   owner->player.hud_icon_timer > 0.0f &&
+                   (owner->player.hud_icon_timer >= 2.0f || (f64)NuFmod(owner->player.hud_icon_timer, 0.4f) >= (f64)0.2f)) {
             if (owner->unknown_280 == 1) {
                 red = 1.7f;
                 green = 2.0f;
@@ -422,9 +423,9 @@ extern "C" {
                 green = Lighting_BlueFlickerGreen * flicker;
                 blue = Lighting_BlueFlickerBlue * flicker;
             }
-        } else if (owner->arrow_blend > 0.0f) {
+        } else if (owner->player.arrow_blend > 0.0f) {
             i32 angle = (i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0);
-            red = green = blue = (f32)(NuTrigTable[((u32)(angle >> 1)) & 0x7fff] * ((f64)owner->arrow_blend * 0.5) + 1.0);
+            red = green = blue = (f32)(NuTrigTable[((u32)(angle >> 1)) & 0x7fff] * ((f64)owner->player.arrow_blend * 0.5) + 1.0);
         } else if (Lighting_FlashRedOnLastHeart != 0 && (owner->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) && owner->current_hp == 1 &&
                    owner->unknown_107e > 1 && owner->vehicle_hit_timer < -0.5f) {
             // MATCH-EXCEPTION: the original negates the (negative) timer and subtracts it rather than adding.
@@ -437,8 +438,8 @@ extern "C" {
             u16 angle = (u16)(i32)((f64)NuFmod((f32)(2.5 - owner->spawn_protection_timer), 0.5f) * 2.0 * 65536.0);
             red = green = blue = NuTrigTable[angle >> 1] + 1.0f;
         }
-        if (owner->surface_flag8_scale > 0.0f) {
-            f32 scale = (f32)((f64)owner->surface_flag8_scale * LightingSurfaceFadeSlope + 1.0);
+        if (owner->player.surface_flag8_scale > 0.0f) {
+            f32 scale = (f32)((f64)owner->player.surface_flag8_scale * LightingSurfaceFadeSlope + 1.0);
             red *= scale;
             green *= scale;
             blue *= scale;

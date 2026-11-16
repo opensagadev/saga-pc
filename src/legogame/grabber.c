@@ -155,7 +155,6 @@ typedef struct grabber_antinode_view_s { // size 0x58
     i64 object_mask;                     // 0x50
 } GRABBER_ANTINODE_VIEW;
 
-extern i32 CharacterBlobShadowsOn;
 #define GRABBER_FIND_SWITCH(field, name)                                                                                                   \
     gizmo = (GIZOBSTACLE **)GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, name);                                                \
     if (gizmo != NULL) {                                                                                                                   \
@@ -368,16 +367,16 @@ static i32 GrabberFindShadow(NUVEC *position, GRABBER *grabber) {
 }
 
 static void GrabberGrabVictim(GAMEOBJECT *victim) {
-    victim->character_context = CHARACTER_CONTEXT_GRABBED;
-    victim->unknown_7aa = ACTION_GRABBED;
+    victim->player.character_context = CHARACTER_CONTEXT_GRABBED;
+    victim->player.unknown_7aa = ACTION_GRABBED;
     if (victim->character_model->model_data_b[104] == NULL) {
-        victim->unknown_7aa = ACTION_FALL;
+        victim->player.unknown_7aa = ACTION_FALL;
     }
     NewRumbleAllPlayers(0.0f, 0.1f, 0, 0);
-    victim->context_timer = 0.0f;
-    victim->context_duration = 0.75f;
-    victim->external_force = victim->start_position;
-    victim->unknown_7b3 = 0;
+    victim->player.context_timer = 0.0f;
+    victim->player.context_duration = 0.75f;
+    victim->player.external_force = victim->start_position;
+    victim->player.unknown_7b3 = 0;
     Hint_SetComplete(0x28b);
 }
 
@@ -535,8 +534,8 @@ static void Grabber_SetVictimPos(GRABBER *grabber) {
     }
     position = *Grabber_GetGrabPos(grabber, NULL);
     if (grabber->character_id == GrabMagnetId) {
-        fraction = victim->context_timer / victim->context_duration;
-        start = victim->external_force;
+        fraction = victim->player.context_timer / victim->player.context_duration;
+        start = victim->player.external_force;
         if (fraction > 1.0f) {
             fraction = 1.0f;
         }
@@ -547,11 +546,11 @@ static void Grabber_SetVictimPos(GRABBER *grabber) {
         victim->position.x -= NU_SIN_LUT(victim->unknown_276) * victim->bounds_half_height * fraction;
         victim = grabber->victim;
         victim->position.z -= NU_COS_LUT(victim->unknown_276) * victim->bounds_half_height * fraction;
-        if (grabber->victim->unknown_7b3 == 0 && fraction == 1.0f) {
+        if (grabber->victim->player.unknown_7b3 == 0 && fraction == 1.0f) {
             PlaySfx("imp_C3PO_magnet", &position);
-            grabber->victim->unknown_7b3 = 1;
+            grabber->victim->player.unknown_7b3 = 1;
         }
-    } else if (victim->unknown_7aa == ACTION_FALL) {
+    } else if (victim->player.unknown_7aa == ACTION_FALL) {
         victim->position.x = position.x - NU_SIN_LUT(victim->unknown_276) * victim->bounds_half_height;
         grabber->victim->position.y = position.y;
         victim = grabber->victim;
@@ -589,7 +588,7 @@ void Grabber_Reset(WORLDINFO *world) {
     grabber->state = 0;
     if (grabber->victim != NULL) {
         Grabber_SetVictimPos(grabber);
-        grabber->victim->character_context = CHARACTER_CONTEXT_NONE;
+        grabber->victim->player.character_context = CHARACTER_CONTEXT_NONE;
     }
     grabber->victim = NULL;
     grabber->carried_blowup = NULL;
@@ -614,7 +613,7 @@ void Grabber_Drop(GRABBER *grabber, NUVEC *previous) {
 
     grabber->flags |= GRABBER_LIFTED;
     if (grabber->victim != NULL) {
-        if (grabber->character_id == GrabMagnetId && grabber->victim->unknown_7b3 != 0) {
+        if (grabber->character_id == GrabMagnetId && grabber->victim->player.unknown_7b3 != 0) {
             PlaySfx("imp_C3PO_magnet_drop", Grabber_GetGrabPos(grabber, NULL));
         }
         Grabber_SetVictimPos(grabber);
@@ -623,7 +622,7 @@ void Grabber_Drop(GRABBER *grabber, NUVEC *previous) {
             grabber->victim->velocity.y = -1.0f;
         }
         grabber->victim->velocity.z = (grabber->grab_position.z - previous->z) / FRAMETIME * 0.5f;
-        grabber->victim->character_context = CHARACTER_CONTEXT_NONE;
+        grabber->victim->player.character_context = CHARACTER_CONTEXT_NONE;
         grabber->victim = NULL;
     } else if (grabber->carried_blowup != NULL) {
         params = Default_ADDPART;
@@ -698,9 +697,9 @@ void Grabber_Update(WORLDINFO *world) {
             Techno_FindOperator(&grabber->special, &pad, &control);
         }
     } else {
-        pad = control->pad;
+        pad = control->player.pad;
     }
-    if (control != NULL && (control->takeover_source != NULL || StartupGameFlag1 == 0) &&
+    if (control != NULL && (control->player.takeover_source != NULL || StartupGameFlag1 == 0) &&
         (control->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         if (pad->input_magnitude > 0.0f) {
             if (Grab_grabber->move_xy != 0) {
@@ -1021,7 +1020,7 @@ void Grabber_Update(WORLDINFO *world) {
         UpdateAnimPacket(grabber->character_model, &grabber->animation, FRAMETIME * 30.0f, grabber->speed, FRAMETIME, 0.0f);
     }
     if (grabber->victim != NULL) {
-        grabber->victim->context_timer += FRAMETIME;
+        grabber->victim->player.context_timer += FRAMETIME;
         Grabber_SetVictimPos(grabber);
         grabber->victim->velocity.z = 0.0f;
         grabber->victim->velocity.x = 0.0f;

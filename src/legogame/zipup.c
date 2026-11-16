@@ -398,29 +398,29 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
     NUVEC end_offset;
 
     transport = (ZIPUP_TRANSPORT_VIEW *)object;
-    if (object->character_context == CHARACTER_CONTEXT_ZIP_UP) {
-        if (object->action_movement_state == JUMP_KIND_FLIP) {
+    if (object->player.character_context == CHARACTER_CONTEXT_ZIP_UP) {
+        if (object->player.action_movement_state == JUMP_KIND_FLIP) {
             NUVEC delta;
             f32 *playing;
             f32 fraction;
             f32 duration;
 
             playing = NULL;
-            if (object->character_model->model_data_b[object->unknown_7aa] == NULL ||
-                (playing = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0)) != NULL) {
-                object->context_timer += FRAMETIME;
-                if (object->context_timer >= object->context_duration) {
-                    object->context_timer = object->context_duration;
+            if (object->character_model->model_data_b[object->player.unknown_7aa] == NULL ||
+                (playing = AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0)) != NULL) {
+                object->player.context_timer += FRAMETIME;
+                if (object->player.context_timer >= object->player.context_duration) {
+                    object->player.context_timer = object->player.context_duration;
                 }
             }
             object->velocity = v000;
-            switch (object->unknown_7b3) {
+            switch (object->player.unknown_7b3) {
                 case 0:
                     if (playing != NULL && *playing > 0.0f) {
                         f32 frame;
 
-                        frame = AnimListFrame(object->character_model, object->unknown_7aa, 0);
-                        if (frame > 1.0f && frame < AnimEndFrame(object->character_model, object->unknown_7aa)) {
+                        frame = AnimListFrame(object->character_model, object->player.unknown_7aa, 0);
+                        if (frame > 1.0f && frame < AnimEndFrame(object->character_model, object->player.unknown_7aa)) {
                             fraction = (*playing - 1.0f) / (frame - 1.0f);
                             if (fraction > 1.0f) {
                                 fraction = 1.0f;
@@ -428,61 +428,61 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                             goto have_fraction;
                         }
                     }
-                    fraction = object->context_timer / object->context_duration;
+                    fraction = object->player.context_timer / object->player.context_duration;
                 have_fraction:
                     NuVecSub(&delta, &transport->start, &transport->entry);
                     NuVecScale(&delta, &delta, fraction);
                     NuVecAdd(&object->position, &transport->entry, &delta);
-                    if (object->context_timer >= object->context_duration) {
-                        object->unknown_7b3 = 1;
-                        object->unknown_7aa = ZipUpSwingSwingAnimation;
-                        object->context_timer = 0.0f;
-                        duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 0);
-                        object->context_duration = duration;
+                    if (object->player.context_timer >= object->player.context_duration) {
+                        object->player.unknown_7b3 = 1;
+                        object->player.unknown_7aa = ZipUpSwingSwingAnimation;
+                        object->player.context_timer = 0.0f;
+                        duration = AnimDuration((i16)object->id, object->player.unknown_7aa, 0.0f, 0.0f, 0);
+                        object->player.context_duration = duration;
                         if (duration <= 0.0f) {
-                            object->context_duration = 1.0f;
+                            object->player.context_duration = 1.0f;
                         }
                         GameAudio_PlaySfx(0x4d, &object->collision_position, GameAudio_GetPlrSfxBits(object), 0);
                     }
                     break;
                 case 1:
-                    fraction = object->context_timer / object->context_duration;
+                    fraction = object->player.context_timer / object->player.context_duration;
                     NuVecSub(&delta, &transport->swing, &transport->start);
                     NuVecScale(&delta, &delta, fraction);
                     NuVecAdd(&object->position, &transport->start, &delta);
-                    if (object->context_timer >= object->context_duration) {
-                        object->unknown_7b3 = 2;
-                        object->unknown_7aa = ZipUpSwingJumpAnimation;
-                        object->context_timer = 0.0f;
-                        duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 0);
-                        object->context_duration = duration;
+                    if (object->player.context_timer >= object->player.context_duration) {
+                        object->player.unknown_7b3 = 2;
+                        object->player.unknown_7aa = ZipUpSwingJumpAnimation;
+                        object->player.context_timer = 0.0f;
+                        duration = AnimDuration((i16)object->id, object->player.unknown_7aa, 0.0f, 0.0f, 0);
+                        object->player.context_duration = duration;
                         if (duration <= 0.0f) {
-                            object->context_duration = 1.0f;
+                            object->player.context_duration = 1.0f;
                         }
                         PlayJumpSfx(object, 0);
                     }
                     break;
                 case 2:
-                    fraction = object->context_timer / object->context_duration;
+                    fraction = object->player.context_timer / object->player.context_duration;
                     NuVecSub(&delta, &transport->landing, &transport->swing);
                     NuVecScale(&delta, &delta, fraction);
                     NuVecAdd(&object->position, &transport->swing, &delta);
-                    if (object->context_timer >= object->context_duration) {
+                    if (object->player.context_timer >= object->player.context_duration) {
                         object->velocity.x = 0.0f;
                         object->velocity.y = -2.0f;
                         object->velocity.z = 0.0f;
-                        object->character_context = CHARACTER_CONTEXT_NONE;
+                        object->player.character_context = CHARACTER_CONTEXT_NONE;
                         StartFallLand(object, BigJumpLandFallback);
                     }
                     break;
             }
             return;
         }
-        zipup = object->attached_zipup;
+        zipup = object->player.attached_zipup;
         hook = &zipup->hook_origin;
-        destination = object->unknown_7b3 == 0 ? &zipup->upper_position : &zipup->lower_position;
+        destination = object->player.unknown_7b3 == 0 ? &zipup->upper_position : &zipup->lower_position;
         if ((zipup->flags_word & ZIPUP_FLAG_CONFIG_0) == 0) {
-            if (NuVecDistSqr(&object->position, hook, NULL) < 0.1f * 0.1f || object->context_timer >= 5.0f) {
+            if (NuVecDistSqr(&object->position, hook, NULL) < 0.1f * 0.1f || object->player.context_timer >= 5.0f) {
                 StartJump(object, JUMP_KIND_ZIPUP);
                 PlaySfx("GrapDetach", &object->collision_position);
                 if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
@@ -490,35 +490,35 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                 }
                 object->movement_facing_angle = object->facing_angle = object->unknown_276 =
                     NuAtan2D(destination->x - object->position.x, destination->z - object->position.z);
-                object->airborne_action_timer =
+                object->player.airborne_action_timer =
                     NuVecXZDist(&object->position, destination, NULL) / object->character_data->game_character->jump_duration;
-                object->velocity.x = NU_SIN_LUT(object->movement_facing_angle) * object->airborne_action_timer;
-                object->velocity.z = NU_COS_LUT(object->movement_facing_angle) * object->airborne_action_timer;
-                object->context_variant_flags &= ~0x20u;
-                object->attached_zipup->flags_word &= ~ZIPUP_FLAG_IN_USE;
-                object->grapple = NULL;
+                object->velocity.x = NU_SIN_LUT(object->movement_facing_angle) * object->player.airborne_action_timer;
+                object->velocity.z = NU_COS_LUT(object->movement_facing_angle) * object->player.airborne_action_timer;
+                object->player.context_variant_flags &= ~0x20u;
+                object->player.attached_zipup->flags_word &= ~ZIPUP_FLAG_IN_USE;
+                object->player.grapple = NULL;
                 return;
             }
         }
-        zipup = object->attached_zipup;
+        zipup = object->player.attached_zipup;
         if ((zipup->flags_word & ZIPUP_FLAG_ACTIVE) == 0 || (zipup->flags_word & ZIPUP_FLAG_VISIBLE) == 0 ||
-            (zipup->flags_word & ZIPUP_FLAG_IN_USE) == 0 || (object->context_variant_flags & 0x20) == 0) {
-            object->context_variant_flags &= ~0x20u;
-            object->character_context = CHARACTER_CONTEXT_NONE;
+            (zipup->flags_word & ZIPUP_FLAG_IN_USE) == 0 || (object->player.context_variant_flags & 0x20) == 0) {
+            object->player.context_variant_flags &= ~0x20u;
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
             zipup->flags_word &= ~ZIPUP_FLAG_IN_USE;
-            object->grapple = NULL;
+            object->player.grapple = NULL;
             return;
         }
         if ((zipup->flags_word & ZIPUP_FLAG_CONFIG_0) != 0) {
-            if (object->context_timer >= ZipUpSwingDuration) {
-                object->context_timer = 0.0f;
-                object->character_context = CHARACTER_CONTEXT_NONE;
-                object->attached_zipup->occupant = NULL;
-                object->context_variant_flags &= ~0x20u;
-                object->attached_zipup->flags_word &= ~ZIPUP_FLAG_IN_USE;
+            if (object->player.context_timer >= ZipUpSwingDuration) {
+                object->player.context_timer = 0.0f;
+                object->player.character_context = CHARACTER_CONTEXT_NONE;
+                object->player.attached_zipup->occupant = NULL;
+                object->player.context_variant_flags &= ~0x20u;
+                object->player.attached_zipup->flags_word &= ~ZIPUP_FLAG_IN_USE;
                 transport->detach_fall_delay = 0.2f;
-                object->grapple = NULL;
-                object->unknown_7a4 = 0;
+                object->player.grapple = NULL;
+                object->player.unknown_7a4 = 0;
                 object->target_velocity = v000;
                 object->target_velocity.y = -1.0f;
                 object->velocity = v000;
@@ -553,7 +553,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                 }
                 offset = zipup->rider_start_offset;
                 NuVecRotateY(&offset, &offset, (u16)-axis);
-                normalized_time = object->context_timer / ZipUpSwingDuration;
+                normalized_time = object->player.context_timer / ZipUpSwingDuration;
                 phase = normalized_time * 32768.0;
                 swing_pitch = (i32)((1.0f - (NU_SIN_LUT((i32)(phase + 16384.0)) + 1.0f) * 0.5) * zipup->pitch_adjustment);
                 NuVecRotateX(&zipup->rider_target_position, &offset, swing_pitch);
@@ -565,15 +565,15 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                 f32 old_time;
                 f32 threshold;
 
-                old_time = object->context_timer;
-                object->context_timer += FRAMETIME;
+                old_time = object->player.context_timer;
+                object->player.context_timer += FRAMETIME;
                 threshold = (f32)(ZipUpSwingDuration * 0.5 - (f64)0.2f);
-                if (old_time < threshold && object->context_timer >= threshold) {
+                if (old_time < threshold && object->player.context_timer >= threshold) {
                     PlaySfx("GrapSwing", &object->collision_position);
                 }
             }
         } else {
-            object->context_timer += FRAMETIME;
+            object->player.context_timer += FRAMETIME;
             PlaySfx("GrapWindLp", &object->collision_position);
         }
         return;
@@ -598,9 +598,9 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
     }
     zipup = ZipUp_FindNearest(WORLD, &object->lower_position, object->collision_radius, NULL, &endpoint, object);
     if (objInNetWaitContext(object, 0x47)) {
-        object->context_timer -= FRAMETIME;
-        if (object->context_timer <= 0.0f) {
-            object->character_context = CHARACTER_CONTEXT_NONE;
+        object->player.context_timer -= FRAMETIME;
+        if (object->player.context_timer <= 0.0f) {
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
         }
     }
     if (zipup == NULL) {
@@ -611,34 +611,34 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
         if ((object->character_data->model_flags & CHARACTER_MODEL_ZIPUP) == 0) {
             destination = endpoint == 0 ? &zipup->upper_position : &zipup->lower_position;
             if (StartBigJump(object, destination, 0, 0.5f, 1.0f, 0)) {
-                object->context_variant_flags |= 0x100;
+                object->player.context_variant_flags |= 0x100;
             }
             return;
         }
         Hint_SetComplete(0x262);
-        object->grapple = zipup;
-        object->character_context = CHARACTER_CONTEXT_ZIP_UP;
+        object->player.grapple = zipup;
+        object->player.character_context = CHARACTER_CONTEXT_ZIP_UP;
         zipup->occupant = object;
-        object->context_variant_flags |= 0x20;
-        object->attached_zipup->flags_word |= ZIPUP_FLAG_IN_USE;
+        object->player.context_variant_flags |= 0x20;
+        object->player.attached_zipup->flags_word |= ZIPUP_FLAG_IN_USE;
         if ((object->character_data->game_character->flags_094 & CHARACTER_OPTION_HAS_WHIP) != 0) {
             NUVEC offset;
             f32 duration;
             ZIPUP *current;
 
-            object->action_movement_state = 1;
+            object->player.action_movement_state = 1;
             SetWeaponIn(object);
             GameAudio_PlaySfx(0x4c, &object->collision_position, GameAudio_GetPlrSfxBits(object), 0);
-            object->unknown_7b3 = 0;
-            object->unknown_7aa = ZipUpSwingStartAnimation;
-            object->context_timer = 0.0f;
-            duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 0);
-            object->context_duration = duration;
+            object->player.unknown_7b3 = 0;
+            object->player.unknown_7aa = ZipUpSwingStartAnimation;
+            object->player.context_timer = 0.0f;
+            duration = AnimDuration((i16)object->id, object->player.unknown_7aa, 0.0f, 0.0f, 0);
+            object->player.context_duration = duration;
             if (duration <= 0.0f) {
-                object->context_duration = 0.5f;
+                object->player.context_duration = 0.5f;
             }
             transport->entry = object->position;
-            current = object->grapple;
+            current = object->player.grapple;
             transport->start = current->endpoints[endpoint != 0 ? 2 : 0];
             transport->landing = current->endpoints[endpoint != 0 ? 0 : 2];
             transport->landing.y = endpoint == 0 ? zipup->upper_ground_height : zipup->lower_ground_height;
@@ -663,16 +663,16 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             f32 rider_height;
             f32 scale;
 
-            zipup = object->attached_zipup;
-            object->action_movement_state = 0;
-            object->unknown_7aa = ACTION_UP;
+            zipup = object->player.attached_zipup;
+            object->player.action_movement_state = 0;
+            object->player.unknown_7aa = ACTION_UP;
             hook = &zipup->hook_origin;
             if (endpoint == 0) {
-                object->unknown_7b3 = 0;
+                object->player.unknown_7b3 = 0;
                 start = &zipup->lower_position;
                 destination = &zipup->upper_position;
             } else {
-                object->unknown_7b3 = 1;
+                object->player.unknown_7b3 = 1;
                 start = &zipup->upper_position;
                 destination = &zipup->lower_position;
             }
@@ -682,16 +682,16 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             if (object->character_data->game_character->hover_fall_mode == 2) {
                 FastWeaponOut(object, 1);
             }
-            object->context_timer = 0.0f;
+            object->player.context_timer = 0.0f;
             PlaySfx("GrapAttach", &object->upper_position);
             FastWeaponOut(object, 0);
-            object->jump_variant_state = 0;
+            object->player.jump_variant_state = 0;
             dx = hook->x - start->x;
             dz = hook->z - start->z;
             angle = NuAtan2D(hook->y - start->y, NuFsqrt(dx * dx + dz * dz));
             pitch = 0x4000 - abs(angle);
-            object->unknown_7a4 = angle < 0 ? -pitch : pitch;
-            zipup = object->attached_zipup;
+            object->player.unknown_7a4 = angle < 0 ? -pitch : pitch;
+            zipup = object->player.attached_zipup;
             if ((zipup->flags_word & ZIPUP_FLAG_CONFIG_0) == 0) {
                 return;
             }
@@ -700,21 +700,21 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             rider_height = ZipUpRiderHeight;
             scale = ZipUpRiderOffsetScale;
             end_offset.y += rider_height;
-            object->attached_zipup->rider_start_offset.x *= scale;
-            object->attached_zipup->rider_start_offset.y *= scale;
-            object->attached_zipup->rider_start_offset.y =
-                rider_height * object->scaled_height + object->attached_zipup->rider_start_offset.y;
-            object->attached_zipup->rider_start_offset.z *= scale;
-            yaw = -(u16)NuAtan2D(object->attached_zipup->rider_start_offset.x, object->attached_zipup->rider_start_offset.z);
-            start_offset = object->attached_zipup->rider_start_offset;
+            object->player.attached_zipup->rider_start_offset.x *= scale;
+            object->player.attached_zipup->rider_start_offset.y *= scale;
+            object->player.attached_zipup->rider_start_offset.y =
+                rider_height * object->scaled_height + object->player.attached_zipup->rider_start_offset.y;
+            object->player.attached_zipup->rider_start_offset.z *= scale;
+            yaw = -(u16)NuAtan2D(object->player.attached_zipup->rider_start_offset.x, object->player.attached_zipup->rider_start_offset.z);
+            start_offset = object->player.attached_zipup->rider_start_offset;
             NuVecRotateY(&start_offset, &start_offset, yaw);
             NuVecRotateY(&end_offset, &end_offset, yaw);
             NuVecNorm(&start_offset, &start_offset);
             NuVecNorm(&end_offset, &end_offset);
-            object->attached_zipup->pitch_adjustment =
+            object->player.attached_zipup->pitch_adjustment =
                 (u16)(0x4000 - ZipUpArcSine(start_offset.z * end_offset.z + start_offset.y * end_offset.y));
-            object->attached_zipup->rider_target_position = object->attached_zipup->rider_start_offset;
-            NuVecAdd(&object->attached_zipup->rider_target_position, hook, &object->attached_zipup->rider_target_position);
+            object->player.attached_zipup->rider_target_position = object->player.attached_zipup->rider_start_offset;
+            NuVecAdd(&object->player.attached_zipup->rider_target_position, hook, &object->player.attached_zipup->rider_target_position);
         }
     } else {
         SetHeadTarget(object, &zipup->hook_origin, 4, 2.0f, 1.0f, 2.0f);
@@ -727,13 +727,13 @@ static void ZipUp_GetStartPoint(GAMEOBJECT *object, NUVEC *position) {
     PLAYERCHARACTERCONFIG *character = object->character_data->game_character;
     if ((joint = character->grapple_locators[0]) != -1 && object->character_model->points_of_interest[joint] != NULL &&
         object->origin_joint_ready != 0) {
-        *position = object->locator_matrices[joint].translation;
+        *position = object->player.locator_matrices[joint].translation;
     } else if ((joint = character->weapon_shoot_joints[0]) != -1 && object->character_model->points_of_interest[joint] != NULL &&
                object->origin_joint_ready != 0) {
-        *position = object->locator_matrices[joint].translation;
+        *position = object->player.locator_matrices[joint].translation;
     } else if ((joint = character->weapon_joints[0]) != -1 && object->character_model->points_of_interest[joint] != NULL &&
                object->origin_joint_ready != 0) {
-        *position = object->locator_matrices[joint].translation;
+        *position = object->player.locator_matrices[joint].translation;
     } else {
         position->x = object->collision_position.x;
         position->y = object->collision_position.y + object->unknown_b0;
@@ -758,10 +758,10 @@ extern void ZipUps_Update(WORLDINFO *world, void *unused, f32 time) {
     CanDrawZipUpSwirls = AvailableToPlayer(CHARACTER_MODEL_ZIPUP, -1, HELMET_NONE, 0);
 
     for (index = 0; index < world->zipup_count; ++index, ++zipup) {
-        if (zipup->occupant != NULL && zipup->occupant->character_context == CHARACTER_CONTEXT_NONE) {
-            zipup->occupant->context_variant_flags &= ~0x20;
+        if (zipup->occupant != NULL && zipup->occupant->player.character_context == CHARACTER_CONTEXT_NONE) {
+            zipup->occupant->player.context_variant_flags &= ~0x20;
             zipup->flags_word &= ~ZIPUP_FLAG_IN_USE;
-            zipup->occupant->grapple = NULL;
+            zipup->occupant->player.grapple = NULL;
             zipup->occupant = NULL;
         }
     }
@@ -1245,23 +1245,23 @@ void ZipUps_DrawLines() {
 
         start = &vertices[0];
         end = &vertices[1];
-        if (object->character_context == CHARACTER_CONTEXT_ZIP_UP) {
-            if (object->action_movement_state == 0) {
+        if (object->player.character_context == CHARACTER_CONTEXT_ZIP_UP) {
+            if (object->player.action_movement_state == 0) {
                 ZipUp_GetStartPoint(object, &start->position);
                 start->colour = 0xffffffff;
-                end->position = object->attached_zipup->hook_position;
-                if (object->context_timer < (f64)0.2f) {
+                end->position = object->player.attached_zipup->hook_position;
+                if (object->player.context_timer < (f64)0.2f) {
                     f32 fraction;
 
-                    fraction = (f32)(object->context_timer / (f64)0.2f);
+                    fraction = (f32)(object->player.context_timer / (f64)0.2f);
                     end->position.x = (end->position.x - start->position.x) * fraction + start->position.x;
                     end->position.y = (end->position.y - start->position.y) * fraction + start->position.y;
                     end->position.z = (end->position.z - start->position.z) * fraction + start->position.z;
                 }
                 end->colour = 0xff808080;
-                DrawRopeSingle(&start->position, &end->position, 1.0f, ropemtl, object->context_timer, 0.2f, 3.5f, 1.0f);
+                DrawRopeSingle(&start->position, &end->position, 1.0f, ropemtl, object->player.context_timer, 0.2f, 3.5f, 1.0f);
             }
-        } else if (object->character_context == CHARACTER_CONTEXT_ZIP_DOWN) {
+        } else if (object->player.character_context == CHARACTER_CONTEXT_ZIP_DOWN) {
             start->colour = 0xffffffff;
             end->colour = 0xff808080;
             end->position = ((ZIPUP_TRANSPORT_VIEW *)object)->entry;
@@ -1271,7 +1271,7 @@ void ZipUps_DrawLines() {
                 continue;
             }
             ZipUp_GetStartPoint(object, &start->position);
-            DrawRopeSingle(&start->position, &end->position, 1.0f, ropemtl, object->context_timer, 0.2f, 3.5f, 1.0f);
+            DrawRopeSingle(&start->position, &end->position, 1.0f, ropemtl, object->player.context_timer, 0.2f, 3.5f, 1.0f);
         }
     }
 }

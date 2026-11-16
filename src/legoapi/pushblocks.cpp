@@ -252,7 +252,7 @@ extern "C" void ResetPushProgress(WORLDINFO *opaque, void *progress_data) {
 extern "C" PUSH_BLOCK *NearestFacingPushBlock(WORLDINFO *world, GAMEOBJECT *object, float range) {
     WORLDINFO *push_world = world;
     if (push_world == NULL || push_world->push_blocks == NULL || push_world->push_block_count == 0 || LEGOCONTEXT_PUSH == -1 ||
-        object->character_context != LEGOCONTEXT_PUSH) {
+        object->player.character_context != LEGOCONTEXT_PUSH) {
         return NULL;
     }
     f32 max_y = object->upper_position.y;
@@ -423,7 +423,7 @@ extern "C" i32 PushBlock(GAMEOBJECT *object) {
         AlertSurroundingCreatures(object, &object->collision_position);
         return 1;
     }
-    object->character_context = CHARACTER_CONTEXT_NONE;
+    object->player.character_context = CHARACTER_CONTEXT_NONE;
     return 0;
 }
 
@@ -600,7 +600,7 @@ extern "C" {
             MoveBlocksOverBlock(opaque_world, opaque_block, index, &delta);
             if (block->pushing_object != NULL && (PushblocksFabs(delta.x) > 0.001f || PushblocksFabs(delta.z) > 0.001f) &&
                 NuFmod(GameTimer.time_elapsed, PushRumblePeriod) < PushRumbleWindow) {
-                NewRumble(block->pushing_object->pad->bound_pad, (f32)((f64)qrand() * 0.000015259021893143654 * (f64)0.05f), 0);
+                NewRumble(block->pushing_object->player.pad->bound_pad, (f32)((f64)qrand() * 0.000015259021893143654 * (f64)0.05f), 0);
             }
         }
         if ((block->packed_state_flags & 8u) != 0) {
@@ -734,7 +734,7 @@ extern "C" void PushSeekComplete(PUSH_BLOCK *opaque_block, i32 index) {
         block->packed_state_flags |= 0x02000100u;
     }
     if (block->pushing_object != NULL) {
-        NewBuzz(block->pushing_object->pad->bound_pad, 0.1f, 0);
+        NewBuzz(block->pushing_object->player.pad->bound_pad, 0.1f, 0);
     }
 }
 

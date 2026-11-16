@@ -224,9 +224,9 @@ void UpdateTrooperCannons(WORLDINFO *unused) {
         if (cannon->object == NULL || netclient != 0) {
             break;
         }
-        if (cannon->object->rider != NULL) {
-            if (cannon->object->rider->tag_object_callback == NULL) {
-                cannon->object->rider->tag_object_callback = KilledTrooperCannon;
+        if (cannon->object->player.rider != NULL) {
+            if (cannon->object->player.rider->tag_object_callback == NULL) {
+                cannon->object->player.rider->tag_object_callback = KilledTrooperCannon;
             }
         } else if (cannon->object->tag_object_callback == NULL) {
             cannon->object->tag_object_callback = KilledTrooperCannon;
@@ -267,7 +267,7 @@ void HothEscapeB_Update(WORLDINFO *world) {
     ResetTrooperCannons(world, id_SNOWTROOPER);
     UpdateTrooperCannons(world);
     if (netclient == 0 && HothEscapeBLocator != NULL && HothEscapeBSnowmob != NULL) {
-        HothEscapeBLocator->position = HothEscapeBSnowmob->locator_matrices[1].translation;
+        HothEscapeBLocator->position = HothEscapeBSnowmob->player.locator_matrices[1].translation;
     }
 }
 
@@ -509,7 +509,7 @@ void DrawFalconSpotLights(GAMEOBJECT *object) {
         return;
     }
     if (object->character_model->points_of_interest[4] != NULL) {
-        matrix = object->locator_matrices[4];
+        matrix = object->player.locator_matrices[4];
         NuSpecialDrawAt(&WORLD->level_objects[0x127].special, &matrix);
     }
     spotLightA_yrot[FALCON_SLOT(object)] += FRAMETIME / 5.0f;
@@ -521,7 +521,7 @@ void DrawFalconSpotLights(GAMEOBJECT *object) {
         spotLightA_zrot[FALCON_SLOT(object)] -= 1.0f;
     }
     if (object->character_model->points_of_interest[5] != NULL) {
-        matrix = object->locator_matrices[5];
+        matrix = object->player.locator_matrices[5];
         NuSpecialDrawAt(&WORLD->level_objects[0x127].special, &matrix);
     }
     spotLightB_yrot[FALCON_SLOT(object)] += FRAMETIME / 5.0f;
@@ -1026,7 +1026,7 @@ void CloudCityEscapeC_Update(WORLDINFO *world) {
 }
 
 i32 TakeOverYodaSeekDistanceHack(GAMEOBJECT *object, GAMEOBJECT *luke, NUVEC *offset) {
-    if ((object->flags_ef4 & APIOBJECT_CAN_BE_CARRIED) == 0 || dagobah_training == 0 || object->rider != NULL || luke == NULL ||
+    if ((object->flags_ef4 & APIOBJECT_CAN_BE_CARRIED) == 0 || dagobah_training == 0 || object->player.rider != NULL || luke == NULL ||
         (luke->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
         !((f64)NuVecDistSqr(&object->position, &luke->position, offset) < (f64)(0.7f * 0.7f))) {
         return 0;

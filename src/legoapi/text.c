@@ -1738,8 +1738,8 @@ void MenuUpdateViewTextStrings(MENU *menu) {
         BackupMenu();
         return;
     }
-    if ((Player[0] == NULL || (Player[0]->pad->buttons_held & GAMEPAD_MENUSELECT) == 0) &&
-        (Player[1] == NULL || (Player[1]->pad->buttons_held & GAMEPAD_MENUSELECT) == 0)) {
+    if ((Player[0] == NULL || (Player[0]->player.pad->buttons_held & GAMEPAD_MENUSELECT) == 0) &&
+        (Player[1] == NULL || (Player[1]->player.pad->buttons_held & GAMEPAD_MENUSELECT) == 0)) {
         return;
     }
     if (menu->up_held != 0) {

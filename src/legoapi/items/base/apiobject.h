@@ -4,6 +4,7 @@
 
 #include "gameapi/ai/aisys/aipath.h"
 #include "gameapi/ai/aisys/aiscript_types.h"
+#include "legoapi/characters/motion/charshadows.h"
 #include "legoapi/items/base/animpacket.h"
 #include "legoapi/props/system/socksys.h"
 #include "legoapi/render/core/rtl.h"
@@ -888,8 +889,336 @@ typedef struct INDY_GUIDELINE_STATE {     // size 0x6
 
 #pragma pack(pop)
 
-/* GAMEOBJECT.combo_style: which punch animation a punch combo continues with (0 or 1), or none. */
+/* PLAYERPACKET.combo_style: which punch animation a punch combo continues with (0 or 1), or none. */
 #define COMBO_STYLE_NONE 0xff
+
+/* The player packet: the per-character control state ResetPlayerPacket clears (GAMEOBJECT.player). */
+typedef struct PLAYERPACKET {        // size 0x788
+    CHARACTER_SHADOW_PACKET shadows; // 0x000
+
+    struct {          // size 0x8
+        f32 height;   // 0x064
+        f32 velocity; // 0x068
+    } suspension[4];  // 0x064
+
+    NUVEC external_force;                  // 0x084
+    NUVEC launch_origin;                   // 0x090
+    NUVEC context_position_offset;         // 0x09c
+    f32 context_animation_timer;           // 0x0a8
+    f32 unknown_770;                       // 0x0ac
+    u8 unknown_774[0x4];                   // 0x0b0
+    f32 context_hover_target_y;            // 0x0b4
+    f32 context_timer;                     // 0x0b8
+    f32 unknown_780;                       // 0x0bc
+    f32 context_duration;                  // 0x0c0
+    f32 airborne_action_timer;             // 0x0c4
+    f32 jump_start_height;                 // 0x0c8
+    struct gameobject_s *force_target;     // 0x0cc
+    struct blowup_target_s *blowup_target; // 0x0d0
+
+    union { // size 0x4
+        void *grapple;
+        struct PART *force_throw_part;
+        struct techno_s *techno;
+        struct zipup_s *attached_zipup;
+        struct TUBE *attached_tube;
+        struct GIZMO_LEVER *lever;
+        struct panel_movement_s *panel;
+        struct security_door_record_s *security_door;
+        struct attracto_s *attracto;
+        struct SIGNAL_s *signal;
+        struct TELEPORT_MOTION *teleport;
+        struct TIGHTROPE_MOTION *tightrope;
+        struct HATMACHINE *hat_machine;
+        struct DETONATOR_s *detonator;
+    }; // 0x0d4
+
+    i32 panel_use_request; // 0x0d8
+
+    union { // size 0x4
+        void *panel_request_data;
+
+        struct {                 // size 0x4
+            u8 unknown_7a0[0x3]; // 0x0dc
+            u8 unknown_7a3;      // 0x0df
+        };
+    }; // 0x0dc
+
+    u16 unknown_7a4;              // 0x0e0
+    u16 takeover_start_angle;     // 0x0e2
+    u16 unknown_7a8;              // 0x0e4
+    i16 unknown_7aa;              // 0x0e6
+    i16 queued_context_animation; // 0x0e8
+    u8 combo_branch;              // 0x0ea
+    u8 unknown_07af;              // 0x0eb
+    u8 combo_input_latched;       // 0x0ec
+
+    union { // size 0x1
+        u8 unknown_07b1;
+        u8 landing_followup;
+    }; // 0x0ed
+
+    u8 combo_stage;           // 0x0ee
+    u8 unknown_7b3;           // 0x0ef
+    u8 big_jump_animation;    // 0x0f0
+    i8 character_context;     // 0x0f1
+    u8 context_variant;       // 0x0f2
+    i8 special_move;          // 0x0f3
+    u8 action_movement_state; // 0x0f4
+    u8 jump_sequence;         // 0x0f5
+    i8 whip_action;           // 0x0f6
+    i8 hit_variant;           // 0x0f7
+
+    union { // size 0x4
+        u32 context_variant_flags;
+
+        struct {                     // size 0x4
+            u8 context_flags;        // 0x0f8
+            i8 context_variant_bits; // 0x0f9
+            u8 jump_flags;           // 0x0fa
+            u8 unknown_7bf[0x1];     // 0x0fb
+        };
+    }; // 0x0f8
+
+    f32 tag_cooldown;                        // 0x0fc
+    i8 tag_player_index;                     // 0x100
+    u8 tag_flags;                            // 0x101
+    u8 unknown_07c6[2];                      // 0x102
+    struct gameobject_s *pending_tag_target; // 0x104
+
+    union { // size 0x4
+        SOCKROT sock_angles;
+
+        struct {                   // size 0x4
+            u16 sock_body_pitch;   // 0x108
+            u16 sock_body_heading; // 0x10a
+        };
+    }; // 0x108
+
+    MINIANIMPACKET mini_anim_packet; // 0x10c
+
+    i16 *weapon_model_override;                        // 0x130
+    u8 unknown_7f8[0x4];                               // 0x134
+    struct player_coin_packet_s *coin_packet;          // 0x138
+    struct player_force_los_slot_s *gizforce_los_info; // 0x13c
+    NUMTX locator_matrices[16];                        // 0x140
+    NUMTX vehicle_orientation;                         // 0x540
+    f32 current_speed_mul;                             // 0x580
+    f32 current_speed_bias;                            // 0x584
+    f32 socket_current_speed;                          // 0x588
+
+    union { // size 0x24
+        u8 unknown_c50[0x4];
+        f32 unknown_c54;
+        u8 unknown_c58[0x4];
+        f32 head_target_facing;
+        u8 unknown_c60[0x14];
+        NUVEC weapon_trail_offset;
+
+        struct {                           // size 0x24
+            u8 targeting_reserved_c50[12]; // 0x58c
+            NUVEC camera_screen_position;  // 0x598
+            NUVEC glow_position;           // 0x5a4
+        };
+    }; // 0x58c
+
+    NUVEC camera_saved_position; // 0x5b0
+
+    union { // size 0xc
+
+        struct {               // size 0xc
+            void *unknown_c80; // 0x5bc
+            void *unknown_c84; // 0x5c0
+            void *unknown_c88; // 0x5c4
+        };
+
+        NUVEC attack_target_position;
+    }; // 0x5bc
+
+    union { // size 0xc
+
+        struct {             // size 0xc
+            f32 unknown_c8c; // 0x5c8
+            f32 unknown_c90; // 0x5cc
+            f32 unknown_c94; // 0x5d0
+        };
+
+        NUVEC attack_target_velocity;
+    }; // 0x5c8
+
+    NUVEC suspension_normal;              // 0x5d4
+    struct GAMEPAD *pad;                  // 0x5e0
+    SOCKPOSITION *previous_sock_position; // 0x5e4
+    u32 directional_input_state;          // 0x5e8
+    struct PART *incoming_part;           // 0x5ec
+    struct PART *blocked_part;            // 0x5f0
+    struct PART *force_part;              // 0x5f4
+    struct SUIT_LAYERS *suit;             // 0x5f8
+
+    union { // size 0x4
+        struct gameobject_s *unknown_cc0;
+        struct player_batarang_slot_s *batarang;
+    }; // 0x5fc
+    struct TORPEDOPACKET *torpedo;         // 0x600
+    struct gameobject_s *collision_target; // 0x604
+    u8 unknown_0ccc[4];                    // 0x608
+
+    union { // size 0x4
+        struct gameobject_s *takeover_source;
+        struct gameobject_s *rider;
+    }; // 0x60c
+    struct gameobject_s *takeover_owner;   // 0x610
+    void *sabre_streaks[4][2];             // 0x614
+    struct gameobject_s *block_attacker;   // 0x634
+    struct gameobject_s *incoming_melee;   // 0x638
+    struct gameobject_s *incoming_special; // 0x63c
+    struct bolt_s *incoming_bolt;          // 0x640
+    struct bolt_s *blocked_bolt;           // 0x644
+
+    i32 unknown_d0c;                         // 0x648
+    struct gameobject_s *force_throw_target; // 0x64c
+
+    void *glow_object;                              // 0x650
+    void *glow_pending;                             // 0x654
+    struct gameobject_s *airborne_collision_target; // 0x658
+    u32 unknown_d20;                                // 0x65c
+    f32 ground_contact_grace_timer;                 // 0x660
+    f32 jump_reentry_timer;                         // 0x664
+    f32 airborne_input_timer;                       // 0x668
+    f32 origin_scale_override;                      // 0x66c
+    f32 timer_d34;                                  // 0x670
+    f32 communicate_blend;                          // 0x674
+    f32 weapon_scale;                               // 0x678
+    f32 weapon_scale_rate;                          // 0x67c
+    f32 sabre_collision_radius;                     // 0x680
+    f32 delayed_turn_timer;                         // 0x684
+    f32 combo_input_timer;                          // 0x688
+    f32 ai_combo_cooldown;                          // 0x68c
+    f32 unknown_d54;                                // 0x690
+    f32 quick_shoot_timer;                          // 0x694
+    f32 torpedo_fire_cooldown;                      // 0x698
+    f32 hud_icon_timer;                             // 0x69c
+    f32 jump_variant_timer;                         // 0x6a0
+    f32 jump_chain_timer;                           // 0x6a4
+    f32 surface_flag8_scale;                        // 0x6a8
+    f32 movement_animation_hold_timer;              // 0x6ac
+    f32 movement_animation_release_timer;           // 0x6b0
+    f32 directional_seek_multiplier;                // 0x6b4
+    f32 terrain_origin_floor_offset;                // 0x6b8
+
+    f32 glow_alpha;    // 0x6bc
+    f32 glow_target;   // 0x6c0
+    f32 glow_recovery; // 0x6c4
+    f32 glow_radius;   // 0x6c8
+    f32 glow_hold;     // 0x6cc
+
+    union { // size 0x4
+        f32 engine_level;
+        f32 force_use_volume;
+    }; // 0x6d0
+
+    f32 turn_braking;                // 0x6d4
+    f32 fall_recovery_timer;         // 0x6d8
+    f32 nearby_floor_distance;       // 0x6dc
+    f32 input_toggle_hold_time;      // 0x6e0
+    f32 unknown_da8;                 // 0x6e4
+    f32 fall_animation_timer;        // 0x6e8
+    f32 unknown_db0;                 // 0x6ec
+    f32 fall_hover_height;           // 0x6f0
+    f32 pre_reset_hover_height;      // 0x6f4
+    f32 field_dbc;                   // 0x6f8
+    f32 sabre_contact_sfx_timer;     // 0x6fc
+    f32 unknown_dc4;                 // 0x700
+    f32 unknown_dc8;                 // 0x704
+    f32 thrust_effect_scale;         // 0x708
+    f32 takeover_timer;              // 0x70c
+    f32 arrow_blend;                 // 0x710
+    f32 block_cooldown;              // 0x714
+    f32 field_ddc;                   // 0x718
+    f32 unknown_de0;                 // 0x71c
+    f32 hold_timer;                  // 0x720
+    f32 ai_hop_timer;                // 0x724
+    f32 powerup_time;                // 0x728
+    f32 pre_terrain_speed;           // 0x72c
+    f32 post_terrain_speed;          // 0x730
+    NUVEC reset_velocity;            // 0x734
+    i32 dynamic_light_id;            // 0x740
+    u16 delayed_turn_target_angle;   // 0x744
+    u16 force_heading;               // 0x746
+    u16 current_input_angle;         // 0x748
+    u16 previous_boundary_angle;     // 0x74a
+    i16 previous_block_animation;    // 0x74c
+    i16 unknown_e12;                 // 0x74e
+    i16 held_movement_animation;     // 0x750
+    i16 released_movement_animation; // 0x752
+    i16 movement_lean_angle;         // 0x754
+    i16 secondary_lean_angle;        // 0x756
+    i16 tertiary_lean_angle;         // 0x758
+    i16 glow_model;                  // 0x75a
+
+    union { // size 0x4
+        u32 flags_e20;
+
+        struct {            // size 0x4
+            u8 unknown_e20; // 0x75c
+            u8 unknown_e21; // 0x75d
+            u8 unknown_e22; // 0x75e
+            u8 unknown_e23; // 0x75f
+        };
+
+        struct {                      // size 0x4
+            u32 : 16;                 // 0x75c:0
+            u32 weapon_animation : 1; // 0x75c:16
+        };
+    }; // 0x75c
+
+    union { // size 0x4
+        u32 flags_e24;
+        u8 unknown_e24;
+
+        struct {                                                                            // size 0x4
+            u32 : 3;                                                                        // 0x760:0
+            u32 origin_hold : 1; /* tightrope: hold position taken from the model origin */ // 0x760:3
+            u32 : 12;                                                                       // 0x760:4
+            u32 hit_side : 3; /* 3 = hit from behind, 4 = from the front */                 // 0x760:16
+            u32 : 13;                                                                       // 0x760:19
+        };
+    }; // 0x760
+
+    u8 effect_noise[4];    // 0x764
+    u8 glow_kind;          // 0x768
+    u8 glow_pending_kind;  // 0x769
+    u8 unknown_0e2e;       // 0x76a
+    u8 block_latch;        // 0x76b
+    u8 quick_shoot_flags;  // 0x76c
+    u8 unknown_0e31;       // 0x76d
+    u8 jump_variant_state; // 0x76e
+    u8 unknown_e33;        // 0x76f
+    u8 sabre_flags;        // 0x770
+    u8 sabre_damage;       // 0x771
+    u8 unknown_0e36;       // 0x772
+    u8 wall_run_state;     // 0x773
+    u8 shield_hitpoints;   // 0x774
+
+    union { // size 0x1
+        u8 saved_hitpoints;
+        u8 vehicle_secondary_hp;
+        u8 protocol_interface_action;
+    }; // 0x775
+
+    u8 bolt_fire_phase;     // 0x776
+    u8 action_suppressed;   // 0x777
+    u8 in_narrow_socket;    // 0x778
+    u8 batarang_release;    // 0x779
+    i8 debris_joint;        // 0x77a
+    i8 quick_shoot_bolt_id; // 0x77b
+    i8 slam_effect;         // 0x77c
+    u8 combo_style;         // 0x77d
+    u8 raw_surface_id;      // 0x77e
+    i8 blade_index;         // 0x77f
+    i8 blade_states[4];     // 0x780
+    f32 unknown_e48;        // 0x784
+} PLAYERPACKET;
 
 typedef struct gameobject_s { // size 0x10d8
 
@@ -1108,339 +1437,7 @@ typedef struct gameobject_s { // size 0x10d8
         u8 contact_material[4];
     }; // 0x06c0
 
-    union { // size 0x64
-        u8 unknown_06c4[0x64];
-        u8 ai_player_packet[0x64];
-    }; // 0x06c4
-
-    struct {          // size 0x8
-        f32 height;   // 0x0728
-        f32 velocity; // 0x072c
-    } suspension[4];  // 0x0728
-
-    NUVEC external_force;                  // 0x0748
-    NUVEC launch_origin;                   // 0x0754
-    NUVEC context_position_offset;         // 0x0760
-    f32 context_animation_timer;           // 0x076c
-    f32 unknown_770;                       // 0x0770
-    u8 unknown_774[0x4];                   // 0x0774
-    f32 context_hover_target_y;            // 0x0778
-    f32 context_timer;                     // 0x077c
-    f32 unknown_780;                       // 0x0780
-    f32 context_duration;                  // 0x0784
-    f32 airborne_action_timer;             // 0x0788
-    f32 jump_start_height;                 // 0x078c
-    struct gameobject_s *force_target;     // 0x0790
-    struct blowup_target_s *blowup_target; // 0x0794
-
-    union { // size 0x4
-        void *grapple;
-        struct PART *force_throw_part;
-        struct techno_s *techno;
-        struct zipup_s *attached_zipup;
-        struct TUBE *attached_tube;
-        struct GIZMO_LEVER *lever;
-        struct panel_movement_s *panel;
-        struct security_door_record_s *security_door;
-        struct attracto_s *attracto;
-        struct SIGNAL_s *signal;
-        struct TELEPORT_MOTION *teleport;
-        struct TIGHTROPE_MOTION *tightrope;
-        struct HATMACHINE *hat_machine;
-        struct DETONATOR_s *detonator;
-    }; // 0x0798
-
-    i32 panel_use_request; // 0x079c
-
-    union { // size 0x4
-        void *panel_request_data;
-
-        struct {                 // size 0x4
-            u8 unknown_7a0[0x3]; // 0x07a0
-            u8 unknown_7a3;      // 0x07a3
-        };
-    }; // 0x07a0
-
-    u16 unknown_7a4;              // 0x07a4
-    u16 takeover_start_angle;     // 0x07a6
-    u16 unknown_7a8;              // 0x07a8
-    i16 unknown_7aa;              // 0x07aa
-    i16 queued_context_animation; // 0x07ac
-    u8 combo_branch;              // 0x07ae
-    u8 unknown_07af;              // 0x07af
-    u8 combo_input_latched;       // 0x07b0
-
-    union { // size 0x1
-        u8 unknown_07b1;
-        u8 landing_followup;
-    }; // 0x07b1
-
-    u8 combo_stage;           // 0x07b2
-    u8 unknown_7b3;           // 0x07b3
-    u8 big_jump_animation;    // 0x07b4
-    i8 character_context;     // 0x07b5
-    u8 context_variant;       // 0x07b6
-    i8 special_move;          // 0x07b7
-    u8 action_movement_state; // 0x07b8
-    u8 jump_sequence;         // 0x07b9
-    i8 whip_action;           // 0x07ba
-    i8 hit_variant;           // 0x07bb
-
-    union { // size 0x4
-        u32 context_variant_flags;
-
-        struct {                     // size 0x4
-            u8 context_flags;        // 0x07bc
-            i8 context_variant_bits; // 0x07bd
-            u8 jump_flags;           // 0x07be
-            u8 unknown_7bf[0x1];     // 0x07bf
-        };
-    }; // 0x07bc
-
-    f32 tag_cooldown;                        // 0x07c0
-    i8 tag_player_index;                     // 0x07c4
-    u8 tag_flags;                            // 0x07c5
-    u8 unknown_07c6[2];                      // 0x07c6
-    struct gameobject_s *pending_tag_target; // 0x07c8
-
-    union { // size 0x4
-        SOCKROT sock_angles;
-
-        struct {                   // size 0x4
-            u16 sock_body_pitch;   // 0x07cc
-            u16 sock_body_heading; // 0x07ce
-        };
-    }; // 0x07cc
-
-    MINIANIMPACKET mini_anim_packet; // 0x07d0
-
-    i16 *weapon_model_override;                        // 0x07f4
-    u8 unknown_7f8[0x4];                               // 0x07f8
-    struct player_coin_packet_s *coin_packet;          // 0x07fc
-    struct player_force_los_slot_s *gizforce_los_info; // 0x0800
-    NUMTX locator_matrices[16];                        // 0x0804
-    NUMTX vehicle_orientation;                         // 0x0c04
-    f32 current_speed_mul;                             // 0x0c44
-    f32 current_speed_bias;                            // 0x0c48
-    f32 socket_current_speed;                          // 0x0c4c
-
-    union { // size 0x24
-        u8 unknown_c50[0x4];
-        f32 unknown_c54;
-        u8 unknown_c58[0x4];
-        f32 head_target_facing;
-        u8 unknown_c60[0x14];
-        NUVEC weapon_trail_offset;
-
-        struct {                           // size 0x24
-            u8 targeting_reserved_c50[12]; // 0x0c50
-            NUVEC camera_screen_position;  // 0x0c5c
-            NUVEC glow_position;           // 0x0c68
-        };
-    }; // 0x0c50
-
-    NUVEC camera_saved_position; // 0x0c74
-
-    union { // size 0xc
-
-        struct {               // size 0xc
-            void *unknown_c80; // 0x0c80
-            void *unknown_c84; // 0x0c84
-            void *unknown_c88; // 0x0c88
-        };
-
-        NUVEC attack_target_position;
-    }; // 0x0c80
-
-    union { // size 0xc
-
-        struct {             // size 0xc
-            f32 unknown_c8c; // 0x0c8c
-            f32 unknown_c90; // 0x0c90
-            f32 unknown_c94; // 0x0c94
-        };
-
-        NUVEC attack_target_velocity;
-    }; // 0x0c8c
-
-    NUVEC suspension_normal;              // 0x0c98
-    struct GAMEPAD *pad;                  // 0x0ca4
-    SOCKPOSITION *previous_sock_position; // 0x0ca8
-    u32 directional_input_state;          // 0x0cac
-    struct PART *incoming_part;           // 0x0cb0
-    struct PART *blocked_part;            // 0x0cb4
-    struct PART *force_part;              // 0x0cb8
-    struct SUIT_LAYERS *suit;             // 0x0cbc
-
-    union { // size 0x4
-        struct gameobject_s *unknown_cc0;
-        struct player_batarang_slot_s *batarang;
-    }; // 0x0cc0
-    struct TORPEDOPACKET *torpedo;         // 0x0cc4
-    struct gameobject_s *collision_target; // 0x0cc8
-    u8 unknown_0ccc[4];                    // 0x0ccc
-
-    union { // size 0x4
-        struct gameobject_s *takeover_source;
-        struct gameobject_s *rider;
-    }; // 0x0cd0
-    struct gameobject_s *takeover_owner;   // 0x0cd4
-    void *sabre_streaks[4][2];             // 0x0cd8
-    struct gameobject_s *block_attacker;   // 0x0cf8
-    struct gameobject_s *incoming_melee;   // 0x0cfc
-    struct gameobject_s *incoming_special; // 0x0d00
-    struct bolt_s *incoming_bolt;          // 0x0d04
-    struct bolt_s *blocked_bolt;           // 0x0d08
-
-    union { // size 0x8
-        u8 unknown_d0c[0x8];
-
-        struct {                                     // size 0x8
-            u8 throw_reserved_d0c[4];                // 0x0d0c
-            struct gameobject_s *force_throw_target; // 0x0d10
-        };
-    }; // 0x0d0c
-
-    void *glow_object;                              // 0x0d14
-    void *glow_pending;                             // 0x0d18
-    struct gameobject_s *airborne_collision_target; // 0x0d1c
-    u32 unknown_d20;                                // 0x0d20
-    f32 ground_contact_grace_timer;                 // 0x0d24
-    f32 jump_reentry_timer;                         // 0x0d28
-    f32 airborne_input_timer;                       // 0x0d2c
-    f32 origin_scale_override;                      // 0x0d30
-    f32 timer_d34;                                  // 0x0d34
-    f32 communicate_blend;                          // 0x0d38
-    f32 weapon_scale;                               // 0x0d3c
-    f32 weapon_scale_rate;                          // 0x0d40
-    f32 sabre_collision_radius;                     // 0x0d44
-    f32 delayed_turn_timer;                         // 0x0d48
-    f32 combo_input_timer;                          // 0x0d4c
-    f32 ai_combo_cooldown;                          // 0x0d50
-    f32 unknown_d54;                                // 0x0d54
-    f32 quick_shoot_timer;                          // 0x0d58
-    f32 torpedo_fire_cooldown;                      // 0x0d5c
-    f32 hud_icon_timer;                             // 0x0d60
-    f32 jump_variant_timer;                         // 0x0d64
-    f32 jump_chain_timer;                           // 0x0d68
-    f32 surface_flag8_scale;                        // 0x0d6c
-    f32 movement_animation_hold_timer;              // 0x0d70
-    f32 movement_animation_release_timer;           // 0x0d74
-    f32 directional_seek_multiplier;                // 0x0d78
-    f32 terrain_origin_floor_offset;                // 0x0d7c
-
-    f32 glow_alpha;    // 0x0d80
-    f32 glow_target;   // 0x0d84
-    f32 glow_recovery; // 0x0d88
-    f32 glow_radius;   // 0x0d8c
-    f32 glow_hold;     // 0x0d90
-
-    union { // size 0x4
-        f32 engine_level;
-        f32 force_use_volume;
-    }; // 0x0d94
-
-    f32 turn_braking;                // 0x0d98
-    f32 fall_recovery_timer;         // 0x0d9c
-    f32 nearby_floor_distance;       // 0x0da0
-    f32 input_toggle_hold_time;      // 0x0da4
-    f32 unknown_da8;                 // 0x0da8
-    f32 fall_animation_timer;        // 0x0dac
-    f32 unknown_db0;                 // 0x0db0
-    f32 fall_hover_height;           // 0x0db4
-    f32 pre_reset_hover_height;      // 0x0db8
-    f32 field_dbc;                   // 0x0dbc
-    f32 sabre_contact_sfx_timer;     // 0x0dc0
-    f32 unknown_dc4;                 // 0x0dc4
-    f32 unknown_dc8;                 // 0x0dc8
-    f32 thrust_effect_scale;         // 0x0dcc
-    f32 takeover_timer;              // 0x0dd0
-    f32 arrow_blend;                 // 0x0dd4
-    f32 block_cooldown;              // 0x0dd8
-    f32 field_ddc;                   // 0x0ddc
-    f32 unknown_de0;                 // 0x0de0
-    f32 hold_timer;                  // 0x0de4
-    f32 ai_hop_timer;                // 0x0de8
-    f32 powerup_time;                // 0x0dec
-    f32 pre_terrain_speed;           // 0x0df0
-    f32 post_terrain_speed;          // 0x0df4
-    NUVEC reset_velocity;            // 0x0df8
-    i32 dynamic_light_id;            // 0x0e04
-    u16 delayed_turn_target_angle;   // 0x0e08
-    u16 force_heading;               // 0x0e0a
-    u16 current_input_angle;         // 0x0e0c
-    u16 previous_boundary_angle;     // 0x0e0e
-    i16 previous_block_animation;    // 0x0e10
-    i16 unknown_e12;                 // 0x0e12
-    i16 held_movement_animation;     // 0x0e14
-    i16 released_movement_animation; // 0x0e16
-    i16 movement_lean_angle;         // 0x0e18
-    i16 secondary_lean_angle;        // 0x0e1a
-    i16 tertiary_lean_angle;         // 0x0e1c
-    i16 glow_model;                  // 0x0e1e
-
-    union { // size 0x4
-        u32 flags_e20;
-
-        struct {            // size 0x4
-            u8 unknown_e20; // 0x0e20
-            u8 unknown_e21; // 0x0e21
-            u8 unknown_e22; // 0x0e22
-            u8 unknown_e23; // 0x0e23
-        };
-
-        struct {                      // size 0x4
-            u32 : 16;                 // 0x0e20:0
-            u32 weapon_animation : 1; // 0x0e20:16
-        };
-    }; // 0x0e20
-
-    union { // size 0x4
-        u32 flags_e24;
-        u8 unknown_e24;
-
-        struct {                                                                            // size 0x4
-            u32 : 3;                                                                        // 0x0e24:0
-            u32 origin_hold : 1; /* tightrope: hold position taken from the model origin */ // 0x0e24:3
-            u32 : 12;                                                                       // 0x0e24:4
-            u32 hit_side : 3; /* 3 = hit from behind, 4 = from the front */                 // 0x0e24:16
-            u32 : 13;                                                                       // 0x0e24:19
-        };
-    }; // 0x0e24
-
-    u8 effect_noise[4];    // 0x0e28
-    u8 glow_kind;          // 0x0e2c
-    u8 glow_pending_kind;  // 0x0e2d
-    u8 unknown_0e2e;       // 0x0e2e
-    u8 block_latch;        // 0x0e2f
-    u8 quick_shoot_flags;  // 0x0e30
-    u8 unknown_0e31;       // 0x0e31
-    u8 jump_variant_state; // 0x0e32
-    u8 unknown_e33;        // 0x0e33
-    u8 sabre_flags;        // 0x0e34
-    u8 sabre_damage;       // 0x0e35
-    u8 unknown_0e36;       // 0x0e36
-    u8 wall_run_state;     // 0x0e37
-    u8 shield_hitpoints;   // 0x0e38
-
-    union { // size 0x1
-        u8 saved_hitpoints;
-        u8 vehicle_secondary_hp;
-        u8 protocol_interface_action;
-    }; // 0x0e39
-
-    u8 bolt_fire_phase;                 // 0x0e3a
-    u8 action_suppressed;               // 0x0e3b
-    u8 in_narrow_socket;                // 0x0e3c
-    u8 batarang_release;                // 0x0e3d
-    i8 debris_joint;                    // 0x0e3e
-    i8 quick_shoot_bolt_id;             // 0x0e3f
-    i8 slam_effect;                     // 0x0e40
-    u8 combo_style;                     // 0x0e41
-    u8 raw_surface_id;                  // 0x0e42
-    i8 blade_index;                     // 0x0e43
-    i8 blade_states[4];                 // 0x0e44
-    u8 unknown_0e48[4];                 // 0x0e48
+    PLAYERPACKET player;                // 0x06c4
     NUVEC unknown_e4c;                  // 0x0e4c
     NUVEC unknown_e58;                  // 0x0e58
     SPLINEPOS movement_spline_position; // 0x0e64

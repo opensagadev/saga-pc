@@ -792,45 +792,45 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
     f32 radius;
     f32 radius_squared;
     (void)world;
-    if (object->unknown_db0 > 0.0f) {
-        object->unknown_db0 -= FRAMETIME;
+    if (object->player.unknown_db0 > 0.0f) {
+        object->player.unknown_db0 -= FRAMETIME;
     }
     PanelStormActive = 0;
     PanelDroidActive = 0;
     PanelBountyHunterActive = 0;
-    if (object->character_context == CHARACTER_CONTEXT_INTERFACE && object->grapple != NULL) {
-        if (object->character_model->model_data_b[object->unknown_7aa] == NULL ||
-            AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0) != NULL) {
-            object->context_hover_target_y += FRAMETIME;
-            if (object->context_hover_target_y > 1.0f) {
-                object->context_hover_target_y = 1.0f;
+    if (object->player.character_context == CHARACTER_CONTEXT_INTERFACE && object->player.grapple != NULL) {
+        if (object->character_model->model_data_b[object->player.unknown_7aa] == NULL ||
+            AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0) != NULL) {
+            object->player.context_hover_target_y += FRAMETIME;
+            if (object->player.context_hover_target_y > 1.0f) {
+                object->player.context_hover_target_y = 1.0f;
             }
-            object->context_timer -= FRAMETIME;
-            if (object->context_timer <= 0.0f) {
-                object->character_context = CHARACTER_CONTEXT_NONE;
-                object->panel->flags &= (u8)~PANEL_IN_USE;
-                object->panel->flags |= PANEL_USED;
-                object->grapple = NULL;
+            object->player.context_timer -= FRAMETIME;
+            if (object->player.context_timer <= 0.0f) {
+                object->player.character_context = CHARACTER_CONTEXT_NONE;
+                object->player.panel->flags &= (u8)~PANEL_IN_USE;
+                object->player.panel->flags |= PANEL_USED;
+                object->player.grapple = NULL;
             }
-            if ((object->flags_e20 & 0x1000) == 0) {
-                object->flags_e20 |= 0x1000;
+            if ((object->player.flags_e20 & 0x1000) == 0) {
+                object->player.flags_e20 |= 0x1000;
             }
         } else {
-            object->context_timer -= FRAMETIME;
-            if (object->context_timer <= 0.0f) {
-                if (object->grapple != NULL) {
-                    NewBuzz(object->pad->bound_pad, 0.1f, 0);
-                    if (object->panel->model_variant == PANEL_VARIANT_BOUNTY_HUNTER) {
+            object->player.context_timer -= FRAMETIME;
+            if (object->player.context_timer <= 0.0f) {
+                if (object->player.grapple != NULL) {
+                    NewBuzz(object->player.pad->bound_pad, 0.1f, 0);
+                    if (object->player.panel->model_variant == PANEL_VARIANT_BOUNTY_HUNTER) {
                         PlaySfx("Hunter_Granted", &object->collision_position);
                     }
-                    if (object->panel->model_variant == PANEL_VARIANT_STORMTROOPER) {
+                    if (object->player.panel->model_variant == PANEL_VARIANT_STORMTROOPER) {
                         PlaySfx("Trooper_Granted", &object->collision_position);
                     }
                 } else {
-                    NewRumble(object->pad->bound_pad, 0.5f, 0);
+                    NewRumble(object->player.pad->bound_pad, 0.5f, 0);
                 }
                 if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-                    u8 variant = object->panel->model_variant;
+                    u8 variant = object->player.panel->model_variant;
                     if (variant == PANEL_VARIANT_ASTROMECH || variant == PANEL_VARIANT_PROTOCOL_DROID) {
                         if (StartupGameFlag1 != 0 && Mission_Active(NULL) != NULL) {
                             Hint_SetComplete(0x2b9);
@@ -844,65 +844,66 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
                         Hint_SetComplete(0x261);
                     }
                 }
-                object->character_context = CHARACTER_CONTEXT_NONE;
-                object->panel->flags &= (u8)~PANEL_IN_USE;
-                object->panel->flags |= PANEL_USED;
-                object->grapple = NULL;
+                object->player.character_context = CHARACTER_CONTEXT_NONE;
+                object->player.panel->flags &= (u8)~PANEL_IN_USE;
+                object->player.panel->flags |= PANEL_USED;
+                object->player.grapple = NULL;
             } else if ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0) {
                 SetProtocolDroidInterfaceAction(object);
             }
         }
         return;
     }
-    if (object->character_context != CHARACTER_CONTEXT_NONE && object->character_context != CHARACTER_CONTEXT_LAND_JUMP &&
-        object->character_context != CHARACTER_CONTEXT_LAND_JUMP_2 && !objInNetWaitContext(object, 0x0b)) {
+    if (object->player.character_context != CHARACTER_CONTEXT_NONE && object->player.character_context != CHARACTER_CONTEXT_LAND_JUMP &&
+        object->player.character_context != CHARACTER_CONTEXT_LAND_JUMP_2 && !objInNetWaitContext(object, 0x0b)) {
         return;
     }
     panel = GizPanel_FindNearest(WORLD, &object->position, object, &distance, 1);
     if (panel != NULL) {
         radius = (f32)((0.25 + object->bounds_radius) * panel->target_scale);
         radius_squared = radius * radius;
-        if (!(distance < radius_squared) || (use == 0 && (object->panel_use_request != 1 || object->panel_request_data == NULL))) {
+        if (!(distance < radius_squared) ||
+            (use == 0 && (object->player.panel_use_request != 1 || object->player.panel_request_data == NULL))) {
             return;
         }
         object->movement_facing_angle = panel->y_rotation;
-        object->context_hover_target_y = 0.0f;
-        object->delayed_turn_timer = 0.0f;
-        object->flags_e20 &= ~0x1000u;
-        object->character_context = CHARACTER_CONTEXT_INTERFACE;
-        object->grapple = panel;
-        object->unknown_7b3 = 0;
+        object->player.context_hover_target_y = 0.0f;
+        object->player.delayed_turn_timer = 0.0f;
+        object->player.flags_e20 &= ~0x1000u;
+        object->player.character_context = CHARACTER_CONTEXT_INTERFACE;
+        object->player.grapple = panel;
+        object->player.unknown_7b3 = 0;
         FastWeaponIn(object, 0);
-        object->flags_e24 |= APIOBJECT_AT_INTERFACE;
-        panel = object->grapple;
+        object->player.flags_e24 |= APIOBJECT_AT_INTERFACE;
+        panel = object->player.grapple;
         if (panel->model_variant == PANEL_VARIANT_BOUNTY_HUNTER) {
             if (object->character_model->model_data_b[0x46] != NULL) {
-                object->unknown_7aa = ACTION_INTERFACE3;
+                object->player.unknown_7aa = ACTION_INTERFACE3;
             } else {
-                object->unknown_7aa = ACTION_INTERFACE2;
+                object->player.unknown_7aa = ACTION_INTERFACE2;
             }
             Hint_SetComplete(0x261);
             Hint_SetComplete(0x26a);
         } else if (panel->model_variant == PANEL_VARIANT_STORMTROOPER) {
             if (object->character_model->model_data_b[0x45] == NULL && object->character_model->model_data_b[0x46] != NULL) {
-                object->unknown_7aa = ACTION_INTERFACE3;
+                object->player.unknown_7aa = ACTION_INTERFACE3;
             } else {
-                object->unknown_7aa = ACTION_INTERFACE2;
+                object->player.unknown_7aa = ACTION_INTERFACE2;
             }
             MakeBaddiesForgetAboutParty(1);
             Hint_SetComplete(0x260);
             Hint_SetComplete(0x269);
         } else {
-            object->unknown_7aa = ACTION_INTERFACE;
+            object->player.unknown_7aa = ACTION_INTERFACE;
             if (panel->model_variant == PANEL_VARIANT_PROTOCOL_DROID) {
-                if (!InStory() || (object->panel->draw_flags & PANEL_NO_VOICE_IN_STORY) == 0) {
+                if (!InStory() || (object->player.panel->draw_flags & PANEL_NO_VOICE_IN_STORY) == 0) {
                     GizPanel_PlaySfx("TC14_VLA", &object->collision_position, 1 << object->unknown_280);
                 }
                 if ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0) {
                     SetProtocolDroidInterfaceAction(object);
                 }
             } else {
-                if (!InStory() || (object->panel->draw_flags & PANEL_NO_VOICE_IN_STORY) == 0) {
+                if (!InStory() || (object->player.panel->draw_flags & PANEL_NO_VOICE_IN_STORY) == 0) {
                     GizPanel_PlaySfx("R2D2_VLA", &object->collision_position, 1 << object->unknown_280);
                 }
             }
@@ -910,17 +911,17 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
             LswForceUsedHintFlags |= 4;
         }
         {
-            f32 duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
-            object->context_timer = duration;
+            f32 duration = AnimDuration((i16)object->id, object->player.unknown_7aa, 0.0f, 0.0f, 1);
+            object->player.context_timer = duration;
             if (duration <= 0.0f) {
-                object->context_timer = 2.0f;
+                object->player.context_timer = 2.0f;
             }
-            object->unknown_db0 = 0.0f;
+            object->player.unknown_db0 = 0.0f;
         }
     } else if (use != 0 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
-               (object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 && object->unknown_db0 <= 0.0f) {
+               (object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 && object->player.unknown_db0 <= 0.0f) {
         GizPanel_PlaySfx("TC14_VLN", &object->collision_position, 1 << object->unknown_280);
-        object->unknown_db0 = 0.5f;
+        object->player.unknown_db0 = 0.5f;
     }
 }
 

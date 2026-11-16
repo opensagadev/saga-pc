@@ -173,7 +173,7 @@ void Shards_UpdateAfterCharacters(WORLDINFO *world, void *unused, f32 delta_time
             if (NuVecDistSqr(&shard->current_position, &target, NULL) < ForcePushApproachOuterSquare) {
                 shard->state_flags = (shard->state_flags & ~SHARD_COLLECTING) | SHARD_COLLECTED;
                 ++shard->collector->unknown_1062;
-                NewBuzzFrames(shard->collector->pad->bound_pad, 1, 0);
+                NewBuzzFrames(shard->collector->player.pad->bound_pad, 1, 0);
             }
         } else if ((shard->state_flags & SHARD_RANDOM_OFFSET) != 0) {
             f32 scale;
@@ -376,7 +376,7 @@ void Shard_Collect(SHARD_s *shard, GAMEOBJECT *object) {
     NuVecRotateZ(&shard->collection_velocity, &v010, shard->angle_z);
     NuVecRotateZ(&shard->collection_velocity, &shard->collection_velocity, shard->angle_x);
     NuVecScale(&shard->collection_velocity, &shard->collection_velocity, 3.0f);
-    NewBuzzFrames(shard->collector->pad->bound_pad, 1, 0);
+    NewBuzzFrames(shard->collector->player.pad->bound_pad, 1, 0);
     shard->tumble_x = qrand() < 0x8000;
 }
 

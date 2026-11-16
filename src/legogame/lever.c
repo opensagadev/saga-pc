@@ -85,9 +85,9 @@ typedef struct LEVER_NET_WAIT { // size 0x7a4
 } LEVER_NET_WAIT;
 
 void ReleaseLever(GAMEOBJECT *object) {
-    if (object->character_context == CHARACTER_CONTEXT_PULL_LEVER) {
-        if (object->grapple != NULL && !LEVER_BITS(object->lever)->being_pulled) {
-            LEVER_BITS(object->lever)->interacting = 0;
+    if (object->player.character_context == CHARACTER_CONTEXT_PULL_LEVER) {
+        if (object->player.grapple != NULL && !LEVER_BITS(object->player.lever)->being_pulled) {
+            LEVER_BITS(object->player.lever)->interacting = 0;
         }
     }
 }
@@ -149,40 +149,40 @@ i32 Lever_FullyPulledDown(GIZMO_LEVER *lever) {
 void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     f32 distance = 1.0e9f;
     GIZMO_LEVER *lever;
-    if (object->character_context == CHARACTER_CONTEXT_PULL_LEVER) {
-        object->context_hover_target_y += FRAMETIME;
-        if (object->context_hover_target_y > 1.0f) {
-            object->context_hover_target_y = 1.0f;
+    if (object->player.character_context == CHARACTER_CONTEXT_PULL_LEVER) {
+        object->player.context_hover_target_y += FRAMETIME;
+        if (object->player.context_hover_target_y > 1.0f) {
+            object->player.context_hover_target_y = 1.0f;
         }
-        object->context_timer += FRAMETIME;
-        if (object->context_timer >= object->context_duration) {
-            object->character_context = CHARACTER_CONTEXT_NONE;
-            if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
+        object->player.context_timer += FRAMETIME;
+        if (object->player.context_timer >= object->player.context_duration) {
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
+            if ((object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                 return;
             }
         } else {
-            if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
+            if ((object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                 return;
             }
-            if (object->character_model->model_data_b[object->unknown_7aa] != NULL) {
-                f32 *playing = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
+            if (object->character_model->model_data_b[object->player.unknown_7aa] != NULL) {
+                f32 *playing = AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0);
                 if (playing == NULL) {
                     return;
                 }
-                if (!(*playing >= AnimListFrame(object->character_model, object->unknown_7aa, 0))) {
+                if (!(*playing >= AnimListFrame(object->character_model, object->player.unknown_7aa, 0))) {
                     return;
                 }
-            } else if (!(object->context_timer >= 0.25f)) {
+            } else if (!(object->player.context_timer >= 0.25f)) {
                 return;
             }
         }
         if ((object->character_data->model_flags & CHARACTER_MODEL_BADDIE) != 0) {
-            object->lever->flags |= LEVER_FLAG_BADDIE;
+            object->player.lever->flags |= LEVER_FLAG_BADDIE;
         } else if ((object->character_data->model_flags & CHARACTER_MODEL_NEUTRAL) == 0) {
-            object->lever->flags |= LEVER_FLAG_GOODIE;
+            object->player.lever->flags |= LEVER_FLAG_GOODIE;
         }
-        object->lever->flags |= LEVER_FLAG_INTERACTION_FINISHED;
-        object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
+        object->player.lever->flags |= LEVER_FLAG_INTERACTION_FINISHED;
+        object->player.context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
         return;
     }
     if (object->character_model->model_data_b[0x5d] == NULL || object->unknown_281 == 0) {
@@ -193,9 +193,9 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     }
     lever = Lever_FindNearest(world, &object->lower_position, object, &distance);
     if (objInNetWaitContext(object, 0x4a) != 0) {
-        object->context_timer -= FRAMETIME;
-        if (object->context_timer <= 0.0f) {
-            object->character_context = CHARACTER_CONTEXT_NONE;
+        object->player.context_timer -= FRAMETIME;
+        if (object->player.context_timer <= 0.0f) {
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
             ((LEVER_NET_WAIT *)object)->net_wait_info = NULL;
         }
     }
@@ -205,23 +205,23 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         if (!(distance < range_squared)) {
             return;
         }
-        if ((object->pad->buttons_pressed & GAMEPAD_SPECIAL) == 0 && objInNetWaitContext(object, 0x4a) == 0) {
+        if ((object->player.pad->buttons_pressed & GAMEPAD_SPECIAL) == 0 && objInNetWaitContext(object, 0x4a) == 0) {
             return;
         }
-        object->context_timer = 0.0f;
-        object->context_hover_target_y = 0.0f;
-        object->character_context = CHARACTER_CONTEXT_PULL_LEVER;
-        object->grapple = lever;
-        object->unknown_7aa = ACTION_PULLLEVER;
-        object->context_duration = AnimDuration((i16)object->id, 0x5d, 0.0f, 0.0f, 1);
-        if (object->context_duration <= 0.0f) {
-            object->context_duration = 1.0f;
+        object->player.context_timer = 0.0f;
+        object->player.context_hover_target_y = 0.0f;
+        object->player.character_context = CHARACTER_CONTEXT_PULL_LEVER;
+        object->player.grapple = lever;
+        object->player.unknown_7aa = ACTION_PULLLEVER;
+        object->player.context_duration = AnimDuration((i16)object->id, 0x5d, 0.0f, 0.0f, 1);
+        if (object->player.context_duration <= 0.0f) {
+            object->player.context_duration = 1.0f;
         }
-        object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
-        object->movement_facing_angle = object->lever->yaw;
-        object->lever->flags |= LEVER_FLAG_INTERACTING;
-        object->lever->pull_progress = 0.0f;
-        object->lever->auto_reset_timer = 0.0f;
+        object->player.context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
+        object->movement_facing_angle = object->player.lever->yaw;
+        object->player.lever->flags |= LEVER_FLAG_INTERACTING;
+        object->player.lever->pull_progress = 0.0f;
+        object->player.lever->auto_reset_timer = 0.0f;
     }
 }
 

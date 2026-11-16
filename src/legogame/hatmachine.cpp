@@ -113,11 +113,11 @@ struct HAT_USE_REQUEST {   // size 0x7a4
 extern "C" i16 id_PRINCESSLEIABOUSHH;
 
 extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 special_pressed) {
-    HATMACHINE *machine = object->hat_machine;
-    if (object->unknown_db0 > 0.0f) {
-        object->unknown_db0 -= FRAMETIME;
+    HATMACHINE *machine = object->player.hat_machine;
+    if (object->player.unknown_db0 > 0.0f) {
+        object->player.unknown_db0 -= FRAMETIME;
     }
-    if (object->character_context != CHARACTER_CONTEXT_HAT_MACHINE || machine == NULL) {
+    if (object->player.character_context != CHARACTER_CONTEXT_HAT_MACHINE || machine == NULL) {
         if (object->character_model->model_data_b[0x5d] == NULL || object->unknown_281 == 0 || ObjLandReady(object) == 0) {
             return;
         }
@@ -130,91 +130,91 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
         range *= machine->scale;
         if (distance < range &&
             (special_pressed != 0 || (((HAT_USE_REQUEST *)object)->request == 2 && ((HAT_USE_REQUEST *)object)->net_wait_info != NULL))) {
-            object->grapple = machine;
+            object->player.grapple = machine;
             object->movement_facing_angle = machine->yaw;
-            object->context_hover_target_y = 0.0f;
-            object->delayed_turn_timer = 0.0f;
-            object->flags_e20 &= ~0x1000;
-            object->character_context = CHARACTER_CONTEXT_HAT_MACHINE;
-            object->unknown_7b3 = 0;
+            object->player.context_hover_target_y = 0.0f;
+            object->player.delayed_turn_timer = 0.0f;
+            object->player.flags_e20 &= ~0x1000;
+            object->player.character_context = CHARACTER_CONTEXT_HAT_MACHINE;
+            object->player.unknown_7b3 = 0;
             FastWeaponIn(object, 0);
-            object->flags_e24 |= APIOBJECT_AT_INTERFACE;
-            object->unknown_7aa = ACTION_PULLLEVER;
+            object->player.flags_e24 |= APIOBJECT_AT_INTERFACE;
+            object->player.unknown_7aa = ACTION_PULLLEVER;
             machine->animation_state = HATMACHINE_ANIM_LID_OPENING;
             if (StartupGameFlag1 != 0) {
                 machine->state_duration = 3.0f;
             } else {
-                machine->state_duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
+                machine->state_duration = AnimDuration((i16)object->id, object->player.unknown_7aa, 0.0f, 0.0f, 1);
             }
-            f32 end_frame = -AnimListFrame(object->character_model, object->unknown_7aa, 0);
+            f32 end_frame = -AnimListFrame(object->character_model, object->player.unknown_7aa, 0);
             machine->flags |= HATMACHINE_FLAG_IN_USE;
             machine->state_elapsed = end_frame;
             machine->state_duration -= end_frame;
             machine->idle_bounce_timer = 0.0f;
             LoseHelmet(object, 0, 0);
-            NewRumble(object->pad->bound_pad, 0.5f, 0);
+            NewRumble(object->player.pad->bound_pad, 0.5f, 0);
             if (object->anim_blending != 0) {
                 ResetAnimPacket(&object->anim_packet, -1);
             }
             AlertSurroundingCreatures(object, &object->collision_position);
-            object->context_timer = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
-            object->hat_machine->state_duration = object->context_timer;
-            if (object->context_timer <= 0.0f) {
-                object->context_timer = 2.0f;
+            object->player.context_timer = AnimDuration((i16)object->id, object->player.unknown_7aa, 0.0f, 0.0f, 1);
+            object->player.hat_machine->state_duration = object->player.context_timer;
+            if (object->player.context_timer <= 0.0f) {
+                object->player.context_timer = 2.0f;
             }
-            object->unknown_db0 = 0.0f;
+            object->player.unknown_db0 = 0.0f;
             return;
         }
         if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
-            (object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 && object->unknown_db0 <= 0.0f) {
+            (object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 && object->player.unknown_db0 <= 0.0f) {
             PlaySfx("TC14_VLN", &object->collision_position);
-            object->unknown_db0 = 0.5f;
+            object->player.unknown_db0 = 0.5f;
         }
         return;
     }
-    if (object->character_model->model_data_b[object->unknown_7aa] == NULL ||
-        AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0) != NULL) {
-        object->context_hover_target_y += FRAMETIME;
-        if (object->context_hover_target_y > 1.0f) {
-            object->context_hover_target_y = 1.0f;
+    if (object->character_model->model_data_b[object->player.unknown_7aa] == NULL ||
+        AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0) != NULL) {
+        object->player.context_hover_target_y += FRAMETIME;
+        if (object->player.context_hover_target_y > 1.0f) {
+            object->player.context_hover_target_y = 1.0f;
         }
-        object->context_timer -= FRAMETIME;
-        switch (object->unknown_7b3) {
+        object->player.context_timer -= FRAMETIME;
+        switch (object->player.unknown_7b3) {
             case 0:
-                if (!(object->context_timer <= 0.0f)) {
+                if (!(object->player.context_timer <= 0.0f)) {
                     return;
                 }
                 if (object->character_model->model_data_b[0x6d] != NULL &&
                     ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_ALREADY_GOT_HAT) != 0 ||
                      (object->id == (u16)id_PRINCESSLEIABOUSHH && FreePlay != 0))) {
                     if (machine->animation_state == HATMACHINE_ANIM_ARMS_OUT) {
-                        object->unknown_7aa = ACTION_HELMETON2;
-                        object->unknown_7b3 = 1;
-                        object->context_timer = AnimDuration((i16)object->id, 0x6d, 0.0f, 0.0f, 1);
-                        machine->state_duration = (f64)object->context_timer * (f64)0.35f;
+                        object->player.unknown_7aa = ACTION_HELMETON2;
+                        object->player.unknown_7b3 = 1;
+                        object->player.context_timer = AnimDuration((i16)object->id, 0x6d, 0.0f, 0.0f, 1);
+                        machine->state_duration = (f64)object->player.context_timer * (f64)0.35f;
                         return;
                     }
-                    object->unknown_7aa = ACTION_IDLE;
+                    object->player.unknown_7aa = ACTION_IDLE;
                     return;
                 }
                 if (object->character_model->model_data_b[0x5e] != NULL) {
                     if (machine->animation_state == HATMACHINE_ANIM_ARMS_OUT) {
-                        object->unknown_7aa = ACTION_HELMETON;
-                        object->unknown_7b3 = 1;
-                        object->context_timer = AnimDuration((i16)object->id, 0x5e, 0.0f, 0.0f, 1);
+                        object->player.unknown_7aa = ACTION_HELMETON;
+                        object->player.unknown_7b3 = 1;
+                        object->player.context_timer = AnimDuration((i16)object->id, 0x5e, 0.0f, 0.0f, 1);
                         if (StartupGameFlag1 == 0) {
-                            machine->state_duration = (f64)object->context_timer * (f64)0.35f;
+                            machine->state_duration = (f64)object->player.context_timer * (f64)0.35f;
                         }
                         return;
                     }
-                    object->unknown_7aa = ACTION_IDLE;
+                    object->player.unknown_7aa = ACTION_IDLE;
                     return;
                 }
                 if (machine->animation_state != HATMACHINE_ANIM_ARMS_OUT) {
                     return;
                 }
-                object->unknown_7aa = ACTION_IDLE;
-                object->unknown_7b3 = 1;
+                object->player.unknown_7aa = ACTION_IDLE;
+                object->player.unknown_7b3 = 1;
                 machine->state_duration = 0.2f;
                 return;
             case 1:
@@ -224,13 +224,13 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
                 if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_ALREADY_GOT_HAT) == 0 &&
                     (object->id != (u16)id_PRINCESSLEIABOUSHH || FreePlay == 0)) {
                     PlaySfx("HatOn", &object->upper_position);
-                    object->helmet = object->hat_machine->displayed_hat;
+                    object->helmet = object->player.hat_machine->displayed_hat;
                     if (object->helmet == HELMET_STORMTROOPER) {
                         MakeBaddiesForgetAboutParty(1);
                     }
                 }
                 machine->displayed_hat = 0;
-                object->unknown_7b3 = 2;
+                object->player.unknown_7b3 = 2;
                 if (StartupGameFlag1 != 0) {
                     machine->animation_state = HATMACHINE_ANIM_LID_CLOSING;
                 }
@@ -240,41 +240,41 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
             default:
                 return;
         }
-        if (!(object->context_timer <= 0.0f)) {
+        if (!(object->player.context_timer <= 0.0f)) {
             return;
         }
-        object->character_context = CHARACTER_CONTEXT_NONE;
-        object->context_timer = 0.0f;
-        machine = object->hat_machine;
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
+        object->player.context_timer = 0.0f;
+        machine = object->player.hat_machine;
         if (machine == NULL) {
             return;
         }
         if (machine->configured_hat == HELMET_BOUNTY_HUNTER) {
             PlaySfx("Hunter_Granted", &object->collision_position);
         }
-        if (object->hat_machine->configured_hat == HELMET_STORMTROOPER) {
+        if (object->player.hat_machine->configured_hat == HELMET_STORMTROOPER) {
             PlaySfx("Trooper_Granted", &object->collision_position);
         }
-        object->grapple = NULL;
+        object->player.grapple = NULL;
     } else {
-        object->context_timer -= FRAMETIME;
-        if (!(object->context_timer <= 0.0f)) {
+        object->player.context_timer -= FRAMETIME;
+        if (!(object->player.context_timer <= 0.0f)) {
             return;
         }
-        if (object->grapple != NULL) {
-            NewBuzz(object->pad->bound_pad, 0.1f, 0);
-            object->hat_machine->hat_delay = 0.6f;
-            if (object->hat_machine->configured_hat == HELMET_BOUNTY_HUNTER) {
+        if (object->player.grapple != NULL) {
+            NewBuzz(object->player.pad->bound_pad, 0.1f, 0);
+            object->player.hat_machine->hat_delay = 0.6f;
+            if (object->player.hat_machine->configured_hat == HELMET_BOUNTY_HUNTER) {
                 PlaySfx("Hunter_Granted", &object->collision_position);
             }
-            if (object->hat_machine->configured_hat == HELMET_STORMTROOPER) {
+            if (object->player.hat_machine->configured_hat == HELMET_STORMTROOPER) {
                 PlaySfx("Trooper_Granted", &object->collision_position);
             }
         } else {
-            NewRumble(object->pad->bound_pad, 0.5f, 0);
+            NewRumble(object->player.pad->bound_pad, 0.5f, 0);
         }
-        object->grapple = NULL;
-        object->character_context = CHARACTER_CONTEXT_NONE;
+        object->player.grapple = NULL;
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
     }
 }
 

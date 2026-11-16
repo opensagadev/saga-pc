@@ -93,7 +93,7 @@ i32 DeathStarShieldDown(void) {
     if (player != NULL &&
         (WORLD->current_level != DEATHSTARBATTLED_LDATA || ObjInNarrowSock(player, WORLD->sock_sys, WORLD->level_idx) == 0)) {
         player = Player[0];
-        packet = (TORPEDO_MUSIC_FLAGS_VIEW *)player->torpedo;
+        packet = (TORPEDO_MUSIC_FLAGS_VIEW *)player->player.torpedo;
         if (packet != NULL && (packet->count > 0 || (packet->flags & 2) != 0)) {
             return 1;
         }
@@ -102,7 +102,7 @@ i32 DeathStarShieldDown(void) {
     if (player != NULL &&
         (WORLD->current_level != DEATHSTARBATTLED_LDATA || ObjInNarrowSock(player, WORLD->sock_sys, WORLD->level_idx) == 0)) {
         player = Player[1];
-        packet = (TORPEDO_MUSIC_FLAGS_VIEW *)player->torpedo;
+        packet = (TORPEDO_MUSIC_FLAGS_VIEW *)player->player.torpedo;
         if (packet != NULL && (packet->count > 0 || (packet->flags & 2) != 0)) {
             return 1;
         }
@@ -284,8 +284,8 @@ void BlockadeRunnerD_Update(WORLDINFO *world) {
         }
         if ((LevGamePart[i]->active & PART_IN_USE) != 0) {
             LevGameObject[i]->flags_107a = 5;
-            LevGameObject[i]->vehicle_orientation = LevGamePart[i]->transform;
-            LevGameObject[i]->position = LevGameObject[i]->vehicle_orientation.translation;
+            LevGameObject[i]->player.vehicle_orientation = LevGamePart[i]->transform;
+            LevGameObject[i]->position = LevGameObject[i]->player.vehicle_orientation.translation;
             LevGameObject[i]->ai_update_position = LevGameObject[i]->position;
         }
         if ((LevGamePart[i]->active & PART_IN_USE) == 0 || LevGamePart[i]->kill_fn != BlockadeRunnerDKillEjectedCreature) {
@@ -347,11 +347,11 @@ void DeathStarRescueB_Update(WORLDINFO *world) {
 void DeathStarEscapeB_Draw(WORLDINFO *world) {
     NUMTX matrix;
     if (LevGameObject[0] != NULL && DeathStarEscapeBNetPacket[0] == 0) {
-        matrix = LevGameObject[0]->locator_matrices[1];
+        matrix = LevGameObject[0]->player.locator_matrices[1];
         NuSpecialDrawAt(&LevHSpecial[2], &matrix);
     }
     if (LevGameObject[1] != NULL && DeathStarEscapeBNetPacket[0] == 0) {
-        matrix = LevGameObject[1]->locator_matrices[1];
+        matrix = LevGameObject[1]->player.locator_matrices[1];
         NuSpecialDrawAt(&LevHSpecial[2], &matrix);
     }
 }
@@ -485,7 +485,7 @@ void TrenchMove(GAMEOBJECT *object) {
     f32 input_magnitude;
     u16 input_angle;
     object->previous_floor_height = object->floor_height;
-    pad = object->pad;
+    pad = object->player.pad;
     object->start_position = object->position;
     object->initial_position = object->collision_position;
     object->unknown_282 = object->unknown_281;
@@ -501,24 +501,24 @@ void TrenchMove(GAMEOBJECT *object) {
     } else {
         object->unknown_f10 = FRAMETIME + object->unknown_f10;
     }
-    if (object->character_context == CHARACTER_CONTEXT_DOOMED) {
-        object->turn_braking += FRAMETIME;
+    if (object->player.character_context == CHARACTER_CONTEXT_DOOMED) {
+        object->player.turn_braking += FRAMETIME;
     }
-    if (object->character_context != CHARACTER_CONTEXT_TURN) {
+    if (object->player.character_context != CHARACTER_CONTEXT_TURN) {
         if ((object->movement_facing_angle > 0x8000) != (player->movement_facing_angle > 0x8000)) {
             StartTurn(object);
-        } else if (player->character_context == CHARACTER_CONTEXT_TURN && player->context_timer < 0.5 * TURNTIME) {
+        } else if (player->player.character_context == CHARACTER_CONTEXT_TURN && player->player.context_timer < 0.5 * TURNTIME) {
             StartTurn(object);
-        } else if (object->character_context != CHARACTER_CONTEXT_LOOP && player->character_context == CHARACTER_CONTEXT_LOOP &&
-                   player->context_timer < 0.75 * VehicleLoopTime) {
-            object->character_context = player->character_context;
-            object->unknown_7aa = ACTION_IDLE;
-            object->context_duration = VehicleLoopTime;
-            object->context_timer = VehicleLoopTime;
+        } else if (object->player.character_context != CHARACTER_CONTEXT_LOOP &&
+                   player->player.character_context == CHARACTER_CONTEXT_LOOP && player->player.context_timer < 0.75 * VehicleLoopTime) {
+            object->player.character_context = player->player.character_context;
+            object->player.unknown_7aa = ACTION_IDLE;
+            object->player.context_duration = VehicleLoopTime;
+            object->player.context_timer = VehicleLoopTime;
         }
     }
-    if (object->character_context == CHARACTER_CONTEXT_TURN) {
-        phase = object->context_timer / TURNTIME;
+    if (object->player.character_context == CHARACTER_CONTEXT_TURN) {
+        phase = object->player.context_timer / TURNTIME;
         if (object->movement_facing_angle <= 0x8000) {
             target.x = (1.0f - phase) * TrenchLaneOffset + phase * -TrenchLaneOffset;
         } else {
@@ -542,8 +542,8 @@ void TrenchMove(GAMEOBJECT *object) {
     NuVecSub(&object->velocity, &object->position, &object->start_position);
     NuVecScale(&object->velocity, &object->velocity, 1.0f / FRAMETIME);
     if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_BANKING) != 0) {
-        if (object->character_context != CHARACTER_CONTEXT_TURN && object->character_context != CHARACTER_CONTEXT_LOOP &&
-            object->character_context != CHARACTER_CONTEXT_BARREL_ROLL) {
+        if (object->player.character_context != CHARACTER_CONTEXT_TURN && object->player.character_context != CHARACTER_CONTEXT_LOOP &&
+            object->player.character_context != CHARACTER_CONTEXT_BARREL_ROLL) {
             roll = (i32)(object->velocity.z * TrenchRollScale);
         } else {
             roll = 0;
@@ -562,7 +562,7 @@ void TrenchMove(GAMEOBJECT *object) {
         } else if (target_roll > 0x2000) {
             target_roll = 0x2000;
         }
-        object->movement_lean_angle = SeekRot(object->movement_lean_angle, target_roll, 8.0f);
+        object->player.movement_lean_angle = SeekRot(object->player.movement_lean_angle, target_roll, 8.0f);
     }
     APIObjectVelocities(object);
     GameObjectOrigin(object);

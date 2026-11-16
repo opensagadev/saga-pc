@@ -64,7 +64,7 @@ static void Explosion_Feedback(EXPLOSION *explosion) {
         NewRumbleAllPlayers(0.5f, 0.1f, 0, 0);
         GameCam_HitJudder();
     } else if (explosion->owner != NULL) {
-        NewBuzz(explosion->owner->pad->bound_pad, 0.1f, 0);
+        NewBuzz(explosion->owner->player.pad->bound_pad, 0.1f, 0);
     }
 }
 
@@ -122,8 +122,8 @@ void UpdateExplosion_Generic(EXPLOSION *explosion) {
                 object->dead != 0) {
                 continue;
             }
-            if ((U64_PAIR(&CInfo[target->character_context].flags) & 0x8000) != 0 ||
-                (U64_PAIR(&CInfo[target->character_context].flags) & 0x20000000) != 0) {
+            if ((U64_PAIR(&CInfo[target->player.character_context].flags) & 0x8000) != 0 ||
+                (U64_PAIR(&CInfo[target->player.character_context].flags) & 0x20000000) != 0) {
                 continue;
             }
             if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) != 0) {
@@ -176,15 +176,15 @@ void UpdateExplosion_Generic(EXPLOSION *explosion) {
                     if (explosion->owner->player_index == -1 && ((explosion->owner->flags_1f8 ^ object->flags_1f8) & 1) == 0) {
                         continue;
                     }
-                } else if (explosion->owner->player_index != -1 && target->origin_scale_override != 1.0f &&
+                } else if (explosion->owner->player_index != -1 && target->player.origin_scale_override != 1.0f &&
                            ((explosion->owner->flags_1f8 ^ object->flags_1f8) & 1) == 0) {
                     continue;
                 }
             }
             explosion->hit_identity_mask[0] |= object->collision_identity_mask[0];
             explosion->hit_identity_mask[1] |= object->collision_identity_mask[1];
-            if ((f64)target->origin_scale_override >= (f64)0.99f) {
-                ObjHitShield(explosion->owner, target, target->shield_hitpoints, NULL);
+            if ((f64)target->player.origin_scale_override >= (f64)0.99f) {
+                ObjHitShield(explosion->owner, target, target->player.shield_hitpoints, NULL);
                 if ((explosion->flags & EXPLOSION_KILLS) == 0) {
                     hit_character = 1;
                     continue;
@@ -215,7 +215,7 @@ void UpdateExplosion_Generic(EXPLOSION *explosion) {
             hit_flags = explosion->hit_flags | ((explosion->flags & EXPLOSION_TRANSFORM) != 0 ? 0x4200 : 0x200);
             if (ObjHitObj(source, target, damage, hit_flags, 0, 1) == 2) {
                 if (source != NULL) {
-                    NewRumble(source->pad->bound_pad, 0.5f, 0);
+                    NewRumble(source->player.pad->bound_pad, 0.5f, 0);
                 }
                 ++explosion->kill_count;
                 if ((explosion->flags & EXPLOSION_TRANSFORM) != 0 && (explosion->player_index == 0 || explosion->player_index == 1) &&

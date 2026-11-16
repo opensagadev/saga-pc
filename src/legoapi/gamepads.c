@@ -138,7 +138,7 @@ f32 GamePad_Rotate(GAMEOBJECT *object) {
     } else {
         return 0.0f;
     }
-    pad = object->pad;
+    pad = object->player.pad;
     if (pad->input_magnitude != 0.0f && PlayerPadCurrentSpeed[index] != 0.0f && PlayerPadPreviousSpeed[index] != 0.0f) {
         current_delta = RotDiff(PlayerPadCurrentAngle[index], pad->input_angle);
         previous_delta = RotDiff(PlayerPadPreviousAngle[index], PlayerPadCurrentAngle[index]);
@@ -220,24 +220,24 @@ void NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, i32 player_inde
     }
     for (index = 0; index < 8; index++) {
         object = Player[index];
-        if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->pad->bound_pad != NULL) {
-            NuSound3AddRumble(object->pad->bound_pad, duration, (i32)((f64)strength * 255.0), 0.0f, strength);
+        if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->player.pad->bound_pad != NULL) {
+            NuSound3AddRumble(object->player.pad->bound_pad, duration, (i32)((f64)strength * 255.0), 0.0f, strength);
         }
     }
 }
 
 void DieRumble(GAMEOBJECT *object) {
     if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-        NewRumble(object->pad->bound_pad, 1.0f, 0);
-        NewBuzz(object->pad->bound_pad, 0.3f, 0);
+        NewRumble(object->player.pad->bound_pad, 1.0f, 0);
+        NewBuzz(object->player.pad->bound_pad, 0.3f, 0);
     }
 }
 
 void KillRumble(GAMEOBJECT *object) {
     FRAME_PAD *pad;
     if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-        NewRumble(object->pad->bound_pad, 0.7f, 0);
-        pad = object->pad->bound_pad;
+        NewRumble(object->player.pad->bound_pad, 0.7f, 0);
+        pad = object->player.pad->bound_pad;
         if (pad != NULL) {
             NuSound3AddRumble(pad, 0.1f, 0, 0.0f, 0.0f);
         }
@@ -247,8 +247,8 @@ void KillRumble(GAMEOBJECT *object) {
 void HitRumble(GAMEOBJECT *object) {
     FRAME_PAD *pad;
     if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-        NewRumble(object->pad->bound_pad, 0.5f, 0);
-        pad = object->pad->bound_pad;
+        NewRumble(object->player.pad->bound_pad, 0.5f, 0);
+        pad = object->player.pad->bound_pad;
         if (pad != NULL) {
             NuSound3AddRumble(pad, 2.0f / DEFAULTFPS, 0, 0.0f, 0.0f);
         }
@@ -257,8 +257,8 @@ void HitRumble(GAMEOBJECT *object) {
 
 void TakeHitRumble(GAMEOBJECT *object, f32 strength) {
     if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-        NewRumble(object->pad->bound_pad, strength, 0);
-        NewBuzz(object->pad->bound_pad, 0.1f, 0);
+        NewRumble(object->player.pad->bound_pad, strength, 0);
+        NewBuzz(object->player.pad->bound_pad, 0.1f, 0);
     }
 }
 
@@ -271,8 +271,8 @@ void FloatRumble(GAMEOBJECT *object) {
         if (strength > 1.0f) {
             strength = 1.0f;
         }
-        NewRumble(object->pad->bound_pad, strength, 0);
-        pad = object->pad->bound_pad;
+        NewRumble(object->player.pad->bound_pad, strength, 0);
+        pad = object->player.pad->bound_pad;
         if (pad != NULL) {
             NuSound3AddRumble(pad, 1.0f / DEFAULTFPS, 0, 0.0f, 0.0f);
         }
@@ -295,7 +295,7 @@ void ConstantRumble(GAMEOBJECT *object, f32 strength, f32 phase) {
     strength = scale * strength;
     if (object != NULL) {
         if (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) {
-            NewRumble(object->pad->bound_pad, strength, 0);
+            NewRumble(object->player.pad->bound_pad, strength, 0);
         }
     } else {
         NewRumbleAllPlayers(strength, 0.0f, 0, 0);
@@ -490,7 +490,7 @@ void DoInput(WORLDINFO *world) {
             if (!(player->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
                 continue;
             }
-            if (LEGOCONTEXT_DROPIN != -1 && player->character_context == LEGOCONTEXT_DROPIN) {
+            if (LEGOCONTEXT_DROPIN != -1 && player->player.character_context == LEGOCONTEXT_DROPIN) {
                 continue;
             }
         }
@@ -525,7 +525,7 @@ void DoInput(WORLDINFO *world) {
             if (GameMenu[GameMenuLevel].menu == -1 && CutSceneWaiting == 0) {
                 if ((CUTSTOPGAME == 0 || CutScene_IsSkippable(CutStopInfo)) && MiniCutCam == 0 && memcard_autosavestarted == 0 &&
                     !(memcard_autosavepostdelay > 0.0f) && !(memcard_autosavepredelay > 0.0f) && GameTimer.update_count != 0) {
-                    PauseGame((GAMEPAD_INIT_RECORD *)player->pad - GamePadStorage);
+                    PauseGame((GAMEPAD_INIT_RECORD *)player->player.pad - GamePadStorage);
                     changed = 1;
                     continue;
                 }

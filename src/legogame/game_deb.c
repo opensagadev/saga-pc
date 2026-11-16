@@ -85,7 +85,7 @@ void AddSurfaceDebris(GAMEOBJECT *object) {
     NUVEC current;
     NUVEC previous;
     NUVEC position;
-    if (object->character_context == CHARACTER_CONTEXT_DOOMED) {
+    if (object->player.character_context == CHARACTER_CONTEXT_DOOMED) {
         return;
     }
     layer = object->unknown_283;
@@ -170,8 +170,8 @@ void AddSurfaceDebris(GAMEOBJECT *object) {
 void AddWaterSplash(GAMEOBJECT *object, NUVEC *position) {
     AddGameDebrisXYZ(WORLD->game_debris_sys, 13, position->x, object->water_height, position->z);
     PlaySfx("FS_WaterJump", &object->collision_position);
-    NewRumble(object->pad->bound_pad, 0.5f, 0);
-    NewBuzzFrames(object->pad->bound_pad, 1, 0);
+    NewRumble(object->player.pad->bound_pad, 0.5f, 0);
+    NewBuzzFrames(object->player.pad->bound_pad, 1, 0);
 }
 
 void AddSlamDebris(GAMEOBJECT *object) {
@@ -193,7 +193,7 @@ void AddSlamDebris(GAMEOBJECT *object) {
         damage = 1;
         strength = 0.3f;
     }
-    explosion = AddExplosion(&position, radius, strength, object, object->slam_effect, flags);
+    explosion = AddExplosion(&position, radius, strength, object, object->player.slam_effect, flags);
     if (explosion != NULL) {
         explosion->damage = damage;
     }
@@ -276,7 +276,7 @@ void AddSurfaceRipples(GAMEOBJECT *object) {
     }
     if (object->contact_count == 1) {
         if (object->contact_material[0] == 13 || object->contact_material[0] == 12) {
-            rate = object->pad->input_magnitude / object->character_data->game_character->run_speed * ForceFieldRippleRate;
+            rate = object->player.pad->input_magnitude / object->character_data->game_character->run_speed * ForceFieldRippleRate;
             if (rate < .5f) {
                 rate = .5f;
             }
@@ -319,7 +319,7 @@ void AddSurfaceRipples(GAMEOBJECT *object) {
         if (object->water_intersects == 0 || object->model_draw_result == 0) {
             return;
         }
-        rate = (f32)(object->pad->input_magnitude / object->character_data->game_character->run_speed * 20.0);
+        rate = (f32)(object->player.pad->input_magnitude / object->character_data->game_character->run_speed * 20.0);
         if (rate < 1.0f) {
             rate = 1.0f;
         }

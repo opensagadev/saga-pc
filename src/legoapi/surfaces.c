@@ -88,7 +88,7 @@ void GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_height) {
     }
 
     if (update_fields != 0) {
-        object->raw_surface_id = (u8)raw_surface;
+        object->player.raw_surface_id = (u8)raw_surface;
         object->jump_animation_state = (u8)surface_index;
         if (object->floor_height == GameObjectNearFloorNoFloorHeight) {
             object->surface_normal = v010;
@@ -211,9 +211,9 @@ void InitSurfaceInfo(GAMEOBJECT *object) {
     if (object->floor_height != GameObjectNearFloorNoFloorHeight) {
         GetSurfaceInfo(object, 1, object->floor_height);
         if (TerSurface[(i8)object->jump_animation_state].flags & 8) {
-            object->surface_flag8_scale = 1.0f;
+            object->player.surface_flag8_scale = 1.0f;
         } else {
-            object->surface_flag8_scale = 0.0f;
+            object->player.surface_flag8_scale = 0.0f;
         }
         FindAnglesZX(&object->surface_normal, NULL, NULL);
         object->unknown_1056 = temp_zrot;
@@ -222,9 +222,9 @@ void InitSurfaceInfo(GAMEOBJECT *object) {
         object->unknown_1054 = temp_xrot;
     } else {
         GetSurfaceInfo(object, 0, object->floor_height);
-        object->surface_flag8_scale = 0.0f;
+        object->player.surface_flag8_scale = 0.0f;
         object->jump_animation_state = 0;
-        object->raw_surface_id = 0;
+        object->player.raw_surface_id = 0;
         object->surface_normal = v010;
     }
 

@@ -79,7 +79,7 @@ extern "C" {
     i32 Player_HasFastBuild(GAMEOBJECT *);
     extern PLAYERPROGRESS PlayerProgress[8];
     extern APICHARSYS *apicharsys;
-    void Player_ResetContexts(void *);
+    void Player_ResetContexts(PLAYERPACKET *);
     void SetFlicker(GAMEOBJECT *, f32);
     extern i32 netclient;
     extern i32 PlayerID[2];

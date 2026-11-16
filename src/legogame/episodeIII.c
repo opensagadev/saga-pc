@@ -491,7 +491,7 @@ i32 Action_BoulderSection(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *p
         processor->action_timer -= FRAMETIME;
         if (processor->action_timer < 0.0f) {
             processor->action_timer = 0.5f;
-            object->pad->buttons_pressed |= GAMEPAD_TOGGLELEFT;
+            object->player.pad->buttons_pressed |= GAMEPAD_TOGGLELEFT;
         }
     }
     object->portal_flags |= APIOBJECT_KEEP_WEAPON_OUT;
@@ -510,7 +510,7 @@ i32 Action_BoulderSection(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *p
     if (nearest != NULL) {
         packet->movement_look_target = &nearest->position;
         if (can_attack != 0) {
-            object->pad->buttons_pressed |= GAMEPAD_ACTION;
+            object->player.pad->buttons_pressed |= GAMEPAD_ACTION;
         }
     } else {
         AIPACKET *player_packet = system->player_1->ai;

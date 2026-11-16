@@ -427,31 +427,31 @@ ADDGIZMOTYPE *Signals_RegisterGizmo(i32 unused_type_id) {
 }
 
 void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
-    if (object->character_context == CHARACTER_CONTEXT_SIGNAL) {
+    if (object->player.character_context == CHARACTER_CONTEXT_SIGNAL) {
         f32 *animation_time = NULL;
         i32 exchange;
         f32 elapsed;
-        if (object->character_model->action_animations[object->unknown_7aa] != NULL) {
-            animation_time = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
+        if (object->character_model->action_animations[object->player.unknown_7aa] != NULL) {
+            animation_time = AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0);
             if (animation_time == NULL) {
                 return;
             }
         }
         exchange = 0;
-        elapsed = (f32)((f64)object->context_timer + (f64)FRAMETIME);
-        object->context_timer = elapsed;
-        if (elapsed >= object->context_duration) {
-            object->character_context = CHARACTER_CONTEXT_NONE;
-            if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
+        elapsed = (f32)((f64)object->player.context_timer + (f64)FRAMETIME);
+        object->player.context_timer = elapsed;
+        if (elapsed >= object->player.context_duration) {
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
+            if ((object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                 exchange = 1;
             }
             StartEndOfJump(object);
         } else {
-            if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
+            if ((object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                 return;
             }
             if (animation_time != NULL) {
-                f32 frame = AnimListFrame(object->character_model, object->unknown_7aa, 0);
+                f32 frame = AnimListFrame(object->character_model, object->player.unknown_7aa, 0);
                 if (frame >= 1.0f && *animation_time >= frame) {
                     exchange = 1;
                 }
@@ -463,15 +463,15 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             SUIT_INITIALIZER_RECORD *new_suit;
             i32 index;
             /* Context 0x4c uses the attachment union and the full 24-byte suit record. */
-            object->signal->flags |= SIGNAL_IN_USE;
-            object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
-            old_suit = (SUIT_INITIALIZER_RECORD *)object->suit;
+            object->player.signal->flags |= SIGNAL_IN_USE;
+            object->player.context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
+            old_suit = (SUIT_INITIALIZER_RECORD *)object->player.suit;
             object->ai_packet.capabilities &= ~old_suit->character_flags;
-            signal = object->grapple;
+            signal = object->player.grapple;
             new_suit = signal->suit;
-            object->suit = (SUIT_LAYERS *)new_suit;
+            object->player.suit = (SUIT_LAYERS *)new_suit;
             signal->suit = old_suit;
-            new_suit = (SUIT_INITIALIZER_RECORD *)object->suit;
+            new_suit = (SUIT_INITIALIZER_RECORD *)object->player.suit;
             object->ai_packet.capabilities |= new_suit->character_flags;
             for (index = 0; index < 10; ++index) {
                 if (new_suit == &SuitRecordInit[index]) {
@@ -479,32 +479,33 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                     break;
                 }
             }
-            NewBuzz(object->pad->bound_pad, 0.1f, 0);
-            NewRumble(object->pad->bound_pad, 0.6f, 0);
+            NewBuzz(object->player.pad->bound_pad, 0.1f, 0);
+            NewRumble(object->player.pad->bound_pad, 0.6f, 0);
         }
-        if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
-            NewRumble(object->pad->bound_pad, (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.4f), 0);
+        if ((object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
+            NewRumble(object->player.pad->bound_pad, (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.4f), 0);
         }
         return;
     }
-    if (object->unknown_281 != 0 || object->character_context == CHARACTER_CONTEXT_BIG_JUMP ||
-        object->character_context == CHARACTER_CONTEXT_DOOMED || object->character_context == CHARACTER_CONTEXT_FLOAT ||
-        (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || (U64_PAIR(&CInfo[object->character_context].flags) & 0x800) != 0) {
+    if (object->unknown_281 != 0 || object->player.character_context == CHARACTER_CONTEXT_BIG_JUMP ||
+        object->player.character_context == CHARACTER_CONTEXT_DOOMED || object->player.character_context == CHARACTER_CONTEXT_FLOAT ||
+        (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
+        (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x800) != 0) {
         return;
     }
     {
         f32 distance;
         SIGNAL_s *signal = Signal_FindNearest(world, &object->collision_position, object, &distance);
         if (signal != NULL && distance < 0.0625f) {
-            object->context_timer = 0.0f;
-            object->character_context = CHARACTER_CONTEXT_SIGNAL;
-            object->grapple = signal;
-            object->unknown_7aa = ACTION_CHANGE;
-            object->context_duration = AnimDuration((i16)object->id, 0x96, 0.0f, 0.0f, 1);
-            if (object->context_duration <= 0.0f) {
-                object->context_duration = 1.0f;
+            object->player.context_timer = 0.0f;
+            object->player.character_context = CHARACTER_CONTEXT_SIGNAL;
+            object->player.grapple = signal;
+            object->player.unknown_7aa = ACTION_CHANGE;
+            object->player.context_duration = AnimDuration((i16)object->id, 0x96, 0.0f, 0.0f, 1);
+            if (object->player.context_duration <= 0.0f) {
+                object->player.context_duration = 1.0f;
             }
-            object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
+            object->player.context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
         }
     }
 }
@@ -517,22 +518,22 @@ void SuitBlowupCode(WORLDINFO *world, GAMEOBJECT *object) {
     i32 count;
     i32 index;
     f32 remaining;
-    if (object->character_context == CHARACTER_CONTEXT_SONAR) {
-        if (object->character_model->model_data_b[object->unknown_7aa] != NULL &&
-            AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0) == NULL) {
+    if (object->player.character_context == CHARACTER_CONTEXT_SONAR) {
+        if (object->character_model->model_data_b[object->player.unknown_7aa] != NULL &&
+            AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0) == NULL) {
             return;
         }
-        object->context_timer += FRAMETIME;
-        if ((f64)object->context_duration < (f64)0.2f && (object->pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
-            object->context_duration = 0.2f;
+        object->player.context_timer += FRAMETIME;
+        if ((f64)object->player.context_duration < (f64)0.2f && (object->player.pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
+            object->player.context_duration = 0.2f;
         }
-        remaining = object->context_duration - FRAMETIME;
-        object->context_duration = remaining;
+        remaining = object->player.context_duration - FRAMETIME;
+        object->player.context_duration = remaining;
         if (remaining <= 0.0f) {
-            object->character_context = CHARACTER_CONTEXT_NONE;
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
             return;
         }
-        if (!(object->context_timer >= 0.5f)) {
+        if (!(object->player.context_timer >= 0.5f)) {
             return;
         }
         blowup = world->gizmo_blowups;
@@ -568,11 +569,11 @@ void SuitBlowupCode(WORLDINFO *world, GAMEOBJECT *object) {
             GizmoBlowupBlowup(candidates[qrand() / (65535 / count + 1)], 1, BLOWUP_HIT_SIGNAL, 1, NULL, 1);
         }
     } else {
-        if (object->unknown_281 != 0 && ObjLandReady(object) != 0 && (object->pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
-            object->character_context = CHARACTER_CONTEXT_SONAR;
-            object->context_timer = 0.0f;
-            object->unknown_7aa = ACTION_SONAR;
-            object->context_duration = 0.3f;
+        if (object->unknown_281 != 0 && ObjLandReady(object) != 0 && (object->player.pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
+            object->player.character_context = CHARACTER_CONTEXT_SONAR;
+            object->player.context_timer = 0.0f;
+            object->player.unknown_7aa = ACTION_SONAR;
+            object->player.context_duration = 0.3f;
         }
     }
 }

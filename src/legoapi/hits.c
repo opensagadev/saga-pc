@@ -40,7 +40,7 @@ void RegenerateHearts(GAMEOBJECT *object) {
 }
 
 i32 CannotKill(GAMEOBJECT *object) {
-    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x02000000) != 0) {
+    if ((U64_PAIR(&CInfo[object->player.character_context].flags) & 0x02000000) != 0) {
         return 1;
     }
     return (object->character_data->game_character->flags_094 & CHARACTER_OPTION_CANNOT_KILL) != 0 && object->player_index == -1;

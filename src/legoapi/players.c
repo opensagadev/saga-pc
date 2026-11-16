@@ -48,63 +48,6 @@
 
 /* Private helpers and combo provider. */
 
-typedef struct player_reset_packet_s { // size 0x780
-    u8 unknown_000[0xe8];              // 0x000
-    i16 context_animation;             // 0x0e8
-    u8 unknown_0ea[0x4];               // 0x0ea
-    u8 context_mode;                   // 0x0ee
-    u8 unknown_0ef[0x2];               // 0x0ef
-    i8 build_context;                  // 0x0f1
-    u8 unknown_0f2[0x2];               // 0x0f2
-    u8 action_movement_state;          // 0x0f4
-    u8 action_movement_variant;        // 0x0f5
-    u8 unknown_0f6[0x6];               // 0x0f6
-    f32 context_animation_time;        // 0x0fc
-    i8 context_target;                 // 0x100
-    u8 unknown_101[0x4df];             // 0x101
-    GAMEPAD *gamepad;                  // 0x5e0
-    u8 unknown_5e4[0x28];              // 0x5e4
-    void *linked_object;               // 0x60c
-    u8 unknown_610[0x38];              // 0x610
-    i32 unknown_648;                   // 0x648
-    u8 unknown_64c[0x10];              // 0x64c
-    i32 input_state;                   // 0x65c
-    u8 unknown_660[0x4];               // 0x660
-    f32 unknown_664;                   // 0x664
-    u8 unknown_668[0x4];               // 0x668
-    f32 unknown_66c;                   // 0x66c
-    f32 unknown_670;                   // 0x670
-    f32 unknown_674;                   // 0x674
-    f32 context_blend;                 // 0x678
-    f32 context_distance;              // 0x67c
-    u8 unknown_680[0x14];              // 0x680
-    f32 unknown_694;                   // 0x694
-    f32 unknown_698;                   // 0x698
-    u8 unknown_69c[0x34];              // 0x69c
-    f32 unknown_6d0;                   // 0x6d0
-    u8 unknown_6d4[0x14];              // 0x6d4
-    f32 unknown_6e8;                   // 0x6e8
-    u8 unknown_6ec[0x14];              // 0x6ec
-    f32 unknown_700;                   // 0x700
-    u8 unknown_704[0x10];              // 0x704
-    f32 unknown_714;                   // 0x714
-    u8 unknown_718[0x8];               // 0x718
-    f32 unknown_720;                   // 0x720
-    f32 unknown_724;                   // 0x724
-    u8 unknown_728[0x24];              // 0x728
-    i16 movement_angle_0;              // 0x74c
-    u8 unknown_74e[0x2];               // 0x74e
-    i16 movement_angle_2;              // 0x750
-    i16 movement_angle_3;              // 0x752
-    u8 unknown_754[0x8];               // 0x754
-    u32 secondary_flags;               // 0x75c
-    u8 unknown_760[0xe];               // 0x760
-    u8 unknown_76e;                    // 0x76e
-    u8 unknown_76f;                    // 0x76f
-    u8 unknown_770[0xd];               // 0x770
-    i8 random_context;                 // 0x77d
-} PLAYER_RESET_PACKET;
-
 /* Two-DWORD view of the default mask. */
 GAMEOBJECT *AddCreature(i32 model, i32 mode);
 
@@ -348,55 +291,54 @@ void Player_ClearContext(GAMEOBJECT *object, i32 mode) {
     Whip_Release(object);
     SuperCarry_Release(object);
     SpecialMove_ReleaseVictim(object);
-    object->flags_e24 &= ~(APIOBJECT_FALL_LAND | APIOBJECT_FALL_LANDING);
+    object->player.flags_e24 &= ~(APIOBJECT_FALL_LAND | APIOBJECT_FALL_LANDING);
 }
 
-void Player_ResetContexts(void *packet_ptr) {
-    PLAYER_RESET_PACKET *packet = packet_ptr;
-    packet->context_animation_time = 0.0f;
-    packet->context_target = -1;
-    if ((packet->secondary_flags >> 16) & 1) {
-        packet->context_blend = 1.0f;
+void Player_ResetContexts(PLAYERPACKET *packet) {
+    packet->tag_cooldown = 0.0f;
+    packet->tag_player_index = -1;
+    if ((packet->flags_e20 >> 16) & 1) {
+        packet->weapon_scale = 1.0f;
     } else {
-        packet->context_blend = 0.0f;
+        packet->weapon_scale = 0.0f;
     }
-    packet->context_distance = 5.0f;
-    packet->unknown_76f = 0;
-    packet->unknown_66c = 0.0f;
-    packet->build_context = -1;
-    packet->unknown_674 = 0.0f;
-    packet->action_movement_variant = 0;
+    packet->weapon_scale_rate = 5.0f;
+    packet->unknown_e33 = 0;
+    packet->origin_scale_override = 0.0f;
+    packet->character_context = -1;
+    packet->communicate_blend = 0.0f;
+    packet->jump_sequence = 0;
     packet->action_movement_state = 0;
-    packet->unknown_664 = 0.0f;
-    packet->gamepad->runtime_flags &= ~GAMEPAD_AI_USE_FORCE;
-    packet->gamepad->runtime_flags &= ~GAMEPAD_AI_FORCE_PUSH;
-    packet->secondary_flags &= ~0x400;
-    packet->input_state = 0;
-    packet->unknown_648 = 0;
-    packet->random_context = (i8)(qrand() / 0x8000);
-    packet->unknown_694 = 0.0f;
-    packet->unknown_698 = 0.0f;
-    packet->unknown_670 = 0.0f;
-    packet->unknown_6d0 = 0.0f;
-    packet->unknown_6e8 = 0.0f;
-    packet->unknown_700 = 0.0f;
-    packet->unknown_714 = 0.0f;
-    packet->context_animation = 0;
-    packet->unknown_720 = 0.0f;
-    packet->context_mode = 0;
-    packet->unknown_76e = 0;
-    packet->unknown_724 = 0.0f;
-    packet->linked_object = NULL;
-    packet->movement_angle_0 = -1;
-    packet->movement_angle_2 = -1;
-    packet->movement_angle_3 = -1;
+    packet->jump_reentry_timer = 0.0f;
+    packet->pad->runtime_flags &= ~GAMEPAD_AI_USE_FORCE;
+    packet->pad->runtime_flags &= ~GAMEPAD_AI_FORCE_PUSH;
+    packet->flags_e20 &= ~0x400;
+    packet->unknown_d20 = 0;
+    packet->unknown_d0c = 0;
+    packet->combo_style = (u8)(qrand() / 0x8000);
+    packet->quick_shoot_timer = 0.0f;
+    packet->torpedo_fire_cooldown = 0.0f;
+    packet->timer_d34 = 0.0f;
+    packet->engine_level = 0.0f;
+    packet->fall_animation_timer = 0.0f;
+    packet->unknown_dc4 = 0.0f;
+    packet->block_cooldown = 0.0f;
+    packet->queued_context_animation = 0;
+    packet->hold_timer = 0.0f;
+    packet->combo_stage = 0;
+    packet->jump_variant_state = 0;
+    packet->ai_hop_timer = 0.0f;
+    packet->rider = NULL;
+    packet->previous_block_animation = -1;
+    packet->held_movement_animation = -1;
+    packet->released_movement_animation = -1;
 }
 
 i32 MovingBackwards(GAMEOBJECT *object) {
-    GAMEPAD *pad = object->pad;
+    GAMEPAD *pad = object->player.pad;
     i32 difference;
     if (pad->operator_data != NULL && pad->input_magnitude != 0.0f) {
-        difference = RotDiff(object->pad->input_angle + GameCam->input_yaw, object->unknown_276);
+        difference = RotDiff(object->player.pad->input_angle + GameCam->input_yaw, object->unknown_276);
         if (difference < -0x4000 || difference > 0x4000) {
             return 1;
         }
@@ -434,13 +376,13 @@ void PushAway(NUVEC *position, f32 radius, NUVEC *minimum, NUVEC *maximum, GAMEO
     }
     for (i = 0; i < count; ++i, ++object) {
         if (object == excluded || !(object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) ||
-            !(object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) || object->dead || (object->flags_e20 & 0x20)) {
+            !(object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) || object->dead || (object->player.flags_e20 & 0x20)) {
             continue;
         }
         if ((flags & 2) && !object->unknown_281) {
             continue;
         }
-        if (U64_PAIR(&CInfo[object->character_context].flags) & 0x40000000) {
+        if (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x40000000) {
             continue;
         }
         if (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) {
@@ -530,7 +472,7 @@ i32 (*Player_ToggleSubCharacterFn)(GAMEOBJECT *, i32, i32) = 0;
 void (*Player_ToggledCharacterFn)(GAMEOBJECT *, i32) = 0;
 
 void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
-    f32 hold_time = object->input_toggle_hold_time;
+    f32 hold_time = object->player.input_toggle_hold_time;
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i32 old_id;
     i32 left;
@@ -545,12 +487,13 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
     u32 right_mask;
     FULLDEBUGTOGGLE = 0;
     if ((HUB_ADATA != NULL && world->area == HUB_ADATA) || FadeSys.fade != 0.0f ||
-        (U64_PAIR(&CInfo[object->character_context].flags) & 0x100) != 0 || object->takeover_source != NULL || FreePlay == 0) {
+        (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x100) != 0 || object->player.takeover_source != NULL ||
+        FreePlay == 0) {
         return;
     }
     if ((MiniCutCam != 0 && object->player_controlled && (object->flags_1fc_word & 0x100) == 0) || object->dead != 0 ||
-        object->pad == ViewCamGetGamePad()) {
-        object->input_toggle_hold_time = TOGGLEHOLDTIME;
+        object->player.pad == ViewCamGetGamePad()) {
+        object->player.input_toggle_hold_time = TOGGLEHOLDTIME;
         return;
     }
     old_id = (i16)object->id;
@@ -569,31 +512,31 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
             left_mask &= ~(u32)GAMEPAD_LIFT;
             right_mask &= ~(u32)GAMEPAD_LIFT;
         }
-        left = object->pad->buttons_pressed & left_mask;
-        right = object->pad->buttons_pressed & right_mask;
+        left = object->player.pad->buttons_pressed & left_mask;
+        right = object->player.pad->buttons_pressed & right_mask;
         if (left != 0 && right != 0) {
             left = 0;
             right = 0;
         }
         if (left == 0 && right == 0 && object->player_controlled) {
-            left = object->pad->buttons_held & left_mask;
-            right = object->pad->buttons_held & right_mask;
+            left = object->player.pad->buttons_held & left_mask;
+            right = object->player.pad->buttons_held & right_mask;
             if ((left != 0 && right != 0) || (left == 0 && right == 0)) {
                 left = 0;
                 right = 0;
-                object->input_toggle_hold_time = TOGGLEHOLDTIME;
+                object->player.input_toggle_hold_time = TOGGLEHOLDTIME;
             } else {
-                hold_time = object->input_toggle_hold_time - FRAMETIME;
-                object->input_toggle_hold_time = hold_time;
+                hold_time = object->player.input_toggle_hold_time - FRAMETIME;
+                object->player.input_toggle_hold_time = hold_time;
                 if (hold_time <= 0.0f) {
-                    object->input_toggle_hold_time = TOGGLEREPEATTIME;
+                    object->player.input_toggle_hold_time = TOGGLEREPEATTIME;
                 } else {
                     left = 0;
                     right = 0;
                 }
             }
         }
-        hold_time = object->input_toggle_hold_time;
+        hold_time = object->player.input_toggle_hold_time;
         if (left == 0 && right == 0) {
             return;
         }
@@ -699,7 +642,7 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
     if (Player_ToggledCharacterFn != NULL) {
         Player_ToggledCharacterFn(object, left);
     }
-    object->input_toggle_hold_time = hold_time;
+    object->player.input_toggle_hold_time = hold_time;
     if (sound != 0) {
         if (left != 0) {
             GameAudio_PlaySfx(0x23, &object->collision_position, 0, 0);
@@ -718,28 +661,28 @@ i32 Player_HasInvincibility(GAMEOBJECT *object) {
     if (Cheats_CheckFlags(CHEAT_INVINCIBILITY) != 0) {
         return 1;
     }
-    return object != NULL && object->powerup_time > 0.0f;
+    return object != NULL && object->player.powerup_time > 0.0f;
 }
 
 i32 Player_HasFastBuild(GAMEOBJECT *object) {
     if (Cheats_CheckFlags(CHEAT_FAST_BUILD) != 0) {
         return 1;
     }
-    return object != NULL && object->powerup_time > 0.0f;
+    return object != NULL && object->player.powerup_time > 0.0f;
 }
 
 i32 Player_HasDeflectBolts(GAMEOBJECT *object) {
     if (Cheats_CheckFlags(CHEAT_DEFLECT_BOLTS) != 0) {
         return 1;
     }
-    return object != NULL && object->powerup_time > 0.0f;
+    return object != NULL && object->player.powerup_time > 0.0f;
 }
 
 i32 fun_0055f290(GAMEOBJECT *object) {
     if (Cheats_CheckFlags(CHEAT_DOUBLE_BOLT_DAMAGE)) {
         return 1;
     }
-    if (object != NULL && object->powerup_time > 0.0f) {
+    if (object != NULL && object->player.powerup_time > 0.0f) {
         return 1;
     }
     return 0;
@@ -759,14 +702,14 @@ i32 Player_HasDoubleBoltDamage_FromBolt(BOLT *bolt) {
     if (Cheats_CheckFlags(CHEAT_DOUBLE_BOLT_DAMAGE) != 0) {
         return 1;
     }
-    return object != NULL && object->powerup_time > 0.0f;
+    return object != NULL && object->player.powerup_time > 0.0f;
 }
 
 i32 Player_HasDoubleWeaponDamage(GAMEOBJECT *object) {
     if (Cheats_CheckFlags(CHEAT_DOUBLE_WEAPON_DAMAGE) != 0) {
         return 1;
     }
-    return object != NULL && object->powerup_time > 0.0f;
+    return object != NULL && object->player.powerup_time > 0.0f;
 }
 
 i32 CanWearHatsInFreePlay(i32 id) {
@@ -795,7 +738,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
     if (object == NULL) {
         return;
     }
-    restore_hitpoints = object->player_index != -1 && object->character_context == CHARACTER_CONTEXT_DOOMED;
+    restore_hitpoints = object->player_index != -1 && object->player.character_context == CHARACTER_CONTEXT_DOOMED;
     if (reset_moves != 0) {
         if (position == NULL) {
             position = Player_StartPos(object);
@@ -811,17 +754,17 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
         object->initial_position = object->position;
         plr_lastpos = object->collision_position;
         object->start_position = object->collision_position;
-        object->reset_velocity = v000;
-        object->velocity = object->reset_velocity;
+        object->player.reset_velocity = v000;
+        object->velocity = object->player.reset_velocity;
         GetTopBot(object);
         GameObjectDimensions(object);
-        object->flags_e20 &= ~0x08000000u;
+        object->player.flags_e20 &= ~0x08000000u;
         object->use_model_origin = 0;
         object->origin_joint_ready = 0;
         GameObjectOrigin(object);
-        ResetRumble(&object->pad->rumble);
+        ResetRumble(&object->player.pad->rumble);
         ResetLights(&object->position, &object->lighting_packet, WORLD->rtl_set);
-        ResetMiniAnimPacket(&object->mini_anim_packet, -1);
+        ResetMiniAnimPacket(&object->player.mini_anim_packet, -1);
         object->sock_position.sock_index = -1;
         object->sock_position.segment = -1;
         if (WORLD->sock_sys != NULL) {
@@ -831,7 +774,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
             }
             ComplexSockPosition(WORLD->sock_sys, &object->position, object->sock_position.sock_index, object->sock_position.segment,
                                 &object->sock_position);
-            ComplexSockAngles(&object->sock_angles);
+            ComplexSockAngles(&object->player.sock_angles);
             if (object->player_index < 2 && object->sock_position.sock_index != -1) {
                 if (BONUS_GUNSHIP_ADATA != NULL && WORLD->area == BONUS_GUNSHIP_ADATA) {
                     object->position = object->sock_position.midpoint;
@@ -874,10 +817,10 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
         object->unknown_276 = facing;
         object->roll_angle = 0;
         NuVecRotateYValZ(&object->facing_direction, 1.0f, facing);
-        object->current_speed_mul = 1.0f;
-        object->current_speed_bias = 0.0f;
+        object->player.current_speed_mul = 1.0f;
+        object->player.current_speed_bias = 0.0f;
         CurrentStart(object, 0, 1);
-        object->flags_e20 &= ~0x08000000u;
+        object->player.flags_e20 &= ~0x08000000u;
         object->flags_ef0 &= ~0x02040000u;
         object->model_draw_result = 1;
         object->use_model_origin = 0;
@@ -903,50 +846,50 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
             if (object->current_hp > object->unknown_107e) {
                 object->current_hp = (i8)object->unknown_107e;
             }
-            object->vehicle_secondary_hp = 4;
+            object->player.vehicle_secondary_hp = 4;
         }
         if ((ResetBits & 8) != 0) {
             player_index = object->player_index;
             if (PlayerProgress[player_index].field_b != 0) {
-                object->jump_variant_state = 1;
+                object->player.jump_variant_state = 1;
             }
-            object->vehicle_secondary_hp = PlayerProgress[player_index].unknown_9;
+            object->player.vehicle_secondary_hp = PlayerProgress[player_index].unknown_9;
         }
         ResetPlayerAI(object);
         object->last_safe_position = object->position;
         object->ai_update_position = object->position;
         if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
-            object->in_narrow_socket = ObjInNarrowSock(object, WORLD->sock_sys, WORLD->level_idx);
-            object->unknown_dc8 = GetVehicleSpeedMul(object, 0.0f);
+            object->player.in_narrow_socket = ObjInNarrowSock(object, WORLD->sock_sys, WORLD->level_idx);
+            object->player.unknown_dc8 = GetVehicleSpeedMul(object, 0.0f);
         } else {
-            object->unknown_dc8 = 0.0f;
+            object->player.unknown_dc8 = 0.0f;
         }
-        if (object->unknown_dc8 > 0.0f) {
-            object->velocity.x = NuTrigTable[object->facing_angle >> 1] * object->unknown_dc8;
-            object->velocity.z = NuTrigTable[((object->facing_angle + 0x4000) >> 1) & 0x7fff] * object->unknown_dc8;
+        if (object->player.unknown_dc8 > 0.0f) {
+            object->velocity.x = NuTrigTable[object->facing_angle >> 1] * object->player.unknown_dc8;
+            object->velocity.z = NuTrigTable[((object->facing_angle + 0x4000) >> 1) & 0x7fff] * object->player.unknown_dc8;
         }
     } else {
-        object->unknown_dc8 = 0.0f;
+        object->player.unknown_dc8 = 0.0f;
     }
     object->flags_1fc_word &= 0xfffdfa83u;
     object->collision_scale = 1.0f;
     object->flags_ef0 |= 0x80;
     object->unknown_1010 = 0.0f;
-    object->unknown_da8 = 0.0f;
+    object->player.unknown_da8 = 0.0f;
     // MATCH-EXCEPTION: the original clears bit 8 as or 0x100 then xor 0x100 in a register; a plain &= ~0x100
     // emits a memory and.
     object->flags_1f8 |= 0x100;
     object->flags_1f8 ^= 0x100;
-    object->flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
-    object->directional_seek_multiplier = 1.0f;
+    object->player.flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
+    object->player.directional_seek_multiplier = 1.0f;
     object->dead = 0;
-    object->wall_run_state = 0;
+    object->player.wall_run_state = 0;
     object->previous_floor_height = 2000000.0f;
     object->effect_flags = 0;
-    object->field_dbc = 0.0f;
+    object->player.field_dbc = 0.0f;
     object->unknown_f10 = 0.0f;
-    object->camera_screen_position.z = -1.0f;
-    object->unknown_de0 = 0.0f;
+    object->player.camera_screen_position.z = -1.0f;
+    object->player.unknown_de0 = 0.0f;
 }
 
 static i32 Customise_FindLetter(char character) {

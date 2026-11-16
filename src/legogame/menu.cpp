@@ -726,7 +726,7 @@ extern "C" {
                     readpads_always = 1;
                 }
                 if (second_active != 0 && first_active == 0) {
-                    pad = Player[1]->pad;
+                    pad = Player[1]->player.pad;
                 }
             } else {
                 first_active = 0;
@@ -903,7 +903,7 @@ extern "C" void MenuUpdatePauseMain(MENU *menu) {
         if (item == drop_item) {
             i32 player = -1;
             for (i32 i = 0; i < 8; ++i) {
-                if (Player[i] && Player[i]->pad == (GAMEPAD *)&GamePadStorage[pause_i_pad]) {
+                if (Player[i] && Player[i]->player.pad == (GAMEPAD *)&GamePadStorage[pause_i_pad]) {
                     player = i;
                 }
                 if (Player[i]) {

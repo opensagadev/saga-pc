@@ -446,9 +446,9 @@ static ATTRACTO_SHARD_READER *AttractoSelectShard(WORLDINFO *world, GAMEOBJECT *
             f32 dx;
             f32 dy;
             f32 distance;
-            dx = AttractoFabs(shard->screen_position.x - object->external_force.x);
+            dx = AttractoFabs(shard->screen_position.x - object->player.external_force.x);
             if (dx < (f64)0.2f) {
-                dy = AttractoFabs(shard->screen_position.y - object->external_force.y);
+                dy = AttractoFabs(shard->screen_position.y - object->player.external_force.y);
                 if (dy < (f64)0.2f) {
                     distance = NuVecDistSqr(&shard->position, &object->collision_position, &delta);
                     if (distance < best) {
@@ -483,14 +483,14 @@ static ATTRACTO_SHARD_READER *AttractoSelectShard(WORLDINFO *world, GAMEOBJECT *
 }
 
 static void AttractoStartSuction(GAMEOBJECT *object) {
-    object->character_context = CHARACTER_CONTEXT_ATTRACTO_TARGET;
-    object->context_timer = 0.0f;
-    object->unknown_7aa = ACTION_ATTRACT;
-    object->context_duration = 0.2f;
-    object->external_force.x = object->camera_screen_position.x;
-    object->external_force.y = object->camera_screen_position.y;
-    object->external_force.z = 1.0f;
-    object->launch_origin = v000;
+    object->player.character_context = CHARACTER_CONTEXT_ATTRACTO_TARGET;
+    object->player.context_timer = 0.0f;
+    object->player.unknown_7aa = ACTION_ATTRACT;
+    object->player.context_duration = 0.2f;
+    object->player.external_force.x = object->player.camera_screen_position.x;
+    object->player.external_force.y = object->player.camera_screen_position.y;
+    object->player.external_force.z = 1.0f;
+    object->player.launch_origin = v000;
 }
 
 NUVEC AttractoBackPackCountPos = {0.0f, 0.45f, 0.15f};
@@ -499,7 +499,8 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     i32 available = 0;
     char text[32];
     NUVEC position;
-    if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->suit != NULL && (object->suit->flags & SUIT_ATTRACT) != 0) {
+    if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->player.suit != NULL &&
+        (object->player.suit->flags & SUIT_ATTRACT) != 0) {
         GAME_MESSAGE *message;
         available = 1;
         sprintf(text, "%i", object->unknown_1062);
@@ -511,24 +512,24 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             message->alpha = (u8)(i32)(((f64)game_pulse * (f64)0.2f + (f64)0.6f) * 128.0);
         }
     }
-    if (object->character_context == CHARACTER_CONTEXT_ATTRACTO_DEPOSIT) {
-        if (object->character_model->action_animations[object->unknown_7aa] != NULL &&
-            AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0) == NULL) {
+    if (object->player.character_context == CHARACTER_CONTEXT_ATTRACTO_DEPOSIT) {
+        if (object->character_model->action_animations[object->player.unknown_7aa] != NULL &&
+            AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0) == NULL) {
             return;
         }
-        if ((object->pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
-            object->context_timer = (f64)object->context_timer + (f64)FRAMETIME;
-            object->context_duration = (f64)object->context_duration - (f64)FRAMETIME;
-            if (!(object->context_duration <= 0.0f)) {
+        if ((object->player.pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
+            object->player.context_timer = (f64)object->player.context_timer + (f64)FRAMETIME;
+            object->player.context_duration = (f64)object->player.context_duration - (f64)FRAMETIME;
+            if (!(object->player.context_duration <= 0.0f)) {
                 return;
             }
             if (object->unknown_1062 > 0) {
-                ATTRACTO *attracto = object->grapple;
+                ATTRACTO *attracto = object->player.grapple;
                 if (attracto->collected_count < attracto->capacity) {
                     --object->unknown_1062;
                     ++attracto->collected_count;
-                    object->context_duration = 0.2f;
-                    attracto = object->grapple;
+                    object->player.context_duration = 0.2f;
+                    attracto = object->player.grapple;
                     if (attracto->collected_count == attracto->capacity) {
                         attracto->filled = 1;
                     } else if (object->unknown_1062 != 0) {
@@ -536,44 +537,44 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                     }
                 }
             }
-            object->character_context = CHARACTER_CONTEXT_NONE;
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
         check_context:
-            if (object->character_context == CHARACTER_CONTEXT_NONE) {
+            if (object->player.character_context == CHARACTER_CONTEXT_NONE) {
                 AttractoStartSuction(object);
             }
         } else {
-            object->context_duration = (f64)object->context_duration - (f64)FRAMETIME;
-            if (object->context_duration <= 0.0f) {
-                object->character_context = CHARACTER_CONTEXT_NONE;
+            object->player.context_duration = (f64)object->player.context_duration - (f64)FRAMETIME;
+            if (object->player.context_duration <= 0.0f) {
+                object->player.character_context = CHARACTER_CONTEXT_NONE;
             }
         }
         return;
     }
-    if (object->character_context == CHARACTER_CONTEXT_ATTRACTO_TARGET) {
+    if (object->player.character_context == CHARACTER_CONTEXT_ATTRACTO_TARGET) {
         i32 red;
         i32 green;
         i32 blue;
-        if ((object->pad->buttons_held & GAMEPAD_SPECIAL) == 0 && !(object->context_timer < 0.3f)) {
-            object->character_context = CHARACTER_CONTEXT_NONE;
+        if ((object->player.pad->buttons_held & GAMEPAD_SPECIAL) == 0 && !(object->player.context_timer < 0.3f)) {
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
             return;
         }
-        if (object->character_model->action_animations[object->unknown_7aa] == NULL ||
-            AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0) != NULL) {
+        if (object->character_model->action_animations[object->player.unknown_7aa] == NULL ||
+            AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0) != NULL) {
             f32 x;
             f32 y;
             ATTRACTO_SHARD_READER *nearest;
-            object->context_timer = (f64)object->context_timer + (f64)FRAMETIME;
-            x = (f64)object->pad->input_direction_z * 1.25;
-            y = (f64)object->pad->input_direction_x * 1.25;
-            if (object->context_timer < 0.25f) {
-                f32 ramp = (f64)object->context_timer * 4.0;
+            object->player.context_timer = (f64)object->player.context_timer + (f64)FRAMETIME;
+            x = (f64)object->player.pad->input_direction_z * 1.25;
+            y = (f64)object->player.pad->input_direction_x * 1.25;
+            if (object->player.context_timer < 0.25f) {
+                f32 ramp = (f64)object->player.context_timer * 4.0;
                 x = (f64)x * (f64)ramp;
                 y = (f64)y * (f64)ramp;
             }
-            object->launch_origin.x = SeekValF(object->launch_origin.x, x, 10.0f);
-            object->launch_origin.y = SeekValF(object->launch_origin.y, y, 10.0f);
-            object->external_force.x = (f64)object->external_force.x + (f64)object->launch_origin.x * (f64)FRAMETIME;
-            object->external_force.y = (f64)object->external_force.y + (f64)object->launch_origin.y * (f64)FRAMETIME;
+            object->player.launch_origin.x = SeekValF(object->player.launch_origin.x, x, 10.0f);
+            object->player.launch_origin.y = SeekValF(object->player.launch_origin.y, y, 10.0f);
+            object->player.external_force.x = (f64)object->player.external_force.x + (f64)object->player.launch_origin.x * (f64)FRAMETIME;
+            object->player.external_force.y = (f64)object->player.external_force.y + (f64)object->player.launch_origin.y * (f64)FRAMETIME;
             nearest = AttractoSelectShard(world, object);
             if (nearest != NULL) {
                 object->movement_facing_angle = NuAtan2D((f64)nearest->position.x - (f64)object->collision_position.x,
@@ -582,13 +583,13 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                     Shard_Collect((SHARD_s *)nearest, object);
                 } else {
                     nearest->flags |= SHARD_RANDOM_OFFSET;
-                    NewRumble(object->pad->bound_pad, (f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.4f, 0);
+                    NewRumble(object->player.pad->bound_pad, (f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.4f, 0);
                 }
             }
         }
-        KeepPointOnScreen(&object->external_force, &object->launch_origin);
+        KeepPointOnScreen(&object->player.external_force, &object->player.launch_origin);
         Batarang_GetSightInfo((i16)object->id, &red, &green, &blue, NULL);
-        AddGameMessage("[  ]", &object->external_force, 1.0f, NULL, 0.0f, red, green, blue, GAMEMSG_ONE_FRAME | GAMEMSG_KEEP, 0.0f);
+        AddGameMessage("[  ]", &object->player.external_force, 1.0f, NULL, 0.0f, red, green, blue, GAMEMSG_ONE_FRAME | GAMEMSG_KEEP, 0.0f);
         return;
     }
     if (available && object->unknown_281 != 0 && ObjLandReady(object)) {
@@ -597,17 +598,17 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         ATTRACTO *attracto = Attracto_FindNearest(world, &object->lower_position, object, &distance);
         if (attracto != NULL) {
             radius = (f64)radius * (f64)radius;
-            if (distance < radius && object->unknown_1062 > 0 && (object->pad->buttons_pressed & GAMEPAD_SPECIAL) != 0) {
-                object->character_context = CHARACTER_CONTEXT_ATTRACTO_DEPOSIT;
-                object->context_timer = 0.0f;
-                object->grapple = attracto;
-                object->unknown_7aa = ACTION_TRANSFER;
+            if (distance < radius && object->unknown_1062 > 0 && (object->player.pad->buttons_pressed & GAMEPAD_SPECIAL) != 0) {
+                object->player.character_context = CHARACTER_CONTEXT_ATTRACTO_DEPOSIT;
+                object->player.context_timer = 0.0f;
+                object->player.grapple = attracto;
+                object->player.unknown_7aa = ACTION_TRANSFER;
                 object->movement_facing_angle = attracto->angle;
                 return;
             }
         }
-        if (object->model_draw_result != 0 && object->camera_screen_position.z > 0.0f &&
-            (object->pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
+        if (object->model_draw_result != 0 && object->player.camera_screen_position.z > 0.0f &&
+            (object->player.pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
             AttractoStartSuction(object);
         }
     }

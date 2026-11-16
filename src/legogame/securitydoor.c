@@ -379,39 +379,39 @@ ADDGIZMOTYPE *SecurityDoors_RegisterGizmo(i32 unused_type_id) {
 }
 
 static void SecurityDoorStart(GAMEOBJECT *object, SECURITY_DOOR_RECORD *door, i32 facing) {
-    object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
-    object->context_timer = 0.0f;
-    object->character_context = CHARACTER_CONTEXT_SECURITY;
-    object->grapple = door;
-    object->unknown_7aa = ACTION_SECURITY;
-    object->context_duration = AnimDuration((i16)object->id, 0xad, 0.0f, 0.0f, 1);
-    if (object->context_duration <= 0.0f) {
-        object->context_duration = 1.0f;
+    object->player.context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
+    object->player.context_timer = 0.0f;
+    object->player.character_context = CHARACTER_CONTEXT_SECURITY;
+    object->player.grapple = door;
+    object->player.unknown_7aa = ACTION_SECURITY;
+    object->player.context_duration = AnimDuration((i16)object->id, 0xad, 0.0f, 0.0f, 1);
+    if (object->player.context_duration <= 0.0f) {
+        object->player.context_duration = 1.0f;
     }
-    object->context_variant_flags |= 0x20;
+    object->player.context_variant_flags |= 0x20;
     if (facing != 0) {
-        object->movement_facing_angle = object->security_door->yaw + 0x8000;
-        object->security_door->state = SECURITYDOOR_STATE_IN_USE;
+        object->movement_facing_angle = object->player.security_door->yaw + 0x8000;
+        object->player.security_door->state = SECURITYDOOR_STATE_IN_USE;
     } else {
-        object->movement_facing_angle = object->security_door->yaw;
+        object->movement_facing_angle = object->player.security_door->yaw;
     }
 }
 
 void SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     f32 *playing = NULL;
-    if (object->character_context == CHARACTER_CONTEXT_SECURITY) {
+    if (object->player.character_context == CHARACTER_CONTEXT_SECURITY) {
         f32 elapsed;
-        if (object->character_model->action_animations[object->unknown_7aa] != NULL) {
-            playing = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
+        if (object->character_model->action_animations[object->player.unknown_7aa] != NULL) {
+            playing = AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0);
             if (playing == NULL) {
                 return;
             }
         }
-        elapsed = (f64)object->context_timer + (f64)FRAMETIME;
-        object->context_timer = elapsed;
-        if (elapsed >= object->context_duration) {
-            object->character_context = CHARACTER_CONTEXT_NONE;
-            if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
+        elapsed = (f64)object->player.context_timer + (f64)FRAMETIME;
+        object->player.context_timer = elapsed;
+        if (elapsed >= object->player.context_duration) {
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
+            if ((object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                 return;
             }
         } else {
@@ -419,15 +419,15 @@ void SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             if (playing == NULL) {
                 return;
             }
-            frame = AnimListFrame(object->character_model, object->unknown_7aa, 0);
+            frame = AnimListFrame(object->character_model, object->player.unknown_7aa, 0);
             if (!(frame >= 1.0f && *playing >= frame)) {
                 return;
             }
         }
-        if ((object->context_variant_flags & 0x20) != 0) {
-            object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
-            object->security_door->state = SECURITYDOOR_STATE_OPEN;
-            NewRumble(object->pad->bound_pad, 0.6f, 0);
+        if ((object->player.context_variant_flags & 0x20) != 0) {
+            object->player.context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
+            object->player.security_door->state = SECURITYDOOR_STATE_OPEN;
+            NewRumble(object->player.pad->bound_pad, 0.6f, 0);
         }
         return;
     }
@@ -443,7 +443,7 @@ void SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             return;
         }
         range = (f64)range * (f64)range;
-        if (!(distance < range) || (object->pad->buttons_pressed & GAMEPAD_SPECIAL) == 0) {
+        if (!(distance < range) || (object->player.pad->buttons_pressed & GAMEPAD_SPECIAL) == 0) {
             return;
         }
         SecurityDoorStart(object, door, 1);

@@ -1332,7 +1332,7 @@ PART *TargetPart(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 radi
         if (!(dot > NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff]) || !(nearest_distance > distance)) {
             continue;
         }
-        if (part == object->collision_target) {
+        if (part == object->player.collision_target) {
             previous = part;
         } else {
             nearest_distance = distance;

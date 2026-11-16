@@ -74,7 +74,7 @@ typedef struct OBJECT_GRAPPLE_MOTION_VIEW { // size 0x1074
     u8 input_flags;                         // 0x1072
 } OBJECT_GRAPPLE_MOTION_VIEW;
 
-#define GRAPPLE_CURRENT ((GRAPPLE_MOTION *)object->grapple)
+#define GRAPPLE_CURRENT ((GRAPPLE_MOTION *)object->player.grapple)
 
 typedef struct grapple_load_extra_s { // size 0xf8
     char name[16];                    // 0x00
@@ -286,11 +286,11 @@ GAMEOBJECT *Grapple_Occupied(void *grapple, GAMEOBJECT *excluded, AIPATHCNX *con
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
         if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 &&
             excluded != object) {
-            if (object->character_context == LEGOCONTEXT_GRAPPLE && object->grapple == grapple) {
+            if (object->player.character_context == LEGOCONTEXT_GRAPPLE && object->player.grapple == grapple) {
                 return object;
             }
             if (connection != NULL && object->ai_packet.path_info.connection == connection && LEGOCONTEXT_JUMP != -1 &&
-                object->character_context == LEGOCONTEXT_JUMP) {
+                object->player.character_context == LEGOCONTEXT_JUMP) {
                 return object;
             }
         }
@@ -314,9 +314,9 @@ static void Grapple_FindNearestInList(NUVEC *position, GRAPPLE_MOTION *grapple, 
                 }
                 if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
                     (object->unknown_281 != 0 || !(object->velocity.y <= 0.0f) ||
-                     (object->character_context != CHARACTER_CONTEXT_NONE &&
-                      (LEGOCONTEXT_JUMP == -1 || object->character_context != LEGOCONTEXT_JUMP ||
-                       !(object->context_timer >= (f64)0.1f))))) {
+                     (object->player.character_context != CHARACTER_CONTEXT_NONE &&
+                      (LEGOCONTEXT_JUMP == -1 || object->player.character_context != LEGOCONTEXT_JUMP ||
+                       !(object->player.context_timer >= (f64)0.1f))))) {
                     continue;
                 }
             }
@@ -493,13 +493,13 @@ static i32 GrappleAttachmentPositions(GAMEOBJECT *object, NUVEC **positions) {
     i32 count = 1;
     i32 joint = object->character_data->game_character->grapple_locators[0];
     if (joint != -1 && object->character_model->points_of_interest[joint] != NULL) {
-        positions[0] = (NUVEC *)&object->locator_matrices[joint].m30;
+        positions[0] = (NUVEC *)&object->player.locator_matrices[joint].m30;
         joint = object->character_data->game_character->grapple_locators[1];
         if (joint != -1 && object->character_model->points_of_interest[joint] != NULL) {
-            positions[1] = (NUVEC *)&object->locator_matrices[joint].m30;
+            positions[1] = (NUVEC *)&object->player.locator_matrices[joint].m30;
             count = 2;
         }
-    } else if (((GRAPPLE_MOTION *)object->grapple)->disabled) {
+    } else if (((GRAPPLE_MOTION *)object->player.grapple)->disabled) {
         positions[0] = &object->collision_position;
     } else {
         positions[0] = &object->upper_position;
@@ -508,21 +508,21 @@ static i32 GrappleAttachmentPositions(GAMEOBJECT *object, NUVEC **positions) {
 }
 
 extern "C" void Grapple_DrawLine(GAMEOBJECT *object) {
-    GRAPPLE_MOTION *grapple = (GRAPPLE_MOTION *)object->grapple;
-    if (!grapple->disabled && object->character_model->model_data_b[object->unknown_7aa] != NULL &&
-        AnimPlaying(&object->anim_packet, object->unknown_7aa, 0, 0) == NULL) {
+    GRAPPLE_MOTION *grapple = (GRAPPLE_MOTION *)object->player.grapple;
+    if (!grapple->disabled && object->character_model->model_data_b[object->player.unknown_7aa] != NULL &&
+        AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 0, 0) == NULL) {
         return;
     }
-    if (object->unknown_7b3 == 1) {
+    if (object->player.unknown_7b3 == 1) {
         return;
     }
 
     NURND_VERTEX3D vertices[2];
     NUVEC *positions[2];
-    grapple = (GRAPPLE_MOTION *)object->grapple;
+    grapple = (GRAPPLE_MOTION *)object->player.grapple;
     vertices[1].colour = vertices[0].colour = grapple->reversed ? 0xff003f5fu : GRAPPLE_RGBA;
     i32 count = GrappleAttachmentPositions(object, positions);
-    vertices[0].position = ((GRAPPLE_MOTION *)object->grapple)->hook_position;
+    vertices[0].position = ((GRAPPLE_MOTION *)object->player.grapple)->hook_position;
     vertices[1].position = *positions[0];
     NuRndrLine3d(vertices, ZipUpLineMaterial, NULL);
     if (count == 2) {
@@ -530,7 +530,7 @@ extern "C" void Grapple_DrawLine(GAMEOBJECT *object) {
         vertices[1].position = *positions[1];
         NuRndrLine3d(vertices, ZipUpLineMaterial, NULL);
     }
-    grapple = (GRAPPLE_MOTION *)object->grapple;
+    grapple = (GRAPPLE_MOTION *)object->player.grapple;
     if (grapple->disabled && !grapple->reversed) {
         if (GrappleCurvedRopeEnabled != 0) {
             vertices[0].position = vertices[1].position;
@@ -538,7 +538,7 @@ extern "C" void Grapple_DrawLine(GAMEOBJECT *object) {
         } else {
             for (i32 point = 0; point < 6; ++point) {
                 vertices[0] = vertices[1];
-                vertices[1].position = ((GRAPPLE_MOTION *)object->grapple)->rope_points[point];
+                vertices[1].position = ((GRAPPLE_MOTION *)object->player.grapple)->rope_points[point];
                 vertices[1].colour = GRAPPLE_RGBA;
                 NuRndrLine3d(vertices, ZipUpLineMaterial, NULL);
             }
@@ -793,8 +793,8 @@ extern "C" void Grapples_Update(void *world_pointer, void *unused_system, f32 un
         }
         if ((attached->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 && (attached->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 &&
             attached->dead == 0) {
-            linked = attached->takeover_source;
-            if (linked != NULL && context != -1 && linked->character_context == context) {
+            linked = attached->player.takeover_source;
+            if (linked != NULL && context != -1 && linked->player.character_context == context) {
                 grapple->position = attached->lower_position;
                 grapple->y_rotation = (u16)(attached->unknown_276 + 0x8000);
                 Grapple_Reset(grapple);
@@ -885,7 +885,7 @@ GRAPPLE_DYNAMIC *Grapple_RemoveDynamic(void *attached_object) {
 }
 
 static f32 Grapple_MaximumLength(GAMEOBJECT *object) {
-    GRAPPLE_MOTION *grapple = (GRAPPLE_MOTION *)object->grapple;
+    GRAPPLE_MOTION *grapple = (GRAPPLE_MOTION *)object->player.grapple;
     f32 ground =
         grapple->shadow_probe_position.y - (grapple->ground_position.y + (object->upper_position.y - object->lower_position.y) + (f64)0.1f);
     if (grapple->disabled) {
@@ -906,25 +906,26 @@ static u16 Grapple_QuantizeAngle(GRAPPLE_MOTION *grapple, u16 angle) {
 }
 
 static void Grapple_InitializeSwingAngle(GAMEOBJECT *object) {
-    if (!(object->pad->input_magnitude > 0.0f) && (object->velocity.x != 0.0f || object->velocity.z != 0.0f)) {
-        object->takeover_start_angle = NuAtan2D(object->velocity.x, object->velocity.z);
+    if (!(object->player.pad->input_magnitude > 0.0f) && (object->velocity.x != 0.0f || object->velocity.z != 0.0f)) {
+        object->player.takeover_start_angle = NuAtan2D(object->velocity.x, object->velocity.z);
     } else {
-        object->takeover_start_angle = object->movement_facing_angle;
+        object->player.takeover_start_angle = object->movement_facing_angle;
     }
     if (PlayerGrappleSwingMode == 1) {
-        object->takeover_start_angle = Grapple_QuantizeAngle((GRAPPLE_MOTION *)object->grapple, object->takeover_start_angle);
+        object->player.takeover_start_angle =
+            Grapple_QuantizeAngle((GRAPPLE_MOTION *)object->player.grapple, object->player.takeover_start_angle);
     }
 }
 
 static void Grapple_Jump(GAMEOBJECT *object) {
     StartJump(object, 0);
-    object->flags_e24 |= APIOBJECT_NO_JUMP;
+    object->player.flags_e24 |= APIOBJECT_NO_JUMP;
     GameAudio_PlaySfx(0x45, &object->collision_position, 0, 0);
     if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         Hint_SetComplete(LEGOHINT_GRAPPLE);
     }
-    GRAPPLE_MOTION *grapple = (GRAPPLE_MOTION *)object->grapple;
-    if (grapple->has_terrain_platform == 0 && object->unknown_7b3 == 1) {
+    GRAPPLE_MOTION *grapple = (GRAPPLE_MOTION *)object->player.grapple;
+    if (grapple->has_terrain_platform == 0 && object->player.unknown_7b3 == 1) {
         f32 height = ((f64)0.1f + grapple->position.y) - object->lower_position.y;
         if (height > 0.0f) {
             f32 square = -2.0 * object->character_data->game_character->gravity * height;
@@ -937,40 +938,41 @@ static void Grapple_Jump(GAMEOBJECT *object) {
 }
 
 extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
-    object->flags_e24 &= ~APIOBJECT_GRAPPLE_AT_MAX_LENGTH;
+    object->player.flags_e24 &= ~APIOBJECT_GRAPPLE_AT_MAX_LENGTH;
     if (LEGOCONTEXT_GRAPPLE == -1) {
         return;
     }
 
-    if (object->character_context == LEGOCONTEXT_GRAPPLE) {
+    if (object->player.character_context == LEGOCONTEXT_GRAPPLE) {
         if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 &&
-            ((OBJECT_GRAPPLE_MOTION_VIEW *)object)->can_use_object != object->grapple) {
+            ((OBJECT_GRAPPLE_MOTION_VIEW *)object)->can_use_object != object->player.grapple) {
             GRAPPLE_CURRENT->activation_progress = 0.0f;
-            object->character_context = CHARACTER_CONTEXT_NONE;
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
             return;
         }
-        if (object->unknown_7b3 == 1) {
-            if ((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0) {
+        if (object->player.unknown_7b3 == 1) {
+            if ((object->player.pad->buttons_pressed & GAMEPAD_JUMP) != 0) {
                 Grapple_Jump(object);
                 return;
             }
-            if (object->pad->input_magnitude == 0.0f || object->pad->input_angle <= 0x6000 || object->pad->input_angle >= 40960) {
+            if (object->player.pad->input_magnitude == 0.0f || object->player.pad->input_angle <= 0x6000 ||
+                object->player.pad->input_angle >= 40960) {
                 return;
             }
-            object->unknown_7b3 = 0;
-            object->unknown_7aa = LEGOACT_GRAPPLE_IDLE;
-            object->context_duration = 0.0f;
-            object->context_variant_flags &= ~APIOBJECT_GRAPPLE_CLIMB;
-            object->context_hover_target_y = 0.1f;
-            object->unknown_7a8 = 0x2000;
-            object->big_jump_animation = 0;
+            object->player.unknown_7b3 = 0;
+            object->player.unknown_7aa = LEGOACT_GRAPPLE_IDLE;
+            object->player.context_duration = 0.0f;
+            object->player.context_variant_flags &= ~APIOBJECT_GRAPPLE_CLIMB;
+            object->player.context_hover_target_y = 0.1f;
+            object->player.unknown_7a8 = 0x2000;
+            object->player.big_jump_animation = 0;
             if (PlayerGrappleSwingMode == 1) {
                 object->movement_facing_angle = GRAPPLE_CURRENT->y_rotation;
             }
             return;
         }
-        object->context_timer += FRAMETIME;
-        if ((GAMEPAD_JUMP & object->pad->buttons_pressed) != 0) {
+        object->player.context_timer += FRAMETIME;
+        if ((GAMEPAD_JUMP & object->player.pad->buttons_pressed) != 0) {
             if (GRAPPLE_CURRENT->disabled) {
                 GRAPPLE_CURRENT->activation_progress = 1.0f;
             }
@@ -982,7 +984,7 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
             (0 != GRAPPLE_CURRENT->has_terrain_platform &&
              (GRAPPLE_CURRENT->attached_object == NULL || GRAPPLE_CURRENT->ground_position.y == 2000000.0f))) {
             GRAPPLE_CURRENT->activation_progress = 0.0f;
-            object->character_context = CHARACTER_CONTEXT_NONE;
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
             GameCam_Blend(NULL, 0.5f, 0.0f, 1);
             return;
         }
@@ -991,20 +993,20 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
         i32 swing_positive = 0;
         i32 swing_negative = 0;
         i32 up = 0;
-        const u16 input_angle = GamePad_InputAngle(object, object->pad);
-        if (object->pad->input_magnitude == 0.0f && !GRAPPLE_CURRENT->disabled) {
-            if ((object->pad->buttons_pressed & GAMEPAD_SPECIAL) != 0) {
-                if ((object->context_variant_flags & APIOBJECT_GRAPPLE_CLIMB) != 0) {
-                    object->context_variant_flags &= ~APIOBJECT_GRAPPLE_CLIMB;
+        const u16 input_angle = GamePad_InputAngle(object, object->player.pad);
+        if (object->player.pad->input_magnitude == 0.0f && !GRAPPLE_CURRENT->disabled) {
+            if ((object->player.pad->buttons_pressed & GAMEPAD_SPECIAL) != 0) {
+                if ((object->player.context_variant_flags & APIOBJECT_GRAPPLE_CLIMB) != 0) {
+                    object->player.context_variant_flags &= ~APIOBJECT_GRAPPLE_CLIMB;
                 } else {
-                    object->context_variant_flags |= APIOBJECT_GRAPPLE_CLIMB;
+                    object->player.context_variant_flags |= APIOBJECT_GRAPPLE_CLIMB;
                     object->movement_facing_angle = static_cast<u16>(GRAPPLE_CURRENT->y_rotation + 0x8000);
                 }
             }
         } else {
-            object->context_variant_flags &= ~APIOBJECT_GRAPPLE_CLIMB;
+            object->player.context_variant_flags &= ~APIOBJECT_GRAPPLE_CLIMB;
         }
-        if (object->pad->input_magnitude != 0.0f || ((OBJECT_GRAPPLE_MOTION_VIEW *)object)->input_flags != 0) {
+        if (object->player.pad->input_magnitude != 0.0f || ((OBJECT_GRAPPLE_MOTION_VIEW *)object)->input_flags != 0) {
             const i32 difference = RotDiff(GRAPPLE_CURRENT->y_rotation, input_angle);
             const i32 absolute_difference = abs(difference);
             if (0x2000 >= absolute_difference || (((OBJECT_GRAPPLE_MOTION_VIEW *)object)->input_flags & 2) != 0) {
@@ -1031,61 +1033,62 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
             AnimBlendingFromTo(object->character_model, &object->anim_packet, LEGOACT_LEDGE_IDLE, LEGOACT_GRAPPLE_IDLE) != 0) {
             object->movement_facing_angle = static_cast<u16>(GRAPPLE_CURRENT->y_rotation + 0x8000);
         }
-        object->unknown_7aa = LEGOACT_GRAPPLE_IDLE;
-        if ((object->context_variant_flags & APIOBJECT_GRAPPLE_CLIMB) != 0 || (object->big_jump_animation <= 15 && up)) {
-            if (object->context_hover_target_y > 0.0f) {
+        object->player.unknown_7aa = LEGOACT_GRAPPLE_IDLE;
+        if ((object->player.context_variant_flags & APIOBJECT_GRAPPLE_CLIMB) != 0 || (object->player.big_jump_animation <= 15 && up)) {
+            if (object->player.context_hover_target_y > 0.0f) {
                 f32 speed;
                 if (-1 != LEGOACT_GRAPPLE_UP && object->character_model->model_data_b[LEGOACT_GRAPPLE_UP] != NULL) {
-                    object->unknown_7aa = LEGOACT_GRAPPLE_UP;
-                    speed = AnimSpeed(object->character_model, object->unknown_7aa);
+                    object->player.unknown_7aa = LEGOACT_GRAPPLE_UP;
+                    speed = AnimSpeed(object->character_model, object->player.unknown_7aa);
                     if (speed < 0.5f) {
                         speed = 0.5f;
                     }
                 } else {
                     speed = 1.0f;
                 }
-                object->context_hover_target_y -= speed * FRAMETIME;
-                if (object->context_hover_target_y < 0.0f) {
-                    object->context_hover_target_y = 0.0f;
+                object->player.context_hover_target_y -= speed * FRAMETIME;
+                if (object->player.context_hover_target_y < 0.0f) {
+                    object->player.context_hover_target_y = 0.0f;
                 }
                 if (Grapple_RopeSwingRotate != 0 && GRAPPLE_CURRENT->disabled) {
                     object->movement_facing_angle += static_cast<i32>(static_cast<u16>(Grapple_RopeSwingRotate) * FRAMETIME);
                 }
             }
-            if (!(object->context_hover_target_y <= 0.0f) || GRAPPLE_CURRENT->has_terrain_platform != 0 || GRAPPLE_CURRENT->disabled) {
-                object->context_duration = 0.0f;
+            if (!(object->player.context_hover_target_y <= 0.0f) || GRAPPLE_CURRENT->has_terrain_platform != 0 ||
+                GRAPPLE_CURRENT->disabled) {
+                object->player.context_duration = 0.0f;
             } else {
-                object->context_duration += FRAMETIME;
-                if (object->context_duration >= 0.5f) {
+                object->player.context_duration += FRAMETIME;
+                if (object->player.context_duration >= 0.5f) {
                     i16 animation = LEGOACT_GRAPPLE_HANG;
                     if (animation == -1 || object->character_model->model_data_b[animation] == NULL) {
                         animation = LEGOACT_LEDGE_IDLE;
                     }
                     if (animation != -1 && object->character_model->model_data_b[animation] != NULL) {
-                        object->unknown_7aa = animation;
-                        object->unknown_7b3 = 1;
+                        object->player.unknown_7aa = animation;
+                        object->player.unknown_7b3 = 1;
                         NUVEC offset = GrapplePointOffset;
                         NuVecRotateX(&offset, &offset, GRAPPLE_CURRENT->x_rotation);
                         offset.z += object->bounds_radius;
                         NuVecRotateY(&offset, &offset, GRAPPLE_CURRENT->y_rotation);
-                        NuVecAdd(&object->external_force, &GRAPPLE_CURRENT->position, &offset);
+                        NuVecAdd(&object->player.external_force, &GRAPPLE_CURRENT->position, &offset);
                         object->movement_facing_angle = static_cast<u16>(GRAPPLE_CURRENT->y_rotation + 0x8000);
                     }
                 }
             }
-        } else if (object->big_jump_animation <= 15) {
-            if (object->pad->input_magnitude == 0.0f && !down) {
-                if (!GRAPPLE_CURRENT->disabled && object->context_hover_target_y < (f64)0.1f) {
-                    object->context_hover_target_y += 0.75f * FRAMETIME;
-                    if (object->context_hover_target_y > (f64)0.1f) {
-                        object->context_hover_target_y = 0.1f;
+        } else if (object->player.big_jump_animation <= 15) {
+            if (object->player.pad->input_magnitude == 0.0f && !down) {
+                if (!GRAPPLE_CURRENT->disabled && object->player.context_hover_target_y < (f64)0.1f) {
+                    object->player.context_hover_target_y += 0.75f * FRAMETIME;
+                    if (object->player.context_hover_target_y > (f64)0.1f) {
+                        object->player.context_hover_target_y = 0.1f;
                     }
                 }
             } else if (down) {
                 f32 speed;
                 if (-1 != LEGOACT_GRAPPLE_DOWN && object->character_model->model_data_b[LEGOACT_GRAPPLE_DOWN] != NULL) {
-                    object->unknown_7aa = LEGOACT_GRAPPLE_DOWN;
-                    speed = AnimSpeed(object->character_model, object->unknown_7aa);
+                    object->player.unknown_7aa = LEGOACT_GRAPPLE_DOWN;
+                    speed = AnimSpeed(object->character_model, object->player.unknown_7aa);
                     if (speed < 0.5f) {
                         speed = 0.5f;
                     }
@@ -1094,59 +1097,59 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
                 }
                 f32 maximum_length;
                 maximum_length = Grapple_MaximumLength(object);
-                if (object->context_hover_target_y < maximum_length) {
-                    object->context_hover_target_y += speed * FRAMETIME;
-                    if (maximum_length < object->context_hover_target_y) {
-                        object->context_hover_target_y = maximum_length;
-                        object->flags_e24 |= APIOBJECT_GRAPPLE_AT_MAX_LENGTH;
+                if (object->player.context_hover_target_y < maximum_length) {
+                    object->player.context_hover_target_y += speed * FRAMETIME;
+                    if (maximum_length < object->player.context_hover_target_y) {
+                        object->player.context_hover_target_y = maximum_length;
+                        object->player.flags_e24 |= APIOBJECT_GRAPPLE_AT_MAX_LENGTH;
                     }
-                    object->context_duration = 0.0f;
+                    object->player.context_duration = 0.0f;
                     if (0 != Grapple_RopeSwingRotate && GRAPPLE_CURRENT->disabled) {
                         object->movement_facing_angle += static_cast<i32>(FRAMETIME * (static_cast<u16>(Grapple_RopeSwingRotate)));
                     }
                 } else {
-                    object->flags_e24 |= APIOBJECT_GRAPPLE_AT_MAX_LENGTH;
-                    object->unknown_7aa = LEGOACT_GRAPPLE_IDLE;
+                    object->player.flags_e24 |= APIOBJECT_GRAPPLE_AT_MAX_LENGTH;
+                    object->player.unknown_7aa = LEGOACT_GRAPPLE_IDLE;
                 }
             }
         }
         if (PlayerGrappleSwingMode == 0) {
             u16 angle = object->movement_facing_angle;
-            const u16 old_angle = object->takeover_start_angle;
+            const u16 old_angle = object->player.takeover_start_angle;
             if (angle >= 0x8000) {
                 angle += 0x8000;
             }
             i32 difference;
-            object->takeover_start_angle =
-                TurnRot(static_cast<u16>(object->takeover_start_angle * 2), static_cast<u16>(2 * angle), 0x2000, &difference) >> 1;
-            if ((difference > 0 && object->takeover_start_angle < old_angle) ||
-                (difference < 0 && object->takeover_start_angle > old_angle)) {
-                object->unknown_7a8 += 0x8000;
+            object->player.takeover_start_angle =
+                TurnRot(static_cast<u16>(object->player.takeover_start_angle * 2), static_cast<u16>(2 * angle), 0x2000, &difference) >> 1;
+            if ((difference > 0 && object->player.takeover_start_angle < old_angle) ||
+                (difference < 0 && object->player.takeover_start_angle > old_angle)) {
+                object->player.unknown_7a8 += 0x8000;
             }
         }
-        const f32 period = ((f64)object->context_hover_target_y / 1.5) * 2.0 + 1.0;
-        const u16 old_phase = object->unknown_7a8;
-        object->unknown_7a4 = 0;
-        object->unknown_7a8 = old_phase - static_cast<i32>((-65536.0 * FRAMETIME) * (1.0 / period));
-        if (object->pad->input_magnitude > 0.0f && 0 == object->big_jump_animation &&
+        const f32 period = ((f64)object->player.context_hover_target_y / 1.5) * 2.0 + 1.0;
+        const u16 old_phase = object->player.unknown_7a8;
+        object->player.unknown_7a4 = 0;
+        object->player.unknown_7a8 = old_phase - static_cast<i32>((-65536.0 * FRAMETIME) * (1.0 / period));
+        if (object->player.pad->input_magnitude > 0.0f && 0 == object->player.big_jump_animation &&
             (PlayerGrappleSwingMode == 0 || (swing_positive != 0 || swing_negative != 0))) {
             Grapple_InitializeSwingAngle(object);
-            object->big_jump_animation = 10;
-            object->unknown_7a8 = 0x2000;
-            if (abs(RotDiff(input_angle, object->takeover_start_angle)) < 0x4000) {
-                object->unknown_7a8 += 0x8000;
+            object->player.big_jump_animation = 10;
+            object->player.unknown_7a8 = 0x2000;
+            if (abs(RotDiff(input_angle, object->player.takeover_start_angle)) < 0x4000) {
+                object->player.unknown_7a8 += 0x8000;
             }
             return;
         }
-        if (!((old_phase < 0x8000 && object->unknown_7a8 >= 0x8000) || object->unknown_7a8 < old_phase)) {
+        if (!((old_phase < 0x8000 && object->player.unknown_7a8 >= 0x8000) || object->player.unknown_7a8 < old_phase)) {
             return;
         }
         i32 change;
-        if (object->pad->input_magnitude == 0.0f) {
+        if (object->player.pad->input_magnitude == 0.0f) {
             change = -10;
         } else {
             u16 angle;
-            if (object->big_jump_animation == 0 || (object->velocity.x == 0.0f && object->velocity.z == 0.0f)) {
+            if (object->player.big_jump_animation == 0 || (object->velocity.x == 0.0f && object->velocity.z == 0.0f)) {
                 angle = object->movement_facing_angle;
             } else {
                 angle = NuAtan2D(object->velocity.x, object->velocity.z);
@@ -1157,18 +1160,18 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
             const i32 swing_mode = PlayerGrappleSwingMode;
             if ((swing_mode == 0 && abs(RotDiff(angle, input_angle)) < 0x4000) ||
                 (swing_mode != 0 && (swing_positive != 0 || swing_negative != 0))) {
-                object->big_jump_animation += 10;
-                if (object->big_jump_animation > 60) {
-                    object->big_jump_animation = 60;
+                object->player.big_jump_animation += 10;
+                if (object->player.big_jump_animation > 60) {
+                    object->player.big_jump_animation = 60;
                 }
                 return;
             }
             change = -20;
         }
-        if (object->big_jump_animation + change < 0) {
-            object->big_jump_animation = 0;
+        if (object->player.big_jump_animation + change < 0) {
+            object->player.big_jump_animation = 0;
         } else {
-            object->big_jump_animation += change;
+            object->player.big_jump_animation += change;
         }
     } else {
         if (Grapples_Available == 0) {
@@ -1177,9 +1180,9 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
         if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->unknown_f00 != 1) {
             return;
         }
-        if (ObjLandReady(object) == 0 && (-1 == LEGOCONTEXT_JUMP || object->character_context != LEGOCONTEXT_JUMP)) {
-            if (LEGOCONTEXT_GLIDE == -1 || object->character_context != LEGOCONTEXT_GLIDE || -1 == LEGOACT_GLIDE ||
-                object->unknown_7aa != LEGOACT_GLIDE || object->grapple != NULL) {
+        if (ObjLandReady(object) == 0 && (-1 == LEGOCONTEXT_JUMP || object->player.character_context != LEGOCONTEXT_JUMP)) {
+            if (LEGOCONTEXT_GLIDE == -1 || object->player.character_context != LEGOCONTEXT_GLIDE || -1 == LEGOACT_GLIDE ||
+                object->player.unknown_7aa != LEGOACT_GLIDE || object->player.grapple != NULL) {
                 return;
             }
         }
@@ -1191,60 +1194,60 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
             return;
         }
         if (!((grapple->disabled && grapple->activation_progress <= 0.0f &&
-               (object->pad->input_magnitude > 0.0f || object->unknown_281 == 0)) ||
-              (!grapple->disabled && ((object->pad->buttons_pressed & GAMEPAD_SPECIAL) != 0 ||
+               (object->player.pad->input_magnitude > 0.0f || object->unknown_281 == 0)) ||
+              (!grapple->disabled && ((object->player.pad->buttons_pressed & GAMEPAD_SPECIAL) != 0 ||
                                       (4 == ((OBJECT_GRAPPLE_MOTION_VIEW *)object)->panel_use_request &&
                                        ((OBJECT_GRAPPLE_MOTION_VIEW *)object)->tube_entry_data != NULL))))) {
             SetHeadTarget(object, &grapple->hook_position, 4, 2.0f, 1.0f, 2.0f);
             return;
         }
-        object->character_context = static_cast<i8>(LEGOCONTEXT_GRAPPLE);
-        object->grapple = grapple;
-        object->unknown_7aa = LEGOACT_GRAPPLE_IDLE;
-        object->context_timer = 0.0f;
-        object->context_duration = 0.0f;
-        object->unknown_7b3 = 0;
-        object->context_hover_target_y = GrapplesFabs(grapple->shadow_probe_position.y - object->upper_position.y);
+        object->player.character_context = static_cast<i8>(LEGOCONTEXT_GRAPPLE);
+        object->player.grapple = grapple;
+        object->player.unknown_7aa = LEGOACT_GRAPPLE_IDLE;
+        object->player.context_timer = 0.0f;
+        object->player.context_duration = 0.0f;
+        object->player.unknown_7b3 = 0;
+        object->player.context_hover_target_y = GrapplesFabs(grapple->shadow_probe_position.y - object->upper_position.y);
         if (grapple->disabled) {
-            object->context_variant_flags &= ~APIOBJECT_GRAPPLE_CLIMB;
+            object->player.context_variant_flags &= ~APIOBJECT_GRAPPLE_CLIMB;
             SetWeaponIn(object);
         } else {
-            object->context_variant_flags |= APIOBJECT_GRAPPLE_CLIMB;
+            object->player.context_variant_flags |= APIOBJECT_GRAPPLE_CLIMB;
             object->movement_facing_angle = static_cast<u16>(grapple->y_rotation + 0x8000);
         }
         GameCam_Blend(NULL, 0.5f, 0.0f, 1);
         Grapple_InitializeSwingAngle(object);
         f32 maximum_length;
         maximum_length = Grapple_MaximumLength(object);
-        object->context_hover_target_y += 0.75f * FRAMETIME;
-        if (object->context_hover_target_y > maximum_length) {
-            object->context_hover_target_y = maximum_length;
+        object->player.context_hover_target_y += 0.75f * FRAMETIME;
+        if (object->player.context_hover_target_y > maximum_length) {
+            object->player.context_hover_target_y = maximum_length;
         }
-        object->unknown_7a8 = 0x2000;
-        object->big_jump_animation = 0;
-        if (object->pad->input_magnitude > 0.0f && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-            object->big_jump_animation = static_cast<u8>(
-                static_cast<i32>((object->pad->input_magnitude / object->character_data->game_character->run_speed) * 30.0f));
-            if (object->big_jump_animation > 0) {
-                if (object->big_jump_animation > 60) {
-                    object->big_jump_animation = 60;
+        object->player.unknown_7a8 = 0x2000;
+        object->player.big_jump_animation = 0;
+        if (object->player.pad->input_magnitude > 0.0f && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
+            object->player.big_jump_animation = static_cast<u8>(
+                static_cast<i32>((object->player.pad->input_magnitude / object->character_data->game_character->run_speed) * 30.0f));
+            if (object->player.big_jump_animation > 0) {
+                if (object->player.big_jump_animation > 60) {
+                    object->player.big_jump_animation = 60;
                 }
-                const u16 angle = object->takeover_start_angle;
-                if (abs(RotDiff(GamePad_InputAngle(object, object->pad), angle)) < 0x4000) {
-                    object->unknown_7a8 += 0x8000;
+                const u16 angle = object->player.takeover_start_angle;
+                if (abs(RotDiff(GamePad_InputAngle(object, object->player.pad), angle)) < 0x4000) {
+                    object->player.unknown_7a8 += 0x8000;
                 }
             }
         }
         GameAudio_PlaySfx(0x44, &object->upper_position, 0, 0);
-        object->jump_variant_state = 0;
+        object->player.jump_variant_state = 0;
     }
 }
 
 extern "C" {
 
     i32 IndyGrappleCanJump(GAMEOBJECT *object) {
-        if (LEGOCONTEXT_GRAPPLE != -1 && object->character_context == LEGOCONTEXT_GRAPPLE &&
-            (object->unknown_7b3 == 1 || (object->unknown_7b3 == 0 && object->context_duration >= 0.5f))) {
+        if (LEGOCONTEXT_GRAPPLE != -1 && object->player.character_context == LEGOCONTEXT_GRAPPLE &&
+            (object->player.unknown_7b3 == 1 || (object->player.unknown_7b3 == 0 && object->player.context_duration >= 0.5f))) {
             return 1;
         }
         return 0;
@@ -1254,21 +1257,21 @@ extern "C" {
         i32 amplitude;
         i32 angle;
         target->x = 0.0f;
-        target->y = -object->context_hover_target_y;
+        target->y = -object->player.context_hover_target_y;
         target->z = 0.0f;
-        amplitude = (object->big_jump_animation << 16) / 360;
-        angle = (i32)((f32)amplitude * NuTrigTable[object->unknown_7a8 >> 1] * GRAPPLE_CURRENT->swing_scale);
+        amplitude = (object->player.big_jump_animation << 16) / 360;
+        angle = (i32)((f32)amplitude * NuTrigTable[object->player.unknown_7a8 >> 1] * GRAPPLE_CURRENT->swing_scale);
         NuVecRotateX(target, target, angle);
-        NuVecRotateY(target, target, object->takeover_start_angle);
+        NuVecRotateY(target, target, object->player.takeover_start_angle);
         NuVecAdd(target, target, &GRAPPLE_CURRENT->shadow_probe_position);
     }
 
     i32 Grapple_SetTargetMom(GAMEOBJECT *object) {
         NUVEC point;
-        if (object->unknown_7b3 == 1) {
-            object->target_velocity.x = (object->external_force.x - object->upper_position.x) * 20.0;
-            object->target_velocity.y = (object->external_force.y - object->upper_position.y) * 20.0;
-            object->target_velocity.z = (object->external_force.z - object->upper_position.z) * 20.0;
+        if (object->player.unknown_7b3 == 1) {
+            object->target_velocity.x = (object->player.external_force.x - object->upper_position.x) * 20.0;
+            object->target_velocity.y = (object->player.external_force.y - object->upper_position.y) * 20.0;
+            object->target_velocity.z = (object->player.external_force.z - object->upper_position.z) * 20.0;
         } else {
             Grapple_SetPlayerTargetPoint(object, &point);
             object->target_velocity.x = (point.x - object->upper_position.x) * 5.0;
@@ -1279,16 +1282,16 @@ extern "C" {
     }
 
     void Grapple_SetRotOrder(GAMEOBJECT *object) {
-        if (object->unknown_7b3 != 1) {
+        if (object->player.unknown_7b3 != 1) {
             object->movement_mode = 2;
         }
     }
 }
 
 extern "C" i32 Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position) {
-    position->x = ((GRAPPLE_MOTION *)object->grapple)->hook_position.x;
-    position->y = ((GRAPPLE_MOTION *)object->grapple)->hook_position.y - object->context_hover_target_y;
-    position->z = ((GRAPPLE_MOTION *)object->grapple)->hook_position.z;
+    position->x = ((GRAPPLE_MOTION *)object->player.grapple)->hook_position.x;
+    position->y = ((GRAPPLE_MOTION *)object->player.grapple)->hook_position.y - object->player.context_hover_target_y;
+    position->z = ((GRAPPLE_MOTION *)object->player.grapple)->hook_position.z;
     return 1;
 }
 

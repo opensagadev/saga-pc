@@ -130,7 +130,8 @@ static GAMEOBJECT *SpinnerOwner(GIZSPINNER_s *spinner) {
         return NULL;
     }
     for (i32 index = 0; index < 8; ++index) {
-        if (Player[index] != NULL && Player[index]->character_context == LEGOCONTEXT_PUSHSPINNER && Player[index]->grapple == spinner) {
+        if (Player[index] != NULL && Player[index]->player.character_context == LEGOCONTEXT_PUSHSPINNER &&
+            Player[index]->player.grapple == spinner) {
             return Player[index];
         }
     }
@@ -598,12 +599,12 @@ extern "C" {
 }
 
 extern "C" void GizSpinner_PushFail(GAMEOBJECT *object, GIZSPINNER_s *) {
-    NewBuzzFrames(object->pad->bound_pad, 1, 0);
+    NewBuzzFrames(object->player.pad->bound_pad, 1, 0);
     NUVEC position;
-    position.x = ((GIZSPINNER_s *)object->grapple)->position.x;
+    position.x = ((GIZSPINNER_s *)object->player.grapple)->position.x;
     i32 random = qrand();
-    position.y = random * (f64)(1.0f / 65535.0f) * (f64)0.25f + (f64)0.15f + ((GIZSPINNER_s *)object->grapple)->position.y;
-    position.z = ((GIZSPINNER_s *)object->grapple)->position.z;
+    position.y = random * (f64)(1.0f / 65535.0f) * (f64)0.25f + (f64)0.15f + ((GIZSPINNER_s *)object->player.grapple)->position.y;
+    position.z = ((GIZSPINNER_s *)object->player.grapple)->position.z;
     AddGameDebris(WORLD->game_debris_sys, GizSpinnerGDeb_Fail[1], &position);
     AddGameDebris(WORLD->game_debris_sys, GizSpinnerGDeb_Fail[2], &position);
     GameAudio_PlaySfx(0x39, &position, 0, 0);
@@ -1010,7 +1011,7 @@ extern "C" {
             GameAudio_PlaySfx(0x29, &bolt->position, 0, 0);
             Bolt_AddDeflectedBolt(bolt, &bolt->velocity, &bolt->hit_normal, hit_flags);
         }
-        NewRumble(owner->pad->bound_pad, 0.5f, 0);
+        NewRumble(owner->player.pad->bound_pad, 0.5f, 0);
         Bolt_PlayHitSfx(bolt);
     }
 }
@@ -1205,9 +1206,9 @@ extern "C" void GizSpinner_Update(GIZSPINNER_s *spinner) {
         GAMEOBJECT *object = Obj;
         for (i32 index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
             if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
-                object->dead != 0 || (object->flags_e20 & 0x20) != 0 ||
-                (U64_PAIR(&CInfo[object->character_context].flags) & 0x40000000) != 0 ||
-                (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) != 0 || minimum.x > object->collision_max.x ||
+                object->dead != 0 || (object->player.flags_e20 & 0x20) != 0 ||
+                (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x40000000) != 0 ||
+                (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x8000) != 0 || minimum.x > object->collision_max.x ||
                 maximum.x < object->collision_min.x || minimum.z > object->collision_max.z || maximum.z < object->collision_min.z) {
                 continue;
             }
@@ -1381,8 +1382,8 @@ extern "C" void GizSpinners_Update(void *world_pointer, void *unused, f32 unused
         if ((spinner->flags & GIZSPINNER_FLAG_SHADOW_MODE_ONLY) != 0 && ShadowMode == 0) {
             spinner->state_flags = (spinner->state_flags & ~SPINNER_STATE_PUSHED) | SPINNER_STATE_HALTED;
             if (SpinnerOwner(spinner) != NULL) {
-                Player[index]->character_context = CHARACTER_CONTEXT_NONE;
-                Player[index]->grapple = NULL;
+                Player[index]->player.character_context = CHARACTER_CONTEXT_NONE;
+                Player[index]->player.grapple = NULL;
             }
         }
         if (spinner->output_pause_time > 0.0f) {
@@ -1400,7 +1401,7 @@ extern "C" void GizSpinners_Update(void *world_pointer, void *unused, f32 unused
             spinner->flags |= 0x40;
             GAMEOBJECT *owner = SpinnerOwner(spinner);
             if (owner != NULL) {
-                NewRumble(owner->pad->bound_pad, 0.8f, 0);
+                NewRumble(owner->player.pad->bound_pad, 0.8f, 0);
             }
         }
         if (output != -1) {

@@ -127,7 +127,7 @@ void SetObjAsHeadTarget(GAMEOBJECT *object, GAMEOBJECT *target, i8 unused_priori
     if (object != NULL && target != NULL && target->character_data != NULL) {
         joint = target->character_data->game_character->head_locator;
         if (joint != -1) {
-            SetHeadTarget(object, (NUVEC *)&target->locator_matrices[joint].m30, 2, 1.0f, 0.0f, 0.0f);
+            SetHeadTarget(object, (NUVEC *)&target->player.locator_matrices[joint].m30, 2, 1.0f, 0.0f, 0.0f);
         } else {
             SetHeadTarget(object, &target->collision_position, 2, 1.0f, 0.0f, 0.0f);
         }
@@ -175,7 +175,7 @@ static void HeadMovementLegacy(GAMEOBJECT *object) {
     if (object->head_target != NULL && object->head_target_timer >= object->head_target_delay &&
         object->character_data->game_character->head_locator != -1 && allowed) {
         NuVecInvMtxTransform(&direction, &object->head_target_position,
-                             &object->locator_matrices[object->character_data->game_character->head_locator]);
+                             &object->player.locator_matrices[object->character_data->game_character->head_locator]);
         if (direction.z < 0.0f) {
             f32 yaw = NuAtan2(-direction.x, -direction.z);
             first = joints->overrides[joints->count].rotation.x - yaw;
@@ -275,7 +275,7 @@ static void HeadMovementAlternate(GAMEOBJECT *object) {
             object->flags_ef0 |= 0x10000u;
 
             NuVecInvMtxTransform(&direction, &object->head_target_position,
-                                 &object->locator_matrices[object->character_data->game_character->head_locator]);
+                                 &object->player.locator_matrices[object->character_data->game_character->head_locator]);
             if (direction.z < 0.0f) {
                 f32 pitch = NuAtan2(-direction.y, NuFsqrt(direction.x * direction.x + direction.z * direction.z));
                 first = pitch - joints->overrides[joints->count].rotation.y;
@@ -378,7 +378,7 @@ static void HeadMovementOrdinary(GAMEOBJECT *object) {
             object->flags_ef0 |= 0x10000u;
 
             NuVecInvMtxTransform(&direction, &object->head_target_position,
-                                 &object->locator_matrices[object->character_data->game_character->head_locator]);
+                                 &object->player.locator_matrices[object->character_data->game_character->head_locator]);
             if (direction.z < 0.0f) {
                 f32 pitch = NuAtan2(-direction.y, NuFsqrt(direction.x * direction.x + direction.z * direction.z));
                 first = joints->overrides[joints->count].rotation.y - pitch;
@@ -439,7 +439,7 @@ static void HeadMovementOrdinary(GAMEOBJECT *object) {
 }
 
 void HeadMovement(GAMEOBJECT *object) {
-    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x200000) != 0) {
+    if ((U64_PAIR(&CInfo[object->player.character_context].flags) & 0x200000) != 0) {
         return;
     }
     if ((object->character_data->game_character->flags_094 & CHARACTER_OPTION_ATATHEADMOVEMENT) != 0) {
