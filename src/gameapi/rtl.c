@@ -989,8 +989,10 @@ i32 rtlDynamicSetDirection(i32 id, NUVEC *direction) {
     return 0;
 }
 
-// Version 2/3 sets kept their fog table in the light slots from 64 onwards.
-#define RTL_OLD_FOG(set) ((RTL_FOG_MIGRATION *)&(set)->lights[64])
+/* Version 2/3 sets kept their fog table in the light slots from 64 onwards. */
+static RTL_FOG_MIGRATION *rtlOldFog(RTL_SET *set) {
+    return (RTL_FOG_MIGRATION *)&set->lights[64];
+}
 
 RTL_SET *rtlLoadSet(char *path, VARIPTR *buffer, i32 buffer_end) {
     RTL_SET *set;
@@ -1004,16 +1006,16 @@ RTL_SET *rtlLoadSet(char *path, VARIPTR *buffer, i32 buffer_end) {
             rtlSwapSetEndianess(path);
             break;
         case 2:
-            RTL_OLD_FOG(set)[0].radius = 10.0f;
-            NuVecClear(&RTL_OLD_FOG(set)[0].position);
-            RTL_OLD_FOG(set)[0].type = 1;
+            rtlOldFog(set)[0].radius = 10.0f;
+            NuVecClear(&rtlOldFog(set)[0].position);
+            rtlOldFog(set)[0].type = 1;
             for (i = 1; i < 32; ++i) {
-                RTL_OLD_FOG(set)[i].type = 0;
+                rtlOldFog(set)[i].type = 0;
             }
         case 3:
             i = 32;
             while (i--) {
-                set->fog[i] = RTL_OLD_FOG(set)[i];
+                set->fog[i] = rtlOldFog(set)[i];
             }
             for (i = 64; i < 128; ++i) {
                 set->lights[i].type = 0;

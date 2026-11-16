@@ -129,12 +129,9 @@ void NetTransporter::RemoveListener(NetListenerInterface *client, u8 channel) {
     }
 }
 
-#define TT_FOR_EACH_CLIENT(entry)                                                                                                          \
-    for (NetTransportEntry *entry = (NetTransportEntry *)clients.head; entry != NULL; entry = (NetTransportEntry *)entry->next)
-
 i32 TTNetwork::PeerRequest(const V2Peer &peer) {
     i32 result = 1;
-    TT_FOR_EACH_CLIENT(entry) {
+    for (NetTransportEntry *entry = (NetTransportEntry *)clients.head; entry != NULL; entry = (NetTransportEntry *)entry->next) {
         if (!entry->client->PeerRequest(peer)) {
             result = 0;
         }
@@ -143,44 +140,44 @@ i32 TTNetwork::PeerRequest(const V2Peer &peer) {
 }
 
 void TTNetwork::PeerJoined(const V2Peer &peer) {
-    TT_FOR_EACH_CLIENT(entry) {
+    for (NetTransportEntry *entry = (NetTransportEntry *)clients.head; entry != NULL; entry = (NetTransportEntry *)entry->next) {
         entry->client->PeerJoined(peer);
     }
 }
 
 void TTNetwork::PeerLeft(const V2Peer &peer, i32 reason) {
-    TT_FOR_EACH_CLIENT(entry) {
+    for (NetTransportEntry *entry = (NetTransportEntry *)clients.head; entry != NULL; entry = (NetTransportEntry *)entry->next) {
         entry->client->PeerLeft(peer, reason);
     }
 }
 
 void TTNetwork::PeerDead(const V2Peer &peer) {
-    TT_FOR_EACH_CLIENT(entry) {
+    for (NetTransportEntry *entry = (NetTransportEntry *)clients.head; entry != NULL; entry = (NetTransportEntry *)entry->next) {
         entry->client->PeerDead(peer);
     }
 }
 
 void TTNetwork::FtpUpload(FtpFile *file) {
-    TT_FOR_EACH_CLIENT(entry) {
+    for (NetTransportEntry *entry = (NetTransportEntry *)clients.head; entry != NULL; entry = (NetTransportEntry *)entry->next) {
         entry->client->FtpUpload(file);
     }
 }
 
 void TTNetwork::FtpDownload(FtpFile *file) {
-    TT_FOR_EACH_CLIENT(entry) {
+    for (NetTransportEntry *entry = (NetTransportEntry *)clients.head; entry != NULL; entry = (NetTransportEntry *)entry->next) {
         entry->client->FtpDownload(file);
     }
 }
 
 void TTNetwork::FtpComplete(FtpFile *file, i32 result) {
-    TT_FOR_EACH_CLIENT(entry) {
+    for (NetTransportEntry *entry = (NetTransportEntry *)clients.head; entry != NULL; entry = (NetTransportEntry *)entry->next) {
         entry->client->FtpComplete(file, result);
     }
 }
 
 i32 TTNetwork::NosAcquire(NetworkObject *object, const V2Peer &peer) {
     i32 result = 1;
-    TT_FOR_EACH_CLIENT(entry) {
+    for (NetTransportEntry *entry = (NetTransportEntry *)clients.head; entry != NULL; entry = (NetTransportEntry *)entry->next) {
         if (!entry->client->NosAcquire(object, peer)) {
             result = 0;
         }
@@ -189,20 +186,20 @@ i32 TTNetwork::NosAcquire(NetworkObject *object, const V2Peer &peer) {
 }
 
 void TTNetwork::NosAdopted(NetworkObject *object, const V2Peer &peer) {
-    TT_FOR_EACH_CLIENT(entry) {
+    for (NetTransportEntry *entry = (NetTransportEntry *)clients.head; entry != NULL; entry = (NetTransportEntry *)entry->next) {
         entry->client->NosAdopted(object, peer);
     }
 }
 
 // noinline: the original calls UpdateClientStats out of line from TTNetwork::Update; VC8 would inline it there.
 __declspec(noinline) void TTNetwork::UpdateClientStats() {
-    TT_FOR_EACH_CLIENT(entry) {
+    for (NetTransportEntry *entry = (NetTransportEntry *)clients.head; entry != NULL; entry = (NetTransportEntry *)entry->next) {
         entry->stats.Update();
     }
 }
 
 void TTNetwork::DeliverMessage(NETMESSAGE &message, u8 channel, const V2Peer &peer) {
-    TT_FOR_EACH_CLIENT(entry) {
+    for (NetTransportEntry *entry = (NetTransportEntry *)clients.head; entry != NULL; entry = (NetTransportEntry *)entry->next) {
         if (entry->channel == channel) {
             entry->stats.totals.values[1] += message.GetSize();
             entry->stats.totals.values[3] += 1;
@@ -212,7 +209,7 @@ void TTNetwork::DeliverMessage(NETMESSAGE &message, u8 channel, const V2Peer &pe
 }
 
 void TTNetwork::RecordSent(NETMESSAGE message, u8 channel) {
-    TT_FOR_EACH_CLIENT(entry) {
+    for (NetTransportEntry *entry = (NetTransportEntry *)clients.head; entry != NULL; entry = (NetTransportEntry *)entry->next) {
         if (entry->channel == channel) {
             entry->stats.totals.values[0] += message.GetSize();
             entry->stats.totals.values[2] += 1;
@@ -223,7 +220,7 @@ void TTNetwork::RecordSent(NETMESSAGE message, u8 channel) {
 }
 
 void TTNetwork::RecordReceived(NETMESSAGE message, u8 channel) {
-    TT_FOR_EACH_CLIENT(entry) {
+    for (NetTransportEntry *entry = (NetTransportEntry *)clients.head; entry != NULL; entry = (NetTransportEntry *)entry->next) {
         if (entry->channel == channel) {
             entry->stats.totals.values[1] += message.GetSize();
             entry->stats.totals.values[3] += 1;
@@ -489,7 +486,7 @@ void TTNetwork::Display(ThingRenderData *data) {
         }
     }
     if (stats == NULL) {
-        TT_FOR_EACH_CLIENT(entry) {
+        for (NetTransportEntry *entry = (NetTransportEntry *)clients.head; entry != NULL; entry = (NetTransportEntry *)entry->next) {
             if (display_page == page++) {
                 stats = &entry->stats;
                 break;
