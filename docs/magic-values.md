@@ -128,6 +128,7 @@ same function initialises and steps (its values are indexes).
 | `cut_load_locator_type_s.flags`, `cut_scene_load_s.flags` (3 bits) | `CUTLOCATOR_*`, `CUTSCENE_*` (gcutscn.h) | the effect each locator type drives in `CutSceneLocatorFixUp` and the locator update; the scene's stream buffers, sound request and pending stream part |
 | `gizobstacle_s.config_flags` (9 bits) | `GIZOBSTACLE_CONFIG_*` (legoapi_types.h) | what `GizObstacleUpdate_Proximity` and `GizObstacle_SatisfyingTerrainChecks` do with each option; 0x40-0x200, 0x800, 0x1000 are left |
 | `bolt_s.flags`, set when shot or deflected; `GIZTURRET_s.behavior_flags` 0x8000 | `BOLT_PLAYER_1` ... `BOLT_DEFLECTED` (bolts.h), `TURRET_SHOOTS_OBSTRUCTIONS` | `Bolt_Add` (the owner's player number, an active player's bolts kept by `Bolt_Alloc` and the draw), the 0x13 test for obstruction hits that the turret option and the Kamino guns join, the deflected copy that gets no double damage |
+| `PART.active`, the runtime bits besides `PART_IN_USE` (11 bits) | `PART_STATE_*` (game_obj.h) | `AddPart` (lighting data or scale, the scale-up), `CastPart` (impact pending, the scale phases), the part update (stopped, below the cutoff height), the draw (drawn this frame), the thermal detonator's beep, water and reflection; 0x10, 0x80, 0x400, 0x800 and 0x1000 are left |
 | `bolt_s.flags`, `BOLTTYPE_s.flags_60` (7 bits) | `BOLT_NO_TERRAIN` ... `BOLT_SINGLE_DEBRIS` (bolts.h) | the bolt type keywords of `BoltType_ConfigKeywords` (no_terrain, canonlyhitplayers, nodeflect, converge, no_collide, trooper_bolt, single_debris) |
 | `game_message_s.flags`, `add_game_message_s.flags` (19 bits) | `GAMEMSG_*` (gizmopickup.h) | what `UpdateGameMessages`, `TransformGameMessages` and `DrawGameMessages` do with each bit (world position and scale, the moves and their easing curves, the fades, the object alpha, the slot and text handling) |
 | `gameanimset_s.state` | `GAMEANIMSET_STATE_*` (legoapi_types.h) | `GameAnimSet_EvaluateState` and `GameAnimSys_Update`: at start, playing forward, at end, playing backward, stopped part way |
@@ -177,15 +178,15 @@ same function initialises and steps (its values are indexes).
 Counted like the magic-state and magic-flag classes of `oddscan.py --magic` (a
 comparison, assignment or `case` with a value other than 0, 1 and -1, or a
 one-bit mask), per field. On 15 November 2026 the named constants stood at
-24852 sites and the literals at 8781 (73.9 % named); the 73 fields below hold
-3200 of the literals, and 1687 more fields have fewer than 20 sites each (5581
+24918 sites and the literals at 8715 (74.1 % named); the 73 fields below hold
+3133 of the literals, and 1683 more fields have fewer than 20 sites each (5582
 in all; `oddscan.py --magic` lists them by use).
 
 | Field | Sites | Values | Where | What is known |
 |---|---:|---|---|---|
 | `STATUS_STAGE_s.unknown_14` | 207 | -1 0 1 2 3 4 5 6 ... | legoapi/status_alternate.cpp, legogame/gamestatus.c | the step of each status screen stage; -1 before it starts, 0 at its start, then steps that differ per stage callback; no name table |
-| `*.flags` | 193 | 0x1 0x2 0x3 0x4 0x8 0x10 0x11 0x20 ... | gameapi/aisysall.c, legoapi/bolts.cpp | `.flags` members whose record the scan cannot resolve (unions, views, casts); name them through their record |
-| `flags` | 177 | 0x0 0x1 0x2 0x3 0x4 0x8 0x10 0x17 ... | nu2api/nu3d_includes.cpp, legoapi/bolts.cpp | bare `flags` locals and parameters of many functions; `magicnames.py --locals flags` lists them per function (GizSpinner_*, ObjHitObj, NuAnimBuff*, UpdateGameMessages) |
+| `flags` | 169 | 0x0 0x1 0x2 0x3 0x4 0x8 0x10 0x17 ... | nu2api/nu3d_includes.cpp, legoapi/bolts.cpp | bare `flags` locals and parameters of many functions; `magicnames.py --locals flags` lists them per function (GizSpinner_*, ObjHitObj, NuAnimBuff*, UpdateGameMessages) |
+| `*.flags` | 166 | 0x1 0x2 0x3 0x4 0x8 0x10 0x11 0x20 ... | gameapi/aisysall.c, nu2api/nu3d_includes.cpp | `.flags` members whose record the scan cannot resolve (unions, views, casts); name them through their record |
 | `gameobject_s.flags_e20` | 135 | 0x1 0x2 0x4 0x8 0x20 0x1000 0x4000 0x20000 ... | legogame/move.c, legogame/creature.c | runtime bits; 0x20 is tested to skip an object almost everywhere and cleared by UpdateGameObjects, its setter is not in the source yet |
 | `mode` | 123 | -1 0 1 2 3 4 5 6 ... | nu2api/nucore_includes.c, nu2api/nu3d_platform.cpp | bare `mode` locals and parameters; NuQFntPushPrintMode/NuQFntSetCoordinateSystem modes, EdFileOpen and NuFileOpenDF open modes |
 | `gameobject_s.flags_ef0` | 93 | 0x4 0x40 0x80 0x200 0x400 0x1000 0x2000 0x4000 ... | legogame/creature.c, legogame/move.c | runtime bits set in code, no keyword |
@@ -196,7 +197,6 @@ in all; `oddscan.py --magic` lists them by use).
 | `gameobject_s.flags_1f8` | 70 | 0x2 0x40 0x80 0x100 0x200 0x800 0x1000 0x4000 ... | gameapi/apiobject.c, legogame/creature.c | 0x40000 tested by the pause menu, network camera and game update |
 | `gameobject_s.unknown_7b3` | 57 | 0 1 2 3 4 5 6 7 | legoapi/carrying.c, legogame/move.c | a per-context sub-state (carrying, batarang, techno); meaning differs per context |
 | `gameobject_s.portal_flags` | 56 | 0x1 0x4 0x20 0x400 0x800 0x1000 0x8000 0x10000 ... | legogame/gameaiscript.c, legogame/game_obj.c | runtime bits (AttackOpponent sets 0x20 and 0x400) |
-| `PART.active` | 54 | 0x2 0x4 0x8 0x10 0x40 0x80 0x100 0x200 ... | legoapi/parts.c, legoapi/thermaldetonators.c | some of its sites already use PART_IN_* (anonymous enum/#define) names |
 | `AIPACKET.path_connection_state` | 53 | 0 1 2 3 4 5 | legoapi/batarang.cpp, legogame/starwars_gameai.c | path-following state; no strings |
 | `count` | 51 | -2 1 2 3 4 5 6 8 ... | legogame/hub.cpp, nu2api/shader_dictionary.cpp | no name table, keyword or label found yet |
 | `parameter` | 49 | 0 1 2 3 4 5 6 7 ... | nu2api/nu3d_includes.cpp, legoapi/lighting_unit.cpp | no name table, keyword or label found yet |
@@ -235,6 +235,7 @@ in all; `oddscan.py --magic` lists them by use).
 | `debris` | 24 | 34 38 44 45 52 69 73 74 ... | legogame/game_obj.c, legogame/game.cpp | no name table, keyword or label found yet |
 | `gameobject_s.movement_mode` | 24 | 0 1 2 3 4 5 | legogame/move.c, legogame/creature.c | no name table, keyword or label found yet |
 | `gizmofns_s.options` | 24 | 8 12 24 32 40 44 48 64 ... | legoapi/gizbuildit.cpp, legoapi/gizmoblowups.c | no name table, keyword or label found yet |
+| `panel_movement_s.flags` | 24 | 0x1 0x2 0x4 0x8 0x10 0x20 0x40 0x80 | legogame/gizpanel.c, legogame/gameaiscript.c | no name table, keyword or label found yet |
 | `starfighter_s.model_id` | 24 | -307 -300 -299 -298 -297 54 | legogame/chris.cpp | no name table, keyword or label found yet |
 | `state` | 24 | 2 3 4 5 6 7 8 9 | legogame/hub.cpp, legoapi/jumping.c | bare `state` locals; ShaderCompilerParser::ParseDeclaration and ProcessDirective are token-driven parser states (one per expected token) |
 | `EdClass.flags` | 23 | 0x2 0x8 0x40 0x400000 0x4000000 0x10000000 0x20000000 | editor/edlevelall.cpp | no name table, keyword or label found yet |
@@ -244,12 +245,12 @@ in all; `oddscan.py --magic` lists them by use).
 | `green` | 22 | 31 63 143 191 223 255 65280 | legogame/panel.cpp, legogame/menu.cpp | no name table, keyword or label found yet |
 | `menu` | 22 | 8 12 13 14 15 16 17 | legogame/dropinout.c, legogame/panel.cpp | no name table, keyword or label found yet |
 | `nudisplaylistitem_s.id` | 22 | 0 1 3 4 | nu2api/nu3d_includes.cpp, nu2api/nurndr.c | no name table, keyword or label found yet |
-| `panel_movement_s.flags` | 22 | 0x1 0x2 0x4 0x8 0x10 0x20 0x40 0x80 | legogame/gizpanel.c | no name table, keyword or label found yet |
 | `panel_movement_s.model_variant` | 22 | 0 1 2 3 | legogame/gizpanel.c | no name table, keyword or label found yet |
 | `buildit_reset_s.state_flags` | 21 | 0x1 0x2 0x4 0x8 0x10 0x40 0x80 0x100 ... | legoapi/gizbuildit.cpp | some of its sites already use GIZBUILDIT_STATE_* (anonymous enum/#define) names |
 | `eduiitem_s.text_alignment` | 21 | 16 32 64 | gameapi/edfile.c, gameapi/edui_widget_render.cpp | no name table, keyword or label found yet |
 | `model` | 21 | -307 14 25 53 54 84 85 86 ... | legogame/chris.cpp, legogame/creature.c | no name table, keyword or label found yet |
 | `*.active` | 20 | 2 3 5 6 7 9 | nu2api/input_runtime.cpp, legoapi/debris_engine.c | some of its sites already use PART_IN_* (anonymous enum/#define) names |
+| `TERRAIN_PLATFORM.flags` | 20 | 0x1 0x2 0x4 | nu2api/nuterrain.c, nu2api/terrain_collision.cpp | some of its sites already use TERRAIN_PLATFORM_* (anonymous enum/#define) names |
 | `buildit_reset_s.availability_flags` | 20 | 0x1 0x2 0x4 0x80 0x200 | legoapi/gizbuildit.cpp | no name table, keyword or label found yet |
 | `format` | 20 | 0 1 2 3 4 5 6 7 ... | nu2api/nu3d_platform.cpp, nu2api/nu3d_includes.cpp | no name table, keyword or label found yet |
 | `gameobject_s.action_movement_state` | 20 | 2 3 4 5 7 | legogame/move.c, legoapi/jumping.c | jump and movement mode of the jump code (JumpCode states 2-9) |
