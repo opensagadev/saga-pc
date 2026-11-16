@@ -135,7 +135,6 @@ typedef struct podrace_netpacket_s {
 
 /* Pod sprint (Episode I bonus) level callbacks. */
 
-#define PODSPRINT_NET ((PODSPRINT_NETPACKET *)podsprint_netpacket)
 /* Last player positions used for the finish line tests. */
 static NUVEC pod_old_pos[2];
 
@@ -348,8 +347,8 @@ CLIENT_MINES client_mines = {0};
 
 void fun_004d8970(NUVEC **positions, u32 **present_words, u32 **exploded_words) {
     *positions = client_mines.positions;
-    *present_words = client_mines.present_words;
-    *exploded_words = client_mines.exploded_words;
+    *present_words = client_mines.present.words;
+    *exploded_words = client_mines.exploded.words;
 }
 
 static void InitPodRaceMines(void) {
@@ -369,7 +368,7 @@ static void InitPodRaceMines(void) {
     }
 }
 
-i32 pod_mines_bitfield[2] = {0};
+MINE_BITS pod_mines_bitfield = {0};
 i32 clients_mines_bitfield[2] = {0};
 GAMEOBJECT *PodPacemaker = 0;
 i32 mine_count = 0;
@@ -377,8 +376,8 @@ i32 mine_count = 0;
 static void PodRaceResetMines(void) {
     clients_mines_bitfield[0] = 0;
     clients_mines_bitfield[1] = 0;
-    pod_mines_bitfield[0] = 0;
-    pod_mines_bitfield[1] = 0;
+    pod_mines_bitfield.words[0] = 0;
+    pod_mines_bitfield.words[1] = 0;
     memset(minesys.mines, 0, sizeof(minesys.mines));
     memset(&client_mines, 0, sizeof(client_mines));
     minesys.spawn_timer = AIPositionUnset;
@@ -431,8 +430,8 @@ static void *CreatePodRaceMine(NUVEC *pos) {
             }
             entry->roty = (u16)NuRandInt();
             bit = 1 << i;
-            *(u64 *)pod_mines_bitfield |= (u64)(i64)bit;
-            *(u64 *)client_mines.present_words &= (u64)(i64)~bit;
+            pod_mines_bitfield.bits |= (u64)(i64)bit;
+            client_mines.present.bits &= (u64)(i64)~bit;
             mine_count++;
             return entry;
         }
@@ -453,7 +452,7 @@ static void PodRaceExplodeMine(MINE_ENTRY *entry, GAMEOBJECT *object) {
     PlaySfx("Explode1", &object->collision_position);
     PodLoseSpeed(object, 1, 1);
     mask = (u64)(i64) ~(1 << (entry - minesys.mines));
-    *(u64 *)pod_mines_bitfield &= mask;
+    pod_mines_bitfield.bits &= mask;
     memset(entry, 0, sizeof(*entry));
     mine_count--;
 }
@@ -499,7 +498,7 @@ void UpdatePodRaceMines(void) {
             }
             NuVecSub(&delta, &entry->pos, &GameCam->position);
             if (GameCam->dir.x * delta.x + GameCam->dir.y * delta.y + GameCam->dir.z * delta.z < 0.0) {
-                *(u64 *)pod_mines_bitfield &= (u64)(i64) ~(1 << (entry - minesys.mines));
+                pod_mines_bitfield.bits &= (u64)(i64) ~(1 << (entry - minesys.mines));
                 memset(entry, 0, sizeof(*entry));
                 mine_count--;
                 continue;
@@ -533,8 +532,7 @@ void UpdatePodRaceMines(void) {
         }
     } else {
         for (i = 0; i < 64; i++) {
-            if (((u64)(i64)(1 << i) & *(u64 *)client_mines.present_words) == 0 ||
-                ((u64)(i64)(1 << i) & *(u64 *)client_mines.exploded_words) != 0) {
+            if (((u64)(i64)(1 << i) & client_mines.present.bits) == 0 || ((u64)(i64)(1 << i) & client_mines.exploded.bits) != 0) {
                 continue;
             }
             radius = minesys.mine_radius * PodMineAreaScale;
@@ -549,7 +547,7 @@ void UpdatePodRaceMines(void) {
                 distance = delta.x * delta.x + delta.z * delta.z;
                 if (distance < reach * reach) {
                     PodRaceExplodeClientMine(&client_mines.positions[i], object);
-                    *(u64 *)client_mines.exploded_words |= (u64)(i64)(1 << i);
+                    client_mines.exploded.bits |= (u64)(i64)(1 << i);
                 }
             }
         }
@@ -576,7 +574,7 @@ void PodRaceADraw(WORLDINFO *world) {
         }
     } else {
         for (i = 0; i < 64; i++) {
-            if ((*(u64 *)client_mines.present_words & (u64)(i64)(1 << i)) != 0) {
+            if ((client_mines.present.bits & (u64)(i64)(1 << i)) != 0) {
                 NuMtxSetIdentity(&mtx);
                 NuMtxTranslate(&mtx, &client_mines.positions[i]);
                 NuSpecialDrawAt(&minesys.mine_special, &mtx);
@@ -957,7 +955,7 @@ void PodRaceUpdate(WORLDINFO *world, f32 dt) {
 
 static f32 podhurryalpha = 0.0f;
 static f32 podstartracealpha = 0.0f;
-struct PODSPRINTNETPACKET_s *podsprint_netpacket = 0;
+PODSPRINT_NETPACKET *podsprint_netpacket = 0;
 static f32 podlapalpha = 0.0f;
 /* Pod sprint HUD and boulder tuning. */
 static f32 PodSprintLapIconScale = 0.16f;
@@ -1600,7 +1598,7 @@ void PodSprintA_Reset(WORLDINFO *world) {
     podsprint.pacemaker = NULL;
     pod_old_pos[1].x = pod_old_pos[1].y = pod_old_pos[1].z = -1.0f;
     podsprint.lap_time = 0.0f;
-    if ((podsprint.flags & 0xc) == 0 && (netclient == 0 || PODSPRINT_NET->ai_state <= 2)) {
+    if ((podsprint.flags & 0xc) == 0 && (netclient == 0 || podsprint_netpacket->ai_state <= 2)) {
         podsprint.bits.halfway = 0;
         podsprint.countdown = 3.0f;
         podsprint.pacemaker = NULL;
@@ -1804,13 +1802,13 @@ void PodSprintA_Update(WORLDINFO *world) {
     f32 seek;
     VehicleAreaRememberSpeed = 1.0f;
     if (nethost != 0) {
-        PODSPRINT_NET->ai_state = podsprint.ai_state;
-        PODSPRINT_NET->countdown = (i16)podsprint.countdown;
-        PODSPRINT_NET->lap_time = (i16)podsprint.lap_time;
+        podsprint_netpacket->ai_state = podsprint.ai_state;
+        podsprint_netpacket->countdown = (i16)podsprint.countdown;
+        podsprint_netpacket->lap_time = (i16)podsprint.lap_time;
     } else if (netclient != 0) {
-        podsprint.countdown = (f32)PODSPRINT_NET->countdown;
-        podsprint.ai_state = (i8)PODSPRINT_NET->ai_state;
-        podsprint.lap_time = (f32)PODSPRINT_NET->lap_time;
+        podsprint.countdown = (f32)podsprint_netpacket->countdown;
+        podsprint.ai_state = (i8)podsprint_netpacket->ai_state;
+        podsprint.lap_time = (f32)podsprint_netpacket->lap_time;
     }
     if (netclient == 0) {
         if (CutScene_PlayingOrRequested(NULL) != 0) {

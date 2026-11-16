@@ -133,10 +133,16 @@ typedef struct PODSPRINT_NETPACKET {
     i16 lap_time;
 } PODSPRINT_NETPACKET;
 
+/* One bit per pod race mine, kept as two words for the network packet. */
+typedef union mine_bits_u { // size 0x8
+    u32 words[2];
+    u64 bits;
+} MINE_BITS;
+
 typedef struct client_mines_s { // size 0x318
     NUVEC positions[64];        // 0x000
-    u32 present_words[2];       // 0x300
-    u32 exploded_words[2];      // 0x308
+    MINE_BITS present;          // 0x300
+    MINE_BITS exploded;         // 0x308
     u32 unknown_310[2];         // 0x310
 } CLIENT_MINES;
 

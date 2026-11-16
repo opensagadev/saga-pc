@@ -72,8 +72,8 @@ void SpeederChaseA_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[7], "clear4_ffield1", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[8], "clear4_ffield2", 1);
     SpeederChaseTime0 = SpeederChaseTime1 = 0.0f;
-    LevSfxFlag[1] = LevSfxFlag[0] = 0;
-    ((u8 *)LevSfxFlag)[8] = 0;
+    LevSfxFlag.words[1] = LevSfxFlag.words[0] = 0;
+    LevSfxFlag.playing[8] = 0;
     SpeederChaseState0 = SpeederChaseState1 = 0;
 }
 
@@ -135,12 +135,12 @@ void SpeederChaseA_Update(WORLDINFO *world) {
         position = NuSpecialGetDrawPos(&LevHSpecial[i]);
         if (animation != NULL) {
             animation_data = WORLD->current_gscn->instance_animation_data[animation->animation_index];
-            if (((u8 *)LevSfxFlag)[i] == 0) {
+            if (LevSfxFlag.playing[i] == 0) {
                 if (animation->ltime > 0.0f) {
                     animation_time = animation->ltime;
                     if (animation_time != NuAnimEndFrameOld(animation_data)) {
                         PlaySfx("env_laser_gate_on", position);
-                        ((u8 *)LevSfxFlag)[i] = 1;
+                        LevSfxFlag.playing[i] = 1;
                     }
                 }
             } else {
@@ -148,7 +148,7 @@ void SpeederChaseA_Update(WORLDINFO *world) {
                     animation_time = animation->ltime;
                     if (animation_time == NuAnimEndFrameOld(animation_data)) {
                         PlaySfx("env_laser_gate_off", position);
-                        ((u8 *)LevSfxFlag)[i] = 0;
+                        LevSfxFlag.playing[i] = 0;
                         continue;
                     }
                 }

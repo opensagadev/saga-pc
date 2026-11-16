@@ -90,19 +90,6 @@ i32 SockSysCamera(SOCKSYS *sock_sys, struct nuvec_s *fallback_camera_position, i
                   f32 *camera_shake, f32 *separation_scale);
 
 i32 Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position);
-#define GAME_CAMERA_ABSOLUTE(destination, source)                                                                                          \
-    do {                                                                                                                                   \
-        union {                                                                                                                            \
-            f32 value;                                                                                                                     \
-            u32 bits;                                                                                                                      \
-        } storage;                                                                                                                         \
-        u32 bits;                                                                                                                          \
-        storage.value = (source);                                                                                                          \
-        bits = storage.bits;                                                                                                               \
-        bits &= 0x7fffffff;                                                                                                                \
-        storage.bits = bits;                                                                                                               \
-        (destination) = storage.value;                                                                                                     \
-    } while (0)
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 CameraFabs(f32 f) {
@@ -164,9 +151,9 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
         scale = 1.0f / NuVecMagVU0(&direction);
         direction.x = CameraFabs(points[3].x - points[0].x);
         direction.x *= scale;
-        GAME_CAMERA_ABSOLUTE(direction.y, points[3].y - points[0].y);
+        direction.y = CameraFabs(points[3].y - points[0].y);
         direction.y *= scale;
-        GAME_CAMERA_ABSOLUTE(direction.z, points[3].z - points[0].z);
+        direction.z = CameraFabs(points[3].z - points[0].z);
         direction.z *= scale;
         position->x = points[0].x - direction.x * focus.x;
         position->y = points[0].y - direction.y * focus.y;
@@ -561,25 +548,25 @@ mode_selected:
     blend_duration = 0.5f;
     selected_pad = camera->mode == GAMECAM_MODE_VIEWCAM ? ViewCam.gamepad : (GAMEPAD *)&GamePadStorage[0];
     left_y = ((f32)(((i32)(selected_pad->bound_pad->analog_left_y)))) - 127.5f;
-    GAME_CAMERA_ABSOLUTE(magnitude, left_y);
+    magnitude = CameraFabs(left_y);
     if (magnitude < 34.0f) {
         left_y = 0.0f;
     }
     left_y /= 127.5f;
     left_x = ((f32)(((i32)(selected_pad->bound_pad->analog_left_x)))) - 127.5f;
-    GAME_CAMERA_ABSOLUTE(magnitude, left_x);
+    magnitude = CameraFabs(left_x);
     if (magnitude < 34.0f) {
         left_x = 0.0f;
     }
     left_x /= 127.5f;
     right_y = ((f32)(((i32)(selected_pad->bound_pad->analog_right_y)))) - 127.5f;
-    GAME_CAMERA_ABSOLUTE(magnitude, right_y);
+    magnitude = CameraFabs(right_y);
     if (magnitude < 34.0f) {
         right_y = 0.0f;
     }
     right_y /= 127.5f;
     right_x = ((f32)(((i32)(selected_pad->bound_pad->analog_right_x)))) - 127.5f;
-    GAME_CAMERA_ABSOLUTE(magnitude, right_x);
+    magnitude = CameraFabs(right_x);
     if (magnitude < 34.0f) {
         right_x = 0.0f;
     }
@@ -621,7 +608,7 @@ mode_selected:
                 if (PODRACE_ADATA != NULL && WORLD->area == PODRACE_ADATA) {
                     NUVEC *pod_offset;
                     player_focus[player_count] = Player[i]->collision_position;
-                    pod_offset = &(mode_scratch);
+                    pod_offset = &mode_scratch;
                     (*pod_offset).x = 0.0f;
                     (*pod_offset).y = 0.0f;
                     (*pod_offset).z = 2.0f;
@@ -670,8 +657,8 @@ mode_selected:
                     f32 pullback;
                     f32 lateral;
                     i32 angle = NuAtan2D(target.x - position.x, target.z - position.z);
-                    NUVEC *pullback_direction = &(offset);
-                    NUVEC *pullback_offset = &(mode_scratch);
+                    NUVEC *pullback_direction = &offset;
+                    NUVEC *pullback_offset = &mode_scratch;
                     NuVecSub(&(*pullback_direction), &position, &target);
                     (*pullback_direction).y = 0.0f;
                     NuVecNorm(&(*pullback_direction), &(*pullback_direction));
@@ -726,7 +713,7 @@ mode_selected:
                         distance = 2.0f;
                     }
                     PodCamDist = SeekLinearF(PodCamDist, distance, FRAMETIME);
-                    average = &(mode_scratch);
+                    average = &mode_scratch;
                     (*average).x = 0.0f;
                     (*average).y = 0.0f;
                     (*average).z = 0.0f;
@@ -769,7 +756,7 @@ mode_selected:
                         distance *= 1.5f;
                     }
                     PodCamDist = distance;
-                    average = &(mode_scratch);
+                    average = &mode_scratch;
                     (*average).x = 0.0f;
                     (*average).y = 0.0f;
                     (*average).z = 0.0f;
@@ -800,7 +787,7 @@ mode_selected:
                         target.x = position.x + NU_SIN_LUT(yaw) * PodCamDist;
                         target.z = position.z + NU_COS_LUT(yaw) * PodCamDist;
                     }
-                    floor_probe = &(mode_scratch);
+                    floor_probe = &mode_scratch;
                     (*floor_probe).x = position.x;
                     (*floor_probe).y = target.y - CamPodSprintHeight;
                     (*floor_probe).z = position.z;
@@ -830,7 +817,7 @@ mode_selected:
                     if (opposite < 0.0f) {
                         opposite += 65536.0f;
                     }
-                    offset = &(mode_scratch);
+                    offset = &mode_scratch;
                     NuVecSub(&(*offset), &position, &target);
                     NuVecNorm(&(*offset), &(*offset));
                     NuVecScale(&(*offset), &(*offset), landspeeder_lookahead);
@@ -873,7 +860,7 @@ mode_selected:
                             distance = NuFsqrt(walker_distance_sq);
                             factor = MAX(0.0f, 1.0f - distance / CamWalkerRadius);
                             factor = (1.0f + NU_SIN_LUT(((i32)(factor * 32768.0f + 16384.0f)))) * 0.5f;
-                            offset = &(mode_scratch);
+                            offset = &mode_scratch;
                             NuVecSub(&(*offset), &position, &target);
                             NuVecNorm(&(*offset), &(*offset));
                             amount = landspeeder_lookahead * (1.0f - factor);
@@ -889,7 +876,7 @@ mode_selected:
                                                   NULL) != NULL) {
                             f32 amount;
                             f32 distance = NuFsqrt(walker_distance_sq);
-                            NUVEC *offset = &(mode_scratch);
+                            NUVEC *offset = &mode_scratch;
                             NuVecSub(&(*offset), &position, &target);
                             NuVecNorm(&(*offset), &(*offset));
                             amount = CamDewbackLift * (1.0f - distance / CamDewbackRadius);
@@ -905,7 +892,7 @@ mode_selected:
                     f32 blend;
                     f32 scale;
                     NUVEC average_position;
-                    NUVEC *offset = &(mode_scratch);
+                    NUVEC *offset = &mode_scratch;
                     Players_AveragePos(&average_position, NULL);
                     NuVecSub(&(*offset), &rail_position, &average_position);
                     magnitude = NuVecMagSqr(&(*offset));
@@ -949,7 +936,7 @@ mode_selected:
                     roll_override = -1;
                 }
                 if (BonusWinner != -1) {
-                    NUVEC *offset = &(mode_scratch);
+                    NUVEC *offset = &mode_scratch;
                     f32 distance = NuVecDist(&position, &target, &(*offset));
                     NuVecNorm(&(*offset), &(*offset));
                     NuVecScale(&(*offset), &(*offset), distance * 0.666f);
@@ -1005,7 +992,7 @@ mode_selected:
         case GAMECAM_MODE_VIEWCAM: {
             f32 speed;
             f32 distance;
-            GAME_CAMERA_ABSOLUTE(distance, ViewCam.distance);
+            distance = CameraFabs(ViewCam.distance);
             speed = distance * testmovef * FRAMETIME;
             if (ViewCam.gamepad != NULL) {
                 offset.x = (left_x * 127.5f) * speed;
@@ -1103,7 +1090,7 @@ mode_selected:
             NuVecRotateY(&lateral, &v001, yaw);
             GunshipANorm = lateral;
             NuVecRotateY(&lateral, &lateral, 0x4000);
-            offset = &(mode_scratch);
+            offset = &mode_scratch;
             (*offset).z = 0.0f;
             (*offset).x = 0.0f;
             (*offset).y = 0.0f;
@@ -1284,11 +1271,11 @@ mode_selected:
         for (i = 0; i < 2; i++) {
             if (Player[i] != NULL && (Player[i]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player[i]->flags_107a == 4) {
                 NuVecAdd(NUMTX_GET_ROW_VEC(&orientation, 0), NUMTX_GET_ROW_VEC(&orientation, 0),
-                         NUMTX_GET_ROW_VEC(&(Player[i])->player.vehicle_orientation, 0));
+                         NUMTX_GET_ROW_VEC(&Player[i]->player.vehicle_orientation, 0));
                 NuVecAdd(NUMTX_GET_ROW_VEC(&orientation, 1), NUMTX_GET_ROW_VEC(&orientation, 1),
-                         NUMTX_GET_ROW_VEC(&(Player[i])->player.vehicle_orientation, 1));
+                         NUMTX_GET_ROW_VEC(&Player[i]->player.vehicle_orientation, 1));
                 NuVecAdd(NUMTX_GET_ROW_VEC(&orientation, 2), NUMTX_GET_ROW_VEC(&orientation, 2),
-                         NUMTX_GET_ROW_VEC(&(Player[i])->player.vehicle_orientation, 2));
+                         NUMTX_GET_ROW_VEC(&Player[i]->player.vehicle_orientation, 2));
                 shared_count++;
             }
         }

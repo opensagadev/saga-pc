@@ -36,11 +36,6 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
-typedef struct lever_trigger_flags_s { // size 0x95
-    u8 unknown_000[0x94];              // 0x00
-    u8 flags;                          // 0x94
-} LEVER_TRIGGER_FLAGS;
-
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 LeverFabs(f32 f) {
     f32 rv;
@@ -49,29 +44,9 @@ static f32 LeverFabs(f32 f) {
     return rv;
 }
 
-i32 Lever_BeingPulled(void *lever) {
-    return (((LEVER_TRIGGER_FLAGS *)lever)->flags >> 1) & 1;
+i32 Lever_BeingPulled(GIZMO_LEVER *lever) {
+    return (lever->flags >> 1) & 1;
 }
-
-/* GIZMO_LEVER.flags as the u16 bitfields that are read and stored (belongs in the header). */
-typedef struct lever_flag_bits_s { // size 0x2
-    u16 interacting : 1;           // 0x0:0
-    u16 being_pulled : 1;          // 0x0:1
-    u16 goodie : 1;                // 0x0:2
-    u16 baddie : 1;                // 0x0:3
-    u16 visible : 1;               // 0x0:4
-    u16 auto_reset : 1;            // 0x0:5
-    u16 returning : 1;             // 0x0:6
-    u16 enabled : 1;               // 0x0:7
-    u16 hide_base : 1;             // 0x0:8
-    u16 hide_target_indicator : 1; // 0x0:9
-    u16 unused_10 : 1;             // 0x0:10
-    u16 interaction_finished : 1;  // 0x0:11
-    u16 pulled_down : 1;           // 0x0:12
-    u16 unused_13 : 3;             // 0x0:13
-} LEVER_FLAG_BITS;
-
-#define LEVER_BITS(lever) ((LEVER_FLAG_BITS *)&(lever)->flags)
 
 typedef struct LEVER_WORLD { // size 0x5070
     u8 unknown_000[0x5068];  // 0x0000
@@ -86,8 +61,8 @@ typedef struct LEVER_NET_WAIT { // size 0x7a4
 
 void ReleaseLever(GAMEOBJECT *object) {
     if (object->player.character_context == CHARACTER_CONTEXT_PULL_LEVER) {
-        if (object->player.grapple != NULL && !LEVER_BITS(object->player.lever)->being_pulled) {
-            LEVER_BITS(object->player.lever)->interacting = 0;
+        if (object->player.grapple != NULL && !object->player.lever->being_pulled) {
+            object->player.lever->interacting = 0;
         }
     }
 }
@@ -346,7 +321,7 @@ static void Lever_Activate(GIZMO *gizmo, i32 enabled) {
         return;
     }
     lever = gizmo->object;
-    LEVER_BITS(lever)->enabled = enabled != 0;
+    lever->enabled = enabled != 0;
     if (enabled != 0) {
         Lever_Reset(lever);
     }
@@ -359,9 +334,9 @@ static i32 Lever_ActivateRev(GIZMO *gizmo, i32 value, i32 query) {
     }
     lever = gizmo->object;
     if ((query & 1) != 0) {
-        return LEVER_BITS(lever)->enabled ? value : value == 0;
+        return lever->enabled ? value : value == 0;
     }
-    LEVER_BITS(lever)->enabled = value == 0;
+    lever->enabled = value == 0;
     return 1;
 }
 
@@ -372,12 +347,12 @@ static void Lever_SetVisibility(GIZMO *gizmo, i32 visible) {
         return;
     }
     lever = gizmo->object;
-    was_visible = LEVER_BITS(lever)->visible;
-    LEVER_BITS(lever)->visible = visible != 0;
-    if (LEVER_BITS(lever)->visible && was_visible == 0) {
+    was_visible = lever->visible;
+    lever->visible = visible != 0;
+    if (lever->visible && was_visible == 0) {
         lever->platform_id = NewPlatPickupInst(lever, 3);
         PlatInstRotate(lever->platform_id, 1);
-    } else if (!LEVER_BITS(lever)->visible && was_visible != 0) {
+    } else if (!lever->visible && was_visible != 0) {
         DeletePlatinst(lever->platform_id);
     }
 }
@@ -415,13 +390,13 @@ static void Levers_StoreProgress(void *world_ptr, void *data, void *progress_ptr
     for (index = 0; index < ((LEVER_WORLD *)world)->lever_count && index < 32; ++index, ++lever) {
         i32 word = index / 32;
         u32 bit = 1 << (index & 31);
-        if (LEVER_BITS(lever)->being_pulled && lever->pull_progress >= 1.0f) {
+        if (lever->being_pulled && lever->pull_progress >= 1.0f) {
             progress->pulled_down[word] |= bit;
         }
-        if (!LEVER_BITS(lever)->visible) {
+        if (!lever->visible) {
             progress->visible[word] &= ~bit;
         }
-        if (!LEVER_BITS(lever)->enabled) {
+        if (!lever->enabled) {
             progress->enabled[word] &= ~bit;
         }
     }
@@ -446,11 +421,11 @@ static void Levers_Reset(void *world_ptr, void *data, void *progress_ptr) {
             u32 bit = 1 << (index & 31);
             if ((progress->pulled_down[word] & bit) != 0) {
                 lever->pull_progress = 1.0f;
-                LEVER_BITS(lever)->being_pulled = 1;
+                lever->being_pulled = 1;
                 lever->animation_frame = 0x8000;
             }
-            LEVER_BITS(lever)->visible = (progress->visible[word] & bit) != 0;
-            LEVER_BITS(lever)->enabled = (progress->enabled[word] & bit) != 0;
+            lever->visible = (progress->visible[word] & bit) != 0;
+            lever->enabled = (progress->enabled[word] & bit) != 0;
         }
     }
 }
@@ -535,12 +510,12 @@ static void Levers_Update(void *world_ptr, void *data, f32 elapsed) {
         return;
     }
     for (index = 0; index < ((LEVER_WORLD *)world)->lever_count; ++index, ++lever) {
-        if (!LEVER_BITS(lever)->being_pulled && (lever->flags & (LEVER_FLAG_INTERACTION_FINISHED | LEVER_FLAG_PULLED_DOWN)) == 0) {
+        if (!lever->being_pulled && (lever->flags & (LEVER_FLAG_INTERACTION_FINISHED | LEVER_FLAG_PULLED_DOWN)) == 0) {
             lever->animation_frame = 0;
             continue;
         }
-        if (!LEVER_BITS(lever)->being_pulled) {
-            LEVER_BITS(lever)->being_pulled = 1;
+        if (!lever->being_pulled) {
+            lever->being_pulled = 1;
         }
         if (lever->auto_reset_timer > 0.0f) {
             lever->auto_reset_timer -= FRAMETIME;
@@ -549,7 +524,7 @@ static void Levers_Update(void *world_ptr, void *data, f32 elapsed) {
                 lever->flags = (lever->flags & ~LEVER_FLAG_INTERACTION_FINISHED) | LEVER_FLAG_RETURNING | LEVER_FLAG_PULLED_DOWN;
                 lever->pull_progress = 0.6f;
             }
-        } else if (!LEVER_BITS(lever)->returning && (lever->flags & LEVER_FLAG_PULLED_DOWN) == 0) {
+        } else if (!lever->returning && (lever->flags & LEVER_FLAG_PULLED_DOWN) == 0) {
             if (lever->pull_progress < 1.0f) {
                 lever->pull_progress += FRAMETIME;
                 if (lever->pull_progress > 1.0f) {
@@ -561,8 +536,8 @@ static void Levers_Update(void *world_ptr, void *data, f32 elapsed) {
                 }
             }
         } else {
-            if (!LEVER_BITS(lever)->returning) {
-                LEVER_BITS(lever)->returning = 1;
+            if (!lever->returning) {
+                lever->returning = 1;
             }
             lever->pull_progress -= FRAMETIME;
             if (lever->pull_progress <= 0.0f) {

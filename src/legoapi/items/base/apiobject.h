@@ -87,9 +87,9 @@ typedef struct TORPEDOPACKET { // size 0x88
     u8 pickup_state;           // 0x03
     u8 target_type;            // 0x04
     u8 unknown_05[3];          // 0x05
-    f32 steal_timer;           // 0x08
+    f32 pickup_timer;          // 0x08
     f32 ricochet_time;         // 0x0c
-    u8 unknown_10[4];          // 0x10
+    f32 steal_timer;           // 0x10
     u32 pickup_data[5];        // 0x14
     u32 pickup_flags[5];       // 0x28
     NUVEC pickup_positions[5]; // 0x3c
@@ -1294,6 +1294,7 @@ typedef struct gameobject_s { // size 0x10d8
             u32 flags_1fc_bit_1 : 1;    // 0x01fc:1
             u32 flags_1fc_bits_2_6 : 5; // 0x01fc:2
             u32 player_controlled : 1;  // 0x01fc:7
+            u32 ai_controlled : 1;      // 0x01fc:8
         };
     }; // 0x01fc
 

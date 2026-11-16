@@ -236,11 +236,6 @@ typedef struct FORCE_ATTENTION {
     f32 attention_timer;
 } FORCE_ATTENTION;
 
-typedef struct GLOW_ANIMATION_DATA {
-    u8 unused_0000[0x4];
-    u32 flags;
-} GLOW_ANIMATION_DATA;
-
 typedef struct cable_view_s {
     u8 unknown_000[0xd18];
     GAMEOBJECT *glow_pending;
@@ -5924,8 +5919,8 @@ static void ForceGlowCode(GAMEOBJECT *object, i32 model) {
             NuVecMtxTransformVU0(&object->player.glow_position, &object->player.glow_position, NuSpecialGetDrawMtx(&animation->special));
             object->player.glow_model = (i16)model;
             object->player.glow_radius *= scale;
-            if (animation->object_data != NULL) {
-                ((GLOW_ANIMATION_DATA *)animation->object_data)->flags |= 1;
+            if (animation->force_data != NULL) {
+                animation->force_data->unknown_04 |= GIZFORCEANIMDATA_GLOW_ACTIVE;
             }
             break;
         }

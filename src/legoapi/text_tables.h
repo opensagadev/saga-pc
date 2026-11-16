@@ -224,13 +224,6 @@ typedef struct StatusPlayerModelPair { // size 0x4
     u16 model[2];                      // 0x0
 } StatusPlayerModelPair;
 
-typedef struct TAGFLAGS1FC {
-    u32 bits_0_6 : 7;
-    u32 player : 1;
-    u32 ai : 1;
-    u32 bits_9_31 : 23;
-} TAGFLAGS1FC;
-
 typedef struct ai_script_progress_view_s { // size 0x2c24
     u8 unknown_0000[0x2824];               // 0x0000
     LEVEL_SCRIPT_PROGRESS scripts[32];     // 0x2824
@@ -302,13 +295,6 @@ typedef struct combat_reaction_owner_s { // size 0x7bc
     u8 unknown_000[0x7bb];               // 0x000
     i8 attacker_slot;                    // 0x7bb
 } COMBAT_REACTION_OWNER;
-
-typedef struct custom_save_config_s {
-    u16 pieces[9];
-    u8 unknown_12[0x26];
-    u16 secondary_pieces[9];
-    u8 unknown_4a[0x26];
-} CUSTOM_SAVE_CONFIG;
 
 typedef struct cut_load_character_animation_s { // size 0x10
     u32 unknown_00;                             // 0x0

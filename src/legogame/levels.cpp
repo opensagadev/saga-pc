@@ -148,26 +148,10 @@ extern "C" void CreateUsefulMaterials(void);
 extern "C" void edbitsRegisterThingsScene(NUGSCN *scene);
 extern "C" void ParticleReset(void);
 
-typedef struct permanent_customiser_save_s {
-    u16 pieces[9];
-    u8 unknown_12[0x26];
-    u16 secondary_pieces[9];
-    u8 unknown_4a[0x26];
-} PERMANENT_CUSTOMISER_SAVE;
-
-typedef struct permanent_customiser_game_s {
-    u8 unknown_0000[0x7c24];
-    PERMANENT_CUSTOMISER_SAVE customiser;
-} PERMANENT_CUSTOMISER_GAME;
-
 extern "C" {
     extern NUFPCOMJMP ConfigChar_GameKeywords[2];
     extern f32 PermCollectionScale;
 }
-#define LEVEL_BYTE_CALLBACK(name, field)                                                                                                   \
-    void name(NUFPAR *parser) {                                                                                                            \
-        levelconfig_ldata->field = (u8)NuFParGetInt(parser);                                                                               \
-    }
 /* Per-level callbacks installed by FixUpLevels. */
 extern "C" void LostTempleC_Reset(WORLDINFO *);
 extern "C" void LostTempleC_Update(WORLDINFO *);
@@ -236,7 +220,6 @@ extern "C" void ChrisDogFightAReset(WORLDINFO *);
 extern "C" void ChrisDogFightAUpdate(WORLDINFO *);
 extern "C" void ChrisDogFightADraw(WORLDINFO *);
 
-#define WORLD_PORTAL_BOUNDS(scene) ((NUVEC4 *)(scene)->portal_boxes)
 extern "C" {
     void SaveSceneObjectAnimTFactors(NUGSCN *scene);
 
@@ -966,7 +949,7 @@ extern "C" {
 
     void ClearLevData(void) {
         memset(&LevFlag, 0, sizeof(LevFlag));
-        memset(LevSfxFlag, 0, sizeof(LevSfxFlag));
+        memset(&LevSfxFlag, 0, sizeof(LevSfxFlag));
         memset(LevHSpecial, 0, sizeof(LevHSpecial));
         memset(dynamic_antinodes, 0, sizeof(dynamic_antinodes));
         memset(&LevInstAnimReset, 0, sizeof(LevInstAnimReset));
@@ -1137,10 +1120,9 @@ extern "C" {
         Collection_CreateCustom("BountyHunters", &PermanentBountyTitleId, &BountyHunterCollection, CHARACTER_MODEL_BOUNTY_HUNTER, 0, 0, 0,
                                 4, &permbuffer_ptr, &permbuffer_end, 0, PermCollectionScale);
         Areas_ConfigureResidents(&permbuffer_ptr, &permbuffer_end);
-        CharacterCustomiser =
-            Customiser_Configure("chars\\customiser.txt", &permbuffer_ptr, &permbuffer_end, PermanentWeirdo1Id, PermanentWeirdo2Id,
-                                 PermanentCustomPieceAvailable, PermanentCustomPieceConfig, LevelObject_FindIndexFromName,
-                                 &((PERMANENT_CUSTOMISER_GAME *)&Game)->customiser, PermanentCustomiserActions);
+        CharacterCustomiser = Customiser_Configure("chars\\customiser.txt", &permbuffer_ptr, &permbuffer_end, PermanentWeirdo1Id,
+                                                   PermanentWeirdo2Id, PermanentCustomPieceAvailable, PermanentCustomPieceConfig,
+                                                   LevelObject_FindIndexFromName, Game.customiser_start, PermanentCustomiserActions);
         SpecialMoves_Configure("chars\\specialmoves.txt", &permbuffer_ptr, &permbuffer_end);
         for (i32 index = 0; index < LEVELCOUNT; ++index) {
             if ((LDataList[index].flags & LEVEL_STATUS) != 0) {
@@ -1327,7 +1309,7 @@ extern "C" {
     AIPATHCNX *LevPathCnx[16] = {0};
     LEVFLAG LevFlag = {0};
     i32 CharacterDataLoad = 0;
-    i32 LevSfxFlag[4] = {0};
+    LEVSFXFLAG LevSfxFlag = {0};
     GIZMOBLOWUP *LevBlowUp[2] = {0};
     f32 LevAlpha = 0.0f;
     f32 TargetDist_Mid2 = 0;
@@ -1613,20 +1595,6 @@ void LoadAreaCharacters(void) {
 
 extern "C" {
 
-    /* Bitfield view of SCENESPECIALPROGRESS.flags. */
-    typedef struct scene_special_state_s { // size 0x8
-        u32 frame : 11;                    // 0x0:0
-        u32 visible : 1;                   // 0x0:11
-        u32 playing : 1;                   // 0x0:12
-        u32 waiting : 1;                   // 0x0:13
-        u32 repeating : 1;                 // 0x0:14
-        u32 unused : 17;                   // 0x0:15
-        f32 tfactor;                       // 0x4
-    } SCENE_SPECIAL_STATE;
-
-    /* progress->specials[i] read through the bitfield view (stands in for the header field). */
-#define SCENE_STATE(progress, i) (((SCENE_SPECIAL_STATE *)(progress)->specials)[i])
-
     void StoreSceneProgress(NUGSCN *scene, SCENEPROGRESS *progress, i32 copy_tfactor) {
         nuhspecial_s special;
         NUINSTANIM *animation;
@@ -1644,7 +1612,7 @@ extern "C" {
             } else {
                 NuSpecialGetFirst(scene, &special, 1);
             }
-            SCENE_STATE(progress, i).visible = NuSpecialGetVisibilityFn(&special);
+            progress->specials[i].visible = NuSpecialGetVisibilityFn(&special);
             if (scene->instance_animation_data == NULL) {
                 continue;
             }
@@ -1653,14 +1621,14 @@ extern "C" {
                 continue;
             }
             if (animation->ltime <= 2048.0f && animation->ltime >= 0.0f) {
-                SCENE_STATE(progress, i).frame = (u32)animation->ltime;
+                progress->specials[i].frame = (u32)animation->ltime;
             } else {
-                SCENE_STATE(progress, i).frame = 1;
+                progress->specials[i].frame = 1;
             }
-            SCENE_STATE(progress, i).playing = animation->flags & NUINSTANIM_FLAG_PLAYING;
-            SCENE_STATE(progress, i).waiting = (animation->flags >> 2) & 1;
-            SCENE_STATE(progress, i).repeating = (animation->flags >> 3) & 1;
-            SCENE_STATE(progress, i).tfactor = animation->tfactor;
+            progress->specials[i].playing = animation->flags & NUINSTANIM_FLAG_PLAYING;
+            progress->specials[i].waiting = (animation->flags >> 2) & 1;
+            progress->specials[i].repeating = (animation->flags >> 3) & 1;
+            progress->specials[i].tfactor = animation->tfactor;
             if (copy_tfactor != 0) {
                 animation->fparam1 = animation->tfactor;
             }
@@ -1755,24 +1723,25 @@ extern "C" {
         if (world == NULL || world->current_gscn == NULL) {
             return;
         }
-        for (index = 0; index < world->current_gscn->portal_instance_count * 2; index += 2) {
+        for (index = 0; index < world->current_gscn->portal_instance_count; index++) {
+            NUGSCN_INSTANCE_BOUNDS *box = &world->current_gscn->portal_boxes[index];
             NUVEC box_minimum;
             NUVEC box_maximum;
 
             if (world->current_gscn->display_list != NULL && (world->current_gscn->display_list->render_flags & 0x4000) > 0) {
-                box_minimum.x = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].x - WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].x;
-                box_minimum.y = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].y - WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].y;
-                box_minimum.z = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].z - WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].z;
-                box_maximum.x = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].x + WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].x;
-                box_maximum.y = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].y + WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].y;
-                box_maximum.z = WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].z + WORLD_PORTAL_BOUNDS(world->current_gscn)[index].z;
+                box_minimum.x = box->center.x - box->extent.x;
+                box_minimum.y = box->center.y - box->extent.y;
+                box_minimum.z = box->center.z - box->extent.z;
+                box_maximum.x = box->center.x + box->extent.x;
+                box_maximum.y = box->center.y + box->extent.y;
+                box_maximum.z = box->extent.z + box->center.z;
             } else {
-                box_minimum.x = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].x;
-                box_minimum.y = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].y;
-                box_minimum.z = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].z;
-                box_maximum.x = WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].x;
-                box_maximum.y = WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].y;
-                box_maximum.z = WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].z;
+                box_minimum.x = box->center.x;
+                box_minimum.y = box->center.y;
+                box_minimum.z = box->center.z;
+                box_maximum.x = box->extent.x;
+                box_maximum.y = box->extent.y;
+                box_maximum.z = box->extent.z;
             }
             if (box_minimum.x < minimum.x) {
                 minimum.x = box_minimum.x;
@@ -1797,37 +1766,61 @@ extern "C" {
         world->level_min = minimum;
     }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_tightropes, max_tightropes)
+    void LC_BL_max_tightropes(NUFPAR *parser) {
+        levelconfig_ldata->max_tightropes = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_signals, max_signals)
+    void LC_BL_max_signals(NUFPAR *parser) {
+        levelconfig_ldata->max_signals = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_levers, max_levers)
+    void LC_BL_max_levers(NUFPAR *parser) {
+        levelconfig_ldata->max_levers = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_technos, max_technos)
+    void LC_BL_max_technos(NUFPAR *parser) {
+        levelconfig_ldata->max_technos = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_zipups, max_zipups)
+    void LC_BL_max_zipups(NUFPAR *parser) {
+        levelconfig_ldata->max_zipups = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_grapples, max_grapples)
+    void LC_BL_max_grapples(NUFPAR *parser) {
+        levelconfig_ldata->max_grapples = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_obstacles, max_obstacles)
+    void LC_BL_max_obstacles(NUFPAR *parser) {
+        levelconfig_ldata->max_obstacles = (u8)NuFParGetInt(parser);
+    }
 
     void LC_BL_max_obstacle_objects(NUFPAR *parser) {
         levelconfig_ldata->max_obstacle_objects = (i16)NuFParGetInt(parser);
     }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_turrets, max_turrets)
+    void LC_BL_max_turrets(NUFPAR *parser) {
+        levelconfig_ldata->max_turrets = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_buildits, max_buildits)
+    void LC_BL_max_buildits(NUFPAR *parser) {
+        levelconfig_ldata->max_buildits = (u8)NuFParGetInt(parser);
+    }
 
     void LC_BL_max_buildit_objects(NUFPAR *parser) {
         levelconfig_ldata->max_buildit_objects = (i16)NuFParGetInt(parser);
     }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_spinneranim_objs, max_spinneranim_objs)
+    void LC_BL_max_spinneranim_objs(NUFPAR *parser) {
+        levelconfig_ldata->max_spinneranim_objs = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_climb_objects, max_climb_objects)
+    void LC_BL_max_climb_objects(NUFPAR *parser) {
+        levelconfig_ldata->max_climb_objects = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_shards, max_shards)
+    void LC_BL_max_shards(NUFPAR *parser) {
+        levelconfig_ldata->max_shards = (u8)NuFParGetInt(parser);
+    }
 
     void LC_BL_max_spinners(NUFPAR *parser) {
         levelconfig_ldata->max_spinners = (u8)NuFParGetInt(parser);
@@ -1836,9 +1829,13 @@ extern "C" {
         }
     }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_minicuts, max_minicuts)
+    void LC_BL_max_minicuts(NUFPAR *parser) {
+        levelconfig_ldata->max_minicuts = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_minicutParts, max_minicut_stages)
+    void LC_BL_max_minicutParts(NUFPAR *parser) {
+        levelconfig_ldata->max_minicut_stages = (u8)NuFParGetInt(parser);
+    }
 
     void LC_BL_max_gizmoblowuptypes(NUFPAR *parser) {
         levelconfig_ldata->max_gizmoblowuptypes = (i16)NuFParGetInt(parser);
@@ -1868,17 +1865,29 @@ extern "C" {
         }
     }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_attractos, max_attractos)
+    void LC_BL_max_attractos(NUFPAR *parser) {
+        levelconfig_ldata->max_attractos = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_timers, max_timers)
+    void LC_BL_max_timers(NUFPAR *parser) {
+        levelconfig_ldata->max_timers = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_guidelines, max_guidelines)
+    void LC_BL_max_guidelines(NUFPAR *parser) {
+        levelconfig_ldata->max_guidelines = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_ledges, max_ledges)
+    void LC_BL_max_ledges(NUFPAR *parser) {
+        levelconfig_ldata->max_ledges = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_securitydoors, max_securitydoors)
+    void LC_BL_max_securitydoors(NUFPAR *parser) {
+        levelconfig_ldata->max_securitydoors = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_tubes, max_tubes)
+    void LC_BL_max_tubes(NUFPAR *parser) {
+        levelconfig_ldata->max_tubes = (u8)NuFParGetInt(parser);
+    }
 
     void LC_BL_max_pickups(NUFPAR *parser) {
         levelconfig_ldata->max_pickups = (i16)NuFParGetInt(parser);
@@ -1888,11 +1897,17 @@ extern "C" {
         levelconfig_ldata->max_gameantinodes = (i16)NuFParGetInt(parser);
     }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_gizpanels, max_gizpanels)
+    void LC_BL_max_gizpanels(NUFPAR *parser) {
+        levelconfig_ldata->max_gizpanels = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_hatmachines, max_hatmachines)
+    void LC_BL_max_hatmachines(NUFPAR *parser) {
+        levelconfig_ldata->max_hatmachines = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_force, max_force)
+    void LC_BL_max_force(NUFPAR *parser) {
+        levelconfig_ldata->max_force = (u8)NuFParGetInt(parser);
+    }
 
     void LC_BL_max_force_objects(NUFPAR *parser) {
         levelconfig_ldata->max_force_objects = (i16)NuFParGetInt(parser);
@@ -1902,21 +1917,37 @@ extern "C" {
         levelconfig_ldata->max_bombgen_objects = (i16)NuFParGetInt(parser);
     }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_bombgens, max_bombgens)
+    void LC_BL_max_bombgens(NUFPAR *parser) {
+        levelconfig_ldata->max_bombgens = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_gizspecials, max_gizspecials)
+    void LC_BL_max_gizspecials(NUFPAR *parser) {
+        levelconfig_ldata->max_gizspecials = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_doors, max_doors)
+    void LC_BL_max_doors(NUFPAR *parser) {
+        levelconfig_ldata->max_doors = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_teleports, max_teleports)
+    void LC_BL_max_teleports(NUFPAR *parser) {
+        levelconfig_ldata->max_teleports = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_gizrandoms, max_gizrandoms)
+    void LC_BL_max_gizrandoms(NUFPAR *parser) {
+        levelconfig_ldata->max_gizrandoms = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_torpmachines, max_torpmachines)
+    void LC_BL_max_torpmachines(NUFPAR *parser) {
+        levelconfig_ldata->max_torpmachines = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_bridges, max_bridges)
+    void LC_BL_max_bridges(NUFPAR *parser) {
+        levelconfig_ldata->max_bridges = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_plugs, max_plugs)
+    void LC_BL_max_plugs(NUFPAR *parser) {
+        levelconfig_ldata->max_plugs = (u8)NuFParGetInt(parser);
+    }
 
     void LC_BL_wind_speed(NUFPAR *parser) {
         levelconfig_ldata->wind_speed = NuFParGetFloat(parser);

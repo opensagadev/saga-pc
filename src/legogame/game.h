@@ -3,6 +3,7 @@
 #include "nu2api/nucore/common.h"
 
 #include "legoapi/audio/audio.h"
+#include "legoapi/characters/core/customiser.h"
 #include "legoapi/items/collect/shard.h"
 #include "legoapi/items/objects/game_obj.h"
 #include "legoapi/world/missions.h"
@@ -35,14 +36,6 @@ struct EPISODESAVE_s {           // size 0xc
         };
     }; // 0x8
 };
-
-typedef struct GAME_CUSTOMISER_START { // size 0x38
-    u16 pieces[9];                     // 0x00
-    u8 reserved_12[2];                 // 0x12
-    char name[32];                     // 0x14
-    u8 use_saved_name;                 // 0x34
-    u8 reserved_35[3];                 // 0x35
-} GAME_CUSTOMISER_START;
 
 typedef struct gamesave_s { // size 0x7e4c
 

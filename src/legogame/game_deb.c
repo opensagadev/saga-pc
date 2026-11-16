@@ -44,8 +44,6 @@ typedef struct BURNOUT_CUT_PREFIX { // size 0x54
     u32 flags;                      // 0x50
 } BURNOUT_CUT_PREFIX;
 
-#define RIPPLE_WORLD ((WORLD_RIPPLE_VIEW *)WORLD)
-
 void DebrisKillPlayers(void) {
     i32 i;
     GAMEOBJECT *player;
@@ -269,7 +267,7 @@ void AddSurfaceRipples(GAMEOBJECT *object) {
     f32 swap_x;
     i32 count;
     i32 i;
-    if (RIPPLE_WORLD->effects == NULL || object->dead != 0) {
+    if (WORLD->ripple_effects == NULL || object->dead != 0) {
         return;
     }
     if (object->contact_count == 1) {
@@ -296,12 +294,12 @@ void AddSurfaceRipples(GAMEOBJECT *object) {
                     u16 angle = (u16)qrand();
                     velocity = seed;
                     VecRotateAxis(&velocity, angle, &normal);
-                    AddRipple(RippleSet, &matrix, RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].initial_size,
-                              RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].end_size,
-                              RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].lifetime, 0.0f,
-                              RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].start_color,
-                              RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].end_color, 15,
-                              RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].material, &velocity);
+                    AddRipple(RippleSet, &matrix, WORLD->ripple_effects[WORLD->sabre_ripple_effect].initial_size,
+                              WORLD->ripple_effects[WORLD->sabre_ripple_effect].end_size,
+                              WORLD->ripple_effects[WORLD->sabre_ripple_effect].lifetime, 0.0f,
+                              WORLD->ripple_effects[WORLD->sabre_ripple_effect].start_color,
+                              WORLD->ripple_effects[WORLD->sabre_ripple_effect].end_color, 15,
+                              WORLD->ripple_effects[WORLD->sabre_ripple_effect].material, &velocity);
                 }
             }
             /* The sound position stays unwritten when no particles are emitted. */
@@ -335,10 +333,10 @@ void AddSurfaceRipples(GAMEOBJECT *object) {
             matrix.m31 = (f32)(object->water_height + (f64).001f);
             matrix.m32 = (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f) - .5) * RipplePerturbation + object->collision_position.z);
             RippleRandomRadius = object->bounds_radius + object->bounds_radius + object->bounds_radius;
-            AddRipple(RippleSet, &matrix, size, RippleRandomRadius, RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].lifetime, 0.0f,
-                      RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].start_color,
-                      RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].end_color, 7,
-                      RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].material, NULL);
+            AddRipple(RippleSet, &matrix, size, RippleRandomRadius, WORLD->ripple_effects[WORLD->water_ripple_effect].lifetime, 0.0f,
+                      WORLD->ripple_effects[WORLD->water_ripple_effect].start_color,
+                      WORLD->ripple_effects[WORLD->water_ripple_effect].end_color, 7,
+                      WORLD->ripple_effects[WORLD->water_ripple_effect].material, NULL);
         }
     }
 }

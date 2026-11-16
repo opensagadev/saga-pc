@@ -214,11 +214,6 @@ extern i32 ShopMoveItems;
 extern i32 ShopSubMoveSfxLock;
 extern i32 HubForceShopSave;
 extern f32 ShopPurchasePulseDuration;
-#define SHOP_SLIDE_SLOT(i, j)                                                                                                              \
-    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));                                                                 \
-    positions[i].x = SubShelfPos[i].x + (SubShelfPos[j].x - SubShelfPos[i].x) * t;                                                         \
-    positions[i].y = SubShelfPos[i].y + (SubShelfPos[j].y - SubShelfPos[i].y) * t;                                                         \
-    positions[i].z = SubShelfPos[i].z + (SubShelfPos[j].z - SubShelfPos[i].z) * t;
 extern AREA_DATA *ANEWHOPE_ADATA;
 extern i32 ShopCodeCharacter;
 extern i32 ShopCodeValid;
@@ -910,12 +905,30 @@ i32 MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count) {
     reverse_phase = 1.0f - t;
     angle = (i32)(t * 32768.0f + 16384.0f);
     t = 1.0f - (NuTrigTable[(angle >> 1) & 0x7fff] + 1.0f) * 0.5f;
-    SHOP_SLIDE_SLOT(1, 0)
-    SHOP_SLIDE_SLOT(2, 1)
-    SHOP_SLIDE_SLOT(3, 2)
-    SHOP_SLIDE_SLOT(4, 3)
-    SHOP_SLIDE_SLOT(5, 4)
-    SHOP_SLIDE_SLOT(6, 5)
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[1].x = SubShelfPos[1].x + (SubShelfPos[0].x - SubShelfPos[1].x) * t;
+    positions[1].y = SubShelfPos[1].y + (SubShelfPos[0].y - SubShelfPos[1].y) * t;
+    positions[1].z = SubShelfPos[1].z + (SubShelfPos[0].z - SubShelfPos[1].z) * t;
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[2].x = SubShelfPos[2].x + (SubShelfPos[1].x - SubShelfPos[2].x) * t;
+    positions[2].y = SubShelfPos[2].y + (SubShelfPos[1].y - SubShelfPos[2].y) * t;
+    positions[2].z = SubShelfPos[2].z + (SubShelfPos[1].z - SubShelfPos[2].z) * t;
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[3].x = SubShelfPos[3].x + (SubShelfPos[2].x - SubShelfPos[3].x) * t;
+    positions[3].y = SubShelfPos[3].y + (SubShelfPos[2].y - SubShelfPos[3].y) * t;
+    positions[3].z = SubShelfPos[3].z + (SubShelfPos[2].z - SubShelfPos[3].z) * t;
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[4].x = SubShelfPos[4].x + (SubShelfPos[3].x - SubShelfPos[4].x) * t;
+    positions[4].y = SubShelfPos[4].y + (SubShelfPos[3].y - SubShelfPos[4].y) * t;
+    positions[4].z = SubShelfPos[4].z + (SubShelfPos[3].z - SubShelfPos[4].z) * t;
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[5].x = SubShelfPos[5].x + (SubShelfPos[4].x - SubShelfPos[5].x) * t;
+    positions[5].y = SubShelfPos[5].y + (SubShelfPos[4].y - SubShelfPos[5].y) * t;
+    positions[5].z = SubShelfPos[5].z + (SubShelfPos[4].z - SubShelfPos[5].z) * t;
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[6].x = SubShelfPos[6].x + (SubShelfPos[5].x - SubShelfPos[6].x) * t;
+    positions[6].y = SubShelfPos[6].y + (SubShelfPos[5].y - SubShelfPos[6].y) * t;
+    positions[6].z = SubShelfPos[6].z + (SubShelfPos[5].z - SubShelfPos[6].z) * t;
     t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
     scale3 = scalepicked + (scalenorm - scalepicked) * t;
     t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
@@ -973,12 +986,30 @@ i32 MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count) {
     reverse_phase = 1.0f - t;
     angle = (i32)(t * 32768.0f + 16384.0f);
     t = 1.0f - (NuTrigTable[(angle >> 1) & 0x7fff] + 1.0f) * 0.5f;
-    SHOP_SLIDE_SLOT(5, 6)
-    SHOP_SLIDE_SLOT(4, 5)
-    SHOP_SLIDE_SLOT(3, 4)
-    SHOP_SLIDE_SLOT(2, 3)
-    SHOP_SLIDE_SLOT(1, 2)
-    SHOP_SLIDE_SLOT(0, 1)
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[5].x = SubShelfPos[5].x + (SubShelfPos[6].x - SubShelfPos[5].x) * t;
+    positions[5].y = SubShelfPos[5].y + (SubShelfPos[6].y - SubShelfPos[5].y) * t;
+    positions[5].z = SubShelfPos[5].z + (SubShelfPos[6].z - SubShelfPos[5].z) * t;
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[4].x = SubShelfPos[4].x + (SubShelfPos[5].x - SubShelfPos[4].x) * t;
+    positions[4].y = SubShelfPos[4].y + (SubShelfPos[5].y - SubShelfPos[4].y) * t;
+    positions[4].z = SubShelfPos[4].z + (SubShelfPos[5].z - SubShelfPos[4].z) * t;
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[3].x = SubShelfPos[3].x + (SubShelfPos[4].x - SubShelfPos[3].x) * t;
+    positions[3].y = SubShelfPos[3].y + (SubShelfPos[4].y - SubShelfPos[3].y) * t;
+    positions[3].z = SubShelfPos[3].z + (SubShelfPos[4].z - SubShelfPos[3].z) * t;
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[2].x = SubShelfPos[2].x + (SubShelfPos[3].x - SubShelfPos[2].x) * t;
+    positions[2].y = SubShelfPos[2].y + (SubShelfPos[3].y - SubShelfPos[2].y) * t;
+    positions[2].z = SubShelfPos[2].z + (SubShelfPos[3].z - SubShelfPos[2].z) * t;
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[1].x = SubShelfPos[1].x + (SubShelfPos[2].x - SubShelfPos[1].x) * t;
+    positions[1].y = SubShelfPos[1].y + (SubShelfPos[2].y - SubShelfPos[1].y) * t;
+    positions[1].z = SubShelfPos[1].z + (SubShelfPos[2].z - SubShelfPos[1].z) * t;
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[0].x = SubShelfPos[0].x + (SubShelfPos[1].x - SubShelfPos[0].x) * t;
+    positions[0].y = SubShelfPos[0].y + (SubShelfPos[1].y - SubShelfPos[0].y) * t;
+    positions[0].z = SubShelfPos[0].z + (SubShelfPos[1].z - SubShelfPos[0].z) * t;
     t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
     scale4 = scalenorm + (scalepicked - scalenorm) * t;
     t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));

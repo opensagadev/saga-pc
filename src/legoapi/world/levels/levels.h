@@ -129,7 +129,7 @@ extern "C" {
     extern f32 PodRace_sniper_fire_time;
     extern SNIPER_s PodRace_snipers[10];
     extern void *kaminoe_netpacket;
-    extern struct PODSPRINTNETPACKET_s *podsprint_netpacket;
+    extern struct PODSPRINT_NETPACKET *podsprint_netpacket;
     extern u16 temp_yrot;
     extern f32 PodRace_sniper_fire_radius;
     extern f32 PodRace_sniper_fire_range_time;

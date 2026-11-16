@@ -262,77 +262,76 @@ extern "C" {
     extern i16 dat_007f1828; /* character id fixed up from "PenguinBomb" */
 }
 
-#define GAME_PUBLISHER_ASSERT(expression) typedef char SAGA_JOIN(game_publisher_static_assert_, __COUNTER__)[(expression) ? 1 : -1]
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.suit) == 0xcbc);
-GAME_PUBLISHER_ASSERT(offsetof(SUIT_LAYERS, flags) == 0xc);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
-GAME_PUBLISHER_ASSERT(offsetof(CHARACTERDATA, game_character) == 0x24);
-GAME_PUBLISHER_ASSERT(offsetof(CHARACTERDATA, model_flags) == 4);
-GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG, flags_090) == 0x90);
-GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG, variant) == 0x116);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.flags_e20) == 0xe20);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.unknown_e33) == 0xe33);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
-GAME_PUBLISHER_ASSERT(sizeof(CUT_PLAYER_CLIP_CONFIG) == 0x44);
-GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, level_id) == 0);
-GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, type) == 2);
-GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, guest_episode) == 3);
-GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, name) == 4);
-GAME_PUBLISHER_ASSERT(sizeof(LEVELDATA) == 0x130);
-GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA, area_index) == 0xa3);
-GAME_PUBLISHER_ASSERT(offsetof(AREA_DATA, index) == 0x7c);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_model) == 0x50);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.character_context) == 0x7b5);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.unknown_7aa) == 0x7aa);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, lower_position) == 0x19c);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, bounds_radius) == 0x1dc);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, unknown_280) == 0x280);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.rider) == 0xcd0);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.locator_matrices) == 0x804);
-GAME_PUBLISHER_ASSERT(offsetof(NUMTX, translation) == 0x30);
+STATIC_ASSERT(offsetof(GAMEOBJECT, player.suit) == 0xcbc);
+STATIC_ASSERT(offsetof(SUIT_LAYERS, flags) == 0xc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
+STATIC_ASSERT(offsetof(CHARACTERDATA, game_character) == 0x24);
+STATIC_ASSERT(offsetof(CHARACTERDATA, model_flags) == 4);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG, flags_090) == 0x90);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG, variant) == 0x116);
+STATIC_ASSERT(offsetof(GAMEOBJECT, player.flags_e20) == 0xe20);
+STATIC_ASSERT(offsetof(GAMEOBJECT, player.unknown_e33) == 0xe33);
+STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
+STATIC_ASSERT(sizeof(CUT_PLAYER_CLIP_CONFIG) == 0x44);
+STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, level_id) == 0);
+STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, type) == 2);
+STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, guest_episode) == 3);
+STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, name) == 4);
+STATIC_ASSERT(sizeof(LEVELDATA) == 0x130);
+STATIC_ASSERT(offsetof(LEVELDATA, area_index) == 0xa3);
+STATIC_ASSERT(offsetof(AREA_DATA, index) == 0x7c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_model) == 0x50);
+STATIC_ASSERT(offsetof(GAMEOBJECT, player.character_context) == 0x7b5);
+STATIC_ASSERT(offsetof(GAMEOBJECT, player.unknown_7aa) == 0x7aa);
+STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
+STATIC_ASSERT(offsetof(GAMEOBJECT, lower_position) == 0x19c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, bounds_radius) == 0x1dc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, unknown_280) == 0x280);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
+STATIC_ASSERT(offsetof(GAMEOBJECT, player.rider) == 0xcd0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, player.locator_matrices) == 0x804);
+STATIC_ASSERT(offsetof(NUMTX, translation) == 0x30);
 
 typedef struct buck_rotation_reader_s {
     u8 unknown_0000[0x27a];
     u16 rotation;
 } BUCK_ROTATION_READER;
 
-GAME_PUBLISHER_ASSERT(offsetof(BUCK_ROTATION_READER, rotation) == 0x27a);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.pad) == 0xca4);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEPAD, bound_pad) == 0);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
+STATIC_ASSERT(offsetof(BUCK_ROTATION_READER, rotation) == 0x27a);
+STATIC_ASSERT(offsetof(GAMEOBJECT, player.pad) == 0xca4);
+STATIC_ASSERT(offsetof(GAMEPAD, bound_pad) == 0);
+STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 
 typedef struct game_callback_weapon_flags_s {
     u8 unknown_00[0xe22];
     u8 weapon_flags;
 } GAME_CALLBACK_WEAPON_FLAGS;
 
-GAME_PUBLISHER_ASSERT(offsetof(GAME_CALLBACK_WEAPON_FLAGS, weapon_flags) == 0xe22);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, anim_packet) == 8);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, floor_height) == 0x21c);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, unknown_283) == 0x283);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, jump_animation_state) == 0x285);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.suit) == 0xcbc);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, surface_normal) + offsetof(NUVEC, y) == 0xf28);
-GAME_PUBLISHER_ASSERT(sizeof(SUIT_INITIALIZER_RECORD) == 0x18);
-GAME_PUBLISHER_ASSERT(offsetof(SUIT_INITIALIZER_RECORD, character_id) == 0x14);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, trafficanim_sys) == 0x5168);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, pulses_sys) == 0x5050);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, giz_flow) == 0x2acc);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, reset_flags) == 0x118);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, ai_trigger_set) == 0x4678);
-GAME_PUBLISHER_ASSERT(offsetof(LEVEL_PROGRESS, flags) == 0x2800);
-GAME_PUBLISHER_ASSERT(offsetof(LEVEL_PROGRESS, giz_flow_progress) == 0x2c24);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, progress_flag_5174) == 0x5170);
-GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA, callbacks) + 2 * sizeof(void *) == 0x70);
-GAME_PUBLISHER_ASSERT(offsetof(AREA_GLOBALS, area_phase) == 0xc);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.saved_hitpoints) == 0xe39);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, spawn_protection_timer) == 0x1000);
+STATIC_ASSERT(offsetof(GAME_CALLBACK_WEAPON_FLAGS, weapon_flags) == 0xe22);
+STATIC_ASSERT(offsetof(GAMEOBJECT, anim_packet) == 8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, floor_height) == 0x21c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, unknown_283) == 0x283);
+STATIC_ASSERT(offsetof(GAMEOBJECT, jump_animation_state) == 0x285);
+STATIC_ASSERT(offsetof(GAMEOBJECT, player.suit) == 0xcbc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, surface_normal) + offsetof(NUVEC, y) == 0xf28);
+STATIC_ASSERT(sizeof(SUIT_INITIALIZER_RECORD) == 0x18);
+STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD, character_id) == 0x14);
+STATIC_ASSERT(offsetof(WORLDINFO, trafficanim_sys) == 0x5168);
+STATIC_ASSERT(offsetof(WORLDINFO, pulses_sys) == 0x5050);
+STATIC_ASSERT(offsetof(WORLDINFO, giz_flow) == 0x2acc);
+STATIC_ASSERT(offsetof(WORLDINFO, reset_flags) == 0x118);
+STATIC_ASSERT(offsetof(WORLDINFO, ai_trigger_set) == 0x4678);
+STATIC_ASSERT(offsetof(LEVEL_PROGRESS, flags) == 0x2800);
+STATIC_ASSERT(offsetof(LEVEL_PROGRESS, giz_flow_progress) == 0x2c24);
+STATIC_ASSERT(offsetof(WORLDINFO, progress_flag_5174) == 0x5170);
+STATIC_ASSERT(offsetof(LEVELDATA, callbacks) + 2 * sizeof(void *) == 0x70);
+STATIC_ASSERT(offsetof(AREA_GLOBALS, area_phase) == 0xc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, player.saved_hitpoints) == 0xe39);
+STATIC_ASSERT(offsetof(GAMEOBJECT, spawn_protection_timer) == 0x1000);
 extern "C" {
     void Bolts_Reset(void);
     void Detonators_Reset(void);
@@ -350,41 +349,41 @@ typedef struct game_door_callback_s {
     u16 level_id;
 } GAME_DOOR_CALLBACK;
 
-GAME_PUBLISHER_ASSERT(offsetof(GAME_DOOR_CALLBACK, level_id) == 0xf0);
-GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA, index) == 0x62);
-GAME_PUBLISHER_ASSERT(offsetof(DOOR_s, level) == offsetof(GAME_DOOR_CALLBACK, level_id));
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, doomed_escape_locator) == 0xf14);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, current_route) == 0x404);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, next_route) == 0x405);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, path_info) == 0x420);
-GAME_PUBLISHER_ASSERT(sizeof(AIPATHINFO) == 0x18);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, frame_state) == 0x4c0);
-GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, flags_word) == 0xb0);
-GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, status_flags) == 0xb4);
-GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, stage) == 0x124);
-GAME_PUBLISHER_ASSERT(offsetof(STATUS_STAGE_s, type) == 0xc);
-GAME_PUBLISHER_ASSERT(offsetof(STATUS_STAGE_s, step_time) == 0x18);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
-GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA, flags) == 0x64);
-GAME_PUBLISHER_ASSERT(offsetof(GAMECAMERA, sock_position.sock_index) == 1);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, nearest_opponent) == 0x39c);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, nearest_opponent_metric) == 0x3a0);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, opponent) == 0x3ac);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, reflection_height) == 0x1014);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-GAME_PUBLISHER_ASSERT(offsetof(GAMECAMERA, sock_position.sock_index) == 0x1);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE, score) == 0xdc);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE, target_is_coin_total) == 0xfe);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE, position_a) == 0x7c);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE, position) == 0x94);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE, has_start_position) == 0xf9);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE, icon) == 0xe6);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
-GAME_PUBLISHER_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME) == 0x10);
-GAME_PUBLISHER_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, special) == 0);
+STATIC_ASSERT(offsetof(GAME_DOOR_CALLBACK, level_id) == 0xf0);
+STATIC_ASSERT(offsetof(LEVELDATA, index) == 0x62);
+STATIC_ASSERT(offsetof(DOOR_s, level) == offsetof(GAME_DOOR_CALLBACK, level_id));
+STATIC_ASSERT(offsetof(GAMEOBJECT, doomed_escape_locator) == 0xf14);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, current_route) == 0x404);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, next_route) == 0x405);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, path_info) == 0x420);
+STATIC_ASSERT(sizeof(AIPATHINFO) == 0x18);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, frame_state) == 0x4c0);
+STATIC_ASSERT(offsetof(STATUSPACKET_s, flags_word) == 0xb0);
+STATIC_ASSERT(offsetof(STATUSPACKET_s, status_flags) == 0xb4);
+STATIC_ASSERT(offsetof(STATUSPACKET_s, stage) == 0x124);
+STATIC_ASSERT(offsetof(STATUS_STAGE_s, type) == 0xc);
+STATIC_ASSERT(offsetof(STATUS_STAGE_s, step_time) == 0x18);
+STATIC_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
+STATIC_ASSERT(offsetof(LEVELDATA, flags) == 0x64);
+STATIC_ASSERT(offsetof(GAMECAMERA, sock_position.sock_index) == 1);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, nearest_opponent) == 0x39c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, nearest_opponent_metric) == 0x3a0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, opponent) == 0x3ac);
+STATIC_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_height) == 0x1014);
+STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
+STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
+STATIC_ASSERT(offsetof(GAMECAMERA, sock_position.sock_index) == 0x1);
+STATIC_ASSERT(offsetof(GAME_MESSAGE, score) == 0xdc);
+STATIC_ASSERT(offsetof(GAME_MESSAGE, target_is_coin_total) == 0xfe);
+STATIC_ASSERT(offsetof(GAME_MESSAGE, position_a) == 0x7c);
+STATIC_ASSERT(offsetof(GAME_MESSAGE, position) == 0x94);
+STATIC_ASSERT(offsetof(GAME_MESSAGE, has_start_position) == 0xf9);
+STATIC_ASSERT(offsetof(GAME_MESSAGE, icon) == 0xe6);
+STATIC_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
+STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
+STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME) == 0x10);
+STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, special) == 0);
 struct GIZBUILDIT;
 
 struct GAME_BUILDIT_READER {
@@ -394,17 +393,17 @@ struct GAME_BUILDIT_READER {
     u8 anim_object_count;
 };
 
-GAME_PUBLISHER_ASSERT(offsetof(GAME_BUILDIT_READER, position) == 0x34);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_BUILDIT_READER, anim_object_count) == 0x6c);
-GAME_PUBLISHER_ASSERT(offsetof(GAMESAVE, gold_bricks) == 0x7c1a);
-GAME_PUBLISHER_ASSERT(offsetof(GAMESAVE, purchased_extra_bits_high) == 0x7c04);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, part_debris_sys) == 0x138);
+STATIC_ASSERT(offsetof(GAME_BUILDIT_READER, position) == 0x34);
+STATIC_ASSERT(offsetof(GAME_BUILDIT_READER, anim_object_count) == 0x6c);
+STATIC_ASSERT(offsetof(GAMESAVE, gold_bricks) == 0x7c1a);
+STATIC_ASSERT(offsetof(GAMESAVE, purchased_extra_bits_high) == 0x7c04);
+STATIC_ASSERT(offsetof(WORLDINFO, part_debris_sys) == 0x138);
 extern "C" i16 dat_00880ff0;
-GAME_PUBLISHER_ASSERT(sizeof(MISSION_MENU_PACKET) == 0xa);
-GAME_PUBLISHER_ASSERT(offsetof(MISSION_MENU_PACKET, player_model) == 0);
-GAME_PUBLISHER_ASSERT(offsetof(MISSION_MENU_PACKET, active_player) == 4);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.unknown_7b3) == 0x7b3);
+STATIC_ASSERT(sizeof(MISSION_MENU_PACKET) == 0xa);
+STATIC_ASSERT(offsetof(MISSION_MENU_PACKET, player_model) == 0);
+STATIC_ASSERT(offsetof(MISSION_MENU_PACKET, active_player) == 4);
+STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
+STATIC_ASSERT(offsetof(GAMEOBJECT, player.unknown_7b3) == 0x7b3);
 
 /* Local minimum reader; no GAMECAMERA size or backing claim. */
 typedef struct GAME_GIZMO_SFX_CAMERA_READER {
@@ -414,33 +413,33 @@ typedef struct GAME_GIZMO_SFX_CAMERA_READER {
     f32 sock_distance;
 } GAME_GIZMO_SFX_CAMERA_READER;
 
-GAME_PUBLISHER_ASSERT(offsetof(GAME_GIZMO_SFX_CAMERA_READER, sock) == 1);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_GIZMO_SFX_CAMERA_READER, sock_distance) == 0x2c);
+STATIC_ASSERT(offsetof(GAME_GIZMO_SFX_CAMERA_READER, sock) == 1);
+STATIC_ASSERT(offsetof(GAME_GIZMO_SFX_CAMERA_READER, sock_distance) == 0x2c);
 
-GAME_PUBLISHER_ASSERT(sizeof(TAG_CHARACTER_DATA_READER) == 0x4c);
-GAME_PUBLISHER_ASSERT(offsetof(TAG_CHARACTER_DATA_READER, icon_model) == 0x42);
-GAME_PUBLISHER_ASSERT(offsetof(APICHARSYS, char_data) == 0x20);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.hud_icon_timer) == 0xd60);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_top) == 0xff4);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, origin_scale) == 0xa8);
-GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG, hover_fall_mode) == 0x116);
+STATIC_ASSERT(sizeof(TAG_CHARACTER_DATA_READER) == 0x4c);
+STATIC_ASSERT(offsetof(TAG_CHARACTER_DATA_READER, icon_model) == 0x42);
+STATIC_ASSERT(offsetof(APICHARSYS, char_data) == 0x20);
+STATIC_ASSERT(offsetof(GAMEOBJECT, player.hud_icon_timer) == 0xd60);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_top) == 0xff4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, origin_scale) == 0xa8);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG, hover_fall_mode) == 0x116);
 /* Reuse TAG_CHARACTER_DATA_READER from the LSW callback contract. */
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, pause_context_state) == 0xee8);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, upper_position) == 0x190);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.flags_e24) == 0xe24);
-GAME_PUBLISHER_ASSERT(offsetof(CHARACTER_MODEL_LAYERS, points_of_interest) == 0x14);
-GAME_PUBLISHER_ASSERT(offsetof(NUMTX, m30) == 0x30);
-GAME_PUBLISHER_ASSERT(offsetof(NUMTX, m31) == 0x34);
-GAME_PUBLISHER_ASSERT(offsetof(NUMTX, m32) == 0x38);
-GAME_PUBLISHER_ASSERT(offsetof(GIZMOBLOWUP, mid_position) == 0x4c);
-GAME_PUBLISHER_ASSERT(offsetof(GIZMOBLOWUP, target_scale) == 0xa8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, pause_context_state) == 0xee8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, upper_position) == 0x190);
+STATIC_ASSERT(offsetof(GAMEOBJECT, player.flags_e24) == 0xe24);
+STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS, points_of_interest) == 0x14);
+STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
+STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
+STATIC_ASSERT(offsetof(NUMTX, m32) == 0x38);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP, mid_position) == 0x4c);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP, target_scale) == 0xa8);
 
 typedef struct GAME_CUSTOMISER_REWARD_READER {
     u8 opaque_00[0x174];
     u16 *save_pieces;
 } GAME_CUSTOMISER_REWARD_READER;
 
-GAME_PUBLISHER_ASSERT(offsetof(GAME_CUSTOMISER_REWARD_READER, save_pieces) == 0x174);
+STATIC_ASSERT(offsetof(GAME_CUSTOMISER_REWARD_READER, save_pieces) == 0x174);
 
 extern "C" void GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP *target);
 static void LEGO_AllGoldBricksFn(void);
@@ -2652,7 +2651,7 @@ extern "C" {
                         object->player.torpedo->pickup_data[object->player.torpedo->count] = part->unknown_10c[0];
                         object->player.torpedo->pickup_flags[object->player.torpedo->count] = part->unknown_10c[1];
                         ++object->player.torpedo->count;
-                        object->player.torpedo->steal_timer = 0.0f;
+                        object->player.torpedo->pickup_timer = 0.0f;
                         object->player.torpedo->pickup_state = 0;
                         KillPart(part, 2);
                     }

@@ -181,8 +181,8 @@ static void RippleEffectType(NUFPAR *parser) {
     if (NuFParGetWord(parser)) {
         i32 index = LookupRippleEffectIndex(parser->word_buffer_ptr);
         if (index != -1) {
-            WORLD_RIPPLE_VIEW *world = (WORLD_RIPPLE_VIEW *)RippleEffectsWorldInfo;
-            world->effect_of_type[index] = world->count;
+            WORLDINFO *world = RippleEffectsWorldInfo;
+            world->ripple_effect_of_type[index] = world->ripple_effect_count;
         }
     }
 }
@@ -197,19 +197,18 @@ static NUFPCOMJMP RippleEffectConfigKeywords[8] = {{"texture_name", RippleTextur
                                                    {NULL, NULL}};
 
 void RippleEffects_Configure(WORLDINFO *world, char *config) {
-    WORLD_RIPPLE_VIEW *view = (WORLD_RIPPLE_VIEW *)world;
     NUFPAR *parser;
     RIPPLE_EFFECT *effect;
     i32 active;
     i32 i;
-    view->effects = NULL;
-    view->count = 0;
+    world->ripple_effects = NULL;
+    world->ripple_effect_count = 0;
     parser = NuFParCreateMem("rippleeffects", config, 0xffff);
     if (parser == NULL) {
         return;
     }
     world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-    effect = view->effects = world->giz_buffer.void_ptr;
+    effect = world->ripple_effects = world->giz_buffer.void_ptr;
     NuFParPushCom(parser, RippleEffectConfigKeywords);
     active = 0;
     while (NuFParGetLine(parser)) {
@@ -222,12 +221,12 @@ void RippleEffects_Configure(WORLDINFO *world, char *config) {
                 active = 0;
                 if (effect->texture_name[0] != 0) {
                     ++effect;
-                    ++view->count;
+                    ++world->ripple_effect_count;
                 }
             } else {
                 NuFParInterpretWord(parser);
             }
-        } else if (view->count < 2 && NuStrICmp(parser->word_buffer_ptr, "rippleeffects_start") == 0) {
+        } else if (world->ripple_effect_count < 2 && NuStrICmp(parser->word_buffer_ptr, "rippleeffects_start") == 0) {
             active = 1;
             RippleEffectsWorldInfo = world;
             RippleEffectsCurrent = effect;
@@ -247,13 +246,14 @@ void RippleEffects_Configure(WORLDINFO *world, char *config) {
         }
     }
     NuFParDestroy(parser);
-    if (view->count > 0) {
-        world->giz_buffer.addr = ((u32)(view->effects + view->count) + 15) & ~15u;
-        for (i = 0; i < view->count; ++i) {
-            InitRippleMtl(view->effects[i].texture_name, &view->effects[i].material, &world->giz_buffer, &world->buffer_end);
+    if (world->ripple_effect_count > 0) {
+        world->giz_buffer.addr = ((u32)(world->ripple_effects + world->ripple_effect_count) + 15) & ~15u;
+        for (i = 0; i < world->ripple_effect_count; ++i) {
+            InitRippleMtl(world->ripple_effects[i].texture_name, &world->ripple_effects[i].material, &world->giz_buffer,
+                          &world->buffer_end);
         }
     } else {
-        view->effects = NULL;
+        world->ripple_effects = NULL;
     }
 }
 

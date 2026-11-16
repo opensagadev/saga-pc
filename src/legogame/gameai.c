@@ -102,7 +102,6 @@ typedef struct controller_cut_view_s {
 
 i32 EquivalentObject_Find(WORLDINFO *, nuhspecial_s *);
 i32 TightRope_SnapTo(GAMEOBJECT *, NUVEC *);
-#define INTERACTION_GEOMETRY(p) ((GAMEOBJECT *)(p))
 
 void __movsd(unsigned long *, unsigned long const *, unsigned int);
 void LevelScriptReStoreProgress(WORLDINFO *, LEVEL_SCRIPT_PROCESS *);
@@ -617,8 +616,8 @@ void GameCreatureInteraction2D(AISYS *system, i32 object_count, APIOBJECT **obje
             if (difference.z > radius || difference.z < minimum) {
                 continue;
             }
-            if (INTERACTION_GEOMETRY(first)->collision_min.y > INTERACTION_GEOMETRY(second)->collision_max.y ||
-                INTERACTION_GEOMETRY(second)->collision_min.y > INTERACTION_GEOMETRY(first)->collision_max.y) {
+            if (((GAMEOBJECT *)first)->collision_min.y > ((GAMEOBJECT *)second)->collision_max.y ||
+                ((GAMEOBJECT *)second)->collision_min.y > ((GAMEOBJECT *)first)->collision_max.y) {
                 continue;
             }
             if (first->collision_link == second || second->collision_link == first) {

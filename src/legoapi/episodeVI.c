@@ -414,7 +414,7 @@ void EmperorFightA_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[39], "dot_on_10", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[40], "dot_on_11", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[41], "dot_on_12", 1);
-    memset(LevSfxFlag, 0, 3 * sizeof(LevSfxFlag[0]));
+    memset(LevSfxFlag.words, 0, 3 * sizeof(LevSfxFlag.words[0]));
 }
 
 void EmperorFightA_Reset(WORLDINFO *world) {
@@ -785,11 +785,11 @@ emperor_routes_done:
         }
     }
     for (i = 0; i < 12; ++i) {
-        if (NuSpecialGetVisibilityFn(&LevHSpecial[i + 30]) && !((u8 *)LevSfxFlag)[i]) {
+        if (NuSpecialGetVisibilityFn(&LevHSpecial[i + 30]) && !LevSfxFlag.playing[i]) {
             PlaySfx("env_block_light_on", NuSpecialGetDrawPos(&LevHSpecial[i]));
-            ((u8 *)LevSfxFlag)[i] = 1;
+            LevSfxFlag.playing[i] = 1;
         } else if (!NuSpecialGetVisibilityFn(&LevHSpecial[i + 30])) {
-            ((u8 *)LevSfxFlag)[i] = 0;
+            LevSfxFlag.playing[i] = 0;
         }
     }
 }

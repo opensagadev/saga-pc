@@ -155,17 +155,6 @@ typedef struct grabber_antinode_view_s { // size 0x58
     i64 object_mask;                     // 0x50
 } GRABBER_ANTINODE_VIEW;
 
-#define GRABBER_FIND_SWITCH(field, name)                                                                                                   \
-    gizmo = (GIZOBSTACLE **)GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, name);                                                \
-    if (gizmo != NULL) {                                                                                                                   \
-        Grab_grabber->field = *gizmo;                                                                                                      \
-        if (Grab_grabber->field != NULL && Grab_grabber->field->anim_set == NULL)                                                          \
-            Grab_grabber->field = NULL;                                                                                                    \
-    } else                                                                                                                                 \
-        Grab_grabber->field = NULL
-#define GRABBER_SWITCH_ON(obstacle)                                                                                                        \
-    ((obstacle) != NULL && ((obstacle)->progress_flags & OBSTACLE_VISIBLE) != 0 && (obstacle)->anim_set->state == 2)
-
 static void GrabberMtxSetRotationZ(NUMTX *m, NUANG a) {
     f32 cosz;
     f32 sinz;
@@ -570,11 +559,51 @@ void Grabber_Reset(WORLDINFO *world) {
     if (grabber == NULL) {
         return;
     }
-    GRABBER_FIND_SWITCH(action_switch, "pad_drop");
-    GRABBER_FIND_SWITCH(direction_switches[0], "pad_n");
-    GRABBER_FIND_SWITCH(direction_switches[1], "pad_s");
-    GRABBER_FIND_SWITCH(direction_switches[2], "pad_e");
-    GRABBER_FIND_SWITCH(direction_switches[3], "pad_w");
+    gizmo = (GIZOBSTACLE **)GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "pad_drop");
+    if (gizmo != NULL) {
+        Grab_grabber->action_switch = *gizmo;
+        if (Grab_grabber->action_switch != NULL && Grab_grabber->action_switch->anim_set == NULL) {
+            Grab_grabber->action_switch = NULL;
+        }
+    } else {
+        Grab_grabber->action_switch = NULL;
+    }
+    gizmo = (GIZOBSTACLE **)GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "pad_n");
+    if (gizmo != NULL) {
+        Grab_grabber->direction_switches[0] = *gizmo;
+        if (Grab_grabber->direction_switches[0] != NULL && Grab_grabber->direction_switches[0]->anim_set == NULL) {
+            Grab_grabber->direction_switches[0] = NULL;
+        }
+    } else {
+        Grab_grabber->direction_switches[0] = NULL;
+    }
+    gizmo = (GIZOBSTACLE **)GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "pad_s");
+    if (gizmo != NULL) {
+        Grab_grabber->direction_switches[1] = *gizmo;
+        if (Grab_grabber->direction_switches[1] != NULL && Grab_grabber->direction_switches[1]->anim_set == NULL) {
+            Grab_grabber->direction_switches[1] = NULL;
+        }
+    } else {
+        Grab_grabber->direction_switches[1] = NULL;
+    }
+    gizmo = (GIZOBSTACLE **)GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "pad_e");
+    if (gizmo != NULL) {
+        Grab_grabber->direction_switches[2] = *gizmo;
+        if (Grab_grabber->direction_switches[2] != NULL && Grab_grabber->direction_switches[2]->anim_set == NULL) {
+            Grab_grabber->direction_switches[2] = NULL;
+        }
+    } else {
+        Grab_grabber->direction_switches[2] = NULL;
+    }
+    gizmo = (GIZOBSTACLE **)GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "pad_w");
+    if (gizmo != NULL) {
+        Grab_grabber->direction_switches[3] = *gizmo;
+        if (Grab_grabber->direction_switches[3] != NULL && Grab_grabber->direction_switches[3]->anim_set == NULL) {
+            Grab_grabber->direction_switches[3] = NULL;
+        }
+    } else {
+        Grab_grabber->direction_switches[3] = NULL;
+    }
     grabber->grab_position.y = grabber->initial_position.y;
     if (world->level_progress != NULL && ((LEVEL_GRABBER_PROGRESS *)world->level_progress)->stored_tfactor != 2000000.0f) {
         grabber->grab_position.x = ((LEVEL_GRABBER_PROGRESS *)world->level_progress)->stored_frame;
@@ -721,8 +750,10 @@ void Grabber_Update(WORLDINFO *world) {
             }
         }
     } else {
-        minus = GRABBER_SWITCH_ON(grabber->direction_switches[0]);
-        plus = GRABBER_SWITCH_ON(grabber->direction_switches[1]);
+        minus = (grabber->direction_switches[0] != NULL && (grabber->direction_switches[0]->progress_flags & OBSTACLE_VISIBLE) != 0 &&
+                 grabber->direction_switches[0]->anim_set->state == 2);
+        plus = (grabber->direction_switches[1] != NULL && (grabber->direction_switches[1]->progress_flags & OBSTACLE_VISIBLE) != 0 &&
+                grabber->direction_switches[1]->anim_set->state == 2);
         if (minus != 0) {
             if (plus == 0) {
                 grabber->target_velocity.x = -grabber->speed;
@@ -730,8 +761,10 @@ void Grabber_Update(WORLDINFO *world) {
         } else if (plus != 0) {
             grabber->target_velocity.x = grabber->speed;
         }
-        plus = GRABBER_SWITCH_ON(grabber->direction_switches[2]);
-        minus = GRABBER_SWITCH_ON(grabber->direction_switches[3]);
+        plus = (grabber->direction_switches[2] != NULL && (grabber->direction_switches[2]->progress_flags & OBSTACLE_VISIBLE) != 0 &&
+                grabber->direction_switches[2]->anim_set->state == 2);
+        minus = (grabber->direction_switches[3] != NULL && (grabber->direction_switches[3]->progress_flags & OBSTACLE_VISIBLE) != 0 &&
+                 grabber->direction_switches[3]->anim_set->state == 2);
         if (plus != 0) {
             if (minus == 0) {
                 grabber->target_velocity.z = grabber->speed;

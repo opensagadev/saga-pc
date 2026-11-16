@@ -214,8 +214,7 @@ static CUSTOMISER_GAME_SETTING CustomiserGameSettingsPrivate[] = {
     {"bountyhunter", 0x1000000, 0},     {"jedi", 8, 0}, {"sith", 0xc, 2}, {"blaster", 0x100080, 0x40000000}, {"alreadygothat", 0, 0x10},
     {"stormtrooperhelmet", 0, 0x40000}, {NULL, 0, 0}};
 
-void PermanentCustomPieceConfig(CUSTOMPIECE_LAYERS *input, NUFPAR *parser) {
-    CUSTOM_PIECE_CONFIG *piece = (CUSTOM_PIECE_CONFIG *)input;
+void PermanentCustomPieceConfig(CUSTOM_PIECE_CONFIG *piece, NUFPAR *parser) {
     CUSTOMISER_GAME_SETTING *setting;
     for (setting = CustomiserGameSettingsPrivate; setting->name != NULL; ++setting) {
         if (NuStrICmp(parser->word_buffer_ptr, setting->name) == 0) {
@@ -307,8 +306,7 @@ void Customiser_SetNameAndIcon(CUSTOMISER_CONFIG *customiser, i32 index) {
     }
 }
 
-i32 PermanentCustomPieceAvailable(CUSTOMPIECE_LAYERS *input) {
-    CUSTOM_PIECE_CONFIG *piece = (CUSTOM_PIECE_CONFIG *)input;
+i32 PermanentCustomPieceAvailable(CUSTOM_PIECE_CONFIG *piece) {
     if (GAMEDEMO != 0) {
         if ((piece->availability_flags & CUSTOM_PIECE_NOT_DEMO) != 0) {
             return 0;
@@ -810,7 +808,7 @@ i32 CustomiserMenu_Update(void) {
                         i32 piece;
                         do {
                             piece = qrand() / (65535 / customiser->piece_counts[category] + 1);
-                        } while (customiser->piece_available((CUSTOMPIECE_LAYERS *)&customiser->piece_sets[category][piece]) == 0);
+                        } while (customiser->piece_available(&customiser->piece_sets[category][piece]) == 0);
                         Game.customiser_start[side].pieces[category] = (u16)piece;
                     }
                 }

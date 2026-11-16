@@ -401,24 +401,22 @@ extern "C" {
     void ChrisDogFightADraw(WORLDINFO *world);
 
     static void CopyFlightMatrix(NUMTX *destination, const NUMTX *source) {
-#define COPY_ELEMENT(field) destination->field = source->field
-        COPY_ELEMENT(m00);
-        COPY_ELEMENT(m01);
-        COPY_ELEMENT(m02);
-        COPY_ELEMENT(m03);
-        COPY_ELEMENT(m10);
-        COPY_ELEMENT(m11);
-        COPY_ELEMENT(m12);
-        COPY_ELEMENT(m13);
-        COPY_ELEMENT(m20);
-        COPY_ELEMENT(m21);
-        COPY_ELEMENT(m22);
-        COPY_ELEMENT(m23);
-        COPY_ELEMENT(m30);
-        COPY_ELEMENT(m31);
-        COPY_ELEMENT(m32);
-        COPY_ELEMENT(m33);
-#undef COPY_ELEMENT
+        destination->m00 = source->m00;
+        destination->m01 = source->m01;
+        destination->m02 = source->m02;
+        destination->m03 = source->m03;
+        destination->m10 = source->m10;
+        destination->m11 = source->m11;
+        destination->m12 = source->m12;
+        destination->m13 = source->m13;
+        destination->m20 = source->m20;
+        destination->m21 = source->m21;
+        destination->m22 = source->m22;
+        destination->m23 = source->m23;
+        destination->m30 = source->m30;
+        destination->m31 = source->m31;
+        destination->m32 = source->m32;
+        destination->m33 = source->m33;
     }
 
     static void TransformFlightVector(NUVEC *output, NUVEC *input, NUMTX *matrix) {
@@ -1132,16 +1130,21 @@ extern "C" {
     // noinline: the original calls DogfightResetGroup out of line from DogfightResetSpace; VC8 would inline it
     // there.
     static __declspec(noinline) void DogfightResetGroup(DOGFIGHT_GROUP *group) {
-#define RESET_FIGHTER(index)                                                                                                               \
-    group->fighters[index].fields.active = 0;                                                                                              \
-    group->fighters[index].fields.parent = NULL;                                                                                           \
-    group->fighters[index].fields.spline = NULL
-        RESET_FIGHTER(0);
-        RESET_FIGHTER(1);
-        RESET_FIGHTER(2);
-        RESET_FIGHTER(3);
-        RESET_FIGHTER(4);
-#undef RESET_FIGHTER
+        group->fighters[0].fields.active = 0;
+        group->fighters[0].fields.parent = NULL;
+        group->fighters[0].fields.spline = NULL;
+        group->fighters[1].fields.active = 0;
+        group->fighters[1].fields.parent = NULL;
+        group->fighters[1].fields.spline = NULL;
+        group->fighters[2].fields.active = 0;
+        group->fighters[2].fields.parent = NULL;
+        group->fighters[2].fields.spline = NULL;
+        group->fighters[3].fields.active = 0;
+        group->fighters[3].fields.parent = NULL;
+        group->fighters[3].fields.spline = NULL;
+        group->fighters[4].fields.active = 0;
+        group->fighters[4].fields.parent = NULL;
+        group->fighters[4].fields.spline = NULL;
         group->reset_colour = 0xff00;
         group->active = 0;
         group->draw_target = 0;

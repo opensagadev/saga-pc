@@ -7,15 +7,17 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
+struct GIZMO_LEVER;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 Lever_BeingPulled(void *);
+    i32 Lever_BeingPulled(struct GIZMO_LEVER *);
     extern i32 lever_gizmotype_id;
 #ifdef __cplusplus
 }
 #endif
-/* GIZMO_LEVER.flags, named like the bitfields of LEVER_FLAG_BITS (lever.c); the level file sets AUTO_RESET,
+/* GIZMO_LEVER.flags, named like its bitfields; the level file sets AUTO_RESET,
  * HIDE_BASE and HIDE_TARGET_INDICATOR. */
 #define LEVER_FLAG_INTERACTING 0x1
 #define LEVER_FLAG_BEING_PULLED 0x2

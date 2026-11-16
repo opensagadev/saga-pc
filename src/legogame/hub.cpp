@@ -189,8 +189,6 @@ typedef struct hub_minikit_pieces_s {
     nuhspecial_s base;
 } HUB_MINIKIT_PIECES;
 
-#define HUB_SIN_LUT(a) (NuTrigTable[(((i32)(a)) >> 1) & 0x7fff])
-
 typedef struct hub_pad_reader_s {
     void *pad;
     u32 held;
@@ -234,10 +232,6 @@ typedef struct hub_door_reader_s {
 } HUB_DOOR_READER;
 
 struct GIZBUILDIT;
-#define HUB_MENU_PLAYER(p, mode)                                                                                                           \
-    ((p) != NULL && ((p)->flags_1fc & 0x80) != 0 && (p)->unknown_281 != 0 &&                                                               \
-     ((p)->player.character_context == -1 || (p)->player.character_context == 0x31 || (p)->player.character_context == 0x32) &&            \
-     (p)->jump_animation_state == (mode))
 extern "C" i32 HubDrawMiniKitCharacter;
 extern "C" i32 HubDoorNewLevel;
 extern "C" i16 dat_008806f8;
@@ -1713,8 +1707,9 @@ static i32 Hub_UpdateMiniKitBounds(i32 area_index, WORLDINFO *world) {
     kit->collision_center.z = kit->position.z + kit->offset_z;
     kit->collision_center.y = (top + bottom) * 0.5 + kit->position.y;
     const f32 scale = kit->scale;
-    kit->collision_center.y += (1.0 - (1.0 + (f64)HUB_SIN_LUT((i32)((f64)scale * 32768.0 + 16384.0))) * 0.5) * (f64)0.333f;
-    kit->collision_center.y += (f64)HUB_SIN_LUT(kit->phase_rotation) * (f64)0.025f * scale;
+    kit->collision_center.y +=
+        (1.0 - (1.0 + (f64)(NuTrigTable[(((i32)((i32)((f64)scale * 32768.0 + 16384.0))) >> 1) & 0x7fff])) * 0.5) * (f64)0.333f;
+    kit->collision_center.y += (f64)(NuTrigTable[(((i32)(kit->phase_rotation)) >> 1) & 0x7fff]) * (f64)0.025f * scale;
     const f32 panel_offset = info ? info->panel_offset : 0.0f;
     kit->collision_center.y += panel_offset;
     kit->bounds_min.x = kit->collision_center.x - radius;
@@ -1940,17 +1935,20 @@ extern "C" void Hub_DrawMiniKits(WORLDINFO *world) {
         }
         f32 x = hub_minikitviewer_pos.x + offset;
         if (hub_minikitviewer_movewait > 0.0f) {
-            const f32 wait_ease = (f32)(1.0 - (1.0 + (f64)HUB_SIN_LUT((i32)(hub_minikitviewer_movewait * 32768.0f + 16384.0f))) * 0.5);
+            const f32 wait_ease =
+                (f32)(1.0 -
+                      (1.0 + (f64)(NuTrigTable[(((i32)((i32)(hub_minikitviewer_movewait * 32768.0f + 16384.0f))) >> 1) & 0x7fff])) * 0.5);
             x += (f64)wait_ease * 2.0 * (f64)hub_minikitviewer_move;
         }
         HUB_MINIKIT_PIECES *pieces = ((HUB_WORLD_READER *)world)->pieces[area];
         const f32 scale = kit->scale;
-        const f32 lift = (f32)((1.0 - (1.0 + (f64)HUB_SIN_LUT((i32)(scale * 32768.0f + 16384.0f))) * 0.5) * (f64)0.333f);
-        const u16 phase_x = (i32)(HUB_SIN_LUT(kit->phase_x) * 910.0f);
-        const u16 phase_y = (i32)(HUB_SIN_LUT(kit->phase_y) * 910.0f);
-        const u16 phase_z = (i32)(HUB_SIN_LUT(kit->phase_z) * 910.0f);
+        const f32 lift =
+            (f32)((1.0 - (1.0 + (f64)(NuTrigTable[(((i32)((i32)(scale * 32768.0f + 16384.0f))) >> 1) & 0x7fff])) * 0.5) * (f64)0.333f);
+        const u16 phase_x = (i32)((NuTrigTable[(((i32)(kit->phase_x)) >> 1) & 0x7fff]) * 910.0f);
+        const u16 phase_y = (i32)((NuTrigTable[(((i32)(kit->phase_y)) >> 1) & 0x7fff]) * 910.0f);
+        const u16 phase_z = (i32)((NuTrigTable[(((i32)(kit->phase_z)) >> 1) & 0x7fff]) * 910.0f);
         const u16 rotation = (i32)(RotDiff(0, phase_y) * scale) + kit->rotation;
-        const f32 bob = HUB_SIN_LUT(kit->phase_rotation) * 0.025f * scale;
+        const f32 bob = (NuTrigTable[(((i32)(kit->phase_rotation)) >> 1) & 0x7fff]) * 0.025f * scale;
         const f32 tilt_scale = (info ? info->panel_scale : 1.0f) * scale;
         NUMTX matrix;
         MiniKitSetRotationX(&matrix, (i32)(RotDiff(0, kit->tilt) * tilt_scale));
@@ -2432,10 +2430,8 @@ static void HubDrawEpisodeStats(i32 episode_index, f32 phase) {
         Hub_DrawMiniKitCount(HubAreaPanelX[0], HubEpisodeTitleY, EpMiniKitCount, EpMiniKitTotal, phase);
         Hub_DrawImportantBrick(210, HubAreaPanelX[2], HubEpisodeTitleY, phase, EpRedBrickCount, EpRedBrickTotal);
         Hub_DrawImportantBrick(211, HubAreaPanelX[3], HubEpisodeTitleY, phase, EpGoldBrickCount, EpGoldBrickTotal);
-        {
-            HubDrawMiniKitCharacter = 1;
-            Hub_DrawMiniKitCount(HubAreaPanelX[5], HubEpisodeTitleY, EpCharKitCount, EpCharKitTotal, phase);
-        }
+        HubDrawMiniKitCharacter = 1;
+        Hub_DrawMiniKitCount(HubAreaPanelX[5], HubEpisodeTitleY, EpCharKitCount, EpCharKitTotal, phase);
     }
     if (episode->text_id != -1) {
         SmartTextEx(TTab[episode->text_id], 0.0f, HubEpisodeSubtitleY, 1.0f, HubEpisodeSubtitleSize, HubEpisodeSubtitleSize,
@@ -3219,10 +3215,16 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     if (SHOPACTIVE != 0) {
         DrawCoinTotalTime = 1;
     } else if (GetMenuID() != MENU_CUSTOMISER) {
-        if (HUB_MENU_PLAYER(Player[0], 14)) {
+        if (((Player[0]) != NULL && (Player[0]->flags_1fc & 0x80) != 0 && Player[0]->unknown_281 != 0 &&
+             (Player[0]->player.character_context == -1 || Player[0]->player.character_context == 0x31 ||
+              Player[0]->player.character_context == 0x32) &&
+             Player[0]->jump_animation_state == 14)) {
             available = 1;
         }
-        if (HUB_MENU_PLAYER(Player[1], 14)) {
+        if (((Player[1]) != NULL && (Player[1]->flags_1fc & 0x80) != 0 && Player[1]->unknown_281 != 0 &&
+             (Player[1]->player.character_context == -1 || Player[1]->player.character_context == 0x31 ||
+              Player[1]->player.character_context == 0x32) &&
+             Player[1]->jump_animation_state == 14)) {
             available = 1;
         }
     }
@@ -3247,10 +3249,16 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     }
     available = 0;
     if (Customiser_MenuAvailable(CharacterCustomiser) != 0) {
-        if (HUB_MENU_PLAYER(Player[0], 15)) {
+        if (((Player[0]) != NULL && (Player[0]->flags_1fc & 0x80) != 0 && Player[0]->unknown_281 != 0 &&
+             (Player[0]->player.character_context == -1 || Player[0]->player.character_context == 0x31 ||
+              Player[0]->player.character_context == 0x32) &&
+             Player[0]->jump_animation_state == 15)) {
             available = 1;
         }
-        if (HUB_MENU_PLAYER(Player[1], 15)) {
+        if (((Player[1]) != NULL && (Player[1]->flags_1fc & 0x80) != 0 && Player[1]->unknown_281 != 0 &&
+             (Player[1]->player.character_context == -1 || Player[1]->player.character_context == 0x31 ||
+              Player[1]->player.character_context == 0x32) &&
+             Player[1]->jump_animation_state == 15)) {
             available = 1;
         }
     }
@@ -3274,10 +3282,16 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     Customiser_Update(CharacterCustomiser, world);
     available = 0;
     if (Missions_PartyAvailable(NULL) != 0) {
-        if (HUB_MENU_PLAYER(Player[0], 20)) {
+        if (((Player[0]) != NULL && (Player[0]->flags_1fc & 0x80) != 0 && Player[0]->unknown_281 != 0 &&
+             (Player[0]->player.character_context == -1 || Player[0]->player.character_context == 0x31 ||
+              Player[0]->player.character_context == 0x32) &&
+             Player[0]->jump_animation_state == 20)) {
             available = 1;
         }
-        if (HUB_MENU_PLAYER(Player[1], 20)) {
+        if (((Player[1]) != NULL && (Player[1]->flags_1fc & 0x80) != 0 && Player[1]->unknown_281 != 0 &&
+             (Player[1]->player.character_context == -1 || Player[1]->player.character_context == 0x31 ||
+              Player[1]->player.character_context == 0x32) &&
+             Player[1]->jump_animation_state == 20)) {
             available = 1;
         }
     }
@@ -4392,7 +4406,7 @@ extern "C" {
     }
 
     i32 IndyGrappleHelperOccupied(AI_HELPER_SLOT *helper, GAMEOBJECT *owner, AIPATHCNX *connection, u8 direction, u8 type) {
-        GRAPPLE_DYNAMIC *grapple = (GRAPPLE_DYNAMIC *)helper->target;
+        GRAPPLE_DYNAMIC *grapple = helper->target;
         return Grapple_Occupied(grapple, owner, owner->ai_packet.path_info.connection) != NULL;
     }
 
@@ -4425,7 +4439,7 @@ extern "C" {
                 AIPathCnxHelperSys_Find(WORLD->ai_connection_helpers, owner, NULL, 0, 1, IndyGrappleHelperOccupied);
         }
         if (owner->indy_connection_helper != NULL) {
-            grapple = (GRAPPLE_DYNAMIC *)owner->indy_connection_helper->target;
+            grapple = owner->indy_connection_helper->target;
             GameObjectSetCanUse(owner, grapple, 1, 0x32, 0.0f);
             if (owner->player.character_context == LEGOCONTEXT_GRAPPLE && owner->player.grapple == grapple) {
                 owner->ai_packet.movement_destination = owner->position;
@@ -4469,7 +4483,7 @@ extern "C" {
 
     i32 Indy_MidSpecialMove_GrappleStart(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
-        GRAPPLE_DYNAMIC *grapple = (GRAPPLE_DYNAMIC *)owner->indy_connection_helper->target;
+        GRAPPLE_DYNAMIC *grapple = owner->indy_connection_helper->target;
         GameObjectSetCanUse(owner, grapple, 1, 0x32, 0.0f);
         if (owner->player.character_context == LEGOCONTEXT_GRAPPLE && owner->player.grapple == grapple) {
             owner->ai_packet.movement_destination = owner->position;
@@ -4497,7 +4511,7 @@ extern "C" {
 
     i32 Indy_MidSpecialMove_GrappleClimb(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
-        GRAPPLE_DYNAMIC *grapple = (GRAPPLE_DYNAMIC *)owner->indy_connection_helper->target;
+        GRAPPLE_DYNAMIC *grapple = owner->indy_connection_helper->target;
         f32 difference;
         if (owner->player.character_context != LEGOCONTEXT_GRAPPLE || owner->player.grapple != grapple) {
             ClearSpecialMove(owner);
@@ -4547,7 +4561,7 @@ extern "C" {
 
     i32 Indy_MidSpecialMove_GrappleEnd(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
-        GRAPPLE_DYNAMIC *grapple = (GRAPPLE_DYNAMIC *)owner->indy_connection_helper->target;
+        GRAPPLE_DYNAMIC *grapple = owner->indy_connection_helper->target;
         f32 distance;
         GameObjectSetCanUse(owner, grapple, 1, 0x32, 0.0f);
         owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;

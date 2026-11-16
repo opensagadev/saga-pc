@@ -37,18 +37,9 @@
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
 
-#define TAG_CAN_TARGET(source, target)                                                                                                     \
-    ((target) != NULL && ((target)->flags_1fc_word & 1) != 0 && ((target)->flags_1fc_word & 0x1000) != 0 && (target) != (source) &&        \
-     (target)->dead == 0 && ((target)->flags_1fc_word & 0x80) == 0 && ((target)->player.tag_flags & APIOBJECT_TAG_DISABLED) == 0)
-
 /* A copy of the 33-DWORD script cohort (script processor plus takeover link), without extending the
    packet. Held as words so the copy is one block move and the local is not treated as a /GS buffer. */
 
-#define TAG_SCRIPT_STATE(object) (*(TAGSCRIPTSTATE *)&(object)->ai_packet.script_processor)
-
-/* Bitfield view of flags_1fc: bit 7 marks a player-controlled object, bit 8 an AI-driven one. */
-
-#define TAG_FLAGS(object) ((TAGFLAGS1FC *)&(object)->flags_1fc_word)
 /* Defined in render.c; an empty body in this unit would let the call be dropped. */
 void TakeOverReleaseDiagnostic(char *rider_name, char *object_name);
 
@@ -285,22 +276,22 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
         source_da8 = source->player.unknown_da8;
         source_hp = source->current_hp;
         destination_hp = destination->current_hp;
-        source_player = TAG_FLAGS(source)->player;
-        destination_player = TAG_FLAGS(destination)->player;
+        source_player = source->player_controlled;
+        destination_player = destination->player_controlled;
         source_ai = 0;
         destination_ai = 0;
         if (takeover != 0) {
-            source_script = TAG_SCRIPT_STATE(source);
-            destination_script = TAG_SCRIPT_STATE(destination);
-            source_ai = TAG_FLAGS(source)->ai;
-            destination_ai = TAG_FLAGS(destination)->ai;
+            source_script = *(TAGSCRIPTSTATE *)&source->ai_packet.script_processor;
+            destination_script = *(TAGSCRIPTSTATE *)&destination->ai_packet.script_processor;
+            source_ai = source->ai_controlled;
+            destination_ai = destination->ai_controlled;
         }
         ResetForceGlow(&source->player);
         ResetForceGlow(&destination->player);
         destination->player.pad = source_pad;
         source->player.pad = destination_pad;
-        TAG_FLAGS(source)->player = destination_player;
-        TAG_FLAGS(destination)->player = source_player;
+        source->player_controlled = destination_player;
+        destination->player_controlled = source_player;
         source->player.unknown_da8 = destination->player.unknown_da8;
         destination->player.unknown_da8 = source_da8;
         pointer = source->player.coin_packet;
@@ -401,13 +392,13 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
                 AIScriptProcess(WORLD->ai_sys, (APIOBJECT *)destination, &destination->ai_packet, &destination->ai_packet.script_processor,
                                 FRAMETIME);
             }
-            TAG_SCRIPT_STATE(source) = destination_script;
-            TAG_SCRIPT_STATE(destination) = source_script;
+            *(TAGSCRIPTSTATE *)&source->ai_packet.script_processor = destination_script;
+            *(TAGSCRIPTSTATE *)&destination->ai_packet.script_processor = source_script;
             source->ai_packet.creature_set = source_script.fields.creature_set;
             destination->ai_packet.creature_set = destination_script.fields.creature_set;
             AICreatureResumeScript(source);
-            TAG_FLAGS(source)->ai = destination_ai;
-            TAG_FLAGS(destination)->ai = source_ai;
+            source->ai_controlled = destination_ai;
+            destination->ai_controlled = source_ai;
             ReleaseForce(source, 0);
             ReleaseBuildIt(source, 0);
             ReleasePush(source);
@@ -441,10 +432,12 @@ i32 TagCharacter(GAMEOBJECT *source, GAMEOBJECT *target, i32 mode) {
     u32 source_active;
     u32 target_active;
     i32 result;
-    if (!TAG_CAN_TARGET(source, target)) {
+    if (!(target != NULL && (target->flags_1fc_word & 1) != 0 && (target->flags_1fc_word & 0x1000) != 0 && target != source &&
+          target->dead == 0 && (target->flags_1fc_word & 0x80) == 0 && (target->player.tag_flags & APIOBJECT_TAG_DISABLED) == 0)) {
         for (index = 0; index < 8; ++index) {
             target = Player[index];
-            if (TAG_CAN_TARGET(source, target)) {
+            if ((target != NULL && (target->flags_1fc_word & 1) != 0 && (target->flags_1fc_word & 0x1000) != 0 && target != source &&
+                 target->dead == 0 && (target->flags_1fc_word & 0x80) == 0 && (target->player.tag_flags & APIOBJECT_TAG_DISABLED) == 0)) {
                 goto found;
             }
         }
@@ -635,21 +628,21 @@ void ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
         rider = target->player.rider;
         object = target;
     }
-    rider_script = TAG_SCRIPT_STATE(rider);
-    object_script = TAG_SCRIPT_STATE(object);
-    rider_flag = TAG_FLAGS(rider)->ai;
-    object_flag = TAG_FLAGS(object)->ai;
+    rider_script = *(TAGSCRIPTSTATE *)&rider->ai_packet.script_processor;
+    object_script = *(TAGSCRIPTSTATE *)&object->ai_packet.script_processor;
+    rider_flag = rider->ai_controlled;
+    object_flag = object->ai_controlled;
     if ((rider->flags_ef4 & APIOBJECT_CAN_BE_CARRIED) == 0 && TagCode(rider, object, 1, 0, 0) == 0) {
         return;
     }
     TakeOverReleaseDiagnostic(rider->character_data->name, object->character_data->name);
-    TAG_SCRIPT_STATE(rider) = object_script;
-    TAG_SCRIPT_STATE(object) = rider_script;
+    *(TAGSCRIPTSTATE *)&rider->ai_packet.script_processor = object_script;
+    *(TAGSCRIPTSTATE *)&object->ai_packet.script_processor = rider_script;
     rider->ai_packet.creature_set = rider_script.fields.creature_set;
     object->ai_packet.creature_set = object_script.fields.creature_set;
     AICreatureResumeScript(object);
-    TAG_FLAGS(rider)->ai = object_flag;
-    TAG_FLAGS(object)->ai = rider_flag;
+    rider->ai_controlled = object_flag;
+    object->ai_controlled = rider_flag;
     if (rider->player.rider != NULL) {
         GetTakeOverPos(rider->player.rider, &rider->position);
         rider->pitch_angle = 0;

@@ -29,11 +29,6 @@
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
 
-typedef struct trigger_lever_s { // size 0x96
-    u8 unknown_000[0x94];        // 0x00
-    u16 flags;                   // 0x94
-} TRIGGER_LEVER;
-
 typedef struct trigger_spinner_s { // size 0xb0
     u8 unknown_000[0x70];          // 0x00
     f32 progress;                  // 0x70
@@ -203,8 +198,8 @@ i32 AITriggerSetAddTrigger(AISYS *system, AITRIGGERSET_s *set, GIZMO *gizmo) {
 
 static i32 TriggerGizmoAvailable(GIZMO *gizmo) {
     if (gizmo->type_id == lever_gizmotype_id) {
-        TRIGGER_LEVER *lever = gizmo->object;
-        if ((lever->flags & 0x80) && !(lever->flags & 2)) {
+        GIZMO_LEVER *lever = gizmo->object;
+        if ((lever->flags & LEVER_FLAG_ENABLED) && !(lever->flags & LEVER_FLAG_BEING_PULLED)) {
             return 1;
         }
     } else if (gizmo->type_id == obstacle_gizmotype_id) {
@@ -267,7 +262,7 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
             gizmo = set->gizmos[index];
             if (gizmo != NULL) {
                 if (gizmo->type_id == lever_gizmotype_id) {
-                    TRIGGER_LEVER *lever = gizmo->object;
+                    GIZMO_LEVER *lever = gizmo->object;
                     if (player->player.character_context == CHARACTER_CONTEXT_PULL_LEVER && player->player.grapple == lever) {
                         set->occupied |= 1 << index;
                     } else if (player2 != NULL && player2->player.character_context == CHARACTER_CONTEXT_PULL_LEVER &&

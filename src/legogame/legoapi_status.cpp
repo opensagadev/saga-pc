@@ -65,13 +65,6 @@ static i32 goldbrickmsgcount = 0;
 
 /* Walks the two adjacent 0x14-byte rumble records. */
 
-#define STATUS_APPEND_STAGE_INLINE(packet_arg, type_arg, gold_arg)                                                                         \
-    do {                                                                                                                                   \
-        (packet_arg)->stage_types[(packet_arg)->stage_count] = (i8)(type_arg);                                                             \
-        (packet_arg)->gold_brick_enabled[(packet_arg)->stage_count] = (u8)(gold_arg);                                                      \
-        ++(packet_arg)->stage_count;                                                                                                       \
-    } while (0)
-
 typedef struct status_world_minikit_reader_s {
     u8 unknown_0000[0x2968];
     MINIKIT minikit;
@@ -582,9 +575,15 @@ extern "C" {
                 }
                 p->final_reward_score = p->time_reward_score;
                 IncreaseScore(&p->final_reward_score, p->superstory_score, 0);
-                STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_SUPER_STORY_COMPLETE, gold);
-                STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_SUPER_STORY_TIME, 0);
-                STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_SUPER_STORY_SCORE, 0);
+                p->stage_types[p->stage_count] = (i8)(STATUS_STAGE_SUPER_STORY_COMPLETE);
+                p->gold_brick_enabled[p->stage_count] = (u8)(gold);
+                ++p->stage_count;
+                p->stage_types[p->stage_count] = (i8)(STATUS_STAGE_SUPER_STORY_TIME);
+                p->gold_brick_enabled[p->stage_count] = (u8)(0);
+                ++p->stage_count;
+                p->stage_types[p->stage_count] = (i8)(STATUS_STAGE_SUPER_STORY_SCORE);
+                p->gold_brick_enabled[p->stage_count] = (u8)(0);
+                ++p->stage_count;
                 if (Game.gold_bricks > p->previous_gold_bricks) {
                     AddStatusStage(p, STATUS_STAGE_GOLD_BRICK, 0);
                 }
@@ -593,7 +592,9 @@ extern "C" {
                 }
                 hub_from_superstory = p->area->episode_index;
             }
-            STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_EXIT, 0);
+            p->stage_types[p->stage_count] = (i8)(STATUS_STAGE_EXIT);
+            p->gold_brick_enabled[p->stage_count] = (u8)(0);
+            ++p->stage_count;
             p->stage_types[p->stage_count] = -1;
             p->current_gold_brick = -1;
             p->next_stage = FindStatusStage(p->stage_types[0]);
@@ -684,12 +685,18 @@ extern "C" {
             if (Game.gold_bricks > p->previous_gold_bricks) {
                 AddStatusStage(p, STATUS_STAGE_GOLD_BRICK, 0);
             }
-            STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_PROMPT, 0);
-            STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_EXIT, 0);
+            p->stage_types[p->stage_count] = (i8)(STATUS_STAGE_PROMPT);
+            p->gold_brick_enabled[p->stage_count] = (u8)(0);
+            ++p->stage_count;
+            p->stage_types[p->stage_count] = (i8)(STATUS_STAGE_EXIT);
+            p->gold_brick_enabled[p->stage_count] = (u8)(0);
+            ++p->stage_count;
             if (netclient == 0) {
                 AddStatusStage(p, STATUS_STAGE_SAVE, 0);
             }
-            STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_FADE, 0);
+            p->stage_types[p->stage_count] = (i8)(STATUS_STAGE_FADE);
+            p->gold_brick_enabled[p->stage_count] = (u8)(0);
+            ++p->stage_count;
             p->stage_types[p->stage_count] = -1;
             p->current_gold_brick = -1;
             p->next_stage = FindStatusStage(p->stage_types[0]);
@@ -900,11 +907,15 @@ extern "C" {
         if ((p->flags_word & STATUSPACKET_SAVED_AND_EXITED) == 0) {
             AddStatusStage(p, STATUS_STAGE_PROMPT, 0);
         }
-        STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_EXIT, 0);
+        p->stage_types[p->stage_count] = (i8)(STATUS_STAGE_EXIT);
+        p->gold_brick_enabled[p->stage_count] = (u8)(0);
+        ++p->stage_count;
         if (netclient == 0) {
             AddStatusStage(p, STATUS_STAGE_SAVE, 0);
         }
-        STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_FADE, 0);
+        p->stage_types[p->stage_count] = (i8)(STATUS_STAGE_FADE);
+        p->gold_brick_enabled[p->stage_count] = (u8)(0);
+        ++p->stage_count;
         p->stage_types[p->stage_count] = -1;
         p->current_gold_brick = -1;
         p->next_stage = FindStatusStage(p->stage_types[0]);

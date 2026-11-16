@@ -87,26 +87,50 @@ extern "C" DETONATOR_s *Detonator_FindNearest(NUVEC *position, f32 radius, GAMEO
     return nearest;
 }
 
-#define DETONATOR_CONSIDER_OLDEST(detonator)                                                                                               \
-    if ((detonator)->active != 0 && (detonator)->timer > oldest_time) {                                                                    \
-        oldest_time = (detonator)->timer;                                                                                                  \
-        oldest = (detonator);                                                                                                              \
-    }
-
 extern "C" {
     static DETONATOR_s *Detonator_FindOldest(void) {
         f32 oldest_time = -1.0f;
         DETONATOR_s *oldest = NULL;
-        DETONATOR_CONSIDER_OLDEST(&Detonator[0]);
-        DETONATOR_CONSIDER_OLDEST(&Detonator[1]);
-        DETONATOR_CONSIDER_OLDEST(&Detonator[2]);
-        DETONATOR_CONSIDER_OLDEST(&Detonator[3]);
-        DETONATOR_CONSIDER_OLDEST(&Detonator[4]);
-        DETONATOR_CONSIDER_OLDEST(&Detonator[5]);
-        DETONATOR_CONSIDER_OLDEST(&Detonator[6]);
-        DETONATOR_CONSIDER_OLDEST(&Detonator[7]);
-        DETONATOR_CONSIDER_OLDEST(&Detonator[8]);
-        DETONATOR_CONSIDER_OLDEST(&Detonator[9]);
+        if (Detonator[0].active != 0 && Detonator[0].timer > oldest_time) {
+            oldest_time = Detonator[0].timer;
+            oldest = &Detonator[0];
+        }
+        if (Detonator[1].active != 0 && Detonator[1].timer > oldest_time) {
+            oldest_time = Detonator[1].timer;
+            oldest = &Detonator[1];
+        }
+        if (Detonator[2].active != 0 && Detonator[2].timer > oldest_time) {
+            oldest_time = Detonator[2].timer;
+            oldest = &Detonator[2];
+        }
+        if (Detonator[3].active != 0 && Detonator[3].timer > oldest_time) {
+            oldest_time = Detonator[3].timer;
+            oldest = &Detonator[3];
+        }
+        if (Detonator[4].active != 0 && Detonator[4].timer > oldest_time) {
+            oldest_time = Detonator[4].timer;
+            oldest = &Detonator[4];
+        }
+        if (Detonator[5].active != 0 && Detonator[5].timer > oldest_time) {
+            oldest_time = Detonator[5].timer;
+            oldest = &Detonator[5];
+        }
+        if (Detonator[6].active != 0 && Detonator[6].timer > oldest_time) {
+            oldest_time = Detonator[6].timer;
+            oldest = &Detonator[6];
+        }
+        if (Detonator[7].active != 0 && Detonator[7].timer > oldest_time) {
+            oldest_time = Detonator[7].timer;
+            oldest = &Detonator[7];
+        }
+        if (Detonator[8].active != 0 && Detonator[8].timer > oldest_time) {
+            oldest_time = Detonator[8].timer;
+            oldest = &Detonator[8];
+        }
+        if (Detonator[9].active != 0 && Detonator[9].timer > oldest_time) {
+            oldest_time = Detonator[9].timer;
+            oldest = &Detonator[9];
+        }
         return oldest;
     }
 

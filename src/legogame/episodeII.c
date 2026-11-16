@@ -124,9 +124,6 @@ typedef struct kamino_e_s {
 extern i32 turret_gizmotype_id;
 void *GizmoFindByData(void *gizmo_sys, i32 type_id, void *data);
 void KaminoEGizmoMissing(char *name);
-#define KAMINO_DISCO_AREA_MASK_SET(world, area)                                                                                            \
-    ((*(u64 *)((GAMEOBJECT *)(world)->ai_sys->player_1)->ai_area_mask & (u64)(i64)(1 << (i32)((area) - (world)->ai_sys->areas))) != 0)
-#define KAMINO_DISCO_PLAYER_IN_AREA(world, who, area) ((who) != NULL && (area) != NULL && KAMINO_DISCO_AREA_MASK_SET(world, area))
 
 static i32 PaintMixColour(i32 first, i32 second) {
     if ((first == 0 && second == 1) || (first == 1 && second == 0)) {
@@ -1333,8 +1330,12 @@ void KaminoC_Update(WORLDINFO *world) {
     SetGizAIMessage(gizaimessagesys, "DiscoComplete", 0.0f, kaminodisco.complete_message);
     switch (kaminodisco.phase) {
         case 0:
-            if (KAMINO_DISCO_PLAYER_IN_AREA(world, world->ai_sys->player_1, kaminodisco.area) ||
-                KAMINO_DISCO_PLAYER_IN_AREA(world, world->ai_sys->player_2, kaminodisco.area)) {
+            if ((world->ai_sys->player_1 != NULL && kaminodisco.area != NULL &&
+                 ((*(u64 *)((GAMEOBJECT *)world->ai_sys->player_1)->ai_area_mask &
+                   (u64)(i64)(1 << (i32)(kaminodisco.area - world->ai_sys->areas))) != 0)) ||
+                (world->ai_sys->player_2 != NULL && kaminodisco.area != NULL &&
+                 ((*(u64 *)((GAMEOBJECT *)world->ai_sys->player_1)->ai_area_mask &
+                   (u64)(i64)(1 << (i32)(kaminodisco.area - world->ai_sys->areas))) != 0))) {
                 kaminoc_netpacket->complete = 0;
                 kaminodisco.timer = 0.0f;
                 kaminodisco.phase = 1;
@@ -1423,8 +1424,12 @@ void KaminoC_Update(WORLDINFO *world) {
         case 2:
             SetGizAIMessage(gizaimessagesys, "DiscoComplete", 1.0f, kaminodisco.complete_message);
             kaminoc_netpacket->complete = 1;
-            if (!(KAMINO_DISCO_PLAYER_IN_AREA(world, world->ai_sys->player_1, kaminodisco.area) ||
-                  KAMINO_DISCO_PLAYER_IN_AREA(world, world->ai_sys->player_2, kaminodisco.area))) {
+            if (!((world->ai_sys->player_1 != NULL && kaminodisco.area != NULL &&
+                   ((*(u64 *)((GAMEOBJECT *)world->ai_sys->player_1)->ai_area_mask &
+                     (u64)(i64)(1 << (i32)(kaminodisco.area - world->ai_sys->areas))) != 0)) ||
+                  (world->ai_sys->player_2 != NULL && kaminodisco.area != NULL &&
+                   ((*(u64 *)((GAMEOBJECT *)world->ai_sys->player_1)->ai_area_mask &
+                     (u64)(i64)(1 << (i32)(kaminodisco.area - world->ai_sys->areas))) != 0)))) {
                 KaminoC_Reset(world);
                 return;
             }
