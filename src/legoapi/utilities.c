@@ -53,7 +53,6 @@
 void NuTexAnimScriptMissing(char *path);
 extern const f64 GameObjectNearFloorNoFloorHeight;
 
-
 static f32 UtilitiesFabs(f32 value);
 
 /* The SDK's inline NuFdiv: a quotient that is 0 when either operand is 0. */

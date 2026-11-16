@@ -1369,8 +1369,8 @@ extern "C" {
             }
         }
         if (WORLD->current_level == STATUS_LDATA || (WORLD->current_level->flags & LEVEL_STATUS) != 0) {
-            if (WORLD->current_level->callbacks[6] != NULL) {
-                ((void (*)(WORLDINFO *))WORLD->current_level->callbacks[6])(WORLD);
+            if (WORLD->current_level->draw_panel != NULL) {
+                WORLD->current_level->draw_panel(WORLD);
             }
             DrawGameMessages();
             goto draw_menu;
@@ -1474,7 +1474,7 @@ extern "C" {
             CutScene_DrawSubtitles();
             goto draw_menu;
         }
-        if (WORLD->current_level->callbacks[6] == NULL && (WORLD->current_level->flags & LEVEL_GAMEPLAY) == 0) {
+        if (WORLD->current_level->draw_panel == NULL && (WORLD->current_level->flags & LEVEL_GAMEPLAY) == 0) {
             goto draw_menu;
         }
         for (player_index = 0; player_index < 8; ++player_index) {
@@ -1487,8 +1487,8 @@ extern "C" {
             }
         }
         DebrisDraw(paused, 4);
-        if (WORLD->current_level->callbacks[6] != NULL) {
-            ((void (*)(WORLDINFO *))WORLD->current_level->callbacks[6])(WORLD);
+        if (WORLD->current_level->draw_panel != NULL) {
+            WORLD->current_level->draw_panel(WORLD);
         }
         GizmoSysPanelDraw(WORLD->gizmo_sys, WORLD, FRAMETIME);
         if (paused == 0) {

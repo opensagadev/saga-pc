@@ -115,9 +115,23 @@ typedef struct level_data_s { // size 0x130
         u16 title_text_id;
     }; // 0x060
 
-    i16 index;             // 0x062
-    u32 flags;             // 0x064
-    void *callbacks[7];    // 0x068
+    i16 index; // 0x062
+    u32 flags; // 0x064
+
+    union { // size 0x1c
+        void *callbacks[7];
+
+        struct {                                                                      // size 0x1c
+            void (*load)(struct WORLDINFO_s *, union variptr_u *, union variptr_u *); // 0x068
+            void (*init)(struct WORLDINFO_s *);                                       // 0x06c
+            void (*reset)(struct WORLDINFO_s *);                                      // 0x070
+            void (*update)(struct WORLDINFO_s *);                                     // 0x074
+            void (*always_update)(struct WORLDINFO_s *);                              // 0x078
+            void (*draw)(struct WORLDINFO_s *);                                       // 0x07c
+            void (*draw_panel)(struct WORLDINFO_s *);                                 // 0x080
+        };
+    }; // 0x068
+
     LEVEL_DISPLAY display; // 0x084
     i16 music_index;       // 0x094
     i16 sfx_ambient;       // 0x096

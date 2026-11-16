@@ -2180,7 +2180,7 @@ extern "C" void CheckResetBits(void) {
         }
     }
     WORLD->blowup_target_candidate_count = 0;
-    callback = (void (*)(WORLDINFO *))WORLD->current_level->callbacks[2];
+    callback = WORLD->current_level->reset;
     if (callback != NULL) {
         callback(WORLD);
     }

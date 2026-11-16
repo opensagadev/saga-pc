@@ -476,7 +476,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             BackDrop_Update(FRAMETIME);
         }
     }
-    callback = (void (*)(WORLDINFO *))world->current_level->callbacks[4];
+    callback = world->current_level->always_update;
     if (callback != NULL) {
         callback(world);
     }
