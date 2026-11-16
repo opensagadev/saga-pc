@@ -1357,16 +1357,7 @@ extern "C" {
     i32 netnewgame = 0;
 }
 
-struct text_crawl_view_s {     // size 0x10
-    i16 *heading_text;         // 0x0
-    i16 *vehicle_bonus_text;   // 0x4
-    i16 *character_bonus_text; // 0x8
-    u8 paragraph_count;        // 0xc
-    i8 area;                   // 0xd
-    u8 unknown_0e[2];          // 0xe
-};
-
-extern "C" struct text_crawl_view_s TextCrawlLsw = {
+extern "C" TEXTCRAWL TextCrawlLsw = {
     &TextCrawlChapterId, &TextCrawlVehicleBonusId, &TextCrawlCharacterBonusId, 3, 0, {0, 0}
 };
 

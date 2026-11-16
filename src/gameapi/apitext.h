@@ -219,7 +219,6 @@ extern "C" {
     extern u32 TextCrawlRed;
     extern u32 TextCrawlGreen;
     extern u8 TextCrawlBlue;
-    struct text_crawl_view_s;
 /* The rows of the video and effects option menus (MenuUpdateVideo, MenuUpdateEffects) */
 #define MENU_VIDEO_ROW_RESOLUTION 0
 #define MENU_VIDEO_ROW_REFRESH 1

@@ -5,7 +5,15 @@
 #include "legoapi/legoapi_types.h"
 #include "nu2api/nu3d/nuqfnt.h"
 
-struct text_crawl_view_s;
+/* The text crawl an area opens with (TextCrawlLsw): the text ids of its heading and bonus lines. */
+typedef struct textcrawl_s {   // size 0x10
+    i16 *heading_text;         // 0x0
+    i16 *vehicle_bonus_text;   // 0x4
+    i16 *character_bonus_text; // 0x8
+    u8 paragraph_count;        // 0xc
+    i8 area;                   // 0xd
+    u8 unknown_0e[2];          // 0xe
+} TEXTCRAWL;
 
 #ifdef __cplusplus
 extern "C" {
@@ -44,7 +52,7 @@ extern "C" {
     void Set3DGameFont(VUFNT *font);
     void SmartTextSetWidescreen(f32 font_scale_x, f32 coordinate_scale);
     void SmartTextGetWidescreen(f32 *font_scale_x, f32 *coordinate_scale);
-    void TextCrawl_Init(struct text_crawl_view_s *, i32, i32);
+    void TextCrawl_Init(TEXTCRAWL *, i32, i32);
     void TextCrawl_Draw(f32, i32, f32, char *);
 
     /* Native C ABI. */

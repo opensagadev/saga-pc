@@ -18,6 +18,7 @@ struct gizaimessage_s;
 struct gizmo_s;
 struct level_data_s;
 struct levelspline_s;
+struct textcrawl_s;
 
 #define AREA_GLOBALS_PROGRESS_FLAGS (AreaGlobals.progress_flags)
 
@@ -251,7 +252,7 @@ extern "C" {
     extern NUMTL *PermanentEffectsMaterial;
     extern NUMTL *PermanentShadowMaterial;
 
-    extern struct text_crawl_view_s TextCrawlLsw;
+    extern struct textcrawl_s TextCrawlLsw;
     extern NUMTX LevMtx;
 #ifdef __cplusplus
 }
