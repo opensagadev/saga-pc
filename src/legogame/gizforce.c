@@ -728,7 +728,7 @@ PART *GizForce_Throw(GAMEOBJECT *object, GIZFORCE *force, f32 speed, f32 gravity
     if (object == NULL || object->player.force_throw_target == NULL) {
         return NULL;
     }
-    MakeThrowVector(&velocity, (NUVEC *)&matrix->m30, &object->player.force_throw_target->collision_position, &v000, speed, gravity);
+    MakeThrowVector(&velocity, &matrix->translation, &object->player.force_throw_target->collision_position, &v000, speed, gravity);
 
     params = Default_ADDPART;
     params.matrix = matrix;

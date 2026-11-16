@@ -244,7 +244,7 @@ void GizActions_ActivateChar(GIZFLOW *flow, FLOWBOX *unused, char **params, i32 
             angle = buildit->linked_rotation;
         }
         if (ActivateCharacter(name, position, angle) == NULL && buildit != NULL) {
-            GizBuildIt_KillParts((GIZBUILDIT_s *)buildit);
+            GizBuildIt_KillParts(buildit);
         }
     } else if (active == 0 && name != NULL) {
         player = Player[0];

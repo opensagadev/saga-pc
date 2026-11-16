@@ -2320,7 +2320,7 @@ extern "C" {
         fighter->shoot_timer = 0.0f;
         fighter->active = 1;
         fighter->parent = NULL;
-        fighter->spline = (FLIGHT_SPLINE_RESOURCE *)spline;
+        fighter->spline = spline;
         fighter->health = 1;
         fighter->hit_count = 0;
         fighter->fired = 0;

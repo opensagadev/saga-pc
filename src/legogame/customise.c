@@ -1065,7 +1065,7 @@ void Customiser_Update(CUSTOMISER_CONFIG *customiser, WORLDINFO *world) {
                 (active_count == 2 || side == preview_side) && control_side != -1 &&
                 (locator = customiser->locator_indices[category]) != -1 && model->points_of_interest[locator] != NULL) {
                 NUVEC position;
-                position = *(NUVEC *)&customiser->joint_matrices[side][locator].m30;
+                position = customiser->joint_matrices[side][locator].translation;
                 message.text = InitAsciiLeft;
                 message.slot_flags = 2;
                 if (customiser->locator_x_offsets[category] != 0.0f) {

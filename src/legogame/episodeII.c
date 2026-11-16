@@ -1332,10 +1332,10 @@ void KaminoC_Update(WORLDINFO *world) {
         case 0:
             if ((world->ai_sys->player_1 != NULL && kaminodisco.area != NULL &&
                  ((*(u64 *)((GAMEOBJECT *)world->ai_sys->player_1)->ai_area_mask &
-                   (u64)(i64)(1 << (i32)(kaminodisco.area - world->ai_sys->areas))) != 0)) ||
+                   (u64)(i64)(1 << (kaminodisco.area - world->ai_sys->areas))) != 0)) ||
                 (world->ai_sys->player_2 != NULL && kaminodisco.area != NULL &&
                  ((*(u64 *)((GAMEOBJECT *)world->ai_sys->player_1)->ai_area_mask &
-                   (u64)(i64)(1 << (i32)(kaminodisco.area - world->ai_sys->areas))) != 0))) {
+                   (u64)(i64)(1 << (kaminodisco.area - world->ai_sys->areas))) != 0))) {
                 kaminoc_netpacket->complete = 0;
                 kaminodisco.timer = 0.0f;
                 kaminodisco.phase = 1;
@@ -1426,10 +1426,10 @@ void KaminoC_Update(WORLDINFO *world) {
             kaminoc_netpacket->complete = 1;
             if (!((world->ai_sys->player_1 != NULL && kaminodisco.area != NULL &&
                    ((*(u64 *)((GAMEOBJECT *)world->ai_sys->player_1)->ai_area_mask &
-                     (u64)(i64)(1 << (i32)(kaminodisco.area - world->ai_sys->areas))) != 0)) ||
+                     (u64)(i64)(1 << (kaminodisco.area - world->ai_sys->areas))) != 0)) ||
                   (world->ai_sys->player_2 != NULL && kaminodisco.area != NULL &&
                    ((*(u64 *)((GAMEOBJECT *)world->ai_sys->player_1)->ai_area_mask &
-                     (u64)(i64)(1 << (i32)(kaminodisco.area - world->ai_sys->areas))) != 0)))) {
+                     (u64)(i64)(1 << (kaminodisco.area - world->ai_sys->areas))) != 0)))) {
                 KaminoC_Reset(world);
                 return;
             }
@@ -1729,7 +1729,7 @@ void KaminoE_UpdateSlave1(WORLDINFO *world) {
                         (object->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE) != 0) {
                         continue;
                     }
-                    distance = NuVecDistSqr(&object->collision_position, (NUVEC *)&matrix->m30, &delta);
+                    distance = NuVecDistSqr(&object->collision_position, &matrix->translation, &delta);
                     if (distance < best_distance) {
                         nearest = Player[i];
                         best_distance = distance;

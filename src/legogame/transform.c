@@ -153,7 +153,7 @@ void TransformDrawTarget(NUVEC *position, f32 radius, f32 alpha) {
     f32 distance;
     i32 angle;
 
-    NuVecSub(&direction, position, (NUVEC *)&pNuCam->mtx.m30);
+    NuVecSub(&direction, position, &pNuCam->mtx.translation);
     length = direction.x * direction.x + direction.y * direction.y + direction.z * direction.z;
     length = NuFsqrt(length);
     distance = length;

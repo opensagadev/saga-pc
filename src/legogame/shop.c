@@ -1581,7 +1581,7 @@ void DrawItem(nuhspecial_s *special, NUVEC *position, float scale_value, float u
 
             scale.x = scale.y = scale.z = scale_value;
             NuMtxScaleVU0(&matrix, &scale);
-            *(NUVEC *)(&matrix.m30) = *position;
+            matrix.translation = *position;
             matrix.m31 += y_push;
             NuSpecialDrawAt(special, &matrix);
         }
@@ -1614,7 +1614,7 @@ static void Shop_DrawItem(shopitem_s *item, NUVEC *position, f32 scale_value, f3
     NuMtxSetRotateXYZVU0(&matrix, &rotation);
     scale.x = scale.y = scale.z = scale_value;
     NuMtxScaleVU0(&matrix, &scale);
-    *(NUVEC *)&matrix.m30 = *position;
+    matrix.translation = *position;
     matrix.m31 += ypush;
     if (opaque != 0) {
         NuSpecialDrawAt(&item->special, &matrix);
@@ -2331,7 +2331,7 @@ void DrawQuestion(NUVEC *position, f32 scale_value, f32 y_push) {
         ShopMtxSetIdentity(&matrix);
         scale.x = scale.y = scale.z = scale_value;
         NuMtxSetScale(&matrix, &scale);
-        *(NUVEC *)&matrix.m30 = *position;
+        matrix.translation = *position;
         matrix.m31 += y_push;
         NuSpecialDrawAt(&question, &matrix);
     }

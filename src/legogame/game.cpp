@@ -138,6 +138,13 @@
 #include "nu2api/numusic/sfx.h"
 #include "nu2api/nusound/nusound.h"
 #include "nu2api/nuwin32/Stubs.h"
+#include <string.h>
+#include <stdio.h>
+#include "legoapi/characters/motion/charplatforms.h"
+#include "legoapi/gizmo/base/gizactions.h"
+#include "legoapi/items/objects/grabber.h"
+#include "legoapi/items/objects/legoapi_traffic.h"
+#include "legoapi/world/world_shared.h"
 
 static NUVEC BuckSnowmobForward = {0.0f, 0.0f, 1.0f};
 static f32 BuckSnowmobJumpDuration = 1.0f;
@@ -149,13 +156,6 @@ static f32 BuckSnowmobRadius = 0.2f;
 extern "C" void Game_WorldInfo_InitLast(WORLDINFO *world);
 extern "C" void Game_WorldInfo_InitMenu(WORLDINFO *world, i32 *menu_id, i32 *menu_y);
 
-#include <string.h>
-#include <stdio.h>
-#include "legoapi/characters/motion/charplatforms.h"
-#include "legoapi/gizmo/base/gizactions.h"
-#include "legoapi/items/objects/grabber.h"
-#include "legoapi/items/objects/legoapi_traffic.h"
-#include "legoapi/world/world_shared.h"
 extern "C" NARROWSOCKEXCEPTION NarrowSockExceptionsLsw[4] = {
     {"deathstarbattle_d", -1, 1, 67.5f, 999.0f},
     {"deathstar2battle_b", -1, 0, 67.5f, 999.0f},
@@ -2266,7 +2266,7 @@ extern "C" {
         KillPart(part, 0);
         if (deflect != 0 && owner != NULL) {
             if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && owner->player_index == -1) {
-                MakeThrowVector(&velocity, (NUVEC *)&matrix.m30, &owner->collision_position, &owner->velocity, speed, gravity);
+                MakeThrowVector(&velocity, &matrix.translation, &owner->collision_position, &owner->velocity, speed, gravity);
             } else {
                 velocity.x = velocity.y = 0.0f;
                 velocity.z = 2.0f;

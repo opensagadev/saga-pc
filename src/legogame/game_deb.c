@@ -229,7 +229,7 @@ void BurnoutApply(i32 view) {
     parameters.enabled = 0;
     memset(&parameters.start_angle, 0, 0x50);
     if ((CutStopInfo == NULL || (CutStopInfo->flags & 0x80) == 0) && WORLD->burnset != NULL) {
-        edrtlCalculateBurnoutEx(WORLD->burnset, &parameters, (NUVEC *)&global_camera.mtx.m30, FRAMETIME);
+        edrtlCalculateBurnoutEx(WORLD->burnset, &parameters, &global_camera.mtx.translation, FRAMETIME);
     }
     if (parameters.intensity > 0.0f) {
         NuRndrSetBurnoutParameters(view, &parameters);

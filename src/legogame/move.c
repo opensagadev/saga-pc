@@ -2154,7 +2154,7 @@ static void GrabCode(GAMEOBJECT *object) {
     }
     joint = object->character_data->game_character->weapon_joints[0];
     if (object->origin_joint_ready != 0 && joint != -1 && object->character_model->points_of_interest[joint] != NULL &&
-        (f64)NuVecDistSqr((NUVEC *)&object->player.locator_matrices[joint].m30, &target->collision_position, NULL) > (f64)(0.7f * 0.7f)) {
+        (f64)NuVecDistSqr(&object->player.locator_matrices[joint].translation, &target->collision_position, NULL) > (f64)(0.7f * 0.7f)) {
         return;
     }
     if (target->id == (u16)id_GAMORREANGUARD && object->player.context_animation == ACTION_LUNGE) {
@@ -2546,7 +2546,7 @@ void LetGoOfBalloon(GAMEOBJECT *object) {
     if (hand == -1 || object->character_model->points_of_interest[hand] == NULL) {
         return;
     }
-    NuMtxSetTranslation(&matrix, (NUVEC *)&object->player.locator_matrices[hand].m30);
+    NuMtxSetTranslation(&matrix, &object->player.locator_matrices[hand].translation);
     velocity.x = 0.0f;
     velocity.y = 0.0f;
     velocity.z = 0.2f;
@@ -3606,8 +3606,8 @@ void LightSabreDebris(GAMEOBJECT *object) {
         if (second == -1 || object->character_model->points_of_interest[second] == NULL) {
             continue;
         }
-        points[0] = *(NUVEC *)&object->player.locator_matrices[first].m30;
-        points[2] = *(NUVEC *)&object->player.locator_matrices[second].m30;
+        points[0] = *&object->player.locator_matrices[first].translation;
+        points[2] = *&object->player.locator_matrices[second].translation;
         NuVecAdd(&points[1], &points[0], &points[2]);
         NuVecScale(&points[1], &points[1], 0.5f);
         for (first = 0; first < 3; ++first) {
@@ -3865,7 +3865,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->model_draw_result == 0) {
             if (object->player.blowup_target != NULL) {
                 /* Prefix view of the GizmoBlowUpOpponent result. */
-                GizmoBlowupBlowup((GIZMOBLOWUP *)object->player.blowup_target, 1, -1, 1, NULL, 1);
+                GizmoBlowupBlowup(object->player.blowup_target, 1, -1, 1, NULL, 1);
                 AlertSurroundingCreatures(object, &points[0]);
             }
             return;
@@ -4050,8 +4050,8 @@ static void JediLightCode(GAMEOBJECT *object) {
                 if (second == -1 || object->character_model->points_of_interest[second] == NULL) {
                     continue;
                 }
-                NuVecAdd(&position, &position, (NUVEC *)&object->player.locator_matrices[first].m30);
-                NuVecAdd(&position, &position, (NUVEC *)&object->player.locator_matrices[second].m30);
+                NuVecAdd(&position, &position, &object->player.locator_matrices[first].translation);
+                NuVecAdd(&position, &position, &object->player.locator_matrices[second].translation);
                 point_count += 2;
             }
             if (point_count <= 0) {
@@ -4590,13 +4590,13 @@ void ForceLightning_Origin(GAMEOBJECT *object, NUVEC *primary, NUVEC *secondary)
     if (joint == -1 || object->character_model->points_of_interest[joint] == NULL) {
         return;
     }
-    *primary = *(NUVEC *)&object->player.locator_matrices[joint].m30;
+    *primary = *&object->player.locator_matrices[joint].translation;
     if (secondary == NULL || (object->player.weapon_scale != 0.0f && object->player.weapon_draw_state != 2)) {
         return;
     }
     joint = object->character_data->game_character->hand_locators[1];
     if (joint != -1 && object->character_model->points_of_interest[joint] != NULL) {
-        *secondary = *(NUVEC *)&object->player.locator_matrices[joint].m30;
+        *secondary = *&object->player.locator_matrices[joint].translation;
     }
 }
 
@@ -5531,11 +5531,9 @@ void DrawForceBackEffect(nuhspecial_s *special) {
         NUVEC scale;
         NuSpecialSetVisibility(special, 1);
         matrix = *NuSpecialGetDrawMtx(special);
-        position = position;
         position.x = ForceBackObj->lower_position.x;
         position.y = 0.005f + ForceBackObj->floor_height;
         position.z = ForceBackObj->lower_position.z;
-        scale = scale;
         scale.x = scale.y = scale.z = ForceBackRadius;
         NuMtxSetTranslation(&matrix, &position);
         NuMtxPreScale(&matrix, &scale);
@@ -5620,7 +5618,7 @@ void DrawForceGlowSprite(NUVEC *position, f32 radius, i32 model, f32 alpha, GAME
         return;
     }
     ResetShadowMapRendering();
-    NuVecSub(&direction, position, (NUVEC *)&pNuCam->mtx.m30);
+    NuVecSub(&direction, position, &pNuCam->mtx.translation);
     distance = NuFsqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
     NuVecNorm(&direction, &direction);
     if (radius < (f64)distance - 0.20000000298023224) {
@@ -6068,7 +6066,7 @@ NUVEC *GetZapOrigin(GAMEOBJECT *object) {
                 return &object->collision_position;
             }
         }
-        return (NUVEC *)&object->player.locator_matrices[joint].m30;
+        return &object->player.locator_matrices[joint].translation;
     }
     return &object->collision_position;
 }
@@ -6736,7 +6734,7 @@ void PooCode(GAMEOBJECT *object) {
     }
     locator = object->character_data->game_character->poo_locator;
     if (locator != -1 && object->character_model->points_of_interest[locator] != NULL) {
-        position = *(NUVEC *)&object->player.locator_matrices[locator].m30;
+        position = *&object->player.locator_matrices[locator].translation;
     } else {
         position.x = object->collision_position.x - NuTrigTable[object->movement_angle >> 1] * object->bounds_radius;
         position.y = object->collision_position.y;
@@ -6869,7 +6867,7 @@ void AwkwardShapeCode(GAMEOBJECT *object, i32 forced) {
             if (object->character_model->points_of_interest[joints[i]] == NULL) {
                 continue;
             }
-            position = (NUVEC *)&object->player.locator_matrices[joints[i]].m30;
+            position = &object->player.locator_matrices[joints[i]].translation;
         }
         if (position == NULL) {
             continue;
@@ -10993,7 +10991,7 @@ void GameObjectStuffAfterAnimation(void) {
         }
         if (object->player.debris_joint != -1) {
             AddGameDebris(WORLD->game_debris_sys, ((object->player.flags_e24 & APIOBJECT_PUNCH_LANDED) | 0x8a00) >> 8,
-                          (NUVEC *)&object->player.locator_matrices[object->player.debris_joint].m30);
+                          &object->player.locator_matrices[object->player.debris_joint].translation);
         }
         if (object->player.character_context == CHARACTER_CONTEXT_PUNCH) {
             CHARACTER_ANIMATION_LOCATOR *animation = object->character_model->animations[object->player.context_animation];
@@ -11173,7 +11171,7 @@ void GameObjectStuffAfterAnimation(void) {
                         i32 count = (i32)(speed * 60.0);
                         if (count > 0) {
                             AddVariableShotDebrisEffectTimed1(
-                                effect, (NUVEC *)&object->player.locator_matrices[LandspeederExhaustJoints[joint]].m30, count, FRAMETIME, 0,
+                                effect, &object->player.locator_matrices[LandspeederExhaustJoints[joint]].translation, count, FRAMETIME, 0,
                                 0, NULL);
                         }
                     }

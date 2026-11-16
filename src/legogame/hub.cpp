@@ -1623,8 +1623,8 @@ static i32 Hub_UpdateMiniKitBounds(i32 area_index, WORLDINFO *world) {
     kit->collision_center.y = (top + bottom) * 0.5 + kit->position.y;
     const f32 scale = kit->scale;
     kit->collision_center.y +=
-        (1.0 - (1.0 + (f64)(NuTrigTable[(((i32)((i32)((f64)scale * 32768.0 + 16384.0))) >> 1) & 0x7fff])) * 0.5) * (f64)0.333f;
-    kit->collision_center.y += (f64)(NuTrigTable[(((i32)(kit->phase_rotation)) >> 1) & 0x7fff]) * (f64)0.025f * scale;
+        (1.0 - (1.0 + (f64)(NuTrigTable[(((i32)((f64)scale * 32768.0 + 16384.0)) >> 1) & 0x7fff])) * 0.5) * (f64)0.333f;
+    kit->collision_center.y += (f64)(NuTrigTable[(kit->phase_rotation >> 1) & 0x7fff]) * (f64)0.025f * scale;
     const f32 panel_offset = info ? info->panel_offset : 0.0f;
     kit->collision_center.y += panel_offset;
     kit->bounds_min.x = kit->collision_center.x - radius;
@@ -1851,18 +1851,18 @@ extern "C" void Hub_DrawMiniKits(WORLDINFO *world) {
         if (hub_minikitviewer_movewait > 0.0f) {
             const f32 wait_ease =
                 (f32)(1.0 -
-                      (1.0 + (f64)(NuTrigTable[(((i32)((i32)(hub_minikitviewer_movewait * 32768.0f + 16384.0f))) >> 1) & 0x7fff])) * 0.5);
+                      (1.0 + (f64)(NuTrigTable[(((i32)(hub_minikitviewer_movewait * 32768.0f + 16384.0f)) >> 1) & 0x7fff])) * 0.5);
             x += (f64)wait_ease * 2.0 * (f64)hub_minikitviewer_move;
         }
         MINIKIT *pieces = world->minikit_pieces_by_id[area];
         const f32 scale = kit->scale;
         const f32 lift =
-            (f32)((1.0 - (1.0 + (f64)(NuTrigTable[(((i32)((i32)(scale * 32768.0f + 16384.0f))) >> 1) & 0x7fff])) * 0.5) * (f64)0.333f);
-        const u16 phase_x = (i32)((NuTrigTable[(((i32)(kit->phase_x)) >> 1) & 0x7fff]) * 910.0f);
-        const u16 phase_y = (i32)((NuTrigTable[(((i32)(kit->phase_y)) >> 1) & 0x7fff]) * 910.0f);
-        const u16 phase_z = (i32)((NuTrigTable[(((i32)(kit->phase_z)) >> 1) & 0x7fff]) * 910.0f);
+            (f32)((1.0 - (1.0 + (f64)(NuTrigTable[(((i32)(scale * 32768.0f + 16384.0f)) >> 1) & 0x7fff])) * 0.5) * (f64)0.333f);
+        const u16 phase_x = (i32)((NuTrigTable[(kit->phase_x >> 1) & 0x7fff]) * 910.0f);
+        const u16 phase_y = (i32)((NuTrigTable[(kit->phase_y >> 1) & 0x7fff]) * 910.0f);
+        const u16 phase_z = (i32)((NuTrigTable[(kit->phase_z >> 1) & 0x7fff]) * 910.0f);
         const u16 rotation = (i32)(RotDiff(0, phase_y) * scale) + kit->rotation;
-        const f32 bob = (NuTrigTable[(((i32)(kit->phase_rotation)) >> 1) & 0x7fff]) * 0.025f * scale;
+        const f32 bob = (NuTrigTable[(kit->phase_rotation >> 1) & 0x7fff]) * 0.025f * scale;
         const f32 tilt_scale = (info ? info->panel_scale : 1.0f) * scale;
         NUMTX matrix;
         MiniKitSetRotationX(&matrix, (i32)(RotDiff(0, kit->tilt) * tilt_scale));

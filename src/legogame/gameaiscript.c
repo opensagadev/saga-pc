@@ -2012,7 +2012,7 @@ f32 Condition_TakeOverTargetInTriggerArea(AISYS *system, AISCRIPTPROCESS *proces
         if (area == NULL) {
             area = process->trigger_area;
         }
-        index = (i32)(area - WORLD->ai_sys->areas);
+        index = area - WORLD->ai_sys->areas;
         if (packet->owner->objptr != NULL) {
             target = packet->owner->objptr->takeover_target;
         }
@@ -2037,7 +2037,7 @@ f32 Condition_EitherPlayerInMyTriggerArea(AISYS *system, AISCRIPTPROCESS *proces
         if (area != NULL) {
             if (system->player_1 != NULL && area->system != NULL) {
                 object = (GAMEOBJECT *)system->player_1;
-                index = (i32)(area - area->system->areas);
+                index = area - area->system->areas;
                 /* Wraps the 32-bit shift and sign-extends bit 31. */
                 mask = (i32)(1u << ((u32)index & 31));
                 if ((((CONDITION_TRIGGER_PLAYER_READER *)object)->membership & mask) != 0) {
@@ -2046,7 +2046,7 @@ f32 Condition_EitherPlayerInMyTriggerArea(AISYS *system, AISCRIPTPROCESS *proces
             }
             if (system->player_2 != NULL && area->system != NULL) {
                 object = (GAMEOBJECT *)system->player_2;
-                index = (i32)(area - area->system->areas);
+                index = area - area->system->areas;
                 mask = (i32)(1u << ((u32)index & 31));
                 if ((((CONDITION_TRIGGER_PLAYER_READER *)object)->membership & mask) != 0) {
                     return 1.0f;
@@ -9052,7 +9052,7 @@ i32 Action_FaceCamera(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, 
 
     camera = NuCameraGetMtx();
     if (camera != NULL) {
-        packet->movement_look_target = (NUVEC *)&camera->m30;
+        packet->movement_look_target = &camera->translation;
         if (processor->action_data_1 != 0) {
             SetHeadTarget(object, object->ai_packet.movement_look_target, 6, 1.0f, 0.0f, 0.0f);
         }

@@ -550,7 +550,7 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                 object->movement_facing_angle = NuAtan2D((f64)nearest->position.x - (f64)object->collision_position.x,
                                                          (f64)nearest->position.z - (f64)object->collision_position.z);
                 if (ParticlesPerSecond(3.0f, FRAMETIME) > 0) {
-                    Shard_Collect((SHARD_s *)nearest, object);
+                    Shard_Collect(nearest, object);
                 } else {
                     nearest->state_flags |= SHARD_RANDOM_OFFSET;
                     NewRumble(object->player.pad->bound_pad, (f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.4f, 0);

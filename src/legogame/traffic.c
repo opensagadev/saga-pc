@@ -172,7 +172,7 @@ void TrafficAnimSys_Configure(WORLDINFO *world, char *config) {
                 EvalAnim(&animation->special, (f32)((f32)frame * animation->room_frame_interval + 1.0), &matrix, 1);
                 matrix.m31 += animation->y_offset;
                 animation->rooms[frame] = -1;
-                room = NuPortalWhichRoom(world->current_gscn, (NUVEC *)&matrix.m30);
+                room = NuPortalWhichRoom(world->current_gscn, &matrix.translation);
                 if (room >= 0 && room < 64) {
                     animation->rooms[frame] = (i8)room;
                 }

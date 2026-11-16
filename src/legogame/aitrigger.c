@@ -506,7 +506,6 @@ static void Attracto_SetVisibility(GIZMO *gizmo, i32 visible) {
     if (attracto->visible && attracto->platform_id == -1) {
         NUMTX matrix;
         FindPlatInst(NuSpecialGetInstanceix(&WORLD->level_objects[72].special));
-        matrix = matrix;
         NuMtxSetIdentity(&matrix);
         NuMtxSetRotationY(&matrix, 0);
         NuMtxRotateY(&matrix, attracto->angle);

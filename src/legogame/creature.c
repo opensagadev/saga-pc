@@ -2225,7 +2225,6 @@ void TerrainPlayer(GAMEOBJECT *object) {
                 }
                 if (api->model_draw_result != 0 && object->player.character_context != CHARACTER_CONTEXT_DISORIENTATE &&
                     object->player.character_context != CHARACTER_CONTEXT_LAUNCH) {
-                    extern void GameObjectRotation(GAMEOBJECT *, i32);
                     GameObjectRotation(object, 2);
                 }
 
