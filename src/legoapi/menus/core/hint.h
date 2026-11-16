@@ -88,6 +88,7 @@ extern "C" {
     i32 Hint_isAvailable(i32 hint_id);
     i32 Hint_isCompleteById(i32 hint_id);
     void Hint_Reset(void);
+    void Hint_Process(f32 elapsed);
 #ifdef __cplusplus
 }
 #endif

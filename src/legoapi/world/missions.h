@@ -66,6 +66,7 @@ extern "C" {
     extern f32 MissionBestTimeScale;
     void MenuDrawEndMission(struct menu_s *);
     void MenuUpdateEndMission(struct menu_s *);
+    void Mission_Clear(MISSIONSYS *mission_sys);
 #ifdef __cplusplus
 }
 #endif

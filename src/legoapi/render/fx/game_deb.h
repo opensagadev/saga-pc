@@ -109,6 +109,7 @@ extern "C" {
     void DebrisStartOffsetEx(struct debris_key_s *, f32);
     void DebrisProcessSpheres(struct debris_particle_s *, f32, struct debris_info_s *, struct debris_key_s *, i32);
     void DebReAlloc(struct debris_key_s *, i32);
+    void DebrisKillPlayers(void);
 #ifdef __cplusplus
 }
 #endif

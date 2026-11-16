@@ -31,6 +31,7 @@ extern "C" {
     void Tag_ResetTransfers(void);
     void Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target);
     void Tag_UpdateTransfers(i32 effect0, i32 effect1, i32 count);
+    void StoreStatusTakeOverObjectSys(void);
 #ifdef __cplusplus
 }
 #endif

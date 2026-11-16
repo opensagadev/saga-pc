@@ -67,6 +67,9 @@ extern "C" {
     void GameCam_UpdateShake(GAMECAMERA *camera, f32 ambient_amount);
     void MakePlayPlanes(GAMECAMERA *camera);
     void NarrowSockExceptions_Init(NARROWSOCKEXCEPTION *);
+    void GameFog_Set(void);
+    void NuMainRenderLeaf(void);
+    void ViewCamDraw(void);
 #ifdef __cplusplus
 }
 #endif

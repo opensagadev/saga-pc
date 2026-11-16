@@ -30,6 +30,7 @@ extern "C" {
     void GetTakeOverPos(GAMEOBJECT *, NUVEC *);
     void Tag_Check(GAMEOBJECT *);
     void TakeOverCode(GAMEOBJECT *, i32);
+    void ReleaseAllTakeOvers(void);
 #ifdef __cplusplus
 }
 #endif

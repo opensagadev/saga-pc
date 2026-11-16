@@ -425,6 +425,8 @@ extern "C" {
     void NuRndrDwaInit(void);
     void NuRndrDwaRelease(void);
     void PCDeviceBeginScene(void);
+    extern i32 NuMainRendererControl;
+    void NuRndrShadowOnOff(i32);
 #ifdef __cplusplus
 }
 #endif

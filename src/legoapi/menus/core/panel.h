@@ -4,6 +4,7 @@
 
 #include "legoapi/menus/core/hint.h"
 
+struct WORLDINFO_s;
 struct gameobject_s;
 struct nuhspecial_s;
 
@@ -86,6 +87,7 @@ extern "C" {
     void Panel_Clear(void);
     extern f32 HudBossIconY;
     void DrawAutoSaveIcon(void);
+    void PanelRender(struct WORLDINFO_s *world);
 #ifdef __cplusplus
 }
 #endif

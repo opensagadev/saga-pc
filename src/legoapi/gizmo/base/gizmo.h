@@ -180,6 +180,8 @@ extern "C" {
     void GizmoSysReset(void *system, void *world, i32 progress_index);
     void GizmoSysStoreProgress(void *system, void *world, i32 index);
     void RegisterGizmoTypes(VARIPTR *, VARIPTR *, REGISTER_GIZMO_CONFIG_TYPE_FN *, i32);
+    void GizmoSysEarlyUpdate(void *system, void *world, f32 delta_time);
+    void GizmoSysLateUpdate(void *system, void *world, f32 delta_time);
 #ifdef __cplusplus
 }
 #endif

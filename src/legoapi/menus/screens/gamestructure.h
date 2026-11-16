@@ -53,3 +53,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#ifdef __cplusplus
+i32 Game_Exit(i32);
+#endif

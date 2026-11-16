@@ -392,6 +392,11 @@ extern "C" {
     extern i32 GameDrawCharacterModelFlag;
     extern i32 come_from_an_editor;
     void InitGameBeforeConfig(void);
+    void Areas_OpenAll(i32 mode);
+    void CheckResetBits(void);
+    void FindGameCutScenes(void);
+    void SpeedBlur_Apply(struct WORLDINFO_s *world);
+    void SpeedBlur_Update(void);
 #ifdef __cplusplus
 }
 #endif

@@ -307,6 +307,10 @@ extern "C" {
     void PauseGameCut(void);
     void ResetSounds(void);
     void SoundKillAll(void);
+    void NuSound3SetDPL(i32 mode, i32 unused);
+    void NuSound3UpdateRumble(f32 frame_time);
+    void RestoreGameCut(void);
+    void SoundUpdate(f32 frame_time);
 #ifdef __cplusplus
 }
 #endif

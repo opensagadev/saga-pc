@@ -786,6 +786,7 @@ extern "C" {
     i32 PcInput_GetFirstKeyboardPort(void);
     u8 PcInput_MappingIsGood(i32 port, i32 player_index);
     void PcInput_SetStringUCGfxRemapFn(void (*)(i32, char *));
+    void NuMainTrailerLeaf(void);
 #ifdef __cplusplus
 }
 #endif

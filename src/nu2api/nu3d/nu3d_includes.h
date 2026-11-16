@@ -1468,6 +1468,9 @@ extern "C" {
     extern GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectWorkTexture;
     f32 fun_005d0920(void);
     f32 fun_005d0930(void);
+    void NuMtlAnimateSetMask(i32 mask);
+    void NuMtlAnimateSetSpeedScale(f32 scale);
+    void SetSpotLightMode(void);
 #ifdef __cplusplus
 }
 #endif

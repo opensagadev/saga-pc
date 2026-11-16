@@ -570,6 +570,7 @@ extern "C" {
     void MovePlayer_VEHICLEDIRECTIONAL(struct gameobject_s *object);
     void PodLoseSpeed(struct gameobject_s *object, i32 hit, i32 rumble);
     void SetProtocolDroidInterfaceAction(struct gameobject_s *object);
+    void GameObjectStuffAfterAnimation(void);
 #ifdef __cplusplus
 }
 #endif

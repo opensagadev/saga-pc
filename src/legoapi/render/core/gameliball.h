@@ -960,6 +960,8 @@ extern "C" {
     extern void *DebrisGlassCopyMaterial;
     void DebrisReleaseResources(void);
     void DebrisRestoreResources(void);
+    void DebrisDrawGlass(void);
+    void DebrisGlassInit(void);
 #ifdef __cplusplus
 }
 #endif

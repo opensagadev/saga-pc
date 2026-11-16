@@ -86,6 +86,7 @@ extern "C" {
     void RippleEffects_Configure(WORLDINFO *, char *);
     extern COLLECTION_BUILD MiniKitCollection;
     void CharScenes_LevelLoad(WORLDINFO *);
+    void Faders_Draw(WORLDINFO *world);
 #ifdef __cplusplus
 }
 #endif

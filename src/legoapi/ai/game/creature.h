@@ -76,6 +76,9 @@ extern "C" {
     i32 fun_0041aec0(GAMEOBJECT *object);
     void ClearAICreatures(void);
     void PlayerSetCurrentHp(GAMEOBJECT *object, i8 hitpoints);
+    i32 DrawGameObjectsProcess(void);
+    i32 MakePlayerList(i32);
+    void DrawGameObjects(void);
 #ifdef __cplusplus
 }
 #endif

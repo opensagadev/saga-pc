@@ -12,6 +12,7 @@ extern "C" {
     extern u32 NuAllocHeaderMetadata[3];
     extern u32 NuAllocTailMetadata[3];
     extern NUALLOC_POOL *NuAllocPool;
+    void NuAllocDumpRecords(i32 min_size);
 #ifdef __cplusplus
 }
 #endif

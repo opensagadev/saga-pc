@@ -93,6 +93,7 @@ extern "C" {
     void NuRndrScreenGrabTileEnd(void **tile);
     extern struct PC_BUFFER_RESOURCE *RendererQuadVertexBuffer;
     void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, struct numtx_s *matrix, i32 colour);
+    void NuRndrGlobalFrameCountPause(i32 paused);
 #ifdef __cplusplus
 }
 #endif

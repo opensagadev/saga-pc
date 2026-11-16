@@ -38,6 +38,8 @@ extern "C" {
     extern f32 nsegments_per_unit;
     extern f32 slack_factor;
     extern i32 solid_cable;
+    void DrawCables(void);
+    void UpdateCables(void);
 #ifdef __cplusplus
 }
 #endif

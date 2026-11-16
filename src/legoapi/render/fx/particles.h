@@ -12,6 +12,7 @@ extern "C" {
     void SetEffectVisibility(char *name, i32 visible);
     void Particles_DumpAreaPage(void);
     void Particles_LoadAreaPage(char *);
+    void AddCameraRain(WORLDINFO *world, i32 mode);
 #ifdef __cplusplus
 }
 #endif
