@@ -9,6 +9,13 @@ struct addgizmotype_s;
 struct gameobject_s;
 struct nuhspecial_s;
 
+/* The techno target_mode: what kind of object target_name names (Technos_FindTgt looks it up by its kind, or
+ * any kind first and records the one it found). */
+#define TECHNO_TARGET_ANY 0
+#define TECHNO_TARGET_CHARACTER 1 /* GetNamedGameObject */
+#define TECHNO_TARGET_SPECIAL 2   /* NuSpecialFind */
+#define TECHNO_TARGET_GIZMO 3     /* GizmoFindByName */
+
 typedef struct techno_s { // size 0x70
     u8 unknown_00[0x37];  // 0x00
     u8 target_mode;       // 0x37

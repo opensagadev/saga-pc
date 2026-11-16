@@ -1013,24 +1013,24 @@ extern "C" {
                     if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
                         return 1;
                     }
-                    packet->path_connection_state = 1;
-                } else if (packet->path_connection_state == 0) {
+                    packet->path_connection_state = AIJUMP_APPROACH;
+                } else if (packet->path_connection_state == AIJUMP_NONE) {
                     distance = packet->path_info.distance * packet->path_info.connection->horizontal_distance;
-                    packet->path_connection_state = 1;
+                    packet->path_connection_state = AIJUMP_APPROACH;
                     if (packet->path_info.direction != 0) {
                         if (distance < source->radius) {
-                            packet->path_connection_state = 0;
+                            packet->path_connection_state = AIJUMP_NONE;
                         }
                     } else if (distance > (f64)packet->path_info.connection->horizontal_distance - destination->radius) {
-                        packet->path_connection_state = 0;
+                        packet->path_connection_state = AIJUMP_NONE;
                     }
                 }
                 goto check;
             }
         }
-        packet->path_connection_state = 0;
+        packet->path_connection_state = AIJUMP_NONE;
     check:
-        if (packet->path_connection_state != 0) {
+        if (packet->path_connection_state != AIJUMP_NONE) {
             offset.x = destination->position.x - source->position.x;
             offset.y = 0.0f;
             offset.z = destination->position.z - source->position.z;
@@ -1058,10 +1058,10 @@ extern "C" {
             }
             if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & BATMAN_AIPATHCNX_DONT_JUMP_NOW) != 0) {
                 packet->flags |= 0x800000;
-                packet->path_connection_state = 1;
+                packet->path_connection_state = AIJUMP_APPROACH;
             }
             switch (packet->path_connection_state) {
-                case 1:
+                case AIJUMP_APPROACH:
                     if (ready != 0) {
                         skip_ahead = (packet->path_info.connection->traversal_flags[packet->path_info.direction] &
                                       BATMAN_AIPATHCNX_NO_DESTINATION_CHECK) == 0 &&
@@ -1078,21 +1078,21 @@ extern "C" {
                                     0 ||
                                 ((destination->runtime_flags | source->runtime_flags) & 2) == 0 ||
                                 NuSpecialCompare(&source->special_handle, &destination->special_handle) != 0) {
-                                packet->path_connection_state = 4;
+                                packet->path_connection_state = AIJUMP_TAKE_OFF;
                             } else {
-                                packet->path_connection_state = 2;
+                                packet->path_connection_state = AIJUMP_BACK_UP;
                             }
                         }
                     }
                     break;
-                case 2:
+                case AIJUMP_BACK_UP:
                     if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & BATMAN_AIPATHCNX_JUMP_NOW) != 0) {
-                        packet->path_connection_state = 4;
+                        packet->path_connection_state = AIJUMP_TAKE_OFF;
                     } else {
                         distance = NuVecDist(&object->position, &destination->position, &offset);
                         if (((destination->runtime_flags | source->runtime_flags) & 2) == 0 ||
                             (f64)distance - destination->radius > jump_distance) {
-                            packet->path_connection_state = 3;
+                            packet->path_connection_state = AIJUMP_RUN_UP;
                             if ((destination->runtime_flags & 2) != 0) {
                                 owner->ai_jump_destination_distance = 0.0f;
                             } else {
@@ -1101,9 +1101,9 @@ extern "C" {
                         }
                     }
                     break;
-                case 3:
+                case AIJUMP_RUN_UP:
                     if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & BATMAN_AIPATHCNX_JUMP_NOW) != 0) {
-                        packet->path_connection_state = 4;
+                        packet->path_connection_state = AIJUMP_TAKE_OFF;
                     } else {
                         distance = NuVecDist(&object->position, &destination->position, &offset);
                         if (((destination->runtime_flags | source->runtime_flags) & 2) == 0) {
@@ -1114,23 +1114,23 @@ extern "C" {
                         if (!(distance > owner->ai_jump_destination_distance)) {
                             owner->ai_jump_destination_distance = distance;
                         } else {
-                            packet->path_connection_state = 4;
+                            packet->path_connection_state = AIJUMP_TAKE_OFF;
                             owner->ai_jump_destination_distance = 0.0f;
                         }
                     }
                     break;
-                case 4:
+                case AIJUMP_TAKE_OFF:
                     if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x26) != 0) {
                         if (0.0f >= owner->jump_reentry_timer) {
-                            packet->path_connection_state = 5;
+                            packet->path_connection_state = AIJUMP_JUMP;
                             owner->portal_flags |= 0x1000;
                         }
                         break;
                     }
-                    packet->path_connection_state = 5;
+                    packet->path_connection_state = AIJUMP_JUMP;
                     owner->portal_flags &= ~0x1000;
                     // Single jumps immediately enter the launch state.
-                case 5:
+                case AIJUMP_JUMP:
                     if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
                         return 1;
                     }
@@ -1170,7 +1170,7 @@ extern "C" {
                             if (!((f64)clearance * clearance > distance)) {
                                 continue;
                             }
-                            packet->path_connection_state = 1;
+                            packet->path_connection_state = AIJUMP_APPROACH;
                             ((GAMEOBJECT *)object)->ai_collision_priority |= 0x2000;
                             return 1;
                         }

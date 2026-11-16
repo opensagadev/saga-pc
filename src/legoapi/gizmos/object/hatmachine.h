@@ -15,6 +15,16 @@ typedef struct HATMACHINE HATMACHINE;
 #define HATMACHINE_FLAG_ENABLED 0x8
 #define HATMACHINE_FLAG_HIDE_TARGET 0x20 /* the level file's hidden byte: no target indicator */
 
+/* HATMACHINE.animation_state: the machine's animation, one step per state_duration (the lid and arm specials
+ * the draw moves in each); 0 while the machine is idle. */
+#define HATMACHINE_ANIM_IDLE 0
+#define HATMACHINE_ANIM_LID_OPENING 1
+#define HATMACHINE_ANIM_ARMS_OUT 2
+#define HATMACHINE_ANIM_HAT_DOWN 3
+#define HATMACHINE_ANIM_ARMS_UP 4
+#define HATMACHINE_ANIM_ARMS_IN 5
+#define HATMACHINE_ANIM_LID_CLOSING 6
+
 #ifdef __cplusplus
 extern "C" {
 #endif

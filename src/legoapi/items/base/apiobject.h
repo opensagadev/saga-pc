@@ -397,6 +397,14 @@ typedef struct APIDEBRISSYS {        // size 0xc
 #define AIPACKET_CIRCLE_CLOCKWISE 0x200        /* SetCircleDirection Clockwise / AntiClockwise / Reverse / Random */
 #define AIPACKET_PATH_BLOCKED 0x400000         /* the PathBlocked and CannotReachDestination conditions */
 #define AIPACKET_FORMATION_COMMANDER 0x1000000 /* SetFormationCommander */
+/* AIPACKET.path_connection_state in the jump connection handlers (StarWars_, Indy_ and Batman_PrepareJump); the
+ * tube, door and other special connections count their own steps. */
+#define AIJUMP_NONE 0
+#define AIJUMP_APPROACH 1 /* to the take-off point on the start node's radius */
+#define AIJUMP_BACK_UP 2  /* until farther than the jump distance from the landing node */
+#define AIJUMP_RUN_UP 3   /* towards the landing node until within the jump distance */
+#define AIJUMP_TAKE_OFF 4 /* a double jump waits for the jump re-entry timer */
+#define AIJUMP_JUMP 5     /* SetSpecialMove and the jump button, unless someone stands on the landing */
 
 /* AIPACKET.creature_index and .current_route when the packet has none (creature.c sets the index of a creature; the route
  * follower clears the route). */

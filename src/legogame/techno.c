@@ -40,7 +40,7 @@ i32 Techno_FindOperator(void *target, GAMEPAD **pad, GAMEOBJECT **operator_objec
     for (index = 0; index < 8; ++index) {
         if (Player[index] != NULL && Player[index]->character_context == CHARACTER_CONTEXT_TECHNO && Player[index]->techno != NULL) {
             techno = Player[index]->techno;
-            if ((techno->target_mode == 2 && NuSpecialCompare(target, techno->controlled_object) != 0) ||
+            if ((techno->target_mode == TECHNO_TARGET_SPECIAL && NuSpecialCompare(target, techno->controlled_object) != 0) ||
                 Player[index]->techno->controlled_object == target) {
                 if (pad != NULL) {
                     *pad = Player[index]->pad;
@@ -65,7 +65,7 @@ TECHNO *Technos_FindControllingTechno(GAMEOBJECT *object) {
     count = WORLD->techno_count;
     for (i = 0; i < count; ++i) {
         techno = &WORLD->technos[i];
-        if (techno->target_mode == 1 && techno->controlled_object == object) {
+        if (techno->target_mode == TECHNO_TARGET_CHARACTER && techno->controlled_object == object) {
             return techno;
         }
     }
@@ -89,54 +89,54 @@ void *Technos_FindTgt(TECHNO_s *techno) {
     }
 
     switch (techno->target_mode) {
-        case 1:
+        case TECHNO_TARGET_CHARACTER:
             techno->controlled_object = GetNamedGameObject(WORLD->ai_sys, techno->target_name);
             if (techno->controlled_object == NULL) {
-                techno->target_mode = 0;
+                techno->target_mode = TECHNO_TARGET_ANY;
                 TechnoTargetDiagnostic(techno->target_name);
                 return NULL;
             }
             return techno->controlled_object;
-        case 2:
+        case TECHNO_TARGET_SPECIAL:
             techno->controlled_object = techno->target_special_storage;
             if (NuSpecialFind(WORLD->current_gscn, (nuhspecial_s *)(techno->target_special_storage), techno->target_name, 0) == 0) {
                 techno->controlled_object = NULL;
-                techno->target_mode = 0;
+                techno->target_mode = TECHNO_TARGET_ANY;
                 TechnoTargetDiagnostic(techno->target_name);
                 return NULL;
             }
             return techno->controlled_object;
-        case 3:
+        case TECHNO_TARGET_GIZMO:
             techno->controlled_object = GizmoFindByName(WORLD->gizmo_sys, -1, techno->target_name);
             if (techno->controlled_object == NULL) {
-                techno->target_mode = 0;
+                techno->target_mode = TECHNO_TARGET_ANY;
                 TechnoTargetDiagnostic(techno->target_name);
                 return NULL;
             }
             return techno->controlled_object;
-        case 0:
+        case TECHNO_TARGET_ANY:
             target = GetNamedGameObject(WORLD->ai_sys, techno->target_name);
             if (target == NULL) {
                 target = GizmoFindByName(WORLD->gizmo_sys, -1, techno->target_name);
                 if (target == NULL) {
                     if (NuSpecialFind(WORLD->current_gscn, (nuhspecial_s *)(techno->target_special_storage), techno->target_name, 0) == 0) {
-                        techno->target_mode = 0;
+                        techno->target_mode = TECHNO_TARGET_ANY;
                         techno->controlled_object = NULL;
                         return NULL;
                     }
                     techno->controlled_object = techno->target_special_storage;
-                    techno->target_mode = 2;
+                    techno->target_mode = TECHNO_TARGET_SPECIAL;
                     return techno->target_special_storage;
                 }
                 techno->controlled_object = target;
-                techno->target_mode = 3;
+                techno->target_mode = TECHNO_TARGET_GIZMO;
                 return target;
             }
             techno->controlled_object = target;
-            techno->target_mode = 1;
+            techno->target_mode = TECHNO_TARGET_CHARACTER;
             return target;
         default:
-            techno->target_mode = 0;
+            techno->target_mode = TECHNO_TARGET_ANY;
             TechnoTargetDiagnostic(NULL);
             return NULL;
     }
@@ -384,13 +384,13 @@ static i32 Techno_GetOutput(GIZMO *gizmo, i32 output, i32 include_inactive) {
         return 0;
     }
     switch (techno->target_mode) {
-        case 0:
+        case TECHNO_TARGET_ANY:
             return 0;
-        case 2:
+        case TECHNO_TARGET_SPECIAL:
             return 0;
-        case 1:
+        case TECHNO_TARGET_CHARACTER:
             return (techno->flags >> 3) & 1;
-        case 3:
+        case TECHNO_TARGET_GIZMO:
             if (NuStrICmp(((TECHNO_GIZMO_TYPE_NAME *)gizmotypes->types)[techno->controlled_object->type_id].name, "GIZOBSTACLE") == 0) {
                 target = techno->controlled_object;
                 return ((TECHNO_OBSTACLE_VIEW *)target->object)->anim_set->state == GAMEANIMSET_STATE_AT_END;
@@ -558,7 +558,7 @@ i32 Techno_isReady(TECHNO_s *techno) {
     }
 
     switch (techno->target_mode) {
-        case 1: {
+        case TECHNO_TARGET_CHARACTER: {
             GAMEOBJECT *object = techno->controlled_object;
             if (object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
                 (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0) {
@@ -566,12 +566,12 @@ i32 Techno_isReady(TECHNO_s *techno) {
             }
             break;
         }
-        case 2:
+        case TECHNO_TARGET_SPECIAL:
             if (NuSpecialGetVisibilityFn(techno->controlled_object) != 0) {
                 return 1;
             }
             break;
-        case 3:
+        case TECHNO_TARGET_GIZMO:
             if (techno->controlled_object != NULL) {
                 return 1;
             }
@@ -588,11 +588,11 @@ NUVEC *Technos_TgtPos(TECHNO_s *techno) {
         Technos_FindTgt(techno);
     }
     switch (techno->target_mode) {
-        case 1:
+        case TECHNO_TARGET_CHARACTER:
             return &((GAMEOBJECT *)techno->controlled_object)->collision_position;
-        case 2:
+        case TECHNO_TARGET_SPECIAL:
             return NuSpecialGetPos(techno->controlled_object);
-        case 3:
+        case TECHNO_TARGET_GIZMO:
             return GizmoGetPos(WORLD->gizmo_sys, techno->controlled_object);
     }
     return NULL;
@@ -653,10 +653,10 @@ void Technos_MoveTarget(TECHNO *techno_pointer, GAMEOBJECT *object) {
         Technos_FindTgt((TECHNO_s *)techno);
     }
     switch (techno->target_mode) {
-        case 2:
+        case TECHNO_TARGET_SPECIAL:
             TechnoMoveSpecialTarget();
             return;
-        case 3:
+        case TECHNO_TARGET_GIZMO:
             break;
         default:
             return;

@@ -190,7 +190,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
             FastWeaponIn(object, 0);
             object->flags_e24 |= APIOBJECT_AT_INTERFACE;
             object->unknown_7aa = ACTION_PULLLEVER;
-            machine->animation_state = 1;
+            machine->animation_state = HATMACHINE_ANIM_LID_OPENING;
             if (StartupGameFlag1 != 0) {
                 machine->state_duration = 3.0f;
             } else {
@@ -237,7 +237,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
                 if (object->character_model->model_data_b[0x6d] != NULL &&
                     ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_ALREADY_GOT_HAT) != 0 ||
                      (object->id == (u16)id_PRINCESSLEIABOUSHH && FreePlay != 0))) {
-                    if (machine->animation_state == 2) {
+                    if (machine->animation_state == HATMACHINE_ANIM_ARMS_OUT) {
                         object->unknown_7aa = ACTION_HELMETON2;
                         object->unknown_7b3 = 1;
                         object->context_timer = AnimDuration((i16)object->id, 0x6d, 0.0f, 0.0f, 1);
@@ -248,7 +248,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
                     return;
                 }
                 if (object->character_model->model_data_b[0x5e] != NULL) {
-                    if (machine->animation_state == 2) {
+                    if (machine->animation_state == HATMACHINE_ANIM_ARMS_OUT) {
                         object->unknown_7aa = ACTION_HELMETON;
                         object->unknown_7b3 = 1;
                         object->context_timer = AnimDuration((i16)object->id, 0x5e, 0.0f, 0.0f, 1);
@@ -260,7 +260,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
                     object->unknown_7aa = ACTION_IDLE;
                     return;
                 }
-                if (machine->animation_state != 2) {
+                if (machine->animation_state != HATMACHINE_ANIM_ARMS_OUT) {
                     return;
                 }
                 object->unknown_7aa = ACTION_IDLE;
@@ -268,7 +268,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
                 machine->state_duration = 0.2f;
                 return;
             case 1:
-                if (machine->animation_state != 4) {
+                if (machine->animation_state != HATMACHINE_ANIM_ARMS_UP) {
                     return;
                 }
                 if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_ALREADY_GOT_HAT) == 0 &&
@@ -282,7 +282,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
                 machine->displayed_hat = 0;
                 object->unknown_7b3 = 2;
                 if (StartupGameFlag1 != 0) {
-                    machine->animation_state = 6;
+                    machine->animation_state = HATMACHINE_ANIM_LID_CLOSING;
                 }
                 break;
             case 2:
@@ -501,7 +501,7 @@ extern "C" {
         }
         machine->flags =
             (machine->flags & ~(HATMACHINE_FLAG_IN_USE | HATMACHINE_FLAG_OUTPUT)) | HATMACHINE_FLAG_VISIBLE | HATMACHINE_FLAG_ENABLED;
-        machine->animation_state = 0;
+        machine->animation_state = HATMACHINE_ANIM_IDLE;
         machine->hat_delay = 0.0f;
         machine->state_duration = 0.0f;
         machine->animation_time = 0.0f;
@@ -571,17 +571,17 @@ extern "C" {
                     machine->hat_delay = 1.0f;
                 }
             }
-            if ((machine->flags & HATMACHINE_FLAG_IN_USE) != 0 && machine->animation_state > 0) {
+            if ((machine->flags & HATMACHINE_FLAG_IN_USE) != 0 && machine->animation_state > HATMACHINE_ANIM_IDLE) {
                 machine->state_elapsed += elapsed;
                 if (machine->state_elapsed > machine->state_duration) {
                     ++machine->animation_state;
-                    if (machine->animation_state == 2) {
+                    if (machine->animation_state == HATMACHINE_ANIM_ARMS_OUT) {
                         PlaySfx("SwLever", &machine->position);
                     }
                     machine->state_elapsed = 0.0f;
-                    if (machine->animation_state > 6) {
+                    if (machine->animation_state > HATMACHINE_ANIM_LID_CLOSING) {
                         machine->flags &= ~HATMACHINE_FLAG_IN_USE;
-                        machine->animation_state = 0;
+                        machine->animation_state = HATMACHINE_ANIM_IDLE;
                         machine->state_duration = 0.0f;
                         machine->hat_delay = 0.6f;
                         machine->animation_time = 0.0f;
@@ -717,10 +717,10 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
         }
         if (StartupGameFlag1 != 0) {
             if (specials[0] != NULL && animations[0] != NULL) {
-                if (machine->animation_state > 0) {
+                if (machine->animation_state > HATMACHINE_ANIM_IDLE) {
                     machine->animation_time += FRAMETIME;
-                    if (machine->animation_state < 4 && machine->animation_time >= 3.0f) {
-                        machine->animation_state = 4;
+                    if (machine->animation_state < HATMACHINE_ANIM_ARMS_UP && machine->animation_time >= 3.0f) {
+                        machine->animation_state = HATMACHINE_ANIM_ARMS_UP;
                         machine->state_elapsed = 0.0f;
                         machine->state_duration = 2.0f;
                     }
@@ -782,7 +782,7 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
                     f32 hat_scale =
                         1.0 - (1.0 - ((f64)NuTrigTable[((i32)((f64)machine->hat_delay * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5);
                     offset.y = (1.0 - hat_scale) * (f64)0.1f + HatMachine_HatOffset.y;
-                    if (machine->animation_state < 3) {
+                    if (machine->animation_state < HATMACHINE_ANIM_HAT_DOWN) {
                         frame = NuFdiv(frame, 50.0f);
                         if (frame > 1.0f) {
                             frame = 1.0f;
@@ -802,16 +802,16 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
             if (world->level_objects[30].active != 0) {
                 NuMtxSetRotationY(&matrix, machine->yaw);
                 switch (machine->animation_state) {
-                    case 1:
+                    case HATMACHINE_ANIM_LID_OPENING:
                         NuMtxPreRotateX(&matrix, (u16)((f64)frame / machine->state_duration * -32768.0));
                         break;
-                    case 2:
-                    case 3:
-                    case 4:
-                    case 5:
+                    case HATMACHINE_ANIM_ARMS_OUT:
+                    case HATMACHINE_ANIM_HAT_DOWN:
+                    case HATMACHINE_ANIM_ARMS_UP:
+                    case HATMACHINE_ANIM_ARMS_IN:
                         NuMtxPreRotateX(&matrix, 0x8000);
                         break;
-                    case 6:
+                    case HATMACHINE_ANIM_LID_CLOSING:
                         NuMtxPreRotateX(&matrix, (u16)((1.0 - (f64)frame / machine->state_duration) * -32768.0));
                         break;
                 }
@@ -829,25 +829,25 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
             if (world->level_objects[285].active != 0) {
                 offset = v000;
                 switch (machine->animation_state) {
-                    case 2:
+                    case HATMACHINE_ANIM_ARMS_OUT:
                         offset.z =
                             (1.0 + NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff]) *
                             (f64)-0.1441f;
                         break;
-                    case 3:
+                    case HATMACHINE_ANIM_HAT_DOWN:
                         offset.z = -0.1441f;
                         offset.y =
                             (1.0 + NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff]) *
                             (f64)-0.35f;
                         break;
-                    case 4:
+                    case HATMACHINE_ANIM_ARMS_UP:
                         offset.z = -0.1441f;
                         offset.y =
                             (1.0 - (NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff] +
                                     1.0)) *
                             (f64)-0.35f;
                         break;
-                    case 5:
+                    case HATMACHINE_ANIM_ARMS_IN:
                         offset.z =
                             (1.0 - NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff]) *
                             (f64)-0.1441f;
@@ -862,25 +862,25 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
             if (world->level_objects[284].active != 0) {
                 offset = v000;
                 switch (machine->animation_state) {
-                    case 2:
+                    case HATMACHINE_ANIM_ARMS_OUT:
                         offset.z =
                             (1.0 + NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff]) *
                             (f64)-0.1441f;
                         break;
-                    case 3:
+                    case HATMACHINE_ANIM_HAT_DOWN:
                         offset.z = -0.1441f;
                         offset.y =
                             (1.0 + NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff]) *
                             (f64)-0.35f;
                         break;
-                    case 4:
+                    case HATMACHINE_ANIM_ARMS_UP:
                         offset.z = -0.1441f;
                         offset.y =
                             (1.0 - (NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff] +
                                     1.0)) *
                             (f64)-0.35f;
                         break;
-                    case 5:
+                    case HATMACHINE_ANIM_ARMS_IN:
                         offset.z =
                             (1.0 - NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff]) *
                             (f64)-0.1441f;
@@ -896,13 +896,13 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
                 world->level_objects[machine->displayed_hat + 249].active != 0) {
                 offset = HatMachine_HatOffset;
                 switch (machine->animation_state) {
-                    case 2:
+                    case HATMACHINE_ANIM_ARMS_OUT:
                         offset.z =
                             (f64)HatMachine_HatOffset.z -
                             (1.0 + NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff]) *
                                 (f64)0.1441f;
                         break;
-                    case 3:
+                    case HATMACHINE_ANIM_HAT_DOWN:
                         if (!((f64)frame / machine->state_duration < (f64)0.85f)) {
                             continue;
                         }
@@ -914,8 +914,8 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
                             (1.0 + NuTrigTable[((i32)((f64)frame / machine->state_duration * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff]) *
                             0.125;
                         break;
-                    case 4:
-                    case 5:
+                    case HATMACHINE_ANIM_ARMS_UP:
+                    case HATMACHINE_ANIM_ARMS_IN:
                         continue;
                 }
                 f32 hat_scale =
