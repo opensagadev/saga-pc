@@ -4,8 +4,9 @@
 Steps, each timed:
   build     make build (objects of removed units are pruned)
   identity  code, data, relocations and symbols of every object against the last proven build
-            (build/proof/state.json); COFF timestamps and .debug$* sections are ignored, since line
-            records move with comments and file names
+            (build/proof/state.json, or after a rebase the state another worktree recorded for the same
+            matching.json in SAGA_CACHE_DIR/proof); COFF timestamps and .debug$* sections are ignored, since
+            line records move with comments and file names
   match     tools/match.py --update, only when some object differs; otherwise the report's input,
             object and member-proof hashes are refreshed (match.refresh)
   checks    the budget guard, the scans and the tool tests side by side with the match, then
@@ -39,6 +40,42 @@ else:
     from tools.lib import ROOT, compiled_objects, object_path
 
 STATE = ROOT / "build/proof/state.json"
+
+
+def shared_states():
+    """Proven states of every worktree (SAGA_CACHE_DIR/proof/<digest of matching.json>.json), or None."""
+    shared = os.environ.get("SAGA_CACHE_DIR")
+    return Path(shared) / "proof" if shared else None
+
+
+def proven_state():
+    """The proven state that matches the current matching.json: this worktree's, or after a rebase the one
+    recorded by whichever worktree proved that report (the objects it was proven for)."""
+    state = json.loads(STATE.read_text()) if STATE.is_file() else {}
+    current = matching_digest()
+    directory = shared_states()
+    if state.get("matching") != current and current and directory is not None:
+        try:
+            shared = json.loads((directory / f"{current}.json").read_text())
+        except (OSError, ValueError):
+            shared = None
+        if isinstance(shared, dict) and shared.get("matching") == current and isinstance(shared.get("objects"), dict):
+            print("identity: matching.json was proven in another worktree; comparing with its objects")
+            return shared
+    return state
+
+
+def record_state(digests):
+    state = {"objects": digests, "matching": matching_digest()}
+    text = json.dumps(state, indent=1) + "\n"
+    STATE.parent.mkdir(parents=True, exist_ok=True)
+    STATE.write_text(text)
+    directory = shared_states()
+    if directory is not None and state["matching"]:
+        directory.mkdir(parents=True, exist_ok=True)
+        partial = directory / f"{state['matching']}.json.{os.getpid()}.tmp"
+        partial.write_text(text)
+        os.replace(partial, directory / f"{state['matching']}.json")
 
 
 def matching_digest():
@@ -232,7 +269,7 @@ def main(argv=None):
     if not failures:
         start = time.monotonic()
         digests = object_digests()
-        state = json.loads(STATE.read_text()) if STATE.is_file() else {}
+        state = proven_state()
         changed = sorted(k for k in set(digests) | set(state.get("objects", {}))
                          if digests.get(k) != state.get("objects", {}).get(k))
         # The skip is only sound when matching.json is the report this state proved: a matching.json
@@ -303,8 +340,7 @@ def main(argv=None):
         print(f"  {name:12} {seconds:7.1f} s{'  FAILED' if code else ''}")
     ok = not failures and not lost
     if ok:
-        STATE.parent.mkdir(parents=True, exist_ok=True)
-        STATE.write_text(json.dumps({"objects": digests, "matching": matching_digest()}, indent=1) + "\n")
+        record_state(digests)
     print(f"proof: {'PASS' if ok else 'FAIL'}; {summary}; {time.monotonic() - total:.0f} s"
           + (f"; failed: {', '.join(failures)}" if failures else ""))
     return 0 if ok else 1
