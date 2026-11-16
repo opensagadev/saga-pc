@@ -425,7 +425,7 @@ address,symbol,size,ctype
 0x428b20,?InitOptionsSaveDefaults@@YAXPAUoptionssave_s@@@Z,81,
 0x428b80,?MakeSaveHash@@YAHXZ,8,
 0x428b90,_InitGameBeforeConfig,466,
-0x00428d70,?GoThroughDoor_ExtraCode@@YAXPAUWORLDINFO_s@@PAUgame_door_callback_s@@@Z,176,
+0x00428d70,?GoThroughDoor_ExtraCode@@YAXPAUWORLDINFO_s@@PAUDOOR_s@@@Z,176,
 0x00428e20,?CanMagnetClimb_Game@@YAHPAUgameobject_s@@@Z,29,
 0x00428e40,?CanPushObstacles_Game@@YAIPAUgameobject_s@@@Z,38,
 0x00428e70,?CanSuperCarry_Game@@YAIPAUgameobject_s@@@Z,38,
@@ -2419,7 +2419,7 @@ address,symbol,size,ctype
 0x4d0800,_TightRopeInitRecord,99,
 0x004d0870,_TightRopes_Reset,112,"void __cdecl(WORLDINFO *, void *, TIGHTROPE_PROGRESS *)"
 0x4d08e0,_TightRope_FindNearest,179,
-0x4d09a0,_TightRope_InRange,477,"TIGHTROPE_MOTION * __cdecl(GAMEOBJECT *, WORLDINFO *, NUVEC *)"
+0x4d09a0,_TightRope_InRange,477,"TIGHTROPE_s * __cdecl(GAMEOBJECT *, WORLDINFO *, NUVEC *)"
 0x4d0b80,_TightRopes_Draw,1069,"void __cdecl(WORLDINFO *, void *, f32)"
 0x004d0fb0,_TightRope_Activate,22,"void __cdecl(GIZMO *, i32)"
 0x004d0fd0,_TightRope_SetVisibility,22,"void __cdecl(GIZMO *, i32)"
@@ -2433,7 +2433,7 @@ address,symbol,size,ctype
 0x004d10f0,_TightRopes_ClearProgress,22,"void __cdecl(void *, TIGHTROPE_PROGRESS *)"
 0x004d1110,_TightRopes_StoreProgress,127,"void __cdecl(WORLDINFO *, void *, TIGHTROPE_PROGRESS *)"
 0x004d1190,_TightRopes_RegisterGizmo,268,ADDGIZMOTYPE *__cdecl(i32)
-0x4d12a0,?TightRopeSetPosition@@YAHPAUTIGHTROPE_MOTION@@PAUnuvec_s@@PAUgameobject_s@@@Z,183,
+0x4d12a0,?TightRopeSetPosition@@YAHPAUTIGHTROPE_s@@PAUnuvec_s@@PAUgameobject_s@@@Z,183,
 0x4d1360,?TightRope_MoveUpdate@@YAHPAUgameobject_s@@H@Z,422,
 0x4d1510,?TightRope_Attach@@YAHPAUgameobject_s@@PAUWORLDINFO_s@@@Z,614,
 0x4d1780,_TightRope_SnapTo,278,
