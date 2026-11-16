@@ -113,36 +113,114 @@ extern "C" {
 }
 #endif
 #endif
-/* NuInitHardware's variable arguments: a list of tags, each followed by the values the tag takes (the tags the
- * function reads; it skips the values of the others). */
-#define NUHW_END 0 /* ends the list */
-#define NUHW_HOSTFS 4
-#define NUHW_FILE_MODE 6
-#define NUHW_EJECT 7
-#define NUHW_STREAM_SIZE 8
-#define NUHW_AUDIO 10          /* gate, buffer size, names, parameter */
-#define NUHW_AUDIO_CHANNELS 11 /* channels, capacity */
-#define NUHW_PAD0 14
-#define NUHW_PAD1 15
-#define NUHW_PAD2 16
-#define NUHW_PAD3 17
-#define NUHW_VIDEO_MODE 18 /* PAL modes 2 and 8 make a 224-line height 256 */
-#define NUHW_DFS_NAME 22
-#define NUHW_SOUND_DFS_NAME 23
-#define NUHW_DAT_NAMES 24 /* names, count */
-#define NUHW_TEXTURE_COUNT 26
-#define NUHW_NO_AUDIO 28     /* four ignored values */
-#define NUHW_VIDEO_HEIGHT 33 /* an ignored value, then the height */
-#define NUHW_MATERIAL_COUNT 37
-#define NUHW_CONFIG_NAME 47         /* the registry key */
-#define NUHW_SAVE_FOLDER_COMPANY 48 /* PcRegisterSaveFolder */
-#define NUHW_SAVE_FOLDER_GAME 49    /* PcRegisterSaveFolder */
-#define NUHW_SHOW_COMMAND 52        /* the window's show command */
-#define NUHW_WINDOW 60
-#define NUHW_ANIMATION_COUNT 68
-#define NUHW_OCCLUSION_CAPACITY 76
-#define NUHW_MAX_GAME_PADS 82
-#define NUHW_ICON 83
+/* NuInitHardware's variable arguments: a list of tags, each followed by the values the tag takes, ended by
+ * NUAPI_SETUP_END. The parser reads the tags it knows and skips the values of the others. The names follow the
+ * engine's own enum (build/reference); this build inserts two tags at 24 and 25 and two at 44 and 45, and adds
+ * the tags from 61 on. Names marked "guessed" have no reference name and come from what the parser does. */
+enum NUAPI_SETUP {
+    NUAPI_SETUP_END = 0,
+    NUAPI_SETUP_NGC_LICENSE_TEXTURE = 1,
+    NUAPI_SETUP_NGC_SFX_PAKFILE = 2,
+    NUAPI_SETUP_NGC_FIFO_SIZE = 3,
+    NUAPI_SETUP_HOSTFS = 4,
+    NUAPI_SETUP_CDDVDMODE = 5,
+    NUAPI_SETUP_IOPRESET = 6, /* the file mode passed to NuFileInitEx */
+    NUAPI_SETUP_EJECTDISC = 7,
+    NUAPI_SETUP_STREAMSIZE = 8,
+    NUAPI_SETUP_TB = 9,
+    NUAPI_SETUP_SOUND = 10,  /* gate, buffer size, names, parameter */
+    NUAPI_SETUP_REVERB = 11, /* two values, kept as the audio channels and capacity */
+    NUAPI_SETUP_ADDITIONALDATASTREAMS = 12,
+    NUAPI_SETUP_MULTITAP = 13,
+    NUAPI_SETUP_PAD0 = 14,
+    NUAPI_SETUP_PAD1 = 15,
+    NUAPI_SETUP_PAD2 = 16,
+    NUAPI_SETUP_PAD3 = 17,
+    NUAPI_SETUP_VIDEOMODE = 18, /* PAL modes 2 and 8 make a 224-line height 256 */
+    NUAPI_SETUP_MULTIPURPOSEBUFFER = 19,
+    NUAPI_SETUP_SCREENPOS = 20,
+    NUAPI_SETUP_GLASSRPLANE = 21,
+    NUAPI_SETUP_DFSNAME = 22,
+    NUAPI_SETUP_SFXDFSNAME = 23,
+    NUAPI_SETUP_DATNAMES = 24,    /* guessed: names, count */
+    NUAPI_SETUP_PARAMETER19 = 25, /* guessed: stored in NuHwParameter19 */
+    NUAPI_SETUP_MAXTEXID = 26,
+    NUAPI_SETUP_TEXFILTERMODE = 27,
+    NUAPI_SETUP_NOSOUND = 28, /* four ignored values */
+    NUAPI_SETUP_BSDEMO = 29,
+    NUAPI_SETUP_FILEPARSER = 30,
+    NUAPI_SETUP_ENABLE_PROFILE = 31,
+    NUAPI_SETUP_FLICKERFIX = 32,
+    NUAPI_SETUP_VIDEORES = 33, /* the width (ignored on PC), then the height */
+    NUAPI_SETUP_SWAPMODE = 34,
+    NUAPI_SETUP_SOUNDSTREAM = 35,
+    NUAPI_SETUP_STREAMCHANCOUNT = 36,
+    NUAPI_SETUP_MAXMTL = 37,
+    NUAPI_SETUP_ZMODE = 38,
+    NUAPI_SETUP_IOPSTEREOSIZE = 39,
+    NUAPI_SETUP_IOPMONOSIZE = 40,
+    NUAPI_SETUP_IOPDATASIZE = 41,
+    NUAPI_SETUP_FRAMEBUFFERDEPTH = 42,
+    NUAPI_SETUP_DEBUGTEXCAHECOLOUR = 43,
+    NUAPI_SETUP_PC_TITLE = 45, /* guessed: the default title (PcSetDefaultParameter) */
+    NUAPI_SETUP_PC_WINDOWTITLE = 46,
+    NUAPI_SETUP_PC_REGISTRYKEY = 47,
+    NUAPI_SETUP_PC_SAVEFOLDERPUBLISHER = 48,
+    NUAPI_SETUP_PC_SAVEFOLDERGAMETITLE = 49,
+    NUAPI_SETUP_PC_SAVEMETADATA = 50, /* guessed: PcRegisterSaveMetadata */
+    NUAPI_SETUP_PARAMETER33 = 51,     /* guessed: NuHwSetParameter33 */
+    NUAPI_SETUP_PC_WINDOWED = 52,     /* windowed when the value is 1 */
+    NUAPI_SETUP_PC_WINDOW = 60,       /* guessed: a window the game draws into */
+    NUAPI_SETUP_ANIMATIONCOUNT = 68,  /* guessed */
+    NUAPI_SETUP_0x46 = 70,
+    NUAPI_SETUP_0x47 = 71,
+    NUAPI_SETUP_0x49 = 73,
+    NUAPI_SETUP_0x4b = 75,
+    NUAPI_SETUP_OCCLUSIONCAPACITY = 76, /* guessed */
+    NUAPI_SETUP_PARAMETER4F = 79,       /* guessed: stored in NuHwParameter4f */
+    NUAPI_SETUP_MAXGAMEPADS = 82,       /* guessed */
+    NUAPI_SETUP_ICON = 83               /* guessed */
+};
+
+#define NUHW_END NUAPI_SETUP_END
+#define NUHW_HOSTFS(func) NUAPI_SETUP_HOSTFS, func
+#define NUHW_CDDVDMODE(func) NUAPI_SETUP_CDDVDMODE, func
+#define NUHW_IOPRESET(func) NUAPI_SETUP_IOPRESET, func
+#define NUHW_EJECTDISC(func) NUAPI_SETUP_EJECTDISC, func
+#define NUHW_STREAMSIZE(size) NUAPI_SETUP_STREAMSIZE, size
+#define NUHW_SOUND(gate, buffer_size, names, parameter) NUAPI_SETUP_SOUND, gate, buffer_size, names, parameter
+#define NUHW_NOSOUND(a, b, c, d) NUAPI_SETUP_NOSOUND, a, b, c, d
+/* NUHW_SOUND, or NUHW_NOSOUND with the same four values when the game runs without sound. */
+#define NUHW_SOUND_OR_NOSOUND(no_sound, gate, buffer_size, names, parameter)                                                               \
+    (no_sound) ? NUAPI_SETUP_NOSOUND : NUAPI_SETUP_SOUND, gate, buffer_size, names, parameter
+#define NUHW_REVERB(a, b) NUAPI_SETUP_REVERB, a, b
+#define NUHW_PAD0(pad) NUAPI_SETUP_PAD0, pad
+#define NUHW_PAD1(pad) NUAPI_SETUP_PAD1, pad
+#define NUHW_PAD2(pad) NUAPI_SETUP_PAD2, pad
+#define NUHW_PAD3(pad) NUAPI_SETUP_PAD3, pad
+#define NUHW_VIDEOMODE(mode) NUAPI_SETUP_VIDEOMODE, mode
+#define NUHW_GLASSRPLANE(value) NUAPI_SETUP_GLASSRPLANE, value
+#define NUHW_DFSNAME(name) NUAPI_SETUP_DFSNAME, name
+#define NUHW_SFXDFSNAME(name) NUAPI_SETUP_SFXDFSNAME, name
+#define NUHW_DAT_NAMES(names) NUAPI_SETUP_DATNAMES, names, (sizeof(names) / sizeof(names[0])) /* names, count */
+#define NUHW_MAXTEXID(count) NUAPI_SETUP_MAXTEXID, count
+#define NUHW_VIDEORES(width, height) NUAPI_SETUP_VIDEORES, width, height
+#define NUHW_MAXMTL(count) NUAPI_SETUP_MAXMTL, count
+#define NUHW_PC_TITLE(title) NUAPI_SETUP_PC_TITLE, title
+#define NUHW_PC_WINDOWTITLE(title) NUAPI_SETUP_PC_WINDOWTITLE, title
+#define NUHW_PC_REGISTRYKEY(key) NUAPI_SETUP_PC_REGISTRYKEY, key
+#define NUHW_PC_SAVEFOLDERPUBLISHER(name) NUAPI_SETUP_PC_SAVEFOLDERPUBLISHER, name
+#define NUHW_PC_SAVEFOLDERGAMETITLE(name) NUAPI_SETUP_PC_SAVEFOLDERGAMETITLE, name
+#define NUHW_PC_WINDOWED(windowed) NUAPI_SETUP_PC_WINDOWED, windowed
+#define NUHW_PC_WINDOW(window) NUAPI_SETUP_PC_WINDOW, window
+#define NUHW_ANIMATIONCOUNT(count) NUAPI_SETUP_ANIMATIONCOUNT, count
+#define NUHW_OCCLUSIONCAPACITY(capacity) NUAPI_SETUP_OCCLUSIONCAPACITY, capacity
+#define NUHW_MAXGAMEPADS(count) NUAPI_SETUP_MAXGAMEPADS, count
+#define NUHW_ICON(icon) NUAPI_SETUP_ICON, icon
+#define NUHW_SETUP_0x46(value) NUAPI_SETUP_0x46, value
+#define NUHW_SETUP_0x47(value) NUAPI_SETUP_0x47, value
+#define NUHW_SETUP_0x49(value) NUAPI_SETUP_0x49, value
+#define NUHW_SETUP_0x4b(value) NUAPI_SETUP_0x4b, value
 
 #ifdef __cplusplus
 extern "C" {

@@ -85,13 +85,32 @@ extern "C" void InitOnce(i32 argc, char **argv) {
                    0x50, 0x4c, 0x4f, -1,   -1, -1, 0x9c, -1, -1, -1, -1,   -1};
     i8 order[] = {0, 1, 2, 3, 12, 13, 14, 15, 16, 18, 23, 4, 5, 6, 7, 8, 10, 11, 9, -1};
     InitPadDescriptors((const u16 *)first, NULL, (const u16 *)third, NULL, order);
-    NuInitHardware(&permbuffer_base, &superbuffer_end, 0, NUHW_HOSTFS, InitOnceHostFs, NUHW_DAT_NAMES, StartupDatNames, 7, NUHW_FILE_MODE,
-                   InitOnceFileMode, NUHW_EJECT, InitOnceEject, NUHW_STREAM_SIZE, 0x500000, NUHW_VIDEO_MODE, PAL ? 8 : 0, NUHW_VIDEO_HEIGHT,
-                   512, PAL ? 256 : 224, NUHW_TEXTURE_COUNT, 0x1000, 21, 1, 5, &InitOnceDvd, NOSOUND ? NUHW_NO_AUDIO : NUHW_AUDIO, 0, 0x640,
-                   0, 0, NUHW_AUDIO_CHANNELS, 5, 0x1fff, NUHW_PAD0, Game_NuPad, NUHW_PAD1, Game_NuPad + 1, 46,
-                   "LEGO\xae Star Wars\x99: The Complete Saga", 45, "LEGO\xae Star Wars\x99: The Complete Saga", NUHW_CONFIG_NAME,
-                   "LUCASARTS\\LEGOSTARWARSSAGA", NUHW_SAVE_FOLDER_COMPANY, "LucasArts", NUHW_SAVE_FOLDER_GAME,
-                   "LEGO Star Wars - The Complete Saga", NUHW_SHOW_COMMAND, InitOnceSelector34, 70, 1, 71, 1, 73, 1, 75, 1, NUHW_END);
+    NuInitHardware(&permbuffer_base, &superbuffer_end, 0,
+                   NUHW_HOSTFS(InitOnceHostFs),                                       //
+                   NUHW_DAT_NAMES(StartupDatNames),                                   //
+                   NUHW_IOPRESET(InitOnceFileMode),                                   //
+                   NUHW_EJECTDISC(InitOnceEject),                                     //
+                   NUHW_STREAMSIZE(0x500000),                                         //
+                   NUHW_VIDEOMODE(PAL ? 8 : 0),                                       //
+                   NUHW_VIDEORES(512, PAL ? 256 : 224),                               //
+                   NUHW_MAXTEXID(0x1000),                                             //
+                   NUHW_GLASSRPLANE(1),                                               //
+                   NUHW_CDDVDMODE(&InitOnceDvd),                                      //
+                   NUHW_SOUND_OR_NOSOUND(NOSOUND, 0, 0x640, 0, 0),                    //
+                   NUHW_REVERB(5, 0x1fff),                                            //
+                   NUHW_PAD0(Game_NuPad),                                             //
+                   NUHW_PAD1(Game_NuPad + 1),                                         //
+                   NUHW_PC_WINDOWTITLE("LEGO\xae Star Wars\x99: The Complete Saga"),  //
+                   NUHW_PC_TITLE("LEGO\xae Star Wars\x99: The Complete Saga"),        //
+                   NUHW_PC_REGISTRYKEY("LUCASARTS\\LEGOSTARWARSSAGA"),                //
+                   NUHW_PC_SAVEFOLDERPUBLISHER("LucasArts"),                          //
+                   NUHW_PC_SAVEFOLDERGAMETITLE("LEGO Star Wars - The Complete Saga"), //
+                   NUHW_PC_WINDOWED(InitOnceSelector34),                              //
+                   NUHW_SETUP_0x46(1),                                                //
+                   NUHW_SETUP_0x47(1),                                                //
+                   NUHW_SETUP_0x49(1),                                                //
+                   NUHW_SETUP_0x4b(1),                                                //
+                   NUHW_END);
     NuTimeBarInit();
     pNuCam = NuCameraCreate();
     InitPanel(Game.options_save.widescreen);
