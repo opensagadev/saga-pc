@@ -2617,7 +2617,6 @@ void rtlSetMinR(f32 radius) {
 }
 
 i32 NuMiscNextPow2(i32 value);
-void RtlUiCreateFailed(void);
 
 /* Carves the undo snapshots (128 lights each), the per-snapshot light pointers and camera positions from the
    editor buffer; at least two snapshots. */
@@ -3264,8 +3263,6 @@ void edrtlDrawLights(void) {
 /* Editor-owned f32 cells, each in its own section to keep the data layout. */
 static f32 game_farclip = 0.0f;
 static f32 game_nearclip = 0.0f;
-
-void eduiItemSliderSetValEx(edui_slider_s *item, f32 value, i32 reset_timer, i32 notify);
 
 void RefreshUI(void) {
     i32 i;

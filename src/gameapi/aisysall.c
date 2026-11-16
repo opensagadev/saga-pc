@@ -71,8 +71,6 @@ AISTATE *aiscript_load_state = 0;
 
 extern NULISTLNK *NuLinkedListGetPrev(NULISTHDR *list, NULISTLNK *node);
 
-extern void EdFileWriteUnsignedChar(u8);
-
 /* Script diagnostics, defined variadic at the end of this unit (no header declares them). */
 void AIScriptMissingStateDiagnostic(const char *format, ...);
 void AIScriptMissingStateDiagnosticAlternate(const char *format, ...);
@@ -499,8 +497,6 @@ typedef struct AI_CREATURE_MODEL_BOUNDS { // size 0x1d0
     f32 radius;                           // 0x1cc
 } AI_CREATURE_MODEL_BOUNDS;
 
-extern void (*ClearAICreaturesFn)(void);
-
 i32 geom = 0;
 
 f32 AiEditorCursorRayScale = 1e-17f;
@@ -687,8 +683,6 @@ extern IMAGE_DOS_HEADER __ImageBase;
 
 /* Game-side AI callback registration; kept in the AI script unit so
    GameAISysInit calls them out of line. */
-
-extern AI_CHARACTER_NAME LevelCharacterNameFn;
 
 typedef void (*AI_LOAD)(AISYS *, i32, NUGSCN *, VARIPTR *, VARIPTR *);
 

@@ -588,8 +588,6 @@ void edanimRender(void) {
     }
 }
 
-i32 edanimParamCreate(i32 instance);
-
 i32 edanim_particle_mode = 0;
 i32 edanim_page_used[8] = {0};
 i32 edanim_nearest_param_id = 0;

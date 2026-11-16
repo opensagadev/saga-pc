@@ -15,8 +15,6 @@
 #include <math.h>
 #include <string.h>
 
-void edanimParticleDestroy(i32 parameter_index, i32 particle_index);
-
 /* Flags are deliberately not compacted by this helper. */
 void edanimSoundDestroy(i32 parameter_index, i32 sound_index) {
     i32 i;

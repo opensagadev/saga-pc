@@ -1323,10 +1323,6 @@ void edppDrawCursor(void) {
     NuQFntPopCoordinateSystem();
 }
 
-extern i32 edpp_copy_source[8];
-extern i32 edpp_cam_ax;
-extern i32 edpp_cam_ay;
-
 typedef union EDPP_FLOAT_BITS {
     f32 value;
     u32 bits;
@@ -1785,10 +1781,7 @@ void edppHighlightNearest(void) {
 
 void EdFileWriteInt(i32 value);
 void EdFileWriteShort(i16 value);
-void EdFileWriteUnsignedShort(u16 value);
 void EdFileWriteChar(char value);
-void EdFileWriteUnsignedChar(u8 value);
-i32 EdFileBackup(char *source, char *destination);
 
 i32 edppSaveEffects(char *filename, u8 page) {
     i32 effect_count = 0;
@@ -2913,7 +2906,6 @@ void cbPtlStartVelMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
 extern struct eduimenu_s *edptl_torus_menu;
 extern struct eduimenu_s *ptlrotmenu;
 
-i32 eduiGradPickRead(eduiitem_s *item, EDUI_GRADIENT_STAGE *stages, i32 capacity);
 struct edui_gradient_node_s *eduiGradStageAddRGB(edui_gradient_pick_s *item, f32 time, f32 red, f32 green, f32 blue);
 
 void edppClose(void) {
@@ -4225,8 +4217,6 @@ void edptlcbSoundsMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     edptl_sounds_menu->x = parent->x + 10;
     edptl_sounds_menu->y = parent->y + 40;
 }
-
-void cbPtlSScaleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2);
 
 void edppInit(void) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};

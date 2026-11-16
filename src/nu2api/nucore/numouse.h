@@ -15,6 +15,9 @@ extern "C" {
     f32 NuMouseReadZRel(void);
     f32 NuMouseReadX(void);
     f32 NuMouseReadY(void);
+    void PcEditorCursorEnable(i32 enabled);
+    void PcGetMousePosition(f32 *x, f32 *y);
+    void PcSetMousePosition(f32 x, f32 y);
 #ifdef __cplusplus
 }
 #endif

@@ -110,6 +110,7 @@ extern "C" {
     extern i32 edanim_cam_ax;
     extern i32 edanim_cam_ay;
     extern struct eduimenu_s *edanim_options_menu;
+    void edanimParticleDestroy(i32 parameter_index, i32 particle_index);
 #ifdef __cplusplus
 }
 #endif

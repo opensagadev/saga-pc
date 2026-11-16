@@ -234,6 +234,7 @@ extern "C" {
     void cbPtlTextureMenu(struct eduimenu_s *menu, struct eduiitem_s *unused1, u32 unused2);
     void edbricbFileLoad(struct eduimenu_s *menu, struct eduiitem_s *unused1, u32 unused2);
     void edptlcbApplyNumGhosts(struct eduimenu_s *unused0, struct eduiitem_s *item, u32 unused2);
+    void cbPtlSScaleMenu(struct eduimenu_s *parent, struct eduiitem_s *unused1, u32 unused2);
 #ifdef __cplusplus
 }
 #endif

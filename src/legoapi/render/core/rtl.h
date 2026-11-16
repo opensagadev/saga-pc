@@ -227,6 +227,7 @@ extern "C" {
     void fogFree(RTL_FOG_MIGRATION *fog);
     void rtlFree(RTL_LIGHT *light);
     void cbModifierAdjust(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons);
+    void RtlUiCreateFailed(void);
 #ifdef __cplusplus
 }
 #endif

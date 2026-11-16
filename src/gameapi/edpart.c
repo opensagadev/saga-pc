@@ -1508,7 +1508,6 @@ i32 edpartSaveEffects(char *filename, u8 page) {
     return 0;
 }
 
-i32 EdFileBackup(char *source, char *destination);
 struct eduimenu_s *edpart_varstart_menu = 0;
 struct PC_SCENE_MTL_VIEW *edpart_boxmtl = 0;
 struct PC_SCENE_MTL_VIEW *edpart_mtl = 0;

@@ -962,6 +962,10 @@ extern "C" {
     void DebrisRestoreResources(void);
     void DebrisDrawGlass(void);
     void DebrisGlassInit(void);
+    extern i32 edpp_cam_ax;
+    extern i32 edpp_cam_ay;
+    extern i32 edpp_copy_source[8];
+    i32 edanimParamCreate(i32 instance);
 #ifdef __cplusplus
 }
 #endif

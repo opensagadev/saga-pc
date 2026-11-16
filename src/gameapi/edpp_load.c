@@ -242,8 +242,6 @@ void cbPtlSelTextureType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     }
 }
 
-eduiitem_s *eduiItemTexturePickCreate(u32 data, void *colours, void *callback, char *text);
-
 /* Stores the picked texture corners in the effect (biased by 524288 so the
  * coordinates keep 1/256 steps) and closes the selector. */
 static void cbPtlChangeTextureSelect(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {

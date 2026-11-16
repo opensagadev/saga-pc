@@ -440,15 +440,12 @@ void FS_SetFileSelPathFromName(char *name) {
 }
 
 extern struct FILE_DIRECTORY_ENTRY *dir_list;
-extern i32 edui_filepick_listsize;
 
 static void eduiFilePickAllocDirList(void) {
     if (edui_filepick_listsize != 0 && dir_list == NULL) {
         dir_list = NuAlloc(edui_filepick_listsize * 0x118, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x821);
     }
 }
-
-void PcEditorCursorEnable(i32 enabled);
 
 typedef struct EDUI_PRIM_VERTEX { // size 0x10
     f32 x;                        // 0x0
@@ -589,7 +586,6 @@ NUVEC *edmainQueryLocVec(void) {
     return ed_loc;
 }
 
-extern f32 EduiSliderGlobalAcceleration;
 extern f32 EduiScaleX;
 extern f32 EduiScaleY;
 
@@ -963,10 +959,6 @@ void cbgpcfgAdd(eduimenu_s *menu, eduiitem_s *item, u32 value) {
     eduiMenuDetach(menu);
     eduiMenuDestroy(menu);
 }
-
-i32 eduicbProcessGreyPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad);
-i32 eduicbRenderSelWithClipColour(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 selected);
-i32 eduicbRenderGreyPick(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 selected);
 
 static void eduicbProcessGradPick(eduimenu_s *menu, eduiitem_s *item) {
     edui_gradient_pick_s *gradient = (edui_gradient_pick_s *)item;
@@ -1408,8 +1400,6 @@ void edmainInitEx(void *font, char *configuration_file, eduiiattr_s *colours, i3
     ed_main_menu_h = height;
     edmainInit(font, configuration_file);
 }
-
-void eduiGradStageSetHSV(edui_gradient_node_s *stage, f32 hue, f32 saturation, f32 value);
 
 edui_gradient_node_s *eduiGradStageAdd(edui_gradient_pick_s *item, f32 time, f32 hue, f32 saturation, f32 value) {
     edui_gradient_node_s *stage = NuAlloc(sizeof(edui_gradient_node_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xa37);
@@ -1965,8 +1955,6 @@ eduimenu_s *eduiGetActiveMenu(void) {
     return active_menu;
 }
 
-void PcGetMousePosition(f32 *x, f32 *y);
-void PcSetMousePosition(f32 x, f32 y);
 u32 edui_cursor_buttons_old;
 i32 edui_cursor_locked;
 struct FILE_DIRECTORY_ENTRY *dir_list = 0;
@@ -2035,9 +2023,6 @@ void eduiProcessCursor(f32 delta_time, FRAME_PAD *pad) {
     eduiProcessCursorDefault(delta_time, pad);
 }
 
-extern f32 edui_font_scale_x;
-extern f32 edui_font_scale_y;
-
 void eduiSetFontScale(f32 x, f32 y) {
     edui_font_scale_x = x;
     edui_font_scale_y = y;
@@ -2089,8 +2074,6 @@ void eduicbMenuCloseAllexpanders(eduimenu_s *menu) {
 }
 
 extern i32 EduiSelectionMaterial;
-i32 NuVSPrintf(char *dest, const char *format, va_list args);
-void NuRndrLineRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material);
 
 static void EduiExpanderOpen(EDUI_EXPANDER *expander) {
     if (expander->first_child && !expander->open) {
@@ -2416,7 +2399,6 @@ struct eduiitem_s *edui_last_item = 0;
 char FS_FileList[65536] = {0};
 f32 EduiPropLabelWidth = 50.0f;
 extern void NuKeyFlush(void);
-extern void EduiFntPrintScaled(void *font, f32 x, f32 y, i32 alignment, char *text);
 
 i32 eduiItemPropSetText(edui_prop_s *item, char *text) {
     if (item->property_text && NuStrLen(item->property_text) < NuStrLen(text)) {
@@ -3073,10 +3055,6 @@ void eduiMenuSetDisabled(eduimenu_s *menu, i32 disabled) {
     }
 }
 
-i32 eduicbProcessColourPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad);
-i32 eduicbRenderColourPick(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 height);
-i32 eduicbInteractColourPick(edui_interact_s *interact);
-
 eduiitem_s *eduiItemColourPickCreate(u32 data, void *colours, void *callback, char *text) {
     edui_colour_pick_s *item = NuAlloc(sizeof(edui_colour_pick_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xb6c);
     if (item) {
@@ -3111,8 +3089,6 @@ eduiitem_s *eduiItemGreyPickCreate(u32 data, void *colours, void *callback, char
     }
     return item;
 }
-
-i32 eduicbRenderTexturePick(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 height);
 
 /* The left stick pans the selected texture corner (scaled by the zoom), the
  * shoulder buttons zoom, and the face buttons snap, switch corners or apply. */
@@ -3203,8 +3179,6 @@ eduiitem_s *eduiItemTexturePickCreate(u32 data, void *colours, void *callback, c
     return NULL;
 }
 
-i32 eduicbProcessGraph(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad);
-i32 eduicbRenderGraph(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 selected);
 void nugraphInit(nugraph_s *graph);
 i32 nugraphCalcCurve(nugraph_s *graph, i32 point_count);
 
@@ -3309,7 +3283,6 @@ eduiitem_s *eduiItemColourSliderCreate(u32 data, void *colours, i32 group, void 
 
 extern char *edui_textrow_default[4];
 extern char *edui_textrow_lower[4];
-extern char EduiTextCopyBuffer[64];
 
 /* On-screen keyboard of the text picker: rows 0-3 are the letter rows, rows
  * 4 and 5 the copy/paste row when the picker allows pasting (flag 2). */
@@ -4070,7 +4043,6 @@ void FS_SetCursorToLastFileName(void) {
     }
 }
 
-extern void NuStrToLower(char *text);
 char FileSelFilterBlocks[8][96] = {0};
 i32 ed_init = 0;
 char FileSelFilterOutBlocks[8][12] = {0};
@@ -4664,7 +4636,6 @@ f32 FS_W = 0.0f;
 f32 FS_H = 0.0f;
 char *SortStrings[4] = {"A to Z", "Z to A", "Old to New", "New To Old"};
 i32 FS_SortMode = 3;
-extern void NuRndrRect2d(f32 x, f32 y, f32 z, f32 width, f32 height, i32 colour, NUMTL *material);
 
 void RenderFileSel3(i32 draw_title) {
     char buffer[256];

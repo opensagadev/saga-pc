@@ -5,6 +5,7 @@
 #include "nu2api/nucore/nucore_plain_types.h"
 
 struct edcam_s;
+struct edui_gradient_stage_s;
 struct numtl_s;
 
 /* FRAME_PAD.digital_buttons and friends: PS2 pad bits. The level editor's pad help (LevelEditor::LevelEditor,
@@ -585,6 +586,21 @@ extern "C" {
     void eduiSetDefaultActiveMenu(eduimenu_s *menu);
     void eduiSetUsingMenuFocus(i32 enabled);
     extern i32 edmain_cursor_enabled;
+    extern char EduiTextCopyBuffer[64];
+    extern f32 EduiSliderGlobalAcceleration;
+    extern i32 edui_filepick_listsize;
+    void EduiFntPrintScaled(void *font, f32 x, f32 y, i32 alignment, char *text);
+    i32 eduiGradPickRead(eduiitem_s *item, struct edui_gradient_stage_s *stages, i32 capacity);
+    i32 eduicbInteractColourPick(edui_interact_s *interact);
+    i32 eduicbProcessColourPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad);
+    i32 eduicbProcessGraph(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad);
+    i32 eduicbProcessGreyPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad);
+    i32 eduicbRenderColourPick(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 height);
+    i32 eduicbRenderGraph(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 selected);
+    i32 eduicbRenderGreyPick(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 selected);
+    i32 eduicbRenderSelWithClipColour(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 selected);
+    i32 eduicbRenderTexturePick(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 height);
+    void eduiGradStageSetHSV(edui_gradient_node_s *stage, f32 hue, f32 saturation, f32 value);
 #ifdef __cplusplus
 }
 #endif

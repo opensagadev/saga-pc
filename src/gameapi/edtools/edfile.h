@@ -5,6 +5,7 @@
 #include "nu2api/numath/nuvec.h"
 
 struct FRAME_PAD;
+struct edui_slider_s;
 struct eduiitem_s;
 struct eduimenu_s;
 
@@ -41,6 +42,14 @@ extern "C" {
     void EdFileWrite(void *data, i32 len);
     void EdFileWriteNuVec(NUVEC *value);
     void edmainSetLocVec(NUVEC *location);
+    struct eduiitem_s *eduiItemTexturePickCreate(u32 data, void *colours, void *callback, char *text);
+    extern f32 edui_font_scale_x;
+    extern f32 edui_font_scale_y;
+    void EdFileWriteUnsignedChar(u8);
+    i32 EdFileBackup(char *source, char *destination);
+    i32 EduiRenderItem(struct eduiitem_s *, struct eduimenu_s *, i32, i32, i32, i32);
+    void EdFileWriteUnsignedShort(u16 value);
+    void eduiItemSliderSetValEx(struct edui_slider_s *item, f32 value, i32 reset_timer, i32 notify);
 #ifdef __cplusplus
 }
 #endif

@@ -94,6 +94,8 @@ extern "C" {
     extern struct PC_BUFFER_RESOURCE *RendererQuadVertexBuffer;
     void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, struct numtx_s *matrix, i32 colour);
     void NuRndrGlobalFrameCountPause(i32 paused);
+    void NuRndrRect2d(f32 x, f32 y, f32 z, f32 width, f32 height, i32 colour, struct numtl_s *material);
+    void NuRndrLineRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, struct numtl_s *material);
 #ifdef __cplusplus
 }
 #endif

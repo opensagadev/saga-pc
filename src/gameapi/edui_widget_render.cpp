@@ -19,7 +19,6 @@
 
 i32 ui_bgmtl = 0;
 extern "C" struct PC_SCENE_MTL_VIEW *uimtls[5];
-extern "C" i32 NuVSPrintf(char *dest, const char *format, va_list args);
 
 static void EduiPrintAlignedText(void *font, i32 x, i32 y, i32 alignment, char *format, ...) {
     if (edui_donotdraw == 0) {
@@ -273,7 +272,6 @@ void eduiItemColourPickSetHSV(edui_colour_pick_s *item, f32 hue, f32 saturation,
 }
 
 extern "C" i32 EduiSelectionMaterial;
-extern "C" void NuRndrLineRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material);
 
 static void EduiDrawGradientSpan(i32 x, i32 y, i32 width, i32 height, u32 first_colour, u32 second_colour, f32 start, f32 end);
 
@@ -772,18 +770,8 @@ extern "C" void cbgpcfgCPPress(eduimenu_s *menu, eduiitem_s *item, u32 value) {
 }
 
 extern "C" {
-    extern f32 edui_font_scale_x;
-    extern f32 edui_font_scale_y;
-    i32 EduiRenderItem(eduiitem_s *, eduimenu_s *, i32, i32, i32, i32);
     u32 eduimenu_outline_colour = 0x80404040;
     u32 eduimenu_selected_outline_colour = 0x80ffffff;
-}
-
-extern "C" {
-    i32 cbInteractMenuTitle(edui_interact_s *);
-    i32 cbInteractMenuScrollUp(edui_interact_s *);
-    i32 cbInteractMenuScrollDown(edui_interact_s *);
-    i32 cbInteractMenuCancelChild(edui_interact_s *);
 }
 
 static void EduiAddInteraction(f32 x, f32 y, f32 width, f32 height, eduimenu_s *menu, eduiitem_s *item, i32 (*callback)(edui_interact_s *),

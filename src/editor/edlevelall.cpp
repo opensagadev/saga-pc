@@ -45,10 +45,6 @@
 
 /* Level editor. The unit is C++ and also holds the EdDraw primitives. */
 
-extern "C" {
-    void PcGetMousePosition(f32 *x, f32 *y);
-}
-
 /* A bump allocator over a variptr range; blocks are 16-byte aligned and
  * cleared. */
 struct MemoryBuffer { // size 0x10

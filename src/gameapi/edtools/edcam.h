@@ -4,6 +4,7 @@
 
 struct FRAME_PAD;
 struct edcam_s;
+struct edui_interact_s;
 struct nucamera_s;
 struct nuvec_s;
 
@@ -27,6 +28,10 @@ extern "C" {
     void edcamGetPosAngSnap(struct nuvec_s *position, i32 *angle_x, i32 *angle_y);
     void edcamSetAng(i32 pitch, i32 yaw);
     void edcamSetPosAng(struct nuvec_s *position, i32 pitch, i32 yaw);
+    i32 cbInteractMenuCancelChild(struct edui_interact_s *);
+    i32 cbInteractMenuScrollDown(struct edui_interact_s *);
+    i32 cbInteractMenuScrollUp(struct edui_interact_s *);
+    i32 cbInteractMenuTitle(struct edui_interact_s *);
 #ifdef __cplusplus
 }
 #endif
