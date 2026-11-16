@@ -1,16 +1,12 @@
 #include "gamelib/util/V2SessionManager.h"
 #include "gamelib/util/gamelib_util_types.h"
+#include "nu2api/nucore/bgproc.h"
 #include "nu2api/nucore/nustring.h"
 #include <stdarg.h>
 #include <stdio.h>
 
 /* PC-only network session manager, never constructed outside this
  * object. */
-
-extern "C" {
-    void PcDebugPrintLock(void);
-    void PcDebugPrintUnlock(void);
-}
 
 V2SessionManager *V2SessionManager::mpSessionManager = 0;
 

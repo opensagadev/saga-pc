@@ -34,6 +34,8 @@ struct bgprocinfo_s {       // size 0x118
 extern "C" {
 #endif
     BGPROCINFO *bgPostRequest(bgprocdofn *do_fn, bgprocdofn *ack_fn, void *data, i32 data_size);
+    void PcDebugPrintLock(void);
+    void PcDebugPrintUnlock(void);
     extern const char GetSfxSwPPadName[7];
     extern i32 bgproc_frozen;
     extern i32 bgproc_freeze;
