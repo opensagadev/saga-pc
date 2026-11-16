@@ -35,3 +35,5 @@ extern "C" {
 #define POW5(x) (POW2(x) * POW3(x))
 #define NU_SIN_LUT(ang) NuTrigTable[(i32)(ang) >> 1 & 0x7fff]
 #define NU_COS_LUT(ang) NuTrigTable[((i32)(ang) + 0x4000) >> 1 & 0x7fff]
+/* The cosine lookup for a floating angle: the quarter turn is added before the conversion. */
+#define NU_COS_LUT_F(ang) NuTrigTable[(i32)((ang) + 16384.0f) >> 1 & 0x7fff]

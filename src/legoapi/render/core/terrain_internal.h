@@ -17,3 +17,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+/* A polygon vertex into a homogeneous vector (w = 0) for the platform transforms, and back. */
+#define TERRAIN_LOAD_VERTEX(vector, vertex) ((vector).x = (vertex).x, (vector).y = (vertex).y, (vector).z = (vertex).z, (vector).w = 0.0f)
+#define TERRAIN_STORE_VERTEX(vertex, vector) ((vertex).x = (vector).x, (vertex).z = (vector).z, (vertex).y = (vector).y)

@@ -20,3 +20,12 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+/* NuFabs written out on the bits: `value` goes through `temp`, `out` receives it with the sign bit cleared, and the
+   expression yields `out`. */
+#define NU_FABS_COPY(value, temp, out) ((temp) = (value), *(i32 *)&(out) = *(i32 *)&(temp) & 0x7fffffff, (out))
+
+/* |a| >= |b| on masked float bits, through `temp` and the u32 copies `bits_a` and `bits_b`. */
+#define NU_FABS_GE_BITS(a, b, temp, bits_a, bits_b)                                                                                        \
+    ((temp) = (a), (bits_a) = *(u32 *)&(temp) & 0x7fffffff, (temp) = (b), (bits_b) = *(u32 *)&(temp) & 0x7fffffff,                         \
+     *(f32 *)&(bits_a) >= *(f32 *)&(bits_b))
