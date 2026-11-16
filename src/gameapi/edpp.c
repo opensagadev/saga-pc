@@ -853,7 +853,7 @@ static void edptlcbOrphanListMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 u
             continue;
         }
         eduiMenuAddItem(edptl_orphanlist_menu, eduiItemSelCreate(0, edblack, 0, 0, NULL, edpp_ptls[index].name));
-        edui_last_item->text_alignment = 0x10;
+        edui_last_item->text_alignment = EDUI_ALIGN_LEFT;
     }
     eduiMenuAttach(parent, edptl_orphanlist_menu);
     edptl_orphanlist_menu->x = parent->x + 10;

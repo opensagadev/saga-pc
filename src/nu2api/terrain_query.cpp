@@ -15,11 +15,6 @@
 #include <string.h>
 #include <math.h>
 
-extern "C" {
-
-    enum { TERRAIN_PLATFORM_FLAG_ROTATING = 1 };
-}
-
 enum {
     NUTRIGTABLE_COUNT = 32768,
     TERRAIN_HIT_TYPE_NONE = 0,
@@ -45,8 +40,7 @@ enum {
     TERRAIN_HIT_EDGE_1_2 = 2,
     TERRAIN_HIT_EDGE_1_3 = 4,
     TERRAIN_HIT_EDGE_3_2 = 5,
-    TERRAIN_TRACK_FLAG_NONE = 0,
-    TERRAIN_PLATFORM_FLAG_COLLIDED = 2
+    TERRAIN_TRACK_FLAG_NONE = 0
 };
 
 struct ShadowScanWriter {
@@ -1654,7 +1648,8 @@ i16 *NewScanHandelFull(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_ty
             TERRAIN_GROUP *group = &CurrentTerrain->groups[*indices];
             TERRAIN_PLATFORM *platform = &TERRAIN_GROUP_PLATFORM(group);
             u32 *scene_state = platform->instance_flags;
-            if (scene_state == NULL || ((platform->flags & 4) != 0 ? (*scene_state & 2) : (*scene_state & 1))) {
+            if (scene_state == NULL ||
+                ((platform->flags & TERRAIN_PLATFORM_FLAG_DISPLAY_LIST_BACKED) != 0 ? (*scene_state & 2) : (*scene_state & 1))) {
                 f32 local_min_x;
                 f32 local_max_x;
                 f32 local_min_z;

@@ -13,11 +13,6 @@
 #include <string.h>
 #include <math.h>
 
-extern "C" {
-
-    enum { TERRAIN_PLATFORM_FLAG_ROTATING = 1 };
-}
-
 enum {
     NUTRIGTABLE_COUNT = 32768,
     TERRAIN_HIT_TYPE_NONE = 0,
@@ -43,8 +38,7 @@ enum {
     TERRAIN_HIT_EDGE_1_2 = 2,
     TERRAIN_HIT_EDGE_1_3 = 4,
     TERRAIN_HIT_EDGE_3_2 = 5,
-    TERRAIN_TRACK_FLAG_NONE = 0,
-    TERRAIN_PLATFORM_FLAG_COLLIDED = 2
+    TERRAIN_TRACK_FLAG_NONE = 0
 };
 
 extern "C" {
@@ -1266,7 +1260,7 @@ extern "C" {
         TERRAIN_TRACK_SLOT *track = CurTrackInfo;
         if (track != NULL && (track->flags & TERRAIN_TRACK_FLAG_CONNECTED)) {
             TERRAIN_PLATFORM *platform = &TERRAIN_TRACK_PLATFORM;
-            if (platform->flags & 1) {
+            if (platform->flags & TERRAIN_PLATFORM_FLAG_ROTATING) {
                 NuMtxInvRSS(&tertempmat, reinterpret_cast<NUMTX *>(platform));
                 track = CurTrackInfo;
                 tertempvec4.x = old_query->position.x - TERRAIN_TRACK_PLATFORM.previous_matrix.m30;
@@ -1329,11 +1323,11 @@ extern "C" {
                     }
                 }
                 if (query->movement_normal.y >= 0.707f && query->terrain_group_index >= 0 && group->chunk_type == 1) {
-                    CurrentTerrain->platforms[group->scene_index].flags |= 2;
+                    CurrentTerrain->platforms[group->scene_index].flags |= TERRAIN_PLATFORM_FLAG_COLLIDED;
                 }
                 old_query->platform_position.x = query->platform_position.x;
                 track = CurTrackInfo;
-                if (TERRAIN_TRACK_PLATFORM.flags & 1) {
+                if (TERRAIN_TRACK_PLATFORM.flags & TERRAIN_PLATFORM_FLAG_ROTATING) {
                     old_query->platform_position.y = old_query->collision_radius + query->platform_position.y;
                 } else {
                     old_query->platform_position.y = old_query->collision_radius + query->platform_position.y + (f64)0.0025f;
@@ -1449,7 +1443,7 @@ extern "C" {
         }
         if (TERRAIN_TPE_PREVIOUS->m30 == TERRAIN_TPE_MATRIX->m30 && TERRAIN_TPE_PREVIOUS->m31 == TERRAIN_TPE_MATRIX->m31 &&
             TERRAIN_TPE_PREVIOUS->m32 == TERRAIN_TPE_MATRIX->m32) {
-            if (!(platform->flags & 1)) {
+            if (!(platform->flags & TERRAIN_PLATFORM_FLAG_ROTATING)) {
                 return 1;
             }
             if (TERRAIN_TPE_PREVIOUS->m00 == TERRAIN_TPE_MATRIX->m00 && TERRAIN_TPE_PREVIOUS->m01 == TERRAIN_TPE_MATRIX->m01 &&
@@ -1483,7 +1477,7 @@ extern "C" {
         query->movement.x = (TERRAIN_TPE_PREVIOUS->m30 - TERRAIN_TPE_MATRIX->m30) * (f64)1.73f;
         query->movement.y = (TERRAIN_TPE_PREVIOUS->m31 - TERRAIN_TPE_MATRIX->m31) * (f64)1.73f * query->inverse_object_scale;
         query->movement.z = (TERRAIN_TPE_PREVIOUS->m32 - TERRAIN_TPE_MATRIX->m32) * (f64)1.73f;
-        if (TERRAIN_TPE_PLATFORM.flags & 1) {
+        if (TERRAIN_TPE_PLATFORM.flags & TERRAIN_PLATFORM_FLAG_ROTATING) {
             NuMtxInvRSS(&tertempmat, TERRAIN_TPE_PREVIOUS);
             query = TerI;
             tertempvec4.x = old_query->position.x - TERRAIN_TPE_PREVIOUS->m30;
@@ -1511,7 +1505,7 @@ extern "C" {
         TERRAIN_GROUP *group = &CurrentTerrain->groups[old_query->terrain_group_index];
         TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group->data);
         if (1.0f == query->object_scale) {
-            if (TERRAIN_TPE_PLATFORM.flags & 1) {
+            if (TERRAIN_TPE_PLATFORM.flags & TERRAIN_PLATFORM_FLAG_ROTATING) {
                 while (batch->marker >= 0) {
                     TERRAIN_POLYGON_INFO *source = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
                     for (i32 remaining = batch->shape_count; remaining > 0; --remaining, ++source) {
@@ -1576,7 +1570,7 @@ extern "C" {
                     batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(source);
                 }
             }
-        } else if (TERRAIN_TPE_PLATFORM.flags & 1) {
+        } else if (TERRAIN_TPE_PLATFORM.flags & TERRAIN_PLATFORM_FLAG_ROTATING) {
             while (batch->marker >= 0) {
                 TERRAIN_POLYGON_INFO *source = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
                 for (i32 remaining = batch->shape_count; remaining > 0; --remaining, ++source) {
@@ -2118,7 +2112,7 @@ extern "C" i32 AddMSituExtraTerrRot(i32 source_index, NUMTX *matrix, NUMTX *prev
     CurrentTerrain->platforms[index].scene_object = matrix;
     if (rotating) {
         CurrentTerrain->platforms[index].previous_matrix = *previous;
-        CurrentTerrain->platforms[index].flags |= 1;
+        CurrentTerrain->platforms[index].flags |= TERRAIN_PLATFORM_FLAG_ROTATING;
     } else {
         if (previous != NULL) {
             CurrentTerrain->platforms[index].previous_matrix.m30 = previous->m30;
@@ -2129,7 +2123,7 @@ extern "C" i32 AddMSituExtraTerrRot(i32 source_index, NUMTX *matrix, NUMTX *prev
             CurrentTerrain->platforms[index].previous_matrix.m31 = matrix->m31;
             CurrentTerrain->platforms[index].previous_matrix.m32 = matrix->m32;
         }
-        CurrentTerrain->platforms[index].flags &= ~1;
+        CurrentTerrain->platforms[index].flags &= ~TERRAIN_PLATFORM_FLAG_ROTATING;
     }
     group->origin.x = matrix->m30;
     group->origin.y = matrix->m31;
@@ -2144,7 +2138,7 @@ extern "C" i32 AddMSituExtraTerrRot(i32 source_index, NUMTX *matrix, NUMTX *prev
     CurrentTerrain->platforms[index].bounce_5c = 0.0f;
     CurrentTerrain->platforms[index].bounce_64 = 0.0f;
     CurrentTerrain->platforms[index].bounce_60 = 0.0f;
-    CurrentTerrain->platforms[index].flags &= ~2;
+    CurrentTerrain->platforms[index].flags &= ~TERRAIN_PLATFORM_FLAG_COLLIDED;
     if (CurrentTerrain->active_platform_count < 96) {
         CurrentTerrain->active_platform_groups[CurrentTerrain->active_platform_count] = CurrentTerrain->group_count;
         CurrentTerrain->active_platform_count++;

@@ -264,6 +264,11 @@ enum { EDUI_CURSOR_PRIMARY = 64 };
 
 enum { EDUI_ITEM_HIGHLIGHTED = 1 };
 
+/* eduiitem_s.text_alignment and the edui text print alignment: where the text starts relative to x. */
+#define EDUI_ALIGN_LEFT 0x10
+#define EDUI_ALIGN_RIGHT 0x20
+#define EDUI_ALIGN_CENTRE 0x40
+
 struct eduimenu_s {                                                     // size 0x44
     struct eduiitem_s *first;                                           // 0x00
     struct eduiitem_s *last;                                            // 0x04

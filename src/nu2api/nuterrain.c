@@ -232,7 +232,7 @@ i32 NewPlatInstMSitu(void *object, i32 source) {
     CurrentTerrain->platforms[new_index].terrain_group_index = CurrentTerrain->group_count;
     CurrentTerrain->platforms[new_index].scene_object_index = source;
     CurrentTerrain->platforms[new_index].instance_flags = NULL;
-    CurrentTerrain->platforms[new_index].flags &= ~1;
+    CurrentTerrain->platforms[new_index].flags &= ~TERRAIN_PLATFORM_FLAG_ROTATING;
     CurrentTerrain->platforms[new_index].bounce_54 = 0.0f;
     CurrentTerrain->platforms[new_index].bounce_58 = 0.0f;
     CurrentTerrain->platforms[new_index].bounce_5c = 0.0f;
@@ -1013,7 +1013,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                 local_max_z = max_z - group->origin.z;
                 local_min_z = min_z - group->origin.z;
             }
-            if ((platform->flags & 1) != 0) {
+            if ((platform->flags & TERRAIN_PLATFORM_FLAG_ROTATING) != 0) {
                 f64 dz;
                 f64 dx;
                 f32 distance_squared;
@@ -1031,7 +1031,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                 }
                 if (platform->instance_flags != NULL) {
                     const u32 *scene_state = platform->instance_flags;
-                    if ((platform->flags & 4) != 0) {
+                    if ((platform->flags & TERRAIN_PLATFORM_FLAG_DISPLAY_LIST_BACKED) != 0) {
                         const u32 state_flags = *scene_state;
                         if ((state_flags & 2) == 0) {
                             continue;
@@ -1158,7 +1158,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                 }
                 if (platform->instance_flags != NULL) {
                     const u32 *scene_state = platform->instance_flags;
-                    if ((platform->flags & 4) != 0) {
+                    if ((platform->flags & TERRAIN_PLATFORM_FLAG_DISPLAY_LIST_BACKED) != 0) {
                         const u32 state_flags = *scene_state;
                         if ((state_flags & 2) == 0) {
                             continue;
@@ -2016,7 +2016,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
             ++platform_cell->group_count;
 
             platform = &(terrain->platforms[group->scene_index]);
-            platform->flags = (platform->flags & ~1u) | (group->platform_flags & 1);
+            platform->flags = (platform->flags & ~TERRAIN_PLATFORM_FLAG_ROTATING) | (group->platform_flags & 1);
             platform->scene_object_index = scene_object_index;
             platform->terrain_group_index = ((i16)(group_index));
             platform->flags &= ~TERRAIN_PLATFORM_FLAG_DISPLAY_LIST_BACKED;
@@ -2049,7 +2049,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
             ++platform_cell->group_count;
 
             platform = &(terrain->platforms[group->scene_index]);
-            platform->flags = (platform->flags & ~1u) | (group->platform_flags & 1);
+            platform->flags = (platform->flags & ~TERRAIN_PLATFORM_FLAG_ROTATING) | (group->platform_flags & 1);
             platform->scene_object_index = scene_object_index;
             platform->terrain_group_index = ((i16)(group_index));
             platform->flags &= ~TERRAIN_PLATFORM_FLAG_DISPLAY_LIST_BACKED;
@@ -2348,7 +2348,8 @@ void PlatInstRotate(i32 platform_index, i32 enabled) {
     if (platform_index >= 0) {
         terrain = CurrentTerrain;
         if (platform_index < terrain->max_platforms) {
-            terrain->platforms[platform_index].flags = (terrain->platforms[platform_index].flags & ~1u) | (enabled & 1);
+            terrain->platforms[platform_index].flags =
+                (terrain->platforms[platform_index].flags & ~TERRAIN_PLATFORM_FLAG_ROTATING) | (enabled & 1);
         }
     }
 }
@@ -2621,7 +2622,7 @@ i32 AddPickupTerrRot(i32 type, NUMTX *matrix, NUMTX *previous, i32 rotating) {
     CurrentTerrain->platforms[found].scene_object = matrix;
     if (rotating != 0) {
         memcpy(&CurrentTerrain->platforms[found].previous_matrix, previous, sizeof(NUMTX));
-        CurrentTerrain->platforms[found].flags |= 1;
+        CurrentTerrain->platforms[found].flags |= TERRAIN_PLATFORM_FLAG_ROTATING;
     } else {
         if (previous != NULL) {
             CurrentTerrain->platforms[found].previous_matrix.m30 = previous->m30;
@@ -2632,7 +2633,7 @@ i32 AddPickupTerrRot(i32 type, NUMTX *matrix, NUMTX *previous, i32 rotating) {
             CurrentTerrain->platforms[found].previous_matrix.m31 = matrix->m31;
             CurrentTerrain->platforms[found].previous_matrix.m32 = matrix->m32;
         }
-        CurrentTerrain->platforms[found].flags &= ~1u;
+        CurrentTerrain->platforms[found].flags &= ~TERRAIN_PLATFORM_FLAG_ROTATING;
     }
     group->origin.x = matrix->m30;
     group->origin.y = matrix->m31;
@@ -2647,7 +2648,7 @@ i32 AddPickupTerrRot(i32 type, NUMTX *matrix, NUMTX *previous, i32 rotating) {
     CurrentTerrain->platforms[found].bounce_5c = 0;
     CurrentTerrain->platforms[found].bounce_64 = 0;
     CurrentTerrain->platforms[found].bounce_60 = 0;
-    CurrentTerrain->platforms[found].flags &= ~2u;
+    CurrentTerrain->platforms[found].flags &= ~TERRAIN_PLATFORM_FLAG_COLLIDED;
     if (CurrentTerrain->active_platform_count < 96) {
         CurrentTerrain->active_platform_groups[CurrentTerrain->active_platform_count] = CurrentTerrain->group_count;
         ++CurrentTerrain->active_platform_count;
@@ -2695,7 +2696,7 @@ i32 NewPlatPickupInst(void *object, i32 type) {
     group->chunk_type = 1;
     group->scene_index = (i16)index;
     CurrentTerrain->platforms[index].scene_object = object;
-    CurrentTerrain->platforms[index].flags &= ~1u;
+    CurrentTerrain->platforms[index].flags &= ~TERRAIN_PLATFORM_FLAG_ROTATING;
     group->origin.x = ((NUMTX *)object)->m30;
     group->origin.y = ((NUMTX *)object)->m31;
     group->origin.z = ((NUMTX *)object)->m32;
@@ -2709,7 +2710,7 @@ i32 NewPlatPickupInst(void *object, i32 type) {
     CurrentTerrain->platforms[index].bounce_5c = 0;
     CurrentTerrain->platforms[index].bounce_64 = 0;
     CurrentTerrain->platforms[index].bounce_60 = 0;
-    CurrentTerrain->platforms[index].flags &= ~2u;
+    CurrentTerrain->platforms[index].flags &= ~TERRAIN_PLATFORM_FLAG_COLLIDED;
     CurrentTerrain->group_count++;
     CurrentTerrain->platform_cell.group_count++;
     return index;
@@ -2865,7 +2866,7 @@ void TerrDrawPlat(TERRAIN_POLYGON_INFO *terrain, i16 index) {
 
     platform = &CurrentTerrain->platforms[TERRAIN_TDP_GROUP.scene_index];
     if (platform->instance_flags != NULL) {
-        if (platform->flags & 4) {
+        if (platform->flags & TERRAIN_PLATFORM_FLAG_DISPLAY_LIST_BACKED) {
             if (!(*platform->instance_flags & 2)) {
                 return;
             }
@@ -2887,7 +2888,7 @@ void TerrDrawPlat(TERRAIN_POLYGON_INFO *terrain, i16 index) {
     normal->w = 0.0f;
     colour = (terrain->flags & 0x80) ? 0x0000ffff : 0x00ff0000;
 
-    if (CurrentTerrain->platforms[TERRAIN_TDP_GROUP.scene_index].flags & 1) {
+    if (CurrentTerrain->platforms[TERRAIN_TDP_GROUP.scene_index].flags & TERRAIN_PLATFORM_FLAG_ROTATING) {
         NuVec4MtxTransformVU0(&points[0], &points[0], TERRAIN_TDP_MATRIX);
         NuVec4MtxTransformVU0(&points[1], &points[1], TERRAIN_TDP_MATRIX);
         NuVec4MtxTransformVU0(&points[2], &points[2], TERRAIN_TDP_MATRIX);
@@ -2946,7 +2947,7 @@ void TerrDrawPlatCol(TERRAIN_POLYGON_INFO *terrain, i16 index, i32 colour) {
 
     platform = &CurrentTerrain->platforms[TERRAIN_TDP_GROUP.scene_index];
     if (platform->instance_flags != NULL) {
-        if (platform->flags & 4) {
+        if (platform->flags & TERRAIN_PLATFORM_FLAG_DISPLAY_LIST_BACKED) {
             if ((*platform->instance_flags & 2) == 0) {
                 return;
             }
@@ -2966,7 +2967,7 @@ void TerrDrawPlatCol(TERRAIN_POLYGON_INFO *terrain, i16 index, i32 colour) {
     normals[0].z = terrain->normals[0].z * (f64)0.4f;
     normals[0].w = 0.0f;
 
-    if (CurrentTerrain->platforms[TERRAIN_TDP_GROUP.scene_index].flags & 1) {
+    if (CurrentTerrain->platforms[TERRAIN_TDP_GROUP.scene_index].flags & TERRAIN_PLATFORM_FLAG_ROTATING) {
         NuVec4MtxTransformVU0(&points[0], &points[0], TERRAIN_TDP_MATRIX);
         NuVec4MtxTransformVU0(&points[1], &points[1], TERRAIN_TDP_MATRIX);
         NuVec4MtxTransformVU0(&points[2], &points[2], TERRAIN_TDP_MATRIX);

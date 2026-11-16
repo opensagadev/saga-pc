@@ -33,13 +33,13 @@ static void EduiPrintAlignedText(void *font, i32 x, i32 y, i32 alignment, char *
         va_end(args);
         width = (i32)NuQFntPrintLenU((VUFNT *)font, text);
         switch (alignment) {
-            case 16:
+            case EDUI_ALIGN_LEFT:
                 left = x;
                 break;
-            case 32:
+            case EDUI_ALIGN_RIGHT:
                 left = x - width;
                 break;
-            case 64:
+            case EDUI_ALIGN_CENTRE:
                 left = x - width / 2;
                 break;
             default:
@@ -76,10 +76,10 @@ i32 eduicbRenderSel(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32
         }
     }
     switch (item->text_alignment) {
-        case 16:
+        case EDUI_ALIGN_LEFT:
             EduiPrintAlignedText(edui_font, x << 4, (y << 3) + baseline, item->text_alignment, item->text);
             break;
-        case 32:
+        case EDUI_ALIGN_RIGHT:
             EduiPrintAlignedText(edui_font, (x + width) << 4, (y << 3) + baseline, item->text_alignment, item->text);
             break;
         default:
@@ -600,7 +600,7 @@ extern "C" eduiitem_s *eduiItemTextSelectorCreate(u32 data, void *colours, i32 g
         item->slider.base.data = data;
         item->slider.base.type = EDUIITEM_SLIDER;
         memcpy(item->slider.base.colours, colours, sizeof(item->slider.base.colours));
-        item->slider.base.text_alignment = 0x40;
+        item->slider.base.text_alignment = EDUI_ALIGN_CENTRE;
         item->slider.base.selection_group = group;
         item->slider.base.process = eduicbProcessSlider;
         item->slider.base.render = eduicbRenderTextSelector;
@@ -658,7 +658,7 @@ extern "C" eduiitem_s *eduiItemSeparatorCreate(u32 data, const void *colours) {
         item->base.type = EDUIITEM_SEPARATOR;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
         item->base.highlighted = 0;
-        item->base.text_alignment = 0x40;
+        item->base.text_alignment = EDUI_ALIGN_CENTRE;
         item->base.selection_group = 0;
         item->base.process = eduicbProcessSeparator;
         item->base.render = eduicbRenderSeparator;
@@ -813,13 +813,13 @@ static void EduiPrintClippedText(void *font, i32 x, i32 y, i32 alignment, i32 cl
         i32 width = (i32)NuQFntPrintLenU((VUFNT *)font, text);
         i32 left;
         switch (alignment) {
-            case 16:
+            case EDUI_ALIGN_LEFT:
                 left = x;
                 break;
-            case 32:
+            case EDUI_ALIGN_RIGHT:
                 left = x - width;
                 break;
-            case 64:
+            case EDUI_ALIGN_CENTRE:
                 left = x - width / 2;
                 break;
             default:

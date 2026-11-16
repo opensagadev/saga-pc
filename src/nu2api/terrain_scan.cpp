@@ -7,10 +7,6 @@
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numath/nuvec4.h"
 
-extern "C" {
-
-    enum { TERRAIN_PLATFORM_FLAG_ROTATING = 1 };
-}
 #define TERRAIN_PLATFORM_OF(group_arg) (CurrentTerrain->platforms[(group_arg).scene_index])
 #define TERRAIN_PLATFORM_MATRIX(group_arg) (TERRAIN_PLATFORM_OF(group_arg).scene_object)
 #define TERRAIN_CROSS_PRODUCT(result_arg, a_arg, b_arg)                                                                                    \

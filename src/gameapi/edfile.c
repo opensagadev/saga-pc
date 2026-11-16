@@ -1450,7 +1450,7 @@ eduiitem_s *eduiItemGradPickCreate(u32 data, void *colours, void *callback, char
         item->base.data = data;
         item->base.type = EDUIITEM_GRAD_PICK;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
-        item->base.text_alignment = 0x40;
+        item->base.text_alignment = EDUI_ALIGN_CENTRE;
         item->base.selection_group = 0;
         item->base.process = eduicbProcessGradPickItem;
         item->base.render = eduicbRenderGradPick;
@@ -1666,7 +1666,7 @@ eduiitem_s *eduiItemSelCreate(u32 data, void *colours, i32 selected, i32 group, 
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
         item->base.selection_group = group;
         item->base.highlighted = selected;
-        item->base.text_alignment = 0x40;
+        item->base.text_alignment = EDUI_ALIGN_CENTRE;
         item->base.process = eduicbProcessSel;
         item->base.render = eduicbRenderSel;
         item->base.destroy = eduicbItemDestroy;
@@ -2311,12 +2311,12 @@ static void eduiFntPrintClipEx(void *font, f32 x, f32 y, i32 alignment, f32 clip
         va_end(args);
         width = (i32)NuQFntPrintLenU(font, text);
         switch (alignment) {
-            case 16:
+            case EDUI_ALIGN_LEFT:
                 break;
-            case 32:
+            case EDUI_ALIGN_RIGHT:
                 left -= width;
                 break;
-            case 64:
+            case EDUI_ALIGN_CENTRE:
                 left -= width / 2;
                 break;
         }
@@ -2394,7 +2394,7 @@ eduiitem_s *eduiItemExpanderCreate(u32 data, const void *colours, void *callback
         item->base.type = EDUIITEM_EXPANDER;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
         item->base.highlighted = 0;
-        item->base.text_alignment = 0x40;
+        item->base.text_alignment = EDUI_ALIGN_CENTRE;
         item->base.selection_group = 0;
         item->base.process = eduicbProcessExpander;
         item->base.render = eduicbRenderExpander;
@@ -2736,7 +2736,7 @@ static i32 eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i3
                           divider_colours[property->divider_active], (NUMTL *)uimtls[0]);
         }
         eduiFntPrintClipEx(edui_font, draw_x + indentation, draw_y + baseline, 16, draw_x - indentation, property->label_width, item->text);
-        EduiFntPrintScaled(edui_font, draw_x + property->label_width + 2.0f, draw_y + baseline, 16, eduiPropTextEdit);
+        EduiFntPrintScaled(edui_font, draw_x + property->label_width + 2.0f, draw_y + baseline, EDUI_ALIGN_LEFT, eduiPropTextEdit);
         NuStrNCpy(prefix, eduiPropTextEdit, eduiPropTextPos + 1);
         prefix[eduiPropTextPos + 1] = '\0';
         caret_x = draw_x + property->label_width + 2.0f + NuQFntPrintLenU(edui_font, prefix) * (1.0f / EduiScaleX);
@@ -2818,7 +2818,7 @@ eduiitem_s *eduiItemPropCreateEx(u32 data, void *colours, void *selected, void *
         item->base.type = EDUIITEM_PROP;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
         item->base.highlighted = 0;
-        item->base.text_alignment = 0x40;
+        item->base.text_alignment = EDUI_ALIGN_CENTRE;
         item->base.selection_group = 0;
         item->base.process = eduicbProcessProp;
         item->base.render = eduicbRenderProp;
@@ -2979,7 +2979,7 @@ eduiitem_s *eduiItemFilterCreate(u32 data, void *colours, char *text, char *valu
         item->prop.base.type = EDUIITEM_FILTER;
         memcpy(item->prop.base.colours, colours, sizeof(item->prop.base.colours));
         item->prop.base.highlighted = 0;
-        item->prop.base.text_alignment = 0x40;
+        item->prop.base.text_alignment = EDUI_ALIGN_CENTRE;
         item->prop.base.selection_group = 0;
         item->prop.base.process = eduicbProcessFilter;
         item->prop.base.render = eduicbRenderFilter;
@@ -3084,7 +3084,7 @@ eduiitem_s *eduiItemColourPickCreate(u32 data, void *colours, void *callback, ch
         item->base.data = data;
         item->base.type = EDUIITEM_COLOUR_PICK;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
-        item->base.text_alignment = 0x40;
+        item->base.text_alignment = EDUI_ALIGN_CENTRE;
         item->base.selection_group = 0;
         item->base.process = eduicbProcessColourPick;
         item->base.render = eduicbRenderColourPick;
@@ -3185,7 +3185,7 @@ eduiitem_s *eduiItemTexturePickCreate(u32 data, void *colours, void *callback, c
         item->base.data = data;
         item->base.type = EDUIITEM_TEXTURE_PICK;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
-        item->base.text_alignment = 0x40;
+        item->base.text_alignment = EDUI_ALIGN_CENTRE;
         item->base.selection_group = 0;
         item->base.process = eduicbProcessTexturePick;
         item->base.render = eduicbRenderTexturePick;
@@ -3220,7 +3220,7 @@ eduiitem_s *eduiItemGraphCreate(u32 data, void *colours, void *callback, nugraph
         item->cursor_y = 0.5f;
         item->x_scale = 1.0f;
         item->y_scale = 1.0f;
-        item->base.text_alignment = 0x40;
+        item->base.text_alignment = EDUI_ALIGN_CENTRE;
         item->base.selection_group = 0;
         item->base.process = eduicbProcessGraph;
         item->base.render = eduicbRenderGraph;
@@ -3249,7 +3249,7 @@ eduiitem_s *eduiItemSliderCreate(u32 data, void *colours, i32 group, void *callb
         item->base.data = data;
         item->base.type = EDUIITEM_SLIDER;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
-        item->base.text_alignment = 0x40;
+        item->base.text_alignment = EDUI_ALIGN_CENTRE;
         item->base.selection_group = group;
         item->base.process = eduicbProcessSlider;
         item->base.render = eduicbRenderSlider;
@@ -3286,7 +3286,7 @@ eduiitem_s *eduiItemColourSliderCreate(u32 data, void *colours, i32 group, void 
         item->base.base.data = data;
         item->base.base.type = EDUIITEM_COLOUR_SLIDER;
         memcpy(item->base.base.colours, colours, sizeof(item->base.base.colours));
-        item->base.base.text_alignment = 0x40;
+        item->base.base.text_alignment = EDUI_ALIGN_CENTRE;
         item->base.base.selection_group = group;
         item->base.base.process = eduicbProcessColourSlider;
         item->base.base.render = eduicbRenderColourSlider;
@@ -3566,7 +3566,7 @@ eduiitem_s *eduiItemTextPickCreate(u32 data, void *colours, void *callback, char
         item->base.data = data;
         item->base.type = EDUIITEM_TEXT_PICK;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
-        item->base.text_alignment = 0x40;
+        item->base.text_alignment = EDUI_ALIGN_CENTRE;
         item->base.selection_group = 0;
         item->base.process = eduicbProcessTextPick;
         item->base.render = eduicbRenderTextPick;
@@ -3604,7 +3604,7 @@ eduiitem_s *eduiItemFilePickCreate(u32 data, void *colours, void *callback, char
         item->base.data = data;
         item->base.type = EDUIITEM_TEXT_PICK;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
-        item->base.text_alignment = 0x40;
+        item->base.text_alignment = EDUI_ALIGN_CENTRE;
         item->base.selection_group = 0;
         item->base.process = eduicbProcessFilePick;
         item->base.render = eduicbRenderFilePick;
@@ -4330,14 +4330,14 @@ static void eduicbAttachDirectoryList(eduimenu_s *menu, edui_file_pick_s *picker
         }
         if (picker->filename[0]) {
             item = eduiItemSelCreate(9999, picker->base.colours, 0, 1, eduicbSelectDirectoryEntry, "<..>");
-            item->text_alignment = 0x10;
+            item->text_alignment = EDUI_ALIGN_LEFT;
             eduiMenuAddItem(directory_menu, item);
         }
         for (index = 0; index < dir_size; index++) {
             if (dir_list[index].flags & FILE_DIRECTORY_FLAG_DIRECTORY) {
                 NuSPrintf(text, "<%s>", dir_list[index].name);
                 item = eduiItemSelCreate(index, picker->base.colours, 0, 1, eduicbSelectDirectoryEntry, text);
-                item->text_alignment = 0x10;
+                item->text_alignment = EDUI_ALIGN_LEFT;
                 eduiMenuAddItem(directory_menu, item);
             }
         }
@@ -4352,7 +4352,7 @@ static void eduicbAttachDirectoryList(eduimenu_s *menu, edui_file_pick_s *picker
                       dir_list[index].modified.day, dir_list[index].modified.month, dir_list[index].modified.year,
                       dir_list[index].modified.hour, dir_list[index].modified.minute);
             item = eduiItemSelCreate(index, picker->base.colours, 0, 1, eduicbSelectDirectoryEntry, text);
-            item->text_alignment = 0x10;
+            item->text_alignment = EDUI_ALIGN_LEFT;
             eduiMenuAddItem(directory_menu, item);
         }
         if (directory_menu->first == NULL) {
@@ -5123,7 +5123,7 @@ eduiitem_s *eduiItemFileSelCreate(u32 data, void *colours, void *callback, char 
         item->base.data = data;
         item->base.type = EDUIITEM_FILE_SEL;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
-        item->base.text_alignment = 0x40;
+        item->base.text_alignment = EDUI_ALIGN_CENTRE;
         item->base.selection_group = 0;
         item->base.process = eduicbProcessFileSel;
         item->base.render = eduicbRenderFileSel;
