@@ -339,7 +339,7 @@ static void Technos_AddGizmos(void *system, i32 type_id, void *world_ptr, void *
 }
 
 static char *Techno_GetGizmoName(GIZMO *gizmo) {
-    return gizmo != NULL ? ((TECHNO *)gizmo->object)->name : NULL;
+    return gizmo != NULL ? gizmo->techno->name : NULL;
 }
 
 static i32 Techno_GetOutput(GIZMO *gizmo, i32 output, i32 include_inactive) {
@@ -380,7 +380,7 @@ static NUVEC *Techno_GetPos(GIZMO *gizmo) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
     }
-    return &((TECHNO *)gizmo->object)->position;
+    return &gizmo->techno->position;
 }
 
 static void *Technos_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {

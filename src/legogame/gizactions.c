@@ -304,7 +304,7 @@ void GizActions_ChangeObstTriggerType(GIZFLOW *flow, FLOWBOX *unused1, char **pa
     }
     gizmo = GizmoFindByName(flow->gizmo_sys, obstacle_gizmotype_id, name);
     if (gizmo != NULL && gizmo->object != NULL) {
-        ((GIZOBSTACLE *)(gizmo->object))->mode = ((u8)(mode));
+        gizmo->obstacle->mode = ((u8)(mode));
     }
 }
 
@@ -587,7 +587,7 @@ void GizActions_PlayObstacle(GIZFLOW *flow, FLOWBOX *box, char **params, i32 cou
         return;
     }
     gizmo = GizmoFindByName(flow->gizmo_sys, obstacle_gizmotype_id, name);
-    obstacle = gizmo ? (GIZOBSTACLE *)gizmo->object : NULL;
+    obstacle = gizmo ? gizmo->obstacle : NULL;
     if (!obstacle) {
         return;
     }

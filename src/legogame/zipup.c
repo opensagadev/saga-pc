@@ -934,7 +934,7 @@ static void ZipUps_AddGizmos(void *system, i32 type_id, WORLDINFO *world) {
 }
 
 static char *ZipUp_GetGizmoName(GIZMO *gizmo) {
-    return gizmo ? ((ZIPUP *)(gizmo->object))->name : NULL;
+    return gizmo ? gizmo->zipup->name : NULL;
 }
 
 static void *ZipUps_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
@@ -978,7 +978,7 @@ static void ZipUps_StoreProgress(WORLDINFO *world, void *unused, ZIPUP_PROGRESS 
 
 static i32 ZipUp_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     if (gizmo != NULL) {
-        return ((ZIPUP *)(gizmo->object))->active;
+        return gizmo->zipup->active;
     }
     return 0;
 }

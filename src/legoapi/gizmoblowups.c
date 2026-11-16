@@ -224,7 +224,7 @@ void Blowup_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
 }
 
 char *Blowup_GetGizmoName(GIZMO *gizmo) {
-    return gizmo != NULL ? ((GIZMOBLOWUP *)gizmo->object)->name : NULL;
+    return gizmo != NULL ? gizmo->blowup->name : NULL;
 }
 
 i32 Blowup_GetOutput(GIZMO *gizmo, i32 output, i32 ignored) {
@@ -283,7 +283,7 @@ void Blowup_SetVisibility(GIZMO *gizmo, i32 visible) {
 }
 
 i32 Blowup_GetVisibility(GIZMO *gizmo) {
-    return gizmo != NULL && (((GIZMOBLOWUP *)gizmo->object)->status_flags & BLOWUP_STATUS_VISIBLE) != 0;
+    return gizmo != NULL && (gizmo->blowup->status_flags & BLOWUP_STATUS_VISIBLE) != 0;
 }
 
 NUVEC *GizmoBlowup_GetPos(GIZMO *gizmo) {

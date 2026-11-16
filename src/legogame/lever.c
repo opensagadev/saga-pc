@@ -294,7 +294,7 @@ static i32 Levers_GetMaxGizmos(void *world_ptr) {
 
 static char *Lever_GetGizmoName(GIZMO *gizmo) {
     if (gizmo != NULL) {
-        return ((GIZMO_LEVER *)gizmo->object)->name;
+        return gizmo->lever->name;
     }
     return NULL;
 }

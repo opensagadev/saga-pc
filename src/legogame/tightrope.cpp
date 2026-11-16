@@ -308,13 +308,13 @@ extern "C" {
 
     void TightRope_Activate(GIZMO *gizmo, i32 active) {
         if (gizmo != NULL) {
-            ((TIGHTROPE_s *)gizmo->object)->active = active != 0;
+            gizmo->tightrope->active = active != 0;
         }
     }
 
     void TightRope_SetVisibility(GIZMO *gizmo, i32 visible) {
         if (gizmo != NULL) {
-            ((TIGHTROPE_s *)gizmo->object)->visible = visible != 0;
+            gizmo->tightrope->visible = visible != 0;
         }
     }
 
@@ -332,11 +332,11 @@ extern "C" {
     }
 
     char *TightRope_GetGizmoName(GIZMO *gizmo) {
-        return gizmo != NULL ? (char *)gizmo->object : NULL;
+        return gizmo != NULL ? gizmo->tightrope->name : NULL;
     }
 
     i32 TightRope_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
-        TIGHTROPE_s *rope = (TIGHTROPE_s *)gizmo->object;
+        TIGHTROPE_s *rope = gizmo->tightrope;
         return rope->visible != 0 && rope->active != 0;
     }
 

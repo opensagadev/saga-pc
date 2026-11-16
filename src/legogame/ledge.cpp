@@ -374,14 +374,14 @@ extern "C" {
 
     void Ledge_SetVisibility(GIZMO *gizmo, i32 visible) {
         if (gizmo != NULL) {
-            LEDGE_s *ledge = (LEDGE_s *)gizmo->object;
+            LEDGE_s *ledge = gizmo->ledge;
             ledge->visible = visible != 0;
         }
     }
 
     void Ledge_Activate(GIZMO *gizmo, i32 active) {
         if (gizmo != NULL) {
-            LEDGE_s *ledge = (LEDGE_s *)gizmo->object;
+            LEDGE_s *ledge = gizmo->ledge;
             ledge->active = active != 0;
         }
     }
@@ -458,11 +458,11 @@ extern "C" {
     }
 
     char *Ledge_GetGizmoName(GIZMO *gizmo) {
-        return gizmo != NULL ? (char *)gizmo->object : NULL;
+        return gizmo != NULL ? gizmo->ledge->name : NULL;
     }
 
     i32 Ledge_GetOutput(GIZMO *gizmo, i32 unused1, i32 unused2) {
-        LEDGE_s *ledge = (LEDGE_s *)gizmo->object;
+        LEDGE_s *ledge = gizmo->ledge;
         return (ledge->state_flags & 2) != 0 && (ledge->state_flags & 1) != 0;
     }
 

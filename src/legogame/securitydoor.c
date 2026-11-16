@@ -270,11 +270,11 @@ void SecurityDoors_AddGizmos(GIZMOSYS *system, i32 type_id, WORLDINFO *world, vo
 }
 
 char *SecurityDoor_GetGizmoName(GIZMO *gizmo) {
-    return gizmo != NULL ? ((SECURITY_DOOR_RECORD *)gizmo->object)->name : NULL;
+    return gizmo != NULL ? gizmo->security_door->name : NULL;
 }
 
 i32 SecurityDoor_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
-    return (((SECURITY_DOOR_RECORD *)gizmo->object)->flags >> 2) & 1;
+    return (gizmo->security_door->flags >> 2) & 1;
 }
 
 char *SecurityDoor_GetOutputName(GIZMO *gizmo, i32 output) {
@@ -334,7 +334,7 @@ NUVEC *SecurityDoor_GetPos(GIZMO *gizmo) {
     if (gizmo == NULL) {
         return NULL;
     }
-    return &((SECURITY_DOOR_RECORD *)gizmo->object)->position;
+    return &gizmo->security_door->position;
 }
 
 char *SecurityDoor_OutputName = "Opened";

@@ -765,19 +765,19 @@ void VaderC_Update(WORLDINFO *world) {
     if (netclient != 0 && GameTimer.time_elapsed < 5.0f) {
         struct gizmo_s *gizmo = GizmoFindByName(WORLD->gizmo_sys, obstacle_gizmotype_id, "obstacle20");
         if (gizmo != NULL && gizmo->object != NULL) {
-            ((GIZOBSTACLE *)gizmo->object)->progress_flags &= ~OBSTACLE_ACTIVE;
+            gizmo->obstacle->progress_flags &= ~OBSTACLE_ACTIVE;
         }
         gizmo = GizmoFindByName(WORLD->gizmo_sys, obstacle_gizmotype_id, "obstacle21");
         if (gizmo != NULL && gizmo->object != NULL) {
-            ((GIZOBSTACLE *)gizmo->object)->progress_flags &= ~OBSTACLE_ACTIVE;
+            gizmo->obstacle->progress_flags &= ~OBSTACLE_ACTIVE;
         }
         gizmo = GizmoFindByName(WORLD->gizmo_sys, obstacle_gizmotype_id, "obstacle22");
         if (gizmo != NULL && gizmo->object != NULL) {
-            ((GIZOBSTACLE *)gizmo->object)->progress_flags &= ~OBSTACLE_ACTIVE;
+            gizmo->obstacle->progress_flags &= ~OBSTACLE_ACTIVE;
         }
         gizmo = GizmoFindByName(WORLD->gizmo_sys, obstacle_gizmotype_id, "obstacle23");
         if (gizmo != NULL && gizmo->object != NULL) {
-            ((GIZOBSTACLE *)gizmo->object)->progress_flags &= ~OBSTACLE_ACTIVE;
+            gizmo->obstacle->progress_flags &= ~OBSTACLE_ACTIVE;
         }
     }
     if (vader_c.players_dead == 0) {

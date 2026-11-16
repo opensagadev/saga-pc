@@ -493,7 +493,7 @@ static void HubRestoreBuildIts(void) {
         GIZMO *gizmo = HubAreaInfo[i].bonus_gizmo;
         if (gizmo != NULL) {
             if (((1U << bit) & Game.hub_buildit_completed) != 0) {
-                GizBuildIt_SetToEnd((GIZBUILDIT *)gizmo->object);
+                GizBuildIt_SetToEnd(gizmo->buildit);
             }
             ++bit;
         }
@@ -529,7 +529,7 @@ static void HubUpdateBonusBuildIts(WORLDINFO *world) {
         }
         if (GizmoGetOutput(world->gizmo_sys, gizmo, 0, 0) == 0) {
             gizmo = HubAreaInfo[i].bonus_gizmo;
-            GIZBUILDIT *buildit = (GIZBUILDIT *)gizmo->object;
+            GIZBUILDIT *buildit = gizmo->buildit;
             if (buildit->anim_object_count <= gold_bricks) {
                 if ((buildit->availability_flags & 1) == 0) {
                     GizmoActivate(world->gizmo_sys, gizmo, 1, 0);
@@ -3469,7 +3469,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
                 if (player != NULL && (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
                     player->player.character_context != CHARACTER_CONTEXT_BUILD_IT) {
                     gizmo = HubAreaInfo[i].bonus_gizmo;
-                    GIZBUILDIT *buildit = (GIZBUILDIT *)gizmo->object;
+                    GIZBUILDIT *buildit = gizmo->buildit;
                     if ((buildit->availability_flags & 4) != 0 || (nearest != NULL && nearest == buildit)) {
                         selected = i;
                     }
@@ -3684,7 +3684,7 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
                 GIZMO *gizmo = HubAreaInfo[HubEpisode].bonus_gizmo;
                 if (gizmo != NULL) {
                     i32 count = Game.gold_bricks;
-                    total = ((GIZBUILDIT *)gizmo->object)->anim_object_count;
+                    total = gizmo->buildit->anim_object_count;
                     if (count > total) {
                         count = total;
                     }

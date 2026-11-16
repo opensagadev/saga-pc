@@ -274,7 +274,7 @@ void UpdatePaintPuzzle(WORLDINFO *world) {
     factoryb_netpacket->paint_try = (i8)painttry;
     factoryb_netpacket->paint_target = (i8)painttarget;
     if (factoryb_netpacket->cylinder_up == 1 && played_sound == 0) {
-        PlaySfx("Fac_BonusCylUp", &NuSpecialGetMtx(&((GIZOBSTACLE *)forcetube->object)->anim_set->objects->special)->translation);
+        PlaySfx("Fac_BonusCylUp", &NuSpecialGetMtx(&forcetube->obstacle->anim_set->objects->special)->translation);
         played_sound = 1;
     }
 }

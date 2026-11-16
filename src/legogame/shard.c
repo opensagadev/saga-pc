@@ -275,11 +275,11 @@ void Shards_AddGizmos(GIZMOSYS *system, i32 type, WORLDINFO *world, void *unused
 }
 
 char *Shard_GetGizmoName(GIZMO *gizmo) {
-    return gizmo != NULL ? ((SHARD_s *)gizmo->object)->name : NULL;
+    return gizmo != NULL ? gizmo->shard->name : NULL;
 }
 
 i32 Shard_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
-    return ((SHARD_s *)gizmo->object)->collected;
+    return gizmo->shard->collected;
 }
 
 char *Shard_OutputName = "Got";

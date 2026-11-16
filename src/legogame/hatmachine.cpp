@@ -299,11 +299,11 @@ extern "C" {
         if (gizmo == NULL || gizmo->object == NULL) {
             return NULL;
         }
-        return ((HATMACHINE *)gizmo->object)->name;
+        return gizmo->hat_machine->name;
     }
 
     static i32 HatMachine_GetOutput(GIZMO *gizmo, i32, i32) {
-        return (((HATMACHINE *)gizmo->object)->flags >> 1) & 1;
+        return (gizmo->hat_machine->flags >> 1) & 1;
     }
 
     static char *HatMachine_GetOutputName(GIZMO *, i32 output_index) {
@@ -385,7 +385,7 @@ extern "C" {
         if (gizmo == NULL || gizmo->object == NULL) {
             return;
         }
-        HATMACHINE *machine = (HATMACHINE *)gizmo->object;
+        HATMACHINE *machine = gizmo->hat_machine;
         const i32 was_visible = (machine->flags >> 2) & 1;
         machine->visible = visible != 0;
         if (machine->visible && was_visible == 0) {
@@ -494,7 +494,7 @@ extern "C" {
         if (gizmo == NULL || gizmo->object == NULL) {
             return;
         }
-        HATMACHINE *machine = (HATMACHINE *)gizmo->object;
+        HATMACHINE *machine = gizmo->hat_machine;
         machine->enabled = enabled != 0;
         if (enabled != 0) {
             HatMachine_Reset(machine);

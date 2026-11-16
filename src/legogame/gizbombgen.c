@@ -81,7 +81,7 @@ NUVEC *GizmoBombGen_GetPos(GIZMO *gizmo) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
     }
-    return &((GIZBOMBGEN_s *)gizmo->object)->position;
+    return &gizmo->bomb_generator->position;
 }
 
 void GizBombGens_SetResetFlag(void *world_ptr, void *data, void *progress) {
@@ -250,7 +250,7 @@ void GizBombGens_AddGizmos(GIZMOSYS *giz, i32 type, void *world, void *data) {
 
 char *GizmoBombGen_GetGizmoName(GIZMO *gizmo) {
     if (gizmo != NULL) {
-        return ((GIZBOMBGEN_s *)gizmo->object)->name;
+        return gizmo->bomb_generator->name;
     }
     return NULL;
 }
@@ -258,7 +258,7 @@ char *GizmoBombGen_GetGizmoName(GIZMO *gizmo) {
 i32 GizmoBombGen_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     (void)output;
     (void)mode;
-    return ((GIZBOMBGEN_s *)gizmo->object)->flags & 1;
+    return gizmo->bomb_generator->flags & 1;
 }
 
 char *GizmoBombGen_GetOutputName(GIZMO *gizmo, i32 output) {

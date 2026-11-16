@@ -430,7 +430,7 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
                                     continue;
                                 }
                             } else if (gizmo->type_id == obstacle_gizmotype_id) {
-                                if (((GIZOBSTACLE *)gizmo->object)->mode == OBSTACLE_TRIGGER_PUSH_ONLY) {
+                                if (gizmo->obstacle->mode == OBSTACLE_TRIGGER_PUSH_ONLY) {
                                     continue;
                                 }
                             } else if (gizmo->type_id == grapple_gizmotype_id) {

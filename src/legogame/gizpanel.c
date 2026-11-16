@@ -683,7 +683,7 @@ void GizPanel_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
 char *GizPanel_GetGizmoName(void *input) {
     GIZMO *gizmo = input;
     if (gizmo != NULL && gizmo->object != NULL) {
-        return ((PANEL_MOVEMENT *)gizmo->object)->name;
+        return gizmo->panel->name;
     }
     return NULL;
 }

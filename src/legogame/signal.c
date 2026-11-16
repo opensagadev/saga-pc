@@ -115,7 +115,7 @@ void Signal_SetGizmoVisibility(GIZMO *gizmo, i32 visible) {
 }
 
 NUVEC *Signal_GetPos(GIZMO *gizmo) {
-    SIGNAL_s *signal = gizmo != NULL ? (SIGNAL_s *)gizmo->object : NULL;
+    SIGNAL_s *signal = gizmo != NULL ? gizmo->signal : NULL;
     return signal != NULL ? &signal->position : NULL;
 }
 
@@ -334,7 +334,7 @@ void Signals_AddGizmos(void *system, i32 type_id, WORLDINFO *world, void *unused
 }
 
 char *Signal_GetGizmoName(GIZMO *gizmo) {
-    SIGNAL_s *signal = gizmo != NULL ? (SIGNAL_s *)gizmo->object : NULL;
+    SIGNAL_s *signal = gizmo != NULL ? gizmo->signal : NULL;
     return signal != NULL ? signal->name : NULL;
 }
 

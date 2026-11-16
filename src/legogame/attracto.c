@@ -313,11 +313,11 @@ void Attractos_AddGizmos(GIZMOSYS *system, i32 type, WORLDINFO *world, void *unu
 }
 
 char *Attracto_GetGizmoName(GIZMO *gizmo) {
-    return gizmo != NULL ? ((ATTRACTO *)gizmo->object)->name : NULL;
+    return gizmo != NULL ? gizmo->attracto->name : NULL;
 }
 
 i32 Attracto_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
-    return ((ATTRACTO *)gizmo->object)->filled;
+    return gizmo->attracto->filled;
 }
 
 char *Attracto_OutputName = "Filled";
@@ -375,7 +375,7 @@ NUVEC *Attracto_GetPos(GIZMO *gizmo) {
     if (gizmo == NULL) {
         return NULL;
     }
-    return &((ATTRACTO *)gizmo->object)->position;
+    return &gizmo->attracto->position;
 }
 
 void Attracto_GetPos_Top(ATTRACTO *attracto, NUVEC *position) {

@@ -133,7 +133,7 @@ void GizmoObstacle_Activate(GIZMO *ptr, i32 activate) {
 
 void GizmoObstacle_SetVisibility(GIZMO *ptr, i32 visibility) {
     GIZMO *gizmo = ptr;
-    GIZOBSTACLE *obstacle = gizmo ? (GIZOBSTACLE *)gizmo->object : NULL;
+    GIZOBSTACLE *obstacle = gizmo ? gizmo->obstacle : NULL;
     if (!obstacle) {
         return;
     }
@@ -142,7 +142,7 @@ void GizmoObstacle_SetVisibility(GIZMO *ptr, i32 visibility) {
 }
 
 NUVEC *GizmoObstacle_GetPos(GIZMO *gizmo) {
-    GIZOBSTACLE *obstacle = gizmo ? (GIZOBSTACLE *)gizmo->object : NULL;
+    GIZOBSTACLE *obstacle = gizmo ? gizmo->obstacle : NULL;
     return obstacle ? &obstacle->position : NULL;
 }
 

@@ -446,7 +446,7 @@ NUVEC *GizmoForce_GetPos(GIZMO *gizmo) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
     }
-    return &((GIZFORCE *)gizmo->object)->position;
+    return &gizmo->force->position;
 }
 
 static i32 ForceUpdateCentre(GIZFORCE *force, i32 frame_selection) {
@@ -780,7 +780,7 @@ void GizForces_AddGizmos(GIZMOSYS *giz, i32 type, void *world, void *data) {
 }
 
 char *GizmoForce_GetGizmoName(GIZMO *gizmo) {
-    return gizmo != NULL ? (char *)gizmo->object : NULL;
+    return gizmo != NULL ? gizmo->force->name : NULL;
 }
 
 i32 GizmoForce_GetOutput(GIZMO *gizmo, i32 output_index, i32 force_read) {
@@ -1204,7 +1204,7 @@ i32 GizForces_BoltHit(WORLDINFO *world, void *system_pointer, GAMEOBJECT *object
 
 GIZFORCE *GizForces_FindForce(WORLDINFO *world, char *name) {
     GIZMO *gizmo = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, name);
-    return gizmo != NULL ? (GIZFORCE *)gizmo->object : NULL;
+    return gizmo != NULL ? gizmo->force : NULL;
 }
 
 /* Studs the level's force objects release (TotalLevelCoinTally). */

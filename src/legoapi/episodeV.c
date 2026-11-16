@@ -852,7 +852,7 @@ void CloudCityTrapA_Update(WORLDINFO *world) {
         }
     }
     gizmo = LevGizmo[0];
-    if (gizmo != NULL && gizmo->object != NULL && ((GIZFORCE *)gizmo->object)->anim_set->state == GAMEANIMSET_STATE_AT_END) {
+    if (gizmo != NULL && gizmo->object != NULL && gizmo->force->anim_set->state == GAMEANIMSET_STATE_AT_END) {
         AIAntinodeCreateSingleFrame(&pos, 0.5f);
     }
 }

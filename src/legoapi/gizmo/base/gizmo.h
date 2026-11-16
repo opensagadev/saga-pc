@@ -11,11 +11,33 @@ struct bolt_s;
 struct gameobject_s;
 struct nuhspecial_s;
 
+/* The record of the gizmo's type, one member per type. */
 typedef struct gizmo_s { // size 0x8
-    void *object;        // 0x0
-    i16 unknown_04;      // 0x4
-    u8 type_id;          // 0x6
-    u8 unknown_07;       // 0x7
+
+    union { // size 0x4
+        void *object;
+        struct attracto_s *attracto;
+        struct security_door_record_s *security_door;
+        struct techno_s *techno;
+        struct HATMACHINE *hat_machine;
+        struct SIGNAL_s *signal;
+        struct SHARD_s *shard;
+        struct GIZBOMBGEN_s *bomb_generator;
+        struct LEDGE_s *ledge;
+        struct zipup_s *zipup;
+        struct TIGHTROPE_s *tightrope;
+        struct GIZMO_LEVER *lever;
+        struct panel_movement_s *panel;
+        struct gizforce_s *force;
+        struct gizobstacle_s *obstacle;
+        struct GIZBUILDIT *buildit;
+        struct level_script_process_s *script_process;
+        struct GIZMOBLOWUP *blowup;
+    }; // 0x0
+
+    i16 unknown_04; // 0x4
+    u8 type_id;     // 0x6
+    u8 unknown_07;  // 0x7
 } GIZMO;
 
 struct gizmoset_s;

@@ -2129,7 +2129,7 @@ i32 AI_GetOutput(void *input, i32 output, i32 mode) {
     (void)output;
     (void)mode;
     if (gizmo != NULL && gizmo->object != NULL) {
-        return (~(((LEVEL_SCRIPT_PROCESS *)gizmo->object)->processor.flags >> 1)) & 1;
+        return (~(gizmo->script_process->processor.flags >> 1)) & 1;
     }
     return 0;
 }

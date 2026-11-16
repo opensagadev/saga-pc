@@ -98,7 +98,7 @@ void PlayRadio(char *special_name, char *blowup_name, i32 play) {
                         if (gizmo == NULL) {
                             return;
                         }
-                        radio->blowup = (GIZMOBLOWUP *)gizmo->object;
+                        radio->blowup = gizmo->blowup;
                     } else if (special_name == NULL || NuSpecialFind(WORLD->current_gscn, &radio->special, special_name, 1) == 0) {
                         return;
                     }
