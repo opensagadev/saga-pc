@@ -190,7 +190,7 @@ extern "C" {
                     }
                     if (shape_count != 0) {
                         group_header->header.shape_count = (i16)shape_count;
-                        group_header->header.terrain_group = (i16)(*group_indices);
+                        group_header->header.terrain_group = *group_indices;
                         group_header = cursor;
                         cursor++;
                         shape_count = 0;
@@ -320,7 +320,7 @@ extern "C" {
                 }
                 if (shape_count != 0) {
                     group_header->header.shape_count = (i16)shape_count;
-                    group_header->header.terrain_group = (i16)(*platform_groups);
+                    group_header->header.terrain_group = *platform_groups;
                     group_header = cursor;
                     cursor++;
                     shape_count = 0;
@@ -1594,7 +1594,7 @@ i16 *NewScanHandelFull(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_ty
                 }
                 if (shape_count != 0) {
                     group_header->header.shape_count = (i16)shape_count;
-                    group_header->header.terrain_group = (i16)(*indices);
+                    group_header->header.terrain_group = *indices;
                     group_header = cursor;
                     cursor++;
                     shape_count = 0;
@@ -1809,7 +1809,7 @@ i16 *NewScanHandelFull(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_ty
             }
             if (shape_count != 0) {
                 group_header->header.shape_count = (i16)shape_count;
-                group_header->header.terrain_group = (i16)(*indices);
+                group_header->header.terrain_group = *indices;
                 group_header = cursor;
                 cursor++;
                 shape_count = 0;

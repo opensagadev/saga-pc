@@ -16535,9 +16535,9 @@ extern "C" {
             return;
         }
         if (special->special != NULL) {
-            ((NUINSTANCE *)NUSPECIAL_LEGACY_OF(special)->instance)->matrix.m30 = position->x;
-            ((NUINSTANCE *)NUSPECIAL_LEGACY_OF(special)->instance)->matrix.m31 = position->y;
-            ((NUINSTANCE *)NUSPECIAL_LEGACY_OF(special)->instance)->matrix.m32 = position->z;
+            NUSPECIAL_LEGACY_OF(special)->instance->matrix.m30 = position->x;
+            NUSPECIAL_LEGACY_OF(special)->instance->matrix.m31 = position->y;
+            NUSPECIAL_LEGACY_OF(special)->instance->matrix.m32 = position->z;
         } else {
             special->display_special->draw_matrix.m30 = position->x;
             special->display_special->draw_matrix.m31 = position->y;

@@ -920,7 +920,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                 }
                 if (shape_count != 0) {
                     group_header->header.shape_count = (i16)shape_count;
-                    group_header->header.terrain_group = (i16)(group_indices[cell_group]);
+                    group_header->header.terrain_group = group_indices[cell_group];
                     group_header = cursor;
                     cursor++;
                     shape_count = 0;
@@ -1194,7 +1194,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                 }
                 if (shape_count != 0) {
                     group_header->header.shape_count = (i16)shape_count;
-                    group_header->header.terrain_group = (i16)(*platform_groups);
+                    group_header->header.terrain_group = *platform_groups;
                     group_header = cursor;
                     cursor++;
                     shape_count = 0;
@@ -1240,7 +1240,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                 }
                 if (shape_count != 0) {
                     group_header->header.shape_count = (i16)shape_count;
-                    group_header->header.terrain_group = (i16)(*platform_groups);
+                    group_header->header.terrain_group = *platform_groups;
                     group_header = cursor;
                     cursor++;
                     shape_count = 0;
