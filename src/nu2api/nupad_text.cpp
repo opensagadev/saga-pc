@@ -186,7 +186,7 @@ i32 PC_INPUT_RUNTIME::ButtonName(i32 device, i32 button, char *destination, i32 
             }
             break;
         default:
-            NuStrCpy(destination, labels->unknown);
+            NuStrCpy(destination, labels->fallback_name);
             break;
     }
     if (close != 0) {
