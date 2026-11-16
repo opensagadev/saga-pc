@@ -3502,7 +3502,7 @@ address,symbol,size,ctype
 0x500a70,_CutSceneStreamHoldFrame,29,
 0x500a90,_instNuGCutSceneCharGetStartMtx,100,"i32 __cdecl (INSTNUGCUTSCENE *, char *, NUMTX *)"
 0x500b00,_CutCameraFixPtrs,132,
-0x00500b90,_NuGCutSceneUpdateMtx,87,"void (CUT_INSTANCE_LOAD *, NUMTX *)"
+0x00500b90,_NuGCutSceneUpdateMtx,87,"void (INSTNUGCUTSCENE *, NUMTX *)"
 0x500bf0,_CutCameraInstanceCreate,87,
 0x500c50,_CutCameraSysStart,43,"void (CUT_LOAD_CAMERA_INSTANCE *, CUT_LOAD_CAMERA_SYSTEM *) [private EDX/ESI]"
 0x500c80,_CutLocatorFixPtrs,207,
@@ -3566,7 +3566,7 @@ address,symbol,size,ctype
 0x5036a0,_CutSceneTriggerFixUp,142,
 0x503730,_CutTriggerInstanceCreate,63,
 0x503770,_CutSceneTriggerSysUpdate,127,
-0x5037f0,_CutTriggerSysStart,35,void (CUT_INSTANCE_LOAD *) [private EAX]
+0x5037f0,_CutTriggerSysStart,35,void (INSTNUGCUTSCENE *) [private EAX]
 0x503820,_CutSceneTriggerSysReset,124,
 0x5038a0,_instNuGCutSceneCalculateAverageCentre,282,
 0x5039c0,_instNuGCutSceneResetCleanUp,136,"void __cdecl (void *, void *, void *, void *, void *, void *, void *, void *)"

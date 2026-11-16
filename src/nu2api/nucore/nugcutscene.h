@@ -38,28 +38,91 @@ struct nuhspecial_s;
 #define NUGCUTSCENE_PLAY_STREAM_SKIP 0x400     /* skipping a streamed scene: CutSceneStreamSkip runs */
 #define NUGCUTSCENE_PLAY_CAMERA_CHANGED 0x1000 /* the camera state animation switched camera this update */
 
-typedef struct instnugcutscene_s {              // size 0xf8
-    struct instnugcutscene_s *next;             // 0x00
-    struct instnugcutscene_s *previous;         // 0x04
-    char name[16];                              // 0x08
-    NUMTX matrix;                               // 0x18
-    void *scene;                                // 0x58
-    u8 opaque_5c_88[0x2c];                      // 0x5c
-    u32 flags_88;                               // 0x88
-    u32 flags_8c;                               // 0x8c
-    f32 current_frame;                          // 0x90
-    f32 render_frame;                           // 0x94
-    f32 rate;                                   // 0x98
-    u8 opaque_9c_b0[0x14];                      // 0x9c
-    struct instnugcutscene_s *chained_instance; // 0xb0
-    i32 unknown_b4;                             // 0xb4
-    u8 opaque_b8_f8[0x40];                      // 0xb8
+typedef struct instnugcutscene_s {      // size 0xf8
+    struct instnugcutscene_s *next;     // 0x00
+    struct instnugcutscene_s *previous; // 0x04
+    char name[16];                      // 0x08
+    NUMTX matrix;                       // 0x18
+    CUT_SCENE_LOAD *scene;              // 0x58
+    CUT_SCENE_LOAD *saved_scene;        // 0x5c
+    NUVEC center;                       // 0x60
+    NUVEC bounds_min;                   // 0x6c
+    NUVEC bounds_max;                   // 0x78
+    f32 radius_squared;                 // 0x84
+
+    union { // size 0x4
+        u32 flags_88;
+
+        struct {                          // size 0x4
+            u32 flags_88_bits_0_12 : 13;  // 0x88:0
+            i32 repeat_count : 5;         // 0x88:13
+            u32 flags_88_bit_18 : 1;      // 0x88:18
+            u32 synchro : 8;              // 0x88:19
+            u32 flags_88_bit_27 : 1;      // 0x88:27
+            i32 active_stream_buffer : 1; // 0x88:28
+        };
+    }; // 0x88
+
+    union { // size 0x4
+        u32 flags_8c;
+
+        struct {                 // size 0x4
+            i32 skip_frames : 4; // 0x8c:0
+        };
+    }; // 0x8c
+
+    f32 current_frame;                                           // 0x90
+    f32 render_frame;                                            // 0x94
+    f32 rate;                                                    // 0x98
+    CUT_LOAD_CAMERA_INSTANCE *camera_instance;                   // 0x9c
+    CUT_LOAD_RIGID_INSTANCE_SYSTEM *rigid_instance;              // 0xa0
+    CUT_LOAD_CHARACTER_INSTANCE_SYSTEM *character_instance;      // 0xa4
+    struct cut_load_locator_instance_system_s *locator_instance; // 0xa8
+    CUT_LOAD_TRIGGER_INSTANCE *trigger_instance;                 // 0xac
+    struct instnugcutscene_s *chained_instance;                  // 0xb0
+    void (*end_callback)(struct instnugcutscene_s *);            // 0xb4
+    u32 unknown_b8;                                              // 0xb8
+
+    union { // size 0x8
+
+        struct {                   // size 0x8
+            void *stream_buffer_0; // 0xbc
+            void *stream_buffer_1; // 0xc0
+        };
+
+        void *stream_buffers[2];
+    }; // 0xbc
+
+    struct NUGSCN_s *scene_owner;                     // 0xc4
+    CUT_LOAD_TRIGGER_OWNER *extra_scene_owner;        // 0xc8
+    u8 unknown_cc[12];                                // 0xcc
+    u16 skip_countdown;                               // 0xd8
+    u8 unknown_da[5];                                 // 0xda
+    u8 stream_index;                                  // 0xdf
+    f32 accumulated_duration;                         // 0xe0
+    f32 elapsed;                                      // 0xe4
+    f32 alpha;                                        // 0xe8
+    void *pending_stream;                             // 0xec
+    u32 allocation_size;                              // 0xf0
+    struct instnugcutscene_s *queued_stream_instance; // 0xf4
 } INSTNUGCUTSCENE;
+
+/* A cut scene the defragmenter tracks (instNuGCutSceneAddCleanUpItem). */
+typedef struct cut_cleanup_entry_s { // size 0x10
+    void *handle;                    // 0x0
+    CUT_SCENE_LOAD *scene;           // 0x4
+    f32 accumulated_duration;        // 0x8
+    u8 flags;                        // 0xc
+    u8 unknown_0d[3];                // 0xd
+} CUT_CLEANUP_ENTRY;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     extern void (*UpdateLocatorVfxFn)(i32, NUMTX *);
+    extern CUT_CLEANUP_ENTRY *DefragCutSceneListBase;
+    extern INSTNUGCUTSCENE *(*DefragGetInstFn)(void *);
+    extern INSTNUGCUTSCENE *(*DefragCreateInstFn)(void *, CUT_SCENE_LOAD *, VARIPTR *);
     extern i32 (*TriggerLocatorVfxFn)(i32, NUMTX *);
     extern void (*NuCutSceneCharacterRender)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32);
     extern void (*NuCutSceneRigidPostRender)(void *, struct nuhspecial_s *, NUMTX *);

@@ -86,9 +86,8 @@ i32 FindTexAnimFromMtl(NUHGOBJ_EVAL *hierarchy, NUMTL *material) {
     return 0;
 }
 
-void instGetLookAtLocatorInfo(INSTNUGCUTSCENE *owner, CUT_LOOKAT_STATE *state) {
+void instGetLookAtLocatorInfo(INSTNUGCUTSCENE *instance, CUT_LOOKAT_STATE *state) {
     CUT_LOOKAT_LOCATOR_INFO *locator = state->locator;
-    CUT_INSTANCE_LOAD *instance = (CUT_INSTANCE_LOAD *)owner;
     CUT_SCENE_LOAD *scene;
     CUT_LOAD_CHARACTER_ANIMATION *animations;
     NUHGOBJ_EVAL *hierarchy;
@@ -111,7 +110,7 @@ void instGetLookAtLocatorInfo(INSTNUGCUTSCENE *owner, CUT_LOOKAT_STATE *state) {
     if (state->character == 0) {
         return;
     }
-    hierarchy = NuCutSceneGetHGObj(owner, state->character - 1);
+    hierarchy = NuCutSceneGetHGObj(instance, state->character - 1);
     state->hierarchy = hierarchy;
     if (hierarchy == NULL) {
         return;
@@ -307,7 +306,6 @@ typedef struct CUT_LOOKAT_MATERIAL_VALUES { // size 0x88
 static void CutSceneLocatorLookAtUpdate(CUT_LOAD_LOCATOR_INSTANCE *instance, CUT_LOAD_LOCATOR *locator, f32 frame, NUMTX *parent,
                                         INSTNUGCUTSCENE *owner) {
     CUT_LOOKAT_STATE *state;
-    CUT_INSTANCE_LOAD *owner_view = (CUT_INSTANCE_LOAD *)owner;
     NUHGOBJ_EVAL *hierarchy;
     CUT_LOOKAT_HIERARCHY *hierarchy_view;
     CUT_LOOKAT_MATERIAL_VALUES *eye_material;
@@ -362,8 +360,8 @@ static void CutSceneLocatorLookAtUpdate(CUT_LOAD_LOCATOR_INSTANCE *instance, CUT
     second = (i32)(values[4] < 0.0f ? (f64)values[4] - 0.5 : (f64)values[4] + 0.5);
     if (state->secondary_material != 0) {
         if (first != 0) {
-            character = &owner_view->scene->character_system->characters[state->character - 1];
-            character_instance = &owner_view->character_instance->characters[state->character - 1];
+            character = &owner->scene->character_system->characters[state->character - 1];
+            character_instance = &owner->character_instance->characters[state->character - 1];
             NuGCutCharAnimProcess((CUT_CHARACTER_GENERIC *)character, character_instance->frame_a, &character_matrix, &visible,
                                   &animation_index, &animation_rate, &blend, &start, &layers);
             if (visible == 0) {
@@ -414,12 +412,12 @@ static void CutSceneLocatorLookAtUpdate(CUT_LOAD_LOCATOR_INSTANCE *instance, CUT
         return;
     }
     if (second != 0) {
-        state->blend = (f32)((f64)owner_view->elapsed * 30.0 + state->blend);
+        state->blend = (f32)((f64)owner->elapsed * 30.0 + state->blend);
         if (state->blend > 3.0f) {
             state->blend = 3.0f;
         }
     } else {
-        state->blend = (f32)((f64)state->blend - (f64)owner_view->elapsed * 10.0);
+        state->blend = (f32)((f64)state->blend - (f64)owner->elapsed * 10.0);
         if (state->blend < 0.0f) {
             state->blend = 0.0f;
         }
@@ -455,7 +453,7 @@ void instNuGCutLocatorUpdate(INSTNUGCUTSCENE *owner, CUT_LOAD_LOCATOR_SYSTEM *sy
             CutSceneLocatorVfxUpdate(locator, system, instance, frame, parent);
         }
     } else if ((type->flags & CUTLOCATOR_SFX) != 0) {
-        if (NuCutSceneSFXUpdate != NULL && ((CUT_INSTANCE_LOAD *)owner)->rate != 0.0f) {
+        if (NuCutSceneSFXUpdate != NULL && owner->rate != 0.0f) {
             NuCutSceneSFXUpdate(system, instance, locator, frame, parent, paused);
         }
     } else if ((type->flags & CUTLOCATOR_LOOK_AT) != 0) {

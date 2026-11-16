@@ -16,33 +16,7 @@
 #include "nu2api/trigger.h"
 #include <stdio.h>
 
-typedef struct cut_scene_pre_end_s { // size 0xc
-    u8 unknown_00[8];                // 0x0
-    f32 duration;                    // 0x8
-} CUT_SCENE_PRE_END;
-
-typedef struct cut_camera_pre_end_s { // size 0xc
-    void *keys;                       // 0x0
-    u8 unknown_04[5];                 // 0x4
-    i8 camera_index;                  // 0x9
-    u8 unknown_0a;                    // 0xa
-    u8 key_count;                     // 0xb
-} CUT_CAMERA_PRE_END;
-
-typedef struct cut_instance_pre_end_s {  // size 0xa0
-    u8 unknown_00[0x58];                 // 0x00
-    CUT_SCENE_PRE_END *scene;            // 0x58
-    u8 unknown_5c[0x2c];                 // 0x5c
-    u32 flags_88;                        // 0x88
-    u32 flags_8c;                        // 0x8c
-    f32 current_frame;                   // 0x90
-    f32 render_frame;                    // 0x94
-    u8 unknown_98[4];                    // 0x98
-    CUT_CAMERA_PRE_END *camera_instance; // 0x9c
-} CUT_INSTANCE_PRE_END;
-
-void instNuGCutSceneEndButNotSystems(INSTNUGCUTSCENE *owner) {
-    CUT_INSTANCE_PRE_END *instance = (CUT_INSTANCE_PRE_END *)owner;
+void instNuGCutSceneEndButNotSystems(INSTNUGCUTSCENE *instance) {
     instance->current_frame = instance->scene->duration;
     instance->render_frame = instance->scene->duration;
     instance->flags_8c &= ~NUGCUTSCENE_PLAY_HOLD_LAST_FRAME;
@@ -75,54 +49,25 @@ void fun_00500470(INSTNUGCUTSCENE *instance, INSTNUGCUTSCENE *chained) {
     instance->chained_instance = chained;
 }
 
-void fun_00500480(INSTNUGCUTSCENE *instance, i32 value) {
-    instance->unknown_b4 = value;
+void fun_00500480(INSTNUGCUTSCENE *instance, void (*end_callback)(INSTNUGCUTSCENE *)) {
+    instance->end_callback = end_callback;
 }
 
-void fun_00500490(INSTNUGCUTSCENE *owner, i32 count, VARIPTR *buffer) {
-    CUT_CAMERA_PRE_END *camera = ((CUT_INSTANCE_PRE_END *)owner)->camera_instance;
+void fun_00500490(INSTNUGCUTSCENE *instance, i32 count, VARIPTR *buffer) {
+    CUT_LOAD_CAMERA_INSTANCE *camera = instance->camera_instance;
     if (camera != NULL && count != 0) {
-        camera->key_count = count;
+        camera->target_capacity = count;
         buffer->addr = (buffer->addr + 15) & ~15;
-        camera->keys = buffer->void_ptr;
-        buffer->addr += count * 16;
-        memset(camera->keys, 0, count * 16);
+        camera->targets = buffer->void_ptr;
+        buffer->addr += count * sizeof(CUT_LOAD_CAMERA_TARGET);
+        memset(camera->targets, 0, count * sizeof(CUT_LOAD_CAMERA_TARGET));
     }
 }
 
 void fun_005004d0(void) {
 }
 
-typedef struct cut_average_rigid_system_s { // size 0x8
-    void *rigids;                           // 0x0
-    u16 count;                              // 0x4
-} CUT_AVERAGE_RIGID_SYSTEM;
-
-typedef struct cut_average_scene_s {        // size 0x18
-    u8 unknown_00[0x14];                    // 0x00
-    CUT_AVERAGE_RIGID_SYSTEM *rigid_system; // 0x14
-} CUT_AVERAGE_SCENE;
-
-typedef struct cut_average_rigid_s { // size 0x10
-    nuhspecial_s special;            // 0x0
-    u8 unknown_0c[4];                // 0xc
-} CUT_AVERAGE_RIGID;
-
-typedef struct cut_average_rigid_instance_s {
-    CUT_AVERAGE_RIGID *rigids;
-} CUT_AVERAGE_RIGID_INSTANCE;
-
-typedef struct cut_average_instance_s {         // size 0xa4
-    u8 unknown_00[0x58];                        // 0x00
-    CUT_AVERAGE_SCENE *scene;                   // 0x58
-    u8 unknown_5c[4];                           // 0x5c
-    NUVEC center;                               // 0x60
-    u8 unknown_6c[0x34];                        // 0x6c
-    CUT_AVERAGE_RIGID_INSTANCE *rigid_instance; // 0xa0
-} CUT_AVERAGE_INSTANCE;
-
-void instNuGCutSceneCalculateAverageCentre(INSTNUGCUTSCENE *owner, NUMTX *matrix, NUVEC *out) {
-    CUT_AVERAGE_INSTANCE *instance = (CUT_AVERAGE_INSTANCE *)owner;
+void instNuGCutSceneCalculateAverageCentre(INSTNUGCUTSCENE *instance, NUMTX *matrix, NUVEC *out) {
     f32 count = 0.0f;
     i32 i;
     out->x = 0.0f;
@@ -151,30 +96,6 @@ void instNuGCutSceneCalculateAverageCentre(INSTNUGCUTSCENE *owner, NUMTX *matrix
     }
 }
 
-typedef struct cut_memory_scene_s { // size 0x5c
-    u8 unknown_00[0x58];            // 0x00
-    u32 loaded_size;                // 0x58
-} CUT_MEMORY_SCENE;
-
-typedef struct cut_memory_instance_s { // size 0xf4
-    u8 unknown_00[0x58];               // 0x00
-    CUT_MEMORY_SCENE *scene;           // 0x58
-    u8 unknown_5c[0x2c];               // 0x5c
-    u32 flags_88;                      // 0x88
-    u8 unknown_8c[0x54];               // 0x8c
-    f32 accumulated_stream_duration;   // 0xe0
-    u8 unknown_e4[0xc];                // 0xe4
-    u32 allocation_size;               // 0xf0
-} CUT_MEMORY_INSTANCE;
-
-typedef struct cut_memory_entry_s { // size 0x10
-    void *handle;                   // 0x0
-    CUT_MEMORY_SCENE *scene;        // 0x4
-    f32 accumulated_duration;       // 0x8
-    u8 flags;                       // 0xc
-    u8 unknown_0d[3];               // 0xd
-} CUT_MEMORY_ENTRY;
-
 void *DefragCutSceneEndMem = NULL;
 void (*ReleaseLocatorVfxFn)(i32) = 0;
 NUVEC CutSceneFocusLocation = {0};
@@ -182,19 +103,18 @@ i32 DefragCutSceneListSize = 0;
 void *DefragCutSceneBaseMem = NULL;
 void *DefragInstBaseMem = NULL;
 void *DefragInstEndMem = NULL;
-CUT_MEMORY_ENTRY *DefragCutSceneListBase = NULL;
+CUT_CLEANUP_ENTRY *DefragCutSceneListBase = NULL;
 i32 (*TriggerLocatorVfxFn)(i32, NUMTX *) = 0;
-CUT_MEMORY_INSTANCE *(*DefragGetInstFn)(void *) = NULL;
-CUT_MEMORY_ENTRY *DefragCutSceneList = NULL;
-CUT_MEMORY_INSTANCE *(*DefragCreateInstFn)(void *, CUT_MEMORY_SCENE *, VARIPTR *) = NULL;
+INSTNUGCUTSCENE *(*DefragGetInstFn)(void *) = NULL;
+CUT_CLEANUP_ENTRY *DefragCutSceneList = NULL;
+INSTNUGCUTSCENE *(*DefragCreateInstFn)(void *, CUT_SCENE_LOAD *, VARIPTR *) = NULL;
 void (*UpdateLocatorVfxFn)(i32, NUMTX *) = 0;
 void (*DefragInstDestroyedFn)(void *) = NULL;
 
 void instNuGCutSceneResetCleanUp(void *list_storage, void *cut_base, void *cut_end, void *inst_base, void *inst_end,
-                                 CUT_MEMORY_INSTANCE *(*get_inst)(void *),
-                                 CUT_MEMORY_INSTANCE *(*create_inst)(void *, CUT_MEMORY_SCENE *, VARIPTR *),
+                                 INSTNUGCUTSCENE *(*get_inst)(void *), INSTNUGCUTSCENE *(*create_inst)(void *, CUT_SCENE_LOAD *, VARIPTR *),
                                  void (*inst_destroyed)(void *)) {
-    DefragCutSceneList = (CUT_MEMORY_ENTRY *)(((u32)list_storage + 3) & ~3);
+    DefragCutSceneList = (CUT_CLEANUP_ENTRY *)(((u32)list_storage + 3) & ~3);
     DefragCutSceneListBase = DefragCutSceneList;
     DefragCutSceneBaseMem = cut_base;
     DefragCutSceneEndMem = cut_end;
@@ -213,15 +133,15 @@ void instNuGCutSceneResetCleanUp(void *list_storage, void *cut_base, void *cut_e
 }
 
 void instNuGCutSceneAddCleanUpItem(void *handle, i32 enabled) {
-    CUT_MEMORY_INSTANCE *instance = DefragGetInstFn(handle);
-    CUT_MEMORY_ENTRY *entry;
+    INSTNUGCUTSCENE *instance = DefragGetInstFn(handle);
+    CUT_CLEANUP_ENTRY *entry;
     if ((instance->flags_88 & NUGCUTSCENE_INST_PLAYING) != 0) {
         ((void (*)(void))CutSceneLoadDiagnostic)();
     }
     entry = DefragCutSceneList++;
     entry->handle = handle;
     entry->scene = instance->scene;
-    entry->accumulated_duration = instance->accumulated_stream_duration;
+    entry->accumulated_duration = instance->accumulated_duration;
     entry->flags = enabled ? 7 : 0;
     ++DefragCutSceneListSize;
 }
@@ -237,10 +157,10 @@ static void CutSceneSetPrimitiveColour(i32 colour) {
 }
 
 void DisplayCutSceneMemory(void) {
-    CUT_MEMORY_ENTRY *entry;
-    CUT_MEMORY_ENTRY *end;
-    CUT_MEMORY_INSTANCE *instance;
-    CUT_MEMORY_SCENE *scene;
+    CUT_CLEANUP_ENTRY *entry;
+    CUT_CLEANUP_ENTRY *end;
+    INSTNUGCUTSCENE *instance;
+    CUT_SCENE_LOAD *scene;
     u32 start;
     u32 finish;
     f32 scale;
