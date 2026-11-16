@@ -305,9 +305,9 @@ extern "C" {
             buffer_end = buffer->addr;
             start_anchor = &buffer_start;
             end_anchor = &buffer_end;
-            unknown_14 = 0;
+            allocated_bytes = 0;
             size = *end_anchor - *start_anchor;
-            unknown_10 = 0;
+            last_end = 0;
             memset(free_lists, 0, sizeof(free_lists));
         }
 

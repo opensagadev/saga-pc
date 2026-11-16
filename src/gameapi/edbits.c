@@ -504,9 +504,9 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
         if (count <= 0) {
             continue;
         }
-        height_offset = GrassClumps[clump_index].unknown_44;
-        terrain_enabled = (i8)GrassClumps[clump_index].unknown_42;
-        slope_enabled = (i8)GrassClumps[clump_index].unknown_43;
+        height_offset = GrassClumps[clump_index].terrain_offset;
+        terrain_enabled = (i8)GrassClumps[clump_index].follow_terrain;
+        slope_enabled = (i8)GrassClumps[clump_index].follow_slope;
         if (GrassClumps[clump_index].kind == 1) {
             slope_enabled = 0;
         }
@@ -524,7 +524,7 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
                 sample->position.z =
                     IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element].position.z;
             } else {
-                switch ((i8)GrassClumps[clump_index].unknown_25) {
+                switch ((i8)GrassClumps[clump_index].area_shape) {
                     case 1: {
                         angle = NuRandIntSeeded(&seed) & 0xffff;
                         radius = NuRandFloatSeeded(&seed) * GrassClumps[clump_index].size;
@@ -589,39 +589,39 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
             sample->position.z += GrassClumps[clump_index].position.z;
             if (GrassClumps[clump_index].kind == 3) {
                 computed_scale =
-                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element].unknown_0c *
-                    (GrassClumps[clump_index].unknown_30 - GrassClumps[clump_index].unknown_2c);
-                sample->scale = computed_scale + GrassClumps[clump_index].unknown_2c;
+                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element].scale *
+                    (GrassClumps[clump_index].max_model_size - GrassClumps[clump_index].min_model_size);
+                sample->scale = computed_scale + GrassClumps[clump_index].min_model_size;
             } else {
-                switch ((i8)GrassClumps[clump_index].unknown_26) {
+                switch ((i8)GrassClumps[clump_index].distribution) {
                     case 1: {
                         random = (f32)(NuRandFloatSeeded(&seed) - 0.25);
                         computed_scale = (f32)(1.25 * sample->scale);
                         computed_scale = (f32)(((f64)1.2f - computed_scale) + random * random);
-                        sample->scale = (f32)(computed_scale / (f64)1.7625f * GrassClumps[clump_index].unknown_30);
-                        if (sample->scale < GrassClumps[clump_index].unknown_2c) {
-                            sample->scale = GrassClumps[clump_index].unknown_2c;
+                        sample->scale = (f32)(computed_scale / (f64)1.7625f * GrassClumps[clump_index].max_model_size);
+                        if (sample->scale < GrassClumps[clump_index].min_model_size) {
+                            sample->scale = GrassClumps[clump_index].min_model_size;
                         }
                         break;
                     }
                     case 2:
                         computed_scale =
-                            NuRandFloatSeeded(&seed) * (GrassClumps[clump_index].unknown_30 - GrassClumps[clump_index].unknown_2c);
-                        sample->scale = computed_scale + GrassClumps[clump_index].unknown_2c;
+                            NuRandFloatSeeded(&seed) * (GrassClumps[clump_index].max_model_size - GrassClumps[clump_index].min_model_size);
+                        sample->scale = computed_scale + GrassClumps[clump_index].min_model_size;
                         break;
                     case 3: {
                         limited = sample->scale < GrassClumps[clump_index].size ? sample->scale : GrassClumps[clump_index].size;
-                        computed_scale = (GrassClumps[clump_index].unknown_30 - GrassClumps[clump_index].unknown_2c) *
+                        computed_scale = (GrassClumps[clump_index].max_model_size - GrassClumps[clump_index].min_model_size) *
                                          (limited / GrassClumps[clump_index].size);
-                        sample->scale = GrassClumps[clump_index].unknown_30 - computed_scale;
+                        sample->scale = GrassClumps[clump_index].max_model_size - computed_scale;
                         break;
                     }
                     case 4: {
                         limited = sample->scale < GrassClumps[clump_index].size ? sample->scale : GrassClumps[clump_index].size;
                         angle = (i32)(-(limited / GrassClumps[clump_index].size) * 16384.0);
                         computed_scale = NuTrigTable[((0x4000 - angle) >> 1) & 0x7fff] *
-                                         (GrassClumps[clump_index].unknown_30 - GrassClumps[clump_index].unknown_2c);
-                        sample->scale = computed_scale + GrassClumps[clump_index].unknown_2c;
+                                         (GrassClumps[clump_index].max_model_size - GrassClumps[clump_index].min_model_size);
+                        sample->scale = computed_scale + GrassClumps[clump_index].min_model_size;
                         break;
                     }
                 }
@@ -643,10 +643,10 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
                 NuMtxSetIdentity(current_matrix);
                 NuMtxRotateZ(
                     current_matrix,
-                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element].unknown_10);
+                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element].rotation_z);
                 NuMtxRotateY(
                     current_matrix,
-                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element].unknown_12);
+                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element].rotation_y);
                 if (slope_enabled) {
                     NuMtxRotateZ(current_matrix, (i32)GrassClumps[clump_index].vector_buffer[element].z);
                     NuMtxRotateX(current_matrix, (i32)GrassClumps[clump_index].vector_buffer[element].x);
@@ -672,7 +672,7 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
                 }
                 NuMtxTranslate(current_matrix, &position);
                 if (GrassClumps[clump_index].kind == 1) {
-                    current_matrix->m33 = GrassClumps[clump_index].unknown_18 * sample->scale;
+                    current_matrix->m33 = GrassClumps[clump_index].wind * sample->scale;
                 }
             }
         }
@@ -807,7 +807,7 @@ void edgracbInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     edgra_instance_menu->x = parent->x + 10;
     edgra_instance_menu->y = parent->y + 40;
     if (selected_found) {
-        edgra_instance_menu->unknown_0c = edgra_instance_menu->selected;
+        edgra_instance_menu->first_visible = edgra_instance_menu->selected;
     }
 }
 

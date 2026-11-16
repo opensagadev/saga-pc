@@ -20,9 +20,9 @@ void *memorymanager_s::AllocPool(u32 size, i32 clear) {
             fresh = reinterpret_cast<void *>(*start_anchor);
             *start_anchor += block;
             memset(fresh, 0, block);
-            unknown_14 += block;
+            allocated_bytes += block;
             this->size -= block;
-            unknown_10 = *start_anchor;
+            last_end = *start_anchor;
         }
         return fresh;
     }

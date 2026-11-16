@@ -2343,8 +2343,7 @@ void BlendRootFn(NUMTX *matrix, void *data, NUVEC *source_root, NUVEC *target_ro
     }
     NuVecLerp(&object->animation_root_delta, &target_motion, &source_motion, blend);
 
-    if (((source_config->flags & 0x200) != 0 || (target_config->flags & 0x200) != 0) &&
-        object->animation_root_delta.y == 0.0f) {
+    if (((source_config->flags & 0x200) != 0 || (target_config->flags & 0x200) != 0) && object->animation_root_delta.y == 0.0f) {
         object->animation_root_delta.y = 1.0e-11f;
     } else if (object->animation_root_delta.x == 0.0f && object->animation_root_delta.y == 0.0f && object->animation_root_delta.z == 0.0f) {
         object->animation_root_delta.x = 1.0e-11f;

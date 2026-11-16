@@ -254,7 +254,7 @@ i32 edanimLoadPage(char *path, NUGSCN *scene) {
         AnimParams[slot].control_mode = EdFileReadInt();
         AnimParams[slot].control_switch = EdFileReadInt();
         AnimParams[slot].control_distance = EdFileReadFloat();
-        AnimParams[slot].unknown_018 = EdFileReadFloat();
+        AnimParams[slot].switch_delay = EdFileReadFloat();
         extra = 0;
         if (AnimParams[slot].effect_count > 8) {
             extra = 8 - AnimParams[slot].effect_count;
@@ -295,7 +295,7 @@ i32 edanimLoadPage(char *path, NUGSCN *scene) {
                 EdFileReadShort();
             }
         }
-        AnimParams[slot].unknown_17c = 0.99f;
+        AnimParams[slot].previous_time = 0.99f;
         extra = 0;
         if (version >= 2) {
             if (AnimParams[slot].sound_count > 8) {

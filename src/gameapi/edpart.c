@@ -214,12 +214,18 @@ void edpartInstanceOrientMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2
     if (edpart_instorient_menu == NULL) {
         return;
     }
-    edpartAddOrientSlider(0, edpart_nearest_type->rotation, edpartChangeInstanceRot, edpart_superscale * -180.0f, edpart_superscale * 360.0f, "Base Rotation X");
-    edpartAddOrientSlider(1, edpart_nearest_type->rotation, edpartChangeInstanceRot, edpart_superscale * -180.0f, edpart_superscale * 360.0f, "Base Rotation Y");
-    edpartAddOrientSlider(2, edpart_nearest_type->rotation, edpartChangeInstanceRot, edpart_superscale * -180.0f, edpart_superscale * 360.0f, "Base Rotation Z");
-    edpartAddOrientSlider(0, edpart_nearest_type->rotation_random, edpartChangeInstanceVarRot, 0.0f, edpart_superscale * 180.0f, "Rotation Variation X");
-    edpartAddOrientSlider(1, edpart_nearest_type->rotation_random, edpartChangeInstanceVarRot, 0.0f, edpart_superscale * 180.0f, "Rotation Variation Y");
-    edpartAddOrientSlider(2, edpart_nearest_type->rotation_random, edpartChangeInstanceVarRot, 0.0f, edpart_superscale * 180.0f, "Rotation Variation Z");
+    edpartAddOrientSlider(0, edpart_nearest_type->rotation, edpartChangeInstanceRot, edpart_superscale * -180.0f,
+                          edpart_superscale * 360.0f, "Base Rotation X");
+    edpartAddOrientSlider(1, edpart_nearest_type->rotation, edpartChangeInstanceRot, edpart_superscale * -180.0f,
+                          edpart_superscale * 360.0f, "Base Rotation Y");
+    edpartAddOrientSlider(2, edpart_nearest_type->rotation, edpartChangeInstanceRot, edpart_superscale * -180.0f,
+                          edpart_superscale * 360.0f, "Base Rotation Z");
+    edpartAddOrientSlider(0, edpart_nearest_type->rotation_random, edpartChangeInstanceVarRot, 0.0f, edpart_superscale * 180.0f,
+                          "Rotation Variation X");
+    edpartAddOrientSlider(1, edpart_nearest_type->rotation_random, edpartChangeInstanceVarRot, 0.0f, edpart_superscale * 180.0f,
+                          "Rotation Variation Y");
+    edpartAddOrientSlider(2, edpart_nearest_type->rotation_random, edpartChangeInstanceVarRot, 0.0f, edpart_superscale * 180.0f,
+                          "Rotation Variation Z");
     eduiMenuAttach(menu, edpart_instorient_menu);
     edpart_instorient_menu->x = menu->x + 10;
     edpart_instorient_menu->y = menu->y + 40;
@@ -409,8 +415,7 @@ void edpartLevelTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     for (index = 0; index < 128; ++index) {
         if (part_types[index].name[0] != 0 && part_types[index].unknown_b3 == 1) {
             selected = edpart_create_type == index;
-            eduiMenuAddItem(edpart_leveltype_menu,
-                            eduiItemCheckCreate(index, edblack, selected, 1, edpartSelType, part_types[index].name));
+            eduiMenuAddItem(edpart_leveltype_menu, eduiItemCheckCreate(index, edblack, selected, 1, edpartSelType, part_types[index].name));
             if (selected == 1) {
                 edpart_leveltype_menu->selected = edui_last_item;
             }
@@ -574,7 +579,6 @@ void edpartGravMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 }
 
 extern i32 edpart_nearest_duplicates;
-
 
 /* Removes variant FIRST from the nearest type, shifting the later variants down. */
 static void edpartRemoveVariant(i32 first) {
@@ -1082,7 +1086,6 @@ void fun_0064a430(void) {
 
 extern struct eduimenu_s *edpart_sscale_menu;
 
-
 /* Marks every emitter of the nearest emitter's effect that has an active sound. The inner loop tests the
  * emitter index, not the sound index. */
 static void edpartRefreshEmitterSounds(void) {
@@ -1172,13 +1175,13 @@ void edpartCancelSoundControlMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edpart_soundcontrol_menu = NULL;
 }
 
-
 const char dat_0076b274[4] = "Off";
 
 /* Adds the check item for sound MODE of sound slot SLOT, selected when it is the slot's current mode. */
 static void edpartAddSoundControlItem(i32 slot, i32 mode, char *label) {
-    eduiMenuAddItem(edpart_soundcontrol_menu, eduiItemCheckCreate((slot << 16) + mode, edblack, edpart_nearest_type->sound_modes[slot] == mode, 1,
-                                                                  edpartSetSoundControl, label));
+    eduiMenuAddItem(
+        edpart_soundcontrol_menu,
+        eduiItemCheckCreate((slot << 16) + mode, edblack, edpart_nearest_type->sound_modes[slot] == mode, 1, edpartSetSoundControl, label));
     if (edui_last_item->highlighted) {
         edpart_soundcontrol_menu->selected = edui_last_item;
     }

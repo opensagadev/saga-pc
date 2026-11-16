@@ -418,9 +418,9 @@ void RTLHelper::PreLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {
             fresh = reinterpret_cast<RTL_SET *>(*manager->start_anchor);
             *manager->start_anchor += RTL_EDITOR_SET_SIZE;
             memset(fresh, 0, RTL_EDITOR_SET_SIZE);
-            manager->unknown_14 += RTL_EDITOR_SET_SIZE;
+            manager->allocated_bytes += RTL_EDITOR_SET_SIZE;
             manager->size -= RTL_EDITOR_SET_SIZE;
-            manager->unknown_10 = *manager->start_anchor;
+            manager->last_end = *manager->start_anchor;
         }
         set = fresh;
         RTL_SET_INDEX(set)->enabled = 0;

@@ -220,12 +220,12 @@ i32 edbriLoadPage(char *path, void *scene) {
             edBridges[index].instance_id = -1;
             EdFileReadNuVec(&edBridges[index].position);
             edBridges[index].length = EdFileReadFloat();
-            edBridges[index].unknown_14 = EdFileReadFloat();
+            edBridges[index].width = EdFileReadFloat();
             edBridges[index].rotation_z = EdFileReadShort();
             edBridges[index].rotation_y = EdFileReadShort();
             edBridges[index].connection_index = page;
-            edBridges[index].unknown_1d = EdFileReadChar();
-            edBridges[index].unknown_1e = EdFileReadChar();
+            edBridges[index].plank_count = EdFileReadChar();
+            edBridges[index].post_interval = EdFileReadChar();
             EdFileRead(name, sizeof(name));
             if (name[0] == '\0') {
                 edBridges[index].special_20 = -1;
@@ -238,16 +238,16 @@ i32 edbriLoadPage(char *path, void *scene) {
             } else {
                 edBridges[index].special_24 = edbitsLookupInstance(name, scene);
             }
-            edBridges[index].unknown_28 = EdFileReadFloat();
-            edBridges[index].unknown_2c = EdFileReadFloat();
-            edBridges[index].unknown_30 = EdFileReadFloat();
-            edBridges[index].unknown_34 = EdFileReadFloat();
-            edBridges[index].unknown_38 = EdFileReadFloat();
-            edBridges[index].unknown_3c = EdFileReadFloat();
+            edBridges[index].tension = EdFileReadFloat();
+            edBridges[index].damping = EdFileReadFloat();
+            edBridges[index].gravity = EdFileReadFloat();
+            edBridges[index].player_weight = EdFileReadFloat();
+            edBridges[index].rope_height = EdFileReadFloat();
+            edBridges[index].stability = EdFileReadFloat();
             edBridges[index].red = (u8)EdFileReadChar();
             edBridges[index].green = (u8)EdFileReadChar();
             edBridges[index].blue = (u8)EdFileReadChar();
-            edBridges[index].unknown_43 = (u8)EdFileReadChar();
+            edBridges[index].alpha = (u8)EdFileReadChar();
             ++edbri_bridges_used;
         }
     }
@@ -286,9 +286,9 @@ void edbriBridgeUpdate(i32 index, NUGSCN *scene) {
         NuGScnGetSpecial(&second, edbits_base_scene, edBridges[index].special_24);
     }
     edBridges[index].instance_id = NuBridgeCreate(
-        scene, &first, &second, &edBridges[index].position, &end, edBridges[index].unknown_3c, edBridges[index].rotation_y,
-        edBridges[index].unknown_28, edBridges[index].unknown_2c, edBridges[index].unknown_30, edBridges[index].unknown_34,
-        edBridges[index].unknown_1d, edBridges[index].unknown_14, edBridges[index].unknown_38, edBridges[index].unknown_1e, colour);
+        scene, &first, &second, &edBridges[index].position, &end, edBridges[index].stability, edBridges[index].rotation_y,
+        edBridges[index].tension, edBridges[index].damping, edBridges[index].gravity, edBridges[index].player_weight,
+        edBridges[index].plank_count, edBridges[index].width, edBridges[index].rope_height, edBridges[index].post_interval, colour);
 }
 
 f32 edbri_length = 1.0f;
@@ -303,9 +303,9 @@ void edbriBridgePlace(i32 index, NUVEC *position) {
     edBridges[index].rotation_z = edbri_rotz;
     edBridges[index].rotation_y = edbri_roty;
     edBridges[index].length = edbri_length;
-    edBridges[index].unknown_14 = edbri_width;
-    edBridges[index].unknown_1d = edbri_planks;
-    edBridges[index].unknown_1e = edbri_post_interval;
+    edBridges[index].width = edbri_width;
+    edBridges[index].plank_count = edbri_planks;
+    edBridges[index].post_interval = edbri_post_interval;
     edBridges[index].special_20 = edbri_plank_instance_type;
     edBridges[index].special_24 = edbri_post_instance_type;
     edbriBridgeUpdate(index, edbits_base_scene);
@@ -387,32 +387,32 @@ static void edbricbRopeColourMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 u
 }
 
 void edbricbSetBridgeTension(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    edBridges[edbri_nearest].unknown_28 = ((edui_slider_s *)(item))->value;
+    edBridges[edbri_nearest].tension = ((edui_slider_s *)(item))->value;
     edbriBridgeUpdate(edbri_nearest, edbits_base_scene);
 }
 
 void edbricbSetBridgeDamp(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    edBridges[edbri_nearest].unknown_2c = ((edui_slider_s *)(item))->value;
+    edBridges[edbri_nearest].damping = ((edui_slider_s *)(item))->value;
     edbriBridgeUpdate(edbri_nearest, edbits_base_scene);
 }
 
 void edbricbSetBridgeGravity(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    edBridges[edbri_nearest].unknown_30 = ((edui_slider_s *)(item))->value;
+    edBridges[edbri_nearest].gravity = ((edui_slider_s *)(item))->value;
     edbriBridgeUpdate(edbri_nearest, edbits_base_scene);
 }
 
 void edbricbSetBridgePlrweight(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    edBridges[edbri_nearest].unknown_34 = ((edui_slider_s *)(item))->value;
+    edBridges[edbri_nearest].player_weight = ((edui_slider_s *)(item))->value;
     edbriBridgeUpdate(edbri_nearest, edbits_base_scene);
 }
 
 void edbricbSetBridgeRopeheight(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    edBridges[edbri_nearest].unknown_38 = ((edui_slider_s *)(item))->value;
+    edBridges[edbri_nearest].rope_height = ((edui_slider_s *)(item))->value;
     edbriBridgeUpdate(edbri_nearest, edbits_base_scene);
 }
 
 void edbricbSetBridgeStability(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    edBridges[edbri_nearest].unknown_3c = ((edui_slider_s *)(item))->value;
+    edBridges[edbri_nearest].stability = ((edui_slider_s *)(item))->value;
     edbriBridgeUpdate(edbri_nearest, edbits_base_scene);
 }
 
@@ -424,18 +424,18 @@ static void edbricbBridgePropertiesMenu(eduimenu_s *parent, eduiitem_s *unused1,
     if (!edbri_bridgeproperties_menu) {
         return;
     }
-    eduiMenuAddItem(edbri_bridgeproperties_menu, eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeTension, 0.0f, 1.0f,
-                                                                      edBridges[edbri_nearest].unknown_28, "Tension"));
     eduiMenuAddItem(edbri_bridgeproperties_menu,
-                    eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeDamp, 0.0f, 1.0f, edBridges[edbri_nearest].unknown_2c, "Damp"));
-    eduiMenuAddItem(edbri_bridgeproperties_menu, eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeGravity, -0.1f, 0.2f,
-                                                                      edBridges[edbri_nearest].unknown_30, "Gravity"));
+                    eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeTension, 0.0f, 1.0f, edBridges[edbri_nearest].tension, "Tension"));
+    eduiMenuAddItem(edbri_bridgeproperties_menu,
+                    eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeDamp, 0.0f, 1.0f, edBridges[edbri_nearest].damping, "Damp"));
+    eduiMenuAddItem(edbri_bridgeproperties_menu,
+                    eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeGravity, -0.1f, 0.2f, edBridges[edbri_nearest].gravity, "Gravity"));
     eduiMenuAddItem(edbri_bridgeproperties_menu, eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgePlrweight, 0.0f, 10.0f,
-                                                                      edBridges[edbri_nearest].unknown_34, "Plrweight"));
+                                                                      edBridges[edbri_nearest].player_weight, "Plrweight"));
     eduiMenuAddItem(edbri_bridgeproperties_menu, eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeRopeheight, 0.0f, 2.0f,
-                                                                      edBridges[edbri_nearest].unknown_38, "Rope Height"));
+                                                                      edBridges[edbri_nearest].rope_height, "Rope Height"));
     eduiMenuAddItem(edbri_bridgeproperties_menu, eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeStability, 0.0f, 10.0f,
-                                                                      edBridges[edbri_nearest].unknown_3c, "Stability"));
+                                                                      edBridges[edbri_nearest].stability, "Stability"));
     eduiMenuAddItem(edbri_bridgeproperties_menu, eduiItemSelCreate(1, edblack, 0, 0, edbricbRopeColourMenu, "Rope Colour..."));
     eduiMenuAttach(parent, edbri_bridgeproperties_menu);
     edbri_bridgeproperties_menu->x = parent->x + 10;
@@ -462,11 +462,11 @@ i32 edbriFileSave(char *path) {
             }
             EdFileWriteNuVec(&edBridges[i].position);
             EdFileWriteFloat(edBridges[i].length);
-            EdFileWriteFloat(edBridges[i].unknown_14);
+            EdFileWriteFloat(edBridges[i].width);
             EdFileWriteShort(edBridges[i].rotation_z);
             EdFileWriteShort(edBridges[i].rotation_y);
-            EdFileWriteChar(edBridges[i].unknown_1d);
-            EdFileWriteChar(edBridges[i].unknown_1e);
+            EdFileWriteChar(edBridges[i].plank_count);
+            EdFileWriteChar(edBridges[i].post_interval);
             if (edBridges[i].special_20 == -1) {
                 name[0] = 0;
             } else {
@@ -483,16 +483,16 @@ i32 edbriFileSave(char *path) {
             }
             name[19] = 0;
             EdFileWrite(name, 20);
-            EdFileWriteFloat(edBridges[i].unknown_28);
-            EdFileWriteFloat(edBridges[i].unknown_2c);
-            EdFileWriteFloat(edBridges[i].unknown_30);
-            EdFileWriteFloat(edBridges[i].unknown_34);
-            EdFileWriteFloat(edBridges[i].unknown_38);
-            EdFileWriteFloat(edBridges[i].unknown_3c);
+            EdFileWriteFloat(edBridges[i].tension);
+            EdFileWriteFloat(edBridges[i].damping);
+            EdFileWriteFloat(edBridges[i].gravity);
+            EdFileWriteFloat(edBridges[i].player_weight);
+            EdFileWriteFloat(edBridges[i].rope_height);
+            EdFileWriteFloat(edBridges[i].stability);
             EdFileWriteChar(edBridges[i].red);
             EdFileWriteChar(edBridges[i].green);
             EdFileWriteChar(edBridges[i].blue);
-            EdFileWriteChar(edBridges[i].unknown_43);
+            EdFileWriteChar(edBridges[i].alpha);
         }
         EdFileClose();
         return 1;
@@ -614,16 +614,16 @@ i32 edbriBridgeCreate(NUVEC *position) {
     }
     edBridges[index].connection_index = edbri_pageid;
     ++edbri_bridges_used;
-    edBridges[index].unknown_28 = 0.18f;
-    edBridges[index].unknown_2c = 0.1f;
-    edBridges[index].unknown_30 = -0.01f;
-    edBridges[index].unknown_34 = 4.0f;
-    edBridges[index].unknown_38 = 0.5f;
-    edBridges[index].unknown_3c = 0.5f;
+    edBridges[index].tension = 0.18f;
+    edBridges[index].damping = 0.1f;
+    edBridges[index].gravity = -0.01f;
+    edBridges[index].player_weight = 4.0f;
+    edBridges[index].rope_height = 0.5f;
+    edBridges[index].stability = 0.5f;
     edBridges[index].red = 0x50;
     edBridges[index].green = 0x50;
     edBridges[index].blue = 0x30;
-    edBridges[index].unknown_43 = 0x80;
+    edBridges[index].alpha = 0x80;
     edbri_page_used[edbri_pageid] = 1;
     edbri_page_scene[edbri_pageid] = edbits_base_scene;
     edbriBridgePlace(index, position);
@@ -689,9 +689,9 @@ void edbriDoInput(FRAME_PAD *pad) {
             edbri_rotz = edBridges[edbri_nearest].rotation_z;
             edbri_roty = edBridges[edbri_nearest].rotation_y;
             edbri_length = edBridges[edbri_nearest].length;
-            edbri_width = edBridges[edbri_nearest].unknown_14;
-            edbri_planks = edBridges[edbri_nearest].unknown_1d;
-            edbri_post_interval = edBridges[edbri_nearest].unknown_1e;
+            edbri_width = edBridges[edbri_nearest].width;
+            edbri_planks = edBridges[edbri_nearest].plank_count;
+            edbri_post_interval = edBridges[edbri_nearest].post_interval;
             edbri_plank_instance_type = edBridges[edbri_nearest].special_20;
             edbri_post_instance_type = edBridges[edbri_nearest].special_24;
         }

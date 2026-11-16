@@ -3392,8 +3392,7 @@ static void AISysCheckAntinode_Circle(APIOBJECT *object, AIANTINODE *antinode, N
         turn = NuAtan2D(difference->x, difference->z);
         turn = NuAngSub(turn, angle);
         if (object->ai->antinode_timer > 0.0f) {
-            if (((!object->ai->path_info.on_path && object->ai->path_info.was_on_path) ||
-                 object->respawn_timer > 1.0f) &&
+            if (((!object->ai->path_info.on_path && object->ai->path_info.was_on_path) || object->respawn_timer > 1.0f) &&
                 object->ai->antinode_timer < antinode_time) {
                 object->ai->antinode_clockwise = !object->ai->antinode_clockwise;
                 object->ai->antinode_timer = antinode_time + antinode_reverse_time;
@@ -3482,8 +3481,7 @@ static void AISysCheckAntinode_Ellipse(APIOBJECT *object, AIANTINODE *antinode, 
             turn = NuAtan2D(aspect * local_destination.x, local_destination.z);
             turn = NuAngSub(turn, object_angle);
             if (object->ai->antinode_timer > 0.0f) {
-                if (((!object->ai->path_info.on_path && object->ai->path_info.was_on_path) ||
-                     object->respawn_timer > 1.0f) &&
+                if (((!object->ai->path_info.on_path && object->ai->path_info.was_on_path) || object->respawn_timer > 1.0f) &&
                     object->ai->antinode_timer < antinode_time) {
                     object->ai->antinode_clockwise = !object->ai->antinode_clockwise;
                     object->ai->antinode_timer = antinode_time + antinode_reverse_time;
@@ -3560,8 +3558,7 @@ static void AISysCheckAntinode_Rectangle(APIOBJECT *object, AIANTINODE *antinode
         turn = NuAtan2D(local_destination.x, local_destination.z);
         turn = NuAngSub(turn, object_angle);
         if (object->ai->antinode_timer > 0.0f) {
-            if (((!object->ai->path_info.on_path && object->ai->path_info.was_on_path) ||
-                 object->respawn_timer > 1.0f) &&
+            if (((!object->ai->path_info.on_path && object->ai->path_info.was_on_path) || object->respawn_timer > 1.0f) &&
                 object->ai->antinode_timer < antinode_time) {
                 object->ai->antinode_clockwise = !object->ai->antinode_clockwise;
                 object->ai->antinode_timer = antinode_time + antinode_reverse_time;
@@ -3587,32 +3584,27 @@ static void AISysCheckAntinode_Rectangle(APIOBJECT *object, AIANTINODE *antinode
         if (angle > 0x8000 - corner_angle) {
             gradient.x = -1.0f;
             gradient.z = 0.0f;
-            object->ai->movement_position.x =
-                (object->ai->mover_height + antinode->base_radius) * NU_SIN_LUT(angle);
+            object->ai->movement_position.x = (object->ai->mover_height + antinode->base_radius) * NU_SIN_LUT(angle);
             object->ai->movement_position.z = -(object->ai->mover_height + antinode->base_height);
         } else if (angle > corner_angle) {
             gradient.x = 0.0f;
             gradient.z = -1.0f;
             object->ai->movement_position.x = object->ai->mover_height + antinode->base_radius;
-            object->ai->movement_position.z =
-                NU_COS_LUT(angle) * (object->ai->mover_height + antinode->base_height);
+            object->ai->movement_position.z = NU_COS_LUT(angle) * (object->ai->mover_height + antinode->base_height);
         } else if (angle > -corner_angle) {
             gradient.x = 1.0f;
             gradient.z = 0.0f;
-            object->ai->movement_position.x =
-                (object->ai->mover_height + antinode->base_radius) * NU_SIN_LUT(angle);
+            object->ai->movement_position.x = (object->ai->mover_height + antinode->base_radius) * NU_SIN_LUT(angle);
             object->ai->movement_position.z = object->ai->mover_height + antinode->base_height;
         } else if (angle > corner_angle - 0x8000) {
             gradient.x = 0.0f;
             gradient.z = 1.0f;
             object->ai->movement_position.x = -(object->ai->mover_height + antinode->base_radius);
-            object->ai->movement_position.z =
-                NU_COS_LUT(angle) * (object->ai->mover_height + antinode->base_height);
+            object->ai->movement_position.z = NU_COS_LUT(angle) * (object->ai->mover_height + antinode->base_height);
         } else {
             gradient.x = -1.0f;
             gradient.z = 0.0f;
-            object->ai->movement_position.x =
-                (object->ai->mover_height + antinode->base_radius) * NU_SIN_LUT(angle);
+            object->ai->movement_position.x = (object->ai->mover_height + antinode->base_radius) * NU_SIN_LUT(angle);
             object->ai->movement_position.z = -(object->ai->mover_height + antinode->base_height);
         }
         if (turn + turn_offset < 0) {
@@ -3758,8 +3750,7 @@ void AISysCreatureAntinodeInteraction(AISYS *system, i32 object_count, APIOBJECT
                         continue;
                     }
                     difference.z = object->ai->movement_position.z - antinode->position.z;
-                    if (difference.z > radius || difference.z < -radius ||
-                        object->collision_min.y > antinode->max_y) {
+                    if (difference.z > radius || difference.z < -radius || object->collision_min.y > antinode->max_y) {
                         continue;
                     }
                     /* An unordered min-height comparison continues to the callback. */
@@ -3821,8 +3812,7 @@ void AISysCreatureInteraction2D(AISYS *system, i32 object_count, APIOBJECT **obj
             if (difference.z > radius || difference.z < -radius) {
                 continue;
             }
-            if (first->collision_min.y > second->collision_max.y ||
-                second->collision_min.y > first->collision_max.y) {
+            if (first->collision_min.y > second->collision_max.y || second->collision_min.y > first->collision_max.y) {
                 continue;
             }
             distance = NuFsqrt(difference.x * difference.x + difference.z * difference.z);
@@ -3898,8 +3888,7 @@ void LEGO_AISysCreatureInteraction2D(AISYS *system, i32 object_count, APIOBJECT 
             if (difference.z > radius || difference.z < -radius) {
                 continue;
             }
-            if (first->collision_min.y > second->collision_max.y ||
-                second->collision_min.y > first->collision_max.y) {
+            if (first->collision_min.y > second->collision_max.y || second->collision_min.y > first->collision_max.y) {
                 continue;
             }
             if (first->collision_link == second || second->collision_link == first) {
@@ -9719,10 +9708,8 @@ eduimenu_s *antinodeEditor_DeleteAntinodeMenu(void) {
     if (aieditor->selected_antinode != NULL && aieditor->selected_antinode == aieditor->nearest_antinode) {
         menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorDeleteAntinodeCancel, "Delete Antinode??");
         if (menu != NULL) {
-            eduiMenuAddItem(menu,
-                            eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteAntinodeAnswer, (char *)NoText));
-            eduiMenuAddItem(menu,
-                            eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteAntinodeAnswer, (char *)YesText));
+            eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteAntinodeAnswer, (char *)NoText));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteAntinodeAnswer, (char *)YesText));
             return menu;
         }
     }
@@ -13340,8 +13327,8 @@ i32 aieditor_Proc(f32 menu_delta_time, FRAME_PAD *pad, f32 frame_delta_time, u32
     f32 distance;
     i32 hit;
     eduimenu_s *(*process)(FRAME_PAD *);
-    aieditor->pad_buttons = pad->digital_buttons;
-    aieditor->pad_pressed = pad->digital_buttons_pressed;
+    aieditor->buttons = pad->digital_buttons;
+    aieditor->buttons_pressed = pad->digital_buttons_pressed;
     if (aieditor->main_menu != NULL) {
         eduiMenuProcess(aieditor->main_menu, menu_delta_time, pad);
         return 0;
@@ -13474,7 +13461,7 @@ void areaEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     if (aieditor->hovered_area != NULL) {
         if (aieditor->selected_area == aieditor->hovered_area) {
             NuQFntPrintEx(system_qfont, text_x, y * 8, 16, "X - Move selected/Adjust size");
-            if (aieditor->pad_buttons & 0x40) {
+            if (aieditor->buttons & 0x40) {
                 if (aieditor->hovered_area->flags & 1) {
                     NuQFntPrintEx(system_qfont, text_x, (y + 15) * 8, 16, "LRIGHT/LLEFT - Adjust Radius");
                 } else {
@@ -13636,10 +13623,10 @@ void locatorEditor_cbDeleteLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 
         case 0:
             menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, NULL, "Delete current locator set?");
             if (menu != NULL) {
-                eduiMenuAddItem(
-                    menu, eduiItemSelCreate(2, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbDeleteLocatorSet, (char *)NoText));
-                eduiMenuAddItem(
-                    menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbDeleteLocatorSet, (char *)YesText));
+                eduiMenuAddItem(menu,
+                                eduiItemSelCreate(2, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbDeleteLocatorSet, (char *)NoText));
+                eduiMenuAddItem(menu,
+                                eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbDeleteLocatorSet, (char *)YesText));
                 eduiMenuAttach(parent, menu);
             }
             break;
@@ -13666,10 +13653,10 @@ void locatorEditor_cbEmptyLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 e
         case 0:
             menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, NULL, "Empty current locator set?");
             if (menu != NULL) {
-                eduiMenuAddItem(
-                    menu, eduiItemSelCreate(2, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbEmptyLocatorSet, (char *)NoText));
-                eduiMenuAddItem(
-                    menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbEmptyLocatorSet, (char *)YesText));
+                eduiMenuAddItem(menu,
+                                eduiItemSelCreate(2, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbEmptyLocatorSet, (char *)NoText));
+                eduiMenuAddItem(menu,
+                                eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbEmptyLocatorSet, (char *)YesText));
                 eduiMenuAttach(parent, menu);
             }
             break;
@@ -14748,15 +14735,15 @@ void antinodeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
         if (aieditor->selected_antinode->type == 0) {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, "LRIGHT - Increase radius, %.2f", aieditor->selected_antinode->radius);
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, "LLEFT - Decrease radius");
-        } else if (aieditor->pad_buttons & 0x40) {
+        } else if (aieditor->buttons & 0x40) {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, "LRIGHT - Increase X, %.2f", aieditor->selected_antinode->base_radius);
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, "LLEFT - Decrease X");
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 720, 16, "LUP - Increase Z, %.2f", aieditor->selected_antinode->base_height);
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 840, 16, "LDOWN - Decrease Z");
-        } else if (((i32)(aieditorsettings.display_options << 23) >> 31) && (aieditor->pad_buttons & 0x1000)) {
+        } else if (((i32)(aieditorsettings.display_options << 23) >> 31) && (aieditor->buttons & 0x1000)) {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, "L1 - Increase upper height");
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, "R1 - Decrease upper height");
-        } else if (((i32)(aieditorsettings.display_options << 23) >> 31) && (aieditor->pad_buttons & 0x4000)) {
+        } else if (((i32)(aieditorsettings.display_options << 23) >> 31) && (aieditor->buttons & 0x4000)) {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, "L1 - Increase lower height");
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, "R1 - Decrease lower height");
         } else {
@@ -16361,10 +16348,8 @@ eduimenu_s *locatorEditor_DeleteLocatorMenu(void) {
     if (aieditor->current_locator != NULL && aieditor->current_locator == aieditor->nearest_locator) {
         menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorDeleteLocatorCancel, "Delete locator??");
         if (menu != NULL) {
-            eduiMenuAddItem(menu,
-                            eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteLocatorSelection, (char *)NoText));
-            eduiMenuAddItem(menu,
-                            eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteLocatorSelection, (char *)YesText));
+            eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteLocatorSelection, (char *)NoText));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteLocatorSelection, (char *)YesText));
             return menu;
         }
     }
@@ -17155,10 +17140,10 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD *pad) {
             sprintf(title, "Add locators \"%s\" to set \"%s\"?", aieditor->pending_locator_name, aieditor->current_locator_set->name);
             menu = eduiMenuCreate(100, 70, 440, 270, ed_fnt, AiEditorMessageCloseMenu, title);
             if (menu != NULL) {
-                eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbAddLocatorsByNameYesNo,
-                                                        (char *)NoText));
-                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbAddLocatorsByNameYesNo,
-                                                        (char *)YesText));
+                eduiMenuAddItem(
+                    menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbAddLocatorsByNameYesNo, (char *)NoText));
+                eduiMenuAddItem(
+                    menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbAddLocatorsByNameYesNo, (char *)YesText));
                 return menu;
             }
         }

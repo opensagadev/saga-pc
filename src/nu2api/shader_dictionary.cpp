@@ -19,7 +19,7 @@ ShaderCompilerDictionary::ShaderCompilerDictionary(VirtualStackAllocator &parent
     definition_count = 0;
     register_block_count = 0;
     emit_definitions = 1;
-    unknown_965 = 0;
+    output_suppressed = 0;
     unknown_966 = 0;
     profile = PC_SHADER_MODEL_3_0;
     first_version = 8;
@@ -852,7 +852,7 @@ void ShaderCompilerDictionary::Expand(void *input, ShaderCompilerBufferAllocator
             }
             case SHADER_NODE_MACRO:
                 AddDefinition(node->data.definition.name, node->data.definition.value, 0);
-                if (unknown_965 == 0 && output != NULL) {
+                if (output_suppressed == 0 && output != NULL) {
                     const char *value = node->data.definition.value != NULL ? node->data.definition.value : "";
                     output->AppendText("#define ");
                     output->AppendText(node->data.definition.name);
@@ -901,7 +901,7 @@ void ShaderCompilerDictionary::Expand(void *input, ShaderCompilerBufferAllocator
                 break;
             }
             case SHADER_NODE_TOGGLE:
-                unknown_965 = node->data.toggle.enabled == 0;
+                output_suppressed = node->data.toggle.enabled == 0;
                 break;
             case SHADER_NODE_EMIT:
                 if (output != NULL) {

@@ -262,14 +262,14 @@ i32 DebAlloc(void) {
     debkeydata[slot].previous_allocated_chunk_count = 0;
     debkeydata[slot].previous_particle_count = 0;
     debkeydata[slot].controlled_chunk_count = 0;
-    debkeydata[slot].unknown_2f2 = -1;
+    debkeydata[slot].portal_room = -1;
     debkeydata[slot].gscene = NULL;
-    debkeydata[slot].unknown_2f4 = 1;
-    debkeydata[slot].unknown_2f6 = 1;
-    debkeydata[slot].unknown_2f7 = 1;
+    debkeydata[slot].status = 1;
+    debkeydata[slot].visible = 1;
+    debkeydata[slot].draw_enabled = 1;
     debkeydata[slot].user_data = NULL;
     debkeydata[slot].allocation_index = slot;
-    debkeydata[slot].unknown_2fa = 0;
+    debkeydata[slot].custom_facing = 0;
     return slot;
 }
 

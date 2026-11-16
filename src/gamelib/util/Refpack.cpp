@@ -12,9 +12,9 @@ void *memorymanager_s::AllocLinear(u32 bytes, u32 alignment, i32 clear) {
         if (clear) {
             memset(memory, 0, bytes);
         }
-        unknown_14 += bytes;
+        allocated_bytes += bytes;
         size -= bytes;
-        unknown_10 = *start_anchor;
+        last_end = *start_anchor;
     }
     return memory;
 }

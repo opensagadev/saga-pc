@@ -67,9 +67,9 @@ ThingManager::ThingManager(i32 max_things) {
         array = (void *)*memory->start_anchor;
         *memory->start_anchor += bytes;
         memset(array, 0, bytes);
-        memory->unknown_14 += bytes;
+        memory->allocated_bytes += bytes;
         memory->size -= bytes;
-        memory->unknown_10 = *memory->start_anchor;
+        memory->last_end = *memory->start_anchor;
     }
     things = static_cast<BaseThing **>(array);
     this->max_things = max_things;

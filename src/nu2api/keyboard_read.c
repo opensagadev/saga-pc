@@ -73,22 +73,22 @@ i32 cbInteractMenuTitle(edui_interact_s *interact) {
 
 i32 cbInteractMenuScrollUp(edui_interact_s *interact) {
     eduimenu_s *menu = interact->menu;
-    if (menu->unknown_0c) {
-        if (menu->unknown_0c->previous) {
-            menu->unknown_0c = menu->unknown_0c->previous;
+    if (menu->first_visible) {
+        if (menu->first_visible->previous) {
+            menu->first_visible = menu->first_visible->previous;
         }
-        menu->selected = menu->unknown_0c;
+        menu->selected = menu->first_visible;
     }
     return 0;
 }
 
 i32 cbInteractMenuScrollDown(edui_interact_s *interact) {
     eduimenu_s *menu = interact->menu;
-    if (menu->unknown_10) {
-        if (menu->unknown_10->next) {
-            menu->unknown_10 = menu->unknown_10->next;
+    if (menu->last_visible) {
+        if (menu->last_visible->next) {
+            menu->last_visible = menu->last_visible->next;
         }
-        menu->selected = menu->unknown_10;
+        menu->selected = menu->last_visible;
     }
     return 0;
 }

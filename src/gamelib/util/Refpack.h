@@ -7,8 +7,8 @@ typedef struct memorymanager_s { // size 0x248
     u32 buffer_end;              // 0x004
     u32 *start_anchor;           // 0x008
     u32 *end_anchor;             // 0x00c
-    u32 unknown_10;              // 0x010
-    u32 unknown_14;              // 0x014
+    u32 last_end;                // 0x010
+    u32 allocated_bytes;         // 0x014
     u32 size;                    // 0x018
     void *free_lists[139];       // 0x01c
 #ifdef __cplusplus

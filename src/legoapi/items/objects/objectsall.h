@@ -50,9 +50,9 @@ typedef struct parttype_lookup_s { // size 0x178
     u8 sound_modes[4];             // 0x158
     f32 maximum_distance;          // 0x15c
     NUVEC lighting_scale;          // 0x160
-    f32 last_used_time;  // 0x16c
-    f32 scale;           // 0x170
-    u32 source_type;     // 0x174: the type a scaled copy was made from
+    f32 last_used_time;            // 0x16c
+    f32 scale;                     // 0x170
+    u32 source_type;               // 0x174: the type a scaled copy was made from
 } PARTTYPE_LOOKUP;
 
 typedef struct partdebrisentry_s { // size 0x14

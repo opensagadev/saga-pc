@@ -783,7 +783,7 @@ static void EduiAddInteraction(f32 x, f32 y, f32 width, f32 height, eduimenu_s *
         eduiInteracts[numInteracts].item = item;
         eduiInteracts[numInteracts].callback = callback;
         eduiInteracts[numInteracts].buttons = buttons;
-        eduiInteracts[numInteracts].unknown_20 = unknown_20;
+        eduiInteracts[numInteracts].needs_debounce = unknown_20;
         ++numInteracts;
     }
 }
@@ -857,7 +857,7 @@ extern "C" void eduiMenuRender(eduimenu_s *menu) {
         EduiPrintClippedText(edui_font, (x + 1) << 4, (y << 3) + baseline, 16, x << 4, menu->width << 4, menu->title);
         y += title_height;
     }
-    eduiitem_s *item = menu->unknown_0c;
+    eduiitem_s *item = menu->first_visible;
     if (item != NULL) {
         i32 find_selected = menu->selected != NULL;
         if (item != menu->first) {
@@ -881,7 +881,7 @@ extern "C" void eduiMenuRender(eduimenu_s *menu) {
             y += scroll_height;
         }
         while (item != NULL) {
-            menu->unknown_10 = item;
+            menu->last_visible = item;
             if (item == menu->selected) {
                 find_selected = 0;
             }
@@ -923,8 +923,8 @@ extern "C" void eduiMenuRender(eduimenu_s *menu) {
             }
             break;
         }
-        if (find_selected && menu->unknown_0c->next != NULL) {
-            menu->unknown_0c = menu->unknown_0c->next;
+        if (find_selected && menu->first_visible->next != NULL) {
+            menu->first_visible = menu->first_visible->next;
         }
     }
     if ((menu->flags & EDUI_MENU_HORIZONTAL) == 0) {
@@ -932,22 +932,22 @@ extern "C" void eduiMenuRender(eduimenu_s *menu) {
     } else {
         y += max_item_height;
     }
-    menu->unknown_24 = x - menu->x;
-    menu->unknown_28 = y - menu->y;
+    menu->drawn_width = x - menu->x;
+    menu->drawn_height = y - menu->y;
     if (active_menu == menu) {
         if (edui_donotdraw == 0) {
-            NuRndrLineRect2di((menu->x - 1) << 4, (menu->y << 3) - 8, (menu->unknown_24 + 2) << 4, (menu->unknown_28 << 3) + 16,
+            NuRndrLineRect2di((menu->x - 1) << 4, (menu->y << 3) - 8, (menu->drawn_width + 2) << 4, (menu->drawn_height << 3) + 16,
                               eduimenu_selected_outline_colour, uimtls[EduiSelectionMaterial]);
         }
     } else {
         if (edui_donotdraw == 0) {
-            NuRndrLineRect2di((menu->x - 1) << 4, (menu->y << 3) - 8, (menu->unknown_24 + 2) << 4, (menu->unknown_28 << 3) + 16,
+            NuRndrLineRect2di((menu->x - 1) << 4, (menu->y << 3) - 8, (menu->drawn_width + 2) << 4, (menu->drawn_height << 3) + 16,
                               eduimenu_outline_colour, uimtls[EduiSelectionMaterial]);
         }
     }
     if (menu->child != NULL) {
-        EduiAddInteraction((f32)menu->x, (f32)menu->y, (f32)menu->unknown_24, (f32)menu->unknown_28, menu, NULL, cbInteractMenuCancelChild,
-                           0x40, 1);
+        EduiAddInteraction((f32)menu->x, (f32)menu->y, (f32)menu->drawn_width, (f32)menu->drawn_height, menu, NULL,
+                           cbInteractMenuCancelChild, 0x40, 1);
         eduiMenuRender(menu->child);
     }
     NuQFntPopPrintMode();
@@ -1106,9 +1106,9 @@ extern "C" void CreateColourPicker(void) {
         item->previous = colourmenu->last;
         item->next = NULL;
         colourmenu->last = item;
-        colourmenu->unknown_0c = colourmenu->first;
+        colourmenu->first_visible = colourmenu->first;
         edui_last_item = item;
-        colourmenu->unknown_10 = NULL;
+        colourmenu->last_visible = NULL;
         cp_item = (edui_colour_pick_s *)item;
         cp_process = item->process;
         item->process = cbProcessColourPick;
@@ -1121,9 +1121,9 @@ extern "C" void CreateColourPicker(void) {
         item->previous = colourmenu->last;
         item->next = NULL;
         colourmenu->last = item;
-        colourmenu->unknown_0c = colourmenu->first;
+        colourmenu->first_visible = colourmenu->first;
         edui_last_item = item;
-        colourmenu->unknown_10 = NULL;
+        colourmenu->last_visible = NULL;
         cp_info = item;
         item = eduiItemSelCreate(1, colours, 0, 0, cbCopy, "Copy To Clipboard");
         if (colourmenu->last != NULL) {
@@ -1134,9 +1134,9 @@ extern "C" void CreateColourPicker(void) {
         item->previous = colourmenu->last;
         item->next = NULL;
         colourmenu->last = item;
-        colourmenu->unknown_0c = colourmenu->first;
+        colourmenu->first_visible = colourmenu->first;
         edui_last_item = item;
-        colourmenu->unknown_10 = NULL;
+        colourmenu->last_visible = NULL;
         cp_copy = item;
         item = eduiItemSelCreate(1, colours, 0, 0, cbPaste, "Paste From Clipboard");
         if (colourmenu->last != NULL) {
@@ -1147,9 +1147,9 @@ extern "C" void CreateColourPicker(void) {
         item->previous = colourmenu->last;
         item->next = NULL;
         colourmenu->last = item;
-        colourmenu->unknown_0c = colourmenu->first;
+        colourmenu->first_visible = colourmenu->first;
         edui_last_item = item;
-        colourmenu->unknown_10 = NULL;
+        colourmenu->last_visible = NULL;
         cp_paste = item;
     }
 }

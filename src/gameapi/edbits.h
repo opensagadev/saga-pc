@@ -17,25 +17,25 @@ extern "C" {
         i32 instance_id;         // 0x00
         NUVEC position;          // 0x04
         f32 length;              // 0x10
-        f32 unknown_14;          // 0x14
+        f32 width;               // 0x14
         i16 rotation_z;          // 0x18
         i16 rotation_y;          // 0x1a
         i8 connection_index;     // 0x1c
-        i8 unknown_1d;           // 0x1d
-        i8 unknown_1e;           // 0x1e
+        i8 plank_count;          // 0x1d
+        i8 post_interval;        // 0x1e
         u8 unknown_1f;           // 0x1f
         i32 special_20;          // 0x20
         i32 special_24;          // 0x24
-        f32 unknown_28;          // 0x28
-        f32 unknown_2c;          // 0x2c
-        f32 unknown_30;          // 0x30
-        f32 unknown_34;          // 0x34
-        f32 unknown_38;          // 0x38
-        f32 unknown_3c;          // 0x3c
+        f32 tension;             // 0x28
+        f32 damping;             // 0x2c
+        f32 gravity;             // 0x30
+        f32 player_weight;       // 0x34
+        f32 rope_height;         // 0x38
+        f32 stability;           // 0x3c
         u8 red;                  // 0x40
         u8 green;                // 0x41
         u8 blue;                 // 0x42
-        u8 unknown_43;           // 0x43
+        u8 alpha;                // 0x43
     } PC_EDBRIDGE;
 
     extern i32 edbri_bridges_used;

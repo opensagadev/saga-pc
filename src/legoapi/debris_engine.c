@@ -260,7 +260,7 @@ void DebReAlloc2(DEBRISKEY *key) {
                         ParticleChunkToRender[i].effect = effect;
                         ParticleChunkToRender[i].key = key;
                         ParticleChunkToRender[i].render_priority = key->render_priority;
-                        if (key->unknown_2f6 != 0) {
+                        if (key->visible != 0) {
                             AddChunkToRenderStack(&ParticleChunkToRender[i], &ParticleChunkRenderStack[effect->time_group]);
                         }
                         break;
@@ -293,7 +293,7 @@ void DebReAlloc2(DEBRISKEY *key) {
                         ParticleChunkToRender[i].effect = effect;
                         ParticleChunkToRender[i].key = key;
                         ParticleChunkToRender[i].render_priority = key->render_priority;
-                        if (key->unknown_2f6 != 0) {
+                        if (key->visible != 0) {
                             AddChunkToRenderStack(&ParticleChunkToRender[i], &ParticleChunkRenderStack[effect->time_group]);
                         }
                         break;
@@ -362,7 +362,7 @@ void DebReAlloc2(DEBRISKEY *key) {
                 ParticleChunkToRender[i].position.y = key->position.y;
                 ParticleChunkToRender[i].position.z = key->position.z;
                 ParticleChunkToRender[i].render_priority = key->render_priority;
-                if (key->unknown_2f6 != 0) {
+                if (key->visible != 0) {
                     AddChunkToRenderStack(&ParticleChunkToRender[i], &ParticleChunkRenderStack[debtab[key->effect_index]->time_group]);
                 }
                 break;
@@ -450,7 +450,7 @@ void DebFreeChunksInstantly(i32 *handle) {
     DebrisReleaseControlStackLock();
     for (i = 0; i < debrischunks + debrischunksglass; ++i) {
         if (ParticleChunkToRender[i].particle_chunk == debkeydata[*handle].particle_chunks[0]) {
-            if (debkeydata[*handle].unknown_2f6 != 0) {
+            if (debkeydata[*handle].visible != 0) {
                 RemoveChunkFromRenderStack(&ParticleChunkToRender[i], &ParticleChunkRenderStack[effect->time_group]);
             }
             ParticleChunkToRender[i].particle_chunk = NULL;
@@ -942,10 +942,10 @@ void DebrisProcessGeneration(void) {
         if (effect->status == 2) {
             key->finite = 1;
         }
-        if (key->unknown_2f4 == 0) {
+        if (key->status == 0) {
             key->finite = 0;
         }
-        if (key->unknown_2f4 == 2) {
+        if (key->status == 2) {
             key->finite = 1;
         }
         if (key->finite != 0 && key->previous_allocated_chunk_count == 0) {
@@ -981,7 +981,7 @@ void DebrisProcessGeneration(void) {
                         }
                     }
                     if (key->finite_count < 0 && ++key->finite_count == 0) {
-                        key->unknown_2f4 = 0;
+                        key->status = 0;
                         key->finite = 0;
                     }
                     if (key->process_collision_sound != 0 && key->finite != 0 && key->cutoff_distance < sound_range) {
@@ -1035,7 +1035,7 @@ void DebrisProcessGeneration(void) {
             emission_time += emission_interval;
         }
         if (key->finite == 0) {
-            if (key->unknown_2f4 != 0 && key->trigger_second == -1 && key->cutoff_distance >= effect->cut_on &&
+            if (key->status != 0 && key->trigger_second == -1 && key->cutoff_distance >= effect->cut_on &&
                 (effect->clip_extent == 0.0f || key->cutoff_distance <= effect->clip_extent) &&
                 (debris_render_group == 0 || key->render_group == 0 || key->render_group == debris_render_group) &&
                 ((i8)key->orientation_flags & debris_detail_level) != 0) {
@@ -1237,7 +1237,7 @@ void DebFreeAllCreatedEffects(void) {
     i32 i;
     for (i = 0; i < maxdebkeys; ++i) {
         DEBRISKEY *key = &debkeydata[i];
-        if (key->effect_index != 0 && key->unknown_2f9 != 0) {
+        if (key->effect_index != 0 && key->editor_flag != 0) {
             i32 handle = i;
             DebFreeInstantly(&handle);
         }
@@ -2253,18 +2253,18 @@ i32 DebrisGetConeProperties(i32 handle, NUVEC *origin, NUVEC *end, f32 *start_ra
 
 void DebrisStatusAlwaysOff(i32 *handle) {
     if (*handle != -1) {
-        debkeydata[*handle].unknown_2f4 = 0;
+        debkeydata[*handle].status = 0;
     }
 }
 
 void fun_006552e0(i32 *handle) {
     if (*handle != -1) {
-        debkeydata[*handle].unknown_2f4 = 2;
+        debkeydata[*handle].status = 2;
     }
 }
 
 void fun_00655300(i32 *handle) {
     if (*handle != -1) {
-        debkeydata[*handle].unknown_2f4 = 1;
+        debkeydata[*handle].status = 1;
     }
 }

@@ -610,7 +610,7 @@ void edpartDebrisIndexMenu(eduimenu_s *menu) {
     edpart_debrisindex_menu->x = menu->x + 10;
     edpart_debrisindex_menu->y = menu->y + 40;
     if (found) {
-        edpart_debrisindex_menu->unknown_0c = edpart_debrisindex_menu->selected;
+        edpart_debrisindex_menu->first_visible = edpart_debrisindex_menu->selected;
     }
 }
 
@@ -1619,7 +1619,7 @@ u16 DebrisQueryPriority(i32 effect_index) {
 
 void DebrisSetDrawFlag(i32 handle, i8 draw_flag) {
     if (handle != -1) {
-        debkeydata[handle].unknown_2f7 = draw_flag;
+        debkeydata[handle].draw_enabled = draw_flag;
     }
 }
 
@@ -1677,16 +1677,16 @@ void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
     debkeydata[key_index].emitter_momentum.x = 0.0f;
     debkeydata[key_index].emitter_momentum.y = 0.0f;
     debkeydata[key_index].emitter_momentum.z = 0.0f;
-    debkeydata[key_index].unknown_2f2 = -1;
+    debkeydata[key_index].portal_room = -1;
     debkeydata[key_index].orientation_flags = 7;
     debkeydata[key_index].gscene = NULL;
     debkeydata[key_index].orientation_dirty = 0.0f;
     debkeydata[key_index].cutoff_distance = 999999.0f;
     debkeydata[key_index].process_collision_sound = 0;
     debkeydata[key_index].last_update_time = now;
-    debkeydata[key_index].unknown_2f9 = 1;
+    debkeydata[key_index].editor_flag = 1;
     debkeydata[key_index].user_data = NULL;
-    debkeydata[key_index].unknown_2fa = 0;
+    debkeydata[key_index].custom_facing = 0;
     if (debkeydata[key_index].emission_end_time < now) {
         debkeydata[key_index].emission_epoch = debkeydata[key_index].emission_end_time;
     } else {
@@ -2243,7 +2243,7 @@ void DebrisDraw(i32 unused, i32 pass) {
                 key->cutoff_distance > effect->sound_range) {
                 visible = 0;
             }
-            if (key->unknown_2f7 == 0) {
+            if (key->draw_enabled == 0) {
                 visible = 0;
             }
             if (pass != 4 && visible && effect->generator_type == DEBRIS_GENERATOR_NORMAL && effect->use_explicit_clip_box == 0 &&
@@ -2253,8 +2253,8 @@ void DebrisDraw(i32 unused, i32 pass) {
                 if (key->clip_radius == 0.0f || *edbits_editor_enabled != 0) {
                     DebrisDrawCalculateClipBoxes(effect, key);
                 }
-                if (edbits_editmode == 0 && key->gscene != NULL && key->unknown_2f2 != -1) {
-                    if (NuPortalClipTest(key->gscene, &key->position, key->clip_radius, key->unknown_2f2) == 0) {
+                if (edbits_editmode == 0 && key->gscene != NULL && key->portal_room != -1) {
+                    if (NuPortalClipTest(key->gscene, &key->position, key->clip_radius, key->portal_room) == 0) {
                         visible = 0;
                     }
                 }
@@ -2291,7 +2291,7 @@ void DebrisDraw(i32 unused, i32 pass) {
             render_time = debris_render_global_time;
             effect->last_render_time = globaltime;
         }
-        if (key != NULL && key->unknown_2fa != 0) {
+        if (key != NULL && key->custom_facing != 0) {
             NuRndrSetParticleRotation(&key->particle_orientation);
         } else if (effect->camera_facing != 0) {
             NuRndrSetParticleRotation(&xzfacingmtx);
@@ -2507,7 +2507,7 @@ PART *FindPart(NUVEC *position, i32 player, GAMEOBJECT *owner) {
 
 void DebrisSetFacing(i32 handle, u8 enabled, i16 x_angle, i16 y_angle) {
     if (handle != -1) {
-        debkeydata[handle].unknown_2fa = enabled;
+        debkeydata[handle].custom_facing = enabled;
         DebrisMtxCopyPrivate(&debkeydata[handle].particle_orientation, &ANI3_EVAL_IDENTITY_MATRIX);
         DebrisMtxRotateXPrivate(&debkeydata[handle].particle_orientation, x_angle);
         DebrisMtxRotateYPrivate(&debkeydata[handle].particle_orientation, y_angle);
@@ -2516,10 +2516,10 @@ void DebrisSetFacing(i32 handle, u8 enabled, i16 x_angle, i16 y_angle) {
 
 void DebrisSetRoomID(i32 handle, NUGSCN *scene) {
     if (scene != NULL) {
-        debkeydata[handle].unknown_2f2 = NuPortalWhichRoom(scene, &debkeydata[handle].position);
-        debkeydata[handle].gscene = debkeydata[handle].unknown_2f2 != -1 ? scene : NULL;
+        debkeydata[handle].portal_room = NuPortalWhichRoom(scene, &debkeydata[handle].position);
+        debkeydata[handle].gscene = debkeydata[handle].portal_room != -1 ? scene : NULL;
     } else {
-        debkeydata[handle].unknown_2f2 = -1;
+        debkeydata[handle].portal_room = -1;
         debkeydata[handle].gscene = NULL;
     }
 }
@@ -2872,8 +2872,7 @@ i32 CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
         closest_index = effect_index;
         closest_distance = ratio;
         for (i = 0; i < 128; ++i) {
-            if (part_types[i].effect_ids[0] != -1 &&
-                part_types[i].source_type == (u32)effect_index) {
+            if (part_types[i].effect_ids[0] != -1 && part_types[i].source_type == (u32)effect_index) {
                 ratio = requested_scale / part_types[i].scale;
                 ratio = ratio <= 1.0f ? 1.0f - ratio : ratio - 1.0f;
                 if (ratio < closest_distance) {

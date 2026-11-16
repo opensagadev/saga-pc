@@ -27,7 +27,7 @@ typedef struct edanim_param_s { // size 0x2d4
     i32 control_mode;           // 0x00c
     i32 control_switch;         // 0x010
     f32 control_distance;       // 0x014
-    f32 unknown_018;            // 0x018
+    f32 switch_delay;           // 0x018
     char effect_names[8][16];   // 0x01c
     i32 effect_ids[8];          // 0x09c
     i32 effect_intervals[8];    // 0x0bc
@@ -35,7 +35,7 @@ typedef struct edanim_param_s { // size 0x2d4
     f32 effect_positions[8][3]; // 0x0fc
     i16 effect_angles[8];       // 0x15c
     i16 effect_angle_ranges[8]; // 0x16c
-    f32 unknown_17c;            // 0x17c
+    f32 previous_time;          // 0x17c
     char sound_names[8][16];    // 0x180
     i32 sound_ids[8];           // 0x200
     i32 sound_flags[8];         // 0x220

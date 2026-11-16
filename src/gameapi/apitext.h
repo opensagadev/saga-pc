@@ -137,7 +137,7 @@ struct PC_CONTROL_SCREEN {                  // size 0xec4
     u8 initialized;                         // 0x00a
     u8 unknown_0b;                          // 0x00b
     f32 opacity;                            // 0x00c
-    f32 unknown_10;                         // 0x010
+    f32 pulse;                              // 0x010
     f32 fade;                               // 0x014
     i32 phase;                              // 0x018
     i32 row_count;                          // 0x01c

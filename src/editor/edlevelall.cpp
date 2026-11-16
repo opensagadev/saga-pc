@@ -1500,7 +1500,7 @@ void ClassEditor::fun_006b8c30(ClassObject &object) {
 }
 
 void ClassEditor::fun_006b8c50(i32 value) {
-    unknown_3c = value;
+    sphere_colour = value;
 }
 
 i32 ClassEditor::fun_006b8c60(ClassObject &object) {
@@ -1620,29 +1620,29 @@ i32 LevelEditor::fun_006b9040() {
 }
 
 void LevelEditor::SetCameraPosition(VuVec &position) {
-    VuVec &camera_position = *reinterpret_cast<VuVec *>(background_colour);
-    VuVecCopy(camera_position, position);
-    edcamSetPos(&camera_position.xyz);
+    VuVec &camera = *reinterpret_cast<VuVec *>(camera_position);
+    VuVecCopy(camera, position);
+    edcamSetPos(&camera.xyz);
 }
 
 f32 *LevelEditor::fun_006b9080() {
-    return background_colour;
+    return camera_position;
 }
 
 void LevelEditor::fun_006b9090(i32 value) {
-    unknown_2c = value;
+    cursor_colour = value;
 }
 
 i32 LevelEditor::fun_006b90a0() {
-    return unknown_30;
+    return picking_enabled;
 }
 
 void LevelEditor::fun_006b90b0(i32 value) {
-    unknown_30 = value;
+    picking_enabled = value;
 }
 
 void LevelEditor::fun_006b90c0(i32 value) {
-    unknown_38 = value;
+    menu_button_enabled = value;
 }
 
 extern "C" i32 fun_006b90d0(void) {
@@ -1650,7 +1650,7 @@ extern "C" i32 fun_006b90d0(void) {
 }
 
 i32 LevelEditor::fun_006b90e0() {
-    return unknown_28;
+    return camera_enabled;
 }
 
 void LevelEditor::fun_006b90f0(BaseEditor *editor) {
@@ -2846,7 +2846,7 @@ void LevelEditor::SetPadText(i32 buttons, char *text) {
     i32 i;
     for (i = 0; i < 32; i++) {
         if (buttons & (1 << i)) {
-            pad_text[i] = text;
+            button_text[i] = text;
         }
     }
 }
@@ -3143,7 +3143,7 @@ void LevelEditor::Display(ThingRenderData *) {
         if (edmainGetCursorEnabled()) {
             eduiFlushInteracts();
         }
-        if (unknown_28) {
+        if (camera_enabled) {
             NUCAMERA *camera = edmainGetCamera();
             f32 distance = edcamGetDist();
             if (global_camera.far_clip < distance + distance) {
@@ -3151,7 +3151,7 @@ void LevelEditor::Display(ThingRenderData *) {
             }
             edcamSet();
             EdDrawBegin(0);
-            EdDrawLineCross(reinterpret_cast<NUVEC *>(background_colour), 1.0f, 0xff000000);
+            EdDrawLineCross(reinterpret_cast<NUVEC *>(camera_position), 1.0f, 0xff000000);
             if (NewPrim != EDDRAW_PRIM_NONE) {
                 if (NewPrim == EDDRAW_PRIM_LINES || NewPrim == EDDRAW_PRIM_TRIANGLES) {
                     NuPrim3DEnd();
@@ -3176,7 +3176,7 @@ void LevelEditor::Display(ThingRenderData *) {
             NuFntScale(EdLevelFntScale, EdLevelFntScale);
             eduiMenuRender(edLevelPinnedMenu);
         }
-        eduiSetCursorColour(unknown_2c);
+        eduiSetCursorColour(cursor_colour);
         if (edmainGetCursorEnabled()) {
             eduiRenderCursor();
         }
@@ -3443,12 +3443,12 @@ void PlaceableNameControl::Process(EdInputContext &input) {
     if (input.GetHold(22) != 0.0f) {
         ClassObject object = theClassEditor.current_object;
         if (thePlaceableHelper.IsEditorObject(object)) {
-            theClassEditor.unknown_3c = 0xff008000;
+            theClassEditor.sphere_colour = 0xff008000;
             if (input.GetPress(25) != 0.0f) {
                 SetVal(static_cast<Placeable *>(object.object)->GetName());
             }
         } else {
-            theClassEditor.unknown_3c = 0xff000080;
+            theClassEditor.sphere_colour = 0xff000080;
         }
     }
 }
@@ -3508,7 +3508,7 @@ void PropertyTool::Initialise(variptr_u &, variptr_u &, i32) {
 }
 
 void PropertyTool::RefreshMenuControls(PropertyMenu *property_menu) {
-    eduiitem_s *item = property_menu->menu->unknown_0c;
+    eduiitem_s *item = property_menu->menu->first_visible;
     NuFntSet(EdLevelFnt);
     NuFntScale(EdLevelFntScale, EdLevelFntScale);
     for (; item != NULL; item = item->next) {
@@ -3516,7 +3516,7 @@ void PropertyTool::RefreshMenuControls(PropertyMenu *property_menu) {
         if (control != NULL) {
             control->Refresh();
         }
-        if (item == property_menu->menu->unknown_10) {
+        if (item == property_menu->menu->last_visible) {
             break;
         }
     }
@@ -4156,9 +4156,9 @@ void SceneObjectHelper::PreLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {
                 objects = (SceneObject *)*manager->start_anchor;
                 *manager->start_anchor += bytes;
                 memset(objects, 0, bytes);
-                manager->unknown_14 += bytes;
+                manager->allocated_bytes += bytes;
                 manager->size -= bytes;
-                manager->unknown_10 = *manager->start_anchor;
+                manager->last_end = *manager->start_anchor;
             }
             if (objects == NULL && MemoryManagerTraceFailures) {
                 EdTrace();
@@ -8110,7 +8110,7 @@ void EdClassObjectNameControl::cbButton(eduimenu_s *parent, eduiitem_s *item, u3
 void EdClassObjectNameControl::Process(EdInputContext &input) {
     if (input.GetHold(22) != 0.0f) {
         ClassObject hovered = theClassEditor.current_object;
-        theClassEditor.unknown_3c = 0xff008000;
+        theClassEditor.sphere_colour = 0xff008000;
         if (input.GetPress(25) != 0.0f) {
             char name[128];
             hovered.GetName(name, sizeof(name));
@@ -8172,15 +8172,15 @@ void EdVectorControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target)
     char value[128];
     NuSPrintf(value, "%.2f", vector.x);
     control->components[0] = eduiItemPropCreate((u32)control, &EdLevelAttr, cbSelected, cbChanged, cbButton, 2, "tx", value);
-    control->components[0]->unknown_10 = 1;
+    control->components[0]->colour_index = 1;
     eduiItemExpanderAddChild(control->item, control->components[0]);
     NuSPrintf(value, "%.2f", vector.y);
     control->components[1] = eduiItemPropCreate((u32)control, &EdLevelAttr, cbSelected, cbChanged, cbButton, 2, "ty", value);
-    control->components[1]->unknown_10 = 2;
+    control->components[1]->colour_index = 2;
     eduiItemExpanderAddChild(control->item, control->components[1]);
     NuSPrintf(value, "%.2f", vector.z);
     control->components[2] = eduiItemPropCreate((u32)control, &EdLevelAttr, cbSelected, cbChanged, cbButton, 2, "tz", value);
-    control->components[2]->unknown_10 = 3;
+    control->components[2]->colour_index = 3;
     eduiItemExpanderAddChild(control->item, control->components[2]);
 }
 
@@ -8220,15 +8220,15 @@ void EdMatrixControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target)
     if (member->attributes & EDREF_ATTR_POSITION) {
         NuSPrintf(value, "%.2f", matrix.matrix.m30);
         control->components[0] = eduiItemPropCreate((u32)control, &EdLevelAttr, cbSelected, cbChanged, cbButton, 2, "pos x", value);
-        control->components[0]->unknown_10 = 1;
+        control->components[0]->colour_index = 1;
         eduiItemExpanderAddChild(control->item, control->components[0]);
         NuSPrintf(value, "%.2f", matrix.matrix.m31);
         control->components[1] = eduiItemPropCreate((u32)control, &EdLevelAttr, cbSelected, cbChanged, cbButton, 2, "pos y", value);
-        control->components[1]->unknown_10 = 2;
+        control->components[1]->colour_index = 2;
         eduiItemExpanderAddChild(control->item, control->components[1]);
         NuSPrintf(value, "%.2f", matrix.matrix.m32);
         control->components[2] = eduiItemPropCreate((u32)control, &EdLevelAttr, cbSelected, cbChanged, cbButton, 2, "pos z", value);
-        control->components[2]->unknown_10 = 3;
+        control->components[2]->colour_index = 3;
         eduiItemExpanderAddChild(control->item, control->components[2]);
     }
     if (member->attributes & EDREF_ATTR_ROTATION) {
@@ -8238,15 +8238,15 @@ void EdMatrixControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target)
         NuMtxGetEulerXYZ(&matrix.matrix, &x, &y, &z);
         NuSPrintf(value, "%.2f", x * (360.0f / 65536.0f));
         control->components[3] = eduiItemPropCreate((u32)control, &EdLevelAttr, cbSelected, cbChanged, cbButton, 2, "rot x", value);
-        control->components[3]->unknown_10 = 1;
+        control->components[3]->colour_index = 1;
         eduiItemExpanderAddChild(control->item, control->components[3]);
         NuSPrintf(value, "%.2f", y * (360.0f / 65536.0f));
         control->components[4] = eduiItemPropCreate((u32)control, &EdLevelAttr, cbSelected, cbChanged, cbButton, 2, "rot y", value);
-        control->components[4]->unknown_10 = 2;
+        control->components[4]->colour_index = 2;
         eduiItemExpanderAddChild(control->item, control->components[4]);
         NuSPrintf(value, "%.2f", z * (360.0f / 65536.0f));
         control->components[5] = eduiItemPropCreate((u32)control, &EdLevelAttr, cbSelected, cbChanged, cbButton, 2, "rot z", value);
-        control->components[5]->unknown_10 = 3;
+        control->components[5]->colour_index = 3;
         eduiItemExpanderAddChild(control->item, control->components[5]);
     }
     if (member->attributes & EDREF_ATTR_SCALE) {
@@ -8255,15 +8255,15 @@ void EdMatrixControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target)
         f32 z = VuVecLength(*reinterpret_cast<VuVec *>(&matrix.matrix.m20));
         NuSPrintf(value, "%.2f", x);
         control->components[6] = eduiItemPropCreate((u32)control, &EdLevelAttr, cbSelected, cbChanged, cbButton, 2, "scale x", value);
-        control->components[6]->unknown_10 = 1;
+        control->components[6]->colour_index = 1;
         eduiItemExpanderAddChild(control->item, control->components[6]);
         NuSPrintf(value, "%.2f", y);
         control->components[7] = eduiItemPropCreate((u32)control, &EdLevelAttr, cbSelected, cbChanged, cbButton, 2, "scale y", value);
-        control->components[7]->unknown_10 = 2;
+        control->components[7]->colour_index = 2;
         eduiItemExpanderAddChild(control->item, control->components[7]);
         NuSPrintf(value, "%.2f", z);
         control->components[8] = eduiItemPropCreate((u32)control, &EdLevelAttr, cbSelected, cbChanged, cbButton, 2, "scale z", value);
-        control->components[8]->unknown_10 = 3;
+        control->components[8]->colour_index = 3;
         eduiItemExpanderAddChild(control->item, control->components[8]);
     }
 }
@@ -8271,28 +8271,28 @@ void EdMatrixControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target)
 /* Labels every pad button whose bit is set in the mask. */
 LevelEditor::LevelEditor() : first_editor(NULL), last_editor(NULL), editor_count(0), active(0) {
     reset_pending = 0;
-    background_colour[0] = 0.0f;
-    background_colour[1] = 0.0f;
-    background_colour[2] = 0.0f;
-    background_colour[3] = 1.0f;
+    camera_position[0] = 0.0f;
+    camera_position[1] = 0.0f;
+    camera_position[2] = 0.0f;
+    camera_position[3] = 1.0f;
     overlay_alpha = 0.6f;
-    unknown_20 = 0;
-    unknown_24 = 0;
-    unknown_28 = 1;
-    unknown_30 = 1;
-    unknown_38 = 1;
+    camera_angle_x = 0;
+    camera_angle_y = 0;
+    camera_enabled = 1;
+    picking_enabled = 1;
+    menu_button_enabled = 1;
     info_x = 0;
     info_y = 0;
     info_width = 640;
     info_height = 448;
     info_colour = 0x80808080;
     info_background = 0x40000000;
-    pad_x = 0;
-    pad_y = 0;
-    pad_width = 640;
-    pad_height = 448;
-    pad_background = 0x80000000;
-    pad_colour = 0x80808080;
+    button_text_x = 0;
+    button_text_y = 0;
+    button_text_width = 640;
+    button_text_height = 448;
+    button_text_background = 0x80000000;
+    button_text_colour = 0x80808080;
     SetPadText(PAD_BUTTON_UP, "D-Up");
     SetPadText(PAD_BUTTON_DOWN, "D-Down");
     SetPadText(PAD_BUTTON_LEFT, "D-Left");
@@ -8523,7 +8523,7 @@ i32 EdManMove::Process(EdInputContext &input, ClassObjectList &objects) {
         VuVec first;
         VuVec second;
         i32 axis = SelectAxis(input, position, first, second, NULL);
-        theLevelEditor.unknown_2c = AxisColour[axis];
+        theLevelEditor.cursor_colour = AxisColour[axis];
         if (input.GetHold(3) == 0.0f && input.GetHold(38) == 0.0f) {
             return axis != 0;
         }
@@ -8570,10 +8570,10 @@ i32 EdManMove::Process(EdInputContext &input, ClassObjectList &objects) {
                 }
                 case 7:
                     if (input.GetHold(38) != 0.0f) {
-                        position.x = theLevelEditor.background_colour[0];
-                        position.y = theLevelEditor.background_colour[1];
-                        position.z = theLevelEditor.background_colour[2];
-                        position.w = theLevelEditor.background_colour[3];
+                        position.x = theLevelEditor.camera_position[0];
+                        position.y = theLevelEditor.camera_position[1];
+                        position.z = theLevelEditor.camera_position[2];
+                        position.w = theLevelEditor.camera_position[3];
                         moved = 1;
                     }
                     break;
@@ -8676,7 +8676,7 @@ i32 EdManRotate::Process(EdInputContext &input, ClassObjectList &objects) {
     }
     __declspec(align(16)) VuVec plane;
     i32 axis = SelectRotator(input, position, plane);
-    theLevelEditor.unknown_2c = AxisColour[axis];
+    theLevelEditor.cursor_colour = AxisColour[axis];
     return RotateItem(input, objects, angle_delta, axis);
 }
 
@@ -8703,7 +8703,7 @@ i32 EdManScale::Process(EdInputContext &input, ClassObjectList &objects) {
     __declspec(align(16)) VuVec first;
     VuVec second;
     i32 axis = SelectAxis(input, position, first, second, &transform);
-    theLevelEditor.unknown_2c = AxisColour[axis];
+    theLevelEditor.cursor_colour = AxisColour[axis];
     if (input.GetHold(3) == 0.0f) {
         return axis != 0;
     }
@@ -9072,7 +9072,7 @@ static i32 IsStreamObject(EdStream &stream, EdClass *object_class, void *object)
     i32 result = 1;
     object_class->GetAttributeData(object, EDREF_ATTR_FLAGS, EdType_Int, &object_flags, 0);
     object_class->GetAttributeData(object, EDREF_ATTR_LED_FILE, EdType_Short, &group, 0);
-    if (stream.unknown_10 != group) {
+    if (stream.led_file != group) {
         result = 0;
     }
     if (stream.flags & EDSTREAM_STATE) {
@@ -10064,7 +10064,7 @@ i32 LevelEditor::Save() {
                 i32 size;
                 NUFILE output_file;
                 stream.Open(memory_file, 4);
-                stream.unknown_10 = i;
+                stream.led_file = i;
                 WriteStream(stream);
                 size = (i32)NuFilePos(memory_file);
                 stream.Close();
@@ -10095,7 +10095,7 @@ i32 LevelEditor::SaveState(i32 scene_index, variptr_u *buffer, variptr_u *buffer
         EdFileOutputStream stream;
         stream.Open(file, 4);
         stream.flags = EDSTREAM_STATE;
-        stream.unknown_10 = scene_index;
+        stream.led_file = scene_index;
         WriteStream(stream);
         size = (i32)NuFilePos(file);
         stream.Close();
@@ -10585,7 +10585,7 @@ void ClassEditor::Render() {
         active_tool->Render();
     }
     if (current_object.object != NULL && !IsSelectedObject(current_object)) {
-        DrawObjectSphere(current_object, unknown_3c);
+        DrawObjectSphere(current_object, sphere_colour);
     }
     if (selected_objects.count > 0) {
         ClassObjectListEntry *entry;
@@ -10694,7 +10694,7 @@ void LevelEditor::ProcessEvenWhenPaused(ThingProcessData *data) {
     memset(info_text, 0, sizeof(info_text));
     memset(reserved_0xf00, 0, 0x80);
     memset(reserved_0xf00 + 0x80, 0, 0x80);
-    unknown_2c = -1;
+    cursor_colour = -1;
     editable_scene_count = 0;
     if (scenes[0].editable) {
         editable_scene_count++;
@@ -10726,7 +10726,7 @@ void LevelEditor::ProcessEvenWhenPaused(ThingProcessData *data) {
     if (scenes[9].editable) {
         editable_scene_count++;
     }
-    if (edLevelActiveMenu == NULL && unknown_38 != 0 && input.GetPress(4) != 0.0f) {
+    if (edLevelActiveMenu == NULL && menu_button_enabled != 0 && input.GetPress(4) != 0.0f) {
         eduiSetCameraEnabled(0);
         eduiSetDefaultActiveMenu(eduiGetActiveMenu());
         theLevelEditor.CreateMenu();
@@ -10752,7 +10752,7 @@ void LevelEditor::ProcessEvenWhenPaused(ThingProcessData *data) {
         edLevelNextMenu = NULL;
     }
     NUCAMERA *camera;
-    if (unknown_28 != 0) {
+    if (camera_enabled != 0) {
         camera = edmainGetCamera();
     } else {
         camera = &global_camera;
@@ -10761,13 +10761,13 @@ void LevelEditor::ProcessEvenWhenPaused(ThingProcessData *data) {
     if (edmainGetCursorEnabled()) {
         eduiProcessCursor(0.0f, pad);
     }
-    if (unknown_28 != 0 && eduiGetCameraEnabled()) {
+    if (camera_enabled != 0 && eduiGetCameraEnabled()) {
         if (edlevel_mouseandkeyboard != 0) {
             edcamMove(NULL);
         } else {
             edcamMove(pad);
         }
-        edcamGetPosAng(reinterpret_cast<NUVEC *>(background_colour), &unknown_20, &unknown_24);
+        edcamGetPosAng(reinterpret_cast<NUVEC *>(camera_position), &camera_angle_x, &camera_angle_y);
     }
     if (input.GetPress(17) != 0.0f) {
         overlay_alpha += 0.1f;
@@ -10969,7 +10969,7 @@ i32 CursorTool::Process(EdInputContext &input) {
         }
         NewPrim = EDDRAW_PRIM_NONE;
     }
-    if (theLevelEditor.unknown_30 == 0) {
+    if (theLevelEditor.picking_enabled == 0) {
         return 0;
     }
     ClassObject after;
@@ -11022,8 +11022,8 @@ void ClassEditor::Process(EdInputContext &input) {
     UpdateSelectedObjects(input);
     UpdateClassFilter(input);
     if (menu != NULL) {
-        theLevelEditor.unknown_30 = 0;
-        theLevelEditor.unknown_38 = 0;
+        theLevelEditor.picking_enabled = 0;
+        theLevelEditor.menu_button_enabled = 0;
         NuFntSet(EdLevelFnt);
         NuFntScale(EdLevelFntScale, EdLevelFntScale);
         eduiMenuProcess(menu, input.delta_time, input.pad);
@@ -11034,9 +11034,9 @@ void ClassEditor::Process(EdInputContext &input) {
     if (input.GetHold(13) != 0.0f) {
         return;
     }
-    theLevelEditor.unknown_30 = 1;
-    theLevelEditor.unknown_38 = 1;
-    unknown_3c = 0xff808080;
+    theLevelEditor.picking_enabled = 1;
+    theLevelEditor.menu_button_enabled = 1;
+    sphere_colour = 0xff808080;
     i32 handled = thePropertyTool.Process(input);
     if (!handled) {
         if (input.GetPress(5) != 0.0f) {
