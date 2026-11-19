@@ -1,5 +1,5 @@
 {
-  "redundant-identity": 13,
+  "redundant-identity": 5,
   "redundant-implicit": 19,
   "codegen-steering": 52,
   "discard": 32,
@@ -25,7 +25,7 @@
   "bool": 5,
   "float-int": 3118,
   "float-width": 3987,
-  "truncation": 2190,
+  "truncation": 2189,
   "signedness": 1865,
   "widening": 201,
   "class-hierarchy": 43,

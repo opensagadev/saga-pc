@@ -53,7 +53,7 @@
   "dup-type-conflict": 0,
   "local-extern": 1,
   "magic-state": 4314,
-  "magic-flag": 2489,
+  "magic-flag": 2488,
   "magic-mask": 1048,
   "magic-bound": 1587,
   "include-mid-file": 2,
@@ -70,6 +70,6 @@
   "stdcall": 262,
   "declspec-align": 193,
   "declspec-other": 17,
-  "other-platform": 4,
+  "other-platform": 0,
   "decomp-type": 0
 }
