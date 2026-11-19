@@ -7254,7 +7254,7 @@ extern "C" {
 
     void NuMainFilter::initResources() {
         NuMainFilterGen::initResources();
-        void *last_program;
+        POST_SHADER_PROGRAM *last_program;
         if (PCDeviceHardwareVertexProcessingPC > 1) {
             programs[6] = PostShaderProgramCreate(2, dat_007662d8, dat_00766578);
             programs[8] = PostShaderProgramCreate(2, dat_00766820, dat_00766578);
@@ -7288,7 +7288,7 @@ extern "C" {
 
     void NuSpeedBlurFilter::initResources() {
         NuPostFilterGen::initResources();
-        void *program;
+        POST_SHADER_PROGRAM *program;
         if (PCDeviceHardwareVertexProcessingPC > 1) {
             program = PostShaderProgramCreate(2, dat_00768de0, dat_007690b0);
             platform_uniform = 0x80;

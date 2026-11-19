@@ -757,13 +757,13 @@ void NuMainFilter::RenderBloom() {
         viewport.max_z = 1.0f;
         NuVpSubmit(&viewport);
     }
-    void *program;
+    POST_SHADER_PROGRAM *program;
     if (bloom->directional) {
         program = output == PcBootSecondaryFramebuffer && PCDeviceBackend.textures[0] != NULL ? programs[8] : platform_programs[1];
     } else {
         program = output == PcBootSecondaryFramebuffer && PCDeviceBackend.textures[0] != NULL ? programs[6] : platform_programs[0];
     }
-    PCDisplayHandlerBindPrograms((POST_SHADER_PROGRAM *)program);
+    PCDisplayHandlerBindPrograms(program);
     if (PCDeviceHardwareVertexProcessingPC < 4) {
         NUMTX inverse_view;
         NuMtxInvH(&inverse_view, &PcGeometryViewMatrix);
@@ -907,7 +907,7 @@ void NuSpeedBlurFilter::render() {
         PCGraphicsBindStageTexture(0, color_texture);
         PCDeviceBackend.DrawPostEffectQuad();
     }
-    PCDisplayHandlerBindPrograms((POST_SHADER_PROGRAM *)programs[0]);
+    PCDisplayHandlerBindPrograms(programs[0]);
     PCDeviceSetVertexShaderConstantsF(platform_uniform, constants, 2);
     PCGraphicsPostEffectBackBufferTexture->flags =
         ((PCGraphicsPostEffectBackBufferTexture->flags & 0xfff5ffff) | 0x40000) & 0xfc2fffff | 0x200000;

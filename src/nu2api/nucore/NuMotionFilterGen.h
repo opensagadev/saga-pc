@@ -15,7 +15,7 @@ class NuMotionFilterGen : public NuPostFilter { // size 0xa0
     virtual void render();
     void setEnabled(bool enable);
     void SetMotion(const NUMTX *previous, const NUMTX *current, f32 scale, f32 maximum, f32 falloff);
-    void *programs[2]; // 0x0c
+    struct POST_SHADER_PROGRAM *programs[2]; // 0x0c
     NUMTX previous;    // 0x14
     NUMTX current;     // 0x54
     f32 scale;         // 0x94

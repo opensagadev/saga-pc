@@ -22,7 +22,7 @@ class NuMotionAccumFilterGen : public NuPostFilter { // size 0x28
     virtual void initTextureResources(i32, i32);
     virtual void destroyTextureResources();
     virtual void render();
-    void *program;                                 // 0x0c
+    struct POST_SHADER_PROGRAM *program;           // 0x0c
     PC_FRAMEBUFFER *accumulation_fbo;              // 0x10
     GRAPHICS_RENDER_TEXTURE *accumulation_texture; // 0x14
     i32 frames;                                    // 0x18

@@ -37,8 +37,8 @@ extern "C" {
     f32 NuVecDot(NUVEC *a, NUVEC *b);
     void NuVecNeg(NUVEC *dst, NUVEC *src);
     void NuVecCross(NUVEC *dst, const NUVEC *a, const NUVEC *b);
-    void NuVecMax(NUVEC *dst, NUVEC *a, NUVEC *b);
-    void NuVecMin(NUVEC *dst, NUVEC *a, NUVEC *b);
+    void NuVecMax(NUVEC *dst, const NUVEC *a, const NUVEC *b);
+    void NuVecMin(NUVEC *dst, const NUVEC *a, const NUVEC *b);
     f32 NuVecMagSqr(NUVEC *vec);
     f32 NuVecMag(NUVEC *vec);
     f32 NuVecDist(NUVEC *v0, NUVEC *v1, NUVEC *dist);

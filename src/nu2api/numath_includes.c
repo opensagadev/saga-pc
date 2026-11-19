@@ -407,7 +407,7 @@ f32 NuVecMagXZ(NUVEC *vector) {
     return NuFsqrt(vector->x * vector->x + vector->z * vector->z);
 }
 
-void NuVecMax(NUVEC *out, NUVEC *left, NUVEC *right) {
+void NuVecMax(NUVEC *out, const NUVEC *left, const NUVEC *right) {
     if (left->x > right->x) {
         out->x = left->x;
     } else {
@@ -427,7 +427,7 @@ void NuVecMax(NUVEC *out, NUVEC *left, NUVEC *right) {
     }
 }
 
-void NuVecMin(NUVEC *out, NUVEC *left, NUVEC *right) {
+void NuVecMin(NUVEC *out, const NUVEC *left, const NUVEC *right) {
     if (left->x < right->x) {
         out->x = left->x;
     } else {

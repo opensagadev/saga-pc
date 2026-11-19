@@ -7282,13 +7282,13 @@ extern "C" {
             NuVecMax(maximum, maximum, &point);
             NuVecMin(minimum, minimum, &point);
         }
-        NuVecMin(maximum, maximum, (NUVEC *)&NuPortalBoundsOne);
-        NuVecMax(maximum, maximum, (NUVEC *)&NuPortalBoundsMinusOne);
-        NuVecMin(minimum, minimum, (NUVEC *)&NuPortalBoundsOne);
-        NuVecMax(minimum, minimum, (NUVEC *)&NuPortalBoundsMinusOne);
+        NuVecMin(maximum, maximum, &NuPortalBoundsOne);
+        NuVecMax(maximum, maximum, &NuPortalBoundsMinusOne);
+        NuVecMin(minimum, minimum, &NuPortalBoundsOne);
+        NuVecMax(minimum, minimum, &NuPortalBoundsMinusOne);
     }
 
-    static NUPORTAL_FRUSTUM *buildFrustrum(NUVEC *minimum, NUVEC *maximum, i16 room_id) {
+    static NUPORTAL_FRUSTUM *buildFrustrum(const NUVEC *minimum, const NUVEC *maximum, i16 room_id) {
         NUPORTAL_FRUSTUM *frustum = allocateFrustrum(4);
         f32 half_angle;
         f32 tangent;
@@ -7577,7 +7577,7 @@ extern "C" {
             -(NuPortalNearPlane.a * near_position.x + NuPortalNearPlane.b * near_position.y + NuPortalNearPlane.c * near_position.z);
         NuPortalCameraPlane.d = -(NuPortalCameraPlane.a * NuPortalWorldCamera.x + NuPortalCameraPlane.b * NuPortalWorldCamera.y +
                                   NuPortalCameraPlane.c * NuPortalWorldCamera.z);
-        frustum = buildFrustrum((NUVEC *)&NuPortalBoundsMinusOne, (NUVEC *)&NuPortalBoundsOne, -2);
+        frustum = buildFrustrum(&NuPortalBoundsMinusOne, &NuPortalBoundsOne, -2);
         drawInitialFrustum(frustum);
         /* The room count compare is unsigned. */
         for (i = 0; i < (u32)scene->num_rooms; ++i) {
@@ -11706,7 +11706,7 @@ void NuMotionFilterGen::render() {
     GRAPHICS_RENDER_TEXTURE *color_texture = color->texture;
     GRAPHICS_RENDER_TEXTURE *velocity_texture = velocity->texture;
     GRAPHICS_RENDER_TEXTURE *destination = NuFramebufferGetAttachedTex(output, 0, NULL, NULL);
-    NuShaderProgramMakeCurrent((POST_SHADER_PROGRAM *)programs[0]);
+    NuShaderProgramMakeCurrent(programs[0]);
     f32 ratio = maximum / scale;
     f32 params[4];
     __declspec(align(16)) f32 weights[7][4];
@@ -11860,7 +11860,7 @@ void NuMotionAccumFilterGen::render() {
     if (++current_frame == frames) {
         current_frame = 0;
     }
-    PostFilterBindProgram((POST_SHADER_PROGRAM *)program);
+    PostFilterBindProgram(program);
     f32 params[4];
     params[1] = 0.0f;
     params[2] = 0.0f;
@@ -11885,7 +11885,7 @@ void NuMotionAccumFilterGen::render() {
     PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE, 15);
     PCGraphicsDrawPostEffectQuad();
     PCGraphicsFramebufferBarrier(0, 1);
-    PostFilterBindProgram((POST_SHADER_PROGRAM *)program);
+    PostFilterBindProgram(program);
     PCDeviceSetPixelShaderConstantsF(0x8a, params, 1);
     PCGraphicsEffectTextureSetFilterFields(color_texture, 1, 1, 0);
     PCGraphicsEffectTextureSetWrapFields(color_texture, 2, 2);
@@ -11929,7 +11929,7 @@ void NuSpeedBlurFilterGen::render() {
     if (texture != NULL) {
         PostFilterCopyTexture(texture, 0, color_texture, 0, PostCopyTexProgram, NULL);
     }
-    POST_SHADER_PROGRAM *program = (POST_SHADER_PROGRAM *)programs[0];
+    POST_SHADER_PROGRAM *program = programs[0];
     PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
     PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
     PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
