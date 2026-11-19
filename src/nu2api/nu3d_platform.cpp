@@ -3326,7 +3326,7 @@ extern "C" {
         return 1;
     }
 
-    i32 fun_005fc690(PC_GEOMETRY_SORT_ITEM *items, PC_GEOMETRY_OUTPUT *output, i32 left, i32 right) {
+    i32 PCGeometrySortItems(PC_GEOMETRY_SORT_ITEM *items, PC_GEOMETRY_OUTPUT *output, i32 left, i32 right) {
         PC_GEOMETRY_SORT_ITEM pivot;
         PC_GEOMETRY_SORT_ITEM swap;
         i32 first = left;
@@ -3358,10 +3358,10 @@ extern "C" {
             items[left] = pivot;
         }
         if (first < left) {
-            fun_005fc690(items, output, first, left - 1);
+            PCGeometrySortItems(items, output, first, left - 1);
         }
         if (last > left) {
-            fun_005fc690(items, output, left + 1, last);
+            PCGeometrySortItems(items, output, left + 1, last);
         }
         return 1;
     }
@@ -7694,7 +7694,7 @@ extern "C" {
     void fun_006031f0(void) {
     }
 
-    void fun_00603200(u8 *colour, const u8 *table, i32 offset) {
+    void PCApplyGammaTable(u8 *colour, const u8 *table, i32 offset) {
         i32 r;
         i32 g;
         i32 b;

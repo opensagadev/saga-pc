@@ -1029,7 +1029,7 @@ extern "C" {
     }
 }
 
-extern "C" void fun_00697eb0(void) {
+extern "C" void NuSound3ShutdownStreams(void) {
     if (NuSound3Initialized) {
         if (NuSound3StereoStreams[1] != NULL) {
             delete NuSound3StereoStreams[1];

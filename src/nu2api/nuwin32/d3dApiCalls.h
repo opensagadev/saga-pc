@@ -5,7 +5,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void fun_006df670(f32, f32);
+    void PCDebugDrawFrameStats(f32, f32);
     void NuKeyboardCreateWindowState(HWND window, HINSTANCE instance);
     extern i32 PCFrameCriticalSectionIndex;
     i32 PCFrameLoadingYieldEnabled(void);

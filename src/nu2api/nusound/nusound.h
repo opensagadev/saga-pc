@@ -283,7 +283,7 @@ extern "C" {
     i32 PCSoundInitialize(struct PC_SOUND_INIT_CONFIG *);
     struct nusound_filename_info_s *ConfigureMusic(char *, VARIPTR *, VARIPTR *);
     i32 NuSoundGetStereoStreamStatus(i32 stream);
-    void fun_00697eb0(void);
+    void NuSound3ShutdownStreams(void);
     void PauseGameCut(void);
     void ResetSounds(void);
     void SoundKillAll(void);

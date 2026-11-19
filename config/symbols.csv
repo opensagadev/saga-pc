@@ -3298,7 +3298,7 @@ address,symbol,size,ctype
 0x4f90f0,_NuTimeWait,256,void __cdecl (f32)
 0x4f91f0,_NuErrorSleep,621,void __cdecl(void)
 0x4f9460,_ParseCommandLine,154,
-0x4f9500,_fun_004f9500,62,
+0x4f9500,_NuMemFileRelocate,62,
 0x4f9540,_fun_004f9540,45,
 0x4f9570,_ImplodeReadOffsetLengthsPrivate,319,
 0x4f96b0,_ImplodeReadLiteralLengthsPrivate,358,
@@ -8615,7 +8615,7 @@ address,symbol,size,ctype
 0x5fbd40,_PCDynamicGeometryRelease,63,
 0x5fbd80,_PcTransformDynamicGeometry,1704,"u8 __cdecl (PC_GEOMETRY_SKIN *, PC_GEOMETRY_MESH *, u32 *)"
 0x5fc430,_PcUpdateGeometryDistances,601,"i32 __cdecl (PC_GEOMETRY_OUTPUT *, PC_GEOMETRY_SORT_ITEM *, i32)"
-0x5fc690,_fun_005fc690,454,
+0x5fc690,_PCGeometrySortItems,454,
 0x5fc860,_PCDynamicGeometryCopyOutput,82,
 0x5fc8c0,_NuDisplayList2dGetPlatform,6,
 0x5fc8d0,_fun_005fc8d0,21,
@@ -8854,7 +8854,7 @@ address,symbol,size,ctype
 0x6030f0,_NuGobjSetMaterialObjectFlags,72,
 0x603140,_PCSetGammaRamp,167,
 0x6031f0,_fun_006031f0,1,
-0x603200,_fun_00603200,141,
+0x603200,_PCApplyGammaTable,141,
 0x603290,_PCBuildGammaTable,189,
 0x603350,_NuDisplayListInit,127,"void __cdecl(VARIPTR *, i32)"
 0x006033d0,_NuDisplayListDrawItems,20,void __cdecl(NUDISPLAYLISTITEM*)
@@ -11813,7 +11813,7 @@ address,symbol,size,ctype
 0x697a50,_NuSound3SetSampleTable,354,"void __cdecl(SFX_FILE_INFO *,VARIPTR *,VARIPTR)"
 0x697bc0,_PCSoundSampleWorker@4,464,DWORD __stdcall(void *)
 0x697d90,_PCSoundInitialize,274,i32 __cdecl(PC_SOUND_INIT_CONFIG *)
-0x697eb0,_fun_00697eb0,207,
+0x697eb0,_NuSound3ShutdownStreams,207,
 0x697f80,_fun_00697f80,138,
 0x698010,_fun_00698010,45,
 0x00698040,_PCSoundPlayUnpositioned,118,"void __cdecl (i32, i32, i32, i32, f32, i32, f32, f32, i32)"
@@ -13369,7 +13369,7 @@ address,symbol,size,ctype
 0x6d5e30,_fun_006d5e30,10,
 0x6d5e40,_PcInputAuxiliaryMasks,134,
 0x6d5ed0,_PcInputAuxiliaryActionMask,76,
-0x6d5f20,_fun_006d5f20,250,
+0x6d5f20,_PcInputFindActionForMasks,250,
 0x6d6020,_GamePadReadBackend,14,"i32 __cdecl(FRAME_PAD *,i32)"
 0x6d6030,_fun_006d6030,1,
 0x6d6040,_fun_006d6040,3,
@@ -13754,8 +13754,8 @@ address,symbol,size,ctype
 0x6df320,_PCFrameSetLoadingYieldEnabled,14,void __cdecl (i32)
 0x6df330,_PCFrameLoadingYieldEnabled,9,i32 __cdecl (void)
 0x6df340,_fun_006df340,298,
-0x6df470,_fun_006df470,512,
-0x6df670,_fun_006df670,573,
+0x6df470,_PCDebugPrintAligned,512,
+0x6df670,_PCDebugDrawFrameStats,573,
 0x6df8b0,_PCDeviceSetWorldIdentity,138,void __cdecl(void)
 0x6df940,_PCDeviceResetState,220,void __cdecl (void)
 0x6dfa20,_PCDeviceResetSamplerDefaults,72,void __cdecl(void)
@@ -13781,7 +13781,7 @@ address,symbol,size,ctype
 0x6dfdc0,_PcFreeApiCallBuffer,45,void __cdecl(void)
 0x6dfdf0,_PcDestroyPlatform,40,void __cdecl(void)
 0x6dfe20,_PCGraphicsRecreateResources,128,void __cdecl(i32)
-0x6dfea0,_fun_006dfea0,27,
+0x6dfea0,_PCDebugDrawFrameStatsDefault,27,
 0x6dfec0,_fun_006dfec0,79,
 0x6dff10,_fun_006dff10,32,
 0x6dff30,_fun_006dff30,1,

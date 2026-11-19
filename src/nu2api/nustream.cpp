@@ -67,7 +67,7 @@ extern "C" i32 fun_00698b50(void) {
 
 SoundVoiceManagerPC::~SoundVoiceManagerPC() {
     i32 i;
-    fun_00697eb0();
+    NuSound3ShutdownStreams();
     for (i = 0; i < 64; i++) {
         if (voices[i].voice != NULL) {
             voices[i].voice->vtable->release(voices[i].voice);

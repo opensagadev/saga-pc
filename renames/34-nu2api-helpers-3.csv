@@ -1,0 +1,9 @@
+old,new,evidence
+fun_006d5f20,PcInputFindActionForMasks,action bound to the given button and axis masks (-2 when both empty)
+fun_005fc690,PCGeometrySortItems,quicksort of the geometry sort items
+fun_00603200,PCApplyGammaTable,maps an RGB colour through a gamma table with an offset
+fun_004f9500,NuMemFileRelocate,relocates the pointer table of a memory file
+fun_00697eb0,NuSound3ShutdownStreams,deletes the stereo streams on shutdown
+fun_006df470,PCDebugPrintAligned,prints formatted text aligned at a position
+fun_006df670,PCDebugDrawFrameStats,draws the frame time and fps overlay
+fun_006dfea0,PCDebugDrawFrameStatsDefault,draws the frame stats at 0,160

@@ -7907,7 +7907,7 @@ void ParseCommandLine() {
     }
 }
 
-void *fun_004f9500(NUFILE file) {
+void *NuMemFileRelocate(NUFILE file) {
     VARIPTR table;
     VARIPTR start;
     VARIPTR entry;

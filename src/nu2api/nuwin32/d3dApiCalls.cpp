@@ -248,7 +248,7 @@ extern "C" {
         NuQFntPrintV(system_qfont, format, args);
     }
 
-    void fun_006df470(u32 colour, f32 x, f32 y, i32 align, const char *format, ...) {
+    void PCDebugPrintAligned(u32 colour, f32 x, f32 y, i32 align, const char *format, ...) {
         va_list args;
         f32 width;
         va_start(args, format);
@@ -283,7 +283,7 @@ extern "C" {
         NuQFntPrintV(system_qfont, format, args);
     }
 
-    void fun_006df670(f32 x, f32 y) {
+    void PCDebugDrawFrameStats(f32 x, f32 y) {
         f32 line_height;
         f32 fps;
         NuQFntPushPrintMode(NUQFNT_MODE_2D);
@@ -528,8 +528,8 @@ extern "C" void PCGraphicsRecreateResources(i32 reset_available) {
     PCGraphicsClearFrameTextures();
 }
 
-extern "C" void fun_006dfea0(void) {
-    fun_006df670(0.0f, 160.0f);
+extern "C" void PCDebugDrawFrameStatsDefault(void) {
+    PCDebugDrawFrameStats(0.0f, 160.0f);
 }
 
 extern "C" void fun_006dfec0(u32 width, u32 height) {

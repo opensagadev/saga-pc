@@ -1576,7 +1576,7 @@ extern "C" u32 PcInputAuxiliaryActionMask(i32 bank) {
     return mask;
 }
 
-extern "C" i32 fun_006d5f20(u32 buttons, u32 axes) {
+extern "C" i32 PcInputFindActionForMasks(u32 buttons, u32 axes) {
     i32 action;
     i32 active;
     i32 axis;
