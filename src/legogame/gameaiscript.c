@@ -1928,10 +1928,10 @@ f32 Condition_NumBaddiesThatCanSeePlayers(AISYS *system, AISCRIPTPROCESS *proces
 }
 
 f32 Condition_HelpWithTriggers(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    AITRIGGERSETSYS_s *triggers = WORLD->ai_trigger_set;
-    if (triggers != NULL && packet != NULL && packet->owner != NULL) {
+    if (WORLD->ai_trigger_set != NULL && packet != NULL && packet->owner != NULL) {
         i32 index = packet->owner->object_id;
-        if (triggers->assigned_trigger[index] != -1 && triggers->sets[triggers->assigned_set[index]].occupied != 0) {
+        if (WORLD->ai_trigger_set->assigned_trigger[index] != -1 &&
+            WORLD->ai_trigger_set->sets[WORLD->ai_trigger_set->assigned_set[index]].occupied != 0) {
             return 1.0f;
         }
     }

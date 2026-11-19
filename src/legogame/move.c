@@ -4359,15 +4359,16 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
               (object->player.action_movement_state == JUMP_KIND_LUNGE || object->player.action_movement_state == JUMP_KIND_SLAM)) &&
             context != CHARACTER_CONTEXT_LAND_LUNGE && context != CHARACTER_CONTEXT_LAND_SLAM &&
             context != CHARACTER_CONTEXT_THROW_DETONATOR && (object->player.flags_e20 & APIOBJECT_FORCE_BLOCKED) == 0 &&
-            (CInfo[context].flags & 0x4000000) == 0 &&
-            ((CInfo[context].flags & 0x8000000) == 0 || (object->player.context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE) == 0) &&
+            (U64_PAIR(&CInfo[context].flags) & 0x4000000) == 0 &&
+            ((U64_PAIR(&CInfo[context].flags) & 0x8000000) == 0 ||
+             (object->player.context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE) == 0) &&
             context != CHARACTER_CONTEXT_FORCE) {
             if (object->ground_flags && object->player.pad->input_magnitude == 0.0f &&
                 object->character_model->model_data_b[object->character_data->game_character->hover_fall_mode == 0 &&
                                                               (object->character_data->model_flags & CHARACTER_MODEL_BLASTER)
                                                           ? 0x7e
                                                           : 0x10] != NULL &&
-                (context == CHARACTER_CONTEXT_NONE || (CInfo[context].flags & 4) != 0)) {
+                (context == CHARACTER_CONTEXT_NONE || (U64_PAIR(&CInfo[context].flags) & 4) != 0)) {
                 SlowWeaponIn(object);
             } else {
                 FastWeaponIn(object, 1);
@@ -4524,8 +4525,8 @@ static void ForceCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 unused) {
         }
         return;
     }
-    if ((object->character_data->game_character->flags_094 & CHARACTER_OPTION_NO_FORCE) != 0 ||
-        (object->player.flags_e20 & APIOBJECT_FORCE_BLOCKED) != 0 || object->player.character_context == CHARACTER_CONTEXT_FORCE_THROW) {
+    if ((object->character_data->game_character->flags_094 & CHARACTER_OPTION_NO_FORCE) != 0 || (object->player.force_flags & 1) != 0 ||
+        object->player.character_context == CHARACTER_CONTEXT_FORCE_THROW) {
         return;
     }
     if (object->ground_flags && (object->player.character_context == CHARACTER_CONTEXT_NONE ||
@@ -6933,24 +6934,25 @@ static void SelfDestructCode(GAMEOBJECT *object, i32 pressed) {
 static void SmartBombCode(GAMEOBJECT *object) {
     i32 old_phase;
     f32 sign;
+    GAMEOBJECT *self = object; /* the timer goes through this copy: read through object, VC8 swaps the fadd operands */
     if (!Cheat_IsOn(20) || (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
         (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0 || InCollectList_Index((i16)object->id, NULL, 0) == -1) {
-        object->player.combo_input_timer = 0.0f;
+        self->player.combo_input_timer = 0.0f;
         return;
     }
-    if (object->player.combo_input_timer == 0.0f) {
+    if (self->player.combo_input_timer == 0.0f) {
         if ((object->player.pad->buttons_pressed & GAMEPAD_SPECIAL) != 0) {
-            object->player.combo_input_timer += FRAMETIME;
+            self->player.combo_input_timer += FRAMETIME;
         }
         return;
     }
     if ((object->player.pad->buttons_held & GAMEPAD_SPECIAL) == 0) {
         return;
     }
-    old_phase = (i32)((f64)object->player.combo_input_timer / (f64)0.2f);
-    object->player.combo_input_timer += FRAMETIME;
-    if (object->player.combo_input_timer >= 2.0f) {
-        object->player.combo_input_timer = 0.0f;
+    old_phase = (i32)((f64)self->player.combo_input_timer / (f64)0.2f);
+    self->player.combo_input_timer += FRAMETIME;
+    if (self->player.combo_input_timer >= 2.0f) {
+        self->player.combo_input_timer = 0.0f;
         AddExplosion(&object->collision_position, (f32)((f64)AreaPickupScale * 7.5), 1.0f, NULL, -1,
                      EXPLOSION_HITS_CHARACTERS | EXPLOSION_KILLS | EXPLOSION_SPARES_PLAYERS);
         NewRumbleAllPlayers(1.0f, 0.1f, 0, 0);
@@ -6959,8 +6961,8 @@ static void SmartBombCode(GAMEOBJECT *object) {
         GameCam_NewShake(GameCam, 2.0f, 1.0f, 1.0f);
         PlaySfx("Explode1", NULL);
     } else {
-        PlaySfxAndSetVolume("JForceUse", NULL, (f32)((f64)object->player.combo_input_timer * 3.0 * 0.5));
-        if ((i32)((f64)object->player.combo_input_timer / (f64)0.2f) != old_phase) {
+        PlaySfxAndSetVolume("JForceUse", NULL, (f32)((f64)self->player.combo_input_timer * 3.0 * 0.5));
+        if ((i32)((f64)self->player.combo_input_timer / (f64)0.2f) != old_phase) {
             NewBuzzFrames(object->player.pad->bound_pad, 2, 0);
         }
     }
@@ -7337,6 +7339,7 @@ void Animate_CANNON(GAMEOBJECT *object) {
 }
 
 void Animate_WEIRDO(GAMEOBJECT *object) {
+    GAMEOBJECT *self = object; /* the fall timer goes through this copy: read through object, VC8 swaps the fadd operands */
     i16 animation;
     i32 weapon;
     if ((U64_PAIR(&CInfo[object->player.character_context].flags) & 0x10) != 0) {
@@ -7391,9 +7394,9 @@ void Animate_WEIRDO(GAMEOBJECT *object) {
     animation = object->anim_packet.requested_animation;
     if (animation == ACTION_FALL || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
                                      (animation == ACTION_FALL2 || animation == ACTION_FALL3 || animation == ACTION_FALL4))) {
-        object->player.fall_animation_timer += FRAMETIME;
+        self->player.fall_animation_timer += FRAMETIME;
     } else {
-        object->player.fall_animation_timer = 0.0f;
+        self->player.fall_animation_timer = 0.0f;
     }
     weapon = object->character_data->game_character->weapon_model;
     if (weapon == 101 || weapon == 103 || weapon == 105 || weapon == 107) {
@@ -7406,6 +7409,7 @@ void Animate_DEFAULT(GAMEOBJECT *object) {
 }
 
 void Animate_JEDI(GAMEOBJECT *object) {
+    GAMEOBJECT *self = object; /* the fall timer goes through this copy: read through object, VC8 swaps the fadd operands */
     i16 animation;
     if ((object->player.flags_e20 & APIOBJECT_FORCE_BLOCKED) != 0) {
         if (((object->player.flags_e20 & APIOBJECT_WEAPON_OUT) != 0 || object->player.weapon_draw_state == 1) &&
@@ -7479,14 +7483,15 @@ void Animate_JEDI(GAMEOBJECT *object) {
     animation = object->anim_packet.requested_animation;
     if (animation == ACTION_FALL || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
                                      (animation == ACTION_FALL2 || animation == ACTION_FALL3 || animation == ACTION_FALL4))) {
-        object->player.fall_animation_timer += FRAMETIME;
+        self->player.fall_animation_timer += FRAMETIME;
     } else {
-        object->player.fall_animation_timer = 0.0f;
+        self->player.fall_animation_timer = 0.0f;
     }
     AnimationWeaponEffect(object);
 }
 
 void Animate_ASTROMECH(GAMEOBJECT *object) {
+    GAMEOBJECT *self = object; /* the fall timer goes through this copy: read through object, VC8 swaps the fadd operands */
     i16 animation;
     if ((U64_PAIR(&CInfo[object->player.character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->player.context_animation;
@@ -7518,9 +7523,9 @@ void Animate_ASTROMECH(GAMEOBJECT *object) {
     animation = object->anim_packet.requested_animation;
     if (animation == ACTION_FALL || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
                                      (animation == ACTION_FALL2 || animation == ACTION_FALL3 || animation == ACTION_FALL4))) {
-        object->player.fall_animation_timer += FRAMETIME;
+        self->player.fall_animation_timer += FRAMETIME;
     } else {
-        object->player.fall_animation_timer = 0.0f;
+        self->player.fall_animation_timer = 0.0f;
     }
 }
 
@@ -7604,6 +7609,7 @@ i32 SetProtocolDroidFallAnim(GAMEOBJECT *object) {
 }
 
 void Animate_PROTOCOL(GAMEOBJECT *object) {
+    GAMEOBJECT *self = object; /* the fall timer goes through this copy: read through object, VC8 swaps the fadd operands */
     i32 falling = 0;
     i16 animation;
     if ((U64_PAIR(&CInfo[object->player.character_context].flags) & 0x10) != 0) {
@@ -7657,9 +7663,9 @@ void Animate_PROTOCOL(GAMEOBJECT *object) {
     animation = object->anim_packet.requested_animation;
     if (animation == ACTION_FALL || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
                                      (animation == ACTION_FALL2 || animation == ACTION_FALL3 || animation == ACTION_FALL4))) {
-        object->player.fall_animation_timer += FRAMETIME;
+        self->player.fall_animation_timer += FRAMETIME;
     } else {
-        object->player.fall_animation_timer = 0.0f;
+        self->player.fall_animation_timer = 0.0f;
     }
 }
 
@@ -8164,7 +8170,7 @@ f32 FindPodHoverHeight(GAMEOBJECT *object) {
     return height;
 }
 
-void SetPodMergeAnims(GAMEOBJECT *object, i32 index) {
+void SetPodMergeAnims(ANIMPACKET *packet, i32 index) {
     f32 roll = pod_roll[index];
 
     union {
@@ -8173,17 +8179,19 @@ void SetPodMergeAnims(GAMEOBJECT *object, i32 index) {
     } value, absolute;
 
     if (roll < 0.0f) {
-        object->anim_packet.requested_animation = 1;
-        object->anim_packet.overlay_animation = 0x26;
+        packet->requested_animation = 1;
+        packet->overlay_animation = 0x26;
     } else {
-        object->anim_packet.requested_animation = 1;
-        object->anim_packet.overlay_animation = 0x4f;
+        packet->requested_animation = 1;
+        packet->overlay_animation = 0x4f;
     }
-    object->anim_packet.blend_source_time = pod_animtime[index];
-    object->anim_packet.blend_target_time = pod_animtime[index];
+    packet->blend_source_time = pod_animtime[index];
+    packet->blend_target_time = pod_animtime[index];
     value.value = roll;
     absolute.bits = value.bits & 0x7fffffff;
-    object->anim_overlay_weight = absolute.value;
+    // MATCH-EXCEPTION: the caller passes &object->anim_packet; the original writes GAMEOBJECT.anim_overlay_weight, the word
+    // after the packet, through that pointer.
+    *(f32 *)(packet + 1) = absolute.value;
 }
 
 void Animate_POD(GAMEOBJECT *object) {
@@ -8204,7 +8212,7 @@ void Animate_POD(GAMEOBJECT *object) {
             if (time >= podanimendframe) {
                 pod_animtime[index] = (f32)((f64)time - ((f64)podanimendframe - 1.0));
             }
-            SetPodMergeAnims(object, index);
+            SetPodMergeAnims(&object->anim_packet, index);
             return;
         }
     }

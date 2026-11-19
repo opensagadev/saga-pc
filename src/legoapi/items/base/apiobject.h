@@ -1207,7 +1207,8 @@ typedef struct PLAYERPACKET {        // size 0x788
             u8 unknown_e21; // 0x75d
             /* bit 0 the weapon is out (weapon_animation) */
             u8 weapon_flags; // 0x75e
-            u8 unknown_e23;  // 0x75f
+            /* bit 0 is APIOBJECT_FORCE_BLOCKED, read as a byte */
+            u8 force_flags; // 0x75f
         };
 
         struct {                            // size 0x4

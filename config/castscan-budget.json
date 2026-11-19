@@ -15,7 +15,7 @@
   "field-address": 256,
   "byte-pointer": 362,
   "record-pun": 507,
-  "scalar-pun": 277,
+  "scalar-pun": 278,
   "int-pointer": 809,
   "const": 810,
   "void-pointer-cpp": 629,

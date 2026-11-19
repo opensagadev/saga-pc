@@ -67,7 +67,7 @@ extern "C" {
     extern f32 PodDustEmissionRate;
     extern f32 PodDustHeightScale;
     i32 PodRace_InStartCountdown(WORLDINFO *);
-    void SetPodMergeAnims(GAMEOBJECT *, i32);
+    void SetPodMergeAnims(ANIMPACKET *, i32);
     extern u8 gunship_flags[10];
     extern struct gameobject_s *Maul_obj;
     void PodRaceReset(void);
