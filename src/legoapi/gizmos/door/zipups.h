@@ -69,7 +69,7 @@ struct zipup_s {   // size 0x7c
     u16 pitch_adjustment;          // 0x60
     u16 direction;                 // 0x62
     u16 facing_angle;              // 0x64
-    u8 reserved_66[2];             // 0x66
+    u8 unknown_66[2];              // 0x66
 
     union { // size 0x2
         u16 flags_word;
@@ -88,14 +88,14 @@ struct zipup_s {   // size 0x7c
             u16 bit_20 : 1; // 0x68:5
         } config;
 
-        struct {                   // size 0x2
-            u16 reserved_68_0 : 6; // 0x68:0
-            u16 active : 1;        // 0x68:6
-            u16 visible : 1;       // 0x68:7
+        struct {                  // size 0x2
+            u16 unknown_bits : 6; // 0x68:0
+            u16 active : 1;       // 0x68:6
+            u16 visible : 1;      // 0x68:7
         };
     }; // 0x68
 
-    u8 reserved_6a[2]; // 0x6a
+    u8 unknown_6a[2]; // 0x6a
 
     union { // size 0x10
 

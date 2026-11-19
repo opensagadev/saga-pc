@@ -80,16 +80,16 @@ typedef struct racepod_resource_s {
     NUVEC4 previous_displacement;
     i32 pitch;
     i32 yaw;
-    i32 reserved_78;
+    i32 unknown_0078;
     f32 speed;
     FLIGHT_SPLINE_RESOURCE *spline;
     f32 start;
     i16 model_id;
-    i16 reserved_8a;
+    i16 unknown_008a;
     f32 distance;
     GAMEOBJECT *object;
     void *next;
-    u8 reserved_98[8];
+    u8 unknown_0098[8];
 } RACEPOD_RESOURCE;
 
 typedef struct podrace_resource_s {
@@ -104,7 +104,7 @@ typedef struct podrace_resource_s {
     i32 attempts_per_increment;
     i32 attempts;
     u8 flags;
-    u8 reserved_b021[15];
+    u8 unknown_b021[15];
 } PODRACE_RESOURCE;
 
 extern nuhspecial_s SebulbaMineSpecial;

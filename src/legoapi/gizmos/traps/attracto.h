@@ -29,7 +29,7 @@ typedef struct attracto_s { // size 0x74
         };
     }; // 0x62
 
-    u8 reserved_63;        // 0x63
+    u8 unknown_63;         // 0x63
     NUVEC active_position; // 0x64
     u16 ground_angle_z;    // 0x70
     u16 ground_angle_x;    // 0x72

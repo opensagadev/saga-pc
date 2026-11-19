@@ -138,7 +138,7 @@ typedef struct hub_episode_info_s {
     const char *door_name;
     const char *lock_on_name;
     i32 force_open;
-    u32 reserved_10;
+    u32 unknown_10;
     EPISODEDATA *data;
     GIZMO *door;
     nuhspecial_s lock_on;

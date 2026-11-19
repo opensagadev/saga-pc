@@ -24,7 +24,7 @@ struct LEDGE_s {    // size 0x38
 
     u8 type_index;     // 0x18
     u8 flags;          // 0x19
-    u8 reserved_1a[2]; // 0x1a
+    u8 pad_1a[2];      // 0x1a
     i16 link_previous; // 0x1c
     i16 link_next;     // 0x1e
     NUVEC bounds_min;  // 0x20

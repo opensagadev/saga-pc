@@ -20,7 +20,7 @@ extern "C" {
         u8 current_level;           // 0x28
         u8 hitpoints;               // 0x29
         u8 contact_index;           // 0x2a
-        u8 reserved_2b;             // 0x2b
+        u8 unknown_2b;              // 0x2b
     } TAKEOVEROBJECT;
 
     extern TAKEOVEROBJECT takeoverobjects[8];

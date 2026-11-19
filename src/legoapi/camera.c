@@ -23,12 +23,12 @@
 #include "nu2api/numath/nuvec.h"
 
 typedef struct CAMERA_JUDDER_FIELDS { // size 0x128
-    u8 reserved_00[0x11c];            // 0x000
+    u8 unknown_000[0x11c];            // 0x000
     NUVEC position;                   // 0x11c
 } CAMERA_JUDDER_FIELDS;
 
 typedef struct LEVEL_JUDDER_FIELDS { // size 0xce
-    u8 reserved_00[0xcd];            // 0x00
+    u8 unknown_000[0xcd];            // 0x00
     u8 maximum_distance;             // 0xcd
 } LEVEL_JUDDER_FIELDS;
 

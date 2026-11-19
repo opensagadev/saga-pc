@@ -12,7 +12,7 @@ typedef struct textcrawl_s {   // size 0x10
     i16 *character_bonus_text; // 0x8
     u8 paragraph_count;        // 0xc
     i8 area;                   // 0xd
-    u8 reserved_0e[2];         // 0xe
+    u8 unknown_0e[2];          // 0xe
 } TEXTCRAWL;
 
 #ifdef __cplusplus

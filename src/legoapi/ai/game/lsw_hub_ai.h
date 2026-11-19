@@ -17,7 +17,7 @@ typedef struct HUB_AI_STATE {                        // size 0x150
     i16 door_state;                                  // 0x0f2
     i16 table_count;                                 // 0x0f4
     i16 counter_count;                               // 0x0f6
-    u8 reserved_f8[4];                               // 0x0f8
+    u8 unknown_f8[4];                                // 0x0f8
     void *customer;                                  // 0x0fc
     void *serving_object;                            // 0x100
     struct gizaimessage_s *area_message;             // 0x104

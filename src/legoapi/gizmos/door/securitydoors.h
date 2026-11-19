@@ -43,7 +43,7 @@ typedef struct security_door_record_s { // size 0xc0
     u16 terrain_angle_z;   // 0xb0
     u16 terrain_angle_x;   // 0xb2
     f32 opening;           // 0xb4
-    u8 reserved_b8[8];     // 0xb8
+    u8 unknown_b8[8];      // 0xb8
 } SECURITY_DOOR_RECORD;
 
 #ifdef __cplusplus

@@ -32,9 +32,9 @@ struct FLOWBOX {          // size 0x20
     union { // size 0x4
         i32 runtime_id;
 
-        struct {                 // size 0x4
-            u8 ai_trigger_group; // 0x04
-            u8 reserved_05[3];   // 0x05
+        struct {                            // size 0x4
+            u8 ai_trigger_group;            // 0x04
+            u8 unknown_05_trigger_group[3]; // 0x05
         };
     }; // 0x04
 

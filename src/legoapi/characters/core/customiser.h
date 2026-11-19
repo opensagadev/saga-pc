@@ -28,7 +28,7 @@ typedef struct GAME_CUSTOMISER_START { // size 0x38
 /* Customiser animation packets are allocated with a 0x48 stride: an ANIMPACKET and four more bytes. */
 typedef struct customiser_anim_packet_s { // size 0x48
     ANIMPACKET packet;                    // 0x00
-    u8 reserved_44[4];                    // 0x44
+    u8 unknown_44[4];                     // 0x44
 } CUSTOMISER_ANIM_PACKET;
 
 typedef struct customiser_config_s {                        // size 0xc98
@@ -42,15 +42,15 @@ typedef struct customiser_config_s {                        // size 0xc98
     CUSTOMISER_ANIM_PACKET animation_packets[2];            // 0x178
     i32 model_texture_ids[18];                              // 0x208
     i8 locator_indices[9];                                  // 0x250
-    u8 reserved_259[3];                                     // 0x259
+    u8 unknown_259[3];                                      // 0x259
     i8 layer_indices[9];                                    // 0x25c
-    u8 reserved_265[3];                                     // 0x265
+    u8 unknown_265[3];                                      // 0x265
     NUMTX joint_matrices[2][16];                            // 0x268
     u16 *animation_ids_to_load;                             // 0xa68
     u8 animation_active[2];                                 // 0xa6c
     u8 animation_state[2];                                  // 0xa6e
     f32 animation_values[2];                                // 0xa70
-    u8 reserved_a78[0x1b0];                                 // 0xa78
+    u8 unknown_a78[0x1b0];                                  // 0xa78
     u16 default_pieces[2][10];                              // 0xc28
     f32 locator_x_offsets[9];                               // 0xc50
     f32 locator_y_offsets[9];                               // 0xc74

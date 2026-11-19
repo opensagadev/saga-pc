@@ -13,10 +13,10 @@ typedef struct AREA_SAVE_PICKUP { // size 0xc
     union { // size 0xc
 
         struct {                    // size 0xc
-            u8 reserved_00[5];      // 0x0
+            u8 unknown_0[5];        // 0x0
             u8 minikit_count;       // 0x5
             u8 red_brick_collected; // 0x6
-            u8 reserved_07[5];      // 0x7
+            u8 unknown_07[5];       // 0x7
         };
 
         struct {              // size 0xc

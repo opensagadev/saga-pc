@@ -51,12 +51,12 @@ extern "C" {
 }
 
 typedef struct WORLD_OBJECT_SETUP_READER { // size 0x2968
-    u8 reserved_00[0x2964];                // 0x0000
+    u8 unknown_0000[0x2964];               // 0x0000
     NUGSCN *icons_gscn;                    // 0x2964
 } WORLD_OBJECT_SETUP_READER;
 
 typedef struct menu_mission_reader_s { // size 0x13
-    u8 reserved_00[0x12];              // 0x00
+    u8 unknown_00[0x12];               // 0x00
     i8 active_count;                   // 0x12
 } MENU_MISSION_READER;
 

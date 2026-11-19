@@ -16,7 +16,7 @@
 #define SUIT_ATTRACT 0x80
 
 typedef struct SUIT_LAYERS { // size 0xe
-    u8 reserved_00[0xc];     // 0x0
+    u8 unknown_00[0xc];      // 0x0
     u16 flags;               // 0xc
 } SUIT_LAYERS;
 

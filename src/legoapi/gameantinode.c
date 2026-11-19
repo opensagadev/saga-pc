@@ -32,7 +32,7 @@ typedef struct antinode_s {  // size 0x40
     u8 grid_max_z;           // 0x36
     u8 reserved_37;          // 0x37
     struct antinode_s *next; // 0x38
-    u8 reserved_3c[4];       // 0x3c
+    u8 unknown_3c[4];        // 0x3c
 } ANTINODE;
 
 typedef struct antinode_sys_s { // size 0x18
@@ -57,24 +57,24 @@ typedef struct antinode_data_s { // size 0x24
 } ANTINODE_DATA;
 
 typedef struct antinode_world_s { // size 0x15c
-    u8 reserved_00[0x144];        // 0x000
+    u8 unknown_0000[0x144];       // 0x000
     NUVEC level_min;              // 0x144
     NUVEC level_max;              // 0x150
 } ANTINODE_WORLD;
 
 typedef struct ANTINODE_AI_OUTPUT { // size 0x58
-    u8 reserved_00[0x10];           // 0x00
+    u8 unknown_00[0x10];            // 0x00
     f32 min_y;                      // 0x10
-    u8 reserved_14[4];              // 0x14
+    u8 unknown_14[4];               // 0x14
     f32 max_y;                      // 0x18
-    u8 reserved_1c[0x1c];           // 0x1c
+    u8 unknown_1c[0x1c];            // 0x1c
     i32 rotation;                   // 0x38
-    u8 reserved_3c[4];              // 0x3c
+    u8 unknown_3c[4];               // 0x3c
     f32 extent_x;                   // 0x40
     f32 extent_z;                   // 0x44
-    u8 reserved_48[2];              // 0x48
+    u8 unknown_48[2];               // 0x48
     u8 shape;                       // 0x4a
-    u8 reserved_4b[5];              // 0x4b
+    u8 unknown_4b[5];               // 0x4b
     u32 user_data[2];               // 0x50
 } ANTINODE_AI_OUTPUT;
 

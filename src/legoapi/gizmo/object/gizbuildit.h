@@ -51,9 +51,9 @@ typedef struct GIZBUILDIT {              // size 0x7c
             u16 active : 1;          // 0x7a:0
             u16 visible : 1;         // 0x7a:1
             u16 flag_04 : 1;         // 0x7a:2
-            u16 reserved_7a_3 : 4;   // 0x7a:3
+            u16 unknown_bits_3 : 4;  // 0x7a:3
             u16 flag_80 : 1;         // 0x7a:7
-            u16 reserved_7a_8 : 1;   // 0x7a:8
+            u16 unknown_bit_8 : 1;   // 0x7a:8
             u16 reward_released : 1; // 0x7a:9
         } availability;
     }; // 0x7a

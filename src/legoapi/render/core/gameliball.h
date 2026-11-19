@@ -51,7 +51,7 @@ typedef struct SFX_GROUP { // size 0x8
     i16 first_sample;      // 0x0
     i16 sample_count;      // 0x2
     i16 cursor;            // 0x4
-    i16 reserved_06;       // 0x6
+    i16 unknown_0006;      // 0x6
 } SFX_GROUP;
 
 typedef struct TERRAIN_POLYGON_INFO TERRAIN_POLYGON_INFO;
@@ -136,7 +136,7 @@ typedef struct TerrainQuery_s {                   // size 0x948
     f32 inverse_object_scale;                     // 0x064
     f32 inverse_object_scale_sq;                  // 0x068
     i16 terrain_group_index;                      // 0x06c
-    u8 reserved_6e[2];                            // 0x06e
+    u8 pad_06e[2];                                // 0x06e
     NUVEC local_start;                            // 0x070
     NUVEC local_end;                              // 0x07c
     u8 hit_type;                                  // 0x088
@@ -154,9 +154,9 @@ typedef struct TerrainQuery_s {                   // size 0x948
     NUVEC platform_position;                      // 0x0c0
     NUVEC platform_normal;                        // 0x0cc
     NUVEC previous_movement_normal;               // 0x0d8
-    u8 reserved_e4[0x18];                         // 0x0e4
+    u8 pad_0e4[0x18];                             // 0x0e4
     NUVEC transformed_vertices[4];                // 0x0fc
-    u8 reserved_12c[0x1c];                        // 0x12c
+    u8 pad_12c[0x1c];                             // 0x12c
 
     union { // size 0x800
         u8 scan_list_storage[0x800];
@@ -171,43 +171,43 @@ struct TERRAIN_FILE_CHUNK { // size 0x34
     NUVEC origin;           // 0x08
     i16 chunk_type;         // 0x14
     u16 scene_index;        // 0x16
-    u8 reserved_18[0x14];   // 0x18
+    u8 unknown_18[0x14];    // 0x18
     u32 platform_flags;     // 0x2c
-    u16 reserved_30;        // 0x30
+    u16 unknown_30;         // 0x30
     u16 group_info;         // 0x32
 };
 
 struct TERRAIN_SCENE_OBJECT { // size 0x50
-    u8 reserved_00[0x44];     // 0x00
+    u8 pad_00[0x44];          // 0x00
     u32 flags;                // 0x44
     void *object;             // 0x48
-    u8 reserved_4c[4];        // 0x4c
+    u8 pad_4c[4];             // 0x4c
 };
 
 struct TERRAIN_DISPLAY_OBJECT { // size 0xd0
-    u8 reserved_00[0x40];       // 0x00
+    u8 pad_00[0x40];            // 0x00
     u8 embedded_object[0x78];   // 0x40
     u32 flags;                  // 0xb8
-    u32 reserved_bc;            // 0xbc
+    u32 unknown_bc;             // 0xbc
     i32 scene_object_index;     // 0xc0
     void *object;               // 0xc4
-    u8 reserved_c8[8];          // 0xc8
+    u8 pad_c8[8];               // 0xc8
 };
 
 struct TERRAIN_DISPLAY_SCENE {       // size 0x74
-    u8 reserved_00[0x6c];            // 0x00
+    u8 pad_00[0x6c];                 // 0x00
     i32 object_count;                // 0x6c
     TERRAIN_DISPLAY_OBJECT *objects; // 0x70
 };
 
 struct TERRAIN_GSCENE {                   // size 0x114
-    u8 reserved_00[0x1c];                 // 0x000
+    u8 pad_00[0x1c];                      // 0x000
     i32 object_count;                     // 0x01c
     TERRAIN_SCENE_OBJECT *objects;        // 0x020
-    u8 reserved_24[0x34];                 // 0x024
+    u8 pad_24[0x34];                      // 0x024
     void *object_map_present;             // 0x058
     u16 *object_map;                      // 0x05c
-    u8 reserved_60[0xb0];                 // 0x060
+    u8 pad_60[0xb0];                      // 0x060
     TERRAIN_DISPLAY_SCENE *display_scene; // 0x110
 };
 
@@ -252,7 +252,7 @@ typedef struct sfx_record_s { // size 0x40
     u32 sample_id_flags;      // 0x04
     i32 pitch;                // 0x08
     i8 priority;              // 0x0c
-    u8 reserved_0d[3];        // 0x0d
+    u8 unknown_000d[3];       // 0x0d
     i16 next;                 // 0x10
     i16 volume;               // 0x12
     i16 group;                // 0x14
@@ -281,7 +281,7 @@ typedef struct sfx_file_info_s { // size 0x1c
     i32 pitch;                   // 0x04
     i32 static_sample;           // 0x08
     i32 index;                   // 0x0c
-    u32 reserved_10[3];          // 0x10
+    u32 unknown_10[3];           // 0x10
 } SFX_FILE_INFO;
 
 typedef struct gameanimprogress_s { // size 0xc
@@ -664,7 +664,7 @@ typedef struct TERRAIN_PLATFORM { // size 0x6c
     }; // 0x4c
 
     i16 bounce_frames;   // 0x50
-    u8 reserved_52[2];   // 0x52
+    u8 pad_52[2];        // 0x52
     f32 bounce_impulse;  // 0x54
     f32 bounce_offset;   // 0x58
     f32 bounce_velocity; // 0x5c
@@ -771,7 +771,7 @@ extern "C" {
     struct SPECIAL_RESOURCE_EVENT {   // size 0x10
         f32 previous_frame;           // 0x0
         u8 flags;                     // 0x4
-        u8 reserved_05;               // 0x5
+        u8 unknown_05;                // 0x5
         i16 sfx_id;                   // 0x6
         f32 trigger_frame;            // 0x8
         SPECIAL_RESOURCE_EVENT *next; // 0xc
@@ -779,7 +779,7 @@ extern "C" {
 
     typedef struct SPECIAL_RESOURCE_ENTRY { // size 0x14
         u8 flags;                           // 0x00
-        u8 reserved_01;                     // 0x01
+        u8 unknown_01;                      // 0x01
         i8 event_count;                     // 0x02
         i8 animation_playing;               // 0x03
         nuhspecial_s special;               // 0x04
@@ -787,13 +787,13 @@ extern "C" {
     } SPECIAL_RESOURCE_ENTRY;
 
     typedef struct SPECIAL_RESOURCE_WORLD { // size 0x46dc
-        u8 reserved_00[0x80];               // 0x0000
+        u8 unknown_000[0x80];               // 0x0000
         char config_file[0x80];             // 0x0080
-        u8 reserved_100[4];                 // 0x0100
+        u8 unknown_100[4];                  // 0x0100
         VARIPTR buffer;                     // 0x0104
-        u8 reserved_108[0x13c - 0x108];     // 0x0108
+        u8 unknown_108[0x13c - 0x108];      // 0x0108
         struct NUGSCN_s *scene;             // 0x013c
-        u8 reserved_140[0x46cc - 0x140];    // 0x0140
+        u8 unknown_140[0x46cc - 0x140];     // 0x0140
         i32 entry_count;                    // 0x46cc
         SPECIAL_RESOURCE_ENTRY *entries;    // 0x46d0
         i32 event_count;                    // 0x46d4
@@ -902,7 +902,7 @@ extern "C" {
         i16 effect_index;                               // 0x1c
         i16 frame;                                      // 0x1e
         i16 rotation_y;                                 // 0x20
-        i16 reserved_22;                                // 0x22
+        i16 unknown_022;                                // 0x22
         f32 collision_plane;                            // 0x24
         f32 restitution;                                // 0x28
     } DEBRIS_CHUNK_CONTROL;

@@ -72,7 +72,7 @@ typedef struct characterdata_s {                    // size 0x4c
     f32 top;                                        // 0x38
     f32 model_scale;                                // 0x3c
     u8 flags;                                       // 0x40
-    u8 reserved_41;                                 // 0x41
+    u8 unknown_0041;                                // 0x41
     i16 icon_model;                                 // 0x42
     /* APICHARACTERDATA.ai_path_capabilities */
     u32 ai_path_capabilities; // 0x44

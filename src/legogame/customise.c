@@ -70,7 +70,7 @@ typedef struct custom_piece_anim_s {
     u16 start_angle;
     u16 target_angle;
     u16 current_angle;
-    u8 reserved_12[2];
+    u8 unknown_12[2];
 } CUSTOM_PIECE_ANIM;
 
 /* Native customiser menu drawing and private matrix helpers; append to customise.c. */

@@ -34,7 +34,7 @@ typedef struct panel_movement_s { // size 0x90
     char name[16];                // 0x40
     NUVEC position;               // 0x50
     u16 y_rotation;               // 0x5c
-    u8 reserved_5e[3];            // 0x5e
+    u8 unknown_5e[3];             // 0x5e
     u8 model_variant;             // 0x61
 
     union { // size 0x1

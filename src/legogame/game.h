@@ -250,7 +250,7 @@ extern "C" {
 typedef struct ANIM_REDIRECT { // size 0x8
     const char *name;          // 0x0
     i16 animation_id;          // 0x4
-    u8 reserved_06[2];         // 0x6
+    u8 pad_06[2];              // 0x6
 } ANIM_REDIRECT;
 
 #ifdef __cplusplus
@@ -422,5 +422,5 @@ typedef struct custom_piece_config_s {
     u16 availability_flags;
     u32 model_flags;
     u32 gameplay_flags;
-    u8 reserved_1c[12];
+    u8 pad_1c[12];
 } CUSTOM_PIECE_CONFIG;

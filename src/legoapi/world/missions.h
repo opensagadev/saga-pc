@@ -35,7 +35,7 @@ extern "C" {
 
             struct {                  // size 0x1
                 u8 pickups : 1;       // 0x1e:0
-                u8 reserved_1e_1 : 7; // 0x1e:1
+                u8 unknown_flags : 7; // 0x1e:1
             };
         }; // 0x1e
 

@@ -31,9 +31,9 @@ typedef struct cheat_s { // size 0x20
     char *name;          // 0x00
     i16 *text_id;        // 0x04
     u8 enabled;          // 0x08
-    u8 reserved_09[2];   // 0x09
+    u8 unknown_0009[2];  // 0x09
     i8 area_index;       // 0x0b
-    i32 reserved_0c;     // 0x0c
+    i32 unknown_0c;      // 0x0c
     char *code;          // 0x10
     i32 extra_price;     // 0x14
     char *extra_name;    // 0x18

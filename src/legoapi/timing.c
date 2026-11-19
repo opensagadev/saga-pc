@@ -70,12 +70,12 @@ void UpdateTimer(TIMER *timer) {
 }
 
 typedef struct GAME_TIMING_MISSION_DATA { // size 0x12
-    u8 reserved_00[0x10];                 // 0x00
+    u8 unknown_00[0x10];                  // 0x00
     u16 time;                             // 0x10
 } GAME_TIMING_MISSION_DATA;
 
 typedef struct GAME_TIMING_AREA_SAVE { // size 0xc
-    u8 reserved_00[8];                 // 0x0
+    u8 unknown_00[8];                  // 0x0
     f32 challenge_trial_time;          // 0x8
 } GAME_TIMING_AREA_SAVE;
 

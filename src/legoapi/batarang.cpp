@@ -63,7 +63,7 @@ extern "C" {
 }
 
 typedef struct suit_ai_capabilities_s {
-    u8 reserved_00[0x10];
+    u8 unknown_00[0x10];
     u32 path_capabilities;
 } SUIT_AI_CAPABILITIES;
 

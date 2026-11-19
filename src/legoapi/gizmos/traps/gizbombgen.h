@@ -14,7 +14,7 @@ struct GIZBOMBGEN_s {                    // size 0x2c
     struct gameanimset_s *anim_set;      // 0x1c
     i32 interval;                        // 0x20
     struct gameobject_s *generated_bomb; // 0x24
-    i16 reserved_28;                     // 0x28
+    i16 unknown_28;                      // 0x28
 
     union { // size 0x2
         u16 flags;
@@ -43,8 +43,8 @@ struct GIZBOMBGENSYS_s {                  // size 0x14
         };
     }; // 0x0c
 
-    u16 reserved_0e; // 0x0e
-    void *progress;  // 0x10
+    u16 unknown_0e; // 0x0e
+    void *progress; // 0x10
 };
 
 #ifdef __cplusplus

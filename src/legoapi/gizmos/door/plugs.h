@@ -15,8 +15,8 @@ typedef struct carry_plug_s { // size 0x34
     u8 active : 1;            // 0x23:0
     u8 visible : 1;           // 0x23:1
     u8 plugged : 1;           // 0x23:2
-    u8 reserved_23_3 : 5;     // 0x23:3
-    u8 reserved_24[0x10];     // 0x24
+    u8 unknown_23 : 5;        // 0x23:3
+    u8 unknown_24[0x10];      // 0x24
 } CARRY_PLUG;
 
 typedef struct carry_plug_sys_s { // size 0x8

@@ -1453,7 +1453,7 @@ void DebrisPopulateInstance(i32 handle, f32 duration) {
 }
 
 typedef struct debris_collision_effect_s { // size 0x428
-    u8 reserved_00[0x2b0];                 // 0x000
+    u8 unknown_000[0x2b0];                 // 0x000
     DEBRIS_FLOAT_KEY collision_keys[8];    // 0x2b0
     i8 process_spheres;                    // 0x2f0
     i8 time_group;                         // 0x2f1
@@ -1467,7 +1467,7 @@ typedef struct debris_collision_effect_s { // size 0x428
     DEBRIS_FLOAT_KEY torus_keys1[8];       // 0x310
     DEBRIS_FLOAT_KEY torus_keys2[8];       // 0x350
     DEBRIS_FLOAT_KEY torus_keys3[8];       // 0x390
-    u8 reserved_3d0[0x58];                 // 0x3d0
+    u8 unknown_3d0[0x58];                  // 0x3d0
 } DEBRIS_COLLISION_EFFECT;
 
 NUVEC debris_collide_pt = {0};

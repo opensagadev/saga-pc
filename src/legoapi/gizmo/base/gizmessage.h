@@ -14,7 +14,7 @@ extern "C" {
         f32 value;                  // 0x28
         i8 output_values[8];        // 0x2c
         i8 output_count;            // 0x34
-        u8 reserved_35;             // 0x35
+        u8 unknown_35;              // 0x35
         u16 flags;                  // 0x36
     } GIZAIMESSAGE;
 

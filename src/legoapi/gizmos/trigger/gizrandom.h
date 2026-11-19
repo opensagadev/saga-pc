@@ -10,7 +10,7 @@ typedef struct gizrandom_s { // size 0x3c
     i32 output_weights[8];   // 0x14
     i32 selected_output;     // 0x34
     u8 flags;                // 0x38
-    u8 reserved_39[3];       // 0x39
+    u8 unknown_039[3];       // 0x39
 } GIZRANDOM;
 
 typedef struct gizrandomsys_s { // size 0xc

@@ -211,7 +211,7 @@ typedef struct level_data_s { // size 0x130
     u8 max_bombgens;               // 0x107
     u8 max_bridges;                // 0x108
     u8 max_plugs;                  // 0x109
-    u8 reserved_10a[6];            // 0x10a
+    u8 unknown_010a[6];            // 0x10a
     f32 wind_speed;                // 0x110
     f32 wind_size;                 // 0x114
     i32 music_tracks[6];           // 0x118

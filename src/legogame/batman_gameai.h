@@ -48,7 +48,7 @@ extern "C" {
     typedef struct player_batarang_slot_s { // size 0xb4
 
         union { // size 0xb4
-            u8 reserved_00[0xb4];
+            u8 unknown_00[0xb4];
 
             struct { // size 0xb4
 

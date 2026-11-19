@@ -80,7 +80,7 @@ typedef struct gizobstacle_system_s { // size 0x14
     u16 count;                        // 0x08
     u16 capacity;                     // 0x0a
     u16 active_gizmo_count;           // 0x0c
-    u16 reserved_0e;                  // 0x0e
+    u16 unknown_00e;                  // 0x0e
     GAMEANIMOBJPOOL *anim_pool;       // 0x10
 } GIZOBSTACLE_SYSTEM;
 
@@ -97,7 +97,7 @@ typedef struct gizobstacle_progress_s { // size 0x70
 typedef struct obstacle_progress_flags_s { // size 0x4
     u32 active : 1;                        // 0x0:0
     u32 visible : 1;                       // 0x0:1
-    u32 reserved_00_2 : 30;                // 0x0:2
+    u32 unknown : 30;                      // 0x0:2
 } OBSTACLE_PROGRESS_FLAGS;
 
 typedef struct obstacle_runtime_flags_s { // size 0x4
@@ -109,7 +109,7 @@ typedef struct obstacle_runtime_flags_s { // size 0x4
     u32 anim_object_bit_1 : 1;            // 0x0:5
     u32 trigger_latched : 1;              // 0x0:6
     u32 destroyed : 1;                    // 0x0:7
-    u32 reserved_00_8 : 24;               // 0x0:8
+    u32 unknown : 24;                     // 0x0:8
 } OBSTACLE_RUNTIME_FLAGS;
 
 void GizmoObstacle_Activate(GIZMO *ptr, i32 activate) {

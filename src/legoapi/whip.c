@@ -17,7 +17,7 @@
 #include "nu2api/numath/nuvec.h"
 
 typedef struct whip_basis_s { // size 0x76c
-    u8 reserved_00[0x748];    // 0x000
+    u8 unknown_000[0x748];    // 0x000
     NUVEC basis[3];           // 0x748
 } WHIP_BASIS;
 
