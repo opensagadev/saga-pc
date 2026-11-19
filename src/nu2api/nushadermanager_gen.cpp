@@ -10,10 +10,10 @@
 #include "nu2api/nu3d/nushaderobject.h"
 #include "nu2api/nuwin32/d3dCalls.h"
 
-template <> bool PC_SHADER_MANAGER_VIEW::CreateShader(const PC_SHADER_MATERIAL_FILTER *, bool, NuShaderObject *, i32);
-template <> void PC_SHADER_MANAGER_VIEW::AdaptDescriptor(const NUSHADERMTLDESC *, const NUMTL *);
+template <> bool ShaderManagerTemplate<NuShaderObject>::CreateShader(const PC_SHADER_MATERIAL_FILTER *, bool, NuShaderObject *, i32);
+template <> void ShaderManagerTemplate<NuShaderObject>::AdaptDescriptor(const NUSHADERMTLDESC *, const NUMTL *);
 
-template <> NuShaderObject *PC_SHADER_MANAGER_VIEW::AllocateSlot(i32 *index) {
+template <> NuShaderObject *ShaderManagerTemplate<NuShaderObject>::AllocateSlot(i32 *index) {
     i32 i;
     for (i = last_allocated + 1; i < 400; ++i) {
         if (slots[i].ref_count <= 0) {
@@ -33,11 +33,11 @@ found:
     return &slots[i];
 }
 
-template <> void PC_SHADER_MANAGER_VIEW::ReleaseShader(NuShaderObject *slot) {
+template <> void ShaderManagerTemplate<NuShaderObject>::ReleaseShader(NuShaderObject *slot) {
     --slot->ref_count;
 }
 
-template <> void PC_SHADER_MANAGER_VIEW::DestroyShaders() {
+template <> void ShaderManagerTemplate<NuShaderObject>::DestroyShaders() {
     NuShaderObject *slot = slots;
     for (i32 i = 0; i < 400; ++i, ++slot) {
         if (slot->marker >= 0) {
@@ -46,23 +46,23 @@ template <> void PC_SHADER_MANAGER_VIEW::DestroyShaders() {
     }
 }
 
-template <> void PC_SHADER_MANAGER_VIEW::SetCurrentShader(NuShaderObject *slot) {
+template <> void ShaderManagerTemplate<NuShaderObject>::SetCurrentShader(NuShaderObject *slot) {
     bound_slot = slot;
 }
 
-template <> NuShaderObject *PC_SHADER_MANAGER_VIEW::GetCurrentShader() {
+template <> NuShaderObject *ShaderManagerTemplate<NuShaderObject>::GetCurrentShader() {
     return bound_slot;
 }
 
 /* Lets index 400 through, one past the last slot. */
-template <> NuShaderObject *PC_SHADER_MANAGER_VIEW::GetShader(u32 index) {
+template <> NuShaderObject *ShaderManagerTemplate<NuShaderObject>::GetShader(u32 index) {
     if (index <= 400) {
         return &slots[index];
     }
     return NULL;
 }
 
-template <> void PC_SHADER_MANAGER_VIEW::BindShader(NuShaderObject *slot) {
+template <> void ShaderManagerTemplate<NuShaderObject>::BindShader(NuShaderObject *slot) {
     if (bound_slot == slot) {
         return;
     }
@@ -78,15 +78,15 @@ extern "C" {
     f32 PCShaderShininessFactorStorage = 1.0f;
 }
 
-template <> void PC_SHADER_MANAGER_VIEW::SetShininessFactor(f32 shininess) {
+template <> void ShaderManagerTemplate<NuShaderObject>::SetShininessFactor(f32 shininess) {
     PCShaderShininessFactorStorage = shininess;
 }
 
-template <> f32 PC_SHADER_MANAGER_VIEW::GetShininessFactor() {
+template <> f32 ShaderManagerTemplate<NuShaderObject>::GetShininessFactor() {
     return PCShaderShininessFactorStorage;
 }
 
-template <> NuShaderObject *PC_SHADER_MANAGER_VIEW::FindShader(const u32 *key) {
+template <> NuShaderObject *ShaderManagerTemplate<NuShaderObject>::FindShader(const u32 *key) {
     for (i32 i = 0; i < 400; ++i) {
         if (*key == slots[i].key) {
             return &slots[i];
@@ -96,7 +96,7 @@ template <> NuShaderObject *PC_SHADER_MANAGER_VIEW::FindShader(const u32 *key) {
 }
 
 template <>
-NuShaderObject *PC_SHADER_MANAGER_VIEW::Retrieve(const NUSHADERMTLDESC *desc, const NUMTL *material, i32 variant, i32 flags,
+NuShaderObject *ShaderManagerTemplate<NuShaderObject>::Retrieve(const NUSHADERMTLDESC *desc, const NUMTL *material, i32 variant, i32 flags,
                                                  bool pixel_stage) {
     PC_SHADER_MATERIAL_FILTER filter;
     u32 key;
@@ -129,11 +129,11 @@ extern "C" {
 }
 
 extern "C" NuShaderObject *NuShaderManagerRetrieveShader(const NUSHADERMTLDESC *desc, const NUMTL *material) {
-    return reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->Retrieve(desc, material, 0, 0, false);
+    return reinterpret_cast<ShaderManagerTemplate<NuShaderObject> *>(PCShaderSlots)->Retrieve(desc, material, 0, 0, false);
 }
 
 extern "C" NuShaderObject *NuShaderManagerRetrieveShaderVariant(const NUSHADERMTLDESC *desc, const NUMTL *material, i32 variant) {
-    return reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->Retrieve(desc, material, variant, 0, false);
+    return reinterpret_cast<ShaderManagerTemplate<NuShaderObject> *>(PCShaderSlots)->Retrieve(desc, material, variant, 0, false);
 }
 
 extern "C" i32 fun_00741860(void) {
@@ -141,7 +141,7 @@ extern "C" i32 fun_00741860(void) {
 }
 
 extern "C" NuShaderObject *PCShaderCurrentObject(void) {
-    return reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->bound_slot;
+    return reinterpret_cast<ShaderManagerTemplate<NuShaderObject> *>(PCShaderSlots)->bound_slot;
 }
 
 extern "C" void NuShaderManagerSetfv(i32 semantic, const f32 *values) {
@@ -161,7 +161,7 @@ extern "C" void NuShaderManagerSetElementsfv(i32 semantic, i32 first_element, i3
 }
 
 extern "C" void NuShaderManagerBindShader(NuShaderObject *shader) {
-    PC_SHADER_MANAGER_VIEW *manager = reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots);
+    ShaderManagerTemplate<NuShaderObject> *manager = reinterpret_cast<ShaderManagerTemplate<NuShaderObject> *>(PCShaderSlots);
     if (manager->bound_slot != shader) {
         manager->bound_slot = shader;
         if (shader != NULL) {
@@ -186,7 +186,7 @@ extern "C" void NuShaderManagerSetShaderSaveFolder(const char *folder) {
 }
 
 extern "C" void NuShaderManagerDestroy(void) {
-    reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->DestroyShaders();
+    reinterpret_cast<ShaderManagerTemplate<NuShaderObject> *>(PCShaderSlots)->DestroyShaders();
     PCShaderSlots = NULL;
 }
 
@@ -194,13 +194,13 @@ extern "C" void NuShaderManagerLoadCompiledShaders(void) {
 }
 
 extern "C" void NuShaderManagerDestroyShaders(void) {
-    reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->DestroyShaders();
+    reinterpret_cast<ShaderManagerTemplate<NuShaderObject> *>(PCShaderSlots)->DestroyShaders();
 }
 
 extern "C" void NuShaderManagerSetCurrentShader(NuShaderObject *slot) {
-    reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->SetCurrentShader(slot);
+    reinterpret_cast<ShaderManagerTemplate<NuShaderObject> *>(PCShaderSlots)->SetCurrentShader(slot);
 }
 
 extern "C" void NuShaderManagerSetShininessFactor(f32 shininess) {
-    PC_SHADER_MANAGER_VIEW::SetShininessFactor(shininess);
+    ShaderManagerTemplate<NuShaderObject>::SetShininessFactor(shininess);
 }

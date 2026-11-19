@@ -308,7 +308,6 @@ template <class T> class ShaderManagerTemplate {
 };
 
 /* With T = NuShaderObject (0x4d8 bytes): slots at 0x4, last_allocated at 0x79184, bound_slot at 0x79188, size 0x7918c. */
-typedef ShaderManagerTemplate<NuShaderObject> PC_SHADER_MANAGER_VIEW;
 #else
 /* NuShaderObject as C sees it: the members of the class without its constructor and methods. */
 struct NuShaderObject {                           // size 0x4d8

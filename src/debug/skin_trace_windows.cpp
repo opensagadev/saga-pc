@@ -70,7 +70,7 @@ extern "C" void skin_trace_emit(const char *record) {
 extern "C" void skin_trace_capture_geometry(TraceWord geometry, TraceWord material, void *manager_pointer, TraceWord vertex_buffer,
                                             TraceWord index_buffer, TraceWord base_vertex, TraceWord start_index) {
     /* All native objects are read synchronously while valid at this draw. */
-    PC_SHADER_MANAGER_VIEW *manager = (PC_SHADER_MANAGER_VIEW *)manager_pointer;
+    ShaderManagerTemplate<NuShaderObject> *manager = (ShaderManagerTemplate<NuShaderObject> *)manager_pointer;
     NuShaderObject *shader = manager ? manager->bound_slot : NULL;
     if (!shader) {
         return;

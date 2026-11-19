@@ -15,8 +15,8 @@
 #include "nu2api/nuwin32/pcapi.h"
 #include <string.h>
 
-template <> bool PC_SHADER_MANAGER_VIEW::CreateShader(const PC_SHADER_MATERIAL_FILTER *, bool, NuShaderObject *, i32);
-template <> void PC_SHADER_MANAGER_VIEW::AdaptDescriptor(const NUSHADERMTLDESC *, const NUMTL *);
+template <> bool ShaderManagerTemplate<NuShaderObject>::CreateShader(const PC_SHADER_MATERIAL_FILTER *, bool, NuShaderObject *, i32);
+template <> void ShaderManagerTemplate<NuShaderObject>::AdaptDescriptor(const NUSHADERMTLDESC *, const NUMTL *);
 
 void PC_SHADER_MATERIAL_FILTER::Initialize(const NUSHADERMTLDESC *desc, const NUMTL *mtl, i32 input_flags, i32 input_parameter) {
     descriptor = desc;
@@ -694,21 +694,21 @@ void ShaderManagerHLSL::SetUniformValues(i32 semantic, const f32 *values) {
 
 #include <new>
 
-template <> PC_SHADER_MANAGER_VIEW::ShaderManagerTemplate() {
+template <> ShaderManagerTemplate<NuShaderObject>::ShaderManagerTemplate() {
     bound_slot = NULL;
     last_allocated = -1;
     NuShaderObject *first = slots;
     ++first->ref_count;
 }
 
-template <> PC_SHADER_MANAGER_VIEW::~ShaderManagerTemplate() {
+template <> ShaderManagerTemplate<NuShaderObject>::~ShaderManagerTemplate() {
 }
 
-template <> bool PC_SHADER_MANAGER_VIEW::CreateShader(const PC_SHADER_MATERIAL_FILTER *, bool, NuShaderObject *, i32) {
+template <> bool ShaderManagerTemplate<NuShaderObject>::CreateShader(const PC_SHADER_MATERIAL_FILTER *, bool, NuShaderObject *, i32) {
     return false;
 }
 
-template <> void PC_SHADER_MANAGER_VIEW::AdaptDescriptor(const NUSHADERMTLDESC *, const NUMTL *) {
+template <> void ShaderManagerTemplate<NuShaderObject>::AdaptDescriptor(const NUSHADERMTLDESC *, const NUMTL *) {
 }
 
 // The HLSL uber-shader source compiled into every material variant, with its NUL.

@@ -15,7 +15,7 @@ extern "C" {
 #endif
 #ifdef __cplusplus
 
-class ShaderManagerHLSL : public PC_SHADER_MANAGER_VIEW { // size 0x791b0
+class ShaderManagerHLSL : public ShaderManagerTemplate<NuShaderObject> { // size 0x791b0
   public:
     ShaderCompilerBase *compiler;                // 0x7918c
     ShaderCompilerBufferAllocator vertex_source; // 0x79190
