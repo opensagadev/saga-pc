@@ -566,7 +566,7 @@ extern "C" {
 
     static NUMTX RndrStateTransform = {0};
     f32 dat_0280d3a0 = 0;
-    PC_GRAPHICS_FRAME_SCRATCH_VIEW PCGraphicsFrameScratchCount = {0};
+    PC_GRAPHICS_FRAME_SCRATCH PCGraphicsFrameScratchCount = {0};
     NUMTX PcGeometryResetMatrix = {0};
     PC_BUFFER_RESOURCE *NuDebrisVertexBuffers[4] = {0};
     u32 NuRndrFxColour = 0;
@@ -1378,7 +1378,7 @@ extern "C" {
         i32 nu_water_reset_state = 0;
         i32 nu_water_flow_state = 0;
         i32 nu_water_reset_status = 0;
-        PC_BOOT_FRAMEBUFFER_VIEW PcBootFramebuffers = {NULL, NULL};
+        PC_BOOT_FRAMEBUFFERS PcBootFramebuffers = {NULL, NULL};
         f32 NuCameraProjectionGlobalScaleX = 0;
         i32 NuLgtArcLaserFrame = 0;
     }

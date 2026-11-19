@@ -474,15 +474,15 @@ extern "C" {
         struct numtl_s *material;           // 0x10
     } NATIVE_PARTICLE_PACKET;
 
-    typedef union PC_GRAPHICS_FRAME_SCRATCH_VIEW { // size 0x4
+    typedef union PC_GRAPHICS_FRAME_SCRATCH { // size 0x4
         i32 reset_word;
         void *lightmap_packet;
-    } PC_GRAPHICS_FRAME_SCRATCH_VIEW;
+    } PC_GRAPHICS_FRAME_SCRATCH;
 
     extern struct NUGSCN_s *PCRegisteredNativeScenes[100];
     extern struct numtl_s *PCStartupMaterial1;
     extern struct numtl_s *PCStartupMaterial2;
-    extern PC_GRAPHICS_FRAME_SCRATCH_VIEW PCGraphicsFrameScratchCount;
+    extern PC_GRAPHICS_FRAME_SCRATCH PCGraphicsFrameScratchCount;
 #ifdef __cplusplus
 }
 #endif
@@ -502,7 +502,7 @@ extern "C" {
 }
 #endif
 
-typedef union PC_BOOT_FRAMEBUFFER_VIEW { // size 0x8
+typedef union PC_BOOT_FRAMEBUFFERS { // size 0x8
 
     struct {                                          // size 0x8
         struct PC_FRAMEBUFFER *default_framebuffer;   // 0x0
@@ -510,7 +510,7 @@ typedef union PC_BOOT_FRAMEBUFFER_VIEW { // size 0x8
     } fields;
 
     struct PC_FRAMEBUFFER *slots[2];
-} PC_BOOT_FRAMEBUFFER_VIEW;
+} PC_BOOT_FRAMEBUFFERS;
 
 #ifdef __cplusplus
 extern "C" {
@@ -540,7 +540,7 @@ extern "C" {
 
     extern FRAME_NATIVE_TEXTURE_POOL FrameNativeTexturePool;
     extern PC_FRAMEBUFFER *PcDefaultFramebuffer;
-    extern PC_BOOT_FRAMEBUFFER_VIEW PcBootFramebuffers;
+    extern PC_BOOT_FRAMEBUFFERS PcBootFramebuffers;
 #ifdef __cplusplus
 }
 #endif

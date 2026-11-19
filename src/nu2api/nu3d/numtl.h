@@ -149,7 +149,8 @@ typedef struct numtl_s { // size 0x2c4
         };
     }; // 0x000
 
-    u8 unknown_002[0x26];                 // 0x002
+    u8 unknown_002[2];                    // 0x002
+    u8 print_stream[0x24];                // 0x004 the font print stream NuQFntMove hands on
     u32 retained_28;                      // 0x028
     u32 retained_2c;                      // 0x02c
     struct numtl_s *next;                 // 0x030

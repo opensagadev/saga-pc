@@ -12651,11 +12651,11 @@ variable:NuHtmlFile,variable,NuHtmlFile,24750,24750,1,nu2api/nu3d/nu3d_includes.
 variable:PCDisplayCaptureCursor,variable,PCDisplayCaptureCursor,24751,24751,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x96e594 between 0x96e590 and 0x96e598
 variable:PCDisplayCaptureFlushLimit,variable,PCDisplayCaptureFlushLimit,24752,24752,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x9718b0 between 0x9718a0 and 0x9718b4
 variable:PCDisplayCaptureBuffer,variable,PCDisplayCaptureBuffer,24753,24753,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x9720d8 between 0x971b20 and 0x9730d8
-union:PC_BOOT_FRAMEBUFFER_VIEW,union,PC_BOOT_FRAMEBUFFER_VIEW,24758,24765,9,decomp.h,decomp,view type
-assert:-#4598,assert,,24767,24767,2,decomp.h,follow-type,PC_BOOT_FRAMEBUFFER_VIEW
-assert:-#4599,assert,,24768,24768,1,decomp.h,follow-type,PC_BOOT_FRAMEBUFFER_VIEW
-assert:-#4600,assert,,24769,24769,1,decomp.h,follow-type,PC_BOOT_FRAMEBUFFER_VIEW
-assert:-#4601,assert,,24770,24770,1,decomp.h,follow-type,PC_BOOT_FRAMEBUFFER_VIEW
+union:PC_BOOT_FRAMEBUFFERS,union,PC_BOOT_FRAMEBUFFERS,24758,24765,9,decomp.h,decomp,view type
+assert:-#4598,assert,,24767,24767,2,decomp.h,follow-type,PC_BOOT_FRAMEBUFFERS
+assert:-#4599,assert,,24768,24768,1,decomp.h,follow-type,PC_BOOT_FRAMEBUFFERS
+assert:-#4600,assert,,24769,24769,1,decomp.h,follow-type,PC_BOOT_FRAMEBUFFERS
+assert:-#4601,assert,,24770,24770,1,decomp.h,follow-type,PC_BOOT_FRAMEBUFFERS
 function:NuRndrSwapScreen,function,NuRndrSwapScreen,24775,24775,1,nu2api/nu3d/nurndr.h,android,NuRndrSwapScreen
 function:NuRndrSwapScreenEx,function,NuRndrSwapScreenEx,24776,24776,1,nu2api/nu3d/nurndr.h,android,NuRndrSwapScreenEx
 function:NuPostEffectInit,function,NuPostEffectInit,24777,24777,1,nu2api/nu3d/nupostfilter.h,android,NuPostEffectInit
@@ -12682,10 +12682,10 @@ function:NuTexCreateFramebufferCopy,function,NuTexCreateFramebufferCopy,24797,24
 function:InitStillRender,function,InitStillRender,24798,24798,1,legoapi/render/core/screen.h,android,InitStillRender
 macro:PcBootDefaultFramebuffer,macro,PcBootDefaultFramebuffer,24804,24804,3,nu2api/nustencilshadows_PC.h,users,PcBootDefaultFramebuffer: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 macro:PcBootSecondaryFramebuffer,macro,PcBootSecondaryFramebuffer,24806,24806,2,nu2api/nuhgo_dlist.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nuhgo_dlist.cpp] (6) pc-path
-union:PC_GRAPHICS_FRAME_SCRATCH_VIEW,union,PC_GRAPHICS_FRAME_SCRATCH_VIEW,24809,24812,6,decomp.h,decomp,view type
-assert:-#4602,assert,,24814,24814,2,decomp.h,follow-type,PC_GRAPHICS_FRAME_SCRATCH_VIEW
-assert:-#4603,assert,,24815,24815,1,decomp.h,follow-type,PC_GRAPHICS_FRAME_SCRATCH_VIEW
-assert:-#4604,assert,,24816,24816,1,decomp.h,follow-type,PC_GRAPHICS_FRAME_SCRATCH_VIEW
+union:PC_GRAPHICS_FRAME_SCRATCH,union,PC_GRAPHICS_FRAME_SCRATCH,24809,24812,6,decomp.h,decomp,view type
+assert:-#4602,assert,,24814,24814,2,decomp.h,follow-type,PC_GRAPHICS_FRAME_SCRATCH
+assert:-#4603,assert,,24815,24815,1,decomp.h,follow-type,PC_GRAPHICS_FRAME_SCRATCH
+assert:-#4604,assert,,24816,24816,1,decomp.h,follow-type,PC_GRAPHICS_FRAME_SCRATCH
 variable:PCGraphicsFrameScratchCount,variable,PCGraphicsFrameScratchCount,24820,24820,1,nu2api/nustencilshadows_PC.h,data-order,retail 0x280d3a4 between 0x280d3a0 and 0x280d3a8
 variable:NuDisplayHandlerTint,variable,NuDisplayHandlerTint,24821,24821,1,nu2api/nuhgo_dlist.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nuhgo_dlist.cpp] (4) pc-path
 variable:NuDisplayHandlerMaterial,variable,NuDisplayHandlerMaterial,24822,24822,1,nu2api/nustencilshadows_PC.h,data-order,retail 0x2854c40 between 0x2854c00 and 0x2854c90

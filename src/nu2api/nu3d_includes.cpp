@@ -4946,18 +4946,13 @@ extern "C" {
         NuQFntPopPrintMode();
     }
 
-    typedef struct qfont_material_stream_view_s { // size 0x5
-        u8 unknown_0000[4];                       // 0x0
-        u8 stream_begin;                          // 0x4
-    } QFONT_MATERIAL_STREAM_VIEW;
-
     void NuQFntMove(VUFNT *font, f32 x, f32 y, f32 z) {
         void *stream;
         if (font == NULL) {
             font = system_qfont;
         }
         if (font != NULL) {
-            stream = (NuQFntMode & 2) != 0 ? NULL : (void *)&((QFONT_MATERIAL_STREAM_VIEW *)font->material)->stream_begin;
+            stream = (NuQFntMode & 2) != 0 ? NULL : (void *)font->material->print_stream;
             NuQFntMoveRS(stream, font, x, y, z);
         }
     }
