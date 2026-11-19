@@ -3402,7 +3402,7 @@ address,symbol,size,ctype
 0x4fe9f0,_fun_004fe9f0,40,
 0x4fea20,_NuErrorSetFilter,44,
 0x4fea50,_NuGetErrN,53,char* __cdecl(i32)
-0x4fea90,_fun_004fea90,15,
+0x4fea90,_NuErrorGetWarnings,15,
 0x004feaa0,_NuSevereWarning,172,"void __cdecl (const char *, ...)"
 0x004feb50,_NuHasError,6,i32 __cdecl (void)
 0x004feb60,_NuClearError,11,void __cdecl (void)
@@ -3648,7 +3648,7 @@ address,symbol,size,ctype
 0x509060,?IsHiresEnabled@PC_WINDOW_OPTIONS@@QAEEXZ,7,
 0x509070,?IsHiresPending@PC_WINDOW_OPTIONS@@QAEEXZ,7,
 0x509080,?fun_00509080@PC_WINDOW_OPTIONS@@QAEEXZ,7,
-0x509090,?fun_00509090@PC_DEVICE_BACKEND@@QAEPAUGRAPHICS_DISPLAY_MODE@@H@Z,16,
+0x509090,?GetDisplayMode@PC_DEVICE_BACKEND@@QAEPAUGRAPHICS_DISPLAY_MODE@@H@Z,16,
 0x5090a0,?GetMultisampleIndex@PC_DEVICE_BACKEND@@QAEHXZ,7,
 0x5090b0,?SupportsMultisample@PC_DEVICE_BACKEND@@QAEEH@Z,36,
 0x5090e0,?fun_005090e0@PC_DEVICE_BACKEND@@QAEEXZ,43,
@@ -7145,7 +7145,7 @@ address,symbol,size,ctype
 0x005bffb0,_NuMtxGetPerspectiveOGL,141,"void __cdecl (NUMTX *, f32 *, f32 *, f32 *, f32 *)"
 0x005c0040,_NuMtxGetPerspectiveBlend,155,"void __cdecl (NUMTX *, f32 *, f32 *, f32 *, f32 *)"
 0x5c00e0,_NuPlnLine2,282,
-0x5c0200,_fun_005c0200,18,
+0x5c0200,_NuFsqrtf,18,
 0x5c0220,_NufloatPcVuVecMake,28,
 0x005c0240,_NuFsqrt,34,f32 __cdecl (f32)
 0x5c0270,_NuFrsqrt,46,f32 __cdecl (f32)
@@ -7191,8 +7191,8 @@ address,symbol,size,ctype
 0x005c11d0,_NuVecMtxTransformVU0,108,"void __cdecl (NUVEC *, NUVEC *, NUMTX *)"
 0x005c1240,_NuMtxMulH,21,"void __cdecl (NUMTX *, NUMTX *, NUMTX *)"
 0x5c1260,_NuVec4MtxTransformHVU0,5,
-0x5c1270,_fun_005c1270,18,
-0x5c1290,_fun_005c1290,18,
+0x5c1270,_NuExpf,18,
+0x5c1290,_NuExpf2,18,
 0x5c12b0,_fun_005c12b0,36,
 0x005c12e0,_AnimationDiagnosticNoOp,1,
 0x005c12f0,_PCAnimationLoadFailureNoOp,1,void __cdecl (char *)
@@ -7781,7 +7781,7 @@ address,symbol,size,ctype
 0x5d4710,_fun_005d4710,6,
 0x5d4720,_fun_005d4720,1,
 0x5d4730,_fun_005d4730,3,
-0x5d4740,_fun_005d4740,21,
+0x5d4740,_NuRndrSetWind,21,
 0x5d4760,_NuRndrGetWindFrameCount,6,
 0x5d4770,_NuRndrGlobalFrameCountPause,10,void __cdecl(i32)
 0x5d4780,_NuRndrCalcRandEllipsePos,283,"void __cdecl(NUVEC4 *,NUMTX *,NUVEC *)"
@@ -7804,12 +7804,12 @@ address,symbol,size,ctype
 0x5d51b0,_NuDynamicLightingGetParameterfv,63,
 0x005d51f0,_NuLightSpeedBlurOldCameraPos,39,void __cdecl(NUMTX *)
 0x5d5220,_NuBackbufferCopy,10,void __cdecl (i32)
-0x5d5230,_fun_005d5230,11,
+0x5d5230,_NuRndrRequestFrameFlags,11,
 0x5d5240,_fun_005d5240,8,
 0x5d5250,_fun_005d5250,10,
 0x5d5260,_NuRndrSetSamplerBiasOffset,11,
 0x5d5270,_fun_005d5270,53,
-0x5d52b0,_fun_005d52b0,54,
+0x5d52b0,_NuRndrClampf,54,
 0x5d52f0,_OctreeSetClipResults,54,"void private(u8 *results, i32 *instances, u8 clip, i32 count); count EDI"
 0x005d5330,_NuCameraCreate,99,NUCAMERA * __cdecl (void)
 0x5d53a0,_NuCameraDestroy,28,
@@ -8555,9 +8555,9 @@ address,symbol,size,ctype
 0x5fa080,_fun_005fa080,28,
 0x005fa0a0,?PCDisplayHandlerBindPrograms@@YAXPAUPOST_SHADER_PROGRAM@@@Z,98,
 0x5fa110,_fun_005fa110,13,
-0x5fa120,_fun_005fa120,19,
-0x5fa140,_fun_005fa140,33,
-0x5fa170,_fun_005fa170,33,
+0x5fa120,_PCStrLen,19,
+0x5fa140,_PCMemCpyS,33,
+0x5fa170,_PCMemMoveS,33,
 0x5fa1a0,_fun_005fa1a0,9,
 0x5fa1b0,??0bad_alloc@std@@QAE@PBD@Z,25,
 0x5fa1d0,??1bad_alloc@std@@UAE@XZ,11,
@@ -8571,7 +8571,7 @@ address,symbol,size,ctype
 0x5fa330,_PcUpdateGeometryCameraOrigin,497,"void __cdecl(NUMTX*,NUMTX*)"
 0x5fa530,_fun_005fa530,5,
 0x5fa540,_PCGraphicsSetSamplerTuple,222,
-0x5fa620,_fun_005fa620,9,
+0x5fa620,_PCDisplayHandlerSetZModeHook,9,
 0x5fa630,_fun_005fa630,5,
 0x5fa640,_NuQFntAsciiToQCode,77,"void __cdecl (VUFNT *, u16 *, const char *)"
 0x5fa690,_NuQFntColumnDiffers8,51,"i32 __cdecl (NUTEXBMP *, i32, i32, i32, i32)"
@@ -8974,8 +8974,8 @@ address,symbol,size,ctype
 0x00605410,??$_Fill@PAUPOST_PIXEL_SHADER_CACHE_ENTRY@@U1@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY@@0ABU1@@Z,36,
 0x00605440,??$_Iter_random@PAUPOST_PIXEL_SHADER_CACHE_ENTRY@@PAU1@@std@@YA?AUrandom_access_iterator_tag@0@ABQAUPOST_PIXEL_SHADER_CACHE_ENTRY@@0@Z,5,
 0x00605450,??$_Move_cat@PAUPOST_PIXEL_SHADER_CACHE_ENTRY@@@std@@YA?AU_Undefined_move_tag@0@ABQAUPOST_PIXEL_SHADER_CACHE_ENTRY@@@Z,7,
-0x605460,?fun_00605460@FRAME_NATIVE_TEXTURE_POOL@@QAEHH@Z,30,
-0x605480,?fun_00605480@POST_SHADER_PROGRAM_POOL@@QAEHH@Z,30,
+0x605460,?IsTextureOccupied@FRAME_NATIVE_TEXTURE_POOL@@QAEHH@Z,30,
+0x605480,?IsProgramOccupied@POST_SHADER_PROGRAM_POOL@@QAEHH@Z,30,
 0x6054a0,?fun_006054a0@POST_SHADER_PROGRAM_POOL@@QAEXH_N@Z,44,
 0x006054d0,??$_Checked_base@PAUPOST_VERTEX_SHADER_CACHE_ENTRY@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY@@AAPAU1@U_Unchanged_checked_iterator_base_type_tag@0@@Z,7,
 0x006054e0,??$_Checked_base@PAUPOST_PIXEL_SHADER_CACHE_ENTRY@@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY@@AAPAU1@U_Unchanged_checked_iterator_base_type_tag@0@@Z,7,
@@ -9106,8 +9106,8 @@ address,symbol,size,ctype
 0x60bdd0,?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z,335,
 0x60be53,__catch$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$0,,
 0x60beee,__catch$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$1,,
-0x60bf20,_fun_0060bf20,9,
-0x60bf30,_fun_0060bf30,9,
+0x60bf20,_FrameNativeTexturePoolAllocate,9,
+0x60bf30,_PostShaderProgramPoolAllocate,9,
 0x60bf40,??$fill@PAUPOST_VERTEX_SHADER_CACHE_ENTRY@@U1@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY@@0ABU1@@Z,36,native typed VC8 helper
 0x60bf70,??$fill@PAUPOST_PIXEL_SHADER_CACHE_ENTRY@@U1@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY@@0ABU1@@Z,36,native typed VC8 helper
 0x60bfa0,??$_Uninit_fill_n@PAUPOST_VERTEX_SHADER_CACHE_ENTRY@@IU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY@@@std@@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY@@IABU1@AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,129,native typed VC8 helper
@@ -10138,7 +10138,7 @@ address,symbol,size,ctype
 0x631890,_FmvInitialize,169,
 0x631940,_FmvOpen,748,
 0x631c30,_FmvFrame,173,
-0x631ce0,_fun_00631ce0,24,
+0x631ce0,_PCFmvMovieGoto,24,
 0x631d00,_FmvClose,119,
 0x631d80,_fun_00631d80,1,
 0x631d90,_FmvReleaseImage,82,void __cdecl(PC_FMV_MOVIE *)
@@ -11771,9 +11771,9 @@ address,symbol,size,ctype
 0x696a00,?xsNoMusicC@NuMusic@@SAXPAUnufpar_s@@PAX@Z,17,"static void  __cdecl NuMusic::xsNoMusicC(NUFPAR *,void *)"
 0x696a20,?xsGlobalAttenuation@NuMusic@@SAXPAUnufpar_s@@PAX@Z,15,"static void  __cdecl NuMusic::xsGlobalAttenuation(NUFPAR *,void *)"
 0x00696a30,?PlayTrack@NuMusic@@QAEHI@Z,15,"i32 __thiscall (NuMusic *, u32)"
-0x696a40,_fun_00696a40,18,
-0x696a60,_fun_00696a60,10,
-0x696a70,_fun_00696a70,18,
+0x696a40,_NuSoundLog10,18,
+0x696a60,_NuSoundAbs,10,
+0x696a70,_NuSoundLog10b,18,
 0x00696a90,_PCSoundAlreadyPlayingHook,1,void __cdecl (void)
 0x696aa0,_fun_00696aa0,1,
 0x00696ab0,_PCSoundFailure,1,PC RET-only diagnostic hook; observed varying cdecl arguments
@@ -11785,7 +11785,7 @@ address,symbol,size,ctype
 0x00696b70,_PCSoundSetLinearVolume,53,"HRESULT __cdecl (IDirectSoundBuffer *, f32)"
 0x696bb0,?SetOptionD14@SoundVoiceManagerPC@@QAEXE@Z,13,"void __thiscall(SoundVoiceManagerPC *,u8)"
 0x696bc0,?GetFactory@SoundVoiceManagerPC@@QAEPAUIDirectSound8@@XZ,7,IDirectSound8 *__thiscall(SoundVoiceManagerPC *)
-0x696bd0,_fun_00696bd0,10,
+0x696bd0,_NuSound3SetListener,10,
 0x00696be0,_NuSound3GetListener,15,NUMTX *__cdecl (void)
 0x696bf0,??_GSoundQueue@@QAEPAXI@Z,30,
 0x696c10,_fun_00696c10,51,
@@ -11896,7 +11896,7 @@ address,symbol,size,ctype
 0x698b30,_fun_00698b30,3,
 0x698b40,_fun_00698b40,3,
 0x698b50,_fun_00698b50,3,
-0x698b60,_fun_00698b60,22,
+0x698b60,_NuSound3DestroyStereoStreams,22,
 0x698b80,??1SoundVoiceManagerPC@@QAE@XZ,206,
 0x698c50,?StopAllVoices@SoundVoiceManagerPC@@QAEXXZ,101,void __thiscall (SoundVoiceManagerPC *)
 0x698cc0,?UpdateVoices@SoundVoiceManagerPC@@QAEXXZ,336,void __thiscall (SoundVoiceManagerPC *)
@@ -13292,7 +13292,7 @@ address,symbol,size,ctype
 0x6d4070,?ExportConfig@PC_INPUT_RUNTIME@@QAEXHPAUPC_INPUT_CONFIG@@HHH@Z,877,
 0x6d43e0,?FindConfig@PC_INPUT_RUNTIME@@QAEPAUPC_INPUT_CONFIG@@EHH@Z,277,"PC_INPUT_CONFIG* __thiscall(u8,i32,i32)"
 0x6d4500,?fun_006d4500@PC_INPUT_RUNTIME@@QAEPAUPC_INPUT_CONFIG@@EPBD@Z,216,
-0x6d45e0,?fun_006d45e0@PC_INPUT_RUNTIME@@QAEXH@Z,13,
+0x6d45e0,?SetPreferredKey@PC_INPUT_RUNTIME@@QAEXH@Z,13,
 0x6d45f0,?InstallConfig@PC_INPUT_RUNTIME@@QAEXPAUPC_INPUT_CONFIG@@HHHH@Z,403,"void __thiscall(PC_INPUT_CONFIG*,i32,i32,i32,i32)"
 0x6d4790,?fun_006d4790@PC_INPUT_RUNTIME@@QAEHH@Z,5,
 0x6d47a0,?InitXInputCaps@PC_INPUT_RUNTIME@@QAEXPBUPC_XINPUT_CAPABILITIES@@PAUPC_INPUT_DEVICE@@@Z,215,"void __thiscall(const PC_XINPUT_CAPABILITIES*,PC_INPUT_DEVICE*)"
@@ -13341,8 +13341,8 @@ address,symbol,size,ctype
 0x6d5910,_fun_006d5910,35,
 0x6d5940,_fun_006d5940,1,
 0x6d5950,?ScheduleRescan@NuKeyboardOwner@@QAEXMH@Z,19,"void __thiscall(f32,i32)"
-0x6d5970,?fun_006d5970@NuKeyboardOwner@@QAEHXZ,9,
-0x6d5980,?fun_006d5980@NuKeyboardOwner@@QAEHXZ,9,
+0x6d5970,?HasMouse@NuKeyboardOwner@@QAEHXZ,9,
+0x6d5980,?HasDevice@NuKeyboardOwner@@QAEHXZ,9,
 0x006d5990,?PollKeyboard@NuKeyboardOwner@@QAEPAEXZ,368,u8 *__thiscall (void)
 0x6d5b00,_PcMouseGetAccumulatedX,12,
 0x6d5b10,_PcMouseGetAccumulatedY,12,
@@ -13354,9 +13354,9 @@ address,symbol,size,ctype
 0x6d5bf0,_NuMouseReadXVel,26,
 0x6d5c10,_NuMouseReadYVel,26,
 0x6d5c30,_NuMouseReadZVel,26,
-0x6d5c50,_fun_006d5c50,12,
-0x6d5c60,_fun_006d5c60,12,
-0x6d5c70,_fun_006d5c70,33,
+0x6d5c50,_PcInputMouseX,12,
+0x6d5c60,_PcInputMouseY,12,
+0x6d5c70,_PcInputSetThresholds,33,
 0x6d5ca0,_fun_006d5ca0,58,
 0x6d5ce0,_fun_006d5ce0,81,
 0x6d5d40,_fun_006d5d40,27,
@@ -13374,18 +13374,18 @@ address,symbol,size,ctype
 0x6d6030,_fun_006d6030,1,
 0x6d6040,_fun_006d6040,3,
 0x6d6050,_fun_006d6050,3,
-0x6d6060,_fun_006d6060,18,
-0x6d6080,_fun_006d6080,21,
+0x6d6060,_PcMouseCurrentSample,18,
+0x6d6080,_PcMousePreviousSample,21,
 0x6d60a0,_NuPad_Interface_GetMaxDevices,6,i32 __cdecl(void)
 0x6d60b0,_NuPadOpenPS,12,void __cdecl(FRAME_PAD*)
 0x6d60c0,_fun_006d60c0,1,
 0x6d60d0,_NuPadClosePS,12,
 0x6d60e0,_NuPadInitPS,1,void __cdecl(FRAME_SCANNED_PAD*)
-0x6d60f0,_fun_006d60f0,13,
+0x6d60f0,_PcInputKeyboardDeadzone,13,
 0x6d6100,_fun_006d6100,50,
-0x6d6140,_fun_006d6140,11,
-0x6d6150,_fun_006d6150,11,
-0x6d6160,_fun_006d6160,11,
+0x6d6140,_NuKeyboardEnableAllDevices,11,
+0x6d6150,_NuKeyboardEnableKeyboardMouse,11,
+0x6d6160,_NuKeyboardDisableDevices,11,
 0x6d6170,_TextInputSetKeyboardOverride,37,void __cdecl(i32)
 0x6d61a0,_AreaGetKeyboardOverride,13,i32 __cdecl(void)
 0x6d61b0,_SetPadDescriptor,229,"void __cdecl(i32,const u16*)"
@@ -13394,7 +13394,7 @@ address,symbol,size,ctype
 0x6d6320,_PcInputSuppressKeyOne,17,
 0x6d6340,_PcInput_SetCtrlStringPlayer,10,void __cdecl(i32)
 0x6d6350,_PcInput_GetCtrlStringPlayer,8,i32 __cdecl(void)
-0x6d6360,_fun_006d6360,57,
+0x6d6360,_PcInputRampCurve,57,
 0x6d63a0,_fun_006d63a0,60,
 0x6d63e0,_fun_006d63e0,35,
 0x6d6410,_fun_006d6410,65,
@@ -13483,7 +13483,7 @@ address,symbol,size,ctype
 0x6d9b10,?SaveConfiguration@PC_INPUT_RUNTIME@@QAEXXZ,97,
 0x6d9b80,?BindPreferredConfig@PC_INPUT_RUNTIME@@QAEXHH@Z,70,"void __thiscall(i32,i32)"
 0x6d9bd0,?InitKeyboardProfiles@PC_INPUT_RUNTIME@@QAEXXZ,496,void __thiscall(void)
-0x6d9dc0,?fun_006d9dc0@PC_INPUT_RUNTIME@@QAEHHHPADHH@Z,42,
+0x6d9dc0,?ButtonNameDefault@PC_INPUT_RUNTIME@@QAEHHHPADHH@Z,42,
 0x6d9df0,_InputEnumDevices@8,1027,"BOOL __stdcall(const PC_DI_INSTANCE*,void*)"
 0x6da200,?RescanDevices@NuKeyboardOwner@@QAEXXZ,338,void __thiscall(void)
 0x6da360,_fun_006da360,106,
@@ -13498,7 +13498,7 @@ address,symbol,size,ctype
 0x6dae50,_NuPadReadOutputs,79,"i32 __cdecl(i32,u8*,u8*,u8*,u8*,u8*,u8*,u8*,u8*,u32*,u8*,i32*)"
 0x6daea0,_NuPadAutoConfigure,17,void __cdecl(i32)
 0x6daec0,_fun_006daec0,28,
-0x6daee0,?fun_006daee0@PC_DEVICE_BACKEND@@QAEPAUGRAPHICS_DISPLAY_MODE@@XZ,7,
+0x6daee0,?GetDesktopMode@PC_DEVICE_BACKEND@@QAEPAUGRAPHICS_DISPLAY_MODE@@XZ,7,
 0x6daef0,?SetDeviceWidth@PC_WINDOW_OPTIONS@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS::SetDeviceWidth(i32)
 0x6daf00,?SetDeviceHeight@PC_WINDOW_OPTIONS@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS::SetDeviceHeight(i32)
 0x6daf10,?SetWidth@PC_WINDOW_OPTIONS@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS::SetWidth(i32)
@@ -13558,16 +13558,16 @@ address,symbol,size,ctype
 0x6db760,?PCOptionsReadUseHiresPending@@YAXPAUnufpar_s@@@Z,25,
 0x6db780,?PCOptionsReadForceShaderModel@@YAXPAUnufpar_s@@@Z,19,
 0x6db7a0,?Validate@PC_WINDOW_OPTIONS@@QAEXXZ,340,void __thiscall PC_WINDOW_OPTIONS::Validate(void)
-0x6db900,_fun_006db900,10,
+0x6db900,_PcWindowOptionsSave,10,
 0x6db910,_NuFileUseHiresPC,8,i32 __cdecl(void)
 0x6db920,??0PC_WINDOW_OPTIONS@@QAE@XZ,28,
 0x6db940,?InitializePath@PC_WINDOW_OPTIONS@@QAEXXZ,75,void __thiscall PC_WINDOW_OPTIONS::InitializePath(void)
 0x6db990,?Load@PC_WINDOW_OPTIONS@@QAEXXZ,285,void __thiscall PC_WINDOW_OPTIONS::Load(void)
 0x6dbab0,_PcapiNuError,1,
 0x6dbac0,?PcapiVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
-0x6dbae0,?fun_006dbae0@PC_DEVICE_BACKEND@@QAEIXZ,7,
-0x6dbaf0,?fun_006dbaf0@PC_DEVICE_BACKEND@@QAEIXZ,7,
-0x6dbb00,?fun_006dbb00@PC_DEVICE_BACKEND@@QAEXE@Z,13,
+0x6dbae0,?GetShaderFlags@PC_DEVICE_BACKEND@@QAEIXZ,7,
+0x6dbaf0,?GetRenderTargetFlags@PC_DEVICE_BACKEND@@QAEIXZ,7,
+0x6dbb00,?SetRequestedWindowed@PC_DEVICE_BACKEND@@QAEXE@Z,13,
 0x6dbb10,_fun_006dbb10,6,
 0x6dbb20,_fun_006dbb20,3,
 0x6dbb30,_NuInitHardware,2930,"i32 __cdecl(VARIPTR*,VARIPTR*,i32,...)"
@@ -13607,7 +13607,7 @@ address,symbol,size,ctype
 0x6ddd90,_PcRegisterSaveMetadata,25,void __cdecl(const void *)
 0x006dddb0,_NuHwSetParameter33,10,void __cdecl(void *)
 0x6dddc0,_fun_006dddc0,12,
-0x6dddd0,_fun_006dddd0,6,
+0x6dddd0,_PcGetWindowClass,6,
 0x6ddde0,_fun_006ddde0,10,
 0x6dddf0,_PcEditorCursorEnable,1,
 0x6dde00,_PcGetMousePosition,33,
@@ -13730,20 +13730,20 @@ address,symbol,size,ctype
 0x6df010,_fun_006df010,1,
 0x6df020,_D3dApiCallsNuErrorPc,1,
 0x6df030,?D3dApiCallsVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
-0x6df050,?fun_006df050@PC_DEVICE_BACKEND@@QAEHXZ,12,
-0x6df060,?fun_006df060@PC_DEVICE_BACKEND@@QAEIXZ,7,
-0x6df070,?fun_006df070@PC_DEVICE_BACKEND@@QAEIXZ,7,
+0x6df050,?IsMultisampled@PC_DEVICE_BACKEND@@QAEHXZ,12,
+0x6df060,?GetEnabledOption0@PC_DEVICE_BACKEND@@QAEIXZ,7,
+0x6df070,?GetEnabledOption1@PC_DEVICE_BACKEND@@QAEIXZ,7,
 0x6df080,_NuKeyboardCreateWindowState,55,"void __cdecl(HWND,HINSTANCE)"
 0x6df0c0,_PcRendererCleanup,20,void __cdecl(void)
 0x6df0e0,_PcRendererShutdown,181,void __cdecl(i32)
 0x6df1a0,_fun_006df1a0,54,
 0x6df1e0,_fun_006df1e0,26,
-0x6df200,_fun_006df200,14,
-0x6df210,_fun_006df210,12,
+0x6df200,_PCDeviceRequestWindowed,14,
+0x6df210,_PCDeviceIsMultisampled,12,
 0x6df220,_fun_006df220,3,
 0x6df230,_fun_006df230,3,
 0x6df240,_fun_006df240,3,
-0x6df250,_fun_006df250,12,
+0x6df250,_PCDeviceIsFullscreen,12,
 0x6df260,_PCDeviceGetBackBufferWidth,6,
 0x006df270,_PcGetRefreshRate,6,u32 __cdecl(void)
 0x6df280,_fun_006df280,16,
@@ -13764,11 +13764,11 @@ address,symbol,size,ctype
 0x6dfbf0,_fun_006dfbf0,37,
 0x6dfc20,_fun_006dfc20,22,
 0x6dfc40,_fun_006dfc40,27,
-0x6dfc60,_fun_006dfc60,13,
+0x6dfc60,_PCTextureGetLevelCount,13,
 0x6dfc70,_fun_006dfc70,80,
 0x6dfcc0,_fun_006dfcc0,48,
-0x6dfcf0,_fun_006dfcf0,6,
-0x6dfd00,_fun_006dfd00,6,
+0x6dfcf0,_PCDeviceGetEnabledOption0,6,
+0x6dfd00,_PCDeviceGetEnabledOption1,6,
 0x6dfd10,_fun_006dfd10,10,
 0x6dfd20,_fun_006dfd20,1,
 0x6dfd30,_PCFrameBeginScene,8,i32 __cdecl(i32)
@@ -13816,7 +13816,7 @@ address,symbol,size,ctype
 0x6e18a0,?GetDesiredBloomMethod@PC_WINDOW_OPTIONS@@QAEHXZ,7,
 0x6e18b0,?GetDesiredShadowMethod@PC_WINDOW_OPTIONS@@QAEHXZ,7,
 0x6e18c0,?GetSpeedBlurSupported@PC_WINDOW_OPTIONS@@QAEEXZ,7,
-0x6e18d0,?fun_006e18d0@PC_DEVICE_BACKEND@@QAEHXZ,9,
+0x6e18d0,?IsDeviceLost@PC_DEVICE_BACKEND@@QAEHXZ,9,
 0x6e18e0,?SetRequestedFeature@PC_DEVICE_BACKEND@@QAEXE@Z,13,
 0x6e18f0,?SetRequestedTargetCount@PC_DEVICE_BACKEND@@QAEXG@Z,15,
 0x6e1900,?GetDeviceType@PC_DEVICE_BACKEND@@QAEHXZ,4,
@@ -13840,7 +13840,7 @@ address,symbol,size,ctype
 0x6e2250,?PostEffectBarrier@PC_DEVICE_BACKEND@@QAEXXZ,1,
 0x6e2260,?SetDepthStencilSurface@PC_DEVICE_BACKEND@@QAEXPAUPC_EFFECT_SURFACE@@@Z,64,
 0x6e22a0,?ClearDepthStencilSurface@PC_DEVICE_BACKEND@@QAEXXZ,17,
-0x6e22c0,?fun_006e22c0@PC_DEVICE_BACKEND@@QAEXXZ,22,
+0x6e22c0,?RestoreDepthStencil@PC_DEVICE_BACKEND@@QAEXXZ,22,
 0x6e22e0,?fun_006e22e0@PC_DEVICE_BACKEND@@QAEJPAUPC_EFFECT_SURFACE@@H@Z,62,
 0x6e2320,?CopySurfaceTarget@PC_DEVICE_BACKEND@@QAEJPAUPC_EFFECT_SURFACE@@HH@Z,43,"HRESULT __thiscall PC_DEVICE_BACKEND::CopySurfaceTarget(PC_EFFECT_SURFACE*,i32,i32)"
 0x6e2350,?fun_006e2350@PC_DEVICE_BACKEND@@QAEXXZ,49,
@@ -15601,7 +15601,7 @@ address,symbol,size,ctype
 0x007423f0,?SetValues@PC_SHADER_PARAMETER_LOCAL@@QAEXHHPBM@Z,60,"void __thiscall PC_SHADER_PARAMETER_LOCAL::SetValues(i32,i32,const f32*)"
 0x00742430,?SetVector@PC_SHADER_PARAMETER_LOCAL@@QAEXPBM@Z,48,void __thiscall PC_SHADER_PARAMETER_LOCAL::SetVector(const f32*)
 0x00742460,?SetVectorElement@PC_SHADER_PARAMETER_LOCAL@@QAEXHPBM@Z,57,"void __thiscall PC_SHADER_PARAMETER_LOCAL::SetVectorElement(i32,const f32*)"
-0x7424a0,?fun_007424a0@PC_SHADER_PARAMETER_LOCAL@@QAEXHPBM@Z,20,
+0x7424a0,?SetMatrixValue@PC_SHADER_PARAMETER_LOCAL@@QAEXHPBM@Z,20,
 0x7424c0,_PCShaderProbeHLSLConstants,565,"void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*,ID3DXConstantTable*,ID3DXConstantTable*)"
 0x742700,_NuShaderObjectDestroy,22,void __cdecl NuShaderObjectDestroy(PC_SHADER_OBJECT_FULL_VIEW *)
 0x742720,?fun_00742720@PC_SHADER_PARAMETER_LOCAL@@QAEXHPBM@Z,88,
@@ -15618,7 +15618,7 @@ address,symbol,size,ctype
 0x7439f0,_NuShaderObjectBaseSetWaterSpeed,17,void __cdecl(f32)
 0x743a10,?NushaderobjectbaseVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x00743a30,_NuShaderObjectBaseUpdateWaterTable,601,"void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*,NUMTL*)"
-0x743c90,?fun_00743c90@PC_SHADER_PARAMETER_LOCAL@@QAEHXZ,9,
+0x743c90,?IsBound@PC_SHADER_PARAMETER_LOCAL@@QAEHXZ,9,
 0x743ca0,?SetTransposedMatrixValues@PC_SHADER_PARAMETER_LOCAL@@QAEXHHPBM@Z,84,"void __thiscall PC_SHADER_PARAMETER_LOCAL::SetTransposedMatrixValues(i32,i32,const f32*)"
 0x743d00,_PCShaderObjectCreateHLSLPc,46,void __cdecl PCShaderObjectCreateHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *)
 0x743d30,_PCShaderObjectDestroyHLSLPc,5,void __cdecl PCShaderObjectDestroyHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *)
@@ -15642,9 +15642,9 @@ address,symbol,size,ctype
 0x744300,?HasVertexSkinAlt@PC_SHADER_MATERIAL_FILTER@@QBE_NXZ,31,bool __thiscall PC_SHADER_MATERIAL_FILTER::HasVertexSkinAlt() const
 0x744320,?fun_00744320@PC_SHADER_MATERIAL_FILTER@@QBEHXZ,15,
 0x744330,?fun_00744330@PC_SHADER_MATERIAL_FILTER@@QBEHXZ,13,
-0x744340,?fun_00744340@PC_SHADER_MATERIAL_FILTER@@QBE_NXZ,16,
+0x744340,?HasShadowSet@PC_SHADER_MATERIAL_FILTER@@QBE_NXZ,16,
 0x744350,?fun_00744350@PC_SHADER_MATERIAL_FILTER@@QBEHH@Z,27,
-0x744370,?fun_00744370@PC_SHADER_MATERIAL_FILTER@@QBEHXZ,9,
+0x744370,?IsBaseVariant@PC_SHADER_MATERIAL_FILTER@@QBEHXZ,9,
 0x744380,?fun_00744380@PC_SHADER_MATERIAL_FILTER@@QBEHXZ,15,
 0x744390,?fun_00744390@PC_SHADER_MATERIAL_FILTER@@QBEHXZ,21,
 0x7443b0,?fun_007443b0@PC_SHADER_MATERIAL_FILTER@@QBEHXZ,22,
@@ -15702,7 +15702,7 @@ address,symbol,size,ctype
 0x745220,?SetIncludeDirectories@ShaderBuilderGen@@UAEXPBD@Z,31,void __thiscall ShaderBuilderGen::SetIncludeDirectories(const char*)
 0x745240,?SetSaveDirectory@ShaderBuilderGen@@UAEXPBD@Z,31,void __thiscall ShaderBuilderGen::SetSaveDirectory(const char*)
 0x745260,?SetProfile@ShaderBuilderGen@@UAEXHHH@Z,11,"void __thiscall ShaderBuilderGen::SetProfile(i32,i32,i32)"
-0x745270,?fun_00745270@ShaderBuilderGen@@QAEXPBDH@Z,11,
+0x745270,?AddDictionaryRegisterBlock@ShaderBuilderGen@@QAEXPBDH@Z,11,
 0x745280,?SetForceMode@ShaderBuilderGen@@UAEX_N@Z,13,void __thiscall ShaderBuilderGen::SetForceMode(bool)
 0x745290,?GetDictionaryForceMode@ShaderBuilderGen@@QAE_NXZ,7,
 0x7452a0,?GetDictionaryProfile@ShaderBuilderGen@@QAEHXZ,7,
@@ -15774,7 +15774,7 @@ address,symbol,size,ctype
 0x746630,?GetTypeName@ShaderSourceNode@@QAEPBDXZ,11,
 0x746640,?SemanticName@ShaderSourceNode@@QAEPBDXZ,264,
 0x746750,??0ShaderRegisterBlock@@QAE@XZ,13,
-0x746760,?fun_00746760@ShaderRegisterBlock@@QAEXPBDH@Z,40,
+0x746760,?SetRegisterBlock@ShaderRegisterBlock@@QAEXPBDH@Z,40,
 0x746790,??1ShaderCompilerDictionary@@QAE@XZ,37,
 0x7467c0,?SetProfile@ShaderCompilerDictionary@@QAEXHHH@Z,80,
 0x746810,?AddRegisterBlock@ShaderCompilerDictionary@@QAEXPBDH@Z,63,
@@ -15815,7 +15815,7 @@ address,symbol,size,ctype
 0x748790,?AppendInt@ShaderCompilerBufferAllocator@@QAEXH@Z,90,
 0x7487f0,_fun_007487f0,27,
 0x748810,?SetOutputStage@ShaderCompilerDictionary@@QAEXH@Z,13,
-0x748820,?fun_00748820@ShaderCompilerDictionary@@QAEXXZ,23,
+0x748820,?ResetScratch@ShaderCompilerDictionary@@QAEXXZ,23,
 0x748840,?fun_00748840@ShaderCompilerDictionary@@QAEXXZ,42,
 0x748870,_fun_00748870,9,
 0x748880,_fun_00748880,4,
@@ -15880,7 +15880,7 @@ address,symbol,size,ctype
 0x74afe0,_ShaderDeclarationFlags,49,
 0x74b020,?IsSpecialToken@ShaderLexicalTokenPredicate@@QAEHPBD@Z,50,
 0x74b060,_fun_0074b060,18,
-0x74b080,?fun_0074b080@ShaderLexicalSlice@@QAE_NPBD@Z,20,
+0x74b080,?NotEquals@ShaderLexicalSlice@@QAE_NPBD@Z,20,
 0x74b0a0,??0ShaderConditionNode@@QAE@PBDPAU0@1@Z,25,
 0x74b0c0,?AppendOperand@ShaderConditionNode@@QAEPAU1@PAU1@@Z,35,ShaderConditionNode *__thiscall ShaderConditionNode::AppendOperand(ShaderConditionNode *)
 0x74b0f0,??0ShaderParserNode@@QAE@H@Z,18,
@@ -15896,10 +15896,10 @@ address,symbol,size,ctype
 0x74b270,?SetIncludeDirectories@ShaderCompilerParser@@QAEXPBD@Z,23,void __thiscall (const char *)
 0x74b290,_fun_0074b290,84,
 0x74b2f0,_fun_0074b2f0,55,
-0x74b330,?fun_0074b330@ShaderCompilerParser@@QAEXABUShaderLexicalSlice@@@Z,25,
+0x74b330,?AppendTextSlice@ShaderCompilerParser@@QAEXABUShaderLexicalSlice@@@Z,25,
 0x74b350,?ShaderConditionPrecedence@@YAHPBD@Z,249,
 0x74b450,_ShaderDeclarationSemantic,607,
-0x74b6b0,?fun_0074b6b0@ShaderCompilerParser@@QAEXPAUShaderParserNode@@@Z,50,
+0x74b6b0,?AppendNodeHook@ShaderCompilerParser@@QAEXPAUShaderParserNode@@@Z,50,
 0x74b6f0,?NextIncludeDirectory@ShaderCompilerParser@@QAE_NPBDPAHPAD@Z,95,"bool __thiscall (const char *, i32 *, char *)"
 0x74b750,??M?$_Vector_const_iterator@PAUShaderParserInclude@@V?$allocator@PAUShaderParserInclude@@@std@@@std@@QBE_NABV01@@Z,38,
 0x0074b780,?capacity@?$vector@PAUShaderParserInclude@@V?$allocator@PAUShaderParserInclude@@@std@@@std@@QBEIXZ,19,
@@ -15932,7 +15932,7 @@ address,symbol,size,ctype
 0x0074bb10,??1ShaderParserInclude@@AAE@XZ,33,
 0x74bb40,?LoadSourceLines@ShaderCompilerParser@@QAEXPAUShaderCompilerBufferAllocator@@H@Z,299,"void __thiscall (ShaderCompilerBufferAllocator *, i32)"
 0x74bc70,?FlushText@ShaderCompilerParser@@QAEXXZ,132,void __thiscall ShaderCompilerParser::FlushText()
-0x74bd00,_fun_0074bd00,37,
+0x74bd00,_ShaderConditionHigherPrecedence,37,
 0x0074bd30,??_GShaderParserInclude@@AAEPAXI@Z,54,
 0x0074bd70,??D?$_Vector_iterator@PAUShaderParserInclude@@V?$allocator@PAUShaderParserInclude@@@std@@@std@@QBEAAPAUShaderParserInclude@@XZ,37,
 0x74bda0,??0?$_Vector_val@PAUShaderParserInclude@@V?$allocator@PAUShaderParserInclude@@@std@@@std@@IAE@V?$allocator@PAUShaderParserInclude@@@1@@Z,5,
@@ -16003,7 +16003,7 @@ address,symbol,size,ctype
 0x0074ea90,_NuRainDraw,1,void __cdecl(i32)
 0x74eaa0,_NuRainSetFall,46,
 0x74ead0,_fun_0074ead0,63,
-0x74eb10,_fun_0074eb10,28,
+0x74eb10,_NuFmvTextureRestart,28,
 0x74eb30,_fun_0074eb30,35,
 0x74eb60,_fun_0074eb60,467,
 0x74ed40,_NuFmvTextureRelease,21,void __cdecl(void)

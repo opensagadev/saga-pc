@@ -368,7 +368,7 @@ typedef struct PC_DEVICE_BACKEND {          // size 0x700
     void CopyBackBuffer(struct GRAPHICS_RENDER_TEXTURE *);
     void CopyCurrentSurface(struct GRAPHICS_RENDER_TEXTURE *);
 
-    GRAPHICS_DISPLAY_MODE *fun_00509090(i32 index);
+    GRAPHICS_DISPLAY_MODE *GetDisplayMode(i32 index);
     i32 GetMultisampleIndex();
     u8 SupportsMultisample(i32);
     u8 HasRequestedModeChanged();
@@ -387,23 +387,23 @@ typedef struct PC_DEVICE_BACKEND {          // size 0x700
     i32 RequiresPow2Textures();
     void SetScreenColourUvDeclaration();
     u16 fun_006e2140();
-    void fun_006e22c0();
+    void RestoreDepthStencil();
     HRESULT fun_006e22e0(PC_EFFECT_SURFACE *target, i32 filter);
     void fun_006e2350();
     void fun_006e2af0();
     void fun_006e2ce0(u32 width, u32 height, u32 refresh);
-    i32 fun_006df050();
-    u32 fun_006df060();
-    u32 fun_006df070();
-    i32 fun_006e18d0();
+    i32 IsMultisampled();
+    u32 GetEnabledOption0();
+    u32 GetEnabledOption1();
+    i32 IsDeviceLost();
     void SetRequestedFeature(u8 feature);
     void SetRequestedTargetCount(u16 count);
     i32 GetDeviceType();
     i32 IsWindowed();
-    GRAPHICS_DISPLAY_MODE *fun_006daee0();
-    u32 fun_006dbae0();
-    u32 fun_006dbaf0();
-    void fun_006dbb00(u8 windowed);
+    GRAPHICS_DISPLAY_MODE *GetDesktopMode();
+    u32 GetShaderFlags();
+    u32 GetRenderTargetFlags();
+    void SetRequestedWindowed(u8 windowed);
 #endif
 } PC_DEVICE_BACKEND;
 

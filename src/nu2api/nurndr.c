@@ -340,7 +340,7 @@ i32 fun_005d4730(void) {
     return 0;
 }
 
-void fun_005d4740(f32 speed, f32 scale) {
+void NuRndrSetWind(f32 speed, f32 scale) {
     global_windspeed = speed;
     global_windscale = scale;
 }
@@ -481,11 +481,11 @@ f32 fun_005d5270(f32 value) {
     return result;
 }
 
-f32 fun_005d52b0(f32 value, f32 minimum, f32 maximum) {
+f32 NuRndrClampf(f32 value, f32 minimum, f32 maximum) {
     return value < minimum ? minimum : (value > maximum ? maximum : value);
 }
 
-void fun_005d5230(void) {
+void NuRndrRequestFrameFlags(void) {
     currentScene.render_frame_flags = 1;
 }
 

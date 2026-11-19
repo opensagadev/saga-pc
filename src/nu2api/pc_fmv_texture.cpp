@@ -31,7 +31,7 @@ extern "C" void fun_0074ead0(NU_FMV_TEXTURE *texture) {
     memset(texture, 0, sizeof(NU_FMV_TEXTURE));
 }
 
-extern "C" void fun_0074eb10(NU_FMV_TEXTURE *texture) {
+extern "C" void NuFmvTextureRestart(NU_FMV_TEXTURE *texture) {
     BinkGoto(texture->movie.bink, 0, 0);
     texture->movie.playing = 1;
 }

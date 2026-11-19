@@ -85,7 +85,7 @@ struct ShaderRegisterBlock { // size 0x14
         register_count = 0;
     }
 
-    void fun_00746760(const char *block_name, i32 count);
+    void SetRegisterBlock(const char *block_name, i32 count);
 };
 
 struct ShaderMacroDefinition { // size 0xc
@@ -283,7 +283,7 @@ struct ShaderCompilerDictionary {                  // size 0x9a4
     ShaderSourceNode *FindASTExact(const char *, u32);
     ShaderSourceNode *FindASTUniform(const char *);
     void SetOutputStage(i32 stage);
-    void fun_00748820();
+    void ResetScratch();
     void fun_00748840();
     void EmitType(ShaderCompilerBufferAllocator *);
     void EmitRegister(ShaderCompilerBufferAllocator *);
@@ -310,7 +310,7 @@ struct ShaderLexicalSlice { // size 0x8
     i32 AsInteger(i32 skipped_prefix);
     const char *GetBegin();
     const char *At(i32 offset);
-    bool fun_0074b080(const char *text);
+    bool NotEquals(const char *text);
 };
 
 struct ShaderLexicalReader {

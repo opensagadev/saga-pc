@@ -213,9 +213,9 @@ struct PC_SHADER_MATERIAL_FILTER {
     i32 fun_007442d0() const;
     i32 fun_00744320() const;
     i32 fun_00744330() const;
-    bool fun_00744340() const;
+    bool HasShadowSet() const;
     i32 fun_00744350(i32 layer) const;
-    i32 fun_00744370() const;
+    i32 IsBaseVariant() const;
     i32 fun_00744380() const;
     i32 fun_00744390() const;
     i32 fun_007443b0() const;

@@ -258,7 +258,7 @@ void PC_SHADER_PARAMETER_LOCAL::SetVectorElement(i32 index, const f32 *values) {
     }
 }
 
-void PC_SHADER_PARAMETER_LOCAL::fun_007424a0(i32 first_element, const f32 *values) {
+void PC_SHADER_PARAMETER_LOCAL::SetMatrixValue(i32 first_element, const f32 *values) {
     SetMatrixValues(first_element, 1, values);
 }
 

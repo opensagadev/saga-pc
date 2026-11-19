@@ -37,8 +37,8 @@ typedef struct NuKeyboardOwner { // size 0x44
     void ScheduleRescan(f32 interval, i32 repetitions);
     void Shutdown();
     i32 fun_006d5720(i32 *axes, i32 *buttons);
-    i32 fun_006d5970();
-    i32 fun_006d5980();
+    i32 HasMouse();
+    i32 HasDevice();
     u8 *PollKeyboard();
 #endif
 } NuKeyboardOwner;
@@ -499,7 +499,7 @@ struct PC_INPUT_RUNTIME {          // size 0x68b4
     PC_INPUT_RUNTIME();
     i32 ButtonName(i32 device, i32 button, char *destination, i32 custom, i32 custom_index, i32 use_callback, i32 alternate_labels,
                    char *delimiters);
-    i32 fun_006d9dc0(i32 device, i32 button, char *destination, i32 custom, i32 custom_index);
+    i32 ButtonNameDefault(i32 device, i32 button, char *destination, i32 custom, i32 custom_index);
 
     i32 PollKeyboard() {
         if (!keyboard_polled) {
@@ -583,7 +583,7 @@ struct PC_INPUT_RUNTIME {          // size 0x68b4
     i32 fun_006d3750(PC_INPUT_CONFIG *records, i32 count, PC_INPUT_CONFIG *config);
     i32 fun_006d37a0(i32 previous, i32 value);
     PC_INPUT_CONFIG *fun_006d4500(u8 mask, const char *name);
-    void fun_006d45e0(i32 key);
+    void SetPreferredKey(i32 key);
     i32 fun_006d4790(i32);
     i32 fun_006d4de0(i32 port, i32 action, i32 auxiliary, i32 bank);
     void fun_006d4c90(u32 layout_id);
@@ -746,8 +746,8 @@ extern "C" {
 #endif
     extern char TextInputActionLabelBuffer[128];
     char *TextInputActionLabel(i32, i32, i32, i32);
-    f32 fun_006d5c50(void);
-    f32 fun_006d5c60(void);
+    f32 PcInputMouseX(void);
+    f32 PcInputMouseY(void);
     i32 PcInput_GetFirstKeyboardPort(void);
     u8 PcInput_MappingIsGood(i32 port, i32 player_index);
     void PcInput_SetStringUCGfxRemapFn(void (*)(i32, char *));

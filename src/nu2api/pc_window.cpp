@@ -535,8 +535,8 @@ extern "C" void PcCreateCursorMaterial(void) {
 }
 
 extern "C" void fun_006ddfa0(f32 size) {
-    f32 x = fun_006d5c50();
-    f32 y = fun_006d5c60();
+    f32 x = PcInputMouseX();
+    f32 y = PcInputMouseY();
     f32 width;
     size *= NuTimeBarSlotWidth;
     width = size / PcInputAspectRatio();

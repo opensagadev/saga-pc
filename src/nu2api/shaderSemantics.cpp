@@ -37,7 +37,7 @@ i32 PC_SHADER_MATERIAL_FILTER::fun_00744330() const {
     return (descriptor->vertex_format & 0x1000000) != 0;
 }
 
-bool PC_SHADER_MATERIAL_FILTER::fun_00744340() const {
+bool PC_SHADER_MATERIAL_FILTER::HasShadowSet() const {
     return descriptor->shadow_set != 0;
 }
 
@@ -48,7 +48,7 @@ i32 PC_SHADER_MATERIAL_FILTER::fun_00744350(i32 layer) const {
     return 0;
 }
 
-i32 PC_SHADER_MATERIAL_FILTER::fun_00744370() const {
+i32 PC_SHADER_MATERIAL_FILTER::IsBaseVariant() const {
     return variant == 0;
 }
 

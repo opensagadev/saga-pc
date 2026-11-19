@@ -117,8 +117,8 @@ class ShaderCompilerParser { // size 0x45c
     void AddDeclaration(u32, i32, i32, const char *, i32, const char *, i32, i32);
     void EmitDeclarations(u32);
     ShaderConditionNode *ParseExpression(ShaderCompilerBufferAllocator *input, i32 *cursor);
-    void fun_0074b330(const ShaderLexicalSlice &slice);
-    void fun_0074b6b0(ShaderParserNode *node);
+    void AppendTextSlice(const ShaderLexicalSlice &slice);
+    void AppendNodeHook(ShaderParserNode *node);
 };
 
 #endif

@@ -49,9 +49,9 @@ extern "C" {
         PC_SHADER_PARAMETER_LOCAL *GetNext();
         void SetNext(PC_SHADER_PARAMETER_LOCAL *parameter);
         PC_SHADER_PARAMETER_LOCAL *fun_007421b0();
-        void fun_007424a0(i32 first_element, const f32 *values);
+        void SetMatrixValue(i32 first_element, const f32 *values);
         void fun_00742720(i32 index, const f32 *values);
-        i32 fun_00743c90();
+        i32 IsBound();
         void fun_00743e10(i32 first_element, i32 count, const f32 *values);
 #endif
     };

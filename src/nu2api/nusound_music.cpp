@@ -1477,15 +1477,15 @@ i32 NuMusic::PlayTrack(u32 class_mask) {
     return PlayTrack(class_mask, 0);
 }
 
-extern "C" f32 fun_00696a40(f32 value) {
+extern "C" f32 NuSoundLog10(f32 value) {
     return (f32)log10((f64)value);
 }
 
-extern "C" i32 fun_00696a60(i32 value) {
+extern "C" i32 NuSoundAbs(i32 value) {
     return abs(value);
 }
 
-extern "C" f32 fun_00696a70(f32 value) {
+extern "C" f32 NuSoundLog10b(f32 value) {
     return (f32)log10((f64)value);
 }
 

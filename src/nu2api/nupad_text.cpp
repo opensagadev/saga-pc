@@ -243,7 +243,7 @@ extern "C" i32 AreaGetKeyboardOverride(void) {
     return nu_input_state->keyboard_ui_override;
 }
 
-extern "C" f32 fun_006d6360(f32 period, f32 time) {
+extern "C" f32 PcInputRampCurve(f32 period, f32 time) {
     time /= period;
     return 1.0f - 1.0f / NuPow(2.0f, time);
 }
@@ -271,7 +271,7 @@ extern "C" i32 PcInputBindingButtonName(i32 action, i32 port, char *destination,
     return nu_input_state->ButtonName(action, port, destination, auxiliary, bank, a, b, c);
 }
 
-i32 PC_INPUT_RUNTIME::fun_006d9dc0(i32 device, i32 button, char *destination, i32 custom, i32 custom_index) {
+i32 PC_INPUT_RUNTIME::ButtonNameDefault(i32 device, i32 button, char *destination, i32 custom, i32 custom_index) {
     return ButtonName(device, button, destination, custom, custom_index, 1, 1, "()");
 }
 

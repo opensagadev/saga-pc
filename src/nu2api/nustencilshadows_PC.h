@@ -533,7 +533,7 @@ extern "C" {
         FRAME_NATIVE_TEXTURE_POOL *fun_00605150();
         i32 fun_00605170(FRAME_NATIVE_TEXTURE *record);
         void fun_00605300(i32 index, bool set);
-        i32 fun_00605460(i32 index);
+        i32 IsTextureOccupied(i32 index);
         void fun_0060a010(FRAME_NATIVE_TEXTURE *record);
 #endif
     } FRAME_NATIVE_TEXTURE_POOL;

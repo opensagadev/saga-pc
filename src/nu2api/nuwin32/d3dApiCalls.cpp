@@ -69,15 +69,15 @@ struct D3DXMATRIX { // size 0x40
 extern "C" void fun_006df010(void) {
 }
 
-i32 PC_DEVICE_BACKEND::fun_006df050() {
+i32 PC_DEVICE_BACKEND::IsMultisampled() {
     return multisample_index != 0;
 }
 
-u32 PC_DEVICE_BACKEND::fun_006df060() {
+u32 PC_DEVICE_BACKEND::GetEnabledOption0() {
     return enabled_option_0;
 }
 
-u32 PC_DEVICE_BACKEND::fun_006df070() {
+u32 PC_DEVICE_BACKEND::GetEnabledOption1() {
     return enabled_option_1;
 }
 
@@ -140,11 +140,11 @@ extern "C" void fun_006df1e0(u32 width, u32 height, u32 refresh) {
     PCDeviceBackend.fun_006e2ce0(width, height, refresh);
 }
 
-extern "C" void fun_006df200(i32 windowed) {
+extern "C" void PCDeviceRequestWindowed(i32 windowed) {
     PCDeviceBackend.requested_windowed = windowed == 1;
 }
 
-extern "C" i32 fun_006df210(void) {
+extern "C" i32 PCDeviceIsMultisampled(void) {
     return PCDeviceBackend.multisample_index != 0;
 }
 
@@ -160,7 +160,7 @@ extern "C" i32 fun_006df240(void) {
     return 0;
 }
 
-extern "C" i32 fun_006df250(void) {
+extern "C" i32 PCDeviceIsFullscreen(void) {
     return PCDeviceBackend.parameters.windowed == 0;
 }
 
@@ -420,7 +420,7 @@ extern "C" void fun_006dfc40(PC_TEXTURE_RESOURCE *texture, u32 level, PC_TEXTURE
     }
 }
 
-extern "C" u32 fun_006dfc60(PC_TEXTURE_RESOURCE *texture) {
+extern "C" u32 PCTextureGetLevelCount(PC_TEXTURE_RESOURCE *texture) {
     return texture->methods->get_level_count(texture);
 }
 
@@ -440,11 +440,11 @@ extern "C" PC_TEXTURE_LEVEL_DESC *fun_006dfcc0(PC_TEXTURE_RESOURCE *texture, u32
     return NULL;
 }
 
-extern "C" u32 fun_006dfcf0(void) {
+extern "C" u32 PCDeviceGetEnabledOption0(void) {
     return PCDeviceBackend.enabled_option_0;
 }
 
-extern "C" u32 fun_006dfd00(void) {
+extern "C" u32 PCDeviceGetEnabledOption1(void) {
     return PCDeviceBackend.enabled_option_1;
 }
 

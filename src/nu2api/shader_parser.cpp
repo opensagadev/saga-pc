@@ -217,11 +217,11 @@ ShaderParserToggle::ShaderParserToggle(u8 enabled) : ShaderParserNode(5), enable
 ShaderParserTextNode::ShaderParserTextNode(char *bytes, i32 count) : ShaderParserNode(7), bytes(bytes), count(count) {
 }
 
-void ShaderCompilerParser::fun_0074b330(const ShaderLexicalSlice &slice) {
+void ShaderCompilerParser::AppendTextSlice(const ShaderLexicalSlice &slice) {
     text.AppendBytes(slice.begin, slice.length);
 }
 
-void ShaderCompilerParser::fun_0074b6b0(ShaderParserNode *node) {
+void ShaderCompilerParser::AppendNodeHook(ShaderParserNode *node) {
     AppendNode(node);
 }
 

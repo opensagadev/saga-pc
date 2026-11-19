@@ -110,7 +110,7 @@ void ShaderCompilerDictionary::SetOutputStage(i32 stage) {
     output_stage = stage;
 }
 
-void ShaderCompilerDictionary::fun_00748820() {
+void ShaderCompilerDictionary::ResetScratch() {
     scratch.cursor = scratch.base;
     program_count = 0;
 }

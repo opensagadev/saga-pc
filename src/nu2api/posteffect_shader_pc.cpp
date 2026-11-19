@@ -22,7 +22,7 @@ struct POST_SHADER_PROGRAM_POOL {     // size 0x40c
     i32 cursor;                       // 0x408
     POST_SHADER_PROGRAM *Allocate(void);
     POST_SHADER_PROGRAM_POOL *fun_006051a0();
-    i32 fun_00605480(i32 index);
+    i32 IsProgramOccupied(i32 index);
     void fun_006054a0(i32 index, bool set);
 };
 
@@ -76,11 +76,11 @@ void FRAME_NATIVE_TEXTURE_POOL::fun_00605300(i32 index, bool set) {
     }
 }
 
-i32 FRAME_NATIVE_TEXTURE_POOL::fun_00605460(i32 index) {
+i32 FRAME_NATIVE_TEXTURE_POOL::IsTextureOccupied(i32 index) {
     return occupied[index >> 3] >> (index & 7) & 1;
 }
 
-i32 POST_SHADER_PROGRAM_POOL::fun_00605480(i32 index) {
+i32 POST_SHADER_PROGRAM_POOL::IsProgramOccupied(i32 index) {
     return (i8)occupied[index >> 3] >> (index & 7) & 1;
 }
 
@@ -186,11 +186,11 @@ extern "C" void fun_00605510(void) {
 extern "C" void fun_00605540(void) {
 }
 
-extern "C" FRAME_NATIVE_TEXTURE *fun_0060bf20(void *, FRAME_NATIVE_TEXTURE_POOL *pool) {
+extern "C" FRAME_NATIVE_TEXTURE *FrameNativeTexturePoolAllocate(void *, FRAME_NATIVE_TEXTURE_POOL *pool) {
     return pool->Allocate();
 }
 
-extern "C" POST_SHADER_PROGRAM *fun_0060bf30(void *, POST_SHADER_PROGRAM_POOL *pool) {
+extern "C" POST_SHADER_PROGRAM *PostShaderProgramPoolAllocate(void *, POST_SHADER_PROGRAM_POOL *pool) {
     return pool->Allocate();
 }
 

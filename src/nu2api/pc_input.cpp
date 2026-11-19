@@ -76,7 +76,7 @@ PC_INPUT_CONFIG *PC_INPUT_RUNTIME::fun_006d4500(u8 mask, const char *name) {
     return NULL;
 }
 
-void PC_INPUT_RUNTIME::fun_006d45e0(i32 key) {
+void PC_INPUT_RUNTIME::SetPreferredKey(i32 key) {
     preferred_key = key;
 }
 
@@ -896,7 +896,7 @@ extern "C" i32 GamePadReadBackend(FRAME_PAD *pad, i32 ignored) {
     return NuPadRead(pad);
 }
 
-extern "C" PC_DI_MOUSE_STATE *fun_006d6080(void) {
+extern "C" PC_DI_MOUSE_STATE *PcMousePreviousSample(void) {
     return &PcMouseSamples[PcMouseSampleIndex ^ 1];
 }
 
@@ -911,7 +911,7 @@ extern "C" i32 fun_006d6050(void) {
     return 0;
 }
 
-extern "C" PC_DI_MOUSE_STATE *fun_006d6060(void) {
+extern "C" PC_DI_MOUSE_STATE *PcMouseCurrentSample(void) {
     return &PcMouseSamples[PcMouseSampleIndex];
 }
 
@@ -933,7 +933,7 @@ extern "C" void NuPadClosePS(FRAME_PAD *pad) {
 extern "C" void NuPadInitPS(FRAME_SCANNED_PAD *pad) {
 }
 
-extern "C" i32 fun_006d60f0(void) {
+extern "C" i32 PcInputKeyboardDeadzone(void) {
     return nu_input_state->devices[10].alternate_deadzone;
 }
 
@@ -946,15 +946,15 @@ extern "C" void fun_006d6100(i32 value) {
     nu_input_state->devices[10].alternate_deadzone = value;
 }
 
-extern "C" void fun_006d6140(void) {
+extern "C" void NuKeyboardEnableAllDevices(void) {
     nu_keyboard_device_flags = 7;
 }
 
-extern "C" void fun_006d6150(void) {
+extern "C" void NuKeyboardEnableKeyboardMouse(void) {
     nu_keyboard_device_flags = 3;
 }
 
-extern "C" void fun_006d6160(void) {
+extern "C" void NuKeyboardDisableDevices(void) {
     nu_keyboard_device_flags = 0;
 }
 
@@ -1727,11 +1727,11 @@ void NuKeyboardOwner::ScheduleRescan(f32 interval, i32 repetitions) {
     rescan_timer = interval;
 }
 
-i32 NuKeyboardOwner::fun_006d5970() {
+i32 NuKeyboardOwner::HasMouse() {
     return mouse != NULL;
 }
 
-i32 NuKeyboardOwner::fun_006d5980() {
+i32 NuKeyboardOwner::HasDevice() {
     return device != NULL;
 }
 
@@ -1875,15 +1875,15 @@ extern "C" f32 NuMouseReadZVel(void) {
     return (f32)(nu_input_state->mouse.delta[2] * -4.0);
 }
 
-extern "C" f32 fun_006d5c50(void) {
+extern "C" f32 PcInputMouseX(void) {
     return nu_input_state->mouse.position[0];
 }
 
-extern "C" f32 fun_006d5c60(void) {
+extern "C" f32 PcInputMouseY(void) {
     return nu_input_state->mouse.position[1];
 }
 
-extern "C" void fun_006d5c70(f32 threshold, i32 motion, f32 ramp) {
+extern "C" void PcInputSetThresholds(f32 threshold, i32 motion, f32 ramp) {
     nu_input_state->SetThresholds(threshold, motion, ramp);
 }
 

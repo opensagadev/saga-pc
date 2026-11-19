@@ -97,7 +97,7 @@ extern "C" void NuShaderObjectBaseUpdateWaterTable(NuShaderObject *shader, NUMTL
     PCShaderWaterLastFrame = nuapi.frame_count;
 }
 
-i32 PC_SHADER_PARAMETER_LOCAL::fun_00743c90() {
+i32 PC_SHADER_PARAMETER_LOCAL::IsBound() {
     return register_index >= 0;
 }
 

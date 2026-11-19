@@ -41,7 +41,7 @@ class ShaderBuilderGen { // size 0xbd0
     bool LoadFile(const char *name);
     i32 CompileEffect(const char *source, i32 length, void *output, i32 unused);
     void Generate(struct PC_SHADER_MATERIAL_FILTER *, ShaderCompilerBufferAllocator *, ShaderCompilerBufferAllocator *);
-    void fun_00745270(const char *name, i32 count);
+    void AddDictionaryRegisterBlock(const char *name, i32 count);
     bool GetDictionaryForceMode();
     i32 GetDictionaryProfile();
 };

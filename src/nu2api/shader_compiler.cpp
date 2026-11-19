@@ -387,7 +387,7 @@ void ShaderCompilerBase::SetProfile(i32 profile, i32 first, i32 second) {
     dictionary.SetProfile(profile, first, second);
 }
 
-void ShaderCompilerBase::fun_00745270(const char *name, i32 count) {
+void ShaderCompilerBase::AddDictionaryRegisterBlock(const char *name, i32 count) {
     dictionary.AddRegisterBlock(name, count);
 }
 

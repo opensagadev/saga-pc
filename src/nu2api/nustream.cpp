@@ -94,7 +94,7 @@ SoundVoiceManagerPC::~SoundVoiceManagerPC() {
     }
 }
 
-extern "C" void fun_00698b60(void) {
+extern "C" void NuSound3DestroyStereoStreams(void) {
     NuSound3StereoStreams[0]->~SoundQueue();
     NuSound3StereoStreams[1]->~SoundQueue();
 }

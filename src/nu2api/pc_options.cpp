@@ -10,7 +10,7 @@
 #include <shlobj.h>
 #include <string.h>
 
-GRAPHICS_DISPLAY_MODE *PC_DEVICE_BACKEND::fun_006daee0() {
+GRAPHICS_DISPLAY_MODE *PC_DEVICE_BACKEND::GetDesktopMode() {
     return &desktop_mode;
 }
 
@@ -223,7 +223,7 @@ void PC_WINDOW_OPTIONS::Validate() {
     }
 }
 
-extern "C" void fun_006db900(void) {
+extern "C" void PcWindowOptionsSave(void) {
     PcWindowOptions.Save();
 }
 
@@ -410,15 +410,15 @@ void PC_WINDOW_OPTIONS::Load() {
     Validate();
 }
 
-u32 PC_DEVICE_BACKEND::fun_006dbae0() {
+u32 PC_DEVICE_BACKEND::GetShaderFlags() {
     return shader_flags;
 }
 
-u32 PC_DEVICE_BACKEND::fun_006dbaf0() {
+u32 PC_DEVICE_BACKEND::GetRenderTargetFlags() {
     return render_target_flags;
 }
 
-void PC_DEVICE_BACKEND::fun_006dbb00(u8 windowed) {
+void PC_DEVICE_BACKEND::SetRequestedWindowed(u8 windowed) {
     requested_windowed = windowed;
 }
 

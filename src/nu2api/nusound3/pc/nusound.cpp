@@ -721,7 +721,7 @@ IDirectSound8 *SoundVoiceManagerPC::GetFactory(void) {
     return factory;
 }
 
-extern "C" void fun_00696bd0(NUMTX *listener) {
+extern "C" void NuSound3SetListener(NUMTX *listener) {
     NuSound3Listener = listener;
 }
 

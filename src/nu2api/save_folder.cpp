@@ -38,7 +38,7 @@ extern "C" void fun_006dddc0(void) {
     }
 }
 
-extern "C" WNDCLASSEXA *fun_006dddd0(void) {
+extern "C" WNDCLASSEXA *PcGetWindowClass(void) {
     return &PcWindowClass;
 }
 

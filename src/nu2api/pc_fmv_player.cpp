@@ -275,7 +275,7 @@ extern "C" void FmvFrame(PC_FMV_MOVIE *movie) {
     }
 }
 
-extern "C" void fun_00631ce0(PC_FMV_MOVIE *movie, u32 frame, u32 flags) {
+extern "C" void PCFmvMovieGoto(PC_FMV_MOVIE *movie, u32 frame, u32 flags) {
     BinkGoto(movie->bink, frame, flags);
 }
 

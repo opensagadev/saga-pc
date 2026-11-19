@@ -4507,7 +4507,7 @@ i32 NuPlnLine2(NUPLANE *plane, NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *start, NUVEC
     return 0;
 }
 
-f32 fun_005c0200(f32 value) {
+f32 NuFsqrtf(f32 value) {
     return sqrtf(value);
 }
 

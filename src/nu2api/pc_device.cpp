@@ -373,7 +373,7 @@ u8 PC_WINDOW_OPTIONS::GetSpeedBlurSupported() {
     return speedblursupported;
 }
 
-i32 PC_DEVICE_BACKEND::fun_006e18d0() {
+i32 PC_DEVICE_BACKEND::IsDeviceLost() {
     return device == NULL;
 }
 
@@ -1407,7 +1407,7 @@ u8 PC_WINDOW_OPTIONS::fun_00509080() {
     return option459;
 }
 
-GRAPHICS_DISPLAY_MODE *PC_DEVICE_BACKEND::fun_00509090(i32 index) {
+GRAPHICS_DISPLAY_MODE *PC_DEVICE_BACKEND::GetDisplayMode(i32 index) {
     return &modes[index];
 }
 
@@ -2614,7 +2614,7 @@ u16 PC_DEVICE_BACKEND::fun_006e2140() {
     return 1;
 }
 
-void PC_DEVICE_BACKEND::fun_006e22c0() {
+void PC_DEVICE_BACKEND::RestoreDepthStencil() {
     device->methods->set_depth_stencil_surface(device, depth_surface);
 }
 

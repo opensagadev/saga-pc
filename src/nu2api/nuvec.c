@@ -79,11 +79,11 @@ void NuVec4MtxTransformHVU0(NUVEC4 *out, NUVEC4 *v, NUMTX *matrix) {
     NuVec4MtxTransformVU0(out, v, matrix);
 }
 
-f32 fun_005c1270(f32 value) {
+f32 NuExpf(f32 value) {
     return expf(value);
 }
 
-f32 fun_005c1290(f32 value) {
+f32 NuExpf2(f32 value) {
     return expf(value);
 }
 

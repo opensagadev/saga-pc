@@ -268,7 +268,7 @@ bool ShaderLexicalReader::Next(ShaderCompilerBufferAllocator *input, i32 *cursor
     return false;
 }
 
-bool ShaderLexicalSlice::fun_0074b080(const char *text) {
+bool ShaderLexicalSlice::NotEquals(const char *text) {
     return !Equals(text);
 }
 
@@ -503,7 +503,7 @@ extern "C" i32 ShaderDeclarationSemantic(ShaderLexicalSlice *slice) {
     return SHADER_SEMANTIC_CUSTOM;
 }
 
-extern "C" bool fun_0074bd00(const char *left, const char *right) {
+extern "C" bool ShaderConditionHigherPrecedence(const char *left, const char *right) {
     return ShaderConditionPrecedence(left) > ShaderConditionPrecedence(right);
 }
 

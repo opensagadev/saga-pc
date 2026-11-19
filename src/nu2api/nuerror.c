@@ -46,6 +46,6 @@ char *NuGetErrN(i32 entry) {
     return PCWarningMessages + offset;
 }
 
-char *fun_004fea90(void) {
+char *NuErrorGetWarnings(void) {
     return bHaveErr ? PCWarningMessages : NULL;
 }

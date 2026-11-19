@@ -711,7 +711,7 @@ const char *ShaderSourceNode::GetTypeName() {
     return ShaderCompilerTypeNames[type];
 }
 
-void ShaderRegisterBlock::fun_00746760(const char *block_name, i32 count) {
+void ShaderRegisterBlock::SetRegisterBlock(const char *block_name, i32 count) {
     PCByteCopy(name, block_name, NuStrLen(block_name) + 1);
     register_count = count;
 }
