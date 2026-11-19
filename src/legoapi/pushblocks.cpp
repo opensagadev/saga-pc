@@ -46,99 +46,6 @@ static f32 PushBlockGapEpsilon = 0.00999999978f;
 extern "C" ADDGIZMOTYPE Default_ADDGIZMOTYPE;
 extern "C" char *PushBlocksName;
 
-typedef struct PUSH_SUPPORT_BLOCK_VIEW {
-    u8 reserved_00[0x24];
-    nuhspecial_s special;
-    GAMEOBJECT *pushing_object;
-    u8 reserved_34[0x58 - 0x34];
-    NUVEC *position;
-    u8 reserved_5c[0xb0 - 0x5c];
-    NUVEC bounds_min;
-    NUVEC bounds_max;
-    u32 packed_state_flags;
-    u8 reserved_cc[4];
-    u8 completed_snap_positions;
-    u8 end_position_count;
-    u8 output_count;
-    u8 reserved_d3;
-} PUSH_SUPPORT_BLOCK_VIEW;
-
-typedef struct PUSH_SUPPORT_WORLD_VIEW {
-    u8 reserved_00[0x46bc];
-    PUSH_SUPPORT_BLOCK_VIEW *blocks;
-    i32 count;
-} PUSH_SUPPORT_WORLD_VIEW;
-
-typedef struct PUSH_RUNTIME_BOUNDS {
-    NUVEC min;
-    NUVEC max;
-} PUSH_RUNTIME_BOUNDS;
-
-typedef struct PUSH_RUNTIME_BLOCK_VIEW {
-    f32 ground_offset;
-    f32 ground_height;
-    f32 snap_timer;
-    f32 settled_height;
-    i8 terrain_info[4];
-
-    union {
-        i8 bytes[4];
-        i32 word;
-    } extra_terrain_info;
-
-    i32 previous_extra_terrain_info;
-    PUSH_BLOCK *supporting_block;
-    PUSH_BLOCK *previous_supporting_block;
-    nuhspecial_s special;
-    GAMEOBJECT *pushing_object;
-    i32 platform_id;
-    u8 reserved_38[8];
-    f32 snap_distance;
-    char name[16];
-    NUVEC *snap_positions;
-    NUVEC *position;
-    nuhspecial_s end_position_specials[2];
-    NUVEC end_position_origins[2];
-    NUVEC velocity;
-    NUVEC target_velocity;
-    NUVEC snap_origin;
-
-    union {
-        struct {
-            NUVEC bounds_min;
-            NUVEC bounds_max;
-        };
-
-        PUSH_RUNTIME_BOUNDS bounds;
-    };
-
-    u32 packed_state_flags;
-    u8 reserved_cc[4];
-    u8 completed_snap_positions;
-    u8 end_position_count;
-    u8 output_count;
-    u8 reserved_d3;
-} PUSH_RUNTIME_BLOCK_VIEW;
-
-typedef struct PUSH_RUNTIME_LEVEL_VIEW {
-    u8 reserved_00[0xff];
-    u8 max_push_blocks;
-} PUSH_RUNTIME_LEVEL_VIEW;
-
-typedef struct PUSH_RUNTIME_WORLD_VIEW {
-    u8 reserved_00[0x104];
-    VARIPTR giz_buffer;
-    u8 reserved_108[0x128 - 0x108];
-    PUSH_RUNTIME_LEVEL_VIEW *current_level;
-    u8 reserved_12c[0x13c - 0x12c];
-    NUGSCN *current_gscn;
-    u8 reserved_140[0x2ac8 - 0x140];
-    void *gizmo_sys;
-    u8 reserved_2acc[0x46bc - 0x2acc];
-    PUSH_RUNTIME_BLOCK_VIEW *blocks;
-    i32 count;
-} PUSH_RUNTIME_WORLD_VIEW;
-
 extern "C" {
     extern NUVEC p000;
     extern i32 RunOutOfPosTabSpace;
@@ -515,10 +422,10 @@ extern "C" {
     }
 
     void MoveBlocksOverBlock(WORLDINFO *opaque_world, PUSH_BLOCK *opaque_block, i32 excluded, NUVEC *delta) {
-        PUSH_RUNTIME_WORLD_VIEW *world = (PUSH_RUNTIME_WORLD_VIEW *)opaque_world;
-        PUSH_RUNTIME_BLOCK_VIEW *block = (PUSH_RUNTIME_BLOCK_VIEW *)opaque_block;
+        WORLDINFO *world = opaque_world;
+        PUSH_BLOCK *block = opaque_block;
         NUVEC *position;
-        PUSH_RUNTIME_BOUNDS box;
+        PUSH_BOUNDS box;
         i32 index;
         if ((block->packed_state_flags & 0x400u) != 0) {
             return;
@@ -531,15 +438,15 @@ extern "C" {
         box.max.x = position->x + box.max.x;
         box.max.y += position->y;
         box.max.z = position->z + box.max.z;
-        for (index = 0; index < world->count; ++index) {
-            PUSH_RUNTIME_BLOCK_VIEW *other;
+        for (index = 0; index < world->push_block_count; ++index) {
+            PUSH_BLOCK *other;
             NUVEC *other_position;
-            PUSH_RUNTIME_BOUNDS other_box;
-            PUSH_RUNTIME_BOUNDS test;
+            PUSH_BOUNDS other_box;
+            PUSH_BOUNDS test;
             if (index == excluded) {
                 continue;
             }
-            other = &world->blocks[index];
+            other = &world->push_blocks[index];
             if ((other->packed_state_flags & 0x04000000u) != 0 || (other->packed_state_flags & PUSHBLOCK_PUSH_VISIBLE) == 0) {
                 continue;
             }
@@ -569,7 +476,7 @@ extern "C" {
             other->ground_offset -= delta->y;
             other_position->z = delta->z + other_position->z;
             other->packed_state_flags |= 4u;
-            if (BlockInBlock(opaque_world, (PUSH_BLOCK *)other, index, &other->supporting_block) != NULL) {
+            if (BlockInBlock(opaque_world, other, index, &other->supporting_block) != NULL) {
                 other->packed_state_flags |= 0x400u;
             }
             NuSpecialUpdate(&other->special);
@@ -577,7 +484,7 @@ extern "C" {
     }
 
     void MoveBlocks(WORLDINFO *opaque_world, PUSH_BLOCK *opaque_block, i32 index, NUVEC *velocity) {
-        PUSH_RUNTIME_BLOCK_VIEW *block = (PUSH_RUNTIME_BLOCK_VIEW *)opaque_block;
+        PUSH_BLOCK *block = opaque_block;
         NUVEC delta;
         PUSH_BLOCK *hit;
         i32 j;
@@ -611,7 +518,7 @@ extern "C" {
             block->ground_offset -= delta.y;
             hit = BlockInBlock(opaque_world, opaque_block, index, &block->supporting_block);
             if (hit != NULL) {
-                PUSH_RUNTIME_BLOCK_VIEW *other = (PUSH_RUNTIME_BLOCK_VIEW *)hit;
+                PUSH_BLOCK *other = hit;
                 block->settled_height = other->position->y + other->bounds_max.y;
                 block->packed_state_flags |= 0x800u;
                 NuSpecialUpdate(&block->special);
@@ -628,16 +535,16 @@ extern "C" {
         if (points == NULL || heights == NULL) {
             return 0;
         }
-        PUSH_SUPPORT_WORLD_VIEW *world = (PUSH_SUPPORT_WORLD_VIEW *)opaque_world;
+        WORLDINFO *world = opaque_world;
         heights[0] = -10000.0f;
         heights[1] = -10000.0f;
         heights[2] = -10000.0f;
         heights[3] = -10000.0f;
-        for (i = 0; i < world->count; ++i) {
-            PUSH_SUPPORT_BLOCK_VIEW *other = &world->blocks[i];
+        for (i = 0; i < world->push_block_count; ++i) {
+            PUSH_BLOCK *other = &world->push_blocks[i];
             NUVEC min;
             NUVEC max;
-            if ((PUSH_BLOCK *)other == block) {
+            if (other == block) {
                 continue;
             }
             max = min = *other->position;
@@ -700,18 +607,18 @@ extern "C" i32 OtherBlockInRange(WORLDINFO *opaque_world, PUSH_BLOCK *opaque_blo
 extern "C" {
 
     i32 SnapPosTaken(WORLDINFO *opaque_world, PUSH_BLOCK *block, NUVEC *position, i32 excluded) {
-        PUSH_SUPPORT_WORLD_VIEW *world = (PUSH_SUPPORT_WORLD_VIEW *)opaque_world;
-        i32 count = world->count;
+        WORLDINFO *world = opaque_world;
+        i32 count = world->push_block_count;
         i32 i;
         for (i = 0; i < count; ++i) {
-            PUSH_SUPPORT_BLOCK_VIEW *other;
+            PUSH_BLOCK *other;
             f32 x;
             f32 y;
             f32 z;
             if (i == excluded) {
                 continue;
             }
-            other = &world->blocks[i];
+            other = &world->push_blocks[i];
             if ((other->packed_state_flags & 0x02000300u) == 0) {
                 continue;
             }

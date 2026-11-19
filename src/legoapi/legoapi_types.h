@@ -2048,6 +2048,11 @@ struct GIZBUILDITSYS_s {                 // size 0x14
 #define PUSHBLOCK_PUSH_ACTIVE 0x1000000
 #define PUSHBLOCK_PROGRESS_STATE 0x2000000
 
+typedef struct PUSH_BOUNDS { // size 0x18
+    NUVEC min;               // 0x00
+    NUVEC max;               // 0x0c
+} PUSH_BOUNDS;
+
 struct pushblock_s { // size 0xd4
 
     union { // size 0x4
@@ -2089,8 +2094,15 @@ struct pushblock_s { // size 0xd4
     NUVEC velocity;                                // 0x8c
     NUVEC target_velocity;                         // 0x98
     NUVEC snap_origin;                             // 0xa4
-    NUVEC bounds_min;                              // 0xb0
-    NUVEC bounds_max;                              // 0xbc
+
+    union { // size 0x18
+        struct {
+            NUVEC bounds_min; // 0xb0
+            NUVEC bounds_max; // 0xbc
+        };
+
+        PUSH_BOUNDS bounds; /* both corners, copied as one (MoveBlocksOverBlock) */
+    }; // 0xb0
 
     union { // size 0x4
         u32 packed_state_flags;
