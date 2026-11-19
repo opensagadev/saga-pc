@@ -7,18 +7,6 @@
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/nufile/nufpar.h"
 
-typedef struct episode_area_save_reader_s { // size 0xc
-    u8 complete;                            // 0x0
-    u8 area_complete;                       // 0x1
-    u8 story_complete;                      // 0x2
-    u8 freeplay_complete;                   // 0x3
-    u8 minikit_complete;                    // 0x4
-    u8 minikit_count;                       // 0x5
-    u8 red_brick_complete;                  // 0x6
-    u8 challenge_complete;                  // 0x7
-    f32 challenge_time;                     // 0x8
-} EPISODE_AREA_SAVE_READER;
-
 extern "C" {
     void EpisodesConfigDiagnostic(char *path);
 
@@ -269,12 +257,12 @@ i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SA
         }
         if ((ADataList[id].flags & AREAFLAG_BONUS_AREA) != 0) {
             ++EpGoldBrickTotal;
-            if ((f64)((EPISODE_AREA_SAVE_READER *)&saves[id])->challenge_time < (f64)ADataList[id].challenge_trial_time) {
+            if ((f64)saves[id].challenge_time < (f64)ADataList[id].challenge_trial_time) {
                 ++EpGoldBrickCount;
             }
             continue;
         }
-        EPISODE_AREA_SAVE_READER *save = (EPISODE_AREA_SAVE_READER *)&saves[id];
+        COLLECTION_AREA_SAVE *save = &saves[id];
         ++EpCompleteTotal;
         EpMiniKitTotal += 10;
         if (save->complete != 0) {

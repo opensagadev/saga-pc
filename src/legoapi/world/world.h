@@ -147,39 +147,39 @@ typedef struct WORLDINFO_s { // size 0x51ac
         };
     }; // 0x0114
 
-    i32 level_idx;                           // 0x011c
-    i32 area_index;                          // 0x0120
-    i32 episode_index;                       // 0x0124
-    struct level_data_s *current_level;      // 0x0128
-    struct area_data_s *area;                // 0x012c
-    struct level_progress_s *level_progress; // 0x0130
-    struct APIDEBRISSYS *game_debris_sys;    // 0x0134
-    struct partdebrissys_s *part_debris_sys; // 0x0138
-    struct NUGSCN_s *current_gscn;           // 0x013c
-    struct NUGSCN_s *secondary_gscn;         // 0x0140
-    NUVEC level_min;                         // 0x0144
-    NUVEC level_max;                         // 0x0150
-    SCENEPROGRESS scene_progress;            // 0x015c
-    void *terrain;                           // 0x295c
-    struct gameanimsys_s *game_anim_sys;     // 0x2960
-    struct NUGSCN_s *icons_scene;            // 0x2964
-    MINIKIT minikit;                         // 0x2968
-    void *character_scenes;                  // 0x2980
-    MINIKIT **minikit_pieces_by_id;          // 0x2984
-    struct socksys_s *sock_sys;              // 0x2988
-    struct APIOBJECTSYS *object_sys;         // 0x298c
-    u8 room_visibility_flag;                 // 0x2990
-    u8 rooms_visible[0x100];                 // 0x2991
-    u8 unknown_2a91[3];                      // 0x2a91
-    u8 *rooms_visible_ptr;                   // 0x2a94
-    i32 page_pp;                             // 0x2a98
-    i32 page_part;                           // 0x2a9c
-    i32 page_anim;                           // 0x2aa0
-    i32 page_grass;                          // 0x2aa4
-    i32 page_bridge;                         // 0x2aa8
-    struct BURN_SET *burnset;                // 0x2aac
-    struct cutsys_s *cutscene_sys;           // 0x2ab0
-    struct RTL_SET *rtl_set;                 // 0x2ab4
+    i32 level_idx;                                // 0x011c
+    i32 area_index;                               // 0x0120
+    i32 episode_index;                            // 0x0124
+    struct level_data_s *current_level;           // 0x0128
+    struct area_data_s *area;                     // 0x012c
+    struct level_progress_s *level_progress;      // 0x0130
+    struct APIDEBRISSYS *game_debris_sys;         // 0x0134
+    struct partdebrissys_s *part_debris_sys;      // 0x0138
+    struct NUGSCN_s *current_gscn;                // 0x013c
+    struct NUGSCN_s *secondary_gscn;              // 0x0140
+    NUVEC level_min;                              // 0x0144
+    NUVEC level_max;                              // 0x0150
+    SCENEPROGRESS scene_progress;                 // 0x015c
+    void *terrain;                                // 0x295c
+    struct gameanimsys_s *game_anim_sys;          // 0x2960
+    struct NUGSCN_s *icons_scene;                 // 0x2964
+    MINIKIT minikit;                              // 0x2968
+    struct KILLPARTS_CHARSCENE *character_scenes; // 0x2980
+    MINIKIT **minikit_pieces_by_id;               // 0x2984
+    struct socksys_s *sock_sys;                   // 0x2988
+    struct APIOBJECTSYS *object_sys;              // 0x298c
+    u8 room_visibility_flag;                      // 0x2990
+    u8 rooms_visible[0x100];                      // 0x2991
+    u8 unknown_2a91[3];                           // 0x2a91
+    u8 *rooms_visible_ptr;                        // 0x2a94
+    i32 page_pp;                                  // 0x2a98
+    i32 page_part;                                // 0x2a9c
+    i32 page_anim;                                // 0x2aa0
+    i32 page_grass;                               // 0x2aa4
+    i32 page_bridge;                              // 0x2aa8
+    struct BURN_SET *burnset;                     // 0x2aac
+    struct cutsys_s *cutscene_sys;                // 0x2ab0
+    struct RTL_SET *rtl_set;                      // 0x2ab4
     /* the world light, -1 for none */
     i32 rtl_id;                                          // 0x2ab8
     NUVEC *light_dir;                                    // 0x2abc

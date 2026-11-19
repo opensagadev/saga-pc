@@ -69,11 +69,6 @@ void UpdateTimer(TIMER *timer) {
     timer->update_count++;
 }
 
-typedef struct GAME_TIMING_AREA_SAVE { // size 0xc
-    u8 unknown_00[8];                  // 0x0
-    f32 challenge_trial_time;          // 0x8
-} GAME_TIMING_AREA_SAVE;
-
 TIMER GamePlayTimer = {0};
 MAINFRAMECOUNTERS MainFrameCounters = {0};
 TIMER SuperStoryTimer = {0};
@@ -128,8 +123,7 @@ void GameTiming(WORLDINFO *world, f32 *game_time) {
                 if (world->area != NULL && (world->area->flags & AREAFLAG_MINIKIT) != 0) {
                     if (ChallengeMode == CHALLENGE_RUNNING) {
                         UpdateTimer(&ChallengeTimer);
-                        if (Game_AreaSave != NULL && ChallengeTimer.time_elapsed >=
-                                                         ((GAME_TIMING_AREA_SAVE *)Game_AreaSave)[world->area_index].challenge_trial_time) {
+                        if (Game_AreaSave != NULL && ChallengeTimer.time_elapsed >= Game_AreaSave[world->area_index].challenge_time) {
                             EndChallenge(CHALLENGE_TIME_UP, 1);
                         }
                     } else if (Mission_CurrentState(NULL) == MISSION_STATE_ACTIVE) {

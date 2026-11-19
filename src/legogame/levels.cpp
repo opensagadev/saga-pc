@@ -1959,7 +1959,7 @@ void WorldInfo_Load(WORLDINFO *world) {
         goto abort;
     }
     world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-    world->character_scenes = world->giz_buffer.void_ptr;
+    world->character_scenes = (KILLPARTS_CHARSCENE *)world->giz_buffer.void_ptr;
     world->giz_buffer.addr += CHARCOUNT * 0x10;
     CharScenes_LevelLoad(world);
     if ((world->current_level->flags & LEVEL_GAMEPLAY) != 0 &&

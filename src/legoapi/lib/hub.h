@@ -40,19 +40,15 @@ extern "C" {
 #endif
 
     typedef struct collection_area_save_s { // size 0xc
-
-        union { // size 0x4
-            u8 unknown_00[4];
-
-            struct {              // size 0x4
-                u8 complete;      // 0x0
-                u8 area_complete; // 0x1
-                u8 unknown_02[2]; // 0x2
-            };
-        }; // 0x0
-
-        u8 minikit_complete; // 0x4
-        u8 unknown_05[7];    // 0x5
+        u8 complete;                        // 0x0
+        u8 area_complete;                   // 0x1
+        u8 story_complete;                  // 0x2
+        u8 freeplay_complete;               // 0x3
+        u8 minikit_complete;                // 0x4
+        u8 minikit_count;                   // 0x5
+        u8 red_brick_complete;              // 0x6
+        u8 challenge_complete;              // 0x7
+        f32 challenge_time;                 // 0x8
     } COLLECTION_AREA_SAVE;
 
     i32 Percent_UpdateHint(HINT *);

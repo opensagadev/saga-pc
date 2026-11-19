@@ -321,12 +321,6 @@ void Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
 
 /* Append to existing collection.c after its canonical static CollectCount/CollectList. */
 
-typedef struct SHOP_UNLOCK_AREA { // size 0xc
-    u8 unknown_00;                // 0x0
-    u8 area_complete;             // 0x1
-    u8 unknown_02[10];            // 0x2
-} SHOP_UNLOCK_AREA;
-
 COLLECTID *CollectIDUnlocked(i32 id) {
     COLLECTID *entry;
     COLLECTID *list = CollectList;
@@ -344,7 +338,7 @@ COLLECTID *CollectIDUnlocked(i32 id) {
                     break;
                 case COLLECTION_UNLOCK_AREA_COMPLETE:
                     area = (i8)entry->field2_0x3;
-                    if (area != -1 && ((SHOP_UNLOCK_AREA *)Game_AreaSave)[area].area_complete != 0) {
+                    if (area != -1 && Game_AreaSave[area].area_complete != 0) {
                         unlocked = 1;
                     }
                     break;
