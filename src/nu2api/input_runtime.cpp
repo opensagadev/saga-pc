@@ -1357,11 +1357,11 @@ i32 PC_INPUT_RUNTIME::GetInputRecordCount() {
     return shutdown_state;
 }
 
-i32 PC_INPUT_RUNTIME::fun_006d4e40() {
+i32 PC_INPUT_RUNTIME::GetReplayFrame() {
     return replay_frame;
 }
 
-i32 PC_INPUT_RUNTIME::fun_006d4e50() {
+i32 PC_INPUT_RUNTIME::GetReplayLength() {
     return replay_length;
 }
 
@@ -1638,7 +1638,7 @@ extern "C" void PcInputSetBlockedKeys(const char *keys) {
     }
 }
 
-extern "C" i32 fun_006d6760(void) {
+extern "C" i32 PcInputXInputBackPressed(void) {
     PC_INPUT_RUNTIME *state = nu_input_state;
     i32 i;
     for (i = 0; i <= 3; ++i) {

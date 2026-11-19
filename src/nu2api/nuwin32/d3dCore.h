@@ -240,7 +240,7 @@ struct PC_EFFECT_SURFACE {                                                      
     static void RestoreResources();
     struct GRAPHICS_RENDER_TEXTURE *GetTexture();
     u16 GetLevel();
-    u32 fun_005f7b10();
+    u32 GetFace();
     u16 GetWidth();
     u16 GetHeight();
     void fun_005fb920(PC_EFFECT_SURFACE *source);

@@ -590,8 +590,8 @@ struct PC_INPUT_RUNTIME {          // size 0x68b4
     void ResetInputRecords();
     void SetCustomBindingsActive(i32 value);
     i32 GetInputRecordCount();
-    i32 fun_006d4e40();
-    i32 fun_006d4e50();
+    i32 GetReplayFrame();
+    i32 GetReplayLength();
     void InsertInputRecord(i32 index, i32 unknown_00, i32 field_01, i32 unknown_02, u16 unknown_04);
     void AddInputRecord(i32 unknown_00, i32 field_01, i32 unknown_02, u16 unknown_04);
     void InitializeDefaultRecords();

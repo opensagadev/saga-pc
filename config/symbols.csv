@@ -8432,7 +8432,7 @@ address,symbol,size,ctype
 0x5f7ae0,_fun_005f7ae0,3,
 0x5f7af0,?GetTexture@PC_EFFECT_SURFACE@@QAEPAUGRAPHICS_RENDER_TEXTURE@@XZ,3,
 0x5f7b00,?GetLevel@PC_EFFECT_SURFACE@@QAEGXZ,5,
-0x5f7b10,?fun_005f7b10@PC_EFFECT_SURFACE@@QAEIXZ,4,
+0x5f7b10,?GetFace@PC_EFFECT_SURFACE@@QAEIXZ,4,
 0x5f7b20,?GetWidth@PC_EFFECT_SURFACE@@QAEGXZ,5,
 0x5f7b30,?GetHeight@PC_EFFECT_SURFACE@@QAEGXZ,5,
 0x5f7b40,_PCGraphicsDestroyRenderTexture,255,void __cdecl(GRAPHICS_RENDER_TEXTURE*)
@@ -8440,7 +8440,7 @@ address,symbol,size,ctype
 0x5f7c50,_PCGraphicsEffectTextureHeight,9,
 0x5f7c60,_PCGraphicsEffectTextureDimensions,46,
 0x5f7c90,_PCGraphicsEffectTextureMipCount,9,i32 __cdecl(GRAPHICS_RENDER_TEXTURE *)
-0x5f7ca0,_fun_005f7ca0,8,
+0x5f7ca0,_PCGraphicsTextureGetType,8,
 0x5f7cb0,_PCGraphicsTextureGetFormat,8,
 0x5f7cc0,_PCGraphicsEffectTextureSetLowNibbles,38,"void __cdecl(GRAPHICS_RENDER_TEXTURE *,i32,i32)"
 0x5f7cf0,_PCGraphicsEffectTextureSetSamplerExtra,12,"void __cdecl(GRAPHICS_RENDER_TEXTURE *,i32)"
@@ -8851,7 +8851,7 @@ address,symbol,size,ctype
 0x602f30,_fun_00602f30,22,
 0x602f50,_fun_00602f50,383,
 0x6030d0,_fun_006030d0,23,
-0x6030f0,_fun_006030f0,72,
+0x6030f0,_NuGobjSetMaterialObjectFlags,72,
 0x603140,_fun_00603140,167,
 0x6031f0,_fun_006031f0,1,
 0x603200,_fun_00603200,141,
@@ -13312,8 +13312,8 @@ address,symbol,size,ctype
 0x6d4de0,?fun_006d4de0@PC_INPUT_RUNTIME@@QAEHHHHH@Z,60,
 0x006d4e20,?SetCustomBindingsActive@PC_INPUT_RUNTIME@@QAEXH@Z,13,void __thiscall (i32)
 0x006d4e30,?GetInputRecordCount@PC_INPUT_RUNTIME@@QAEHXZ,7,i32 __thiscall (void)
-0x006d4e40,?fun_006d4e40@PC_INPUT_RUNTIME@@QAEHXZ,7,i32 __thiscall (void)
-0x006d4e50,?fun_006d4e50@PC_INPUT_RUNTIME@@QAEHXZ,7,i32 __thiscall (void)
+0x006d4e40,?GetReplayFrame@PC_INPUT_RUNTIME@@QAEHXZ,7,i32 __thiscall (void)
+0x006d4e50,?GetReplayLength@PC_INPUT_RUNTIME@@QAEHXZ,7,i32 __thiscall (void)
 0x006d4e60,?InsertInputRecord@PC_INPUT_RUNTIME@@QAEXHHHHG@Z,135,"void __thiscall (i32, i32, i32, i32, u16)"
 0x6d4ef0,?fun_006d4ef0@PC_INPUT_RUNTIME@@QAEHHPAH000@Z,108,
 0x6d4f60,?fun_006d4f60@PC_INPUT_RUNTIME@@QAEHHH@Z,96,
@@ -13404,7 +13404,7 @@ address,symbol,size,ctype
 0x6d6710,_PcInputCapturedPort,12,
 0x6d6720,_PcInput_DisableAllKeyboards,30,void __cdecl(void)
 0x6d6740,_PcInputSetBlockedKeys,32,
-0x6d6760,_fun_006d6760,49,
+0x6d6760,_PcInputXInputBackPressed,49,
 0x6d67a0,_PcInput_PortIsKeyboard,20,i32 __cdecl(i32)
 0x6d67c0,_PcInputIsMouseDevice,23,
 0x6d67e0,_PcInputIsJoystickDevice,15,
@@ -13571,7 +13571,7 @@ address,symbol,size,ctype
 0x6dbb10,_fun_006dbb10,6,
 0x6dbb20,_fun_006dbb20,3,
 0x6dbb30,_NuInitHardware,2930,"i32 __cdecl(VARIPTR*,VARIPTR*,i32,...)"
-0x6dc6b0,_fun_006dc6b0,12,
+0x6dc6b0,_NuKeyboardDevicePresent,12,
 0x6dc6c0,_fun_006dc6c0,28,
 0x6dc6e0,_fun_006dc6e0,15,
 0x6dc6f0,_fun_006dc6f0,28,

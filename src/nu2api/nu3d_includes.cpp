@@ -15527,7 +15527,7 @@ extern "C" {
 
     void fun_005cff80(nuhspecial_s *special, i32 first, i32 second) {
         if (special->special != NULL) {
-            fun_006030f0((special->scene->objects[NUSPECIAL_LEGACY_OF(special)->instance->object_index]), first, second);
+            NuGobjSetMaterialObjectFlags((special->scene->objects[NUSPECIAL_LEGACY_OF(special)->instance->object_index]), first, second);
         }
     }
 

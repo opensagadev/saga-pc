@@ -1632,7 +1632,7 @@ extern "C" {
         return texture->mip_count;
     }
 
-    u32 fun_005f7ca0(GRAPHICS_RENDER_TEXTURE *texture) {
+    u32 PCGraphicsTextureGetType(GRAPHICS_RENDER_TEXTURE *texture) {
         return texture->texture_type;
     }
 
@@ -7400,7 +7400,7 @@ u16 PC_EFFECT_SURFACE::GetLevel() {
     return level;
 }
 
-u32 PC_EFFECT_SURFACE::fun_005f7b10() {
+u32 PC_EFFECT_SURFACE::GetFace() {
     return face;
 }
 
@@ -7674,7 +7674,7 @@ extern "C" {
         }
     }
 
-    void fun_006030f0(NUGOBJ *gobj, i32 first, i32 second) {
+    void NuGobjSetMaterialObjectFlags(NUGOBJ *gobj, i32 first, i32 second) {
         for (NUGEOM *geom = gobj->geom; geom != NULL; geom = geom->next) {
             NUMTL *mtl = geom->mtl;
             mtl->object_flag_a = first;

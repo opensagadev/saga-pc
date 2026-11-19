@@ -1,0 +1,8 @@
+old,new,evidence
+fun_006d6760,PcInputXInputBackPressed,returns 1 when an XInput pad has its back button held
+fun_006d4e40,GetReplayFrame,returns PC_INPUT_RUNTIME.replay_frame
+fun_006d4e50,GetReplayLength,returns PC_INPUT_RUNTIME.replay_length
+fun_006dc6b0,NuKeyboardDevicePresent,returns nu_keyboard_owner.device_present[index]
+fun_005f7ca0,PCGraphicsTextureGetType,returns GRAPHICS_RENDER_TEXTURE.texture_type
+fun_005f7b10,GetFace,returns PC_EFFECT_SURFACE.face
+fun_006030f0,NuGobjSetMaterialObjectFlags,sets object_flag_a/b on every geometry material of a gobj and updates it

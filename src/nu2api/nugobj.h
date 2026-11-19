@@ -15,7 +15,7 @@ extern "C" {
     void NuGobjReleaseChild(PC_GOBJ_REGISTRY_CHILD *);
     void PCGraphicsClearFrameTextures(void);
     void fun_006030d0(struct nugobj_s *gobj);
-    void fun_006030f0(struct nugobj_s *gobj, i32 first, i32 second);
+    void NuGobjSetMaterialObjectFlags(struct nugobj_s *gobj, i32 first, i32 second);
 #ifdef __cplusplus
 }
 #endif
