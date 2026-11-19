@@ -51,11 +51,11 @@ extern "C" {
     f32 PCShaderWaterTheta = 0.7f;
     i32 PCShaderWaterLastFrame = -1;
     __declspec(align(16)) NUVEC4 PCShaderWaterTable[32] = {0};
-    struct PC_SHADER_WATER_MATERIAL_VIEW *PCShaderWaterPreviousMaterial = NULL;
+    struct numtl_s *PCShaderWaterPreviousMaterial = NULL;
     u32 PCShaderWaterInitializationBits = 0;
 }
 
-extern "C" void NuShaderObjectBaseUpdateWaterTable(NuShaderObject *shader, PC_SHADER_WATER_MATERIAL_VIEW *material) {
+extern "C" void NuShaderObjectBaseUpdateWaterTable(NuShaderObject *shader, NUMTL *material) {
     if (shader->parameters[23].register_index < 0) {
         return;
     }
@@ -64,7 +64,7 @@ extern "C" void NuShaderObjectBaseUpdateWaterTable(NuShaderObject *shader, PC_SH
         PCShaderWaterInitializationBits |= 1;
     }
     if (PCShaderWaterLastFrame != nuapi.frame_count) {
-        PCShaderWaterTheta = material->phase_speed * PCShaderWaterThetaStep + PCShaderWaterTheta;
+        PCShaderWaterTheta = material->transform_scale * PCShaderWaterThetaStep + PCShaderWaterTheta;
     }
     if (PCShaderWaterPreviousMaterial != material || PCShaderWaterLastFrame != nuapi.frame_count) {
         NUMTX inverse;

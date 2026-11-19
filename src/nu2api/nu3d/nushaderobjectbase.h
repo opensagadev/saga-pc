@@ -5,7 +5,7 @@
 #include "nu2api/nu3d/nushaderobject.h"
 #include "nu2api/numath/nuvec4.h"
 
-struct PC_SHADER_WATER_MATERIAL_VIEW;
+struct numtl_s;
 
 struct PC_SHADER_PARAMETER_LOCAL;
 
@@ -30,7 +30,7 @@ extern "C" {
     extern f32 PCShaderWaterTheta;
     extern i32 PCShaderWaterLastFrame;
     extern NUVEC4 PCShaderWaterTable[32];
-    extern struct PC_SHADER_WATER_MATERIAL_VIEW *PCShaderWaterPreviousMaterial;
+    extern struct numtl_s *PCShaderWaterPreviousMaterial;
     extern u32 PCShaderWaterInitializationBits;
 #ifdef __cplusplus
 }
@@ -41,7 +41,7 @@ extern "C" {
 #endif
     void PCShaderObjectCreateHLSLPc(NuShaderObject *);
     void PCShaderObjectDestroyHLSLPc(NuShaderObject *);
-    void NuShaderObjectBaseUpdateWaterTable(NuShaderObject *shader, struct PC_SHADER_WATER_MATERIAL_VIEW *material);
+    void NuShaderObjectBaseUpdateWaterTable(NuShaderObject *shader, struct numtl_s *material);
 #ifdef __cplusplus
 }
 #endif

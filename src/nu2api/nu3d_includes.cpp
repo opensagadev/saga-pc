@@ -14122,7 +14122,7 @@ extern "C" {
             material->shader.normal_map_tid = NuGScnFixupTID(scene, material->shader.normal_map_tid);
             material->shader.lightmap_tids[1] = NuGScnFixupTID(scene, material->shader.lightmap_tids[1]);
             material->shader.envmap_cubic_tid = NuGScnFixupTID(scene, material->shader.envmap_cubic_tid);
-            material->shader.detail_map_tid = NuGScnFixupTID(scene, material->shader.detail_map_tid);
+            material->shader.clamp_map_tid = NuGScnFixupTID(scene, material->shader.clamp_map_tid);
             material->shader.shine_map_tid = NuGScnFixupTID(scene, material->shader.shine_map_tid);
             material->shader.diffuse_map_ids[0] = NuGScnFixupTID(scene, material->shader.diffuse_map_ids[0]);
             material->shader.diffuse_map_ids[1] = NuGScnFixupTID(scene, material->shader.diffuse_map_ids[1]);
@@ -14203,7 +14203,7 @@ extern "C" {
             material->shader.normal_map_tid = NuGScnRestoreTID(scene, material->shader.normal_map_tid);
             material->shader.lightmap_tids[1] = NuGScnRestoreTID(scene, material->shader.lightmap_tids[1]);
             material->shader.envmap_cubic_tid = NuGScnRestoreTID(scene, material->shader.envmap_cubic_tid);
-            material->shader.detail_map_tid = NuGScnRestoreTID(scene, material->shader.detail_map_tid);
+            material->shader.clamp_map_tid = NuGScnRestoreTID(scene, material->shader.clamp_map_tid);
             material->shader.shine_map_tid = NuGScnRestoreTID(scene, material->shader.shine_map_tid);
             material->shader.diffuse_map_ids[0] = NuGScnRestoreTID(scene, material->shader.diffuse_map_ids[0]);
             material->shader.diffuse_map_ids[1] = NuGScnRestoreTID(scene, material->shader.diffuse_map_ids[1]);
