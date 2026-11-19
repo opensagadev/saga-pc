@@ -80,8 +80,6 @@
 
 void *CutScene_FindInst(void *, char *);
 
-i32 EquivalentObject_Find(WORLDINFO *, nuhspecial_s *);
-
 void __movsd(unsigned long *, unsigned long const *, unsigned int);
 
 extern char AIGizmoNameBuffer[16];

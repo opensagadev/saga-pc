@@ -50,6 +50,13 @@ extern "C" {
     extern const f32 DogfightOriginEndY;
     extern const f32 DogfightOriginEndZ;
     extern const f32 DogfightOriginStartX;
+    i32 ChrisExtraBoltCollision(struct bolt_s *bolt, struct nuvec_s *points);
+    void ChrisAllocLevelStuff(struct WORLDINFO_s *world);
+    void ChrisDogFightADraw(struct WORLDINFO_s *);
+    void ChrisDogFightAInit(struct WORLDINFO_s *);
+    void ChrisDogFightAReset(struct WORLDINFO_s *);
+    void ChrisDogFightAUpdate(struct WORLDINFO_s *);
+    void FlightSpline_Init(struct WORLDINFO_s *world, FLIGHT_SPLINE_RESOURCE *splines, i32 capacity);
 #ifdef __cplusplus
 }
 #endif

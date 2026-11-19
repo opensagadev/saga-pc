@@ -138,6 +138,7 @@
 #include "legoapi/world/levels/episodeIV.h"
 #include "legoapi/gizmos/door/securitydoors.h"
 #include "legoapi/props/objects/legoapi_signal.h"
+#include "legoapi/characters/motion/chris.h"
 
 extern "C" void FmvPlatformUpdate(void);
 
@@ -156,29 +157,8 @@ extern "C" {
 }
 /* Per-level callbacks installed by FixUpLevels. */
 extern "C" void LostTempleC_Reset(WORLDINFO *);
-extern "C" void GrievousA_Init(WORLDINFO *);
-extern "C" void KashyyykA_Init(WORLDINFO *);
-extern "C" void KashyyykA_Update(WORLDINFO *);
-extern "C" void KashyyykB_Init(WORLDINFO *);
-extern "C" void KashyyykB_Reset(WORLDINFO *);
-extern "C" void KashyyykB_Update(WORLDINFO *);
-extern "C" void KashyyykC_Init(WORLDINFO *);
-extern "C" void KashyyykC_Update(WORLDINFO *);
-extern "C" void VaderB_Init(WORLDINFO *);
-extern "C" void VaderB_DrawPanel(WORLDINFO *);
 extern "C" {
     extern LEVELDATA *CLOUDCITYTRAPB_LDATA;
-}
-extern "C" void ChrisDogFightAInit(WORLDINFO *);
-extern "C" void ChrisDogFightAReset(WORLDINFO *);
-extern "C" void ChrisDogFightAUpdate(WORLDINFO *);
-extern "C" void ChrisDogFightADraw(WORLDINFO *);
-
-extern "C" {
-
-    void LoadGrassFile(WORLDINFO *world);
-    void LoadBridgeFile(WORLDINFO *world);
-    void LoadTerrainFile(WORLDINFO *world);
 }
 
 extern "C" {

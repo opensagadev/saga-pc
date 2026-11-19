@@ -12,7 +12,7 @@
   "declaration-type": 767,
   "layout-compatible": 56,
   "function-pointer": 535,
-  "field-address": 119,
+  "field-address": 110,
   "byte-pointer": 286,
   "record-pun": 368,
   "scalar-pun": 279,

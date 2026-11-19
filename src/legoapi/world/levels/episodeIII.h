@@ -66,6 +66,16 @@ extern "C" {
     extern void *CurTerr;
     i32 Action_BoulderSection(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
     void VaderA_GoneThroughDoor(struct WORLDINFO_s *world, struct DOOR_s *door);
+    void GrievousA_Init(struct WORLDINFO_s *);
+    void KashyyykA_Init(struct WORLDINFO_s *);
+    void KashyyykA_Update(struct WORLDINFO_s *);
+    void KashyyykB_Init(struct WORLDINFO_s *);
+    void KashyyykB_Reset(struct WORLDINFO_s *);
+    void KashyyykB_Update(struct WORLDINFO_s *);
+    void KashyyykC_Init(struct WORLDINFO_s *);
+    void KashyyykC_Update(struct WORLDINFO_s *);
+    void VaderB_DrawPanel(struct WORLDINFO_s *);
+    void VaderB_Init(struct WORLDINFO_s *);
 #ifdef __cplusplus
 }
 #endif

@@ -378,6 +378,10 @@ extern "C" {
     void WorldInfo_Init(WORLDINFO *);
 
     void WorldInfo_StreamLevel(BGPROCINFO *);
+    i32 EquivalentObject_Find(struct WORLDINFO_s *, nuhspecial_s *);
+    void LoadBridgeFile(struct WORLDINFO_s *world);
+    void LoadGrassFile(struct WORLDINFO_s *world);
+    void LoadTerrainFile(struct WORLDINFO_s *world);
 #ifdef __cplusplus
 }
 #endif

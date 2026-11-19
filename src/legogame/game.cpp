@@ -148,6 +148,7 @@
 #include "legoapi/items/collect/detonator.h"
 #include "legoapi/actions/character/transform.h"
 #include "nu2api/nu3d/nurndr.h"
+#include "legoapi/characters/motion/chris.h"
 
 static NUVEC BuckSnowmobForward = {0.0f, 0.0f, 1.0f};
 static f32 BuckSnowmobJumpDuration = 1.0f;
@@ -241,7 +242,6 @@ extern "C" {
     extern NUVEC PodAvalanchePeakPos;
     extern f32 PodAvalancheShakeFrames;
     extern f32 PodAvalancheShakeRange;
-    extern i32 ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points);
 }
 extern "C" TIMER ChallengeTimer;
 extern "C" {
