@@ -35,7 +35,7 @@ void NuTexBmpUnsupportedDepth(i32 bit_count, const char *path) {
 void NuFrameEndLeaf(void) {
 }
 
-void fun_005c6110(void) {
+void NuDebugToggle(void) {
     i32 enabled;
     if (dat_00973868 != 0) {
         dat_00973868 = 0;

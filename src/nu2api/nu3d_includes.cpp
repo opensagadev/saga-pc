@@ -955,7 +955,7 @@ extern "C" {
         return (f32)(animation->frame_count + animation->first_frame);
     }
 
-    f32 fun_005ca500(NUGSCN *scene, NUINSTANIM *animation_instance) {
+    f32 NuGScnInstanceAnimEndFrame(NUGSCN *scene, NUINSTANIM *animation_instance) {
         void *animation_data;
         if (animation_instance == NULL) {
             return 0.0f;
@@ -3526,7 +3526,7 @@ extern "C" {
         matrix->m32 = -matrix->m32;
     }
 
-    i32 fun_005ea480(nuhspecial_s *special) {
+    i32 NuSpecialSetAlphaBlend(nuhspecial_s *special) {
         i32 found = 0;
         if (special->scene == NULL) {
             return 0;
@@ -3571,7 +3571,7 @@ extern "C" {
         NuDisplayListBurstRndrSpecial(special, count, matrices, clip);
     }
 
-    void *fun_005f30d0(char *path, VARIPTR *buffer, VARIPTR *buffer_end) {
+    void *NuAnimData2Load(char *path, VARIPTR *buffer, VARIPTR *buffer_end) {
         buffer->addr = (buffer->addr + 15) & ~15u;
         i32 size = NuFileLoadBuffer(path, buffer->void_ptr, (i32)(buffer_end->addr - buffer->addr));
         if (size == 0) {
@@ -6197,7 +6197,7 @@ extern "C" {
         NuPrim3DEnd();
     }
 
-    void fun_005db460(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour) {
+    void OccluderDrawTriangleOutline(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour) {
         NuPrim3DBegin(15, 5, NULL, NULL);
         NuRndrPrimSetColourPrivate(colour);
         OCCLUDER_PRIM_POSITION(*a);
@@ -7016,7 +7016,7 @@ extern "C" {
         return fully_inside == frustum->plane_count + 1 ? 1 : 2;
     }
 
-    i32 fun_005da2d0(NUGSCN *scene, i16 room_id) {
+    i32 NuPortalRoomVisible(NUGSCN *scene, i16 room_id) {
         if (scene == NULL || scene->max_portals == 0) {
             return 1;
         }
@@ -7673,7 +7673,7 @@ extern "C" {
         }
     }
 
-    void fun_005ede70(NUVEC *center, NUVEC *extent, i32 colour) {
+    void NuPortalDrawDebugBox(NUVEC *center, NUVEC *extent, i32 colour) {
         __declspec(align(16)) NUVEC maximum;
         __declspec(align(16)) NUVEC minimum;
         maximum.x = center->x + extent->x;
@@ -8299,7 +8299,7 @@ extern "C" {
         ++material->version;
     }
 
-    void fun_005f1f50(i32 texture_id) {
+    void NuTexDestroyId(i32 texture_id) {
         if (texture_id == 0) {
             return;
         }
@@ -11532,7 +11532,7 @@ PC_FRAMEBUFFER *NuPostFilterGen::getInputFbo() {
     return input_fbo;
 }
 
-void NuMainFilterGen::fun_005c2310(i32 filter, bool enable) {
+void NuMainFilterGen::SetFilterEnabled(i32 filter, bool enable) {
     bool &flag = (&dof_enabled)[filter];
     if (enable) {
         if (!flag) {
@@ -11750,7 +11750,7 @@ i32 PCFrustumClipSet::TestSpecial(nuhspecial_s *special, NUMTX *matrix) {
     return TestBoxes(&minimum, &maximum);
 }
 
-bool PCFrustumClipSet::fun_005e6710(const NUVEC *center, const NUVEC *extent, i32 group_index) {
+bool PCFrustumClipSet::TestCenterExtent(const NUVEC *center, const NUVEC *extent, i32 group_index) {
     __declspec(align(16)) NUVEC maximum;
     __declspec(align(16)) NUVEC minimum;
     minimum.x = center->x - extent->x;
@@ -11762,7 +11762,7 @@ bool PCFrustumClipSet::fun_005e6710(const NUVEC *center, const NUVEC *extent, i3
     return TestBox(&minimum, &maximum, group_index);
 }
 
-i32 PCFrustumClipSet::fun_005e6770(const NUVEC *center, const NUVEC *extent) {
+i32 PCFrustumClipSet::TestCenterExtentBoxes(const NUVEC *center, const NUVEC *extent) {
     __declspec(align(16)) NUVEC maximum;
     __declspec(align(16)) NUVEC minimum;
     minimum.x = center->x - extent->x;
@@ -12489,7 +12489,7 @@ extern "C" void fun_005c3a40(void) {
 
 extern "C" POST_SHADER_PROGRAM *dat_00973820;
 
-extern "C" void fun_005c3a50(GRAPHICS_RENDER_TEXTURE *color, GRAPHICS_RENDER_TEXTURE *depth, PC_FRAMEBUFFER *framebuffer) {
+extern "C" void PostFilterDepthResolve(GRAPHICS_RENDER_TEXTURE *color, GRAPHICS_RENDER_TEXTURE *depth, PC_FRAMEBUFFER *framebuffer) {
     PCGraphicsBindFramebuffer(framebuffer);
     NuShaderProgramMakeCurrent(dat_00973820);
     i32 width = PCGraphicsEffectTextureWidth(color);
@@ -12958,7 +12958,7 @@ extern "C" {
         }
     }
 
-    void fun_005e0a30(NUDISPLAY_LIST *scene, u32 flags, i32 type_count, i32 *types) {
+    void NuDisplaySceneHtmlDump(NUDISPLAY_LIST *scene, u32 flags, i32 type_count, i32 *types) {
         i32 i;
         if (scene == NULL) {
             return;
@@ -12977,7 +12977,7 @@ extern "C" {
         DisplayListPrintItems(items, 3, 0, NULL, file_handle);
     }
 
-    void fun_005e0ad0(NUSORTPRI *sort) {
+    void NuDisplaySortHtmlHeading(NUSORTPRI *sort) {
         if (nudlist_field_fe4 != 0) {
             if (sort->display_scene != NULL && sort->display_scene->name != NULL) {
                 NuHtmlHeading("Display Scene : %s (sort: %d)", sort->display_scene->name, sort->sort_pri);
@@ -13705,7 +13705,7 @@ extern "C" {
         return 0;
     }
 
-    i32 fun_005e5270(NUTEXDIM *texture, i32 texture_id) {
+    i32 NuTexRegister(NUTEXDIM *texture, i32 texture_id) {
         i32 index;
         if (texture == NULL) {
             return 0;
@@ -14922,7 +14922,7 @@ extern "C" {
         }
     }
 
-    void fun_005d88e0(i32 *index, NUVEC *position, f32 *distances) {
+    void NuSortByCameraDistance(i32 *index, NUVEC *position, f32 *distances) {
         NUVEC delta;
         f32 distance;
         if (distances[*index] != 0.0f) {
@@ -17544,7 +17544,7 @@ extern "C" void NuDynamicLightTestShadowExtrusionsSpecial(PCFrustumClipSet *ligh
 }
 
 extern "C" i32 fun_005e8870(PCFrustumClipSet *light, const NUVEC *center, const NUVEC *extent, i32 group_index) {
-    return light->fun_005e6710(center, extent, group_index) ? 1 : 0;
+    return light->TestCenterExtent(center, extent, group_index) ? 1 : 0;
 }
 
 extern "C" i32 NuDynamicLightTestShadowExtrusionsExtent(PCFrustumClipSet *light, const NUVEC *center, const NUVEC *extent) {

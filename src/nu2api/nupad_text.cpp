@@ -288,7 +288,7 @@ extern "C" char *TextInputActionLabel(i32 device, i32 action, i32 custom, i32 cu
     return TextInputActionLabelBuffer;
 }
 
-extern "C" void fun_006da460(i32 player) {
+extern "C" void PcInputLoadPlayerConfigs(i32 player) {
     PC_INPUT_RUNTIME *runtime = nu_input_state;
     PC_INPUT_CONFIG config;
     for (i32 port = 0; port < 14; ++port) {

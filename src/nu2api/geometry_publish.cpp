@@ -145,12 +145,12 @@ extern "C" i32 PcRegisterDynamicGeometry(PC_GEOMETRY_PUBLISH_FORMAT *format) {
     return 1;
 }
 
-extern "C" i32 fun_005fbd40(PC_GEOMETRY_PUBLISH_RECORD *record);
+extern "C" i32 PCDynamicGeometryRelease(PC_GEOMETRY_PUBLISH_RECORD *record);
 
 extern "C" i32 PcUnregisterDynamicGeometry(PC_GEOMETRY_PUBLISH_FORMAT *format) {
     for (i32 i = 0; i < PcGeometryRegistryCount; ++i) {
         if (format == PcGeometryRegistry[i].format) {
-            fun_005fbd40(&PcGeometryRegistry[i]);
+            PCDynamicGeometryRelease(&PcGeometryRegistry[i]);
             if (PcGeometryRegistryCount != 0) {
                 PC_GEOMETRY_PUBLISH_RECORD *old = PcGeometryRegistry;
                 PcGeometryRegistry =

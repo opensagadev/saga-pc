@@ -33,7 +33,7 @@ extern "C" {
     void PCGraphicsEffectTextureSetLowNibbles(GRAPHICS_RENDER_TEXTURE *, i32, i32);
     void PCGraphicsEffectTextureSetWrapFields(GRAPHICS_RENDER_TEXTURE *, i32, i32);
     void PCGraphicsResolveFramebuffer(i32);
-    void fun_005f83a0(GRAPHICS_RENDER_TEXTURE *texture, i32 texture_id);
+    void PCGraphicsRenderTextureFromTexture(GRAPHICS_RENDER_TEXTURE *texture, i32 texture_id);
 #ifdef __cplusplus
 }
 #endif

@@ -131,7 +131,7 @@ i32 SoundQueue::SendCommand(i32 command_value, i32 argument_value) {
     return success;
 }
 
-i32 SoundQueue::fun_00699200(i32 *argument_value) {
+i32 SoundQueue::PopCommand(i32 *argument_value) {
     i32 command_value = 0;
     EnterCriticalSection(&lock);
     if (count > 0) {

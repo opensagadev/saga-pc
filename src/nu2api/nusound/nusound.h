@@ -82,7 +82,7 @@ typedef struct SoundVoiceManagerPC { // size 0xda8
     void Setup3DVoice(i32, const NUVEC *, i32);
     u8 IsSampleValid(i32 sample_index);
     u8 IsSampleFailed(i32 sample_index);
-    void fun_00697700(i32 voice_id, i32 sound_key, i32, f32 unknown_1c, f32 unknown_20, i32 volume_index);
+    void StartFade(i32 voice_id, i32 sound_key, i32, f32 unknown_1c, f32 unknown_20, i32 volume_index);
 #endif
 } SoundVoiceManagerPC;
 
@@ -393,7 +393,7 @@ struct SoundQueue {                  // size 0x400
     i32 SetStreamFile(const char *path, f32 offset);
     i32 SetStreamFlags(i32 flags);
     i32 FormatDiffers(const WAVEFORMATEX *format);
-    i32 fun_00699200(i32 *argument_value);
+    i32 PopCommand(i32 *argument_value);
 };
 
 #endif

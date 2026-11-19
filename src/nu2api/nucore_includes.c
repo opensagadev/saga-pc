@@ -226,7 +226,7 @@ typedef struct NUMEMBUF {
     u32 pad;
 } NUMEMBUF;
 
-NUMEMBUF *fun_004ef720(u32 size) {
+NUMEMBUF *NuMemBufAlloc(u32 size) {
     NUALLOC_POOL *pool;
     NUMEMBUF *buffer;
     pool = NuAllocPool;
@@ -2694,7 +2694,7 @@ typedef struct NUFILE_RELOC_HEADER {
     u32 data;
 } NUFILE_RELOC_HEADER;
 
-NUFILE_RELOC_HEADER *fun_004fda20(char *filepath, VARIPTR *buffer, VARIPTR *buffer_end) {
+NUFILE_RELOC_HEADER *NuFileLoadRelocated(char *filepath, VARIPTR *buffer, VARIPTR *buffer_end) {
     NUFILE_RELOC_HEADER *header;
     i32 loaded;
     i32 index;
@@ -6622,7 +6622,7 @@ i32 GetLineW(u16 *line, NUFILE file) {
     }
 }
 
-i32 fun_004fcba0(NUFILE file) {
+i32 NuFileReadSize(NUFILE file) {
     u32 header[3];
     i32 size;
     i32 position = NuFileSeek(file, 0, 1);
@@ -8651,7 +8651,7 @@ void *NuPtrBlockFix(void *block) {
     return return_pointer.void_ptr;
 }
 
-void fun_004f4f80(void *block, u32 base) {
+void NuRelocateTable(void *block, u32 base) {
     VARIPTR table;
     VARIPTR entry;
     u32 *word;

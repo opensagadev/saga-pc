@@ -771,8 +771,8 @@ class PCFrustumClipSet { // size 0x714
     i32 TestBoxes(const NUVEC *, const NUVEC *);
     bool TestBox(const NUVEC *minimum, const NUVEC *maximum, i32 group_index);
     i32 TestSpecial(nuhspecial_s *special, NUMTX *matrix);
-    bool fun_005e6710(const NUVEC *center, const NUVEC *extent, i32 group_index);
-    i32 fun_005e6770(const NUVEC *center, const NUVEC *extent);
+    bool TestCenterExtent(const NUVEC *center, const NUVEC *extent, i32 group_index);
+    i32 TestCenterExtentBoxes(const NUVEC *center, const NUVEC *extent);
 };
 
 #endif
@@ -1467,7 +1467,7 @@ extern "C" {
     void NuRndrRectUV2dNoScale(f32 x, f32 y, f32 z, f32 width, f32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, NUMTL *material);
     void NuRndrSphereMtx(NUMTX *matrix, i32 colour, i32 segments, NUMTL *material);
     void PostFilterInitSharedResources(void);
-    void fun_005f1f50(i32 texture_id);
+    void NuTexDestroyId(i32 texture_id);
     NUVPCURRENT *NuVpGetCurrentViewport(void);
     extern NUMTX PostShadowProjection;
     extern NUMTX PostShadowView;

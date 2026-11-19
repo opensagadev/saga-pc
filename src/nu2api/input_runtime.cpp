@@ -1087,7 +1087,7 @@ i32 PC_INPUT_RUNTIME::TranslateBindings(i32 port, PC_INPUT_SAMPLE *out, i32 vali
     return 1;
 }
 
-u32 PC_INPUT_RUNTIME::fun_006d82d0(i32, u32 buttons, i32 key, i32 mouse_button, i32 axis, i32 direction, u32 bit) {
+u32 PC_INPUT_RUNTIME::MergeKeyMouseButton(i32, u32 buttons, i32 key, i32 mouse_button, i32 axis, i32 direction, u32 bit) {
     if (key >= 0 && nu_keyboard_pages[nu_keyboard_page_index * 256 + key]) {
         buttons |= bit;
     }
@@ -1303,7 +1303,7 @@ void PC_INPUT_RUNTIME::AdvanceCaptureRecords() {
 extern "C" const char *dat_02974d58[256];
 extern "C" char dat_029753c0[512];
 
-void PC_INPUT_RUNTIME::fun_006d4c90(u32 layout_id) {
+void PC_INPUT_RUNTIME::BuildKeyboardLayoutNames(u32 layout_id) {
     char *text = dat_029753c0;
     char name[16];
     sprintf(name, "%08.8i32x", layout_id);
@@ -1385,7 +1385,7 @@ void PC_INPUT_RUNTIME::InsertInputRecord(i32 index, i32 unknown_00, i32 field_01
     commands[index].value = unknown_04;
 }
 
-i32 PC_INPUT_RUNTIME::fun_006d4ef0(i32 action, i32 *active, i32 *axis, i32 *button, i32 *value) {
+i32 PC_INPUT_RUNTIME::GetCommand(i32 action, i32 *active, i32 *axis, i32 *button, i32 *value) {
     if (action < 0 || action >= 32) {
         return 0;
     }
@@ -1404,12 +1404,12 @@ i32 PC_INPUT_RUNTIME::fun_006d4ef0(i32 action, i32 *active, i32 *axis, i32 *butt
     return 1;
 }
 
-i32 PC_INPUT_RUNTIME::fun_006d4f60(i32 active, i32 code) {
+i32 PC_INPUT_RUNTIME::FindCommand(i32 active, i32 code) {
     i32 button;
     i32 axis;
     i32 mode;
     for (i32 action = 0; action < 32; ++action) {
-        fun_006d4ef0(action, &mode, &axis, &button, NULL);
+        GetCommand(action, &mode, &axis, &button, NULL);
         if (mode == active) {
             if (active == 3) {
                 if (button == code) {
@@ -1444,7 +1444,7 @@ extern "C" i32 PcInput_GetFirstKeyboardPort(void) {
     return 10;
 }
 
-extern "C" void fun_006d5050(const i8 *order) {
+extern "C" void PcInputSetActionOrder(const i8 *order) {
     i8 *destination;
     i32 value;
     PcInputActionOrder[0] = -1;
@@ -1541,7 +1541,7 @@ extern "C" void fun_006d5e30(void (*callback)(PC_INPUT_RUNTIME *)) {
     PcInputStateInitializedCallback = callback;
 }
 
-extern "C" void fun_006d5e40(u32 *buttons, u32 *axes, i32 bank) {
+extern "C" void PcInputAuxiliaryMasks(u32 *buttons, u32 *axes, i32 bank) {
     PC_INPUT_RUNTIME *runtime = nu_input_state;
     u32 button_mask = 0;
     u32 axis_mask = 0;
@@ -1549,7 +1549,7 @@ extern "C" void fun_006d5e40(u32 *buttons, u32 *axes, i32 bank) {
         i32 active;
         i32 axis;
         i32 button;
-        if (runtime->fun_006d4ef0(action, &active, &axis, &button, NULL) && active != 0 &&
+        if (runtime->GetCommand(action, &active, &axis, &button, NULL) && active != 0 &&
             runtime->auxiliary_bindings[bank][action].kind != PC_BINDING_NONE) {
             if (button >= 0) {
                 button_mask |= 1 << button;
@@ -1563,12 +1563,12 @@ extern "C" void fun_006d5e40(u32 *buttons, u32 *axes, i32 bank) {
     *axes = axis_mask;
 }
 
-extern "C" u32 fun_006d5ed0(i32 bank) {
+extern "C" u32 PcInputAuxiliaryActionMask(i32 bank) {
     PC_INPUT_RUNTIME *runtime = nu_input_state;
     u32 mask = 0;
     for (i32 action = 0; action < 32; ++action) {
         i32 active;
-        if (runtime->fun_006d4ef0(action, &active, NULL, NULL, NULL) && active != 0 &&
+        if (runtime->GetCommand(action, &active, NULL, NULL, NULL) && active != 0 &&
             runtime->auxiliary_bindings[bank][action].kind != PC_BINDING_NONE) {
             mask |= 1 << action;
         }
@@ -1590,7 +1590,7 @@ extern "C" i32 fun_006d5f20(u32 buttons, u32 axes) {
     }
     if (buttons != 0) {
         for (action = 0; action < 32; ++action) {
-            if (nu_input_state->fun_006d4ef0(action, &active, &axis, &button, &value) && button >= 0 && (buttons & (1 << button))) {
+            if (nu_input_state->GetCommand(action, &active, &axis, &button, &value) && button >= 0 && (buttons & (1 << button))) {
                 if (buttons & ~(1 << button)) {
                     return -4;
                 }
@@ -1599,7 +1599,7 @@ extern "C" i32 fun_006d5f20(u32 buttons, u32 axes) {
         }
     } else {
         for (action = 0; action < 32; ++action) {
-            if (nu_input_state->fun_006d4ef0(action, NULL, &axis, NULL, NULL) && axis >= 0 && (axes & (1 << axis))) {
+            if (nu_input_state->GetCommand(action, NULL, &axis, NULL, NULL) && axis >= 0 && (axes & (1 << axis))) {
                 if (axes & ~(1 << axis)) {
                     return -5;
                 }
@@ -1866,7 +1866,7 @@ extern "C" PC_INPUT_COMMAND_FILTER PcInputGetCommandFilter() {
     return PcInputCommandFilter;
 }
 
-i32 PC_INPUT_RUNTIME::fun_006d6db0(i32 port, i32 index) {
+i32 PC_INPUT_RUNTIME::KeyboardPortFor(i32 port, i32 index) {
     if (port >= 10 && port <= 13) {
         if (index != captured_port) {
             ++port;
@@ -1980,11 +1980,11 @@ extern "C" void PcInputAssignBinding(i32 action, i32 port, i32 kind, i32 value, 
     nu_input_state->AssignBinding(action, port, kind, value, unused, auxiliary, bank, excluded);
 }
 
-extern "C" void fun_006d9250(i32 button, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank, u32 excluded) {
+extern "C" void PcInputAssignButtonBinding(i32 button, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank, u32 excluded) {
     PC_INPUT_RUNTIME *runtime = nu_input_state;
     i32 command_button;
     for (i32 action = 0; action < 32; ++action) {
-        runtime->fun_006d4ef0(action, NULL, NULL, &command_button, NULL);
+        runtime->GetCommand(action, NULL, NULL, &command_button, NULL);
         if (command_button == button) {
             runtime->AssignBinding(action, port, kind, value, unused, auxiliary, bank, excluded);
             return;
@@ -1992,12 +1992,12 @@ extern "C" void fun_006d9250(i32 button, i32 port, i32 kind, i32 value, i32 unus
     }
 }
 
-extern "C" void fun_006d92c0(i32 axis, i32 active, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank, u32 excluded) {
+extern "C" void PcInputAssignAxisBinding(i32 axis, i32 active, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank, u32 excluded) {
     PC_INPUT_RUNTIME *runtime = nu_input_state;
     i32 command_active;
     i32 command_axis;
     for (i32 action = 0; action < 32; ++action) {
-        runtime->fun_006d4ef0(action, &command_active, &command_axis, NULL, NULL);
+        runtime->GetCommand(action, &command_active, &command_axis, NULL, NULL);
         if (command_axis == axis && command_active == active) {
             runtime->AssignBinding(action, port, kind, value, unused, auxiliary, bank, excluded);
             return;
@@ -2246,7 +2246,7 @@ PC_INPUT_CONFIG *PC_INPUT_RUNTIME::FindPortConfig(u8 mask, i32 port) {
     return FindConfig(mask, port, 0);
 }
 
-void PC_INPUT_RUNTIME::fun_006d6ef0(u8 mask, i32 port, i32 key, i32 auxiliary, i32 auxiliary_port, i32 fallback) {
+void PC_INPUT_RUNTIME::InstallConfigFor(u8 mask, i32 port, i32 key, i32 auxiliary, i32 auxiliary_port, i32 fallback) {
     PC_INPUT_CONFIG *config = FindConfig(mask, port, key);
     if (config == NULL) {
         if (!fallback) {

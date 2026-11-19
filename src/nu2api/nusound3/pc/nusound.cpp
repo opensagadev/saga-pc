@@ -455,7 +455,7 @@ void SoundVoiceManagerPC::StopVoice(i32 voice_id) {
     memset(&voices[voice_id], 0, sizeof(voices[voice_id]));
 }
 
-void SoundVoiceManagerPC::fun_00697700(i32 voice_id, i32 sound_key, i32, f32 unknown_1c, f32 unknown_20, i32 volume_index) {
+void SoundVoiceManagerPC::StartFade(i32 voice_id, i32 sound_key, i32, f32 unknown_1c, f32 unknown_20, i32 volume_index) {
     voices[voice_id].fade_start = unknown_1c;
     voices[voice_id].fade_end = unknown_20;
     voices[voice_id].sound_key = sound_key;
@@ -530,7 +530,7 @@ void SoundVoiceManagerPC::UpdateVoices(void) {
     }
 }
 
-extern "C" void fun_00698e10(i32 signal) {
+extern "C" void PCSoundMixCopy(i32 signal) {
     if (PCSoundMixDestination != NULL) {
         if (PCSoundMixSource != NULL && PCSoundMixSampleCount != 0) {
             memcpy(PCSoundMixDestination, PCSoundMixSource, (u32)PCSoundMixSampleCount * 2u);

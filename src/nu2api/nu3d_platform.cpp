@@ -1492,7 +1492,7 @@ extern "C" {
         PCDeviceSetVertexDeclaration(screen_colour_uv_declaration);
     }
 
-    static i32 fun_005f7900(i32 mode) {
+    static i32 PCGraphicsFilterMode(i32 mode) {
         switch (mode) {
             case 0:
                 return 0;
@@ -1507,7 +1507,7 @@ extern "C" {
         }
     }
 
-    static i32 fun_005f7940(i32 mode) {
+    static i32 PCGraphicsAddressMode(i32 mode) {
         switch (mode) {
             case 0:
                 return 1;
@@ -1655,24 +1655,24 @@ extern "C" {
     } PC_SAMPLER_FLAGS;
 
     void PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE *texture, i32 first, i32 second, i32 third) {
-        texture->min_filter = fun_005f7900(first);
-        texture->mag_filter = fun_005f7900(second);
-        texture->mip_filter = fun_005f7900(third);
+        texture->min_filter = PCGraphicsFilterMode(first);
+        texture->mag_filter = PCGraphicsFilterMode(second);
+        texture->mip_filter = PCGraphicsFilterMode(third);
     }
 
     void fun_005f7e30(GRAPHICS_RENDER_TEXTURE *texture, i32 mode) {
-        texture->address_u = fun_005f7940(mode);
+        texture->address_u = PCGraphicsAddressMode(mode);
     }
 
     void PCGraphicsEffectTextureSetWrapFields(GRAPHICS_RENDER_TEXTURE *texture, i32 first, i32 second) {
-        texture->address_u = fun_005f7940(first);
-        texture->address_v = fun_005f7940(second);
+        texture->address_u = PCGraphicsAddressMode(first);
+        texture->address_v = PCGraphicsAddressMode(second);
     }
 
     void PCGraphicsTextureSetAddressModes(GRAPHICS_RENDER_TEXTURE *texture, i32 u, i32 v, i32 w) {
-        texture->address_u = fun_005f7940(u);
-        texture->address_v = fun_005f7940(v);
-        texture->address_w = fun_005f7940(w);
+        texture->address_u = PCGraphicsAddressMode(u);
+        texture->address_v = PCGraphicsAddressMode(v);
+        texture->address_w = PCGraphicsAddressMode(w);
     }
 
     GRAPHICS_RENDER_TEXTURE *PCGraphicsAllocRenderTextureSlot(void) {
@@ -1724,7 +1724,7 @@ extern "C" {
     void fun_005f8390(void) {
     }
 
-    void fun_005f83a0(GRAPHICS_RENDER_TEXTURE *texture, i32 id) {
+    void PCGraphicsRenderTextureFromTexture(GRAPHICS_RENDER_TEXTURE *texture, i32 id) {
         PC_TEXTURE_LEVEL_DESC description;
         texture->resource = NuTextureGetDimensions(id)->resource;
         if (texture->resource == NULL) {
@@ -3142,7 +3142,7 @@ extern "C" {
         return 1;
     }
 
-    i32 fun_005fbd40(PC_DYNAMIC_GEOMETRY *geometry) {
+    i32 PCDynamicGeometryRelease(PC_DYNAMIC_GEOMETRY *geometry) {
         if (geometry->strip_index_buffer != NULL) {
             geometry->strip_index_buffer->methods->release(geometry->strip_index_buffer);
         }
@@ -3366,7 +3366,7 @@ extern "C" {
         return 1;
     }
 
-    i32 fun_005fc860(PC_DYNAMIC_GEOMETRY *geometry, PC_GEOMETRY_OUTPUT *output, i32 count) {
+    i32 PCDynamicGeometryCopyOutput(PC_DYNAMIC_GEOMETRY *geometry, PC_GEOMETRY_OUTPUT *output, i32 count) {
         if (dat_00806b94 == 1) {
             for (i32 i = 0; i < count; i++) {
                 output[i] = PcGeometryOutput[geometry->sort_items[i].output_index];
@@ -3590,7 +3590,7 @@ extern "C" {
         return NULL;
     }
 
-    i32 *fun_005fd070(void) {
+    i32 *NuDisplayListWriteVertexOffsets(void) {
         VARIPTR *cursor;
         i32 *packet;
         if (nuspecial_vertex_noffsets > 0) {
@@ -5298,7 +5298,7 @@ extern "C" {
     void fun_00602800(void) {
     }
 
-    void fun_00602810(NUGSCN *scene, u32 delta) {
+    void PCRebaseNativeScene(NUGSCN *scene, u32 delta) {
         VARIPTR old_scene;
         i32 i;
         old_scene.void_ptr = scene;
@@ -5704,7 +5704,7 @@ extern "C" {
 
     GRAPHICS_RENDER_TEXTURE *PCGraphicsRenderTextureFromId(i32 texture_id) {
         GRAPHICS_RENDER_TEXTURE *texture = PCGraphicsAllocRenderTexture();
-        fun_005f83a0(texture, texture_id);
+        PCGraphicsRenderTextureFromTexture(texture, texture_id);
         return texture;
     }
 
@@ -6922,7 +6922,7 @@ extern "C" {
         FRAME_NATIVE_TEXTURE *texture = (FRAME_NATIVE_TEXTURE *)NuTextureGetDimensions(texture_id);
         if (texture != NULL) {
             i32 index;
-            fun_005f1f50(texture_id);
+            NuTexDestroyId(texture_id);
             index = texture - FrameNativeTexturePool.records;
             FrameNativeTexturePool.occupied[index >> 3] &= ~(1 << (index & 7));
             FrameNativeTexturePool.cursor = index;
@@ -7089,7 +7089,7 @@ extern "C" {
         NuDebrisFrameVertexCount += emitted;
     }
 
-    void fun_0060bb20(PC_GOBJ_REGISTRY_ENTRY *entry) {
+    void NuGobjRegistryRelease(PC_GOBJ_REGISTRY_ENTRY *entry) {
         PC_GOBJ_REGISTRY_CHILD *child = entry->children;
         PC_GOBJ_REGISTRY_AUX *aux = entry->auxiliary;
         PC_GOBJ_REGISTRY_ENTRY *next;
@@ -7598,7 +7598,7 @@ extern "C" {
     void fun_00602970(void) {
     }
 
-    PC_GOBJ_REGISTRY_ENTRY *fun_00602980(void) {
+    PC_GOBJ_REGISTRY_ENTRY *NuGobjRegistryAlloc(void) {
         PC_GOBJ_REGISTRY_ENTRY *entry =
             (PC_GOBJ_REGISTRY_ENTRY *)NuAlloc(0x70, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nugobj.c", 107);
         PC_GOBJ_REGISTRY_ENTRY *first;
@@ -7671,7 +7671,7 @@ extern "C" {
         }
     }
 
-    void fun_00603140(f32 gamma) {
+    void PCSetGammaRamp(f32 gamma) {
         u16 ramp[3][256];
         for (i32 i = 0; i < 256; ++i) {
             i32 value = i * gamma * 255.0;
@@ -7936,7 +7936,7 @@ extern "C" {
     NULGTARCLASER NuLgtArcLaserData[16] = {0};
     NUGLOBALRNDRSTATE render_state = {0};
 
-    void fun_005fe640(NUVEC *position, f32 start_radius, f32 end_radius, i32 duration, u32 colour, i32 extra) {
+    void RendererClearAdd(NUVEC *position, f32 start_radius, f32 end_radius, i32 duration, u32 colour, i32 extra) {
         for (i32 i = 0; i < 32; i++) {
             if (RendererClearRecords[i].active == 0) {
                 position->y += 0.01f;
@@ -7957,7 +7957,7 @@ extern "C" {
     void fun_005fe6f0(void) {
     }
 
-    void fun_005fe700(i32 frames) {
+    void RendererClearUpdate(i32 frames) {
         for (i32 i = 0; i < 32; i++) {
             RENDERER_CLEAR_RECORD *record = &RendererClearRecords[i];
             if (record->active != 0) {
@@ -7986,7 +7986,7 @@ extern "C" {
         dat_0080e21c = value;
     }
 
-    void fun_005fe860(i32 restore) {
+    void NuRndrFxApplyHeight(i32 restore) {
         if (NuRndrFxHeightOverride != 0.0f) {
             NuRndrFxHeight = NuRndrFxHeightOverride;
             NuRndrFxColour = 0xc04080c0;
@@ -8141,7 +8141,7 @@ extern "C" {
         NuMtlAnimateShaderMtlTextures(frame_time);
     }
 
-    void fun_00607b40(i32 enable, i32 mode) {
+    void PCFogSetMode(i32 enable, i32 mode) {
         PCFogEnabled = enable != 0;
         PCDeviceSetRenderState(D3DRS_FOGENABLE, PCFogEnabled);
         if (enable) {
@@ -8446,7 +8446,7 @@ extern "C" {
         PCDeviceSetTransform(D3DTS_PROJECTION, &pmtx);
     }
 
-    void fun_00603d20(NUMTX *mtx, f32 fov, f32 aspect, f32 near_clip, f32 far_clip, f32 portal_nearclip) {
+    void NuCameraSetGlobalParameters(NUMTX *mtx, f32 fov, f32 aspect, f32 near_clip, f32 far_clip, f32 portal_nearclip) {
         NUCAMERA camera;
         camera.mtx = *mtx;
         camera.fov = fov;
@@ -8485,7 +8485,7 @@ extern "C" {
         }
     }
 
-    void fun_00603e80(void) {
+    void NuCameraPop(void) {
         if (NuCameraStackTop != NuCameraStack) {
             NuCameraStackTop--;
             if (NuCameraStackTop->camera_id != (i16)render_state.camera_id) {

@@ -1,0 +1,55 @@
+old,new,evidence
+fun_006d82d0,MergeKeyMouseButton,ors bit into buttons for a held key, mouse button or mouse axis direction
+fun_006d4c90,BuildKeyboardLayoutNames,fills the key-name table from a keyboard layout
+fun_006d4ef0,GetCommand,copies a command's active, axis, button and value
+fun_006d4f60,FindCommand,action of an active button or axis code
+fun_006d5050,PcInputSetActionOrder,copies a -1 terminated action order
+fun_006d5e40,PcInputAuxiliaryMasks,button and axis masks bound in an auxiliary bank
+fun_006d5ed0,PcInputAuxiliaryActionMask,action mask bound in an auxiliary bank
+fun_006d6db0,KeyboardPortFor,keyboard port for a capture index
+fun_006d9250,PcInputAssignButtonBinding,binds the action of a button
+fun_006d92c0,PcInputAssignAxisBinding,binds the action of an axis
+fun_006d6ef0,InstallConfigFor,finds and installs the configuration of a port and key
+fun_005ca500,NuGScnInstanceAnimEndFrame,end frame of an instance animation
+fun_005ea480,NuSpecialSetAlphaBlend,switches the special's clip materials to alpha blend
+fun_005f30d0,NuAnimData2Load,loads and relocates an animation file
+fun_005db460,OccluderDrawTriangleOutline,draws a closed coloured occluder triangle
+fun_005da2d0,NuPortalRoomVisible,a portal frustum of the scene is in the room
+fun_005ede70,NuPortalDrawDebugBox,draws a centre/extent box in the debug camera
+fun_005f1f50,NuTexDestroyId,frees a texture id unless persistent
+fun_005c2310,SetFilterEnabled,toggles one filter flag and the active count
+fun_005e6710,TestCenterExtent,box test from centre and extent
+fun_005e6770,TestCenterExtentBoxes,box test of all groups from centre and extent
+fun_005c3a50,PostFilterDepthResolve,draws colour and depth with depth writes
+fun_005e0a30,NuDisplaySceneHtmlDump,writes a display scene's sort lists as HTML
+fun_005e0ad0,NuDisplaySortHtmlHeading,HTML heading of a sort priority
+fun_005e5270,NuTexRegister,stores a texture in NuTextureDimensions
+fun_005d88e0,NuSortByCameraDistance,advances an index past nearer distances
+fun_005f7900,PCGraphicsFilterMode,maps a filter mode
+fun_005f7940,PCGraphicsAddressMode,maps an address mode to D3D
+fun_005f83a0,PCGraphicsRenderTextureFromTexture,fills a render texture from a texture id
+fun_005fbd40,PCDynamicGeometryRelease,releases the dynamic geometry buffers
+fun_005fc860,PCDynamicGeometryCopyOutput,copies sorted outputs
+fun_005fd070,NuDisplayListWriteVertexOffsets,writes the vertex offset packet
+fun_00602810,PCRebaseNativeScene,rebases a registered native scene
+fun_0060bb20,NuGobjRegistryRelease,releases a registry entry and children
+fun_00602980,NuGobjRegistryAlloc,allocates a registry entry
+fun_00603140,PCSetGammaRamp,builds and sets a gamma ramp
+fun_005fe640,RendererClearAdd,adds a clear record
+fun_005fe700,RendererClearUpdate,ages clear records by frames
+fun_005fe860,NuRndrFxApplyHeight,applies or restores the fx height override
+fun_00607b40,PCFogSetMode,fog enable and table mode
+fun_00603d20,NuCameraSetGlobalParameters,builds a camera from parameters and sets it
+fun_00603e80,NuCameraPop,pops the camera stack
+fun_004ef720,NuMemBufAlloc,allocates a memory buffer outside the pool
+fun_004fda20,NuFileLoadRelocated,loads and relocates a file
+fun_004fcba0,NuFileReadSize,size from a file header
+fun_004f4f80,NuRelocateTable,relocates a pointer table
+fun_005c6110,NuDebugToggle,toggles the debug flag
+fun_006da460,PcInputLoadPlayerConfigs,installs saved configurations of a player's ports
+fun_00742720,SetElementValues,sets one element by parameter class
+fun_00743e10,SetClassValues,sets values by parameter class
+fun_00697700,StartFade,starts a voice fade
+fun_00698e10,PCSoundMixCopy,copies the mix and signals the event
+fun_00699200,PopCommand,pops a queued command
+fun_00681cc0,TerrainFindInstanceGroup,group of a terrain instance

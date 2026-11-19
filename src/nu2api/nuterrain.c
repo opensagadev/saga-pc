@@ -3568,7 +3568,7 @@ u8 *TerrainSkinRebuildIndex(i32 pool_slots) {
     return (u8 *)(use + pool_slots);
 }
 
-TERRAIN_GROUP *fun_00681cc0(i32 instance) {
+TERRAIN_GROUP *TerrainFindInstanceGroup(i32 instance) {
     TERRAIN_SET *terrain = CurrentTerrain;
     i32 index = -1;
     i32 i;

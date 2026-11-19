@@ -23,7 +23,7 @@ class NuMainFilterGen : public NuPostFilter { // size 0x128
     virtual bool isEnabled();
     void preprocessBlurTextures(GRAPHICS_RENDER_TEXTURE *color, GRAPHICS_RENDER_TEXTURE *normal);
     void preprocessDofMotionBlur(GRAPHICS_RENDER_TEXTURE *depth);
-    void fun_005c2310(i32 filter, bool enable);
+    void SetFilterEnabled(i32 filter, bool enable);
     bool isFilterEnabled(i32 filter);
     void SetDofParameters(const NU_POST_DOF_PARAMETERS *parameters);
     void setBloomParameters(const NU_POST_BLOOM_PARAMETERS *parameters);

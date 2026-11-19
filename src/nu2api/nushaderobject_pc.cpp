@@ -262,7 +262,7 @@ void PC_SHADER_PARAMETER_LOCAL::SetMatrixValue(i32 first_element, const f32 *val
     SetMatrixValues(first_element, 1, values);
 }
 
-void PC_SHADER_PARAMETER_LOCAL::fun_00742720(i32 index, const f32 *values) {
+void PC_SHADER_PARAMETER_LOCAL::SetElementValues(i32 index, const f32 *values) {
     switch ((i32)(metadata << 4) >> 28) {
         case 1:
             SetValues(index, 1, values);
@@ -861,7 +861,7 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
 extern "C" void fun_00743970(void) {
 }
 
-void PC_SHADER_PARAMETER_LOCAL::fun_00743e10(i32 first_element, i32 count, const f32 *values) {
+void PC_SHADER_PARAMETER_LOCAL::SetClassValues(i32 first_element, i32 count, const f32 *values) {
     switch ((i32)(metadata << 4) >> 28) {
         case 1:
             SetScalarValues(first_element, count, values);
