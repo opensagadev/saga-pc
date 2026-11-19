@@ -5789,7 +5789,7 @@ extern "C" {
 // occlusion (OccluderSet/OcclusionManager and the PostShadow helpers).
 
 static inline void OccluderCross(NUVEC *dst, const NUVEC &a, const NUVEC &b) {
-    NuVecCross(dst, const_cast<NUVEC *>(&a), const_cast<NUVEC *>(&b));
+    NuVecCross(dst, &a, &b);
 }
 
 bool OccluderSet::IsOccludedSphere(NUVEC const *center, f32 radius) {
@@ -5797,7 +5797,7 @@ bool OccluderSet::IsOccludedSphere(NUVEC const *center, f32 radius) {
         return false;
     }
     NUVEC4 projected;
-    NuVec4MtxTransform(&projected, const_cast<NUVEC *>(center), &projection_matrix);
+    NuVec4MtxTransform(&projected, center, &projection_matrix);
     if (projected.w < radius) {
         return false;
     }
@@ -5868,7 +5868,7 @@ bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMT
                          {maximum->x, minimum->y, maximum->z, 1.0f}, {maximum->x, minimum->y, minimum->z, 1.0f}};
     NUMTX transform;
     if (matrix) {
-        NuMtxMulH(&transform, const_cast<NUMTX *>(matrix), &projection_matrix);
+        NuMtxMulH(&transform, matrix, &projection_matrix);
     } else {
         NuAnimMtxCopyPrivate(&transform, &projection_matrix);
     }
@@ -6285,9 +6285,9 @@ void OcclusionManager::AddOccluder(const NUVEC *a, const NUVEC *b, const NUVEC *
     }
     if (unknown_158 > 0.0f || unknown_15c > 0.0f) {
         __declspec(align(16)) NUVEC4 projected[4];
-        NuVec4MtxTransform(&projected[0], const_cast<NUVEC *>(a), &vpmtx);
-        NuVec4MtxTransform(&projected[1], const_cast<NUVEC *>(b), &vpmtx);
-        NuVec4MtxTransform(&projected[2], const_cast<NUVEC *>(c), &vpmtx);
+        NuVec4MtxTransform(&projected[0], a, &vpmtx);
+        NuVec4MtxTransform(&projected[1], b, &vpmtx);
+        NuVec4MtxTransform(&projected[2], c, &vpmtx);
         if (unknown_158 > 0.0f) {
             NUVEC normal;
             OccluderCross(&normal, projected[1] - projected[0], projected[2] - projected[0]);
@@ -6298,7 +6298,7 @@ void OcclusionManager::AddOccluder(const NUVEC *a, const NUVEC *b, const NUVEC *
                 return;
             }
         }
-        NuVec4MtxTransform(&projected[3], const_cast<NUVEC *>(d), &vpmtx);
+        NuVec4MtxTransform(&projected[3], d, &vpmtx);
         f32 min_x = 1000000.0f;
         f32 min_y = 1000000.0f;
         f32 min_depth = 1000000.0f;
@@ -6404,7 +6404,7 @@ void OcclusionManager::AddOccluder(const NUVEC *minimum, const NUVEC *maximum, c
                                                {max_x, min_y, min_z, 1.0f}, {min_x, min_y, max_z, 1.0f}};
     for (i32 i = 0; i < 8; ++i) {
         NUVEC *vertex = &corners[i].xyz;
-        NuVecMtxTransform(vertex, vertex, const_cast<NUMTX *>(matrix));
+        NuVecMtxTransform(vertex, vertex, matrix);
     }
     AddOccluder(&corners[0].xyz, &corners[1].xyz, &corners[2].xyz, &corners[3].xyz);
     AddOccluder(&corners[4].xyz, &corners[5].xyz, &corners[6].xyz, &corners[7].xyz);
@@ -11518,11 +11518,11 @@ void NuSpeedBlurFilterGen::computeSpeedBlur(NUVEC4 *result) {
     NUMTX previous_inverse;
     NUMTX current_inverse;
     NUVEC4 motion;
-    NuMtxInvH(&previous_inverse, const_cast<NUMTX *>(&parameters->previous));
-    NuMtxInvH(&current_inverse, const_cast<NUMTX *>(&parameters->current));
-    NuVec4MtxTransformH(&motion, &previous_inverse.rows[3], const_cast<NUMTX *>(&parameters->current));
+    NuMtxInvH(&previous_inverse, &parameters->previous);
+    NuMtxInvH(&current_inverse, &parameters->current);
+    NuVec4MtxTransformH(&motion, &previous_inverse.rows[3], &parameters->current);
     if (motion.z < 0.0f) {
-        NuVec4MtxTransformH(&motion, &current_inverse.rows[3], const_cast<NUMTX *>(&parameters->previous));
+        NuVec4MtxTransformH(&motion, &current_inverse.rows[3], &parameters->previous);
         motion.x = (f32)((f64)motion.x * -1.0);
         motion.y = (f32)((f64)motion.y * -1.0);
         motion.z = (f32)((f64)motion.z * -1.0);

@@ -132,7 +132,7 @@ i16 NuACos(f32 cos) {
     return 0x4000 - NuASin(cos);
 }
 
-void NuVecMtxTransform(NUVEC *out, NUVEC *v, NUMTX *m) {
+void NuVecMtxTransform(NUVEC *out, const NUVEC *v, const NUMTX *m) {
     f32 y = v->x * m->m01 + v->y * m->m11 + v->z * m->m21 + m->m31;
     f32 z = v->x * m->m02 + v->y * m->m12 + v->z * m->m22 + m->m32;
 
@@ -347,7 +347,7 @@ void NuVecInvScale(NUVEC *out, NUVEC *vector, f32 scale) {
     out->z = vector->z * inverse_scale;
 }
 
-void NuVecCross(NUVEC *out, NUVEC *left, NUVEC *right) {
+void NuVecCross(NUVEC *out, const NUVEC *left, const NUVEC *right) {
     f32 y;
     f32 z;
 
@@ -719,7 +719,7 @@ void NuVec4Sub(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b) {
     out->w = a->w - b->w;
 }
 
-void NuVec4MtxTransform(NUVEC4 *out, NUVEC *v, NUMTX *m) {
+void NuVec4MtxTransform(NUVEC4 *out, const NUVEC *v, const NUMTX *m) {
     f32 y = v->x * m->m01 + v->y * m->m11 + v->z * m->m21 + m->m31;
     f32 z = v->x * m->m02 + v->y * m->m12 + v->z * m->m22 + m->m32;
     f32 w = v->x * m->m03 + v->y * m->m13 + v->z * m->m23 + m->m33;
@@ -729,7 +729,7 @@ void NuVec4MtxTransform(NUVEC4 *out, NUVEC *v, NUMTX *m) {
     out->w = w;
 }
 
-void NuVec4MtxTransformH(NUVEC4 *out, NUVEC4 *input, NUMTX *matrix) {
+void NuVec4MtxTransformH(NUVEC4 *out, const NUVEC4 *input, const NUMTX *matrix) {
     f32 y = input->x * matrix->m01 + input->y * matrix->m11 + input->z * matrix->m21 + input->w * matrix->m31;
     f32 z = input->x * matrix->m02 + input->y * matrix->m12 + input->z * matrix->m22 + input->w * matrix->m32;
     f32 w = input->x * matrix->m03 + input->y * matrix->m13 + input->z * matrix->m23 + input->w * matrix->m33;
@@ -1437,7 +1437,7 @@ void NuMtxInvRSSH(NUMTX *inv, NUMTX *T) {
     *inv = gm;
 }
 
-void NuMtxInvH(NUMTX *mi, NUMTX *m0) {
+void NuMtxInvH(NUMTX *mi, const NUMTX *m0) {
     i32 p[4];
     i32 j;
     i32 k;

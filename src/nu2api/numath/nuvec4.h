@@ -47,9 +47,9 @@ extern "C" {
 #endif
     void NuVec4MtxRotateVU0(NUVEC4 *, NUVEC4 *, struct numtx_s *);
     void NuVec4MtxTransformVU0x3(NUVEC4 *out, NUVEC4 *in, struct numtx_s *matrix);
-    void NuVec4MtxTransform(NUVEC4 *, NUVEC *, struct numtx_s *);
+    void NuVec4MtxTransform(NUVEC4 *, const NUVEC *, const struct numtx_s *);
     void NuVec4MtxTransformVU0(NUVEC4 *, NUVEC4 *, struct numtx_s *);
-    void NuVec4MtxTransformH(NUVEC4 *, NUVEC4 *, struct numtx_s *);
+    void NuVec4MtxTransformH(NUVEC4 *, const NUVEC4 *, const struct numtx_s *);
 #ifdef __cplusplus
 }
 #endif

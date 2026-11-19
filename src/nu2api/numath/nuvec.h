@@ -36,7 +36,7 @@ extern "C" {
     void NuVecAddScale(NUVEC *dst, NUVEC *a, NUVEC *b, f32 scale);
     f32 NuVecDot(NUVEC *a, NUVEC *b);
     void NuVecNeg(NUVEC *dst, NUVEC *src);
-    void NuVecCross(NUVEC *dst, NUVEC *a, NUVEC *b);
+    void NuVecCross(NUVEC *dst, const NUVEC *a, const NUVEC *b);
     void NuVecMax(NUVEC *dst, NUVEC *a, NUVEC *b);
     void NuVecMin(NUVEC *dst, NUVEC *a, NUVEC *b);
     f32 NuVecMagSqr(NUVEC *vec);
@@ -61,7 +61,7 @@ extern "C" {
 #endif
     void NuVecMtxTransformVU0(NUVEC *, NUVEC *, struct numtx_s *);
     void NuVecMtxRotate(NUVEC *dst, NUVEC *src, struct numtx_s *matrix);
-    void NuVecMtxTransform(NUVEC *dst, NUVEC *src, struct numtx_s *matrix);
+    void NuVecMtxTransform(NUVEC *dst, const NUVEC *src, const struct numtx_s *matrix);
     void NuVecInvMtxRotate(NUVEC *dst, NUVEC *src, struct numtx_s *matrix);
     void NuVecInvMtxTransform(NUVEC *dst, NUVEC *src, struct numtx_s *matrix);
     void NuVecMtxTransformBlock(NUVEC *, NUVEC *, struct numtx_s *, i32);

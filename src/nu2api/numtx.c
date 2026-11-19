@@ -72,7 +72,7 @@ void NuMtxScaleVU0(NUMTX *matrix, NUVEC *scale) {
     NuMtxScale(matrix, scale);
 }
 
-void NuMtxMulH(NUMTX *result, NUMTX *left, NUMTX *right) {
+void NuMtxMulH(NUMTX *result, const NUMTX *left, const NUMTX *right) {
     D3DXMatrixMultiply((D3DXMATRIX *)result, (D3DXMATRIX *)left, (D3DXMATRIX *)right);
 }
 

@@ -98,11 +98,11 @@ extern "C" {
     void NuMtxRotateZ(NUMTX *matrix, NUANG angle);
     void NuMtxTransposeR(NUMTX *out, NUMTX *source);
     void NuMtxTranspose(NUMTX *out, NUMTX *source);
-    void NuMtxMulH(NUMTX *, NUMTX *, NUMTX *);
+    void NuMtxMulH(NUMTX *, const NUMTX *, const NUMTX *);
     void NuMtxMulRVU0(NUMTX *, NUMTX *, NUMTX *);
     void NuMtxCalcCheapFaceOn(NUMTX *matrix, NUVEC *position);
     void NuMtxCalcDebrisFaceOn(NUMTX *matrix);
-    void NuMtxInvH(NUMTX *, NUMTX *);
+    void NuMtxInvH(NUMTX *, const NUMTX *);
     void NuMtxPreRotateX(NUMTX *, NUANG);
     void NuMtxPreRotateY(NUMTX *, NUANG);
     void NuMtxPreRotateZ(NUMTX *, NUANG);
