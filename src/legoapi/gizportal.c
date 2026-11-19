@@ -69,7 +69,8 @@ static i32 Portal_ActivateRev(GIZMO *gizmo, i32 inactive, i32 check) {
     }
     portal = gizmo->object;
     if ((check & 1) != 0) {
-        if (inactive != 0 && inactive != (portal->flags & 1)) {
+        u8 flags = portal->flags;
+        if (inactive != 0 && inactive != (flags & NUPORTAL_FLAG_ACTIVE)) {
             return 0;
         }
         return 1;

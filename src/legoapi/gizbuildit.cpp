@@ -78,7 +78,7 @@ extern "C" void *GizBuildIt_Find(WORLDINFO *world, char *name) {
     GIZBUILDITSYS_s *system = world->giz_buildit_sys;
     if (system != NULL) {
         GIZBUILDIT *buildit = system->buildits;
-        for (i32 i = 0; i < system->count; ++i, ++buildit) {
+        for (i32 i = 0; i < world->giz_buildit_sys->count; ++i, ++buildit) {
             if (NuStrICmp(buildit->name, name) == 0) {
                 return buildit;
             }

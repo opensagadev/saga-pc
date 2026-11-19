@@ -82,9 +82,9 @@ struct DOOR_s {                        // size 0x128
     NUVEC normal;                      // 0x0e4
     i16 level;                         // 0x0f0
     i16 freeplay_level;                // 0x0f2
-    u8 next_sock;                      // 0x0f4
+    i8 next_sock;                      // 0x0f4
     u8 flags;                          // 0x0f5
-    u8 vehicle;                        // 0x0f6
+    i8 vehicle;                        // 0x0f6
     u8 active;                         // 0x0f7
     struct nugspline_s *camera_spline; // 0x0f8
     f32 camera_wait;                   // 0x0fc

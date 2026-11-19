@@ -356,7 +356,7 @@ static void D_do_not_use(NUFPAR *parser) {
 static void D_next_sock(NUFPAR *parser) {
     i32 index = NuFParGetInt(parser);
     if ((u32)index <= 63) {
-        D_door->next_sock = (u8)index;
+        D_door->next_sock = (i8)index;
     }
 }
 
@@ -546,7 +546,7 @@ void Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
             }
             gone_through_door_to_new_mode = 1;
         }
-        Door_NextSock = (i8)door->next_sock;
+        Door_NextSock = door->next_sock;
         Door_SetCutCam(door);
     }
     ResetBits |= 8;
