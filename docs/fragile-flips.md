@@ -99,3 +99,5 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | GIZMO object union, NUVEC4 xyz casts, LEVFLAG union (stream C) | BoulderSpawn | legogame/episodeIII.c | exact | 83.28 % |
 | GIZMO object union, NUVEC4 xyz casts, LEVFLAG union (stream C) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | 95.18 % |
 | quick run: unused CAMERA_*/KEEP_SCREEN/PLAYER_RESET views out of nuvec.h (32635fafa; bisected, no source change in parts.c matters) | DebrisSetup2 | legoapi/parts.c | exact | 99.95 % |
+| nu2api cleanup batch (unit macros as functions, views merged, accessors named) | BoulderSpawn | legogame/episodeIII.c | exact | 83.28 % |
+| nu2api cleanup batch (unit macros as functions, views merged, accessors named) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | 90.96 % |
