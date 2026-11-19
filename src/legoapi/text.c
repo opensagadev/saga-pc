@@ -595,7 +595,7 @@ i32 TriggerAutoSave(void) {
     return 0;
 }
 
-i32 fun_0050c040(void) {
+i32 SaveloadGetStatus(void) {
     return saveload_status;
 }
 
@@ -1286,7 +1286,7 @@ void SmartTextExDrop(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, 
                 alpha);
 }
 
-void fun_0050e510(i32 mode) {
+void TextSetPrintMode(i32 mode) {
     TextPrintMode = mode;
 }
 
@@ -1558,16 +1558,16 @@ VUFNT *LoadButtonFont(char *path, char *texture_path, VARIPTR *buffer, VARIPTR *
     return QFont2DButtons;
 }
 
-void fun_00511640(MENU *menu, char *text) {
+void DrawMenuEntry(MENU *menu, char *text) {
     DrawMenuEntryEx(menu, text, MenuA);
 }
 
-void fun_00511660(MENU *menu) {
+void DrawMenuEntryOK(MENU *menu) {
     menu->draw_y = MENUBOTY;
     DrawMenuEntryEx(menu, apitxt_OK, MenuA);
 }
 
-void fun_00511690(MENU *menu) {
+void DrawMenuEntryCancel(MENU *menu) {
     menu->draw_y = MENUBOTY;
     DrawMenuEntryEx(menu, apitxt_CANCEL, MenuA);
 }

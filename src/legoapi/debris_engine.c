@@ -557,7 +557,7 @@ void DebFreeInstantly(i32 *handle) {
     *handle = -1;
 }
 
-void fun_00684560(DEBRISKEY *key) {
+void DebrisKeyFree(DEBRISKEY *key) {
     i32 handle = key->allocation_index;
     DebFree(&handle);
 }
@@ -1227,7 +1227,7 @@ void DebrisFreeOldestDmaDebTypeTable(void) {
     }
 }
 
-void fun_006580b0(void) {
+void DebrisResetGlobalTime(void) {
     globalframes = 0;
     panelglobaltime = 0.0f;
     debris_render_panel_time = 0.0f;
@@ -1387,14 +1387,14 @@ void DebrisReScale(i32 effect_index, f32 scale) {
     GenericDebinfoDmaTypeUpdate(effect);
 }
 
-DEBRIS_INFO *fun_006582c0(i32 index) {
+DEBRIS_INFO *DebrisGetInfo(i32 index) {
     if (index >= 0 && index < debinf_count && debtab[index] != NULL) {
         return debtab[index];
     }
     return NULL;
 }
 
-f32 fun_006582f0(i32 index) {
+f32 DebrisGetCycleTime(i32 index) {
     if (index >= 0 && index < debinf_count && debtab[index] != NULL) {
         DEBRIS_INFO *info = debtab[index];
         return info->emission_period_random + info->emission_period + info->emission_pause + info->emission_pause_random;
@@ -1732,11 +1732,11 @@ i32 DebrisTorusCollisionCheckScaleY(NUVEC *p, f32 r, f32 y) {
     return DebrisTorusCollisionCheckScaleYFlag(p, r, y, 3);
 }
 
-i32 fun_00658d00(NUVEC *position, f32 radius, u8 flags) {
+i32 DebrisTorusCollisionCheckFlag(NUVEC *position, f32 radius, u8 flags) {
     return DebrisTorusCollisionCheckScaleYFlag(position, radius, 1.0f, flags);
 }
 
-i32 fun_00658d30(NUVEC *position, f32 radius) {
+i32 DebrisTorusCollisionCheckDefault(NUVEC *position, f32 radius) {
     return DebrisTorusCollisionCheckScaleYFlag(position, radius, 1.0f, 3);
 }
 
@@ -2021,7 +2021,7 @@ void AddScaledFiniteShotDebrisEffect(i32 *key, i32 effect, NUVEC *position, NUVE
     }
 }
 
-void fun_006904d0(i32 *handle, i32 effect, NUVEC *position, i32 count, void *user_data) {
+void AddFiniteShotDebrisEffectUserData(i32 *handle, i32 effect, NUVEC *position, i32 count, void *user_data) {
     AddFiniteShotDebrisEffect2(handle, effect, position, NULL, NULL, count);
     if (*handle != -1) {
         debkeydata[*handle].user_data = user_data;
@@ -2252,13 +2252,13 @@ void DebrisStatusAlwaysOff(i32 *handle) {
     }
 }
 
-void fun_006552e0(i32 *handle) {
+void DebrisStatusAlwaysOn(i32 *handle) {
     if (*handle != -1) {
         debkeydata[*handle].status = 2;
     }
 }
 
-void fun_00655300(i32 *handle) {
+void DebrisStatusNormal(i32 *handle) {
     if (*handle != -1) {
         debkeydata[*handle].status = 1;
     }

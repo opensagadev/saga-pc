@@ -347,7 +347,7 @@ void DrawMenuHeader(void) {
     }
 }
 
-void fun_0050f620(char *text, u32 red, u32 green, u32 blue) {
+void MenuDrawTopText(char *text, u32 red, u32 green, u32 blue) {
     MenuSmartTextEx(text, 0.0f, MenuTopY, 1.0f, MenuTextScale, MenuTextScale, MenuTextScale, 1, red, green, blue, 1.5f, 3, NULL, 0, MenuA);
 }
 
@@ -725,11 +725,11 @@ i32 UpdateMenu(u32 primary_held, u32 primary_pressed, u32 alternate_held, u32 al
     return MenuResult;
 }
 
-i32 fun_0050a3e0(void) {
+i32 GameMenuIsOpen(void) {
     return GameMenu[GameMenuLevel].menu != -1;
 }
 
-void fun_0050a400(void) {
+void MenuRequestLoad(void) {
     MenuLoadStarted = 1;
     memcard_loadneeded = 1;
     memcard_loadstarted = 0;
@@ -737,7 +737,7 @@ void fun_0050a400(void) {
     memcard_loadcorrupt = 0;
 }
 
-void fun_0050a430(void) {
+void MenuRequestSave(void) {
     memcard_saveneeded = 1;
     memcard_savestarted = 0;
     memcard_savefailed = 0;
@@ -919,19 +919,19 @@ void MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r, u8 entry_
     MENUFLASH1B = flash1_b;
 }
 
-void fun_00509710(f32 speed) {
+void MenuSetPulsateSpeed(f32 speed) {
     menu_pulsate_speed = speed;
 }
 
-void fun_00509720(f32 top, f32 bottom) {
+void MenuSetTopBottom(f32 top, f32 bottom) {
     MenuTopY = top;
     MENUBOTY = bottom;
 }
 
-void fun_00509740(void (*function)(MENU *)) {
+void MenuSetPreDrawFn(void (*function)(MENU *)) {
     predrawfn = function;
 }
 
-void fun_00509750(void (*function)(void)) {
+void MenuSetHeaderDrawFn(void (*function)(void)) {
     headerdrawfn = function;
 }

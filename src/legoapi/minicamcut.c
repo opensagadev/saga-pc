@@ -273,7 +273,7 @@ void Minicam_ResetForNextCommand(void) {
     MiniCam.delta_time = 0.0f;
 }
 
-void fun_005776f0(void) {
+void MiniCam_Clear(void) {
     memset(&MiniCam, 0, sizeof(MiniCam));
 }
 

@@ -717,7 +717,7 @@ extern "C" void DrawPauseFade(void) {
     }
 }
 
-extern "C" void fun_00565d80() {
+extern "C" void PauseStateClear() {
     Paused = 0;
     old_pause_state = 0;
 }

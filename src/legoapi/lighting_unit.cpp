@@ -64,19 +64,19 @@ extern "C" {
     }
 }
 
-void NUVEC4::fun_00595250(f32 new_x, f32 new_y, f32 new_z, f32 new_w) {
+void NUVEC4::SetXYZW(f32 new_x, f32 new_y, f32 new_z, f32 new_w) {
     x = new_x;
     y = new_y;
     z = new_z;
     w = new_w;
 }
 
-void NUVEC4::fun_00595270() {
+void NUVEC4::NormaliseXYZ() {
     NuVecNorm(&this->xyz, &this->xyz);
     w = 1.0f;
 }
 
-NUVEC4 &NUVEC4::fun_00595290(const NUVEC &v) {
+NUVEC4 &NUVEC4::SetPoint(const NUVEC &v) {
     f32 new_y = v.y;
     f32 new_z = v.z;
     x = v.x;
@@ -104,7 +104,7 @@ void PC_SPECIAL_SHADOW_LIGHT::LookAt(NUVEC *eye, NUVEC *target, NUVEC *up) {
     NuMtxLookAtD3D(&view, eye, target, up);
 }
 
-void PC_SPECIAL_SHADOW_LIGHT::fun_00595360(f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane) {
+void PC_SPECIAL_SHADOW_LIGHT::SetOrthoProjection(f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane) {
     parameter_4 = 0;
     NuMtxSetOrthoBlend(&projection, left, right, bottom, top, near_plane, far_plane);
 }
@@ -585,11 +585,11 @@ void EnableShadowMapRenderingFn(void) {
     EnableShadowMapRendering(0);
 }
 
-extern "C" f32 fun_005969a0(f32 *from, f32 *to, f32 *t) {
+extern "C" f32 LightLerp(f32 *from, f32 *to, f32 *t) {
     return (*to - *from) * *t + *from;
 }
 
-extern "C" void fun_005969c0(void *set) {
+extern "C" void LightProcessCharacters(void *set) {
     GAMEOBJECT *object;
     rtlProcessLights(set, FRAMETIME);
     object = Obj;

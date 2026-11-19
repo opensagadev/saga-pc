@@ -205,7 +205,7 @@ void RememberPlayerIDs(i32 force, i32 first_id, i32 second_id) {
 
 GAMEOBJECT *player = 0;
 
-GAMEOBJECT *fun_0055e2b0(i32 id) {
+GAMEOBJECT *Player_FindById(i32 id) {
     i32 index;
     for (index = 0; index < 8; ++index) {
         GAMEOBJECT *player = Player[index];
@@ -677,7 +677,7 @@ i32 Player_HasDeflectBolts(GAMEOBJECT *object) {
     return object != NULL && object->player.powerup_time > 0.0f;
 }
 
-i32 fun_0055f290(GAMEOBJECT *object) {
+i32 Player_HasPowerUp(GAMEOBJECT *object) {
     if (Cheats_CheckFlags(CHEAT_DOUBLE_BOLT_DAMAGE)) {
         return 1;
     }

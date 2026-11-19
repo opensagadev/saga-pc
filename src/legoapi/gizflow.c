@@ -75,7 +75,7 @@ i32 CheckOutputGizmoFlowBox(GIZFLOW *system, FLOWBOX *box, u8 output) {
     return result;
 }
 
-u8 fun_0059d9c0(void) {
+u8 GizFlow_NextLoopChecksum(void) {
     return ++gizflow_loop_checksum;
 }
 
@@ -955,7 +955,7 @@ static void GizFlowConfigSumBox(NUFPAR *parser) {
     load_conditionParam = NuFParGetInt(parser);
 }
 
-void fun_0059ecb0(void) {
+void GizFlow_LoadCondition(void) {
     FLOWBOXCONDITION *condition = GizmoBufferAlloc(load_buff, load_endbuff, 4);
     if (condition != NULL) {
         condition->operation = load_conditiontype;

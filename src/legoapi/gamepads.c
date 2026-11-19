@@ -300,7 +300,7 @@ void ConstantRumble(GAMEOBJECT *object, f32 strength, f32 phase) {
 
 i32 LEGOMENU_CREDITS = -1;
 
-i32 fun_0054ace0(i32 index, i32 require_ready) {
+i32 GamePad_InputAllowed(i32 index, i32 require_ready) {
     i32 menu = GetMenuID();
     if ((require_ready && !GamePadStorage[index].input_ready) || (GamePadStorage[index].bound_pad->flags & 4) ||
         (LEGOMENU_NEWGAME != -1 && menu == LEGOMENU_NEWGAME) || (LEGOMENU_CREDITS != -1 && menu == LEGOMENU_CREDITS)) {

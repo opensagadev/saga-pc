@@ -115,7 +115,6 @@ static f32 CutscenesFabs(f32 f) {
     return rv;
 }
 
-
 typedef struct CUT_DRAW_RIGID {
     u8 unknown_00[0x58];
     u8 flags;
@@ -126,14 +125,15 @@ typedef struct CUT_DRAW_LOCATOR_ENTRY { // size 0x14
     u32 unknown_04;                     // 0x04
     u32 unknown_08;                     // 0x08
     u32 unknown_0c;                     // 0x0c
-    void (*update)(INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *, f32, NUMTX *, i32); // 0x10
+    void (*update)(INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *, f32, NUMTX *,
+                   i32); // 0x10
 } CUT_DRAW_LOCATOR_ENTRY;
 
 struct FADEINFO_s;
 
 extern "C" {
-    static void LocatorFunction_Blaster(INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *locator,
-                                        f32 frame, NUMTX *parent, i32);
+    static void LocatorFunction_Blaster(INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *,
+                                        CUT_LOAD_LOCATOR *locator, f32 frame, NUMTX *parent, i32);
 }
 extern "C" {
 
@@ -1211,8 +1211,8 @@ i32 CutScene_IsSkippable(CUTINFO *cut) {
 
 extern "C" {
 
-    static void LocatorFunction_Blaster(INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *locator,
-                                        f32 frame, NUMTX *parent, i32) {
+    static void LocatorFunction_Blaster(INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *,
+                                        CUT_LOAD_LOCATOR *locator, f32 frame, NUMTX *parent, i32) {
         NUANIM_TIME2 time;
         NuAnimData2CalcTime(locator->animation, frame, &time);
         if (NuGCutLocatorIsVisble(reinterpret_cast<CUT_LOCATOR_GENERIC *>(locator), frame, &time, NULL, NULL) == 0) {
@@ -1706,16 +1706,12 @@ extern "C" {
             for (i32 i = 0; i < character->locator_count; ++i) {
                 i32 locator_index = character->locator_index + i;
                 if (locator_system->locators[locator_index].joint_index == 0xff) {
-                    instNuGCutLocatorUpdate(cutscene_instance, locator_system,
-                                            &locator_instance->locators[locator_index],
-                                            &locator_system->locators[locator_index], frame,
-                                            &world_matrix, paused);
+                    instNuGCutLocatorUpdate(cutscene_instance, locator_system, &locator_instance->locators[locator_index],
+                                            &locator_system->locators[locator_index], frame, &world_matrix, paused);
                 } else {
                     NuMtxMulVU0(&locator_parent, &joint_matrices[locator_system->locators[locator_index].joint_index], &world_matrix);
-                    instNuGCutLocatorUpdate(cutscene_instance, locator_system,
-                                            &locator_instance->locators[locator_index],
-                                            &locator_system->locators[locator_index], frame,
-                                            &locator_parent, paused);
+                    instNuGCutLocatorUpdate(cutscene_instance, locator_system, &locator_instance->locators[locator_index],
+                                            &locator_system->locators[locator_index], frame, &locator_parent, paused);
                 }
             }
         }
@@ -1729,8 +1725,7 @@ extern "C" {
         NuGCutSceneSysInit(reinterpret_cast<CUT_LOCATOR_FUNCTION_ENTRY *>(cutscene_locatorfns));
         NuSetCutSceneCharacterRenderFn(reinterpret_cast<CUT_DRAW_RENDER_CALLBACK>(CutScene_DrawCharacter));
         NuSetCutSceneFindCharactersFn(CutScene_FindCharacters);
-        NuSetCutSceneCharacterCreateDataFn(
-            CutScene_CreateCharacterInstance);
+        NuSetCutSceneCharacterCreateDataFn(CutScene_CreateCharacterInstance);
         NuSetCutSceneResetCharactersFn(CutScene_ResetCharacters);
         NuSetCutSceneCharacterEvalFn(reinterpret_cast<CUT_DRAW_EVAL_CALLBACK>(CutScene_EvalCharacter));
         NuSetCutSceneRigidPostRenderFn(reinterpret_cast<CUT_DRAW_RIGID_CALLBACK>(CutScene_RigidPostRender));

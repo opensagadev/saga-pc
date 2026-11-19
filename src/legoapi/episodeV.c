@@ -1242,7 +1242,7 @@ void HothBattleC_Draw(WORLDINFO *world) {
     DrawMiniSnowTroopers(world);
 }
 
-void fun_004e8d20(HOTHBATTLE_MELEE_s *battle) {
+void HothBattleMelee_Reset(HOTHBATTLE_MELEE_s *battle) {
     if (battle != NULL) {
         battle->current_wave = 0;
         battle->next_wave = 0;
@@ -1316,7 +1316,7 @@ void HothBattleE_Panel(WORLDINFO *world) {
     }
 }
 
-i32 fun_004e8fc0(GAMEOBJECT *object) {
+i32 HothBattleMelee_IsWaveCreature(GAMEOBJECT *object) {
     i32 wave;
     i32 i;
     for (wave = 0; wave < 4; ++wave) {

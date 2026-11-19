@@ -29,9 +29,9 @@ typedef struct NUVEC4 { // size 0x10
         return result;
     }
 
-    void fun_00595250(f32 new_x, f32 new_y, f32 new_z, f32 new_w);
-    void fun_00595270();
-    NUVEC4 &fun_00595290(const NUVEC &v);
+    void SetXYZW(f32 new_x, f32 new_y, f32 new_z, f32 new_w);
+    void NormaliseXYZ();
+    NUVEC4 &SetPoint(const NUVEC &v);
 #endif
 } NUVEC4;
 

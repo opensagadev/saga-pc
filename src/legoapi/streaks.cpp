@@ -24,7 +24,7 @@ extern "C" {
 }
 
 /* Moves a header from the free list to the front of the used list. */
-extern "C" STREAK_HEADER *fun_005a35c0(void) {
+extern "C" STREAK_HEADER *StreakHeaderAlloc(void) {
     STREAK_HEADER *header = streakhdrs_free;
     if (header != NULL) {
         streakhdrs_free = header->next;

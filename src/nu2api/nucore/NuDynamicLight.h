@@ -24,8 +24,8 @@ struct VuMtx { // size 0x40
         VuVec rows[4];
     }; // 0x00
 #ifdef __cplusplus
-    void fun_006341a0(const VuVec &translation);
-    VuVec &fun_006341d0(i32 row);
+    void SetTranslation(const VuVec &translation);
+    VuVec &GetRow(i32 row);
     void SetScale(const VuVec &scale);
 #endif
 };

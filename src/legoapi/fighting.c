@@ -508,7 +508,7 @@ void HoldCode(GAMEOBJECT *object) {
     }
 }
 
-void fun_0058e480(GAMEOBJECT *object) {
+void Fighting_UpdateHoldContext(GAMEOBJECT *object) {
     if (LEGOCONTEXT_HOLD != -1 && object->player.character_context == LEGOCONTEXT_HOLD) {
         if (object->player.context_timer > 0.0f) {
             object->player.context_timer -= FRAMETIME;

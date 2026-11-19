@@ -295,12 +295,12 @@ f32 VuVec::Length() {
 }
 
 /* Sets the translation row; the row is a point, so w is forced to 1. */
-void VuMtx::fun_006341a0(const VuVec &translation) {
+void VuMtx::SetTranslation(const VuVec &translation) {
     RtlVuVecCopy(rows[3], translation);
     rows[3].w = 1.0f;
 }
 
-VuVec &VuMtx::fun_006341d0(i32 row) {
+VuVec &VuMtx::GetRow(i32 row) {
     return rows[row];
 }
 
@@ -533,8 +533,8 @@ class FogHelper : public EdClassInterface { // size 0x8
 FogHelper::FogHelper() {
 }
 
-RTLHelper dat_0080ffe0;
-FogHelper dat_0080ffec;
+RTLHelper theRTLHelper;
+FogHelper theFogHelper;
 
 i32 FogHelper::GetNumObjects() {
     i32 count = 0;

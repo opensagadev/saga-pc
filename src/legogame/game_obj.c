@@ -1108,7 +1108,7 @@ void ActivatePlayer(GAMEOBJECT *object) {
 }
 
 void FindPlayerAndSetWeapon(i32 id, i32 weapon_out) {
-    GAMEOBJECT *object = fun_0055e2b0(id);
+    GAMEOBJECT *object = Player_FindById(id);
     if (object == NULL) {
         return;
     }

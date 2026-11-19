@@ -228,19 +228,19 @@ void PC_CONTROL_SCREEN::RefreshItems(void) {
     AdvanceSelection(row);
 }
 
-i32 PC_CONTROL_SCREEN::fun_00420160(void) {
+i32 PC_CONTROL_SCREEN::IsScreenActive(void) {
     return active;
 }
 
-i32 PC_CONTROL_SCREEN::fun_00420170(i32 player) {
+i32 PC_CONTROL_SCREEN::GetSavedPort(i32 player) {
     return saved_ports[player];
 }
 
-void PC_CONTROL_SCREEN::fun_00420180(void (*callback)(i32)) {
+void PC_CONTROL_SCREEN::SetPlaySoundFn(void (*callback)(i32)) {
     play_sound = callback;
 }
 
-PC_CONTROL_SCREEN *PC_CONTROL_SCREEN::fun_00420190(void) {
+PC_CONTROL_SCREEN *PC_CONTROL_SCREEN::InitDefaults(void) {
     fade = 0.0f;
     deadzone[3] = 32.0f;
     active = 0;
@@ -295,7 +295,7 @@ void PC_CONTROL_SCREEN::Register(PC_CONTROL_CONFIG *config, VARIPTR *, VARIPTR *
     }
 }
 
-void PC_CONTROL_SCREEN::fun_00420320(i32) {
+void PC_CONTROL_SCREEN::BeginFadeOut(i32) {
     phase = PC_CONTROL_FADE_OUT;
 }
 
@@ -343,13 +343,13 @@ i32 PC_CONTROL_SCREEN::WaitForRelease(void) {
     return release_frames == 0;
 }
 
-void PC_CONTROL_SCREEN::fun_00420420(i32 sound) {
+void PC_CONTROL_SCREEN::PlaySoundCallback(i32 sound) {
     if (play_sound) {
         play_sound(sound);
     }
 }
 
-void PC_CONTROL_SCREEN::fun_00420440(void) {
+void PC_CONTROL_SCREEN::ResetReleaseFrames(void) {
     release_frames = release_reset = 3;
     PcInputResetMouseMotion();
 }
@@ -1019,7 +1019,7 @@ u32 PC_CONTROL_SCREEN::ScaleColour(f32 brightness, f32 alpha, u32 colour) {
     return (((i32)b & 0xff) << 16) | ((i32)a << 24) | (((i32)g & 0xff) << 8) | ((i32)r & 0xff);
 }
 
-void PC_CONTROL_SCREEN::fun_00421020(void) {
+void PC_CONTROL_SCREEN::ClearTextKeys(void) {
     for (i32 i = 0; i < 12; ++i) {
         text[i].key = 0;
     }
@@ -1250,7 +1250,7 @@ void PC_CONTROL_SCREEN::DrawDeadzone(f32 x, f32 y, f32 z, f32 width, f32 height,
     NuPrim2DEnd();
 }
 
-void PC_CONTROL_SCREEN::fun_00420d30(f32 x, f32 y, f32 z, f32 width, f32 height, f32 brightness, f32 bars, f32 level) {
+void PC_CONTROL_SCREEN::DrawBarMeter(f32 x, f32 y, f32 z, f32 width, f32 height, f32 brightness, f32 bars, f32 level) {
     f32 base = (height * NuQFntHalfScale);
     u32 colour = ScaleAlpha(opacity * brightness, 0x40c88080);
     y = (f32)(-y - 0.05999999865889549);

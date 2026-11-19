@@ -74,7 +74,7 @@ config/oddscan-budget.json stdcall 289 port batch 2: get_level_count, a COM slot
 config/oddscan-budget.json undef-in-unit 220 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
 config/oddscan-budget.json view-type 186 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
 config/oddscan-budget.json view-use 1049 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
-config/castscan-budget.json codegen-steering 58 port batch 2: the float cast in PC_CONTROL_SCREEN::fun_00420d30 (config/castscan-keep.csv)
+config/castscan-budget.json codegen-steering 58 port batch 2: the float cast in PC_CONTROL_SCREEN::DrawBarMeter (config/castscan-keep.csv)
 config/castscan-budget.json declaration-type 1741 port batch 2 (510 new functions): casts the new code keeps where saga.h types the member void * or as an overlay view (each tried without; the removable ones were removed)
 config/castscan-budget.json duplicate-type 1651 port batch 2 (510 new functions): casts the new code keeps where saga.h types the member void * or as an overlay view (each tried without; the removable ones were removed)
 config/castscan-budget.json field-address 344 port batch 2 (510 new functions): casts the new code keeps where saga.h types the member void * or as an overlay view (each tried without; the removable ones were removed)
@@ -307,3 +307,4 @@ config/oddscan-budget.json pc-suffix 57 quick run, settled in the refix
 config/declscan-budget.json A 22 quick run, settled in the refix
 config/castscan-budget.json layout-compatible 56 quick run, settled in the refix
 config/castscan-budget.json record-pun 368 quick run, settled in the refix
+config/castscan-budget.json record-pun 373 quick run, settled in the refix

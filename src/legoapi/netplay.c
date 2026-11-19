@@ -27,27 +27,27 @@ i32 objInNetWaitContext(GAMEOBJECT *object, i32 context) {
     return 0;
 }
 
-void fun_005787d0(GAMEOBJECT *object, i16 value) {
+void NetPlay_SetWaitContext(GAMEOBJECT *object, i16 value) {
     if (object != NULL) {
         object->player.character_context = LegoContextNetWait;
         object->player.context_animation = value;
     }
 }
 
-i32 fun_00578800(i16 high, u16 low) {
+i32 NetPlay_Pack16x2(i16 high, u16 low) {
     return (high << 16) | low;
 }
 
-i32 fun_00578810(i8 a, u8 b, u8 c, u8 d) {
+i32 NetPlay_Pack8x4(i8 a, u8 b, u8 c, u8 d) {
     return (((((a << 8) | b) << 8) | c) << 8) | d;
 }
 
-void fun_00578840(u32 value, u16 *high, u16 *low) {
+void NetPlay_Unpack16x2(u32 value, u16 *high, u16 *low) {
     *high = (value >> 16);
     *low = value;
 }
 
-void fun_00578860(i32 value, u8 *a, u8 *b, u8 *c, u8 *d) {
+void NetPlay_Unpack8x4(i32 value, u8 *a, u8 *b, u8 *c, u8 *d) {
     *a = ((u32)value >> 26) & 0x3f;
     *b = (value >> 16);
     *c = (value >> 8);

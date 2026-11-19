@@ -2930,7 +2930,7 @@ i32 edpartLookupObjectInScene(char *name, NUGSCN *scene) {
     return -1;
 }
 
-i32 fun_006489a0(char *name) {
+i32 LookupDebrisEffectOnLoadPage(char *name) {
     if (edpart_load_particle_page == -1) {
         return LookupDebrisEffect(name);
     }

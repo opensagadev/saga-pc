@@ -25,11 +25,11 @@ void instNuGCutSceneEndButNotSystems(INSTNUGCUTSCENE *instance) {
     }
 }
 
-void fun_00500400(INSTNUGCUTSCENE *instance) {
+void instNuGCutSceneResume(INSTNUGCUTSCENE *instance) {
     instance->flags_88 &= ~NUGCUTSCENE_INST_SUSPENDED;
 }
 
-void fun_00500410(INSTNUGCUTSCENE *instance) {
+void instNuGCutSceneSuspend(INSTNUGCUTSCENE *instance) {
     instance->flags_88 |= NUGCUTSCENE_INST_SUSPENDED;
 }
 
@@ -40,19 +40,19 @@ void fun_00500420(INSTNUGCUTSCENE *instance, i32 value) {
     instance->flags_88 = (instance->flags_88 & ~0x3e000U) | ((value << 13) & 0x3e000);
 }
 
-void fun_00500450(INSTNUGCUTSCENE *instance, i32 value) {
+void instNuGCutSceneSetHoldLastFrame(INSTNUGCUTSCENE *instance, i32 value) {
     instance->flags_8c = (instance->flags_8c & ~NUGCUTSCENE_PLAY_HOLD_LAST_FRAME) | ((value << 6) & 0x40);
 }
 
-void fun_00500470(INSTNUGCUTSCENE *instance, INSTNUGCUTSCENE *chained) {
+void instNuGCutSceneSetChained(INSTNUGCUTSCENE *instance, INSTNUGCUTSCENE *chained) {
     instance->chained_instance = chained;
 }
 
-void fun_00500480(INSTNUGCUTSCENE *instance, void (*end_callback)(INSTNUGCUTSCENE *)) {
+void instNuGCutSceneSetEndCallback(INSTNUGCUTSCENE *instance, void (*end_callback)(INSTNUGCUTSCENE *)) {
     instance->end_callback = end_callback;
 }
 
-void fun_00500490(INSTNUGCUTSCENE *instance, i32 count, VARIPTR *buffer) {
+void instNuGCutSceneAllocCameraTargets(INSTNUGCUTSCENE *instance, i32 count, VARIPTR *buffer) {
     CUT_LOAD_CAMERA_INSTANCE *camera = instance->camera_instance;
     if (camera != NULL && count != 0) {
         camera->target_capacity = count;

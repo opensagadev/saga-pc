@@ -21,7 +21,7 @@ extern "C" i32 MenuInMemoryCard(void) {
     return 0;
 }
 
-extern "C" i32 fun_0050b360() {
+extern "C" i32 Menu_IsMemcardBusy() {
     if (MenuValidated != 0) {
         switch (MenuInfo[GameMenu[GameMenuLevel].menu].id) {
             case MENU_DO_NOT_REMOVE_CARD:
@@ -35,14 +35,14 @@ extern "C" i32 fun_0050b360() {
     return 0;
 }
 
-extern "C" i32 fun_0050b3d0() {
+extern "C" i32 Menu_IsInLoadFlow() {
     return MenuValidated ? Menu_InLoadFlow : 0;
 }
 
-extern "C" i32 fun_0050b3e0() {
+extern "C" i32 Menu_IsInWarningFlow() {
     return MenuValidated ? Menu_InWarningFlow : 0;
 }
 
-extern "C" i32 fun_0050b3f0() {
+extern "C" i32 Menu_CurrentId() {
     return MenuInfo[GameMenu[GameMenuLevel].menu].id;
 }

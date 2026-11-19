@@ -20,7 +20,7 @@ u8 MENU_VIDEO_OPTIONS::Changed() {
     return (hires_enabled == 1) != PcWindowOptions.usehirespending;
 }
 
-void MENU_VIDEO_OPTIONS::fun_005091f0() {
+void MENU_VIDEO_OPTIONS::LoadFromWindowOptions() {
     aspect_mode = PcWindowOptions.aspect_mode;
     shadows_enabled = PcWindowOptions.shadowsenabled != 0;
     bloom_enabled = PcWindowOptions.bloomenabled != 0;
@@ -542,7 +542,7 @@ extern "C" void MenuDrawNotice(char *text, u32 red, u32 green, u32 blue) {
     MenuSmartTextEx(text, 0.0f, 0.15f, 1.0f, MenuTextScale, MenuTextScale, MenuTextScale, 0, red, green, blue, 1.5f, 4, NULL, 0, MenuA);
 }
 
-extern "C" void fun_0050f6e0(char *text, u32 red, u32 green, u32 blue) {
+extern "C" void MenuDrawLowerText(char *text, u32 red, u32 green, u32 blue) {
     MenuSmartTextEx(text, 0.0f, -0.3f, 1.0f, MenuTextScale, MenuTextScale, MenuTextScale, 0, red, green, blue, 1.5f, 4, NULL, 0, MenuA);
 }
 

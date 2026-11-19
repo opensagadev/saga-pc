@@ -20,7 +20,7 @@
 #include "gameapi/edpart.h"
 
 extern "C" {
-    MENU_SETTINGS_STRING_ENTRY dat_00827800[40] = {
+    MENU_SETTINGS_STRING_ENTRY MenuSettingsStringsUS[40] = {
         {0, "Quit"},
         {1, "Quit to Windows"},
         {2, "Quit to Demos Menu"},
@@ -62,7 +62,7 @@ extern "C" {
         {38, "Show Game Controls"},
         {39, NULL},
     };
-    MENU_SETTINGS_STRING_ENTRY dat_00827940[40] = {
+    MENU_SETTINGS_STRING_ENTRY MenuSettingsStringsEnglish[40] = {
         {0, "Quit"},
         {1, "Quit to Windows"},
         {2, "Quit to Demos Menu"},
@@ -104,7 +104,7 @@ extern "C" {
         {38, "Show Game Controls"},
         {39, NULL},
     };
-    MENU_SETTINGS_STRING_ENTRY dat_00827a80[40] = {
+    MENU_SETTINGS_STRING_ENTRY MenuSettingsStringsFrench[40] = {
         {0, "Quitter"},
         {1, "Revenir sous Windows"},
         {2, "Quitter au menu D\303\251mo"},
@@ -146,7 +146,7 @@ extern "C" {
         {38, "Show Game Controls"},
         {39, NULL},
     };
-    MENU_SETTINGS_STRING_ENTRY dat_00827bc0[40] = {
+    MENU_SETTINGS_STRING_ENTRY MenuSettingsStringsGerman[40] = {
         {0, "Ende"},
         {1, "Zur\303\274ck zu Windows"},
         {2, "Schlie\303\237en und zum Demo-Men\303\274"},
@@ -188,7 +188,7 @@ extern "C" {
         {38, "Show Game Controls"},
         {39, NULL},
     };
-    MENU_SETTINGS_STRING_ENTRY dat_00827d00[40] = {
+    MENU_SETTINGS_STRING_ENTRY MenuSettingsStringsItalian[40] = {
         {0, "Esci"},
         {1, "Torna a Windows"},
         {2, "Esci al Menu Demo"},
@@ -230,7 +230,7 @@ extern "C" {
         {38, "Show Game Controls"},
         {39, NULL},
     };
-    MENU_SETTINGS_STRING_ENTRY dat_00827e40[40] = {
+    MENU_SETTINGS_STRING_ENTRY MenuSettingsStringsSpanish[40] = {
         {0, "Salir"},
         {1, "Salir a Windows"},
         {2, "Salir al menu del demo"},
@@ -272,7 +272,7 @@ extern "C" {
         {38, "Show Game Controls"},
         {39, NULL},
     };
-    MENU_SETTINGS_STRING_ENTRY dat_00827f80[40] = {
+    MENU_SETTINGS_STRING_ENTRY MenuSettingsStringsDanish[40] = {
         {0, "Forlad"},
         {1, "Forlad til Windows"},
         {2, "Slut og g\303\245 til Demo-menuen"},
@@ -319,25 +319,25 @@ extern "C" {
 }
 
 extern "C" void MenuSettingsStringsInit(void) {
-    MENU_SETTINGS_STRING_ENTRY *entry = dat_00827940;
+    MENU_SETTINGS_STRING_ENTRY *entry = MenuSettingsStringsEnglish;
     switch (NuLanguageGet()) {
         case NULANGUAGE_US_ENGLISH:
-            entry = dat_00827800;
+            entry = MenuSettingsStringsUS;
             break;
         case NULANGUAGE_FRENCH:
-            entry = dat_00827a80;
+            entry = MenuSettingsStringsFrench;
             break;
         case NULANGUAGE_GERMAN:
-            entry = dat_00827bc0;
+            entry = MenuSettingsStringsGerman;
             break;
         case NULANGUAGE_ITALIAN:
-            entry = dat_00827d00;
+            entry = MenuSettingsStringsItalian;
             break;
         case NULANGUAGE_SPANISH:
-            entry = dat_00827e40;
+            entry = MenuSettingsStringsSpanish;
             break;
         case NULANGUAGE_DANISH:
-            entry = dat_00827f80;
+            entry = MenuSettingsStringsDanish;
             break;
     }
     memset(MenuSettingsStrings, 0, sizeof(MenuSettingsStrings));

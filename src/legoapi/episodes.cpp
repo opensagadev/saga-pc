@@ -184,7 +184,7 @@ extern "C" i32 Episodes_Completed(void) {
     return completed;
 }
 
-extern "C" i32 fun_0059b7e0(i32 area) {
+extern "C" i32 Episode_FindByArea(i32 area) {
     for (i32 episode = 0; episode < EPISODECOUNT; ++episode) {
         for (i32 i = 0; i < EDataList[episode].area_count; ++i) {
             if (EDataList[episode].area_ids[i] == area) {

@@ -5171,13 +5171,13 @@ function:MenuEnterNewGame,function,MenuEnterNewGame,13188,13188,1,legoapi/menus/
 function:MenuDrawNewGame,function,MenuDrawNewGame,13189,13189,1,legoapi/menus/screens/menu.h,android,MenuDrawNewGame
 function:MenuUpdateNewGame,function,MenuUpdateNewGame,13190,13190,1,legoapi/menus/screens/menu.h,android,MenuUpdateNewGame
 function:MenuSettingsStringsInit,function,MenuSettingsStringsInit,13191,13191,1,nu2api/nuwin32/Stubs.h,symbol,nu2api/nuwin32/Stubs.cpp pc-path
-variable:dat_00827800,variable,dat_00827800,13192,13192,1,nu2api/nuwin32/Stubs.h,users,dat_00827800: only nu2api/nuwin32/Stubs.cpp pc-path
-variable:dat_00827940,variable,dat_00827940,13193,13193,1,nu2api/nuwin32/Stubs.h,users,dat_00827940: only nu2api/nuwin32/Stubs.cpp pc-path
-variable:dat_00827a80,variable,dat_00827a80,13194,13194,1,nu2api/nuwin32/Stubs.h,users,dat_00827a80: only nu2api/nuwin32/Stubs.cpp pc-path
-variable:dat_00827bc0,variable,dat_00827bc0,13195,13195,1,nu2api/nuwin32/Stubs.h,users,dat_00827bc0: only nu2api/nuwin32/Stubs.cpp pc-path
-variable:dat_00827d00,variable,dat_00827d00,13196,13196,1,nu2api/nuwin32/Stubs.h,users,dat_00827d00: only nu2api/nuwin32/Stubs.cpp pc-path
-variable:dat_00827e40,variable,dat_00827e40,13197,13197,1,nu2api/nuwin32/Stubs.h,users,dat_00827e40: only nu2api/nuwin32/Stubs.cpp pc-path
-variable:dat_00827f80,variable,dat_00827f80,13198,13198,1,nu2api/nuwin32/Stubs.h,users,dat_00827f80: only nu2api/nuwin32/Stubs.cpp pc-path
+variable:MenuSettingsStringsUS,variable,MenuSettingsStringsUS,13192,13192,1,nu2api/nuwin32/Stubs.h,users,MenuSettingsStringsUS: only nu2api/nuwin32/Stubs.cpp pc-path
+variable:MenuSettingsStringsEnglish,variable,MenuSettingsStringsEnglish,13193,13193,1,nu2api/nuwin32/Stubs.h,users,MenuSettingsStringsEnglish: only nu2api/nuwin32/Stubs.cpp pc-path
+variable:MenuSettingsStringsFrench,variable,MenuSettingsStringsFrench,13194,13194,1,nu2api/nuwin32/Stubs.h,users,MenuSettingsStringsFrench: only nu2api/nuwin32/Stubs.cpp pc-path
+variable:MenuSettingsStringsGerman,variable,MenuSettingsStringsGerman,13195,13195,1,nu2api/nuwin32/Stubs.h,users,MenuSettingsStringsGerman: only nu2api/nuwin32/Stubs.cpp pc-path
+variable:MenuSettingsStringsItalian,variable,MenuSettingsStringsItalian,13196,13196,1,nu2api/nuwin32/Stubs.h,users,MenuSettingsStringsItalian: only nu2api/nuwin32/Stubs.cpp pc-path
+variable:MenuSettingsStringsSpanish,variable,MenuSettingsStringsSpanish,13197,13197,1,nu2api/nuwin32/Stubs.h,users,MenuSettingsStringsSpanish: only nu2api/nuwin32/Stubs.cpp pc-path
+variable:MenuSettingsStringsDanish,variable,MenuSettingsStringsDanish,13198,13198,1,nu2api/nuwin32/Stubs.h,users,MenuSettingsStringsDanish: only nu2api/nuwin32/Stubs.cpp pc-path
 variable:MenuSettingsStrings,variable,MenuSettingsStrings,13199,13199,1,legoapi/menus/screens/gamemenuall.h,rule,used most in gameapi/gamemenuall.cpp (42) android-path
 variable:MenuSettingsStringsInitialized,variable,MenuSettingsStringsInitialized,13200,13200,1,legoapi/menus/screens/gamemenuall.h,rule,used most in gameapi/gamemenuall.cpp (42) android-path
 variable:dat_00880824,variable,dat_00880824,13201,13201,1,legoapi/menus/screens/menu.h,users,dat_00880824: only legogame/menu.cpp android-path

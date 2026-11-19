@@ -122,7 +122,7 @@ i32 Hint_isComplete(HINT *hint) {
     return hint->completed;
 }
 
-void fun_00576550(void) {
+void HintSys_Dismiss(void) {
     hintsys.state = 2;
     hintsys.display_elapsed = 0.0f;
     hintsys.active_hint = NULL;

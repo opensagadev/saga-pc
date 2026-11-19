@@ -1028,7 +1028,7 @@ INSTNUGCUTSCENE *instNuGCutSceneCreate(void *asset, NUGSCN *gscene, void *extra_
     return instance;
 }
 
-void fun_005000c0(void) {
+void CutSceneClearBackgroundInstances(void) {
     CutSceneBackgroundInstances = NULL;
 }
 
@@ -1609,7 +1609,7 @@ void instNuGCutSceneStart(INSTNUGCUTSCENE *instance) {
     }
 }
 
-i32 fun_00502620(INSTNUGCUTSCENE *instance) {
+i32 instNuGCutSceneHasInstancedRigids(INSTNUGCUTSCENE *instance) {
     CUT_LOAD_RIGID_SYSTEM *system = instance->scene->rigid_system;
     i32 count = system->count;
     i32 i;
@@ -2274,7 +2274,7 @@ void instNuGCutSceneStop(INSTNUGCUTSCENE *owner) {
     }
 }
 
-void fun_00500200(void) {
+void CutSceneClearActiveInstances(void) {
     active_cutscene_instances = NULL;
 }
 

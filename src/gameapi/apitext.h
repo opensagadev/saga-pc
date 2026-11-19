@@ -185,15 +185,15 @@ struct PC_CONTROL_SCREEN {                  // size 0xec4
     void QueueText(char *, f32, f32, f32, i32, f32, f32, u32, f32, f32, u32);
     f32 DrawText(char *, f32, f32, f32, i32, f32, f32, u32, i32, f32);
     void DrawQueuedText(f32);
-    i32 fun_00420160(void);
-    i32 fun_00420170(i32);
-    void fun_00420180(void (*)(i32));
-    PC_CONTROL_SCREEN *fun_00420190(void);
-    void fun_00420320(i32);
-    void fun_00420420(i32);
-    void fun_00420440(void);
-    void fun_00420d30(f32, f32, f32, f32, f32, f32, f32, f32);
-    void fun_00421020(void);
+    i32 IsScreenActive(void);
+    i32 GetSavedPort(i32);
+    void SetPlaySoundFn(void (*)(i32));
+    PC_CONTROL_SCREEN *InitDefaults(void);
+    void BeginFadeOut(i32);
+    void PlaySoundCallback(i32);
+    void ResetReleaseFrames(void);
+    void DrawBarMeter(f32, f32, f32, f32, f32, f32, f32, f32);
+    void ClearTextKeys(void);
 
     void Draw(void);
 };

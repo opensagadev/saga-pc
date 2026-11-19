@@ -1,0 +1,100 @@
+old,new,evidence
+fun_0050f620,MenuDrawTopText,draws the text at MenuTopY in the given colour
+fun_0050f6e0,MenuDrawLowerText,draws the text at y -0.3 in the given colour
+fun_0050a3e0,GameMenuIsOpen,true while the current game menu level holds a menu
+fun_0050a400,MenuRequestLoad,raises memcard_loadneeded and clears the load result flags
+fun_0050a430,MenuRequestSave,raises memcard_saveneeded and clears the save result flags
+fun_00509710,MenuSetPulsateSpeed,sets menu_pulsate_speed
+fun_00509720,MenuSetTopBottom,sets MenuTopY and MENUBOTY
+fun_00509740,MenuSetPreDrawFn,sets predrawfn
+fun_00509750,MenuSetHeaderDrawFn,sets headerdrawfn
+fun_0050c040,SaveloadGetStatus,returns saveload_status
+fun_0050e510,TextSetPrintMode,sets TextPrintMode
+fun_00511640,DrawMenuEntry,DrawMenuEntryEx with MenuA
+fun_00511660,DrawMenuEntryOK,draws the OK entry at MENUBOTY
+fun_00511690,DrawMenuEntryCancel,draws the CANCEL entry at MENUBOTY
+fun_0059b7e0,Episode_FindByArea,returns the episode whose area list holds the area
+fun_00655360,DebrisTypeStatusNormal,sets a debris type's status to 1 (between DebrisTypeStatusAlwaysOff 0 and AlwaysOn 2)
+fun_006552e0,DebrisStatusAlwaysOn,sets a debris key's status to 2 (next to DebrisStatusAlwaysOff)
+fun_00655300,DebrisStatusNormal,sets a debris key's status to 1
+fun_00655380,DebrisTypesReleaseDmaData,returns every debris type's native data to DmaDebTypes
+fun_00659250,DebrisSetUserData,sets debkeydata[handle].user_data
+fun_00659290,DebrisSetThinningLevel,sets debris_thinning_level (at least 1)
+fun_006592c0,DebrisSetDetailLevel,sets debris_detail_level
+fun_006592d0,DebrisSetForcedThinning,sets forced_debris_thinning
+fun_0055e2b0,Player_FindById,returns the in-use character player with the id
+fun_0055f290,Player_HasPowerUp,true with the double damage cheat or a running power-up
+fun_00420160,IsScreenActive,returns active
+fun_00420170,GetSavedPort,returns saved_ports[player]
+fun_00420180,SetPlaySoundFn,sets play_sound
+fun_00420190,InitDefaults,sets the default dead zones scales and state
+fun_00420320,BeginFadeOut,sets phase to PC_CONTROL_FADE_OUT
+fun_00420420,PlaySoundCallback,calls play_sound when set
+fun_00420440,ResetReleaseFrames,rearms release_frames and resets the mouse motion
+fun_00421020,ClearTextKeys,clears text[].key
+fun_00420d30,DrawBarMeter,draws the background wedge and level bars
+fun_0050b360,Menu_IsMemcardBusy,true on the card, formatting, saving, loading and deleting menus
+fun_0050b3d0,Menu_IsInLoadFlow,returns Menu_InLoadFlow once validated
+fun_0050b3e0,Menu_IsInWarningFlow,returns Menu_InWarningFlow once validated
+fun_0050b3f0,Menu_CurrentId,returns the id of the current game menu
+fun_004e8d20,HothBattleMelee_Reset,resets the wave state of the melee battle
+fun_004e8fc0,HothBattleMelee_IsWaveCreature,true when the object is in one of the melee waves
+fun_0058e480,Fighting_UpdateHoldContext,counts down the hold context and drops it when the action button is released
+fun_0055c910,Memcard_AutosaveBusy,true while an autosave is needed or running
+fun_00500400,instNuGCutSceneResume,clears NUGCUTSCENE_INST_SUSPENDED
+fun_00500410,instNuGCutSceneSuspend,sets NUGCUTSCENE_INST_SUSPENDED
+fun_00500450,instNuGCutSceneSetHoldLastFrame,sets NUGCUTSCENE_PLAY_HOLD_LAST_FRAME
+fun_00500470,instNuGCutSceneSetChained,sets chained_instance
+fun_00500480,instNuGCutSceneSetEndCallback,sets end_callback
+fun_00500490,instNuGCutSceneAllocCameraTargets,allocates the camera target list from the buffer
+fun_006489a0,LookupDebrisEffectOnLoadPage,looks the effect up on edpart_load_particle_page when one is set
+fun_005091f0,LoadFromWindowOptions,copies the PcWindowOptions video settings
+fun_005b1030,MiniCut_SetFramesToWait,sets FRAMES_TO_WAIT
+fun_005b1040,MiniCut_PlayWipeSfx,plays WipeScreen outside cut-scene levels
+fun_00684560,DebrisKeyFree,frees the key's allocation
+fun_006580b0,DebrisResetGlobalTime,clears the debris global and panel times
+fun_006582c0,DebrisGetInfo,returns debtab[index] when valid
+fun_006582f0,DebrisGetCycleTime,sums the emission period and pause with their random parts
+fun_00658d00,DebrisTorusCollisionCheckFlag,DebrisTorusCollisionCheckScaleYFlag with scale 1
+fun_00658d30,DebrisTorusCollisionCheckDefault,DebrisTorusCollisionCheckScaleYFlag with scale 1 and flags 3
+fun_006904d0,AddFiniteShotDebrisEffectUserData,AddFiniteShotDebrisEffect2 and set the key's user data
+fun_005787d0,NetPlay_SetWaitContext,puts the player in LegoContextNetWait with the value
+fun_00578800,NetPlay_Pack16x2,packs two 16-bit halves
+fun_00578810,NetPlay_Pack8x4,packs four bytes
+fun_00578840,NetPlay_Unpack16x2,unpacks two 16-bit halves
+fun_00578860,NetPlay_Unpack8x4,unpacks four bytes
+fun_0059d9c0,GizFlow_NextLoopChecksum,increments gizflow_loop_checksum
+fun_0059ecb0,GizFlow_LoadCondition,allocates a FLOWBOXCONDITION from the loaded type and parameter
+fun_006d34f0,StartupDats_SelectFirst,NuDatSet of the first startup dat in hi-res
+fun_006d3520,StartupDats_SelectSecond,NuDatSet of the second startup dat in hi-res
+fun_00565d80,PauseStateClear,clears Paused and old_pause_state
+fun_005776f0,MiniCam_Clear,clears MiniCam
+fun_006341a0,SetTranslation,sets the translation row with w 1
+fun_006341d0,GetRow,returns rows[row]
+fun_005000c0,CutSceneClearBackgroundInstances,clears CutSceneBackgroundInstances
+fun_00502620,instNuGCutSceneHasInstancedRigids,true when a found rigid is instanced
+fun_00500200,CutSceneClearActiveInstances,clears active_cutscene_instances
+fun_005a35c0,StreakHeaderAlloc,moves a header from the free list to the used list
+fun_0054ace0,GamePad_InputAllowed,false on unready pads and on the new game and credits menus
+fun_00595250,SetXYZW,sets the four components
+fun_00595270,NormaliseXYZ,normalises xyz and sets w 1
+fun_00595290,SetPoint,copies a NUVEC with w 1
+fun_00595360,SetOrthoProjection,sets an orthographic blend projection
+fun_005969a0,LightLerp,linear interpolation of from to to by t
+fun_005969c0,LightProcessCharacters,processes the light set and lights every character
+fun_00576550,HintSys_Dismiss,sets hint state 2 and clears the active hint
+dat_00827800,MenuSettingsStringsUS,the settings strings MenuSettingsStringsInit picks for NULANGUAGE_US_ENGLISH
+dat_00827940,MenuSettingsStringsEnglish,the default settings strings of MenuSettingsStringsInit
+dat_00827a80,MenuSettingsStringsFrench,the settings strings for NULANGUAGE_FRENCH
+dat_00827bc0,MenuSettingsStringsGerman,the settings strings for NULANGUAGE_GERMAN
+dat_00827d00,MenuSettingsStringsItalian,the settings strings for NULANGUAGE_ITALIAN
+dat_00827e40,MenuSettingsStringsSpanish,the settings strings for NULANGUAGE_SPANISH
+dat_00827f80,MenuSettingsStringsDanish,the settings strings for NULANGUAGE_DANISH
+dat_0080ffe0,theRTLHelper,the RTLHelper instance (like theRegistry)
+dat_0080ffec,theFogHelper,the FogHelper instance
+dat_00876de8,StatusAltSuitSlideSfxPlayed,set once Char_Icon_Slide has played
+dat_00876de4,StatusAltSuitAppearSfxPlayed,set once Char_Icon_App has played
+dat_007f8274,StatusAltMiniKitScale,the per-step scale of the mini-kit drawing
+dat_007f8228,StatusAltMiniKitBaseScale,the resting scale of the mini-kit drawing
+dat_007f826c,StatusAltMiniKitStartScale,the scale the mini-kit zooms in from
+dat_007f8234,StatusAltMiniKitZ,the z passed to DrawStatusMiniKit

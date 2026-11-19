@@ -13,13 +13,13 @@ typedef struct MENU_SETTINGS_STRING_ENTRY { // size 0x8
 extern "C" {
 #endif
     void MenuSettingsStringsInit(void);
-    extern MENU_SETTINGS_STRING_ENTRY dat_00827800[40];
-    extern MENU_SETTINGS_STRING_ENTRY dat_00827940[40];
-    extern MENU_SETTINGS_STRING_ENTRY dat_00827a80[40];
-    extern MENU_SETTINGS_STRING_ENTRY dat_00827bc0[40];
-    extern MENU_SETTINGS_STRING_ENTRY dat_00827d00[40];
-    extern MENU_SETTINGS_STRING_ENTRY dat_00827e40[40];
-    extern MENU_SETTINGS_STRING_ENTRY dat_00827f80[40];
+    extern MENU_SETTINGS_STRING_ENTRY MenuSettingsStringsUS[40];
+    extern MENU_SETTINGS_STRING_ENTRY MenuSettingsStringsEnglish[40];
+    extern MENU_SETTINGS_STRING_ENTRY MenuSettingsStringsFrench[40];
+    extern MENU_SETTINGS_STRING_ENTRY MenuSettingsStringsGerman[40];
+    extern MENU_SETTINGS_STRING_ENTRY MenuSettingsStringsItalian[40];
+    extern MENU_SETTINGS_STRING_ENTRY MenuSettingsStringsSpanish[40];
+    extern MENU_SETTINGS_STRING_ENTRY MenuSettingsStringsDanish[40];
     void PCAnimationEffectCheckpoint(void);
     void NuPadSetDeviceMotors(struct FRAME_PAD *, i32, i32);
     extern u8 *ps2_scratch_free;

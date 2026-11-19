@@ -106,10 +106,10 @@ extern "C" {
     f32 StatusAltTitleY = 0.5f;
     f32 StatusAltStepDuration = 0.5f;
     f32 StatusAltBrickPulseTime = 0.5f;
-    f32 dat_007f8228 = 0.333f;
+    f32 StatusAltMiniKitBaseScale = 0.333f;
     f32 dat_007f822c = -0.5f;
     f32 dat_007f8230 = -0.6f;
-    f32 dat_007f8234 = 1.1f;
+    f32 StatusAltMiniKitZ = 1.1f;
     f32 StatusAltSuitTextY = -0.25f;
     f32 StatusAltSuitTextScale = 0.5f;
     f32 dat_007f8240 = 0.3f;
@@ -123,9 +123,9 @@ extern "C" {
     f32 dat_007f8260 = 0.333f;
     f32 dat_007f8264 = 0.7f;
     f32 StatusAltTrueHeroThreshold = 5.0f;
-    f32 dat_007f826c = 10.0f;
+    f32 StatusAltMiniKitStartScale = 10.0f;
     f32 dat_007f8270 = 0.7f;
-    f32 dat_007f8274 = 1.0f;
+    f32 StatusAltMiniKitScale = 1.0f;
     f32 StatusAltLabelScale = 0.7f;
     f32 StatusAltSuitRadius = 0.75f;
 
@@ -202,8 +202,8 @@ extern "C" {
     f32 dat_00876df4;
     u32 StatusAltSuitsShown;
     i32 StatusAltSuitIndex;
-    i32 dat_00876de4;
-    i32 dat_00876de8;
+    i32 StatusAltSuitAppearSfxPlayed;
+    i32 StatusAltSuitSlideSfxPlayed;
     static struct STATUSPACKET_LSW_s StatusPacketAlt;
 
     f32 StatusAltTextScale = StatusAltScale;
@@ -1701,20 +1701,20 @@ extern "C" {
                 dat_007f8244 = 1.3f;
                 StatusAltMiniKitY = 0.0f;
                 dat_007f8270 = 0.7f;
-                dat_007f8274 = dat_007f826c;
+                StatusAltMiniKitScale = StatusAltMiniKitStartScale;
                 break;
             case MINIKIT_ALT_STEP_IN:
                 count_alpha = stage->step_time / stage->step_duration;
                 title_alpha = count_alpha;
                 count_alpha = 1.0 - (NuTrigTable[((i32)((f64)count_alpha * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
                 size = count_alpha;
-                dat_007f8274 =
+                StatusAltMiniKitScale =
                     (1.0f -
                      (1.0 -
                       (NuTrigTable[((i32)(StatusCoinsRatioAlt(stage->step_time, stage->step_duration) * 32768.0 + 16384.0) >> 1) & 0x7fff] +
                        1.0f) *
                           0.5)) *
-                        dat_007f826c +
+                        StatusAltMiniKitStartScale +
                     1.0f;
                 break;
             case MINIKIT_ALT_STEP_NEXT_KIT:
@@ -1723,11 +1723,11 @@ extern "C" {
                 size = 1.0f;
                 if (stage->step_time < stage->step_duration - 0.25) {
                     f32 duration = stage->step_duration - 0.25;
-                    dat_007f8274 =
+                    StatusAltMiniKitScale =
                         NuTrigTable[((i32)(StatusCoinsRatioAlt(stage->step_time, duration) * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff] *
-                        dat_007f8228;
+                        StatusAltMiniKitBaseScale;
                 } else {
-                    dat_007f8274 = dat_007f8228;
+                    StatusAltMiniKitScale = StatusAltMiniKitBaseScale;
                 }
                 break;
             case MINIKIT_ALT_STEP_KIT_IN: {
@@ -1737,13 +1737,13 @@ extern "C" {
                 count_alpha = 1.0f;
                 title_alpha = 1.0f;
                 if (stage->step_time > stage->step_duration - jibberlen) {
-                    dat_007f8274 = (stage->step_time - (stage->step_duration - jibberlen)) / jibberlen;
+                    StatusAltMiniKitScale = (stage->step_time - (stage->step_duration - jibberlen)) / jibberlen;
                 } else {
-                    dat_007f8274 = 0.0f;
+                    StatusAltMiniKitScale = 0.0f;
                 }
-                pulse = StatusAltFabs(NuTrigTable[((i32)((f64)dat_007f8274 * 32768.0 + 16384.0) >> 1) & 0x7fff]);
+                pulse = StatusAltFabs(NuTrigTable[((i32)((f64)StatusAltMiniKitScale * 32768.0 + 16384.0) >> 1) & 0x7fff]);
                 inverse = 1.0f - pulse;
-                dat_007f8274 = inverse * 0.25 + 1.0f;
+                StatusAltMiniKitScale = inverse * 0.25 + 1.0f;
                 break;
             }
             case MINIKIT_ALT_STEP_HOLD: {
@@ -1753,9 +1753,9 @@ extern "C" {
                 count_alpha = StatusAltFabs(phase - 1.0);
                 size = 1.0f;
                 if (currentminikit == 0) {
-                    dat_007f8274 = 1.0f;
+                    StatusAltMiniKitScale = 1.0f;
                 } else {
-                    dat_007f8274 =
+                    StatusAltMiniKitScale =
                         1.0 - (NuTrigTable[((i32)(StatusCoinsRatioAlt(stage->step_time, stage->step_duration) * 32768.0 + 16384.0) >> 1) &
                                            0x7fff] +
                                1.0f) *
@@ -1767,9 +1767,9 @@ extern "C" {
                 count_alpha = 1.0f;
                 size = 1.0f;
                 title_alpha = 1.0f - stage->step_time / stage->step_duration;
-                dat_007f8274 = 1.0f;
+                StatusAltMiniKitScale = 1.0f;
                 if (stage->step_time < stage->step_duration) {
-                    DrawStatusMiniKit(StatusAltMiniKitX, StatusAltMiniKitY, dat_007f8234, dat_007f8228, 1.0f,
+                    DrawStatusMiniKit(StatusAltMiniKitX, StatusAltMiniKitY, StatusAltMiniKitZ, StatusAltMiniKitBaseScale, 1.0f,
                                       Game.area_save[packet->area->index].minikit_count, packet, 0.0f);
                 }
                 break;
@@ -1782,7 +1782,7 @@ extern "C" {
         if (currentminikit == 0) {
             DrawStatusText("?", 0, 0.0f, 0.0f, StatusAltCountTextScale * size, ((u8)(count_alpha * 255.0) << 24) | 0xffffff, 0);
         } else {
-            DrawStatusMiniKit(0.0f, 0.0f, 1.0f, dat_007f8228 * dat_007f8274, 0.0f, currentminikit, packet, 0.0f);
+            DrawStatusMiniKit(0.0f, 0.0f, 1.0f, StatusAltMiniKitBaseScale * StatusAltMiniKitScale, 0.0f, currentminikit, packet, 0.0f);
         }
         if (pop_timer <= 0.0f) {
             DrawStatusTextFraction(currentminikit, packet->minikit_max, 0.0f, -StatusCoinsTitleY * size, -StatusAltSpin,
@@ -1867,9 +1867,9 @@ extern "C" {
                     SmartTextEx(TTab[*SuitRecordInit[StatusAltSuitIndex].text_id], 0.0f, StatusAltSuitTextY, 1.0f, StatusAltSuitTextScale,
                                 StatusAltSuitTextScale, StatusAltSuitTextScale, 0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1,
                                 NULL, 0, (u16)(title_alpha * 128.0));
-                    if (dat_00876de8 == 0) {
+                    if (StatusAltSuitSlideSfxPlayed == 0) {
                         PlaySfx("Char_Icon_Slide", NULL);
-                        dat_00876de8 = 1;
+                        StatusAltSuitSlideSfxPlayed = 1;
                     }
                 } else {
                     f32 pulse;
@@ -1881,9 +1881,9 @@ extern "C" {
                     pulse = StatusAltFabs(NuTrigTable[((i32)((f64)blend * 32768.0 + 16384.0) >> 1) & 0x7fff]);
                     blend = 1.0f - pulse;
                     blend = (f64)blend * 0.1f + 0.3f;
-                    if (dat_00876de4 == 0) {
+                    if (StatusAltSuitAppearSfxPlayed == 0) {
                         PlaySfx("Char_Icon_App", NULL);
-                        dat_00876de4 = 1;
+                        StatusAltSuitAppearSfxPlayed = 1;
                     }
                     DrawCharIcon(StatusAltSuitIndex, x, y, 0.0f, blend, 0xa7, 1.0f, 1.0f, 1, NULL);
                 }
@@ -1925,7 +1925,7 @@ extern "C" {
                         if ((StatusAltSuitsShown & (1 << StatusAltSuitIndex)) == 0 && (areaSuitBits & (1 << StatusAltSuitIndex)) != 0) {
                             stage->step_time = 0.0f;
                             PlaySfx("LegoClicks", NULL);
-                            dat_00876de4 = 0;
+                            StatusAltSuitAppearSfxPlayed = 0;
                             break;
                         }
                     }
@@ -1940,7 +1940,7 @@ extern "C" {
                         if ((StatusAltSuitsShown & (1 << StatusAltSuitIndex)) == 0 && (areaSuitBits & (1 << StatusAltSuitIndex)) != 0) {
                             stage->step_time = 0.0f;
                             PlaySfx("LegoClicks", NULL);
-                            dat_00876de4 = 0;
+                            StatusAltSuitAppearSfxPlayed = 0;
                             break;
                         }
                     }

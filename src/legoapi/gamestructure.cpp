@@ -282,7 +282,7 @@ extern "C" i32 fun_0055c8f0() {
     return 0;
 }
 
-extern "C" i32 fun_0055c910() {
+extern "C" i32 Memcard_AutosaveBusy() {
     if (memcard_autosaveneeded != 0 || memcard_autosaveinprogress != 0) {
         return 1;
     }

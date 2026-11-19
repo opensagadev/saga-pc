@@ -1371,7 +1371,7 @@ struct PC_SPECIAL_SHADOW_LIGHT {      // size 0x828
     void QueueScene(i32 set, i32 scene);
     PC_SPECIAL_SHADOW_LIGHT *Clone(VARIPTR *arena, VARIPTR end);
     PC_SPECIAL_SHADOW_LIGHT &operator=(const PC_SPECIAL_SHADOW_LIGHT &other);
-    void fun_00595360(f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane);
+    void SetOrthoProjection(f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane);
 #endif
 };
 
