@@ -15578,7 +15578,7 @@ address,symbol,size,ctype
 0x741910,_PCVertexDeclarationFindSlot,82,"PC_VERTEX_DECL_ENTRY* __cdecl(const PC_VERTEX_DECL_ENTRY*,PC_VERTEX_DECL_ENTRY*,i32,u8*)"
 0x741970,_NuGetVertexDeclaration,1684,PC_TEXTURE_RESOURCE* __cdecl(u32)
 0x742010,_fun_00742010,9,
-0x00742020,?PCShaderMaterialTextureNative@@YAPAXPAUPC_SHADER_MATERIAL_DISPATCH_VIEW@@E@Z,30,
+0x00742020,?PCShaderMaterialTextureNative@@YAPAXPAUnumtl_s@@E@Z,30,
 0x742040,?SetScalarValues@PC_SHADER_PARAMETER_LOCAL@@QAEXHHPBM@Z,55,"void __thiscall PC_SHADER_PARAMETER_LOCAL::SetScalarValues(i32,i32,const f32*)"
 0x742080,?SetVectorValues@PC_SHADER_PARAMETER_LOCAL@@QAEXHHPBM@Z,55,"void __thiscall PC_SHADER_PARAMETER_LOCAL::SetVectorValues(i32,i32,const f32*)"
 0x7420c0,?SetMatrixValues@PC_SHADER_PARAMETER_LOCAL@@QAEXHHPBM@Z,177,"void __thiscall PC_SHADER_PARAMETER_LOCAL::SetMatrixValues(i32,i32,const f32*)"
@@ -15617,7 +15617,7 @@ address,symbol,size,ctype
 0x7439e0,_NuShaderObjectBaseUnInit,11,void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*)
 0x7439f0,_NuShaderObjectBaseSetWaterSpeed,17,void __cdecl(f32)
 0x743a10,?NushaderobjectbaseVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
-0x00743a30,_NuShaderObjectBaseUpdateWaterTable,601,"void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*,PC_SHADER_WATER_MATERIAL_VIEW*)"
+0x00743a30,_NuShaderObjectBaseUpdateWaterTable,601,"void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*,NUMTL*)"
 0x743c90,?fun_00743c90@PC_SHADER_PARAMETER_LOCAL@@QAEHXZ,9,
 0x743ca0,?SetTransposedMatrixValues@PC_SHADER_PARAMETER_LOCAL@@QAEXHHPBM@Z,84,"void __thiscall PC_SHADER_PARAMETER_LOCAL::SetTransposedMatrixValues(i32,i32,const f32*)"
 0x743d00,_PCShaderObjectCreateHLSLPc,46,void __cdecl PCShaderObjectCreateHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *)
@@ -43673,7 +43673,7 @@ address,symbol,size,ctype
 0x297cc90,_PCVertexDeclarationCountPC,4,i32
 0x297cc98,_PCVertexDeclarationCachePC,2048,PC_VERTEX_DECL_ENTRY[256]
 0x297d4a0,_PCShaderWaterTable,512,NUVEC4[32]
-0x297d6a0,_PCShaderWaterPreviousMaterial,4,struct PC_SHADER_WATER_MATERIAL_VIEW *
+0x297d6a0,_PCShaderWaterPreviousMaterial,4,struct numtl_s *
 0x297d6a4,_PCShaderWaterInitializationBits,4,u32
 0x297d6a8,_dat_0297d6a8,16,u8[16]
 0x297d6b8,_CRC16TablePC,1024,u32[256]

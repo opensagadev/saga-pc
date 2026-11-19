@@ -170,8 +170,8 @@ extern "C" {
                     while (batch->header.kind >= 0) {
                         const i16 count = batch->header.count;
                         TERRAIN_POLYGON_INFO *shape = batch->polygons;
-                        if ((local_max_x >= batch->header.min_x && batch->header.max_x > local_min_x && local_max_z >= batch->header.min_z &&
-                             batch->header.max_z > local_min_z)) {
+                        if ((local_max_x >= batch->header.min_x && batch->header.max_x > local_min_x &&
+                             local_max_z >= batch->header.min_z && batch->header.max_z > local_min_z)) {
                             i32 remaining = count;
                             while (remaining > 0) {
                                 if ((local_max_x >= shape->min_x && shape->max_x > local_min_x && local_max_z >= shape->min_z &&
@@ -1667,8 +1667,8 @@ i16 *NewScanHandelFull(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_ty
                         while (batch->header.kind >= 0) {
                             i32 count = batch->header.count;
                             TERRAIN_POLYGON_INFO *source = batch->polygons;
-                            if (local_max_x >= batch->header.min_x && batch->header.max_x > local_min_x && local_max_z >= batch->header.min_z &&
-                                batch->header.max_z > local_min_z) {
+                            if (local_max_x >= batch->header.min_x && batch->header.max_x > local_min_x &&
+                                local_max_z >= batch->header.min_z && batch->header.max_z > local_min_z) {
                                 while (count-- > 0) {
                                     if ((local_max_x >= source->min_x && source->max_x > local_min_x && local_max_z >= source->min_z &&
                                          source->max_z > local_min_z && local_max_y >= source->min_y && source->max_y > local_min_y)) {

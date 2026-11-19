@@ -97,7 +97,7 @@ template <> NuShaderObject *ShaderManagerTemplate<NuShaderObject>::FindShader(co
 
 template <>
 NuShaderObject *ShaderManagerTemplate<NuShaderObject>::Retrieve(const NUSHADERMTLDESC *desc, const NUMTL *material, i32 variant, i32 flags,
-                                                 bool pixel_stage) {
+                                                                bool pixel_stage) {
     PC_SHADER_MATERIAL_FILTER filter;
     u32 key;
     NuShaderObject *shader;

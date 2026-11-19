@@ -78,18 +78,18 @@ struct TERRAIN_POLYGON_INFO { // size 0x64
 };
 
 typedef struct TERRAIN_SHAPE_BATCH { // size 0x14
-    i16 kind;                       // 0x00
-    i16 count;                      // 0x02
-    f32 min_x;                      // 0x04
-    f32 max_x;                      // 0x08
-    f32 min_z;                      // 0x0c
-    f32 max_z;                      // 0x10
+    i16 kind;                        // 0x00
+    i16 count;                       // 0x02
+    f32 min_x;                       // 0x04
+    f32 max_x;                       // 0x08
+    f32 min_z;                       // 0x0c
+    f32 max_z;                       // 0x10
 } TERRAIN_SHAPE_BATCH;
 
 /* Raw records are variable-length: a stream is a 20-byte header followed
  * by count 100-byte polygons. */
 struct TERRAIN_SKIN_STREAM {          // size 0x78
-    TERRAIN_SHAPE_BATCH header;        // 0x00
+    TERRAIN_SHAPE_BATCH header;       // 0x00
     TERRAIN_POLYGON_INFO polygons[1]; // 0x14
 };
 

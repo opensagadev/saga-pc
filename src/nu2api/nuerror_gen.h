@@ -8,7 +8,7 @@ typedef struct PC_NATIVE_DEBUG_HEADER { // size 0xa4
     i32 third;                          // 0x08
     i32 font_size;                      // 0x0c
     char label[128];                    // 0x10
-    u32 shadow_colour;                 // 0x90
+    u32 shadow_colour;                  // 0x90
     u32 face_colour;                    // 0x94
     u32 high_colour;                    // 0x98
     u32 low_colour;                     // 0x9c
@@ -27,9 +27,9 @@ typedef struct PC_NATIVE_DEBUG_STATE {      // size 0x508
     u8 initialised;                         // 0x000
     u8 enabled;                             // 0x001
     u8 unknown_002[2];                      // 0x002
-    i32 cursor_x;                        // 0x004
-    i32 cursor_y;                        // 0x008
-    i32 line_count;                        // 0x00c
+    i32 cursor_x;                           // 0x004
+    i32 cursor_y;                           // 0x008
+    i32 line_count;                         // 0x00c
     PC_NATIVE_DEBUG_HEADER header;          // 0x010
     PC_NATIVE_DEBUG_HEADER *current_header; // 0x0b4
     f32 top;                                // 0x0b8

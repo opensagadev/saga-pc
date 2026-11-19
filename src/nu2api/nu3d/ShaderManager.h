@@ -264,10 +264,10 @@ class NuShaderObject { // size 0x4d8
     i32 marker;                                   // 0x000
     i32 ref_count;                                // 0x004
     u32 key;                                      // 0x008
-    u32 base_state;                                // 0x00c
+    u32 base_state;                               // 0x00c
     PC_SHADER_PARAMETER_LOCAL *active_parameters; // 0x010
     i32 version;                                  // 0x014
-    u32 compiled_state;                               // 0x018
+    u32 compiled_state;                           // 0x018
     PC_SHADER_PARAMETER_LOCAL parameters[100];    // 0x01c
     struct PC_TEXTURE_RESOURCE *vertex_shader;    // 0x4cc
     struct PC_TEXTURE_RESOURCE *pixel_shader;     // 0x4d0
@@ -314,10 +314,10 @@ struct NuShaderObject {                           // size 0x4d8
     i32 marker;                                   // 0x000
     i32 ref_count;                                // 0x004
     u32 key;                                      // 0x008
-    u32 base_state;                                // 0x00c
+    u32 base_state;                               // 0x00c
     PC_SHADER_PARAMETER_LOCAL *active_parameters; // 0x010
     i32 version;                                  // 0x014
-    u32 compiled_state;                               // 0x018
+    u32 compiled_state;                           // 0x018
     PC_SHADER_PARAMETER_LOCAL parameters[100];    // 0x01c
     struct PC_TEXTURE_RESOURCE *vertex_shader;    // 0x4cc
     struct PC_TEXTURE_RESOURCE *pixel_shader;     // 0x4d0

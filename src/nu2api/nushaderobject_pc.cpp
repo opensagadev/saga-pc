@@ -234,7 +234,6 @@ extern "C" void NuShaderObjectSetElementsfv_transpose(NuShaderObject *shader, i3
     }
 }
 
-
 void PC_SHADER_PARAMETER_LOCAL::SetScalar(f32 value) {
     if ((metadata & 0xf0000000U) == 0x10000000U) {
         PCDeviceSetVertexShaderConstantsF(register_index, &value, 1);
@@ -527,8 +526,7 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
             case SHADER_UNIFORM_LAYER0_SAMPLER: {
                 const i32 stage = parameter->register_index;
                 PCDeviceSetTexture(stage, PCShaderMaterialTextureNative(material, 0));
-                PCShaderSamplerWrap((material->attribs.word >> 8) & 3, parameter->register_index,
-                                    (material->attribs.word >> 10) & 3);
+                PCShaderSamplerWrap((material->attribs.word >> 8) & 3, parameter->register_index, (material->attribs.word >> 10) & 3);
                 PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MAGFILTER, 2);
                 PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MINFILTER, 2);
                 PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MIPFILTER, 2);
@@ -539,8 +537,7 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
             case SHADER_UNIFORM_LAYER1_SAMPLER: {
                 const i32 stage = parameter->register_index;
                 PCDeviceSetTexture(stage, PCShaderMaterialTextureNative(material, 1));
-                PCShaderSamplerWrap((material->attribs.word >> 8) & 3, parameter->register_index,
-                                    (material->attribs.word >> 10) & 3);
+                PCShaderSamplerWrap((material->attribs.word >> 8) & 3, parameter->register_index, (material->attribs.word >> 10) & 3);
                 const f32 bias = material->shader.texture_bias[1] + PCShaderMaterialSamplerBiasOffset;
                 PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MIPMAPLODBIAS, PCShaderSamplerBiasBits(bias));
                 break;
@@ -548,8 +545,7 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
             case SHADER_UNIFORM_LAYER2_SAMPLER: {
                 const i32 stage = parameter->register_index;
                 PCDeviceSetTexture(stage, PCShaderMaterialTextureNative(material, 2));
-                PCShaderSamplerWrap((material->attribs.word >> 8) & 3, parameter->register_index,
-                                    (material->attribs.word >> 10) & 3);
+                PCShaderSamplerWrap((material->attribs.word >> 8) & 3, parameter->register_index, (material->attribs.word >> 10) & 3);
                 const f32 bias = material->shader.texture_bias[2] + PCShaderMaterialSamplerBiasOffset;
                 PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MIPMAPLODBIAS, PCShaderSamplerBiasBits(bias));
                 break;
@@ -557,8 +553,7 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
             case SHADER_UNIFORM_LAYER3_SAMPLER: {
                 const i32 stage = parameter->register_index;
                 PCDeviceSetTexture(stage, PCShaderMaterialTextureNative(material, 3));
-                PCShaderSamplerWrap((material->attribs.word >> 8) & 3, parameter->register_index,
-                                    (material->attribs.word >> 10) & 3);
+                PCShaderSamplerWrap((material->attribs.word >> 8) & 3, parameter->register_index, (material->attribs.word >> 10) & 3);
                 const f32 bias = material->shader.texture_bias[3] + PCShaderMaterialSamplerBiasOffset;
                 PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MIPMAPLODBIAS, PCShaderSamplerBiasBits(bias));
                 break;
@@ -679,7 +674,8 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                 } else if (PCDeviceHardwareVertexProcessingPC != PC_SHADER_MODEL_1_1 && (material->shader.flags & 0x50000u) != 0) {
                     texture = NuTextureEnvironmentCube;
                 } else {
-                    texture = material->shader.envmap_cubic_tid > 0 ? NuTextureGetDimensions(material->shader.envmap_cubic_tid)->resource : NULL;
+                    texture =
+                        material->shader.envmap_cubic_tid > 0 ? NuTextureGetDimensions(material->shader.envmap_cubic_tid)->resource : NULL;
                 }
                 PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSU, 3);

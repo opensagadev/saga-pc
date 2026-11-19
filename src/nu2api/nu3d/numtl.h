@@ -19,79 +19,79 @@ typedef struct numtluvanim_s { // size 0x14
 /* Shader description of a material: filled by NuShaderMtlDescInit and NuMtlSetShaderDescPS, read by the shader
    selection in NuMtlUpdatePS. Embedded in NUMTL at 0xb4. */
 typedef struct nushadermtldesc_s { // size 0x208
-    u32 flags; // 0x000
-    i32 diffuse_map_ids[4]; // 0x004
-    u32 diffuse_colours[4]; // 0x014
-    f32 default_scale; // 0x024
-    f32 parameter_028; // 0x028
-    f32 parameter_02c; // 0x02c
-    f32 parameter_030; // 0x030
-    i32 lightmap_tids[2]; // 0x034
-    f32 texture_lerp; // 0x03c
-    u32 reflection_colour; // 0x040
-    u8 blend_ops[3]; // 0x044 per-layer combine ops (0xff: layer off)
-    u8 flip_sign; // 0x047
-    i32 specular_map_tid; // 0x048
-    i32 normal_map_tid; // 0x04c
-    i32 envmap_cubic_tid; // 0x050
-    i32 shine_map_tid; // 0x054
-    i32 vtf_height_map_tid; // 0x058
-    i32 vtf_normal_map_tid; // 0x05c
-    f32 parameter_060; // 0x060
-    f32 parameter_064; // 0x064
-    u32 diffuse_colour; // 0x068
-    u32 specular_colour; // 0x06c
-    u32 tint_colour; // 0x070
-    u32 shadow_colour; // 0x074
-    f32 parameter_078; // 0x078
-    f32 parameter_07c; // 0x07c
-    f32 parameter_080; // 0x080
-    f32 parameter_084; // 0x084
-    f32 shininess; // 0x088
-    f32 parameter_08c; // 0x08c
-    f32 parameter_090; // 0x090
-    f32 parameter_094; // 0x094
-    f32 parameter_098; // 0x098
-    f32 parameter_09c; // 0x09c
-    f32 parameter_0a0; // 0x0a0
-    f32 parameter_0a4; // 0x0a4
-    u8 texture_unit_count; // 0x0a8
-    u8 sampler_indices[6]; // 0x0a9
-    u8 unknown_0af[0x29]; // 0x0af
-    f32 texture_bias[6]; // 0x0d8
-    u8 unknown_0f0[4]; // 0x0f0
-    f32 parameter_0f4; // 0x0f4
-    f32 parameter_0f8; // 0x0f8
-    f32 parameter_0fc; // 0x0fc
-    f32 parameter_100; // 0x100
-    f32 parameter_104; // 0x104
-    f32 parameter_108; // 0x108
-    i32 animation_ids[4]; // 0x10c -1: layer not animated
-    f32 animation_offsets[4][2]; // 0x11c
-    u32 vertex_format; // 0x13c
-    i16 shader_handles[2]; // 0x140 base shader, shadow/variant shader
-    NUMTLUVANIM uv_animations[4]; // 0x144
-    f32 parameter_194; // 0x194
-    i32 clamp_map_tid; // 0x198
-    u32 palette_colours[4]; // 0x19c
-    f32 parameter_1ac; // 0x1ac
-    f32 parameter_1b0; // 0x1b0
-    u8 shadow_set; // 0x1b4
-    u8 unknown_1b5[3]; // 0x1b5
-    u32 layer_flags; // 0x1b8 PC_SHADER_LAYER_*
-    u32 selectors; // 0x1bc
-    f32 parameter_1c0; // 0x1c0
-    f32 parameter_1c4; // 0x1c4
-    f32 parameter_1c8; // 0x1c8
-    f32 parameter_1cc; // 0x1cc
-    f32 parameter_1d0; // 0x1d0
-    f32 parameter_1d4; // 0x1d4
-    f32 parameter_1d8; // 0x1d8
-    f32 parameter_1dc; // 0x1dc
-    f32 parameter_1e0; // 0x1e0
-    i32 extra_texture; // 0x1e4
-    i32 environment_texture; // 0x1e8
-    u8 unknown_1ec[0x1c]; // 0x1ec
+    u32 flags;                     // 0x000
+    i32 diffuse_map_ids[4];        // 0x004
+    u32 diffuse_colours[4];        // 0x014
+    f32 default_scale;             // 0x024
+    f32 parameter_028;             // 0x028
+    f32 parameter_02c;             // 0x02c
+    f32 parameter_030;             // 0x030
+    i32 lightmap_tids[2];          // 0x034
+    f32 texture_lerp;              // 0x03c
+    u32 reflection_colour;         // 0x040
+    u8 blend_ops[3];               // 0x044 per-layer combine ops (0xff: layer off)
+    u8 flip_sign;                  // 0x047
+    i32 specular_map_tid;          // 0x048
+    i32 normal_map_tid;            // 0x04c
+    i32 envmap_cubic_tid;          // 0x050
+    i32 shine_map_tid;             // 0x054
+    i32 vtf_height_map_tid;        // 0x058
+    i32 vtf_normal_map_tid;        // 0x05c
+    f32 parameter_060;             // 0x060
+    f32 parameter_064;             // 0x064
+    u32 diffuse_colour;            // 0x068
+    u32 specular_colour;           // 0x06c
+    u32 tint_colour;               // 0x070
+    u32 shadow_colour;             // 0x074
+    f32 parameter_078;             // 0x078
+    f32 parameter_07c;             // 0x07c
+    f32 parameter_080;             // 0x080
+    f32 parameter_084;             // 0x084
+    f32 shininess;                 // 0x088
+    f32 parameter_08c;             // 0x08c
+    f32 parameter_090;             // 0x090
+    f32 parameter_094;             // 0x094
+    f32 parameter_098;             // 0x098
+    f32 parameter_09c;             // 0x09c
+    f32 parameter_0a0;             // 0x0a0
+    f32 parameter_0a4;             // 0x0a4
+    u8 texture_unit_count;         // 0x0a8
+    u8 sampler_indices[6];         // 0x0a9
+    u8 unknown_0af[0x29];          // 0x0af
+    f32 texture_bias[6];           // 0x0d8
+    u8 unknown_0f0[4];             // 0x0f0
+    f32 parameter_0f4;             // 0x0f4
+    f32 parameter_0f8;             // 0x0f8
+    f32 parameter_0fc;             // 0x0fc
+    f32 parameter_100;             // 0x100
+    f32 parameter_104;             // 0x104
+    f32 parameter_108;             // 0x108
+    i32 animation_ids[4];          // 0x10c -1: layer not animated
+    f32 animation_offsets[4][2];   // 0x11c
+    u32 vertex_format;             // 0x13c
+    i16 shader_handles[2];         // 0x140 base shader, shadow/variant shader
+    NUMTLUVANIM uv_animations[4];  // 0x144
+    f32 parameter_194;             // 0x194
+    i32 clamp_map_tid;             // 0x198
+    u32 palette_colours[4];        // 0x19c
+    f32 parameter_1ac;             // 0x1ac
+    f32 parameter_1b0;             // 0x1b0
+    u8 shadow_set;                 // 0x1b4
+    u8 unknown_1b5[3];             // 0x1b5
+    u32 layer_flags;               // 0x1b8 PC_SHADER_LAYER_*
+    u32 selectors;                 // 0x1bc
+    f32 parameter_1c0;             // 0x1c0
+    f32 parameter_1c4;             // 0x1c4
+    f32 parameter_1c8;             // 0x1c8
+    f32 parameter_1cc;             // 0x1cc
+    f32 parameter_1d0;             // 0x1d0
+    f32 parameter_1d4;             // 0x1d4
+    f32 parameter_1d8;             // 0x1d8
+    f32 parameter_1dc;             // 0x1dc
+    f32 parameter_1e0;             // 0x1e0
+    i32 extra_texture;             // 0x1e4
+    i32 environment_texture;       // 0x1e8
+    u8 unknown_1ec[0x1c];          // 0x1ec
 } NUSHADERMTLDESC;
 
 typedef union numtlattrib_u { // size 0x4
@@ -162,8 +162,8 @@ typedef struct numtl_s { // size 0x2c4
 
         struct {                        // size 0x4
             u32 unknown_0044_0_4 : 5;   // 0x044:0
-            u32 object_flag_a : 1;     // 0x044:5
-            u32 object_flag_b : 1;     // 0x044:6
+            u32 object_flag_a : 1;      // 0x044:5
+            u32 object_flag_b : 1;      // 0x044:6
             u32 unknown_0044_7_31 : 25; // 0x044:7
         };
 

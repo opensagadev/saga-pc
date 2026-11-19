@@ -7928,7 +7928,7 @@ extern "C" {
         u32 current_colour;                // 0x1c
         i16 active;                        // 0x20
         i16 duration;                      // 0x22
-        u16 extra_bytes;                    // 0x24
+        u16 extra_bytes;                   // 0x24
         u8 unknown_26[2];                  // 0x26
     } RENDERER_CLEAR_RECORD;
 

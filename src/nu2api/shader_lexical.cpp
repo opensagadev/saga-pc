@@ -172,7 +172,7 @@ bool ShaderLexicalReader::Next(ShaderCompilerBufferAllocator *input, i32 *cursor
     slice->begin = p;
     slice->length = 0;
     i32 first = *cursor;
-    if ((ShaderLexicalClasses[(u8) input->data[first]] & SHADER_CHAR_IDENTIFIER) != 0) {
+    if ((ShaderLexicalClasses[(u8)input->data[first]] & SHADER_CHAR_IDENTIFIER) != 0) {
         do {
             ++*cursor;
             ++p;

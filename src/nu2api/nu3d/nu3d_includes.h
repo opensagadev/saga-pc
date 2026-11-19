@@ -1228,7 +1228,7 @@ struct GRAPHICS_RENDER_TEXTURE {   // size 0x30
     PC_TEXTURE_RESOURCE *resource; // 0x00
     u16 width;                     // 0x04
     u16 height;                    // 0x06
-    u16 depth;                // 0x08
+    u16 depth;                     // 0x08
     u16 mip_count;                 // 0x0a
 
     union { // size 0x1c
@@ -1237,7 +1237,7 @@ struct GRAPHICS_RENDER_TEXTURE {   // size 0x30
         struct {                    // size 0x1c
             u16 original_mip_count; // 0x0c
             u16 reserved_0e;        // 0x0e
-            u32 texture_type;         // 0x10
+            u32 texture_type;       // 0x10
             i32 format;             // 0x14
             i32 usage;              // 0x18
             i32 pool;               // 0x1c

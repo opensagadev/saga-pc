@@ -227,7 +227,7 @@ struct PC_EFFECT_SURFACE {                                                      
     struct PC_TEXTURE_RESOURCE *surface;                                                               // 0x08
     u16 level;                                                                                         // 0x0c
     u16 unknown_0e;                                                                                    // 0x0e
-    u32 face;                                                                                    // 0x10
+    u32 face;                                                                                          // 0x10
     u16 width;                                                                                         // 0x14
     u16 height;                                                                                        // 0x16
     i16 registry_index; /* 0x1a..0x1b alignment padding */                                             // 0x18
@@ -259,7 +259,7 @@ typedef struct PC_DEVICE_BACKEND {          // size 0x700
     i32 device_type;                        // 0x5f0
     u32 creation_flags;                     // 0x5f4
     u8 force_software;                      // 0x5f8
-    u8 force_reference;                         // 0x5f9
+    u8 force_reference;                     // 0x5f9
     u8 multithreaded;                       // 0x5fa
     u8 unknown_5fb;                         // 0x5fb
     HRESULT present_result;                 // 0x5fc

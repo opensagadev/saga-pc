@@ -10772,8 +10772,7 @@ extern "C" void NuDisplayListDrawRenderScene(i32 scene_id) {
         NUSORTPRI *sort = PCSafeRenderScenes[scene_id]->sort_pris[index];
         if (nudlist_field_fe4 != 0) {
             if (sort->display_scene != NULL && sort->display_scene->name != NULL) {
-                NuHtmlHeading("Display Scene : %s (sort: %d)", sort->display_scene->name,
-                              sort->sort_pri);
+                NuHtmlHeading("Display Scene : %s (sort: %d)", sort->display_scene->name, sort->sort_pri);
             } else {
                 NuHtmlHeading("Display Scene : UNKNOWN (sort: %d)", sort->sort_pri);
             }
@@ -12980,8 +12979,7 @@ extern "C" {
     void fun_005e0ad0(NUSORTPRI *sort) {
         if (nudlist_field_fe4 != 0) {
             if (sort->display_scene != NULL && sort->display_scene->name != NULL) {
-                NuHtmlHeading("Display Scene : %s (sort: %d)", sort->display_scene->name,
-                              sort->sort_pri);
+                NuHtmlHeading("Display Scene : %s (sort: %d)", sort->display_scene->name, sort->sort_pri);
             } else {
                 NuHtmlHeading("Display Scene : UNKNOWN (sort: %d)", sort->sort_pri);
             }
