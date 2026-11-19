@@ -17,17 +17,11 @@
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
 
-struct RADIO_ENTRY {      // size 0x14
-    GIZMOBLOWUP *blowup;  // 0x00
-    nuhspecial_s special; // 0x04
-    f32 time;             // 0x10
-};
-
 f32 RadioLifetime = 20.0f;
 
 extern "C" {
     i32 radios_playing = 0;
-    u8 RadioEntries[0xa0] = {0};
+    RADIO_ENTRY RadioEntries[8] = {0};
 }
 
 void ResetRadios(void) {
@@ -43,7 +37,7 @@ extern "C" void UpdateRadios(void) {
         return;
     }
     radios_playing = 0;
-    RADIO_ENTRY *pool = reinterpret_cast<RADIO_ENTRY *>(RadioEntries);
+    RADIO_ENTRY *pool = RadioEntries;
     RADIO_ENTRY *radio;
     i32 index;
     NUVEC scale;
@@ -86,7 +80,7 @@ extern "C" void UpdateRadios(void) {
 }
 
 void PlayRadio(char *special_name, char *blowup_name, i32 play) {
-    RADIO_ENTRY *pool = reinterpret_cast<RADIO_ENTRY *>(RadioEntries);
+    RADIO_ENTRY *pool = RadioEntries;
     if (special_name != NULL || blowup_name != NULL) {
         if (play != 0) {
             RADIO_ENTRY *radio;
