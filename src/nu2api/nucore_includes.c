@@ -7559,9 +7559,9 @@ void NuAPIInit(void) {
     nuapi.language = 1;
     nuapi.video_aspect = 0;
     nuapi.frame_end_state = 0;
-    nuapi.pad_record.buf_size = NUAPI_PADREC_DEFAULT_BUFFERSIZE;
-    nuapi.pad_record.end_record_buttons = 0;
-    nuapi.pad_record.end_play_buttons = 0;
+    nuapi.frame_pad_record.buf_size = NUAPI_PADREC_DEFAULT_BUFFERSIZE;
+    nuapi.frame_pad_record.end_record_buttons = 0;
+    nuapi.frame_pad_record.end_play_buttons = 0;
     NuWindInitialise(nuapi.wind);
 }
 
@@ -7823,7 +7823,7 @@ f32 NuFrameEnd(void) {
 }
 
 void NuPadRecordLoad(char *filepath, VARIPTR *buffer, VARIPTR end) {
-    FRAME_PAD_RECORD *record = &nuapi.pad_record;
+    FRAME_PAD_RECORD *record = &nuapi.frame_pad_record;
     NUFILE file;
     i32 size;
     record->mode = NUPAD_NORM;
@@ -7847,7 +7847,7 @@ void NuPadRecordLoad(char *filepath, VARIPTR *buffer, VARIPTR end) {
 }
 
 void NuPadRecordInit(i32 mode, char *filepath, VARIPTR *buffer, VARIPTR end, i32 size) {
-    FRAME_PAD_RECORD *record = &nuapi.pad_record;
+    FRAME_PAD_RECORD *record = &nuapi.frame_pad_record;
     switch (mode) {
         case NUPAD_RECORD:
             record->mode = NUPAD_RECORD;
@@ -7888,16 +7888,16 @@ void ParseCommandLine() {
                 if (argument_count == 0) {
                     NuFileError();
                 }
-                nuapi.pad_record.filepath = *argument;
-                nuapi.pad_record.mode = NUPAD_RECORD;
+                nuapi.frame_pad_record.filepath = *argument;
+                nuapi.frame_pad_record.mode = NUPAD_RECORD;
             } else if (NuStrICmp(*argument, "PADPLAY") == 0) {
                 ++argument;
                 --argument_count;
                 if (argument_count == 0) {
                     NuFileError();
                 }
-                nuapi.pad_record.filepath = *argument;
-                nuapi.pad_record.mode = NUPAD_PLAY;
+                nuapi.frame_pad_record.filepath = *argument;
+                nuapi.frame_pad_record.mode = NUPAD_PLAY;
             }
             --argument_count;
             ++argument;
@@ -8212,17 +8212,17 @@ void NuPadUpdatePads(void) {
         NuPadProcessReadData(g_nupadScannedPads + i);
     }
 
-    if (nuapi.pad_record.should_end == 1) {
-        switch (nuapi.pad_record.mode) {
+    if (nuapi.frame_pad_record.should_end == 1) {
+        switch (nuapi.frame_pad_record.mode) {
             case NUPAD_RECORD:
-                NuPadRecordSave(nuapi.pad_record.filepath);
+                NuPadRecordSave(nuapi.frame_pad_record.filepath);
                 break;
             case NUPAD_PLAY:
-                nuapi.pad_record.mode = NUPAD_NORM;
-                nuapi.pad_record.record.u8_ptr = nuapi.pad_record.buf_start;
+                nuapi.frame_pad_record.mode = NUPAD_NORM;
+                nuapi.frame_pad_record.record.u8_ptr = nuapi.frame_pad_record.buf_start;
                 break;
         }
-        nuapi.pad_record.should_end = 0;
+        nuapi.frame_pad_record.should_end = 0;
     }
 
     for (i = 0; i < max_interface_devices; i++) {
@@ -8461,23 +8461,23 @@ void NuPadSetMotors(FRAME_PAD *pad, i32 motor0, i32 motor1) {
 
 void NuPadRecordEndFrame() {
     FRAME_RECORD_CURSOR *cursor;
-    if (nuapi.pad_record.is_recording) {
-        cursor = (FRAME_RECORD_CURSOR *)&nuapi.pad_record.buf_start;
-        nuapi.pad_record.is_recording = 0;
+    if (nuapi.frame_pad_record.is_recording) {
+        cursor = (FRAME_RECORD_CURSOR *)&nuapi.frame_pad_record.buf_start;
+        nuapi.frame_pad_record.is_recording = 0;
     }
-    cursor = &nuapi.pad_record.record;
-    switch (nuapi.pad_record.mode) {
+    cursor = &nuapi.frame_pad_record.record;
+    switch (nuapi.frame_pad_record.mode) {
         case NUPAD_PLAY:
-            if (cursor->u8_ptr == nuapi.pad_record.buf_end) {
-                nuapi.pad_record.mode = NUPAD_NORM;
+            if (cursor->u8_ptr == nuapi.frame_pad_record.buf_end) {
+                nuapi.frame_pad_record.mode = NUPAD_NORM;
             } else {
                 nuapi.frame_time = *cursor->f32_ptr++;
             }
             break;
         case NUPAD_RECORD:
             *cursor->f32_ptr++ = nuapi.frame_time;
-            if (cursor->u8_ptr > nuapi.pad_record.buf_end - 0x1840) {
-                nuapi.pad_record.mode = NUPAD_NORM;
+            if (cursor->u8_ptr > nuapi.frame_pad_record.buf_end - 0x1840) {
+                nuapi.frame_pad_record.mode = NUPAD_NORM;
             }
             break;
         default:
@@ -8502,7 +8502,7 @@ void NuPadResetState(i32 preserve_scanned_state) {
 }
 
 void NuPadRecordStart(void) {
-    nuapi.pad_record.is_recording = 1;
+    nuapi.frame_pad_record.is_recording = 1;
 }
 
 void NuPadSetStatus(i32 pad, i32 status) {
@@ -8526,17 +8526,19 @@ void NuPadSetStatus(i32 pad, i32 status) {
 void NuPadRecordPlay(FRAME_SCANNED_PAD *pad) {
     FRAME_RECORD_CURSOR *record_ptr;
 
-    if (pad->is_valid && nuapi.pad_record.mode == NUPAD_PLAY && (pad->digital_buttons & nuapi.pad_record.end_play_buttons) != 0) {
-        nuapi.pad_record.mode = NUPAD_NORM;
+    if (pad->is_valid && nuapi.frame_pad_record.mode == NUPAD_PLAY &&
+        (pad->digital_buttons & nuapi.frame_pad_record.end_play_buttons) != 0) {
+        nuapi.frame_pad_record.mode = NUPAD_NORM;
     }
 
-    if (pad->is_valid && nuapi.pad_record.mode == NUPAD_RECORD && (pad->digital_buttons & nuapi.pad_record.end_record_buttons) != 0) {
-        nuapi.pad_record.should_end = 1;
+    if (pad->is_valid && nuapi.frame_pad_record.mode == NUPAD_RECORD &&
+        (pad->digital_buttons & nuapi.frame_pad_record.end_record_buttons) != 0) {
+        nuapi.frame_pad_record.should_end = 1;
     }
 
-    record_ptr = &nuapi.pad_record.record;
+    record_ptr = &nuapi.frame_pad_record.record;
 
-    switch (nuapi.pad_record.mode) {
+    switch (nuapi.frame_pad_record.mode) {
         case NUPAD_RECORD:
             *record_ptr->u32_ptr++ = pad->is_valid;
 
@@ -8577,11 +8579,11 @@ void NuPadRecordPlay(FRAME_SCANNED_PAD *pad) {
 }
 
 void NuPadRecordSetPlayEndButtons(u32 buttons) {
-    nuapi.pad_record.end_play_buttons = buttons;
+    nuapi.frame_pad_record.end_play_buttons = buttons;
 }
 
 void NuPadRecordSetRecordEndButtons(u32 buttons) {
-    nuapi.pad_record.end_record_buttons = buttons;
+    nuapi.frame_pad_record.end_record_buttons = buttons;
 }
 
 void fun_004f4f10(void) {
@@ -8597,7 +8599,7 @@ void NuPadRecordSave(char *filepath) {
     NUFILE file;
     u32 size;
     u8 *start;
-    FRAME_PAD_RECORD *record = &nuapi.pad_record;
+    FRAME_PAD_RECORD *record = &nuapi.frame_pad_record;
     if (record->mode == NUPAD_RECORD && record->record.u8_ptr != record->buf_start) {
         if (filepath != NULL) {
             file = NuFileOpenDF(filepath, 1, curr_dat, 0);
@@ -8616,16 +8618,16 @@ void NuPadRecordSave(char *filepath) {
 }
 
 void NuPadRecordEnd(void) {
-    switch (nuapi.pad_record.mode) {
+    switch (nuapi.frame_pad_record.mode) {
         case NUPAD_RECORD:
-            NuPadRecordSave(nuapi.pad_record.filepath);
+            NuPadRecordSave(nuapi.frame_pad_record.filepath);
             break;
         case NUPAD_PLAY:
-            nuapi.pad_record.mode = 0;
-            nuapi.pad_record.record.u8_ptr = nuapi.pad_record.buf_start;
+            nuapi.frame_pad_record.mode = 0;
+            nuapi.frame_pad_record.record.u8_ptr = nuapi.frame_pad_record.buf_start;
             break;
     }
-    nuapi.pad_record.should_end = 0;
+    nuapi.frame_pad_record.should_end = 0;
 }
 
 void *NuPtrBlockFix(void *block) {

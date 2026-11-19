@@ -98,18 +98,18 @@ typedef struct nushadermtldesc_s { // size 0x208
 
 typedef union numtlattrib_u { // size 0x4
 
-    struct {                      // size 0x4
-        u32 alpha_mode : 4;       // 0x0:0
-        u32 filter_mode : 2;      // 0x0:4
-        u32 unknown_0_64_128 : 2; // 0x0:6
-        u32 u_address : 2;        // 0x0:8
-        u32 v_address : 2;        // 0x0:10
-        u32 cull_mode : 2;        // 0x0:12
-        u32 z_mode : 2;           // 0x0:14
-        u32 lighting : 2;         // 0x0:16
-        u32 vertex_colour : 1;    // 0x0:18
-        u32 alpha_write : 1;      // 0x0:19
-        u32 unknown_20_31 : 12;   // 0x0:20
+    struct {                    // size 0x4
+        u32 alpha_mode : 4;     // 0x0:0
+        u32 filter_mode : 2;    // 0x0:4
+        u32 mip_mode : 2;       // 0x0:6
+        u32 u_address : 2;      // 0x0:8
+        u32 v_address : 2;      // 0x0:10
+        u32 cull_mode : 2;      // 0x0:12
+        u32 z_mode : 2;         // 0x0:14
+        u32 lighting : 2;       // 0x0:16
+        u32 vertex_colour : 1;  // 0x0:18
+        u32 alpha_write : 1;    // 0x0:19
+        u32 unknown_20_31 : 12; // 0x0:20
     };
 
     struct {                // size 0x4

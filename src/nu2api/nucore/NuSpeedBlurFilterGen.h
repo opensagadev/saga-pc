@@ -18,7 +18,7 @@ class NuSpeedBlurFilterGen : public NuPostFilter { // size 0x20
     virtual void initTextureResources(i32, i32);
     virtual void destroyTextureResources();
     virtual void render();
-    struct POST_SHADER_PROGRAM *programs[3];   // 0x0c
+    struct POST_SHADER_PROGRAM *programs[3];    // 0x0c
     GRAPHICS_RENDER_TEXTURE *texture;           // 0x18
     const NU_POST_SPEED_PARAMETERS *parameters; // 0x1c
 };

@@ -290,7 +290,7 @@ void cbPtlTextureSelectMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
             texture->material->attribs.lighting = DebMat[1]->attribs.lighting;
             texture->material->attribs.alpha_mode = DebMat[1]->attribs.alpha_mode;
             texture->material->attribs.z_mode = DebMat[1]->attribs.z_mode;
-            texture->material->attribs.unknown_0_64_128 = DebMat[1]->attribs.unknown_0_64_128;
+            texture->material->attribs.mip_mode = DebMat[1]->attribs.mip_mode;
             NuMtlUpdate(texture->material);
             texture->uv_x[0] = (effect->texture_u0 - 524288.0) * (1.0 / 256.0);
             texture->uv_y[0] = (effect->texture_v0 - 524288.0) * (1.0 / 256.0);

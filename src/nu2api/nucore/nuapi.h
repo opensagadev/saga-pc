@@ -34,9 +34,9 @@ typedef struct nuapi_s {   // size 0x90
             u8 unknown_004c[0x2c]; // 0x4c
         };
 
-        struct {                            // size 0x30
-            FRAME_PAD_RECORD pad_record;    // 0x48
-            u8 reserved_pad_record_0070[8]; // 0x70
+        struct {                               // size 0x30
+            FRAME_PAD_RECORD frame_pad_record; // 0x48
+            u8 reserved_pad_record_0070[8];    // 0x70
         };
     }; // 0x48
 
