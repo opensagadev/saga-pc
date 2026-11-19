@@ -7817,13 +7817,13 @@ extern "C" {
 
     void NuMtlDestroy(NUMTL *material) {
         PC_MATERIAL_VARIANT_RECORD *entry;
-        material->flags &= ~1;
+        material->in_use = 0;
         NuDisplayListDestroyMtl(material);
         entry = (PC_MATERIAL_VARIANT_RECORD *)NuLstGetNext(g_overrideList, NULL);
         while (entry != NULL) {
             PC_MATERIAL_VARIANT_RECORD *next = (PC_MATERIAL_VARIANT_RECORD *)NuLstGetNext(g_overrideList, (NULNKHDR *)entry);
             if (entry->original == material) {
-                entry->material->flags &= ~1;
+                entry->material->in_use = 0;
                 NuDisplayListDestroyMtl(entry->material);
                 NuLstFree((NULNKHDR *)entry);
             }
