@@ -236,7 +236,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     i32 i;
     void (*callback)(WORLDINFO *);
     NUVEC *wind_objects[8];
-    NUPAD_INIT_STATE *pads[2];
+    FRAME_PAD *pads[2];
     ThingProcessData packet;
 
     UpdateFrameCounters();
@@ -269,15 +269,15 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
                 for (i = 0; i < 2; ++i) {
                     object = Player[i];
                     if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-                        PauseGame((GAMEPAD_INIT_RECORD *)object->player.pad - GamePadStorage);
+                        PauseGame(object->player.pad - GamePadStorage);
                         break;
                     }
                 }
             }
         }
     }
-    pads[0] = GamePadStorage[0].pad;
-    pads[1] = GamePadStorage[1].pad;
+    pads[0] = GamePadStorage[0].bound_pad;
+    pads[1] = GamePadStorage[1].bound_pad;
     packet.frame_time = FRAMETIME;
     packet.paused = Paused;
     packet.pads = pads;
@@ -319,7 +319,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         NuRndrGlobalFrameCountPause(1);
         pNuCam->mtx = GameCam->render_mtx;
         NuCameraSet(pNuCam);
-        UpdateGameMenu((GAMEPAD *)GamePadStorage, 1);
+        UpdateGameMenu(GamePadStorage, 1);
         for (i = 0; i < 2; ++i) {
             object = Player[i];
             if (object != NULL) {
@@ -438,7 +438,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             Hint_Process(FRAMETIME);
             Cheats_FrameUpdate();
         }
-        UpdateGameMenu((GAMEPAD *)GamePadStorage, 1);
+        UpdateGameMenu(GamePadStorage, 1);
         Debris(0);
         if (CUTSTOPGAME == 0) {
             DebrisKillPlayers();

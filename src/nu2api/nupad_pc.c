@@ -2,7 +2,7 @@
 #include "nu2api/nucore/nupad.h"
 #include "nu2api/nuwin32/Stubs.h"
 
-void NuPadSetDeviceMotors(NUPAD_INIT_STATE *pad, i32 motor0, i32 motor1) {
+void NuPadSetDeviceMotors(FRAME_PAD *pad, i32 motor0, i32 motor1) {
 }
 
 void fun_006de6e0(void) {

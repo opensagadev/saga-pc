@@ -314,7 +314,6 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern GAMEPAD_INIT_RECORD GamePadStorage[64];
     extern struct level_data_s *dat_0087b2dc;
     i32 Hub_BonusBuildIt(struct GIZBUILDIT *);
 

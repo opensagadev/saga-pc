@@ -292,7 +292,7 @@ static i32 Shop_CharacterUnlocked(i32 character_id) {
 /* Same-unit helper taking its input in EAX. */
 static void Shop_GetInput(SHOP_INPUT *input) {
     i32 player;
-    GAMEPAD_RUNTIME_INPUT *pad;
+    GAMEPAD *pad;
     u32 held;
     u32 pressed;
     memset(input, 0, sizeof(*input));
@@ -300,20 +300,20 @@ static void Shop_GetInput(SHOP_INPUT *input) {
         if (MissionMenuPacket.active_player[player] == 0) {
             continue;
         }
-        pad = (GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[player];
-        if ((pad->pressed & GAMEPAD_MENUSELECT) != 0 && netclient == 0) {
+        pad = &GamePadStorage[player];
+        if ((pad->buttons_pressed & GAMEPAD_MENUSELECT) != 0 && netclient == 0) {
             input->confirm = 1;
             return;
         }
-        if ((pad->pressed & GAMEPAD_MENUCANCEL) != 0) {
+        if ((pad->buttons_pressed & GAMEPAD_MENUCANCEL) != 0) {
             input->cancel = 1;
             return;
         }
         if (netclient != 0) {
             continue;
         }
-        held = pad->held | pad->left_held;
-        pressed = pad->pressed | pad->left_pressed;
+        held = pad->buttons_held | pad->left_held;
+        pressed = pad->buttons_pressed | pad->left_pressed;
         if ((held & GAMEPAD_DLEFT) != 0) {
             input->left_held = 1;
         }

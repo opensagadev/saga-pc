@@ -1061,9 +1061,9 @@ void Prompt_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapse
         if (stage->step_time >= 0.5f) {
             i32 player;
             for (player = 0; player < 2 && selected == 0 && moved_up == 0 && moved_down == 0; ++player) {
-                GAMEPAD_INIT_RECORD *pad = &GamePadStorage[player];
+                GAMEPAD *pad = &GamePadStorage[player];
                 if (packet->player_active[player] != 0) {
-                    if ((pad->menu_buttons_pressed & GAMEPAD_MENUSELECT) != 0) {
+                    if ((pad->buttons_pressed & GAMEPAD_MENUSELECT) != 0) {
                         selected = 1;
                     } else if (((packet->flags_word & STATUSPACKET_FREE_PLAY) == 0 &&
                                 (packet->flags_word & STATUSPACKET_NEXT_AREA_UNLOCKED) != 0 &&
@@ -1072,12 +1072,12 @@ void Prompt_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapse
                                (packet->flags_word & STATUSPACKET_BONUS_MODE) != 0 || packet->challenge_state != CHALLENGE_OFF ||
                                packet->mission_state != MISSION_STATE_NONE) {
                         if (status_prompt > 0 &&
-                            ((pad->menu_directions & GAMEPAD_DUP) != 0 || (pad->menu_buttons_pressed & GAMEPAD_DUP) != 0)) {
+                            ((pad->left_pressed & GAMEPAD_DUP) != 0 || (pad->buttons_pressed & GAMEPAD_DUP) != 0)) {
                             GameAudio_PlaySfx(0x2f, NULL, 0, 0);
                             status_prompt--;
                             moved_up = 1;
                         } else if (status_prompt < 1 &&
-                                   ((pad->menu_directions & GAMEPAD_DDOWN) != 0 || (pad->menu_buttons_pressed & GAMEPAD_DDOWN) != 0)) {
+                                   ((pad->left_pressed & GAMEPAD_DDOWN) != 0 || (pad->buttons_pressed & GAMEPAD_DDOWN) != 0)) {
                             GameAudio_PlaySfx(0x2f, NULL, 0, 0);
                             status_prompt++;
                             moved_down = 1;

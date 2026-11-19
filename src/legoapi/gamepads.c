@@ -82,9 +82,9 @@ static f32 HitsFabs(f32 f) {
 GAMEPAD *GamePad_Allocate(void) {
     i32 index;
     for (index = 0; index < 64; ++index) {
-        if ((GamePadStorage[index].allocated & 1) == 0) {
-            GamePadStorage[index].allocated |= 1;
-            return (GAMEPAD *)&GamePadStorage[index];
+        if ((GamePadStorage[index].runtime_flags & 1) == 0) {
+            GamePadStorage[index].runtime_flags |= 1;
+            return &GamePadStorage[index];
         }
     }
     return NULL;
@@ -94,18 +94,18 @@ void GamePads_Init(void) {
     i32 i;
 
     memset(GamePadStorage, 0, sizeof(GamePadStorage));
-    GamePadStorage[0].pad = Game_NuPad[0];
-    if (GamePadStorage[0].pad != NULL) {
-        GamePadStorage[0].pad->init_type = 0x2a;
-        GamePadStorage[0].pad->init_flags = 0x60;
-        GamePadStorage[0].pad->init_port = 0x38;
+    GamePadStorage[0].bound_pad = Game_NuPad[0];
+    if (GamePadStorage[0].bound_pad != NULL) {
+        GamePadStorage[0].bound_pad->deadzone = 0x2a;
+        GamePadStorage[0].bound_pad->deadzone_max = 0x60;
+        GamePadStorage[0].bound_pad->button_threshold = 0x38;
     }
 
-    GamePadStorage[1].pad = Game_NuPad[1];
-    if (GamePadStorage[1].pad != NULL) {
-        GamePadStorage[1].pad->init_type = 0x2a;
-        GamePadStorage[1].pad->init_flags = 0x60;
-        GamePadStorage[1].pad->init_port = 0x38;
+    GamePadStorage[1].bound_pad = Game_NuPad[1];
+    if (GamePadStorage[1].bound_pad != NULL) {
+        GamePadStorage[1].bound_pad->deadzone = 0x2a;
+        GamePadStorage[1].bound_pad->deadzone_max = 0x60;
+        GamePadStorage[1].bound_pad->button_threshold = 0x38;
     }
 }
 
@@ -119,7 +119,7 @@ void fun_0054a680(void) {
 }
 
 u16 PlayerPadCurrentAngle[2] = {0};
-GAMEPAD_INIT_RECORD GamePadStorage[64] = {0};
+GAMEPAD GamePadStorage[64] = {0};
 f32 PlayerPadPreviousSpeed[2] = {0};
 u16 PlayerPadPreviousAngle[2] = {0};
 // Two-entry reconstruction access views; all observed PC readers/producers select 0 or 1.
@@ -302,8 +302,8 @@ i32 LEGOMENU_CREDITS = -1;
 
 i32 fun_0054ace0(i32 index, i32 require_ready) {
     i32 menu = GetMenuID();
-    if ((require_ready && !((GAMEPAD_RUNTIME_INPUT *)GamePadStorage)[index].input_ready) ||
-        (((GAMEPAD_RUNTIME_INPUT *)GamePadStorage)[index].bound_pad->flags & 4) || (LEGOMENU_NEWGAME != -1 && menu == LEGOMENU_NEWGAME) ||
+    if ((require_ready && !GamePadStorage[index].input_ready) ||
+        (GamePadStorage[index].bound_pad->flags & 4) || (LEGOMENU_NEWGAME != -1 && menu == LEGOMENU_NEWGAME) ||
         (LEGOMENU_CREDITS != -1 && menu == LEGOMENU_CREDITS)) {
         return 0;
     }
@@ -320,8 +320,8 @@ void PadOutPause(i32 index, WORLDINFO *world) {
         return;
     }
     menu = GetMenuID();
-    if (!((GAMEPAD_RUNTIME_INPUT *)GamePadStorage)[index].input_ready ||
-        (((GAMEPAD_RUNTIME_INPUT *)GamePadStorage)[index].bound_pad->flags & 4)) {
+    if (!GamePadStorage[index].input_ready ||
+        (GamePadStorage[index].bound_pad->flags & 4)) {
         return;
     }
     if ((LEGOMENU_NEWGAME != -1 && menu == LEGOMENU_NEWGAME) || (LEGOMENU_CREDITS != -1 && menu == LEGOMENU_CREDITS)) {
@@ -360,7 +360,7 @@ u32 GAMEPAD_START = PAD_BUTTON_START;
 i32 PLAYERCOUNT = 0;
 
 i32 ReadPad(i32 port) {
-    GAMEPAD_RUNTIME_INPUT *gamepad = (GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[port];
+    GAMEPAD *gamepad = &GamePadStorage[port];
     FRAME_PAD *pad = gamepad->bound_pad;
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i32 mode;
@@ -384,8 +384,8 @@ i32 ReadPad(i32 port) {
     gamepad->left_pressed = 0;
     gamepad->right_held = 0;
     gamepad->right_pressed = 0;
-    gamepad->held = 0;
-    gamepad->pressed = 0;
+    gamepad->buttons_held = 0;
+    gamepad->buttons_pressed = 0;
     if (pad == NULL || GamePadReadBackend(pad, 0) == 0) {
         if (mode != 1) {
             mode = 0;
@@ -396,7 +396,7 @@ i32 ReadPad(i32 port) {
         return mode;
     }
     if (mode == 3) {
-        gamepad->pressed |= pad->digital_buttons_pressed & GAMEPAD_START;
+        gamepad->buttons_pressed |= pad->digital_buttons_pressed & GAMEPAD_START;
         return mode;
     }
 
@@ -431,8 +431,8 @@ i32 ReadPad(i32 port) {
     gamepad->right_pressed = (gamepad->right_previous ^ gamepad->right_held) & gamepad->right_held;
     gamepad->right_previous = gamepad->right_held;
     gamepad->input_ready = 1;
-    gamepad->held = pad->digital_buttons;
-    gamepad->pressed = pad->digital_buttons_pressed;
+    gamepad->buttons_held = pad->digital_buttons;
+    gamepad->buttons_pressed = pad->digital_buttons_pressed;
     pActivePad = gamepad->bound_pad;
     return mode;
 }
@@ -468,7 +468,7 @@ void DoInput(WORLDINFO *world) {
     }
     changed = PlayersDropInOut();
     for (index = 0; index < 2; ++index) {
-        pad = ((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[index])->bound_pad;
+        pad = GamePadStorage[index].bound_pad;
         player = Player[index];
         if (GamePads_IgnoreInputFn != NULL && GamePads_IgnoreInputFn()) {
             continue;
@@ -521,7 +521,7 @@ void DoInput(WORLDINFO *world) {
             if (GameMenu[GameMenuLevel].menu == -1 && CutSceneWaiting == 0) {
                 if ((CUTSTOPGAME == 0 || CutScene_IsSkippable(CutStopInfo)) && MiniCutCam == 0 && memcard_autosavestarted == 0 &&
                     !(memcard_autosavepostdelay > 0.0f) && !(memcard_autosavepredelay > 0.0f) && GameTimer.update_count != 0) {
-                    PauseGame((GAMEPAD_INIT_RECORD *)player->player.pad - GamePadStorage);
+                    PauseGame(player->player.pad - GamePadStorage);
                     changed = 1;
                     continue;
                 }
@@ -566,8 +566,8 @@ i32 GamePads_SkipMovie(void) {
             pressed_device = 1;
         }
     }
-    if ((GamePadStorage[0].menu_buttons_held & GAMEPAD_SKIP) != 0 || pressed_device != 0 ||
-        (GamePadStorage[1].menu_buttons_held & GAMEPAD_SKIP) != 0) {
+    if ((GamePadStorage[0].buttons_held & GAMEPAD_SKIP) != 0 || pressed_device != 0 ||
+        (GamePadStorage[1].buttons_held & GAMEPAD_SKIP) != 0) {
         skipped = 1;
     }
     PCPresentationPlatformLeaf();

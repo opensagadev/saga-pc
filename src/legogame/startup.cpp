@@ -33,6 +33,7 @@
 #include "legoapi/menus/screens/gamemenuall.h"
 #include "legoapi/menus/screens/menu.h"
 #include "legoapi/menus/screens/shop.h"
+#include "legoapi/menus/screens/movies.h"
 #include "legoapi/misc/buffers.h"
 #include "legoapi/misc/gamemain.h"
 #include "legoapi/render/core/gameliball.h"
@@ -1088,7 +1089,7 @@ extern "C" {
                 NuCameraSet(&global_camera);
                 readpads_always = 1;
                 ReadPads();
-                UpdateGameMenu((GAMEPAD *)&GamePadStorage[0], 0);
+                UpdateGameMenu(&GamePadStorage[0], 0);
                 UpdateTimer(&GlobalTimer);
                 menu_flash = NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.2f) < 0.1f;
                 if (NOSOUND == 0) {

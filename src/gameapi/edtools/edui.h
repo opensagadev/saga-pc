@@ -67,7 +67,9 @@ typedef struct FRAME_PAD {        // size 0xa4
 
     u8 reserved_84[4];        // 0x84
     u8 deadzone;              // 0x88
-    u8 reserved_89[7];        // 0x89
+    u8 deadzone_max;          // 0x89
+    u8 button_threshold;      // 0x8a
+    u8 reserved_8b[5];        // 0x8b
     u8 analog_right_x;        // 0x90
     u8 analog_right_y;        // 0x91
     u8 analog_left_x;         // 0x92

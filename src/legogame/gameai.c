@@ -2424,12 +2424,12 @@ void GameAIProcess(void) {
             continue;
         }
         if (object->player.pad->bound_pad == NULL) {
-            object->player.pad->buttons_released = 0;
-            object->player.pad->left_directions = 0;
-            object->player.pad->previous_left_directions = 0;
-            object->player.pad->right_directions = 0;
-            object->player.pad->previous_right_directions = 0;
-            object->player.pad->ai_input_state = 0;
+            object->player.pad->left_held = 0;
+            object->player.pad->left_pressed = 0;
+            object->player.pad->left_previous = 0;
+            object->player.pad->right_held = 0;
+            object->player.pad->right_pressed = 0;
+            object->player.pad->right_previous = 0;
             object->player.pad->buttons_held = 0;
             object->player.pad->buttons_pressed = 0;
         }

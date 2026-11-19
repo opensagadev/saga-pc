@@ -172,7 +172,7 @@ void DropOut(i32 player, i32 resume, i32 silent, i32 unused) {
     }
     if (!silent) {
         if (!object->player.rider) {
-            NuPadSetStatus((GAMEPAD_INIT_RECORD *)object->player.pad - GamePadStorage, 0);
+            NuPadSetStatus(object->player.pad - GamePadStorage, 0);
         }
         GameAudio_PlaySfx(0x20, &object->collision_position, 0, 0);
     }

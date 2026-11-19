@@ -1296,14 +1296,14 @@ extern "C" void Hub_UpdateFreePlaySelect(void) {
                 if (MissionMenuPacket.active_player[player] == 0) {
                     continue;
                 }
-                const u32 digital = GamePadStorage[player].pad->digital_buttons_pressed;
+                const u32 digital = GamePadStorage[player].bound_pad->digital_buttons_pressed;
                 if ((digital & GAMEPAD_MENUSELECT) != 0) {
                     select = 1;
                 } else if ((digital & GAMEPAD_MENUCANCEL) != 0) {
                     cancel = 1;
                 } else if (freeplay_selected[player] == 0) {
-                    const u32 held = GamePadStorage[player].menu_buttons_held | GamePadStorage[player].menu_directions_held;
-                    const u32 pressed = GamePadStorage[player].menu_buttons_pressed | GamePadStorage[player].menu_directions;
+                    const u32 held = GamePadStorage[player].buttons_held | GamePadStorage[player].left_held;
+                    const u32 pressed = GamePadStorage[player].buttons_pressed | GamePadStorage[player].left_pressed;
                     i32 up_held = held & GAMEPAD_DUP;
                     i32 down_held = held & GAMEPAD_DDOWN;
                     i32 left_held = held & GAMEPAD_DLEFT;
@@ -1701,8 +1701,8 @@ extern "C" void Hub_UpdateMiniKits(WORLDINFO *world) {
             }
             kit->target_piece_count = count[i];
             if (viewer && count[i] >= pieces->piece_count &&
-                ((MissionMenuPacket.active_player[0] != 0 && (GamePadStorage[0].menu_buttons_held & GAMEPAD_JUMP) != 0) ||
-                 (MissionMenuPacket.active_player[1] != 0 && (GamePadStorage[1].menu_buttons_held & GAMEPAD_JUMP) != 0))) {
+                ((MissionMenuPacket.active_player[0] != 0 && (GamePadStorage[0].buttons_held & GAMEPAD_JUMP) != 0) ||
+                 (MissionMenuPacket.active_player[1] != 0 && (GamePadStorage[1].buttons_held & GAMEPAD_JUMP) != 0))) {
                 kit->target_piece_count = 1;
             }
         } else if (count[i] == 0) {
@@ -2037,14 +2037,14 @@ extern "C" void Hub_UpdateKit(void) {
     if (hub_minikitviewer_movewait <= 0.0f) {
         for (i32 player = 0; player < 2; ++player) {
             if (MissionMenuPacket.active_player[player] != 0) {
-                if ((GamePadStorage[player].menu_buttons_held & GAMEPAD_TOGGLELEFT) != 0 &&
-                    (GamePadStorage[player].menu_buttons_held & GAMEPAD_TOGGLERIGHT) == 0) {
+                if ((GamePadStorage[player].buttons_held & GAMEPAD_TOGGLELEFT) != 0 &&
+                    (GamePadStorage[player].buttons_held & GAMEPAD_TOGGLERIGHT) == 0) {
                     ++left;
-                } else if ((GamePadStorage[player].menu_buttons_held & GAMEPAD_TOGGLERIGHT) != 0 &&
-                           (GamePadStorage[player].menu_buttons_held & GAMEPAD_TOGGLELEFT) == 0) {
+                } else if ((GamePadStorage[player].buttons_held & GAMEPAD_TOGGLERIGHT) != 0 &&
+                           (GamePadStorage[player].buttons_held & GAMEPAD_TOGGLELEFT) == 0) {
                     ++right;
                 }
-                if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUCANCEL) != 0) {
+                if ((GamePadStorage[player].buttons_pressed & GAMEPAD_MENUCANCEL) != 0) {
                     cancel = 1;
                 }
             }
@@ -3654,15 +3654,15 @@ static void HubUpdateSelectMode(void) {
             }
             for (i32 player = 0; player < 2 && !confirm && !cancel; ++player) {
                 if (MissionMenuPacket.active_player[player] != 0) {
-                    if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUSELECT) != 0) {
+                    if ((GamePadStorage[player].buttons_pressed & GAMEPAD_MENUSELECT) != 0) {
                         confirm = 1;
-                    } else if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUCANCEL) != 0) {
+                    } else if ((GamePadStorage[player].buttons_pressed & GAMEPAD_MENUCANCEL) != 0) {
                         cancel = 1;
-                    } else if ((GamePadStorage[player].menu_directions & GAMEPAD_DUP) != 0 ||
-                               (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DUP) != 0) {
+                    } else if ((GamePadStorage[player].left_pressed & GAMEPAD_DUP) != 0 ||
+                               (GamePadStorage[player].buttons_pressed & GAMEPAD_DUP) != 0) {
                         up = 1;
-                    } else if ((GamePadStorage[player].menu_directions & GAMEPAD_DDOWN) != 0 ||
-                               (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DDOWN) != 0) {
+                    } else if ((GamePadStorage[player].left_pressed & GAMEPAD_DDOWN) != 0 ||
+                               (GamePadStorage[player].buttons_pressed & GAMEPAD_DDOWN) != 0) {
                         down = 1;
                     }
                 }
@@ -3833,21 +3833,21 @@ static void HubUpdateBonusMode(void) {
             i32 right = 0;
             for (i32 player = 0; player < 2 && !confirm && !cancel; ++player) {
                 if (MissionMenuPacket.active_player[player] != 0) {
-                    if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUSELECT) != 0) {
+                    if ((GamePadStorage[player].buttons_pressed & GAMEPAD_MENUSELECT) != 0) {
                         confirm = 1;
-                    } else if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUCANCEL) != 0) {
+                    } else if ((GamePadStorage[player].buttons_pressed & GAMEPAD_MENUCANCEL) != 0) {
                         cancel = 1;
-                    } else if ((GamePadStorage[player].menu_directions & GAMEPAD_DUP) != 0 ||
-                               (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DUP) != 0) {
+                    } else if ((GamePadStorage[player].left_pressed & GAMEPAD_DUP) != 0 ||
+                               (GamePadStorage[player].buttons_pressed & GAMEPAD_DUP) != 0) {
                         player_up[player] = up = 1;
-                    } else if ((GamePadStorage[player].menu_directions & GAMEPAD_DDOWN) != 0 ||
-                               (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DDOWN) != 0) {
+                    } else if ((GamePadStorage[player].left_pressed & GAMEPAD_DDOWN) != 0 ||
+                               (GamePadStorage[player].buttons_pressed & GAMEPAD_DDOWN) != 0) {
                         player_down[player] = down = 1;
-                    } else if ((GamePadStorage[player].menu_directions & GAMEPAD_DLEFT) != 0 ||
-                               (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DLEFT) != 0) {
+                    } else if ((GamePadStorage[player].left_pressed & GAMEPAD_DLEFT) != 0 ||
+                               (GamePadStorage[player].buttons_pressed & GAMEPAD_DLEFT) != 0) {
                         player_left[player] = left = 1;
-                    } else if ((GamePadStorage[player].menu_directions & GAMEPAD_DRIGHT) != 0 ||
-                               (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DRIGHT) != 0) {
+                    } else if ((GamePadStorage[player].left_pressed & GAMEPAD_DRIGHT) != 0 ||
+                               (GamePadStorage[player].buttons_pressed & GAMEPAD_DRIGHT) != 0) {
                         player_right[player] = right = 1;
                     }
                 }

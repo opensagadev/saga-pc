@@ -1359,7 +1359,7 @@ extern "C" {
             }
         }
         {
-            GAMEPAD_RUNTIME_INPUT *pads = (GAMEPAD_RUNTIME_INPUT *)GamePadStorage;
+            GAMEPAD *pads = GamePadStorage;
             if (pads[0].input_ready == 0 || (pads[0].bound_pad->flags & 4) == 0) {
                 NuPadMapPlayerToPort(0, PcInput_GetFirstKeyboardPort() + 1);
             }

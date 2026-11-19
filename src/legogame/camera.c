@@ -545,7 +545,7 @@ mode_selected:
     roll_hint_valid = 0;
     // The per-mode camera blend duration starts afresh after transition selection.
     blend_duration = 0.5f;
-    selected_pad = camera->mode == GAMECAM_MODE_VIEWCAM ? ViewCam.gamepad : (GAMEPAD *)&GamePadStorage[0];
+    selected_pad = camera->mode == GAMECAM_MODE_VIEWCAM ? ViewCam.gamepad : &GamePadStorage[0];
     left_y = ((f32)(((i32)(selected_pad->bound_pad->analog_left_y)))) - 127.5f;
     magnitude = CameraFabs(left_y);
     if (magnitude < 34.0f) {

@@ -562,26 +562,26 @@ i32 CustomiserMenu_Update(void) {
     cancel = 0;
 
     for (player = 0; player < 2; ++player) {
-        GAMEPAD_RUNTIME_INPUT *pad = (GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[player];
+        GAMEPAD *pad = &GamePadStorage[player];
         select[player] = 0;
         CustomiseNameBoardTMul[player] = CustomiseMode[player] == 1 ? 1.0f : 0.0f;
         CustomiseNameBoardMul[player] =
             SeekLinearF(CustomiseNameBoardMul[player], CustomiseNameBoardTMul[player], (f32)((f64)FRAMETIME * 4.0));
         CustomiseNameLetterBlipScale[player] = SeekLinearF(CustomiseNameLetterBlipScale[player], 1.0f, (f32)((f64)FRAMETIME * 5.0));
         if (MissionMenuPacket.active_player[player] != 0) {
-            if ((pad->pressed & GAMEPAD_MENUSELECT) != 0) {
+            if ((pad->buttons_pressed & GAMEPAD_MENUSELECT) != 0) {
                 select[player] = 1;
-            } else if ((pad->pressed & GAMEPAD_MENUCANCEL) != 0) {
+            } else if ((pad->buttons_pressed & GAMEPAD_MENUCANCEL) != 0) {
                 cancel = 1;
             }
         }
     }
     if (cancel != 0 && CustomiseMode[0] != 1 && CustomiseMode[1] != 1) {
         if (GAMEDEMO != 0 && MissionMenuPacket.active_player[0] != 0 && MissionMenuPacket.active_player[1] != 0) {
-            if ((((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[0])->pressed & GAMEPAD_MENUCANCEL) != 0) {
+            if ((GamePadStorage[0].buttons_pressed & GAMEPAD_MENUCANCEL) != 0) {
                 MissionMenuPacket.selected[0] = MissionMenuPacket.selected[0] == 0;
             }
-            if ((((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[1])->pressed & GAMEPAD_MENUCANCEL) != 0) {
+            if ((GamePadStorage[1].buttons_pressed & GAMEPAD_MENUCANCEL) != 0) {
                 MissionMenuPacket.selected[1] = MissionMenuPacket.selected[1] == 0;
             }
             if (MissionMenuPacket.selected[0] != 0 && MissionMenuPacket.selected[1] != 0) {
@@ -604,9 +604,9 @@ i32 CustomiserMenu_Update(void) {
             if (MissionMenuPacket.active_player[player] == 0) {
                 continue;
             }
-            held = ((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[player])->left_held | ((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[player])->held;
-            pressed = ((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[player])->pressed |
-                      ((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[player])->left_pressed;
+            held = GamePadStorage[player].left_held | GamePadStorage[player].buttons_held;
+            pressed = GamePadStorage[player].buttons_pressed |
+                      GamePadStorage[player].left_pressed;
 
             if (active_count == 1 && MissionMenuPacket.customise_other_player[player] != 0) {
                 side = player == 0;
@@ -783,7 +783,7 @@ i32 CustomiserMenu_Update(void) {
                 i32 category;
                 i32 angle;
                 PlaySfx("ToggleChar", position);
-                NewBuzzFrames(((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[player])->bound_pad, 1, 0);
+                NewBuzzFrames(GamePadStorage[player].bound_pad, 1, 0);
                 for (category = 0; category < 9; ++category) {
                     if (customiser->piece_counts[category] > 0) {
                         i32 piece;

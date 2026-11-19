@@ -302,7 +302,7 @@ extern "C" {
                 i32 selected = 0;
                 i32 moved_up = 0;
                 i32 moved_down = 0;
-                GAMEPAD_INIT_RECORD *pad = &GamePadStorage[0];
+                GAMEPAD *pad = &GamePadStorage[0];
                 do {
                     if (selected != 0) {
                         break;
@@ -311,7 +311,7 @@ extern "C" {
                         break;
                     }
                     if (packet->player_active[player] != 0) {
-                        u32 buttons = pad->menu_buttons_pressed;
+                        u32 buttons = pad->buttons_pressed;
                         if ((buttons & GAMEPAD_MENUSELECT) != 0) {
                             selected = 1;
                         } else if (((packet->flags_word & STATUSPACKET_FREE_PLAY) == 0 &&
@@ -321,12 +321,12 @@ extern "C" {
                                    (packet->flags_word & STATUSPACKET_BONUS_MODE) != 0 || packet->challenge_state != CHALLENGE_OFF ||
                                    packet->mission_state != MISSION_STATE_NONE) {
                             if (status_prompt > 0) {
-                                if (((pad->menu_directions | buttons) & GAMEPAD_DUP) != 0) {
+                                if (((pad->left_pressed | buttons) & GAMEPAD_DUP) != 0) {
                                     GameAudio_PlaySfx(0x2f, NULL, 0, 0);
                                     status_prompt = (i32)((u32)status_prompt - 1u);
                                     moved_up = 1;
                                 }
-                            } else if (status_prompt < 1 && ((pad->menu_directions | buttons) & GAMEPAD_DDOWN) != 0) {
+                            } else if (status_prompt < 1 && ((pad->left_pressed | buttons) & GAMEPAD_DDOWN) != 0) {
                                 GameAudio_PlaySfx(0x2f, NULL, 0, 0);
                                 status_prompt = (i32)((u32)status_prompt + 1u);
                                 moved_down = 1;

@@ -480,12 +480,12 @@ void ResetPlayerPacket(PLAYERPACKET *packet, CHARACTERDATA *character) {
     Player_ResetContexts(packet);
     packet->pad->buttons_held = 0;
     packet->pad->buttons_pressed = 0;
-    packet->pad->buttons_released = 0;
-    packet->pad->left_directions = 0;
-    packet->pad->previous_left_directions = 0;
-    packet->pad->right_directions = 0;
-    packet->pad->previous_right_directions = 0;
-    packet->pad->ai_input_state = 0;
+    packet->pad->left_held = 0;
+    packet->pad->left_pressed = 0;
+    packet->pad->left_previous = 0;
+    packet->pad->right_held = 0;
+    packet->pad->right_pressed = 0;
+    packet->pad->right_previous = 0;
     packet->pad->rumble.intensity = 0.0f;
     packet->pad->rumble.amount = 0.0f;
     packet->pad->rumble.decay_duration = 0.0f;

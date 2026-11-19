@@ -13,17 +13,17 @@ struct PLAYERPACKET;
 struct gameobject_s;
 struct level_data_s;
 
-typedef struct GAMEPAD {           // size 0x5c
+typedef struct GAMEPAD {           // size 0x60
     struct FRAME_PAD *bound_pad;   // 0x00
     u32 buttons_held;              // 0x04
     u32 buttons_pressed;           // 0x08
-    u32 buttons_released;          // 0x0c
-    u32 left_directions;           // 0x10
-    u32 previous_left_directions;  // 0x14
-    u32 right_directions;          // 0x18
-    u32 previous_right_directions; // 0x1c
-    u32 ai_input_state;            // 0x20
-    u8 input_state;                // 0x24
+    u32 left_held;                 // 0x0c
+    u32 left_pressed;              // 0x10
+    u32 left_previous;             // 0x14
+    u32 right_held;                // 0x18
+    u32 right_pressed;             // 0x1c
+    u32 right_previous;            // 0x20
+    u8 input_ready;                // 0x24
     u8 input_mode;                 // 0x25
     u16 input_angle;               // 0x26
     f32 input_magnitude;           // 0x28
@@ -42,11 +42,14 @@ typedef struct GAMEPAD {           // size 0x5c
         u16 runtime_flags;
 
         struct {            // size 0x2
-            u16 : 3;        // 0x5a:0
-            u16 waggle : 1; // 0x5a:3 (GAMEPAD_WAGGLE)
+            u16 allocated : 1; // 0x5a:0 (GamePad_Allocate)
+            u16 : 2;           // 0x5a:1
+            u16 waggle : 1;    // 0x5a:3 (GAMEPAD_WAGGLE)
             u16 : 12;       // 0x5a:4
         };
     }; // 0x5a
+
+    u8 reserved_5c[4]; // 0x5c
 } GAMEPAD;
 
 /* GAMEPAD.runtime_flags. The AI script actions set the AI bits on the pads of AI-driven characters; the waggle bit
@@ -67,6 +70,7 @@ typedef struct awkward_shape_sphere_s { // size 0xc
 #ifdef __cplusplus
 extern "C" {
 #endif
+    extern GAMEPAD GamePadStorage[64];
     extern i16 *objhitobj_killparts_yrot;
     extern i16 id_SNAKE;
     extern f32 VehicleGunshipHoverBase;

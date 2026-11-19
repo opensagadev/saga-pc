@@ -72,15 +72,15 @@ extern "C" {
 }
 
 extern "C" i32 Movie_CallBack(void) {
-    NUPAD_INIT_STATE *pads[2];
+    FRAME_PAD *pads[2];
     i32 skipped = 0;
     ThingProcessData frame;
     if (MovieInputFn != NULL && MovieInputFn() != 0 && (f64)MoviePlayTime >= (f64)0.2f) {
         skipped = 1;
         movie_skipped = 1;
     }
-    pads[0] = GamePadStorage[0].pad;
-    pads[1] = GamePadStorage[1].pad;
+    pads[0] = GamePadStorage[0].bound_pad;
+    pads[1] = GamePadStorage[1].bound_pad;
     frame.frame_time = MovieFrameTime;
     frame.paused = Paused;
     frame.controller_count = 2;

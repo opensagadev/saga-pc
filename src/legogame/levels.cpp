@@ -1328,8 +1328,8 @@ void LoadAreaCharacters(void) {
             }
         } else if (AreaDataLoaded != 0 && LoadWait == LOADWAITTIME && LoadTime < AreaCrawlMaximumTime && skip_text_scroll == 0 &&
                    (NuSound3LoadingSfx() == 0 || !(LoadTime < AreaCrawlSoundWaitTime))) {
-            GAMEPAD_INIT_RECORD *pads = GamePadStorage;
-            if ((pads[0].menu_buttons_pressed & GAMEPAD_START) != 0 || (pads[1].menu_buttons_pressed & GAMEPAD_START) != 0 ||
+            GAMEPAD *pads = GamePadStorage;
+            if ((pads[0].buttons_pressed & GAMEPAD_START) != 0 || (pads[1].buttons_pressed & GAMEPAD_START) != 0 ||
                 NuKeyboard_db(1) != 0) {
                 skip_text_scroll = 1;
             } else {

@@ -302,15 +302,15 @@ extern "C" {
             i32 motor1;
             UpdateRumble(packet);
             if (Game.options_save.rumble[player] != 0 && StatusPacket.player_active[player] != 0 &&
-                ((u8)GamePadStorage[player].allocated & 0x20) != 0) {
+                ((u8)GamePadStorage[player].runtime_flags & 0x20) != 0) {
                 if (packet->amount > 0.0f) {
                     motor1 = (i32)((packet->intensity * packet->amount) * 255.0f / packet->decay_duration);
                 } else {
                     motor1 = 0;
                 }
-                NuPadSetDeviceMotors(GamePadStorage[player].pad, packet->duration > 0.0f || packet->active > 0, motor1);
+                NuPadSetDeviceMotors(GamePadStorage[player].bound_pad, packet->duration > 0.0f || packet->active > 0, motor1);
             } else {
-                NuPadSetDeviceMotors(GamePadStorage[player].pad, 0, 0);
+                NuPadSetDeviceMotors(GamePadStorage[player].bound_pad, 0, 0);
             }
         }
     }
@@ -1521,11 +1521,11 @@ extern "C" {
                         if (StatusPacket.player_active[player] == 0) {
                             continue;
                         }
-                        pressed = GamePadStorage[player].menu_buttons_pressed;
+                        pressed = GamePadStorage[player].buttons_pressed;
                         if ((pressed & GAMEPAD_MENUSELECT) != 0) {
                             select = 1;
                         } else {
-                            directions = GamePadStorage[player].menu_directions;
+                            directions = GamePadStorage[player].left_pressed;
                             if ((directions & GAMEPAD_DUP) != 0 || (pressed & GAMEPAD_DUP) != 0) {
                                 up = 1;
                             } else if ((directions & GAMEPAD_DDOWN) != 0 || (pressed & GAMEPAD_DDOWN) != 0) {
@@ -1571,8 +1571,8 @@ extern "C" {
         }
         if (!(StatusPacket.newly_completed != 0 && StatusPacket.area != NULL && StatusPacket.area == NEGOTIATIONS_ADATA)) {
             u32 button = Text_Language != NULANGUAGE_JAPANESE ? GAMEPAD_JUMP : GAMEPAD_MENUSELECT;
-            if ((StatusPacket.player0_active != 0 && (GamePadStorage[0].menu_buttons_pressed & button) != 0) ||
-                (StatusPacket.player1_active != 0 && (GamePadStorage[1].menu_buttons_pressed & button) != 0) ||
+            if ((StatusPacket.player0_active != 0 && (GamePadStorage[0].buttons_pressed & button) != 0) ||
+                (StatusPacket.player1_active != 0 && (GamePadStorage[1].buttons_pressed & button) != 0) ||
                 (StatusPacket.result_flags & 2) != 0) {
                 STATUS_STAGE_s *stage = StatusPacket.stage;
                 if (stage == NULL) {

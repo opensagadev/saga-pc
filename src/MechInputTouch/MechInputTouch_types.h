@@ -2,7 +2,7 @@
 
 #include "nu2api/nucore/common.h"
 
-#include "legoapi/menus/screens/movies.h"
+struct FRAME_PAD;
 
 #ifdef __cplusplus
 struct ThingProcessData;
@@ -16,7 +16,7 @@ struct ThingResetData;
 struct ThingProcessData {
     f32 frame_time;
     i32 paused;
-    NUPAD_INIT_STATE **pads;
+    struct FRAME_PAD **pads;
     i32 controller_count;
 };
 #endif
