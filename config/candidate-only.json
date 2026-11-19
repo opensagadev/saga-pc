@@ -470,6 +470,11 @@
    "unit": "src/nu2api/terrain_scan.cpp",
    "symbol": "?TerrainStoreScanShape@@YAXAAPAPAUTERRAIN_POLYGON_INFO@@AAH1PAU1@ABUTERRAIN_GROUP@@@Z",
    "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_dictionary.cpp",
+   "symbol": "?ShaderAddDefinition@@YAXPAUShaderCompilerDictionary@@PBD1H@Z",
+   "kind": "function"
   }
  ]
 }
