@@ -321,7 +321,7 @@ extern "C" {
         camera->position_speed.z = position_z;
     }
 
-    void fun_0061fff0(f32 position_x, f32 position_y, f32 position_z, f32 distance) {
+    void EdCamSetSpeeds(f32 position_x, f32 position_y, f32 position_z, f32 distance) {
         edcam_s *camera = gp_cam;
         camera->position_speed.x = position_x;
         camera->position_speed.y = position_y;
@@ -2315,7 +2315,7 @@ extern "C" void cbNearClipAtCursor(eduimenu_s *menu, eduiitem_s *item, u32 butto
     near_clip_at_cursor = item->flags & EDUI_ITEM_HIGHLIGHTED;
 }
 
-extern "C" void fun_00623900(NUVEC *position, u8 red, u8 green, u8 blue) {
+extern "C" void EduiDrawCross(NUVEC *position, u8 red, u8 green, u8 blue) {
     i32 colour = 0xff000000 | (blue << 16) | (green << 8) | red;
     NuRndrLine3dDbg(position->x - 0.5, position->y, position->z, position->x + 0.5, position->y, position->z, colour);
     NuRndrLine3dDbg(position->x, position->y - 0.5, position->z, position->x, position->y + 0.5, position->z, colour);

@@ -50,18 +50,18 @@ void AINet::Register() {
     theTTNetwork.AddListener(this, 10, "AINet");
 }
 
-void NETMESSAGE::MessageData::fun_0053d2e0() {
+void NETMESSAGE::MessageData::AddReference() {
     references++;
 }
 
-void NETMESSAGE::fun_0053d330(i8 &value) {
+void NETMESSAGE::ReadI8(i8 &value) {
     if (data != NULL) {
         PCByteCopy(&value, data->bytes + read_offset, 1);
         read_offset++;
     }
 }
 
-void NETMESSAGE::fun_0053d360(i16 &value) {
+void NETMESSAGE::ReadI16(i16 &value) {
     if (data != NULL) {
         PCByteCopy(&value, data->bytes + read_offset, 2);
         if (swap_endianness) {
@@ -71,11 +71,11 @@ void NETMESSAGE::fun_0053d360(i16 &value) {
     }
 }
 
-NETMESSAGE::MessageData *NETMESSAGE::MessageData::fun_0053d420() {
+NETMESSAGE::MessageData *NETMESSAGE::MessageData::PoolEnd() {
     return this + 512;
 }
 
-i32 NETMESSAGE::MessageData::fun_0053d430() const {
+i32 NETMESSAGE::MessageData::IsReferenced() const {
     return references > 0;
 }
 
@@ -83,7 +83,7 @@ extern "C" void fun_0053d450(void) {
 }
 
 /* Writes the string with a leading length byte. */
-void NETMESSAGE::fun_0053d4a0(char *text) {
+void NETMESSAGE::WriteString(char *text) {
     if (data != NULL) {
         i32 length = NuStrLen(text);
         u8 *destination = data->bytes + write_offset;
@@ -93,8 +93,8 @@ void NETMESSAGE::fun_0053d4a0(char *text) {
     }
 }
 
-/* Reads a string written by fun_0053d4a0 into a cleared buffer. */
-void NETMESSAGE::fun_0053d4e0(char *text, i32 size) {
+/* Reads a string written by WriteString into a cleared buffer. */
+void NETMESSAGE::ReadString(char *text, i32 size) {
     if (data != NULL) {
         i32 length = (i8)data->bytes[read_offset];
         read_offset++;
@@ -104,13 +104,13 @@ void NETMESSAGE::fun_0053d4e0(char *text, i32 size) {
     }
 }
 
-NETMESSAGE::MessageData *NETMESSAGE::MessageData::fun_0053d560() {
+NETMESSAGE::MessageData *NETMESSAGE::MessageData::AcquireFirstReference() {
     references = 1;
     return this;
 }
 
 /* Claims the first free entry of the pool starting at this one. */
-NETMESSAGE::MessageData *NETMESSAGE::MessageData::fun_0053d590() {
+NETMESSAGE::MessageData *NETMESSAGE::MessageData::AllocateFromPool() {
     for (MessageData *entry = this; entry != this + 512; entry++) {
         if (entry->references <= 0) {
             entry->references = 1;
@@ -120,11 +120,11 @@ NETMESSAGE::MessageData *NETMESSAGE::MessageData::fun_0053d590() {
     return NULL;
 }
 
-void NETMESSAGE::MessageData::fun_0053d5c0() {
+void NETMESSAGE::MessageData::ResetReferences() {
     references = 0;
 }
 
-void NETMESSAGE::MessageData::fun_0053d620() {
+void NETMESSAGE::MessageData::DropReference() {
     u32 count = references;
     if (count > 1) {
         references = count - 1;
@@ -133,7 +133,7 @@ void NETMESSAGE::MessageData::fun_0053d620() {
     }
 }
 
-void NETMESSAGE::fun_00613140(i16 &value) {
+void NETMESSAGE::ReadI16Copy(i16 &value) {
     if (data != NULL) {
         PCByteCopy(&value, data->bytes + read_offset, 2);
         if (swap_endianness) {
@@ -143,14 +143,14 @@ void NETMESSAGE::fun_00613140(i16 &value) {
     }
 }
 
-void NETMESSAGE::fun_00613180(i8 &value) {
+void NETMESSAGE::ReadI8Copy(i8 &value) {
     if (data != NULL) {
         PCByteCopy(&value, data->bytes + read_offset, 1);
         read_offset++;
     }
 }
 
-void NETMESSAGE::fun_006131b0(u32 &value) {
+void NETMESSAGE::ReadU32(u32 &value) {
     if (data != NULL) {
         PCByteCopy(&value, data->bytes + read_offset, 4);
         if (swap_endianness) {
@@ -161,7 +161,7 @@ void NETMESSAGE::fun_006131b0(u32 &value) {
 }
 
 /* Bytes left in the message buffer after the written data. */
-i32 NETMESSAGE::fun_00613230() {
+i32 NETMESSAGE::FreeSpace() {
     if (data == NULL) {
         return 0;
     }

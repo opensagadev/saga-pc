@@ -8,23 +8,23 @@ i32 FtpFile::CompareAddress(const NetAddress &other) const {
     return memcmp(&other, &address, sizeof(address));
 }
 
-i32 FtpFile::fun_00617210(const NetAddress &other) const {
+i32 FtpFile::MatchesAddress(const NetAddress &other) const {
     return CompareAddress(other) == 0;
 }
 
-const u32 *FtpFile::fun_00617230() const {
+const u32 *FtpFile::GetAddress() const {
     return &address;
 }
 
-i32 FtpFile::fun_00617240() const {
+i32 FtpFile::GetDirection() const {
     return direction;
 }
 
-char *FtpFile::fun_00617250() {
+char *FtpFile::GetFileName() {
     return name;
 }
 
-i32 FtpFile::fun_00617260() const {
+i32 FtpFile::GetBytesLeft() const {
     return size - transferred;
 }
 
@@ -103,22 +103,22 @@ extern "C" void fun_00617400() {
 void FtpFile::RecvData(NETMESSAGE &message) {
 }
 
-u32 NETMESSAGE::MessageData::fun_00617420() const {
+u32 NETMESSAGE::MessageData::GetReferences() const {
     return references;
 }
 
-FtpFile *FtpFileArray::fun_00617480() {
+FtpFile *FtpFileArray::ItemsEnd() {
     return items + 32;
 }
 
-const FtpFile *FtpFileArray::fun_00617490() const {
+const FtpFile *FtpFileArray::ItemsEndConst() const {
     return items + 32;
 }
 
 extern "C" void fun_006174b0() {
 }
 
-u32 NETMESSAGE::fun_006174c0() const {
+u32 NETMESSAGE::GetReferenceCount() const {
     if (data == NULL) {
         return 0;
     }
@@ -163,7 +163,7 @@ void NetFtpManager::Receive(NETMESSAGE message, u8 channel, const NetAddress &ad
     message.Release();
 }
 
-void FtpFile::fun_006176d0() {
+void FtpFile::ReleaseMessage() {
     message.Release();
 }
 

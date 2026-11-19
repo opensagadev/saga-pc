@@ -259,7 +259,7 @@ i32 NetLogFile::Flush() {
     return 0;
 }
 
-void NETMESSAGE::fun_0060ea60(const u8 &value) {
+void NETMESSAGE::UnreadU8Copy(const u8 &value) {
     if (data != NULL) {
         read_offset--;
         PCByteCopy(data->bytes + read_offset, &value, 1);
@@ -340,23 +340,23 @@ NetAddress::NetAddress() {
     address = 0;
 }
 
-void NetFtpManager::fun_0060e6f0(i32 value) {
+void NetFtpManager::SetTransferId(i32 value) {
     transfer_id = value;
 }
 
-NetStats *NetworkObjectManager::fun_0060e740(i32 class_id) {
+NetStats *NetworkObjectManager::GetClassStats(i32 class_id) {
     return class_stats[class_id];
 }
 
-void NuNetEmu::fun_0060e750(u8 new_enabled) {
+void NuNetEmu::SetEmulationEnabled(u8 new_enabled) {
     enabled = new_enabled;
 }
 
-NetStats *NuNetEmu::fun_0060e760() {
+NetStats *NuNetEmu::GetRawStats() {
     return &raw_stats;
 }
 
-NuNetEmu::PackStats *NuNetEmu::fun_0060e770() {
+NuNetEmu::PackStats *NuNetEmu::GetPacketStats() {
     return &packet_stats;
 }
 
@@ -517,7 +517,7 @@ TTNetwork theTTNetwork;
 TPool<NETMESSAGE::MessageData, 512> NETMESSAGE::sm_poolMessageData;
 
 /* Drops every outstanding reference of the message pool. */
-template <> void TPool<NETMESSAGE::MessageData, 512>::fun_0060f370() {
+template <> void TPool<NETMESSAGE::MessageData, 512>::ClearReferences() {
     for (NETMESSAGE::MessageData *entry = items; entry != items + 512; ++entry) {
         if (entry->references > 0) {
             entry->references = 0;

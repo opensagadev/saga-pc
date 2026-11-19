@@ -18,7 +18,7 @@ extern "C" void fun_006118a0() {
 
 /* The engine's VuAngleDifference: signed difference of two 16-bit angles, in -0x8000..0x7fff. */
 extern "C" {
-    static i32 fun_006118b0(i32 from, i32 to) {
+    static i32 SequenceDifference(i32 from, i32 to) {
         i32 difference = (from - to) & 0xffff;
         if (difference >= 0x8000) {
             difference -= 0x10000;
@@ -30,23 +30,23 @@ extern "C" {
 void NOSTrace(...) {
 }
 
-void NETMESSAGE::fun_00611a00(u32 size) {
+void NETMESSAGE::SkipWrite(u32 size) {
     if (data != NULL) {
         write_offset += size;
     }
 }
 
-void NETMESSAGE::fun_00611a10(u32 size) {
+void NETMESSAGE::SkipRead(u32 size) {
     if (data != NULL) {
         read_offset += size;
     }
 }
 
-u8 V2Peer::fun_00611a20() const {
+u8 V2Peer::IsLocalPeer() const {
     return local;
 }
 
-i32 V2Peer::fun_00611a60(i32 time) const {
+i32 V2Peer::ToLocalTime(i32 time) const {
     return time_offset + time;
 }
 
@@ -195,50 +195,50 @@ class NetRotator2 : public NetPredictor {
 i32 ForceDummySerialise = 0;
 NetworkObjectManager *theNos = NULL;
 
-void ReplicatorData::fun_00611b60(u8 *memory, u32 size) {
+void ReplicatorData::SetMemory(u8 *memory, u32 size) {
     start = cursor = memory;
     end = memory + size;
 }
 
-i32 ReplicatorData::fun_00611b80() const {
+i32 ReplicatorData::GetUsed() const {
     return cursor - start;
 }
 
-void ReplicatorData::fun_00611b90(u32 alignment) {
+void ReplicatorData::AlignCursor(u32 alignment) {
     cursor = (u8 *)((u32)(cursor + alignment - 1) & ~(alignment - 1));
 }
 
-i32 NetReplicator::fun_00611bb0() const {
+i32 NetReplicator::GetId() const {
     return id;
 }
 
-i32 NetReplicator::fun_00611bc0(i32 groups) const {
+i32 NetReplicator::InGroups(i32 groups) const {
     return (replication_group & groups) != 0;
 }
 
-i32 NetReplicator::fun_00611be0(u16 groups) {
+i32 NetReplicator::AddGroups(u16 groups) {
     replication_group |= groups;
     return replication_group;
 }
 
-i32 NetReplicator::fun_00611c00(u16 groups) {
+i32 NetReplicator::RemoveGroups(u16 groups) {
     replication_group &= ~groups;
     return replication_group;
 }
 
-i32 NetReplicator::fun_00611c20() const {
+i32 NetReplicator::GetDataSize() const {
     return data_size;
 }
 
-void NetReplicator::fun_00611c30(u16 size) {
+void NetReplicator::SetDataSize(u16 size) {
     data_size = size;
 }
 
-i32 NetReplicator::fun_00611c40() const {
+i32 NetReplicator::GetMessageSize() const {
     return message_size;
 }
 
-void NetReplicator::fun_00611c50(u16 size) {
+void NetReplicator::SetMessageSize(u16 size) {
     message_size = size;
 }
 
@@ -266,11 +266,11 @@ void NetworkObjectManager::NetPeerPush::SetNextObject(i32 index) {
     next_object = index;
 }
 
-i32 TTNetwork::fun_00611dc0() const {
+i32 TTNetwork::GetActiveTransfer() const {
     return active_transfer;
 }
 
-i32 NuNetEmu::fun_00611dd0() const {
+i32 NuNetEmu::GetPackedQueuedBytes() const {
     if (packet_stats.pack_ratio > 0.0f) {
         return queued_bytes * packet_stats.pack_ratio;
     }
@@ -391,7 +391,7 @@ void NetRotator2::PredictValue(const EdClass *, void *, PredictorTime *time, Pre
     f32 interval_scale = 1.0f / (time->values[2] - time->values[1]);
     f32 elapsed = now - time->values[2];
     for (i32 i = 0; i < count; i++) {
-        i32 delta = fun_006118b0((i32)samples[i]->values[2], (i32)samples[i]->values[1]);
+        i32 delta = SequenceDifference((i32)samples[i]->values[2], (i32)samples[i]->values[1]);
         f32 velocity = delta * interval_scale;
         f32 predicted = velocity * elapsed + samples[i]->values[2];
         if (replication_group & 0x10) {
@@ -699,11 +699,11 @@ template <class T> T *ReplicatorData::Allocate(u32 alignment) {
 template u32 *ReplicatorData::Allocate<u32>(u32);
 template NetPredictor::PredictorTime *ReplicatorData::Allocate<NetPredictor::PredictorTime>(u32);
 
-i32 EdStream::fun_00613030(u8 &value) {
+i32 EdStream::SerialiseU8(u8 &value) {
     return SerialiseBuffer(&value, 1, 1);
 }
 
-i32 EdStream::fun_00613050(i32 &value) {
+i32 EdStream::SerialiseI32(i32 &value) {
     return SerialiseBuffer(&value, 4, 1);
 }
 

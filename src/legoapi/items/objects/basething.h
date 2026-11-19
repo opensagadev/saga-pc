@@ -49,7 +49,7 @@ class BaseThing {
     virtual void Effects(ThingRenderData *) {
     }
 
-    i32 fun_00633400(i32 action);
+    i32 IsActionEnabled(i32 action);
 
     u32 id;
     u32 flags;

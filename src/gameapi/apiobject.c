@@ -187,7 +187,7 @@ APIOBJECTSYS *APIObjectSysInit(i32 object_size, VARIPTR *buffer, VARIPTR *end) {
     return system;
 }
 
-void fun_0062a840(APIOBJECT *object, u8 object_id, i32 enable) {
+void APIObjectSetId(APIOBJECT *object, u8 object_id, i32 enable) {
     if (enable) {
         object->flags_low |= 1;
         object->object_id = object_id;

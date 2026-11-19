@@ -16,6 +16,7 @@ struct eduiitem_s;
 struct eduimenu_s;
 struct nucamera_s;
 struct numtx_s;
+struct VuVec;
 
 /* NewPrim: the primitive the editor's immediate drawing has open (EdDrawBegin, EdDrawLineSegment, EdDrawPolyTri). */
 #define EDDRAW_PRIM_NONE 0
@@ -48,9 +49,9 @@ extern "C" {
     extern i32 pad_disabled;
     extern struct eduiiattr_s EdLevelAttr;
     void EdDrawLineArrow(NUMTX *transform, f32 size, i32 colour);
-    void EdDrawLineCircleX(NUVEC *centre, f32 radius, i32 colour, i32 segments);
-    void EdDrawLineCircleY(NUVEC *centre, f32 radius, i32 colour, i32 segments);
-    void EdDrawLineCircleZ(NUVEC *centre, f32 radius, i32 colour, i32 segments);
+    void EdDrawLineCircleX(struct VuVec *centre, f32 radius, i32 colour, i32 segments);
+    void EdDrawLineCircleY(struct VuVec *centre, f32 radius, i32 colour, i32 segments);
+    void EdDrawLineCircleZ(struct VuVec *centre, f32 radius, i32 colour, i32 segments);
     void EdDrawLineCross(NUVEC *position, f32 size, i32 colour);
     void EdDrawLineCube(NUMTX *transform, f32 size, i32 colour);
     void EdDrawLineSegment(NUVEC *a, NUVEC *b, i32 colour);
@@ -59,7 +60,7 @@ extern "C" {
     void EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f32 min_radius, f32 max_radius, f32 radius_scale,
                          f32 radius_bias);
     void EdDrawPolyAxis(NUMTX *transform, f32 size, i32 opacity);
-    void EdDrawPolyCylinderEx(NUVEC *start, NUVEC *end, i32 sides, i32 colour, i32 cap_colour, f32 radius, f32 limit, f32 offset);
+    void EdDrawPolyCylinderEx(struct VuVec *start, struct VuVec *end, i32 sides, i32 colour, i32 cap_colour, f32 radius, f32 limit, f32 offset);
     void EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_angle, i32 last_angle, i32 colour, i32 segments);
     void EdDrawPolyTri(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour);
     extern f32 rtl_helper_radius;
@@ -85,13 +86,13 @@ struct VuVec { // size 0x10
     f32 w; // 0xc
 #ifdef __cplusplus
     f32 Length();
-    void fun_006b83b0();
-    void fun_006b83c0();
-    void fun_006b83d0();
-    void fun_006b83e0();
-    f32 &fun_006b83f0(i32 index);
-    VuVec fun_006b8400(f32 value) const;
-    f32 fun_006b8440(const VuVec &other) const;
+    void SetOrigin();
+    void SetUnitX();
+    void SetUnitY();
+    void SetUnitZ();
+    f32 &Component(i32 index);
+    VuVec DividedBy(f32 value) const;
+    f32 Dot(const VuVec &other) const;
 #endif
 };
 
@@ -273,7 +274,7 @@ class EdEnumControl : public EdControl { // size 0x14
     virtual void AddMenuItem(struct eduimenu_s *menu, EdRef *reference, void *object);
     virtual void Refresh();
     char *GetEnumString(i32 value);
-    i32 fun_006ba010(char *name);
+    i32 FindItemValue(char *name);
     void GetVal(i32 &value);
     void SetVal(i32 &value);
     static void cbChanged(struct eduimenu_s *, struct eduiitem_s *item, u32);
@@ -313,8 +314,8 @@ struct EdString { // size 0x4
 
     void Set(const char *value);
     ~EdString();
-    i32 fun_006b85c0(i32 size);
-    char *fun_006b86a0();
+    i32 RoundedCapacity(i32 size);
+    char *GetText();
 };
 
 /* Editor serialisation stream; mode is 1 reading, 2 writing. */
@@ -342,15 +343,15 @@ class EdStream { // size 0x20
     virtual i32 SerialiseString(char **text, i32 count) = 0;
     virtual char const *BeginBlock(char const *name) = 0;
     virtual void EndBlock() = 0;
-    i32 fun_00613030(u8 &value);
-    i32 fun_00613050(i32 &value);
+    i32 SerialiseU8(u8 &value);
+    i32 SerialiseI32(i32 &value);
 
     EdStream(MemoryBuffer *buffer);
-    i32 fun_00611910();
-    i32 fun_006119a0(i32 mask);
-    void fun_006119b0(MemoryBuffer *buffer);
-    i32 fun_006c1e00(i32 &value);
-    i32 fun_006c1e20(u8 &value);
+    i32 GetMode();
+    i32 HasFlags(i32 mask);
+    void SetMemoryBuffer(MemoryBuffer *buffer);
+    i32 SerialiseInt32(i32 &value);
+    i32 SerialiseByte(u8 &value);
 
     i32 version;                    // 0x04
     i32 mode;                       // 0x08
@@ -533,8 +534,8 @@ struct EdMember {     // size 0x8
     void *object;     // 0x0
     EdRef *reference; // 0x4
 
-    i32 fun_006c1f60(i32 attribute, i32 requested_type, void *data, i32 data_size);
-    i32 fun_006c1f90(i32 attribute, i32 requested_type, void *data, i32 data_size);
+    i32 GetAttributeValue(i32 attribute, i32 requested_type, void *data, i32 data_size);
+    i32 SetAttributeValue(i32 attribute, i32 requested_type, void *data, i32 data_size);
 };
 
 /* An editor object together with its class and the member it was picked by. */
@@ -555,15 +556,15 @@ struct ClassObject {   // size 0xc
         return *this;
     }
 
-    void fun_006b89c0(EdClass *object_class, void *object_data);
-    void fun_006b89d0();
-    i32 fun_006b89e0();
+    void Assign(EdClass *object_class, void *object_data);
+    void ClearObject();
+    i32 IsValid();
 
     bool fun_006b89f0(ClassObject &other) {
         return object == other.object && reference == other.reference;
     }
 
-    bool fun_006b8a20(ClassObject &other);
+    bool IsDifferentObject(ClassObject &other);
 
     void Set(char *name);
     void GetName(char *destination, i32 size);
@@ -641,13 +642,13 @@ class Placeable { // size 0x18
     virtual void Render(const struct VuMtx *) const {
     }
 
-    i32 fun_006b8ce0();
-    i32 fun_006b8cf0();
-    void fun_006b8d00(i32 value);
-    char *fun_006b8d10();
-    i32 fun_006b8d20();
-    void fun_006b8d30(i16 value);
-    void fun_006c22b0(const char *value);
+    i32 GetSceneId();
+    i32 GetAttributes();
+    void SetAttributes(i32 value);
+    char *GetParams();
+    i32 GetLedFile();
+    void SetLedFile(i16 value);
+    void SetParams(const char *value);
 };
 
 /* A selection list node: the list link, then the selected ClassObject (0x08). */
@@ -663,10 +664,10 @@ struct ClassObjectList {         // size 0xc
     ClassObjectListEntry *last;  // 0x4
     i32 count;                   // 0x8
 
-    ClassObjectListEntry *fun_006c1440();
+    ClassObjectListEntry *GetFirst();
     void fun_006c1450(ClassObjectListEntry *entry, ClassObjectListEntry *position);
     void Remove(ClassObjectListEntry *entry);
-    i32 fun_006c14f0();
+    i32 GetObjectCount();
     i32 GetAveragePosition(struct VuVec &average);
     i32 GetAveragePosition(struct VuVec &average, f32 &radius);
     i32 IsInList(ClassObject object);
@@ -836,16 +837,16 @@ class ClassEditor : public BaseEditor { // size 0x70
     static void cbEdClassToolsMenu(struct eduimenu_s *parent, struct eduiitem_s *item, u32 buttons);
     static void cbEdClassViewMenu(struct eduimenu_s *parent, struct eduiitem_s *item, u32 buttons);
     static void cbFileSelected(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons);
-    EdTool *fun_006b8be0();
-    f32 &fun_006b8bf0();
-    i32 fun_006b8c10();
-    void fun_006b8c20(EdTool *tool);
-    void fun_006b8c30(struct ClassObject &object);
-    void fun_006b8c50(i32 value);
-    i32 fun_006b8c60(struct ClassObject &object);
-    ClassObjectList &fun_006b8c90();
+    EdTool *GetFirstTool();
+    f32 &SnapDistance();
+    i32 GetSelectedAttribute();
+    void SetActiveTool(EdTool *tool);
+    void SetCurrentObject(struct ClassObject &object);
+    void SetSphereColour(i32 value);
+    i32 IsCurrentObject(struct ClassObject &object);
+    ClassObjectList &SelectedObjects();
     void RegisterTool(EdTool &tool);
-    struct ClassObject &fun_006b8ca0();
+    struct ClassObject &CurrentObject();
 };
 #endif
 
@@ -936,7 +937,7 @@ struct EdInputContext {    // size 0x260
     u8 reserved_258[8];    // 0x258
 
     void Set(i32 input, f32 value, f32 repeat_delay);
-    void fun_006c1fc0(i32 input, i32 value, f32 repeat_delay);
+    void SetInput(i32 input, i32 value, f32 repeat_delay);
     void Clear(i32 input);
     f32 Get(i32 input);
     f32 GetPress(i32 input);
@@ -990,23 +991,23 @@ class LevelEditor : public BaseThing { // size 0x10b0
     i32 LoadState(variptr_u *buffer, variptr_u *buffer_end, variptr_u *scratch_begin, variptr_u *scratch_end, variptr_u *file_begin,
                   variptr_u *file_end);
     void DrawInfoText(char **lines, i32 count, i32 x, i32 y, i32 available_width, i32 available_height, i32 text_colour, i32 background);
-    void fun_006b8ff0(bool value);
-    void fun_006b9000(u8 value);
-    void fun_006b9010(u8 value);
-    i16 fun_006b9020();
-    void fun_006b9030(i16 value);
-    i32 fun_006b9040();
-    f32 *fun_006b9080();
-    void fun_006b9090(i32 value);
-    i32 fun_006b90a0();
-    void fun_006b90b0(i32 value);
-    void fun_006b90c0(i32 value);
-    i32 fun_006b90e0();
-    void fun_006b90f0(BaseEditor *editor);
-    struct NUGSCN_s *fun_006bc740(char *name);
-    i32 fun_006bc7e0(struct NUGSCN_s *scene);
-    void fun_006bc9d0(struct eduimenu_s *menu);
-    char *fun_006bc9e0(char *text);
+    void SetMultiLoadActive(bool value);
+    void SetLoading(u8 value);
+    void SetDestroyingObjects(u8 value);
+    i16 GetCurrentLedFile();
+    void SetCurrentLedFile(i16 value);
+    i32 GetResetPending();
+    f32 *GetCameraPosition();
+    void SetCursorColour(i32 value);
+    i32 GetPickingEnabled();
+    void SetPickingEnabled(i32 value);
+    void SetMenuButtonEnabled(i32 value);
+    i32 GetCameraEnabled();
+    void SetActiveEditor(BaseEditor *editor);
+    struct NUGSCN_s *FindScene(char *name);
+    i32 IsSceneActive(struct NUGSCN_s *scene);
+    void SetNextMenu(struct eduimenu_s *menu);
+    char *StoreText(char *text);
 
     f32 camera_position[4];       // 0x0010
     i32 camera_angle_x;           // 0x0020

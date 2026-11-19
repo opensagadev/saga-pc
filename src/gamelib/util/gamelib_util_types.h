@@ -23,8 +23,8 @@ struct VirtualStackAllocator { // size 0x10
     VirtualStackAllocator(VirtualStackAllocator &, u32);
     ~VirtualStackAllocator();
     void setExternalMemoryPool(void *, u32);
-    void fun_00740fa0(VirtualStackAllocator &parent, u32 size);
-    i32 fun_00741100() const;
+    void TakeFrom(VirtualStackAllocator &parent, u32 size);
+    i32 GetUsed2() const;
 };
 
 #endif
@@ -85,9 +85,9 @@ struct NetAddress {
 };
 
 struct ReplicatorData {
-    void fun_00611b60(u8 *memory, u32 size);
-    i32 fun_00611b80() const;
-    void fun_00611b90(u32 alignment);
+    void SetMemory(u8 *memory, u32 size);
+    i32 GetUsed() const;
+    void AlignCursor(u32 alignment);
     template <class T> T *Allocate(u32 alignment);
 
     u8 *start;
@@ -116,13 +116,13 @@ template <typename T, u32 COUNT> struct TPool {
         }
     }
 
-    void fun_0060f370();
+    void ClearReferences();
 };
 
 struct NETMESSAGE { // size 0x10
 
     struct MessageData {
-        u32 fun_00617420() const;
+        u32 GetReferences() const;
 
         u8 bytes[0x4b0];
         u32 references;
@@ -130,13 +130,13 @@ struct NETMESSAGE { // size 0x10
         MessageData() : references(0) {
         }
 
-        void fun_0053d2e0();
-        void fun_0053d5c0();
-        void fun_0053d620();
-        MessageData *fun_0053d420();
-        i32 fun_0053d430() const;
-        MessageData *fun_0053d560();
-        MessageData *fun_0053d590();
+        void AddReference();
+        void ResetReferences();
+        void DropReference();
+        MessageData *PoolEnd();
+        i32 IsReferenced() const;
+        MessageData *AcquireFirstReference();
+        MessageData *AllocateFromPool();
     };
 
     static TPool<MessageData, 512> sm_poolMessageData;
@@ -222,10 +222,10 @@ struct NETMESSAGE { // size 0x10
     }
 
     void MakeUnique();
-    void fun_0060ea60(const u8 &value);
-    u32 fun_006174c0() const;
-    void fun_00611a00(u32 size);
-    void fun_00611a10(u32 size);
+    void UnreadU8Copy(const u8 &value);
+    u32 GetReferenceCount() const;
+    void SkipWrite(u32 size);
+    void SkipRead(u32 size);
     void fun_00613090(const u8 &value);
 
     void Write8(const u8 &value) {
@@ -379,14 +379,14 @@ struct NETMESSAGE { // size 0x10
         }
     }
 
-    void fun_0053d330(i8 &value);
-    void fun_0053d360(i16 &value);
-    void fun_0053d4a0(char *text);
-    void fun_0053d4e0(char *text, i32 size);
-    void fun_00613140(i16 &value);
-    void fun_00613180(i8 &value);
-    void fun_006131b0(u32 &value);
-    i32 fun_00613230();
+    void ReadI8(i8 &value);
+    void ReadI16(i16 &value);
+    void WriteString(char *text);
+    void ReadString(char *text, i32 size);
+    void ReadI16Copy(i16 &value);
+    void ReadI8Copy(i8 &value);
+    void ReadU32(u32 &value);
+    i32 FreeSpace();
 };
 
 #ifdef __cplusplus
@@ -417,8 +417,8 @@ class V2Peer { // size 0x2a0
     u32 unknown_230[27]; // 0x230
     i32 time_offset;     // 0x29c
 
-    u8 fun_00611a20() const;
-    i32 fun_00611a60(i32 time) const;
+    u8 IsLocalPeer() const;
+    i32 ToLocalTime(i32 time) const;
 };
 #endif
 
@@ -561,13 +561,13 @@ struct FtpFile { // size 0xb0
     }
 
     i32 CompareAddress(const NetAddress &other) const;
-    i32 fun_00617210(const NetAddress &other) const;
-    const u32 *fun_00617230() const;
-    i32 fun_00617240() const;
-    char *fun_00617250();
-    i32 fun_00617260() const;
+    i32 MatchesAddress(const NetAddress &other) const;
+    const u32 *GetAddress() const;
+    i32 GetDirection() const;
+    char *GetFileName();
+    i32 GetBytesLeft() const;
     void RecvData(struct NETMESSAGE &message);
-    void fun_006176d0();
+    void ReleaseMessage();
     void Init(i32 new_direction, const char *new_name, i32 new_size, const NetAddress &new_address, void *new_buffer, i32 new_capacity);
     i32 Accept(i32 new_capacity, void *new_buffer);
     i32 Accept(i32 new_size);
@@ -598,8 +598,8 @@ struct FtpFileArray {
         }
     }
 
-    FtpFile *fun_00617480();
-    const FtpFile *fun_00617490() const;
+    FtpFile *ItemsEnd();
+    const FtpFile *ItemsEndConst() const;
 
     FtpFile items[32];
 };
@@ -621,7 +621,7 @@ class NetFtpManager : public NetListenerInterface { // size 0x1608
     FtpFile *FindTransfer(const char *name, const NetAddress &address, i32 direction);
     const FtpFile *FindTransfer(const char *name, const NetAddress &address, i32 direction) const;
     const FtpFile *GetTransfers() const;
-    void fun_0060e6f0(i32 value);
+    void SetTransferId(i32 value);
 
     FtpFileArray files; // 0x0004
     i32 transfer_id;    // 0x1604
@@ -651,14 +651,14 @@ class NetReplicator : public CSListLink<NetReplicator> { // size 0x18
     virtual i32 SerialiseObject(EdStream &stream, V2Peer *peer, const struct EdClass *object_class, void *object, ReplicatorData &data,
                                 i16 *flags);
     virtual i32 DoPrediction(const struct EdClass *object_class, void *object, ReplicatorData &data, i32 check_only);
-    i32 fun_00611bb0() const;
-    i32 fun_00611bc0(i32 groups) const;
-    i32 fun_00611be0(u16 groups);
-    i32 fun_00611c00(u16 groups);
-    i32 fun_00611c20() const;
-    void fun_00611c30(u16 size);
-    i32 fun_00611c40() const;
-    void fun_00611c50(u16 size);
+    i32 GetId() const;
+    i32 InGroups(i32 groups) const;
+    i32 AddGroups(u16 groups);
+    i32 RemoveGroups(u16 groups);
+    i32 GetDataSize() const;
+    void SetDataSize(u16 size);
+    i32 GetMessageSize() const;
+    void SetMessageSize(u16 size);
 
     u16 id;                // 0x0c
     u16 replication_group; // 0x0e
@@ -819,7 +819,7 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
     void Term();
     void Update();
     void UpdateLocalObjectList();
-    NetStats *fun_0060e740(i32 class_id);
+    NetStats *GetClassStats(i32 class_id);
 
     i32 push_owner;                      // 0x0008
     i32 active;                          // 0x000c
@@ -880,7 +880,7 @@ class TTNetwork : public NetTransporter, public BaseThing { // size 0x110f4
     struct NetAddress *GetMyHostAddress();
     void SetMyHostAddress(struct NetAddress *address);
     void ClearMyHostAddress();
-    i32 fun_00611dc0() const;
+    i32 GetActiveTransfer() const;
 
     NetLogFile log;                    // 0x00020
     u32 frame_count;                   // 0x02134

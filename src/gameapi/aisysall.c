@@ -6709,7 +6709,7 @@ void aieditor_Render(f32 x_scale, f32 y_scale) {
     NuQFntPopCoordinateSystem();
 }
 
-static void fun_005209e0(NUVEC *direction, NUVEC *from, NUVEC *to, f32 length) {
+static void AIPathDirectionXZ(NUVEC *direction, NUVEC *from, NUVEC *to, f32 length) {
     direction->x = (to->x - from->x) / length;
     direction->z = (to->z - from->z) / length;
 }
@@ -6745,7 +6745,7 @@ void FindAIDirectionedRandomPointOnNetwork2D(AIPACKET *packet, NUVEC *position, 
         return;
     }
     fun_00520a00(packet, connection, &start, &end, direction);
-    fun_005209e0(&delta, &start->position, &end->position, connection->horizontal_distance);
+    AIPathDirectionXZ(&delta, &start->position, &end->position, connection->horizontal_distance);
     if (flags & 2) {
         distance *= connection->horizontal_distance;
     }
@@ -6765,7 +6765,7 @@ void FindAIDirectionedRandomPointOnNetwork2D(AIPACKET *packet, NUVEC *position, 
                 AIPATHNODE *candidate_start;
                 AIPATHNODE *candidate_end;
                 i32 reverse = fun_00520a00(packet, junction->connections[i], &candidate_start, &candidate_end, direction);
-                fun_005209e0(&delta, &candidate_start->position, &candidate_end->position, junction->connections[i]->horizontal_distance);
+                AIPathDirectionXZ(&delta, &candidate_start->position, &candidate_end->position, junction->connections[i]->horizontal_distance);
                 if ((junction->connections[i]->traversal_flags[reverse] & (AIPATHCNX_PERMANENT_BLOCK | AIPATHCNX_TEMPORARY_BLOCK)) == 0) {
                     f32 dot = direction->z * delta.z + direction->x * delta.x;
                     if (dot > best_dot) {
@@ -6784,7 +6784,7 @@ void FindAIDirectionedRandomPointOnNetwork2D(AIPACKET *packet, NUVEC *position, 
                 distance -= old_length;
             }
             fun_00520a00(packet, connection, &start, &end, direction);
-            fun_005209e0(&delta, &start->position, &end->position, connection->horizontal_distance);
+            AIPathDirectionXZ(&delta, &start->position, &end->position, connection->horizontal_distance);
         }
     }
     fraction = distance / connection->horizontal_distance;

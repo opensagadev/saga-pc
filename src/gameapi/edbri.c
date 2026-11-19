@@ -362,7 +362,7 @@ void edbriStartPage(i32 page_number) {
     }
 }
 
-void fun_006896c0(void) {
+void edbriStartUsedPages(void) {
     i32 page;
     for (page = 0; page < 8; ++page) {
         if (edbri_page_used[page]) {

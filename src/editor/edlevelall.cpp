@@ -73,9 +73,9 @@ struct MemoryBuffer { // size 0x10
     u32 used;          // 0x8
     u32 remaining;     // 0xc
 
-    VARIPTR *fun_006b85e0();
-    VARIPTR *fun_006b85f0();
-    u32 fun_006b8600();
+    VARIPTR *GetPosition();
+    VARIPTR *GetEnd();
+    u32 GetRemaining();
 
     void *Allocate(u32 size) {
         void *allocation = NULL;
@@ -386,7 +386,7 @@ class PropertyTool : public EdTool { // size 0x4c
     void ediMenuStoreMetrics(eduimenu_s *menu);
     void ediMenuRetrieveMetrics(eduimenu_s *menu);
     PropertyMenu *CreatePropertyMenu(ClassObject &object);
-    PropertyMenu *fun_006cd120(ClassObject &object, i32);
+    PropertyMenu *CreateMenuFor(ClassObject &object, i32);
     PropertyMenu *FindItemMenu(PropertyMenu *menu, ClassObjectListEntry *entry);
     void BringToFront(PropertyMenu *menu);
     PropertyMenu *GetActiveMenu(PropertyMenu *menu);
@@ -517,8 +517,8 @@ class PlaceableInterface : public EdClassInterface { // size 0xc
     Placeable *Find(char *name);
     i32 Find(char *name, Placeable **objects, i32 capacity);
     i32 DebugOutputObjects();
-    i32 fun_006b8d60();
-    i32 fun_006b8d70(Placeable *object);
+    i32 GetObjectTypeId();
+    i32 OwnsObject(Placeable *object);
 
     i32 scene_id; // 0x8
 };
@@ -1399,39 +1399,39 @@ static inline void VuMtxSetScale(VuMtx &matrix, const VuVec &scale) {
     matrix.matrix.m33 = value;
 }
 
-void VuVec::fun_006b83b0() {
+void VuVec::SetOrigin() {
     x = 0.0f;
     y = 0.0f;
     z = 0.0f;
     w = 1.0f;
 }
 
-void VuVec::fun_006b83c0() {
+void VuVec::SetUnitX() {
     x = 1.0f;
     y = 0.0f;
     z = 0.0f;
     w = 1.0f;
 }
 
-void VuVec::fun_006b83d0() {
+void VuVec::SetUnitY() {
     x = 0.0f;
     y = 1.0f;
     z = 0.0f;
     w = 1.0f;
 }
 
-void VuVec::fun_006b83e0() {
+void VuVec::SetUnitZ() {
     x = 0.0f;
     y = 0.0f;
     z = 1.0f;
     w = 1.0f;
 }
 
-f32 &VuVec::fun_006b83f0(i32 index) {
+f32 &VuVec::Component(i32 index) {
     return (&x)[index];
 }
 
-VuVec VuVec::fun_006b8400(f32 value) const {
+VuVec VuVec::DividedBy(f32 value) const {
     __declspec(align(16)) VuVec result;
     f32 inverse = 1.0f / value;
     result.x = x * inverse;
@@ -1440,7 +1440,7 @@ VuVec VuVec::fun_006b8400(f32 value) const {
     return result;
 }
 
-f32 VuVec::fun_006b8440(const VuVec &other) const {
+f32 VuVec::Dot(const VuVec &other) const {
     return other.x * x + other.y * y + other.z * z;
 }
 
@@ -1474,83 +1474,83 @@ EdTool::~EdTool() {
 BaseEditor::~BaseEditor() {
 }
 
-EdTool *ClassEditor::fun_006b8be0() {
+EdTool *ClassEditor::GetFirstTool() {
     return first_tool;
 }
 
-f32 &ClassEditor::fun_006b8bf0() {
+f32 &ClassEditor::SnapDistance() {
     return snap_distance;
 }
 
 ClassEditor::~ClassEditor() {
 }
 
-i32 ClassEditor::fun_006b8c10() {
+i32 ClassEditor::GetSelectedAttribute() {
     if (manipulator != NULL) {
         return manipulator->selected_attribute;
     }
     return 0;
 }
 
-void ClassEditor::fun_006b8c20(EdTool *tool) {
+void ClassEditor::SetActiveTool(EdTool *tool) {
     active_tool = tool;
 }
 
-void ClassEditor::fun_006b8c30(ClassObject &object) {
+void ClassEditor::SetCurrentObject(ClassObject &object) {
     current_object = object;
 }
 
-void ClassEditor::fun_006b8c50(i32 value) {
+void ClassEditor::SetSphereColour(i32 value) {
     sphere_colour = value;
 }
 
-i32 ClassEditor::fun_006b8c60(ClassObject &object) {
+i32 ClassEditor::IsCurrentObject(ClassObject &object) {
     return current_object.fun_006b89f0(object);
 }
 
-ClassObjectList &ClassEditor::fun_006b8c90() {
+ClassObjectList &ClassEditor::SelectedObjects() {
     return selected_objects;
 }
 
-ClassObject &ClassEditor::fun_006b8ca0() {
+ClassObject &ClassEditor::CurrentObject() {
     return current_object;
 }
 
 EditorSettings::~EditorSettings() {
 }
 
-i32 Placeable::fun_006b8ce0() {
+i32 Placeable::GetSceneId() {
     return scene_id;
 }
 
-i32 Placeable::fun_006b8cf0() {
+i32 Placeable::GetAttributes() {
     return attributes;
 }
 
-void Placeable::fun_006b8d00(i32 value) {
+void Placeable::SetAttributes(i32 value) {
     attributes = value;
 }
 
-char *Placeable::fun_006b8d10() {
+char *Placeable::GetParams() {
     return params.data ? params.data + 1 : NULL;
 }
 
-i32 Placeable::fun_006b8d20() {
+i32 Placeable::GetLedFile() {
     return led_file;
 }
 
-void Placeable::fun_006b8d30(i16 value) {
+void Placeable::SetLedFile(i16 value) {
     led_file = value;
 }
 
 PlaceableInterface::PlaceableInterface() : scene_id(-1) {
 }
 
-i32 PlaceableInterface::fun_006b8d60() {
+i32 PlaceableInterface::GetObjectTypeId() {
     return scene_id;
 }
 
-i32 PlaceableInterface::fun_006b8d70(Placeable *object) {
+i32 PlaceableInterface::OwnsObject(Placeable *object) {
     return scene_id == object->scene_id;
 }
 
@@ -1564,24 +1564,24 @@ extern "C" void fun_006b8500(void) {
 }
 
 /* The pool size EdString::Set allocates: the length rounded up to 32. */
-i32 EdString::fun_006b85c0(i32 size) {
+i32 EdString::RoundedCapacity(i32 size) {
     return ((size - 1) / 32 + 1) * 32;
 }
 
-VARIPTR *MemoryBuffer::fun_006b85e0() {
+VARIPTR *MemoryBuffer::GetPosition() {
     return position;
 }
 
-VARIPTR *MemoryBuffer::fun_006b85f0() {
+VARIPTR *MemoryBuffer::GetEnd() {
     return end;
 }
 
-u32 MemoryBuffer::fun_006b8600() {
+u32 MemoryBuffer::GetRemaining() {
     return remaining;
 }
 
 /* The text after the capacity byte. */
-char *EdString::fun_006b86a0() {
+char *EdString::GetText() {
     if (data != NULL) {
         return data + 1;
     }
@@ -1596,27 +1596,27 @@ extern "C" i32 fun_006b8f00(i32 first, i32 second) {
     return second;
 }
 
-void LevelEditor::fun_006b8ff0(bool value) {
+void LevelEditor::SetMultiLoadActive(bool value) {
     multi_load_active = value;
 }
 
-void LevelEditor::fun_006b9000(u8 value) {
+void LevelEditor::SetLoading(u8 value) {
     loading = value;
 }
 
-void LevelEditor::fun_006b9010(u8 value) {
+void LevelEditor::SetDestroyingObjects(u8 value) {
     destroying_objects = value;
 }
 
-i16 LevelEditor::fun_006b9020() {
+i16 LevelEditor::GetCurrentLedFile() {
     return current_led_file;
 }
 
-void LevelEditor::fun_006b9030(i16 value) {
+void LevelEditor::SetCurrentLedFile(i16 value) {
     current_led_file = value;
 }
 
-i32 LevelEditor::fun_006b9040() {
+i32 LevelEditor::GetResetPending() {
     return reset_pending;
 }
 
@@ -1626,35 +1626,35 @@ void LevelEditor::SetCameraPosition(VuVec &position) {
     edcamSetPos(&camera.xyz);
 }
 
-f32 *LevelEditor::fun_006b9080() {
+f32 *LevelEditor::GetCameraPosition() {
     return camera_position;
 }
 
-void LevelEditor::fun_006b9090(i32 value) {
+void LevelEditor::SetCursorColour(i32 value) {
     cursor_colour = value;
 }
 
-i32 LevelEditor::fun_006b90a0() {
+i32 LevelEditor::GetPickingEnabled() {
     return picking_enabled;
 }
 
-void LevelEditor::fun_006b90b0(i32 value) {
+void LevelEditor::SetPickingEnabled(i32 value) {
     picking_enabled = value;
 }
 
-void LevelEditor::fun_006b90c0(i32 value) {
+void LevelEditor::SetMenuButtonEnabled(i32 value) {
     menu_button_enabled = value;
 }
 
-extern "C" i32 fun_006b90d0(void) {
+extern "C" i32 EdLevelMenuActive(void) {
     return edLevelActiveMenu != NULL;
 }
 
-i32 LevelEditor::fun_006b90e0() {
+i32 LevelEditor::GetCameraEnabled() {
     return camera_enabled;
 }
 
-void LevelEditor::fun_006b90f0(BaseEditor *editor) {
+void LevelEditor::SetActiveEditor(BaseEditor *editor) {
     active_editor = editor;
 }
 
@@ -2142,7 +2142,7 @@ char *EdEnumControl::GetEnumString(i32 value) {
     return "Unknown";
 }
 
-i32 EdEnumControl::fun_006ba010(char *name) {
+i32 EdEnumControl::FindItemValue(char *name) {
     for (Item *entry = items; entry->name != NULL; entry++) {
         if (NuStrICmp(entry->name, name)) {
             return entry->value;
@@ -2366,8 +2366,8 @@ void EdDrawLineCross(NUVEC *position, f32 size, i32 colour) {
     EdDrawLineSegment(&start.xyz, &end.xyz, colour);
 }
 
-void EdDrawLineCircleX(NUVEC *centre, f32 radius, i32 colour, i32 segments) {
-    VuVec &origin = *(VuVec *)centre;
+void EdDrawLineCircleX(VuVec *centre, f32 radius, i32 colour, i32 segments) {
+    VuVec &origin = *centre;
     VuVec base;
     VuVec point;
     __declspec(align(16)) VuVec previous;
@@ -2384,8 +2384,8 @@ void EdDrawLineCircleX(NUVEC *centre, f32 radius, i32 colour, i32 segments) {
     }
 }
 
-void EdDrawLineCircleY(NUVEC *centre, f32 radius, i32 colour, i32 segments) {
-    VuVec &origin = *(VuVec *)centre;
+void EdDrawLineCircleY(VuVec *centre, f32 radius, i32 colour, i32 segments) {
+    VuVec &origin = *centre;
     VuVec base;
     VuVec point;
     __declspec(align(16)) VuVec previous;
@@ -2402,8 +2402,8 @@ void EdDrawLineCircleY(NUVEC *centre, f32 radius, i32 colour, i32 segments) {
     }
 }
 
-void EdDrawLineCircleZ(NUVEC *centre, f32 radius, i32 colour, i32 segments) {
-    VuVec &origin = *(VuVec *)centre;
+void EdDrawLineCircleZ(VuVec *centre, f32 radius, i32 colour, i32 segments) {
+    VuVec &origin = *centre;
     VuVec base;
     VuVec point;
     __declspec(align(16)) VuVec previous;
@@ -2737,7 +2737,7 @@ void EdDrawPolyCylinder(NUMTX *matrix, f32 half_height, f32 radius, f32 top_radi
     EdDrawMtx(NULL);
 }
 
-void EdDrawPolyCylinderEx(NUVEC *start, NUVEC *end, i32 sides, i32 colour, i32 cap_colour, f32 radius, f32 limit, f32 offset) {
+void EdDrawPolyCylinderEx(VuVec *start, VuVec *end, i32 sides, i32 colour, i32 cap_colour, f32 radius, f32 limit, f32 offset) {
     __declspec(align(16)) NUMTX transform;
     VuVec direction;
     VuVec center;
@@ -2747,7 +2747,7 @@ void EdDrawPolyCylinderEx(NUVEC *start, NUVEC *end, i32 sides, i32 colour, i32 c
     f32 half_length;
     f32 first_radius;
     f32 second_radius;
-    VuVecCopy(direction, *(VuVec *)end - *(VuVec *)start);
+    VuVecCopy(direction, *end - *start);
     length = VuVecLength(direction);
     if (length > 0.0f) {
         inverse_length = 1.0f / length;
@@ -2763,7 +2763,7 @@ void EdDrawPolyCylinderEx(NUVEC *start, NUVEC *end, i32 sides, i32 colour, i32 c
             angles.x = -NuAtan2D(direction.y, direction.z);
         }
         angles.z = 0;
-        VuVecCopy(center, (*(VuVec *)end + *(VuVec *)start) * 0.5f);
+        VuVecCopy(center, (*end + *start) * 0.5f);
         NuMtxSetRotateXYZVU0(&transform, &angles);
         NuMtxTranslate(&transform, &center.xyz);
         half_length = length * 0.5f;
@@ -3007,7 +3007,7 @@ i32 LevelEditor::FindSceneId(char *name) {
     return -1;
 }
 
-NUGSCN *LevelEditor::fun_006bc740(char *name) {
+NUGSCN *LevelEditor::FindScene(char *name) {
     for (i32 i = 0; i < reset_pending; i++) {
         if (NuStrICmp(name, scenes[i].name) == 0) {
             return scenes[i].scene;
@@ -3030,7 +3030,7 @@ LevelEditorScene *LevelEditor::GetEdScene(i32 index) {
     return NULL;
 }
 
-i32 LevelEditor::fun_006bc7e0(NUGSCN *scene) {
+i32 LevelEditor::IsSceneActive(NUGSCN *scene) {
     for (i32 i = 0; i < reset_pending; i++) {
         if (scene == scenes[i].scene) {
             return scenes[i].active;
@@ -3117,12 +3117,12 @@ extern "C" void fun_006bc990(void) {
     edLevelDestroyActiveMenu = 1;
 }
 
-void LevelEditor::fun_006bc9d0(eduimenu_s *menu) {
+void LevelEditor::SetNextMenu(eduimenu_s *menu) {
     edLevelNextMenu = menu;
 }
 
 /* Copies the text into the editor's text pool and returns the copy. */
-char *LevelEditor::fun_006bc9e0(char *text) {
+char *LevelEditor::StoreText(char *text) {
     i32 length = NuStrLen(text) + 1;
     char *copy = &text_buffer[text_length];
     NuStrCpy(copy, text);
@@ -3285,9 +3285,9 @@ void EdManipulator::GetAxisLocators(VuVec &origin, VuVec *points, VuMtx *matrix)
 void EdManipulator::DrawRotator(VuVec &origin) {
     f32 radius = ManipulatorAxisLength * Scale;
     EdDrawBegin(1);
-    EdDrawLineCircleX(&origin.xyz, radius, attribute_selected ? AxisColour[1] : 0xff808080, 32);
-    EdDrawLineCircleY(&origin.xyz, radius, attribute_selected ? AxisColour[2] : 0xff808080, 32);
-    EdDrawLineCircleZ(&origin.xyz, radius, attribute_selected ? AxisColour[3] : 0xff808080, 32);
+    EdDrawLineCircleX(&origin, radius, attribute_selected ? AxisColour[1] : 0xff808080, 32);
+    EdDrawLineCircleY(&origin, radius, attribute_selected ? AxisColour[2] : 0xff808080, 32);
+    EdDrawLineCircleZ(&origin, radius, attribute_selected ? AxisColour[3] : 0xff808080, 32);
     if (NewPrim != EDDRAW_PRIM_NONE) {
         if (NewPrim == EDDRAW_PRIM_LINES || NewPrim == EDDRAW_PRIM_TRIANGLES) {
             NuPrim3DEnd();
@@ -4609,7 +4609,7 @@ void KnotHelper::Render(void *object, i32) {
     EdDrawBegin(0);
     VuVec *handles = &knot->position;
     for (i32 index = 0; index < 3; index++) {
-        EdDrawLineCircleY(&handles[index].xyz, KnotHelperRadius * EdManipulator::Scale, colours[index], 8);
+        EdDrawLineCircleY(&handles[index], KnotHelperRadius * EdManipulator::Scale, colours[index], 8);
     }
     EdDrawLineSegment(&knot->position.xyz, &knot->in_tangent.xyz, -1);
     EdDrawLineSegment(&knot->position.xyz, &knot->out_tangent.xyz, -1);
@@ -4629,15 +4629,15 @@ EdStream::EdStream() {
     flags = 0;
 }
 
-i32 EdStream::fun_00611910() {
+i32 EdStream::GetMode() {
     return mode;
 }
 
-i32 EdStream::fun_006119a0(i32 mask) {
+i32 EdStream::HasFlags(i32 mask) {
     return (flags & mask) != 0;
 }
 
-void EdStream::fun_006119b0(MemoryBuffer *buffer) {
+void EdStream::SetMemoryBuffer(MemoryBuffer *buffer) {
     memory_buffer = buffer;
 }
 
@@ -4865,7 +4865,7 @@ i32 LineToSphereIntersection(VuVec &origin, VuVec &direction, VuVec &center, f32
     return 1;
 }
 
-ClassObjectListEntry *ClassObjectList::fun_006c1440() {
+ClassObjectListEntry *ClassObjectList::GetFirst() {
     return first;
 }
 
@@ -4911,7 +4911,7 @@ void ClassObjectList::Remove(ClassObjectListEntry *entry) {
     count--;
 }
 
-i32 ClassObjectList::fun_006c14f0() {
+i32 ClassObjectList::GetObjectCount() {
     return count;
 }
 
@@ -5070,11 +5070,11 @@ void SplineKnotList::Remove(SplineKnot *knot) {
     count--;
 }
 
-i32 EdStream::fun_006c1e00(i32 &value) {
+i32 EdStream::SerialiseInt32(i32 &value) {
     return SerialiseBuffer(&value, 4, 1);
 }
 
-i32 EdStream::fun_006c1e20(u8 &value) {
+i32 EdStream::SerialiseByte(u8 &value) {
     return SerialiseBuffer(&value, 1, 1);
 }
 
@@ -5082,15 +5082,15 @@ EdInputStream::EdInputStream(MemoryBuffer *buffer, MemoryBuffer *secondary) : Ed
     mode = 1;
 }
 
-i32 EdMember::fun_006c1f60(i32 attribute, i32 requested_type, void *data, i32 data_size) {
+i32 EdMember::GetAttributeValue(i32 attribute, i32 requested_type, void *data, i32 data_size) {
     return reference->GetAttributeData(object, attribute, requested_type, data, data_size);
 }
 
-i32 EdMember::fun_006c1f90(i32 attribute, i32 requested_type, void *data, i32 data_size) {
+i32 EdMember::SetAttributeValue(i32 attribute, i32 requested_type, void *data, i32 data_size) {
     return reference->SetAttributeData(object, attribute, requested_type, data, data_size);
 }
 
-void EdInputContext::fun_006c1fc0(i32 input, i32 value, f32 repeat_delay) {
+void EdInputContext::SetInput(i32 input, i32 value, f32 repeat_delay) {
     Set(input, value, repeat_delay);
 }
 
@@ -5110,7 +5110,7 @@ void PropertyMenuList::InsertSorted(PropertyMenu *menu) {
 Placeable::~Placeable() {
 }
 
-void Placeable::fun_006c22b0(const char *value) {
+void Placeable::SetParams(const char *value) {
     params.Set(value);
 }
 
@@ -7356,21 +7356,21 @@ void ClassObjectListEntry::operator delete(void *memory) {
 ClassObjectListEntry::ClassObjectListEntry() {
 }
 
-void ClassObject::fun_006b89c0(EdClass *object_class, void *object_data) {
+void ClassObject::Assign(EdClass *object_class, void *object_data) {
     ed_class = object_class;
     object = object_data;
 }
 
-void ClassObject::fun_006b89d0() {
+void ClassObject::ClearObject() {
     ed_class = NULL;
     object = NULL;
 }
 
-i32 ClassObject::fun_006b89e0() {
+i32 ClassObject::IsValid() {
     return object != NULL;
 }
 
-bool ClassObject::fun_006b8a20(ClassObject &other) {
+bool ClassObject::IsDifferentObject(ClassObject &other) {
     if (object != other.object) {
         return true;
     }
@@ -9015,7 +9015,7 @@ void PropertyTool::ToggleActiveMenu() {
     }
 }
 
-PropertyMenu *PropertyTool::fun_006cd120(ClassObject &object, i32) {
+PropertyMenu *PropertyTool::CreateMenuFor(ClassObject &object, i32) {
     return CreatePropertyMenu(object);
 }
 
@@ -10748,7 +10748,7 @@ void CursorTool::Render() {
     thePropertyTool.Render();
 }
 
-extern "C" void fun_006d1fe0(void) {
+extern "C" void EdLevelCreateMenu(void) {
     theLevelEditor.CreateMenu();
 }
 

@@ -170,7 +170,7 @@ void edanimDetermineNearestSound(float distance) {
     }
 }
 
-void fun_006597e0(i32 index) {
+void edanimFreeParam(i32 index) {
     if (AnimParams[index].instance_id != -1) {
         AnimParams[index].instance_id = -1;
     }

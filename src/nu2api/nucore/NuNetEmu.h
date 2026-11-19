@@ -49,10 +49,10 @@ struct NuNetEmu {
     i32 SplitSendPacket(EmuPacket *packet);
     void SetConditions(eConditions new_conditions);
     void Update();
-    void fun_0060e750(u8 new_enabled);
-    NetStats *fun_0060e760();
-    PackStats *fun_0060e770();
-    i32 fun_00611dd0() const;
+    void SetEmulationEnabled(u8 new_enabled);
+    NetStats *GetRawStats();
+    PackStats *GetPacketStats();
+    i32 GetPackedQueuedBytes() const;
 
     i32 unknown_00;
     EmuPacket *first_packet;

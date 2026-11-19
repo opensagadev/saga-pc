@@ -757,7 +757,7 @@ void MenuUpdateCardWarning(MENU *menu) {
     }
 }
 
-i32 fun_0050b300(void) {
+i32 MemCardGetSlot(void) {
     return memcard_slot;
 }
 

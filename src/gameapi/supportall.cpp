@@ -12,7 +12,7 @@
 /* ThingManager's unit. */
 
 /* A set flag bit switches the action off. */
-i32 BaseThing::fun_00633400(i32 action) {
+i32 BaseThing::IsActionEnabled(i32 action) {
     return (flags & (1 << action)) == 0;
 }
 

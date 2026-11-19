@@ -44,7 +44,7 @@ void VirtualStackAllocator::setExternalMemoryPool(void *memory, u32 size) {
     end = cursor + size;
 }
 
-void VirtualStackAllocator::fun_00740fa0(VirtualStackAllocator &parent, u32 size) {
+void VirtualStackAllocator::TakeFrom(VirtualStackAllocator &parent, u32 size) {
     u8 *memory = parent.cursor;
     parent.cursor += size;
     setExternalMemoryPool(memory, size);
@@ -72,7 +72,7 @@ bool ShaderObjectKey::operator==(const ShaderObjectKey &other) const {
     return key == other.key;
 }
 
-i32 VirtualStackAllocator::fun_00741100() const {
+i32 VirtualStackAllocator::GetUsed2() const {
     return cursor - base;
 }
 

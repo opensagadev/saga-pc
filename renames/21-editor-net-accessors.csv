@@ -1,0 +1,133 @@
+old,new,evidence
+fun_006b83b0,SetOrigin,VuVec: x y z 0 and w 1
+fun_006b83c0,SetUnitX,VuVec: (1 0 0 1)
+fun_006b83d0,SetUnitY,VuVec: (0 1 0 1)
+fun_006b83e0,SetUnitZ,VuVec: (0 0 1 1)
+fun_006b83f0,Component,VuVec: (&x)[index]
+fun_006b8400,DividedBy,VuVec: each component times 1/value
+fun_006b8440,Dot,VuVec: dot product of xyz
+fun_006b8be0,GetFirstTool,ClassEditor: returns first_tool
+fun_006b8bf0,SnapDistance,ClassEditor: returns snap_distance by reference
+fun_006b8c10,GetSelectedAttribute,ClassEditor: the manipulator's selected_attribute
+fun_006b8c20,SetActiveTool,ClassEditor: writes active_tool
+fun_006b8c30,SetCurrentObject,ClassEditor: writes current_object
+fun_006b8c50,SetSphereColour,ClassEditor: writes sphere_colour
+fun_006b8c60,IsCurrentObject,ClassEditor: compares current_object with the argument
+fun_006b8c90,SelectedObjects,ClassEditor: returns selected_objects
+fun_006b8ca0,CurrentObject,ClassEditor: returns current_object
+fun_006b8ce0,GetSceneId,Placeable: returns scene_id
+fun_006b8cf0,GetAttributes,Placeable: returns attributes
+fun_006b8d00,SetAttributes,Placeable: writes attributes
+fun_006b8d10,GetParams,Placeable: the params text after its length byte
+fun_006b8d20,GetLedFile,Placeable: returns led_file
+fun_006b8d30,SetLedFile,Placeable: writes led_file
+fun_006c22b0,SetParams,Placeable: params.Set
+fun_006b8d60,GetObjectTypeId,PlaceableInterface: returns scene_id (the registered object type)
+fun_006b8d70,OwnsObject,PlaceableInterface: object's scene_id equals the interface's
+fun_006b85c0,RoundedCapacity,EdString: size rounded up to 32 bytes
+fun_006b86a0,GetText,EdString: data after its length byte
+fun_006b85e0,GetPosition,MemoryBuffer: returns position
+fun_006b85f0,GetEnd,MemoryBuffer: returns end
+fun_006b8600,GetRemaining,MemoryBuffer: returns remaining
+fun_006b8ff0,SetMultiLoadActive,LevelEditor: writes multi_load_active
+fun_006b9000,SetLoading,LevelEditor: writes loading
+fun_006b9010,SetDestroyingObjects,LevelEditor: writes destroying_objects
+fun_006b9020,GetCurrentLedFile,LevelEditor: returns current_led_file
+fun_006b9030,SetCurrentLedFile,LevelEditor: writes current_led_file
+fun_006b9040,GetResetPending,LevelEditor: returns reset_pending
+fun_006b9080,GetCameraPosition,LevelEditor: returns camera_position
+fun_006b9090,SetCursorColour,LevelEditor: writes cursor_colour
+fun_006b90a0,GetPickingEnabled,LevelEditor: returns picking_enabled
+fun_006b90b0,SetPickingEnabled,LevelEditor: writes picking_enabled
+fun_006b90c0,SetMenuButtonEnabled,LevelEditor: writes menu_button_enabled
+fun_006b90d0,EdLevelMenuActive,edLevelActiveMenu != NULL
+fun_006b90e0,GetCameraEnabled,LevelEditor: returns camera_enabled
+fun_006b90f0,SetActiveEditor,LevelEditor: writes active_editor
+fun_006ba010,FindItemValue,EdEnumControl: the value of the item with the given name
+fun_006bc740,FindScene,LevelEditor: the scene with the given name
+fun_006bc7e0,IsSceneActive,LevelEditor: the active flag of the given scene
+fun_006bc9d0,SetNextMenu,LevelEditor: writes edLevelNextMenu
+fun_006bc9e0,StoreText,LevelEditor: copies text into text_buffer
+fun_00611910,GetMode,EdStream: returns mode
+fun_006119a0,HasFlags,EdStream: tests flags against a mask
+fun_006119b0,SetMemoryBuffer,EdStream: writes memory_buffer
+fun_006c1440,GetFirst,ClassObjectList: returns first
+fun_006c14f0,GetObjectCount,ClassObjectList: returns count
+fun_006c1e00,SerialiseInt32,EdStream: four bytes through SerialiseBuffer
+fun_006c1e20,SerialiseByte,EdStream: one byte through SerialiseBuffer
+fun_00613030,SerialiseU8,EdStream: one byte through SerialiseBuffer (second copy)
+fun_00613050,SerialiseI32,EdStream: four bytes through SerialiseBuffer (second copy)
+fun_006c1f60,GetAttributeValue,EdMember: forwards to EdRef::GetAttributeData
+fun_006c1f90,SetAttributeValue,EdMember: forwards to EdRef::SetAttributeData
+fun_006c1fc0,SetInput,EdInputContext: forwards to Set
+fun_006b89c0,Assign,ClassObject: writes ed_class and object
+fun_006b89d0,ClearObject,ClassObject: clears ed_class and object
+fun_006b89e0,IsValid,ClassObject: object != NULL
+fun_006b8a20,IsDifferentObject,ClassObject: object differs
+fun_006cd120,CreateMenuFor,PropertyTool: forwards to CreatePropertyMenu
+fun_006d1fe0,EdLevelCreateMenu,theLevelEditor.CreateMenu
+fun_005209e0,AIPathDirectionXZ,direction from 'from' to 'to' divided by length in x and z
+fun_0062a840,APIObjectSetId,sets or clears the in-use bit and the object id
+fun_0050b300,MemCardGetSlot,returns memcard_slot
+fun_006597e0,edanimFreeParam,clears the param's instance and drops the used count
+fun_006896c0,edbriStartUsedPages,starts every used bridge page
+fun_00617d30,EduiPopCoordinateSystem,pops NuPrimCoordSystemStack
+fun_00617fe0,EduiScaledX,x times EduiScaleX
+fun_00617ff0,EduiScaledY,y times EduiScaleY
+fun_0061fff0,EdCamSetSpeeds,writes the camera's position and distance speeds
+fun_00623900,EduiDrawCross,three short debug lines through the position
+fun_0053d2e0,AddReference,MessageData: references++
+fun_0053d330,ReadI8,NETMESSAGE: one byte at read_offset
+fun_0053d360,ReadI16,NETMESSAGE: two bytes at read_offset with endian swap
+fun_0053d420,PoolEnd,MessageData: this + 512
+fun_0053d430,IsReferenced,MessageData: references > 0
+fun_0053d4a0,WriteString,NETMESSAGE: length byte then the text
+fun_0053d4e0,ReadString,NETMESSAGE: length byte then the text into a cleared buffer
+fun_0053d560,AcquireFirstReference,MessageData: references = 1
+fun_0053d590,AllocateFromPool,MessageData: the first unreferenced entry of the pool
+fun_0053d5c0,ResetReferences,MessageData: references = 0
+fun_0053d620,DropReference,MessageData: references down to zero
+fun_00613140,ReadI16Copy,NETMESSAGE: two bytes at read_offset with endian swap (second copy)
+fun_00613180,ReadI8Copy,NETMESSAGE: one byte at read_offset (second copy)
+fun_006131b0,ReadU32,NETMESSAGE: four bytes at read_offset with endian swap
+fun_00613230,FreeSpace,NETMESSAGE: 0x4af minus write_offset
+fun_00633400,IsActionEnabled,BaseThing: the action's bit is clear in flags
+fun_00617210,MatchesAddress,FtpFile: CompareAddress == 0
+fun_00617230,GetAddress,FtpFile: returns &address
+fun_00617240,GetDirection,FtpFile: returns direction
+fun_00617250,GetFileName,FtpFile: returns name
+fun_00617260,GetBytesLeft,FtpFile: size - transferred
+fun_00617420,GetReferences,MessageData: returns references
+fun_00617480,ItemsEnd,FtpFileArray: items + 32
+fun_00617490,ItemsEndConst,FtpFileArray: items + 32 (const)
+fun_006174c0,GetReferenceCount,NETMESSAGE: data's references
+fun_006176d0,ReleaseMessage,FtpFile: message.Release
+fun_006118b0,SequenceDifference,signed 16-bit difference of two sequence numbers
+fun_00611a00,SkipWrite,NETMESSAGE: write_offset += size
+fun_00611a10,SkipRead,NETMESSAGE: read_offset += size
+fun_00611a20,IsLocalPeer,V2Peer: returns local
+fun_00611a60,ToLocalTime,V2Peer: time_offset + time
+fun_00611b60,SetMemory,ReplicatorData: start/cursor/end over the memory
+fun_00611b80,GetUsed,ReplicatorData: cursor - start
+fun_00611b90,AlignCursor,ReplicatorData: cursor rounded up to the alignment
+fun_00611bb0,GetId,NetReplicator: returns id
+fun_00611bc0,InGroups,NetReplicator: replication_group & groups
+fun_00611be0,AddGroups,NetReplicator: replication_group |= groups
+fun_00611c00,RemoveGroups,NetReplicator: replication_group &= ~groups
+fun_00611c20,GetDataSize,NetReplicator: returns data_size
+fun_00611c30,SetDataSize,NetReplicator: writes data_size
+fun_00611c40,GetMessageSize,NetReplicator: returns message_size
+fun_00611c50,SetMessageSize,NetReplicator: writes message_size
+fun_00611dc0,GetActiveTransfer,TTNetwork: returns active_transfer
+fun_00611dd0,GetPackedQueuedBytes,NuNetEmu: queued_bytes times the pack ratio
+fun_0060ea60,UnreadU8Copy,NETMESSAGE: steps read_offset back and writes the byte there (second copy)
+fun_0060e6f0,SetTransferId,NetFtpManager: writes transfer_id
+fun_0060e740,GetClassStats,NetworkObjectManager: class_stats[class_id]
+fun_0060e750,SetEmulationEnabled,NuNetEmu: writes enabled
+fun_0060e760,GetRawStats,NuNetEmu: returns &raw_stats
+fun_0060e770,GetPacketStats,NuNetEmu: returns &packet_stats
+fun_0060f370,ClearReferences,TPool<MessageData>: every referenced entry back to 0
+fun_005ddcf0,NuWindSetDlistValue,writes dat_009739d4
+fun_005ddd00,NuWindDlistCursor,returns &nudlist_stream_cursor
+fun_00740fa0,TakeFrom,VirtualStackAllocator: carves size bytes off the parent
+fun_00741100,GetUsed2,VirtualStackAllocator: cursor - base

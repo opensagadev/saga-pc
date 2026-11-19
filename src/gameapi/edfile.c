@@ -457,7 +457,7 @@ static void EduiPrimSetColour(i32 colour) {
     NuPrimStreamBufferPointer->vertex_ptr->colour = converted;
 }
 
-void fun_00617d30(void) {
+void EduiPopCoordinateSystem(void) {
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
 }
 
@@ -591,11 +591,11 @@ void eduiSetGlobalSliderAccel(f32 acceleration) {
     EduiSliderGlobalAcceleration = acceleration;
 }
 
-i32 fun_00617fe0(f32 x) {
+i32 EduiScaledX(f32 x) {
     return (EduiScaleX * x);
 }
 
-i32 fun_00617ff0(f32 y) {
+i32 EduiScaledY(f32 y) {
     return (EduiScaleY * y);
 }
 
