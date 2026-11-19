@@ -1372,9 +1372,34 @@ typedef struct gizobstacle_s {              // size 0xa0
     u8 mode;                                // 0x91
     u8 trigger_mode;                        // 0x92
     u8 unknown_093;                         // 0x93
-    u32 progress_flags;                     // 0x94
+
+    union { // size 0x4
+        u32 progress_flags;
+
+        struct {                 // size 0x4
+            u32 active : 1;      // 0x94:0
+            u32 visible : 1;     // 0x94:1
+            u32 unknown : 30;    // 0x94:2
+        } progress_bits;
+    }; // 0x94
+
     i32 proximity_output;                   // 0x98
-    u32 runtime_flags;                      // 0x9c
+
+    union { // size 0x4
+        u32 runtime_flags;
+
+        struct {                          // size 0x4
+            u32 pickups_spawned : 1;      // 0x9c:0
+            u32 pending_blowup_type : 1;  // 0x9c:1
+            u32 ai_active : 1;            // 0x9c:2
+            u32 blocked : 1;              // 0x9c:3
+            u32 has_platform : 1;         // 0x9c:4
+            u32 anim_object_bit_1 : 1;    // 0x9c:5
+            u32 trigger_latched : 1;      // 0x9c:6
+            u32 destroyed : 1;            // 0x9c:7
+            u32 unknown : 24;             // 0x9c:8
+        } runtime_bits;
+    }; // 0x9c
 } GIZOBSTACLE;
 
 /* gizobstacle_s.runtime_flags: the bits gizobstacle.c saves in the level progress, and the AI script's

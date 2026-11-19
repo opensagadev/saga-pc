@@ -94,24 +94,6 @@ typedef struct gizobstacle_progress_s { // size 0x70
     u32 destroyed[4];                   // 0x60
 } GIZOBSTACLE_PROGRESS;
 
-typedef struct obstacle_progress_flags_s { // size 0x4
-    u32 active : 1;                        // 0x0:0
-    u32 visible : 1;                       // 0x0:1
-    u32 unknown : 30;                      // 0x0:2
-} OBSTACLE_PROGRESS_FLAGS;
-
-typedef struct obstacle_runtime_flags_s { // size 0x4
-    u32 pickups_spawned : 1;              // 0x0:0
-    u32 pending_blowup_type : 1;          // 0x0:1
-    u32 ai_active : 1;                    // 0x0:2
-    u32 blocked : 1;                      // 0x0:3
-    u32 has_platform : 1;                 // 0x0:4
-    u32 anim_object_bit_1 : 1;            // 0x0:5
-    u32 trigger_latched : 1;              // 0x0:6
-    u32 destroyed : 1;                    // 0x0:7
-    u32 unknown : 24;                     // 0x0:8
-} OBSTACLE_RUNTIME_FLAGS;
-
 void GizmoObstacle_Activate(GIZMO *ptr, i32 activate) {
     GIZMO *gizmo = ptr;
     GIZOBSTACLE *obstacle;
@@ -123,7 +105,7 @@ void GizmoObstacle_Activate(GIZMO *ptr, i32 activate) {
         GameAnimSet_JumpToStart(obstacle->anim_set);
     }
     obstacle->proximity_output = 0;
-    ((OBSTACLE_PROGRESS_FLAGS *)&obstacle->progress_flags)->active = activate != 0;
+    obstacle->progress_bits.active = activate != 0;
     if (activate) {
         obstacle->runtime_flags &= ~GIZOBSTACLE_DESTROYED;
         obstacle->progress_flags &= ~0x100u;
@@ -138,7 +120,7 @@ void GizmoObstacle_SetVisibility(GIZMO *ptr, i32 visibility) {
         return;
     }
     GameAnimSet_SetVisibility(obstacle->anim_set, visibility);
-    ((OBSTACLE_PROGRESS_FLAGS *)&obstacle->progress_flags)->visible = visibility != 0;
+    obstacle->progress_bits.visible = visibility != 0;
 }
 
 NUVEC *GizmoObstacle_GetPos(GIZMO *gizmo) {
@@ -518,13 +500,13 @@ void GizObstacles_Reset(void *world_ptr, void *data, void *progress_ptr) {
         if (progress && i < 128) {
             i32 word = i / 32;
             u32 bit = 1u << (i & 31);
-            ((OBSTACLE_PROGRESS_FLAGS *)&obstacle->progress_flags)->visible = (progress->visible[word] & bit) != 0;
-            ((OBSTACLE_PROGRESS_FLAGS *)&obstacle->progress_flags)->active = (progress->enabled[word] & bit) != 0;
-            ((OBSTACLE_RUNTIME_FLAGS *)&obstacle->runtime_flags)->pickups_spawned = (progress->pickups_spawned[word] & bit) != 0;
-            ((OBSTACLE_RUNTIME_FLAGS *)&obstacle->runtime_flags)->ai_active = (progress->ai_active[word] & bit) != 0;
-            ((OBSTACLE_RUNTIME_FLAGS *)&obstacle->runtime_flags)->blocked = (progress->blocked[word] & bit) != 0;
-            ((OBSTACLE_RUNTIME_FLAGS *)&obstacle->runtime_flags)->trigger_latched = (progress->trigger_latched[word] & bit) != 0;
-            ((OBSTACLE_RUNTIME_FLAGS *)&obstacle->runtime_flags)->destroyed = (progress->destroyed[word] & bit) != 0;
+            obstacle->progress_bits.visible = (progress->visible[word] & bit) != 0;
+            obstacle->progress_bits.active = (progress->enabled[word] & bit) != 0;
+            obstacle->runtime_bits.pickups_spawned = (progress->pickups_spawned[word] & bit) != 0;
+            obstacle->runtime_bits.ai_active = (progress->ai_active[word] & bit) != 0;
+            obstacle->runtime_bits.blocked = (progress->blocked[word] & bit) != 0;
+            obstacle->runtime_bits.trigger_latched = (progress->trigger_latched[word] & bit) != 0;
+            obstacle->runtime_bits.destroyed = (progress->destroyed[word] & bit) != 0;
         }
     }
     ngizobstacletriggers = 0;
