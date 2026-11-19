@@ -96,13 +96,6 @@ PC_TEXTURE_ANIM_ENV *NuTexAnimEnvCreate(VARIPTR *buffer, NUMTL *material, u16 *t
     return environment;
 }
 
-typedef struct TEXTURE_ANIM_MATERIAL { // size 0xbc
-    u8 unknown_00[0x74];               // 0x00
-    i16 texture_id;                    // 0x74
-    u8 unknown_76[0x42];               // 0x76
-    i32 diffuse_texture_id;            // 0xb8
-} TEXTURE_ANIM_MATERIAL;
-
 static u32 nta_sig_off = 0;
 NURAND texanim_rand = {0};
 static u32 nta_sig_on = 0;
@@ -191,12 +184,12 @@ static void TextureAnimationCrossReferencePrivate(i32 label, PC_TEXTURE_ANIM_ENV
 
 void NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
     TEXTURE_ANIM_PROGRAM *program = environment->program;
-    TEXTURE_ANIM_MATERIAL *material;
+    NUMTL *material;
     i32 i;
     if (program == NULL || (program->mask & nta_script_mask) == 0) {
         return;
     }
-    material = (TEXTURE_ANIM_MATERIAL *)environment->material;
+    material = environment->material;
     if ((nta_sig_off & program->off_mask) != 0) {
         for (i = 0; i < 32; ++i) {
             if ((nta_sig_off & (program->off_mask & (1U << i))) != 0) {
@@ -302,7 +295,7 @@ void NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
             case TEXANIM_OP_TEX:
                 environment->texture_index = program->instructions[environment->instruction_index + 1];
                 material->texture_id = environment->texture_ids[environment->texture_index];
-                material->diffuse_texture_id = environment->texture_ids[environment->texture_index] & 0x7fff;
+                material->shader.diffuse_map_ids[0] = environment->texture_ids[environment->texture_index] & 0x7fff;
                 environment->instruction_index += 2;
                 environment->wait_remaining += environment->wait_base;
                 if (environment->wait_random != 0) {
@@ -316,7 +309,7 @@ void NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
                 i32 random = NuRand(&texanim_rand);
                 environment->texture_index = random % program->instructions[environment->instruction_index + 1];
                 material->texture_id = environment->texture_ids[environment->texture_index];
-                material->diffuse_texture_id = environment->texture_ids[environment->texture_index] & 0x7fff;
+                material->shader.diffuse_map_ids[0] = environment->texture_ids[environment->texture_index] & 0x7fff;
                 environment->instruction_index += 2;
                 environment->wait_remaining += environment->wait_base;
                 if (environment->wait_random != 0) {
@@ -333,7 +326,7 @@ void NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
                         MAX(program->instructions[environment->instruction_index + 2],
                             program->instructions[environment->instruction_index + 1] + environment->texture_index));
                 material->texture_id = environment->texture_ids[environment->texture_index];
-                material->diffuse_texture_id = environment->texture_ids[environment->texture_index] & 0x7fff;
+                material->shader.diffuse_map_ids[0] = environment->texture_ids[environment->texture_index] & 0x7fff;
                 environment->instruction_index += 4;
                 environment->wait_remaining += environment->wait_base;
                 if (environment->wait_random != 0) {
@@ -351,7 +344,7 @@ void NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
                     MIN(program->instructions[environment->instruction_index + 4],
                         MAX(program->instructions[environment->instruction_index + 3], environment->texture_index + texture));
                 material->texture_id = environment->texture_ids[environment->texture_index];
-                material->diffuse_texture_id = environment->texture_ids[environment->texture_index] & 0x7fff;
+                material->shader.diffuse_map_ids[0] = environment->texture_ids[environment->texture_index] & 0x7fff;
                 environment->instruction_index += 5;
                 environment->wait_remaining += environment->wait_base;
                 if (environment->wait_random != 0) {
