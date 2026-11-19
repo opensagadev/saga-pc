@@ -90,7 +90,6 @@ typedef struct custom_material_update_s {
     u8 material_tag;
 } CUSTOM_MATERIAL_UPDATE;
 
-
 /* Native customiser menu drawing and private matrix helpers; append to customise.c. */
 
 static void CustomiserMtxSetRotateZ(NUMTX *matrix, i32 angle) {
