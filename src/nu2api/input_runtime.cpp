@@ -1992,7 +1992,8 @@ extern "C" void PcInputAssignButtonBinding(i32 button, i32 port, i32 kind, i32 v
     }
 }
 
-extern "C" void PcInputAssignAxisBinding(i32 axis, i32 active, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank, u32 excluded) {
+extern "C" void PcInputAssignAxisBinding(i32 axis, i32 active, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank,
+                                         u32 excluded) {
     PC_INPUT_RUNTIME *runtime = nu_input_state;
     i32 command_active;
     i32 command_axis;

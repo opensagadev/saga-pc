@@ -14060,29 +14060,19 @@ extern "C" {
         return scene;
     }
 
-    typedef struct CHARACTER_GHG_API_STATE { // size 0x84
-        u8 unknown_00[0x80];                 // 0x00
-        i32 loading_hgobj;                   // 0x80
-    } CHARACTER_GHG_API_STATE;
-
     NUHGOBJ_EVAL *NuGHGRead(char *path, VARIPTR *buffer, VARIPTR end) {
         NUGSCN *scene;
         i32 i;
-        ((CHARACTER_GHG_API_STATE *)&nuapi)->loading_hgobj = 1;
+        nuapi.loading_hgobj = 1;
         scene = NuReadGraphicsData(buffer, &end, path, NULL);
         if (scene != NULL && nuapi.force_shadows_on_characters != 0) {
             for (i = 0; i != scene->display_list->special_count; ++i) {
                 scene->display_list->visibility_flags[i] |= 0x20;
             }
         }
-        ((CHARACTER_GHG_API_STATE *)&nuapi)->loading_hgobj = 0;
+        nuapi.loading_hgobj = 0;
         return (NUHGOBJ_EVAL *)scene;
     }
-
-    typedef struct SCENE_MATERIAL_FLAGS { // size 0x48
-        u8 unknown_00[0x44];              // 0x00
-        u32 flags;                        // 0x44
-    } SCENE_MATERIAL_FLAGS;
 
     i32 NuGScnFixupTID(NUGSCN *scene, i32 tid) {
         i32 resolved;
@@ -14126,7 +14116,7 @@ extern "C" {
             material->shader.vtf_normal_map_tid = NuGScnFixupTID(scene, material->shader.vtf_normal_map_tid);
             material->shader.extra_texture = NuGScnFixupTID(scene, material->shader.extra_texture);
             material->shader.environment_texture = NuGScnFixupTID(scene, material->shader.environment_texture);
-            ((SCENE_MATERIAL_FLAGS *)scene->materials[i])->flags &= ~0x400000u;
+            scene->materials[i]->attribs2 &= ~0x400000u;
             material = scene->materials[i];
             NuMtlUpdatePS(material);
             ++material->version;

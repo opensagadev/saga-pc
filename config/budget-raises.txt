@@ -309,3 +309,4 @@ config/castscan-budget.json truncation 2190 quick run, settled in the refix
 config/oddscan-budget.json magic-flag 2482 quick run, settled in the refix
 config/castscan-budget.json redundant-identity 12 quick run, settled in the refix
 config/castscan-budget.json raw-offset 350 quick run, settled in the refix
+config/oddscan-budget.json magic-flag 2483 quick run, settled in the refix
