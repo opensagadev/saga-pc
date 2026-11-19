@@ -135,7 +135,7 @@ typedef struct ANI3_HEADER {  // size 0x3c
     u16 first_frame;          // 0x0e
     u8 end_frame;             // 0x10
     u8 constant_index;        // 0x11
-    u8 field_12_low;          // 0x12
+    u8 fixed_up;              // 0x12 (pointers fixed up after loading)
     u8 format_flags;          // 0x13
     u16 next_block;           // 0x14
     u16 declared_end_frame;   // 0x16

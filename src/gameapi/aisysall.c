@@ -3943,7 +3943,7 @@ void AISysCharacterSetPath(AIPACKET *packet, AIPATH *path) {
     packet->path_info.path = path;
     packet->path_info.path_index = 0xff;
     packet->available_routes = 0;
-    packet->unknown_124 = 0xffff;
+    packet->inside_path_node = -1;
     packet->current_route = AIPACKET_NO_ROUTE;
     packet->next_route = 0;
     packet->current_path_node = NULL;

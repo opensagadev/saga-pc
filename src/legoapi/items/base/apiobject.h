@@ -555,10 +555,7 @@ struct AIPACKET { // size 0x20c
     NUVEC movement_position;                    // 0x114
     f32 mover_height;                           // 0x120
 
-    union { // size 0x2
-        u16 unknown_124;
-        i16 inside_path_node;
-    }; // 0x124
+    i16 inside_path_node; // 0x124
 
     i16 animation_override_from; // 0x126
     i16 animation_override_to;   // 0x128
@@ -764,7 +761,7 @@ typedef struct CHARACTERANIM_CONFIG { // size 0x4c
     char *name;                       // 0x00
     u32 flags;                        // 0x04
     i16 action_id;                    // 0x08
-    u8 unknown_0a;                    // 0x0a
+    u8 load_group;                    // 0x0a
     u8 priority;                      // 0x0b
     u8 minimum_repetitions;           // 0x0c
     u8 maximum_repetitions;           // 0x0d

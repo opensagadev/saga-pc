@@ -303,3 +303,4 @@ config/declscan-budget.json A 24 quick run: removable re-declarations of header 
 config/oddscan-budget.json magic-flag 2477 quick run, settled in the refix
 config/oddscan-budget.json magic-state 4314 quick run, settled in the refix
 config/castscan-budget.json redundant-identity 11 quick run, settled in the refix
+config/oddscan-budget.json magic-state 4313 quick run, settled in the refix

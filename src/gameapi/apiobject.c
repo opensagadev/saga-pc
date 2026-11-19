@@ -136,7 +136,7 @@ void AnimList_RequestAnimGroups(i32 character_id, ...) {
             break;
         }
         while (animation->name != NULL) {
-            if (animation->unknown_0a == group_id) {
+            if (animation->load_group == group_id) {
                 animation->flags &= ~CHARANIM_NO_LOAD;
             }
             animation++;
@@ -1423,13 +1423,13 @@ void APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VAR
                             } else {
                                 joint = data;
                             }
-                            if (joint->field_12_low == 0) {
+                            if (joint->fixed_up == 0) {
                                 if (pointer_block) {
                                     NuPtrBlockFix(data);
                                 } else {
                                     NuAnimData2Fixup(size, &data);
                                 }
-                                joint->field_12_low = 1;
+                                joint->fixed_up = 1;
                             }
                             model->model_data_b[animation->action_id] = joint;
                             model->animation_configs[animation->action_id] = animation;
