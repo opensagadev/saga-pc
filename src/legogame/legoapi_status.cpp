@@ -394,7 +394,7 @@ extern "C" {
                         COLLECTID *entry = &MasterCollection.list[found];
                         if (entry->can_buy == 0) {
                             StatusNewCharacterIds[count++] = (i16)id;
-                            if (entry->field5_0x9 != 0) {
+                            if (entry->counts_towards_completion != 0) {
                                 AddToCompletionPoints(POINTS_PER_CHARACTER);
                             }
                         }

@@ -57,12 +57,6 @@ i32 Collection_Got(i32 id) {
     return 1;
 }
 
-typedef struct collection_variant_reader_s { // size 0x120
-    u8 unknown_00[0x116];                    // 0x000
-    i8 variant_type;                         // 0x116
-    u8 unknown_117[9];                       // 0x117
-} COLLECTION_VARIANT_READER;
-
 i32 Collection_GotAnyOfType(i32 type, u32 flags) {
     i32 index;
     if (CollectList == NULL) {
@@ -70,7 +64,7 @@ i32 Collection_GotAnyOfType(i32 type, u32 flags) {
     }
     for (index = 0; index < CollectCount; ++index) {
         i32 id = CollectList[index].id;
-        if (type != -1 && ((COLLECTION_VARIANT_READER *)GCDataList)[id].variant_type != type) {
+        if (type != -1 && GCDataList[id].variant != type) {
             continue;
         }
         if (flags != 0 && (CDataList[id].model_flags & flags) != flags) {
@@ -110,13 +104,6 @@ void CollectAllCharacters(i32 only_story) {
     }
 }
 
-typedef struct collection_buyable_reader_s { // size 0x1c
-    i16 id;                                  // 0x00
-    u8 unknown_02[6];                        // 0x02
-    u8 can_buy;                              // 0x08
-    u8 unknown_09[0x13];                     // 0x09
-} COLLECTION_BUYABLE_READER;
-
 void Collection_CreateMaster(char *name, i16 *title_id, COLLECTION_BUILD *collection, i32 columns, f32 scale) {
     collection->list = CollectList;
     collection->columns = (u16)columns;
@@ -143,7 +130,7 @@ void Collection_CreateCustom(char *name, i16 *title_id, COLLECTION_BUILD *collec
             if (excluded_model_flags != 0 && (apicharsys->char_data[id].model_flags & excluded_model_flags) != 0) {
                 continue;
             }
-            if (require_buyable != 0 && ((COLLECTION_BUYABLE_READER *)source)->can_buy == 0) {
+            if (require_buyable != 0 && source->can_buy == 0) {
                 continue;
             }
             if (required_game_flags != 0 && (GCDataList[id].flags_090 & required_game_flags) != required_game_flags) {
@@ -224,31 +211,20 @@ i32 Collection_GetIDList(COLLECTION_BUILD *collection, u32 mask, u32 required, i
     return count;
 }
 
-typedef struct collection_config_entry_s { // size 0x1c
-    i16 id;                                // 0x00
-    u8 type;                               // 0x02
-    u8 area_index;                         // 0x03
-    i32 buy_price;                         // 0x04
-    u8 can_buy;                            // 0x08
-    u8 counts_towards_completion;          // 0x09
-    u16 gold_bricks;                       // 0x0a
-    char cheat_code[16];                   // 0x0c
-} COLLECTION_CONFIG_ENTRY;
-
 /* Native 594220 is an actual RET with no argument reads. */
 void CollectionConfigDiagnostic(char *file, ...) {
 }
 
 void Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
     NUFPAR *parser = NuFParCreate(file);
-    COLLECTION_CONFIG_ENTRY *entry;
+    COLLECTID *entry;
     i32 area;
     if (parser == NULL) {
         CollectionConfigDiagnostic(file);
         return;
     }
 
-    entry = (COLLECTION_CONFIG_ENTRY *)((buffer->addr + 3) & ~3u);
+    entry = (COLLECTID *)((buffer->addr + 3) & ~3u);
     buffer->void_ptr = entry;
     CollectList = (COLLECTID *)entry;
     CollectCount = 0;
@@ -270,7 +246,7 @@ void Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
         entry->type = COLLECTION_UNLOCK_NONE;
         entry->area_index = 0xff;
         entry->can_buy = 0;
-        entry->buy_price = 0;
+        entry->price = 0;
         entry->gold_bricks = 0;
         entry->counts_towards_completion = 0;
         entry->cheat_code[0] = '\0';
@@ -296,7 +272,7 @@ void Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
                 entry->type = COLLECTION_UNLOCK_MINIKIT;
             } else if (NuStrICmp(parser->word_buffer_ptr, "buy_in_shop") == 0) {
                 entry->can_buy = 1;
-                entry->buy_price = NuFParGetInt(parser);
+                entry->price = NuFParGetInt(parser);
             } else if (NuStrICmp(parser->word_buffer_ptr, "cheat_code") == 0 && NuFParGetWord(parser) != 0 &&
                        NuStrLen(parser->word_buffer_ptr) == 6) {
                 NuStrCpy(entry->cheat_code, parser->word_buffer_ptr);
@@ -337,7 +313,7 @@ COLLECTID *CollectIDUnlocked(i32 id) {
                     unlocked = 1;
                     break;
                 case COLLECTION_UNLOCK_AREA_COMPLETE:
-                    area = (i8)entry->field2_0x3;
+                    area = (i8)entry->area_index;
                     if (area != -1 && Game_AreaSave[area].area_complete != 0) {
                         unlocked = 1;
                     }
@@ -348,7 +324,7 @@ COLLECTID *CollectIDUnlocked(i32 id) {
                     }
                     break;
                 case COLLECTION_UNLOCK_GOLD_BRICKS:
-                    if (CustomiserCompletionSave != NULL && CustomiserCompletionSave->gold_bricks >= entry->field6_0xa) {
+                    if (CustomiserCompletionSave != NULL && CustomiserCompletionSave->gold_bricks >= entry->gold_bricks) {
                         unlocked = 1;
                     }
                     break;

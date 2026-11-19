@@ -7,11 +7,11 @@ typedef struct COLLECTID COLLECTID;
 struct COLLECTID {  // size 0x1c
     i16 id;         // 0x00
     u8 type;        // 0x02
-    u8 field2_0x3;  // 0x03
+    u8 area_index;  // 0x03
     u32 price;      // 0x04
     u8 can_buy;     // 0x08
-    u8 field5_0x9;  // 0x09
-    u16 field6_0xa; // 0x0a
+    u8 counts_towards_completion; // 0x09
+    u16 gold_bricks; // 0x0a
 
     union { // size 0x10
         char cheat_code[16];

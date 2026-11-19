@@ -1738,7 +1738,7 @@ extern "C" {
         }
         for (i = 0; i < MasterCollection.count; ++i) {
             COLLECTID *entry = &MasterCollection.list[i];
-            if (entry->field5_0x9 != 0) {
+            if (entry->counts_towards_completion != 0) {
                 CompletionPointInfoRecalculate[2] += POINTS_PER_CHARACTER;
                 if (Collection_Got(entry->id) != 0) {
                     AddToCompletionPoints(POINTS_PER_CHARACTER);
