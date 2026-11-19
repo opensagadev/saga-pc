@@ -6,6 +6,9 @@
 #include "nu2api/numath/nuvec.h"
 
 struct AIAREA;
+struct AIPATH;
+struct AIPATHCNXCONTROLLER_s;
+struct ai_control_system_s;
 struct AIPACKET;
 struct AISYS;
 struct APIOBJECT;
@@ -143,6 +146,9 @@ extern "C" {
     struct addgizmotype_s *AI_RegisterGizmo(i32);
     u32 GameAI_TotalScore(void);
     i32 CanFightLikeAJedi(struct gameobject_s *);
+    struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(struct ai_control_system_s *, struct AISYS *, struct AIPATH *, char *, char *,
+                                                            i32, char *, i32, i32);
+    void AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *, i32, i32);
 #ifdef __cplusplus
 }
 #endif

@@ -85,8 +85,8 @@
 #include "legoapi/gizmos/fx/guidelines.h"
 #include "legoapi/gizmos/transport/grapples.h"
 #include "legoapi/props/objects/legoapi_signal.h"
+#include "legoapi/props/objects/tightrope.h"
 
-ADDGIZMOTYPE *TightRopes_RegisterGizmo(i32);
 ADDGIZMOTYPE *Ledges_RegisterGizmo(i32);
 ADDGIZMOTYPE *Spinner_RegisterGizmo(i32);
 ADDGIZMOTYPE *Push_RegisterGizmo(i32);

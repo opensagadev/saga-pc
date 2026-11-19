@@ -62,8 +62,6 @@
 /* Retail unit 0x40a4b0-0x40e6fa: definitions in retail address order. */
 
 extern NUMTX CutCamMtx;
-extern struct nuvec_s *shopcamlookat;
-extern struct nuvec_s *shopcampos;
 extern f32 CamStopBlend;
 extern NUVEC GunshipAOffset;
 extern f32 PodCamDist;
@@ -83,7 +81,6 @@ extern f32 CamWalkerRadius;
 extern f32 CamWalkerLift;
 extern f32 CamDewbackRadius;
 extern f32 CamDewbackLift;
-void GetShopCamLookPos(struct nuvec_s *position);
 i32 SockSysCamera(SOCKSYS *sock_sys, struct nuvec_s *fallback_camera_position, i32 socket_changed, struct nuvec_s *player_camera_positions,
                   struct nuvec_s *player_positions, i32 player_count, struct sockposition_s *camera_socket_position,
                   struct nuvec_s *camera_position, struct nuvec_s *camera_target, f32 *overlap_blend, f32 *position_seek, f32 *angle_seek,

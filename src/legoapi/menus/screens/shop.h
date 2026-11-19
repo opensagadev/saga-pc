@@ -100,6 +100,9 @@ extern "C" {
     extern i32 ShopCodeMoveSfxLock;
     extern i32 ShopCodeValid;
     extern i32 ShopSubMoveSfxLock;
+    extern struct nuvec_s *shopcampos;
+    extern struct nuvec_s *shopcamlookat;
+    void GetShopCamLookPos(struct nuvec_s *position);
 #ifdef __cplusplus
 }
 #endif

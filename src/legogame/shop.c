@@ -73,8 +73,6 @@ extern nuhspecial_s arrow2;
 extern nuhspecial_s arrow3;
 extern nuhspecial_s arrow4;
 extern struct nugspline_s *shopcamspline;
-extern NUVEC *shopcampos;
-extern NUVEC *shopcamlookat;
 extern NUVEC CharCurPos[7];
 extern NUVEC HintCurPos[7];
 extern NUVEC ExtraCurPos[7];

@@ -304,3 +304,4 @@ config/oddscan-budget.json magic-flag 2488 quick run 2: views merged into the re
 config/oddscan-budget.json magic-state 4314 quick run 2: views merged into the real records, so state stores that went through a cast now count: pushing.c player.landing_followup 3 (2), parts.c DebMat[7] material_kind 0x97 and sort_priority 128 (4 new; the aisysall.c and input_runtime.cpp 0xffff/0xff placeholder stores, 2, left with their renames)
 config/castscan-budget.json redundant-identity 6 quick run, settled in the refix
 config/oddscan-budget.json pc-suffix 57 quick run, settled in the refix
+config/declscan-budget.json A 22 quick run, settled in the refix

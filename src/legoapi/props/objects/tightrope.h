@@ -7,6 +7,7 @@
 #include "nu2api/numath/nuvec.h"
 
 struct TIGHTROPE_s;
+struct addgizmotype_s;
 
 #ifdef __cplusplus
 extern "C" {
@@ -14,6 +15,7 @@ extern "C" {
     struct TIGHTROPE_s *TightRope_InRange(GAMEOBJECT *, WORLDINFO *, NUVEC *);
     void TightRope_MoveCode(GAMEOBJECT *, i32);
     i32 TightRope_SnapTo(GAMEOBJECT *, NUVEC *);
+    struct addgizmotype_s *TightRopes_RegisterGizmo(i32);
 #ifdef __cplusplus
 }
 #endif

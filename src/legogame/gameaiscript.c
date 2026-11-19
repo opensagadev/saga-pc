@@ -158,8 +158,6 @@ u32 LEGO_AIPATHCNX_JUMP_NOW;
 u32 LEGO_AIPATHCNX_DONT_JUMP_NOW = 0;
 u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
 
-struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM *, AISYS *, AIPATH *, char *, char *, i32, char *, i32, i32);
-void AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *, i32, i32);
 i32 turret_gizmotype_id;
 i32 obstacle_gizmotype_id;
 i32 turret_gizmotype_id = -1;
