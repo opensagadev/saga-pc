@@ -156,13 +156,18 @@ extern "C" void PCDeviceSetTextureStageState(u32 stage, i32 state, u32 value) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_texture_stage_state(PCDeviceBackend.device, stage, state, value);
 }
 
+/* The backend keeps the device through its own method table; D3DX takes the same object as the SDK interface. */
+static IDirect3DDevice9 *PCDeviceD3DX() {
+    return reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device);
+}
+
 extern "C" void PCDeviceCreateTextureFromFile(char *path, PC_TEXTURE_RESOURCE **texture) {
     NudxFw_D3DBeginCriticalSection();
     u32 size = static_cast<u32>(NuFileSize(path));
     if (size > 0) {
         void *data = NuFileLoad(path);
         if (data != NULL) {
-            PCDeviceLastResult = D3DXCreateTextureFromFileInMemory(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), data, size,
+            PCDeviceLastResult = D3DXCreateTextureFromFileInMemory(PCDeviceD3DX(), data, size,
                                                                    reinterpret_cast<IDirect3DTexture9 **>(texture));
             NuFree(data, ".\\d3dCalls.cpp", 1032);
         }
@@ -173,29 +178,29 @@ extern "C" void PCDeviceCreateTextureFromFile(char *path, PC_TEXTURE_RESOURCE **
 extern "C" void PCDeviceCreateRenderToSurface(u32 width, u32 height, i32 format, BOOL depth_stencil, i32 depth_stencil_format,
                                               ID3DXRenderToSurface **render) {
     PCDeviceLastResult =
-        D3DXCreateRenderToSurface(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), width, height,
+        D3DXCreateRenderToSurface(PCDeviceD3DX(), width, height,
                                   static_cast<D3DFORMAT>(format), depth_stencil, static_cast<D3DFORMAT>(depth_stencil_format), render);
 }
 
 extern "C" void PCDeviceCreateFont(i32 height, u32 width, u32 weight, u32 mip_levels, BOOL italic, u32 char_set, u32 output_precision,
                                    u32 quality, u32 pitch_and_family, const char *face_name, ID3DXFont **font) {
-    PCDeviceLastResult = D3DXCreateFontA(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), height, width, weight, mip_levels,
+    PCDeviceLastResult = D3DXCreateFontA(PCDeviceD3DX(), height, width, weight, mip_levels,
                                          italic, char_set, output_precision, quality, pitch_and_family, face_name, font);
 }
 
 extern "C" void PCDeviceCreateEffectFromFile(const char *path, const D3DXMACRO *defines, ID3DXInclude *include, u32 flags,
                                              ID3DXEffectPool *pool, ID3DXEffect **effect, ID3DXBuffer **errors) {
-    PCDeviceLastResult = D3DXCreateEffectFromFileA(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), path, defines, include,
+    PCDeviceLastResult = D3DXCreateEffectFromFileA(PCDeviceD3DX(), path, defines, include,
                                                    flags, pool, effect, errors);
 }
 
 extern "C" void PCDeviceCreateTextureFromMemory(const void *data, u32 size, PC_TEXTURE_RESOURCE **texture) {
-    PCDeviceLastResult = D3DXCreateTextureFromFileInMemory(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), data, size,
+    PCDeviceLastResult = D3DXCreateTextureFromFileInMemory(PCDeviceD3DX(), data, size,
                                                            reinterpret_cast<IDirect3DTexture9 **>(texture));
 }
 
 extern "C" void PCDeviceCreateTextureFromFileInMemory(const void *data, u32 size, PC_TEXTURE_RESOURCE **texture) {
-    PCDeviceLastResult = D3DXCreateTextureFromFileInMemory(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), data, size,
+    PCDeviceLastResult = D3DXCreateTextureFromFileInMemory(PCDeviceD3DX(), data, size,
                                                            reinterpret_cast<IDirect3DTexture9 **>(texture));
 }
 
@@ -225,13 +230,13 @@ extern "C" void PCDeviceCreateTextureFromMemoryEx(const void *data, u32 size, u3
                                                   i32 pool, u32 filter, u32 mip_filter, u32 colour_key, D3DXIMAGE_INFO *information,
                                                   PALETTEENTRY *palette, PC_TEXTURE_RESOURCE **resource) {
     PCDeviceLastResult =
-        D3DXCreateTextureFromFileInMemoryEx(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), data, size, width, height, levels,
+        D3DXCreateTextureFromFileInMemoryEx(PCDeviceD3DX(), data, size, width, height, levels,
                                             usage, static_cast<D3DFORMAT>(format), static_cast<D3DPOOL>(pool), filter, mip_filter,
                                             colour_key, information, palette, reinterpret_cast<IDirect3DTexture9 **>(resource));
 }
 
 extern "C" void PCDeviceCreateCubeTextureFromMemory(const void *data, u32 size, PC_TEXTURE_RESOURCE **resource) {
-    PCDeviceLastResult = D3DXCreateCubeTextureFromFileInMemory(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), data, size,
+    PCDeviceLastResult = D3DXCreateCubeTextureFromFileInMemory(PCDeviceD3DX(), data, size,
                                                                reinterpret_cast<IDirect3DCubeTexture9 **>(resource));
 }
 
@@ -324,7 +329,7 @@ extern "C" void PCDeviceCreateCubeTextureFromFile(char *path, PC_TEXTURE_RESOURC
     if (size > 0) {
         void *data = NuFileLoad(path);
         if (data != NULL) {
-            PCDeviceLastResult = D3DXCreateCubeTextureFromFileInMemory(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), data,
+            PCDeviceLastResult = D3DXCreateCubeTextureFromFileInMemory(PCDeviceD3DX(), data,
                                                                        size, reinterpret_cast<IDirect3DCubeTexture9 **>(resource));
             NuFree(data, ".\\d3dCalls.cpp", 1116);
         }
@@ -333,7 +338,7 @@ extern "C" void PCDeviceCreateCubeTextureFromFile(char *path, PC_TEXTURE_RESOURC
 
 extern "C" void PCDeviceCreateEffect(const void *data, u32 size, const D3DXMACRO *defines, ID3DXInclude *include, u32 flags,
                                      ID3DXEffectPool *pool, ID3DXEffect **effect, ID3DXBuffer **errors) {
-    PCDeviceLastResult = D3DXCreateEffect(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), data, size, defines, include, flags,
+    PCDeviceLastResult = D3DXCreateEffect(PCDeviceD3DX(), data, size, defines, include, flags,
                                           pool, effect, errors);
 }
 

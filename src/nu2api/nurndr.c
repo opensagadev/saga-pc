@@ -1409,7 +1409,7 @@ typedef struct PC_SHADOW_CYLINDER { // size 0x40
  * when bit 0 of the record is set, otherwise the four edges of a box. */
 void NuRndrArenaAddCylinderVolume(PC_SHADOW_CYLINDER *cylinder, PC_HG_SHADOW_PACKET *packet, NUVEC *offset) {
     NUVEC axis[3];
-    VuVec v[32];
+    NUVEC4 v[32];
     NUVEC4 centre;
     NUVEC length;
     NUVEC perp;
@@ -1428,12 +1428,12 @@ void NuRndrArenaAddCylinderVolume(PC_SHADOW_CYLINDER *cylinder, PC_HG_SHADOW_PAC
         v[4].y = cylinder->centre.y;
         v[4].z = cylinder->centre.z;
         v[4].w = 1.0f;
-        NuVec4MtxTransformVU0(&centre, (NUVEC4 *)&v[4], &packet->matrix);
+        NuVec4MtxTransformVU0(&centre, &v[4], &packet->matrix);
         v[0].x = cylinder->axis.x + cylinder->centre.x;
         v[0].y = cylinder->axis.y + cylinder->centre.y;
         v[0].z = cylinder->axis.z + cylinder->centre.z;
         v[0].w = 1.0f;
-        NuVec4MtxTransformVU0((NUVEC4 *)&v[0], (NUVEC4 *)&v[0], &packet->matrix);
+        NuVec4MtxTransformVU0(&v[0], &v[0], &packet->matrix);
         axis[0].x = v[0].x - centre.x;
         axis[0].y = v[0].y - centre.y;
         axis[0].z = v[0].z - centre.z;
@@ -1441,7 +1441,7 @@ void NuRndrArenaAddCylinderVolume(PC_SHADOW_CYLINDER *cylinder, PC_HG_SHADOW_PAC
         v[1].y = cylinder->side.y + cylinder->centre.y;
         v[1].z = cylinder->side.z + cylinder->centre.z;
         v[1].w = 1.0f;
-        NuVec4MtxTransformVU0((NUVEC4 *)&v[1], (NUVEC4 *)&v[1], &packet->matrix);
+        NuVec4MtxTransformVU0(&v[1], &v[1], &packet->matrix);
         axis[1].x = v[1].x - centre.x;
         axis[1].y = v[1].y - centre.y;
         axis[1].z = v[1].z - centre.z;
@@ -1449,7 +1449,7 @@ void NuRndrArenaAddCylinderVolume(PC_SHADOW_CYLINDER *cylinder, PC_HG_SHADOW_PAC
         v[2].y = cylinder->up.y + cylinder->centre.y;
         v[2].z = cylinder->up.z + cylinder->centre.z;
         v[2].w = 1.0f;
-        NuVec4MtxTransformVU0((NUVEC4 *)&v[2], (NUVEC4 *)&v[2], &packet->matrix);
+        NuVec4MtxTransformVU0(&v[2], &v[2], &packet->matrix);
         axis[2].x = v[2].x - centre.x;
         axis[2].y = v[2].y - centre.y;
         axis[2].z = v[2].z - centre.z;
@@ -1598,12 +1598,12 @@ void NuRndrArenaAddCylinderVolume(PC_SHADOW_CYLINDER *cylinder, PC_HG_SHADOW_PAC
         v[4].y = cylinder->centre.y;
         v[4].z = cylinder->centre.z;
         v[4].w = 1.0f;
-        NuVec4MtxTransformVU0(&centre, (NUVEC4 *)&v[4], &packet->matrix);
+        NuVec4MtxTransformVU0(&centre, &v[4], &packet->matrix);
         v[0].x = cylinder->axis.x + cylinder->centre.x;
         v[0].y = cylinder->axis.y + cylinder->centre.y;
         v[0].z = cylinder->axis.z + cylinder->centre.z;
         v[0].w = 1.0f;
-        NuVec4MtxTransformVU0((NUVEC4 *)&v[0], (NUVEC4 *)&v[0], &packet->matrix);
+        NuVec4MtxTransformVU0(&v[0], &v[0], &packet->matrix);
         axis[0].x = v[0].x - centre.x;
         axis[0].y = v[0].y - centre.y;
         axis[0].z = v[0].z - centre.z;
@@ -1611,7 +1611,7 @@ void NuRndrArenaAddCylinderVolume(PC_SHADOW_CYLINDER *cylinder, PC_HG_SHADOW_PAC
         v[1].y = cylinder->side.y + cylinder->centre.y;
         v[1].z = cylinder->side.z + cylinder->centre.z;
         v[1].w = 1.0f;
-        NuVec4MtxTransformVU0((NUVEC4 *)&v[1], (NUVEC4 *)&v[1], &packet->matrix);
+        NuVec4MtxTransformVU0(&v[1], &v[1], &packet->matrix);
         axis[1].x = v[1].x - centre.x;
         axis[1].y = v[1].y - centre.y;
         axis[1].z = v[1].z - centre.z;
@@ -1619,7 +1619,7 @@ void NuRndrArenaAddCylinderVolume(PC_SHADOW_CYLINDER *cylinder, PC_HG_SHADOW_PAC
         v[2].y = cylinder->up.y + cylinder->centre.y;
         v[2].z = cylinder->up.z + cylinder->centre.z;
         v[2].w = 1.0f;
-        NuVec4MtxTransformVU0((NUVEC4 *)&v[2], (NUVEC4 *)&v[2], &packet->matrix);
+        NuVec4MtxTransformVU0(&v[2], &v[2], &packet->matrix);
         axis[2].x = v[2].x - centre.x;
         axis[2].y = v[2].y - centre.y;
         axis[2].z = v[2].z - centre.z;
@@ -1718,7 +1718,7 @@ void NuRndrArenaAddCylinderVolume(PC_SHADOW_CYLINDER *cylinder, PC_HG_SHADOW_PAC
 /* Extrudes the eight-direction silhouette of a queued ellipsoid (centre and three axes) along the light offset into
  * arena quads. */
 void NuRndrArenaAddEllipsoidVolume(NUVEC *axes, PC_HG_SHADOW_PACKET *packet, NUVEC *offset, f32 near_value, f32 far_value) {
-    VuVec v[32];
+    NUVEC4 v[32];
     NUVEC4 centre;
     NUVEC axis[3];
     NUVEC local;
@@ -1729,12 +1729,12 @@ void NuRndrArenaAddEllipsoidVolume(NUVEC *axes, PC_HG_SHADOW_PACKET *packet, NUV
     v[4].y = axes[0].y;
     v[4].z = axes[0].z;
     v[4].w = 1.0f;
-    NuVec4MtxTransformVU0(&centre, (NUVEC4 *)&v[4], &packet->matrix);
+    NuVec4MtxTransformVU0(&centre, &v[4], &packet->matrix);
     v[0].x = axes[2].x + axes[0].x;
     v[0].y = axes[2].y + axes[0].y;
     v[0].z = axes[2].z + axes[0].z;
     v[0].w = 1.0f;
-    NuVec4MtxTransformVU0((NUVEC4 *)&v[0], (NUVEC4 *)&v[0], &packet->matrix);
+    NuVec4MtxTransformVU0(&v[0], &v[0], &packet->matrix);
     axis[0].x = v[0].x - centre.x;
     axis[0].y = v[0].y - centre.y;
     axis[0].z = v[0].z - centre.z;
@@ -1742,7 +1742,7 @@ void NuRndrArenaAddEllipsoidVolume(NUVEC *axes, PC_HG_SHADOW_PACKET *packet, NUV
     v[1].y = axes[1].y + axes[0].y;
     v[1].z = axes[1].z + axes[0].z;
     v[1].w = 1.0f;
-    NuVec4MtxTransformVU0((NUVEC4 *)&v[1], (NUVEC4 *)&v[1], &packet->matrix);
+    NuVec4MtxTransformVU0(&v[1], &v[1], &packet->matrix);
     axis[1].x = v[1].x - centre.x;
     axis[1].y = v[1].y - centre.y;
     axis[1].z = v[1].z - centre.z;
@@ -1750,7 +1750,7 @@ void NuRndrArenaAddEllipsoidVolume(NUVEC *axes, PC_HG_SHADOW_PACKET *packet, NUV
     v[2].y = axes[3].y + axes[0].y;
     v[2].z = axes[3].z + axes[0].z;
     v[2].w = 1.0f;
-    NuVec4MtxTransformVU0((NUVEC4 *)&v[2], (NUVEC4 *)&v[2], &packet->matrix);
+    NuVec4MtxTransformVU0(&v[2], &v[2], &packet->matrix);
     axis[2].x = v[2].x - centre.x;
     axis[2].y = v[2].y - centre.y;
     axis[2].z = v[2].z - centre.z;
@@ -1823,14 +1823,14 @@ void NuRndrArenaAddEllipsoidVolume(NUVEC *axes, PC_HG_SHADOW_PACKET *packet, NUV
 void NuRndrArenaAddEdgeVolumes(PC_HG_SHADOW_PACKET *packet, PC_SHADOW_EDGE *groups, PC_SHADOW_EDGE *points, NUVEC *offset) {
     f32 buffer[256];
     NUMTX *matrix = (NUMTX *)(((u32)buffer + 15) & ~15u);
-    VuVec *v;
+    NUVEC4 *v;
     i32 group_count;
     *matrix = packet->matrix;
-    v = (VuVec *)(matrix + 1);
+    v = matrix[1].rows;
     for (group_count = points->count; group_count > 0; group_count--) {
         v[0].xyz = groups->v;
         v[0].w = 1.0f;
-        NuVec4MtxRotateVU0((NUVEC4 *)&v[0], (NUVEC4 *)&v[0], matrix);
+        NuVec4MtxRotateVU0(&v[0], &v[0], matrix);
         if (!(v[0].x * offset->x + v[0].y * offset->y + v[0].z * offset->z > 0.0)) {
             PC_SHADOW_EDGE *point = points;
             i32 remaining;
@@ -1843,14 +1843,14 @@ void NuRndrArenaAddEdgeVolumes(PC_HG_SHADOW_PACKET *packet, PC_SHADOW_EDGE *grou
                 RendererArenaIndexCount += 6;
                 v[0].xyz = point->v;
                 v[0].w = 1.0f;
-                NuVec4MtxTransformVU0((NUVEC4 *)&v[0], (NUVEC4 *)&v[0], matrix);
+                NuVec4MtxTransformVU0(&v[0], &v[0], matrix);
                 if (remaining == 1) {
-                    v[1] = *(VuVec *)points;
+                    v[1] = *(NUVEC4 *)points;
                 } else {
-                    v[1] = *(VuVec *)&point[1];
+                    v[1] = *(NUVEC4 *)&point[1];
                 }
                 v[1].w = 1.0f;
-                NuVec4MtxTransformVU0((NUVEC4 *)&v[1], (NUVEC4 *)&v[1], matrix);
+                NuVec4MtxTransformVU0(&v[1], &v[1], matrix);
                 v[2].x = v[0].x + offset->x;
                 v[2].y = v[0].y + offset->y;
                 v[2].z = v[0].z + offset->z;

@@ -142,7 +142,7 @@ extern "C" {
     NULGTVERTEX *NuDebrisVertexData = 0;
 }
 
-static f32 Nu3dPcIncludesVuVecLengthSq(const VuVec &v) {
+static f32 Nu3dPcIncludesVecLengthSq(const NUVEC &v) {
     return v.x * v.x + v.y * v.y + v.z * v.z;
 }
 
@@ -675,10 +675,19 @@ extern "C" {
     } SCENE_FIXUP_NATIVE;
 
     struct __declspec(align(16)) PC_GEOMETRY_BASIS_VECTOR { // size 0x10
-        f32 x;                                              // 0x0
-        f32 y;                                              // 0x4
-        f32 z;                                              // 0x8
-        f32 w;                                              // 0xc
+
+        union { // size 0xc
+
+            struct {   // size 0xc
+                f32 x; // 0x0
+                f32 y; // 0x4
+                f32 z; // 0x8
+            };
+
+            NUVEC xyz;
+        }; // 0x0
+
+        f32 w; // 0xc
     };
 
     struct PC_GEOMETRY_BASIS_INPUT_RECORD { // size 0x40
@@ -706,11 +715,6 @@ extern "C" {
 
     struct PC_GEOMETRY_MORPH_WEIGHTS { // size 0x4
         f32 *weight_words;             // 0x0
-    };
-
-    struct PC_GEOMETRY_INITIALIZED_BASIS_RECORD { // size 0x40
-        PC_GEOMETRY_BASIS_VECTOR rows[3];         // 0x00
-        u8 unwritten_30[0x10];                    // 0x30
     };
 
     extern "C" i32 PcGeometryMatrixCapacity;
@@ -822,7 +826,7 @@ extern "C" {
         PC_GEOMETRY_BASIS_MATRIX matrices[3]; // 0x00
     } PC_GEOMETRY_BASIS;
 
-    extern "C" PC_GEOMETRY_BASIS *PcGeometryTransforms;
+    extern "C" PC_GEOMETRY_BASIS_MATRIX *PcGeometryTransforms;
     extern "C" PC_GEOMETRY_OUTPUT *PcGeometryOutput;
 
     extern "C" {
@@ -3164,7 +3168,7 @@ extern "C" {
     u8 PcTransformDynamicGeometry(PC_GEOMETRY_SKIN *skin, PC_GEOMETRY_MESH *mesh, u32 *output_index) {
         for (u32 group_index = 0; group_index < mesh->group_count; ++group_index) {
             PC_GEOMETRY_GROUP *group = &mesh->groups[group_index];
-            PC_GEOMETRY_BASIS *basis = &PcGeometryTransforms[group->transform_index];
+            PC_GEOMETRY_BASIS *basis = (PC_GEOMETRY_BASIS *)&PcGeometryTransforms[group->transform_index * 3];
             for (u32 element = 0; element < group->element_count; ++element) {
                 PC_GEOMETRY_INPUT *input = &mesh->elements[group->first_element + element];
                 PC_GEOMETRY_OUTPUT *output = &PcGeometryOutput[*output_index];
@@ -3256,7 +3260,7 @@ extern "C" {
                 row2.y = partial2.y + p22.y;
                 row2.z = partial2.z + p22.z;
                 PC_GEOMETRY_BASIS_VECTOR cross;
-                NuVecCross((NUVEC *)&cross, (NUVEC *)&row1, (NUVEC *)&row2);
+                NuVecCross(&cross.xyz, &row1.xyz, &row2.xyz);
                 PC_GEOMETRY_CORNER *corners = output->corners;
                 if (input->skin_indices[0] >= 0 && skin->matrix_group_count > 1) {
                     corners[0] = input->corners[0];
@@ -3324,7 +3328,7 @@ extern "C" {
             delta.x = origin.x - position->x;
             delta.y = origin.y - position->y;
             delta.z = origin.z - position->z;
-            output[i].distance_squared = Nu3dPcIncludesVuVecLengthSq(*(VuVec *)&delta);
+            output[i].distance_squared = Nu3dPcIncludesVecLengthSq(delta.xyz);
         }
         for (i32 i = 0; i < count; ++i) {
             items[i].distance_squared = output[items[i].output_index].distance_squared;
@@ -5851,16 +5855,16 @@ extern "C" {
         for (u32 i = 0; i < (u32)source->record_count; ++i) {
             PC_GEOMETRY_BASIS_INPUT_RECORD *input = &source->records[i];
             if (morph_count == 0 && input->bones[0] == 0xff && input->bones[1] == 0xff && input->bones[2] == 0xff) {
-                ((PC_GEOMETRY_INITIALIZED_BASIS_RECORD *)PcGeometryTransforms)[i].rows[0] = input->rows[0];
-                ((PC_GEOMETRY_INITIALIZED_BASIS_RECORD *)PcGeometryTransforms)[i].rows[1] = input->rows[1];
-                ((PC_GEOMETRY_INITIALIZED_BASIS_RECORD *)PcGeometryTransforms)[i].rows[2] = input->rows[2];
+                PcGeometryTransforms[i].rows[0] = input->rows[0];
+                PcGeometryTransforms[i].rows[1] = input->rows[1];
+                PcGeometryTransforms[i].rows[2] = input->rows[2];
                 continue;
             }
             PC_GEOMETRY_BASIS_VECTOR point = input->rows[0];
             for (i32 j = 0; j < morph_count; ++j) {
                 NUVEC delta;
-                NuVecScale(&delta, (NUVEC *)&source->morph_deltas[j].vectors[i], morph->weight_words[j + 2]);
-                NuVecAdd((NUVEC *)&point, (NUVEC *)&point, &delta);
+                NuVecScale(&delta, &source->morph_deltas[j].vectors[i].xyz, morph->weight_words[j + 2]);
+                NuVecAdd(&point.xyz, &point.xyz, &delta);
             }
             NUMTX *matrices[3];
             matrices[0] = input->bones[0] < 0xff ? &palette[input->bones[0]] : &identity;
@@ -5869,9 +5873,9 @@ extern "C" {
             PC_GEOMETRY_BASIS_VECTOR t0;
             PC_GEOMETRY_BASIS_VECTOR t1;
             PC_GEOMETRY_BASIS_VECTOR t2;
-            NuVecMtxTransform((NUVEC *)&t0, (NUVEC *)&point, matrices[0]);
-            NuVecMtxTransform((NUVEC *)&t1, (NUVEC *)&point, matrices[1]);
-            NuVecMtxTransform((NUVEC *)&t2, (NUVEC *)&point, matrices[2]);
+            NuVecMtxTransform(&t0.xyz, &point.xyz, matrices[0]);
+            NuVecMtxTransform(&t1.xyz, &point.xyz, matrices[1]);
+            NuVecMtxTransform(&t2.xyz, &point.xyz, matrices[2]);
             {
                 PC_GEOMETRY_BASIS_VECTOR p0;
                 PC_GEOMETRY_BASIS_VECTOR p1;
@@ -5902,7 +5906,7 @@ extern "C" {
                 sum.x = partial.x + p2.x;
                 sum.y = partial.y + p2.y;
                 sum.z = partial.z + p2.z;
-                ((PC_GEOMETRY_INITIALIZED_BASIS_RECORD *)PcGeometryTransforms)[i].rows[0] = sum;
+                PcGeometryTransforms[i].rows[0] = sum;
             }
             {
                 f32 x = input->rows[1].x * matrices[0]->m00 + input->rows[1].y * matrices[0]->m10 + input->rows[1].z * matrices[0]->m20;
@@ -5955,7 +5959,7 @@ extern "C" {
                 sum.x = partial.x + p2.x;
                 sum.y = partial.y + p2.y;
                 sum.z = partial.z + p2.z;
-                ((PC_GEOMETRY_INITIALIZED_BASIS_RECORD *)PcGeometryTransforms)[i].rows[1] = sum;
+                PcGeometryTransforms[i].rows[1] = sum;
             }
             {
                 f32 x = input->rows[2].x * matrices[0]->m00 + input->rows[2].y * matrices[0]->m10 + input->rows[2].z * matrices[0]->m20;
@@ -6008,7 +6012,7 @@ extern "C" {
                 sum.x = partial.x + p2.x;
                 sum.y = partial.y + p2.y;
                 sum.z = partial.z + p2.z;
-                ((PC_GEOMETRY_INITIALIZED_BASIS_RECORD *)PcGeometryTransforms)[i].rows[2] = sum;
+                PcGeometryTransforms[i].rows[2] = sum;
             }
         }
         return 1;

@@ -5,7 +5,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern struct PC_GEOMETRY_BASIS *PcGeometryTransforms;
+    extern struct PC_GEOMETRY_BASIS_MATRIX *PcGeometryTransforms;
     extern struct PC_GEOMETRY_OUTPUT *PcGeometryOutput;
 #ifdef __cplusplus
 }

@@ -123,12 +123,12 @@ static f32 Nu3dIncludesFabs(f32 f) {
 }
 
 /* Unit-length copy of a direction, as a point (w = 1). */
-static void Nu3dIncludesVuVecNormalise(VuVec &destination, VuVec &source) {
+static void Nu3dIncludesVec4Normalise(NUVEC4 &destination, NUVEC4 &source) {
     NuVecNorm(&destination.xyz, &source.xyz);
     destination.w = 1.0f;
 }
 
-static f32 Nu3dIncludesVuVecDot(const VuVec &a, const VuVec &b) {
+static f32 Nu3dIncludesVecDot(const NUVEC &a, const NUVEC &b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
@@ -5841,7 +5841,7 @@ bool OccluderSet::IsOccludedSphere(NUVEC const *center, f32 radius) {
             delta.x = projected.x - first.x;
             delta.y = projected.y - first.y;
             delta.z = 0.0f;
-            f32 distance = Nu3dIncludesVuVecDot(*(VuVec *)&normal, *(VuVec *)&delta);
+            f32 distance = Nu3dIncludesVecDot(normal.xyz, delta);
             if (distance - screen_radius < 0.0) {
                 break;
             }
@@ -7344,13 +7344,13 @@ extern "C" {
         planes[1].c = -edge * inverse_length;
         planes[1].d = 0.0f;
         camera_position = NuPortalLocalView.translation;
-        NuVec4MtxTransformH((NUVEC4 *)&planes[0], (NUVEC4 *)&planes[0], &NuPortalLocalView);
+        NuVec4MtxTransformH(&planes[0].equation, &planes[0].equation, &NuPortalLocalView);
         planes[0].d = -(planes[0].a * camera_position.x + planes[0].b * camera_position.y + planes[0].c * camera_position.z);
-        NuVec4MtxTransformH((NUVEC4 *)&planes[1], (NUVEC4 *)&planes[1], &NuPortalLocalView);
+        NuVec4MtxTransformH(&planes[1].equation, &planes[1].equation, &NuPortalLocalView);
         planes[1].d = -(planes[1].a * camera_position.x + planes[1].b * camera_position.y + planes[1].c * camera_position.z);
-        NuVec4MtxTransformH((NUVEC4 *)&planes[2], (NUVEC4 *)&planes[2], &NuPortalLocalView);
+        NuVec4MtxTransformH(&planes[2].equation, &planes[2].equation, &NuPortalLocalView);
         planes[2].d = -(planes[2].a * camera_position.x + planes[2].b * camera_position.y + planes[2].c * camera_position.z);
-        NuVec4MtxTransformH((NUVEC4 *)&planes[3], (NUVEC4 *)&planes[3], &NuPortalLocalView);
+        NuVec4MtxTransformH(&planes[3].equation, &planes[3].equation, &NuPortalLocalView);
         planes[3].d = -(planes[3].a * camera_position.x + planes[3].b * camera_position.y + planes[3].c * camera_position.z);
         transposeClipPlanes(frustum);
         return frustum;
@@ -11520,9 +11520,9 @@ void NuSpeedBlurFilterGen::computeSpeedBlur(NUVEC4 *result) {
     NUVEC4 motion;
     NuMtxInvH(&previous_inverse, const_cast<NUMTX *>(&parameters->previous));
     NuMtxInvH(&current_inverse, const_cast<NUMTX *>(&parameters->current));
-    NuVec4MtxTransformH(&motion, reinterpret_cast<NUVEC4 *>(&previous_inverse) + 3, const_cast<NUMTX *>(&parameters->current));
+    NuVec4MtxTransformH(&motion, &previous_inverse.rows[3], const_cast<NUMTX *>(&parameters->current));
     if (motion.z < 0.0f) {
-        NuVec4MtxTransformH(&motion, reinterpret_cast<NUVEC4 *>(&current_inverse) + 3, const_cast<NUMTX *>(&parameters->previous));
+        NuVec4MtxTransformH(&motion, &current_inverse.rows[3], const_cast<NUMTX *>(&parameters->previous));
         motion.x = (f32)((f64)motion.x * -1.0);
         motion.y = (f32)((f64)motion.y * -1.0);
         motion.z = (f32)((f64)motion.z * -1.0);
@@ -12312,7 +12312,7 @@ void NuMainFilterGen::render() {
             f32 direction_y = source->y;
             f32 direction_z = source->z;
             __declspec(align(16)) NUVEC4 direction = {source->x, direction_y, direction_z, 1.0f};
-            Nu3dIncludesVuVecNormalise(*(VuVec *)&direction, *(VuVec *)&direction);
+            Nu3dIncludesVec4Normalise(direction, direction);
             direction.w = bloom->direction_bias;
             PCDeviceSetVertexShaderConstantsF(0x8a, &direction.x, 1);
         }
@@ -13246,7 +13246,7 @@ extern "C" {
     i32 PcGeometryRegistryCount = 0;
     struct PC_GEOMETRY_PUBLISH_RECORD *PcGeometryRegistry = NULL;
     i32 PcGeometryMatrixCapacity = 0;
-    struct PC_GEOMETRY_BASIS *PcGeometryTransforms = NULL;
+    struct PC_GEOMETRY_BASIS_MATRIX *PcGeometryTransforms = NULL;
     i32 PcGeometryOutputCapacity = 0;
     struct PC_GEOMETRY_OUTPUT *PcGeometryOutput = NULL;
     i32 NuAnimDataBitCountInitialized = 0;

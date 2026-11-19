@@ -126,7 +126,7 @@ extern "C" i32 PcRegisterDynamicGeometry(PC_GEOMETRY_PUBLISH_FORMAT *format) {
         PcGeometryMatrixCapacity = maximum;
         void *raw =
             NuAlloc((i32)(((u32)maximum + 2) * sizeof(NUMTX)), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0x9d);
-        PcGeometryTransforms = (PC_GEOMETRY_BASIS *)(((u32)raw + 0x7f) & 0xffffff00);
+        PcGeometryTransforms = (PC_GEOMETRY_BASIS_MATRIX *)(((u32)raw + 0x7f) & 0xffffff00);
         if (PcGeometryTransforms == NULL) {
             PcGeometryMatrixCapacity = -1;
         }

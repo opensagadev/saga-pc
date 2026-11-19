@@ -3,6 +3,7 @@
 #include "nu2api/nucore/common.h"
 
 #include "nu2api/numath/nuvec.h"
+#include "nu2api/numath/nuvec4.h"
 
 typedef union nuplane_s { // size 0x10
 
@@ -17,6 +18,8 @@ typedef union nuplane_s { // size 0x10
         NUVEC normal; // 0x0
         f32 distance; // 0xc
     };
+
+    NUVEC4 equation;
 } NUPLANE;
 
 #ifdef __cplusplus
