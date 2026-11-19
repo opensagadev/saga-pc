@@ -36,12 +36,6 @@ extern const f64 GameObjectNearFloorNoFloorHeight;
 
 /* Bitfield view of flags_1fc: bit 7 marks a player-controlled object, bit 8 an AI-driven one. */
 
-typedef struct gameobject_collision_reset_s { // size 0x2b8
-    u8 unknown_000[0x2b0];                    // 0x000
-    u32 collision_overlap_low;                // 0x2b0
-    u32 collision_overlap_high;               // 0x2b4
-} GAMEOBJECT_COLLISION_RESET;
-
 void ClearGameObjects(APIOBJECTSYS *system) {
     memset(Obj, 0, sizeof(GAMEOBJECT) * 64);
     APIObjectDestroyAll(system);
@@ -82,8 +76,8 @@ GAMEOBJECT *AddGameObject(void) {
         ((APIOBJECT *)object)->owner = object;
         object->ai_packet.owner = object;
         ((APIOBJECT *)object)->ai = &object->ai_packet;
-        ((GAMEOBJECT_COLLISION_RESET *)object)->collision_overlap_low = 0;
-        ((GAMEOBJECT_COLLISION_RESET *)object)->collision_overlap_high = 0;
+        object->ai_area_mask[0] = 0;
+        object->ai_area_mask[1] = 0;
         return object;
     }
     return NULL;

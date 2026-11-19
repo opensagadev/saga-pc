@@ -15,13 +15,6 @@
 #include "legogame/game.h"
 #include "nu2api/nucore/nustring.h"
 
-typedef struct HINT_CANCEL { // size 0x1c
-    u8 unknown_00[8];        // 0x00
-    f32 display_duration;    // 0x08
-    u8 unknown_0c[0xc];      // 0x0c
-    f32 cooldown;            // 0x18
-} HINT_CANCEL;
-
 /* Hint updater records keep their packed field offsets. */
 
 struct panel_movement_s;
@@ -146,7 +139,7 @@ void RegisterWithHintSys(void (*draw_fn)(HINT *, i32), HINT *hints, u32 *save_bi
 }
 
 void Hint_CancelCurrent(void) {
-    HINT_CANCEL *hint = (HINT_CANCEL *)hintsys.active_hint;
+    HINT *hint = hintsys.active_hint;
     if (hint != NULL) {
         if (hint->display_duration != 0.0f && (f64)hint->display_duration - 0.5 > hintsys.display_elapsed) {
             hintsys.display_elapsed = (f32)((f64)hint->display_duration - 0.5);

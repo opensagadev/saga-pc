@@ -22,16 +22,6 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
-typedef struct CAMERA_JUDDER_FIELDS { // size 0x128
-    u8 unknown_000[0x11c];            // 0x000
-    NUVEC position;                   // 0x11c
-} CAMERA_JUDDER_FIELDS;
-
-typedef struct LEVEL_JUDDER_FIELDS { // size 0xce
-    u8 unknown_000[0xcd];            // 0x00
-    u8 maximum_distance;             // 0xcd
-} LEVEL_JUDDER_FIELDS;
-
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 LegoapiCameraFabs(f32 f) {
     f32 rv;
@@ -54,8 +44,8 @@ void GameCam_Judder(GAMECAMERA *camera, f32 amount, i32 axis, NUVEC *source) {
     magnitude.value = LegoapiCameraFabs(amount);
     if (magnitude.value > camera->judder_time) {
         if (source != NULL) {
-            distance = NuVecDist(&((CAMERA_JUDDER_FIELDS *)camera)->position, source, NULL);
-            maximum_distance = (f32)((LEVEL_JUDDER_FIELDS *)WORLD->current_level)->maximum_distance;
+            distance = NuVecDist(&camera->position, source, NULL);
+            maximum_distance = (f32)WORLD->current_level->reflection_range;
             if (distance < maximum_distance) {
                 magnitude.value *= (maximum_distance - distance) / maximum_distance;
                 if (magnitude.value > camera->judder_time) {
