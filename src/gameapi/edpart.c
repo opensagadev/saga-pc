@@ -1156,11 +1156,11 @@ void edpartSetSoundID(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     }
     for (emitter = 0; emitter < 40; ++emitter) {
         if (part_emits[emitter].effect_id == edpart_nearest_emit->effect_id) {
-            part_emits[emitter].unknown_3c = 0;
+            part_emits[emitter].has_sounds = 0;
             for (sound = 0; emitter < 4; ++sound) {
                 if (part_types[part_emits[emitter].effect_id].sounds[sound] != -1 &&
                     part_types[part_emits[emitter].effect_id].sound_modes[sound] != 0) {
-                    part_emits[emitter].unknown_3c = 1;
+                    part_emits[emitter].has_sounds = 1;
                     break;
                 }
             }
@@ -1187,11 +1187,11 @@ void edpartSetSoundControl(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     }
     for (emitter = 0; emitter < 40; ++emitter) {
         if (part_emits[emitter].effect_id == edpart_nearest_emit->effect_id) {
-            part_emits[emitter].unknown_3c = 0;
+            part_emits[emitter].has_sounds = 0;
             for (sound = 0; emitter < 4; ++sound) {
                 if (part_types[part_emits[emitter].effect_id].sounds[sound] != -1 &&
                     part_types[part_emits[emitter].effect_id].sound_modes[sound] != 0) {
-                    part_emits[emitter].unknown_3c = 1;
+                    part_emits[emitter].has_sounds = 1;
                     break;
                 }
             }
@@ -1324,9 +1324,9 @@ void edpartSoundsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 void edpartSetSwitchType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     edpart_switchtype_menu = NULL;
     if (edpart_nearest_emit != NULL) {
-        edpart_nearest_emit->unknown_44 = item->data;
-        if (edpart_nearest_emit->unknown_44 == 0) {
-            edpart_nearest_emit->unknown_3d = 1;
+        edpart_nearest_emit->switch_type = item->data;
+        if (edpart_nearest_emit->switch_type == 0) {
+            edpart_nearest_emit->switch_state = 1;
         }
     }
     eduiMenuDetach(menu);
@@ -1335,7 +1335,7 @@ void edpartSetSwitchType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
 
 void edpartSetSwitchId(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_emit != NULL) {
-        edpart_nearest_emit->unknown_46 = (i16)((edui_slider_s *)item)->value;
+        edpart_nearest_emit->switch_id = (i16)((edui_slider_s *)item)->value;
     }
 }
 
@@ -1348,8 +1348,8 @@ void edpartSwitchTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edpart_switchtype_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edpartCancelSwitchTypeMenu, "Switch Type");
     if (edpart_switchtype_menu != NULL) {
         eduiMenuAddItem(edpart_switchtype_menu,
-                        eduiItemCheckCreate(0, edblack, part_emits[edpart_nearest].unknown_44 == 0, 1, edpartSetSwitchType, "None"));
-        eduiMenuAddItem(edpart_switchtype_menu, eduiItemCheckCreate(1, edblack, part_emits[edpart_nearest].unknown_44 == 1, 1,
+                        eduiItemCheckCreate(0, edblack, part_emits[edpart_nearest].switch_type == 0, 1, edpartSetSwitchType, "None"));
+        eduiMenuAddItem(edpart_switchtype_menu, eduiItemCheckCreate(1, edblack, part_emits[edpart_nearest].switch_type == 1, 1,
                                                                     edpartSetSwitchType, "Global Switch"));
         eduiMenuAttach(menu, edpart_switchtype_menu);
         edpart_switchtype_menu->x = menu->x + 10;
@@ -1368,7 +1368,7 @@ void edpartSwitchMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         if (edpart_switch_menu != NULL) {
             eduiMenuAddItem(edpart_switch_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartSwitchTypeMenu, "Switch Type..."));
             eduiMenuAddItem(edpart_switch_menu, eduiItemSliderCreateInt(0, edblack, 0, edpartSetSwitchId, 0, 128,
-                                                                        part_emits[edpart_nearest].unknown_46, "Switch ID"));
+                                                                        part_emits[edpart_nearest].switch_id, "Switch ID"));
             eduiMenuAttach(menu, edpart_switch_menu);
             edpart_switch_menu->x = menu->x + 10;
             edpart_switch_menu->y = menu->y + 40;
@@ -1574,8 +1574,8 @@ i32 edpartSaveEffects(char *filename, u8 page) {
                 EdFileWriteShort(part_emits[index].rotation_30);
                 EdFileWriteShort(part_emits[index].rotation_2e);
                 EdFileWriteShort(part_emits[index].rotation_2c);
-                EdFileWriteShort(part_emits[index].unknown_44);
-                EdFileWriteShort(part_emits[index].unknown_46);
+                EdFileWriteShort(part_emits[index].switch_type);
+                EdFileWriteShort(part_emits[index].switch_id);
             }
         } else {
             EdFileWriteInt(0);

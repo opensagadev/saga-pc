@@ -1643,12 +1643,10 @@ f32 Condition_PlayerInLevelNode(AISYS *system, AISCRIPTPROCESS *process, AIPACKE
 f32 Condition_EitherPlayerInLevelNode(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     AIPATHNODE *node = argument;
     if (system != NULL && node != NULL) {
-        if (system->player_1 != NULL &&
-            system->player_1->ai->inside_path_node == node - system->path_sys->active_path->nodes) {
+        if (system->player_1 != NULL && system->player_1->ai->inside_path_node == node - system->path_sys->active_path->nodes) {
             return 1.0f;
         }
-        if (system->player_2 != NULL &&
-            system->player_2->ai->inside_path_node == node - system->path_sys->active_path->nodes) {
+        if (system->player_2 != NULL && system->player_2->ai->inside_path_node == node - system->path_sys->active_path->nodes) {
             return 1.0f;
         }
     }

@@ -2290,16 +2290,16 @@ void DebrisDraw(i32 unused, i32 pass) {
         if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             NuRndrParticleGroup(chunk->particle_chunk, chunk->effect->native_data, DebMat[chunk->effect->particle_type], render_time,
                                 &matrix, 4, effect->particle_parameter_a, effect->particle_parameter_b, effect->clip_extent,
-                                effect->unknown_044);
+                                effect->camera_cutoff_radius);
         } else if (effect->use_explicit_clip_box != 0) {
             NuRndrSetDebBox(&effect->particle_box);
             NuRndrParticleGroup(chunk->particle_chunk, chunk->effect->native_data, DebMat[chunk->effect->particle_type], render_time,
                                 &matrix, 6, effect->particle_parameter_a, effect->particle_parameter_b, effect->clip_extent,
-                                effect->unknown_044);
+                                effect->camera_cutoff_radius);
         } else {
             NuRndrParticleGroup(chunk->particle_chunk, chunk->effect->native_data, DebMat[chunk->effect->particle_type], render_time,
                                 &matrix, 0, effect->particle_parameter_a, effect->particle_parameter_b, effect->clip_extent,
-                                effect->unknown_044);
+                                effect->camera_cutoff_radius);
         }
     }
     if (drawn != 0) {
@@ -3577,25 +3577,25 @@ i32 edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count) {
                 part_emits[emitter_slot].rotation_2e = EdFileReadShort();
                 part_emits[emitter_slot].rotation_2c = EdFileReadShort();
                 if (version >= 11) {
-                    part_emits[emitter_slot].unknown_44 = EdFileReadShort();
-                    part_emits[emitter_slot].unknown_46 = EdFileReadShort();
+                    part_emits[emitter_slot].switch_type = EdFileReadShort();
+                    part_emits[emitter_slot].switch_id = EdFileReadShort();
                 } else {
-                    part_emits[emitter_slot].unknown_44 = 0;
-                    part_emits[emitter_slot].unknown_46 = 0;
+                    part_emits[emitter_slot].switch_type = 0;
+                    part_emits[emitter_slot].switch_id = 0;
                 }
                 part_emits[emitter_slot].page = page;
-                part_emits[emitter_slot].unknown_3c = 0;
+                part_emits[emitter_slot].has_sounds = 0;
                 for (sound = 0; sound < 4; ++sound) {
                     if (part_types[part_emits[emitter_slot].effect_id].sounds[sound] != -1 &&
                         part_types[part_emits[emitter_slot].effect_id].sound_modes[sound] != 0) {
-                        part_emits[emitter_slot].unknown_3c = 1;
+                        part_emits[emitter_slot].has_sounds = 1;
                         break;
                     }
                 }
                 if (part_emits[emitter_slot].effect_id != -1) {
                     ++part_emits_used;
                     PARTStartOffset(emitter_slot, 0.0f);
-                    part_emits[emitter_slot].unknown_3d = 1;
+                    part_emits[emitter_slot].switch_state = 1;
                 }
             }
             EdFileSetReadWrongEndianess(0);
@@ -3674,35 +3674,35 @@ void UpdatePartEmits(f32 time) {
             continue;
         }
         interval = 1.0f / type->emission_rate;
-        if (emitter->unknown_44 == 1 && emitter->unknown_3d != 2) {
-            if (emitter->unknown_46 != -1) {
-                switch (debris_object_switches[emitter->unknown_46]) {
+        if (emitter->switch_type == 1 && emitter->switch_state != 2) {
+            if (emitter->switch_id != -1) {
+                switch (debris_object_switches[emitter->switch_id]) {
                     case 0:
-                        emitter->unknown_3d = 0;
+                        emitter->switch_state = 0;
                         break;
                     case 1:
-                        emitter->unknown_3d = 1;
+                        emitter->switch_state = 1;
                         break;
                     case 2:
                         last_switch_change = (last_switch_change + 1) & 31;
-                        emitter->unknown_3d = 2;
+                        emitter->switch_state = 2;
                         switch_changes[last_switch_change][1] = 4;
-                        switch_changes[last_switch_change][0] = emitter->unknown_46;
+                        switch_changes[last_switch_change][0] = emitter->switch_id;
                         break;
                     case 3:
-                        emitter->unknown_3d = 2;
+                        emitter->switch_state = 2;
                         last_switch_change = (last_switch_change + 1) & 31;
                         switch_changes[last_switch_change][1] = 0;
-                        switch_changes[last_switch_change][0] = emitter->unknown_46;
+                        switch_changes[last_switch_change][0] = emitter->switch_id;
                         break;
                     case 4:
                         last_switch_change = (last_switch_change + 1) & 31;
                         switch_changes[last_switch_change][1] = 0;
-                        switch_changes[last_switch_change][0] = emitter->unknown_46;
+                        switch_changes[last_switch_change][0] = emitter->switch_id;
                         break;
                 }
             }
-            if (emitter->unknown_3d == 2) {
+            if (emitter->switch_state == 2) {
                 PARTStartOffset(i, 0.0f);
                 shift = emitter->time_24 - partglobaltime;
                 emitter->time_24 -= shift;
@@ -3712,7 +3712,7 @@ void UpdatePartEmits(f32 time) {
         }
         previous_distance = emitter->camera_distance;
         emitter->camera_distance = CameraEmitterDistance(&emitter->position);
-        if (emitter->unknown_3c != 0) {
+        if (emitter->has_sounds != 0) {
             for (sound = 0; sound < 4; ++sound) {
                 if (type->sounds[sound] != -1) {
                     SetSfxBit_On(type->sounds[sound]);
@@ -3740,7 +3740,7 @@ void UpdatePartEmits(f32 time) {
                 if (emitter->time_24 >= emitter->time_28) {
                     emitter->time_28 =
                         NuRandFloatSeeded(&partseed) * type->emission_period_random + (type->emission_period + emitter->time_24);
-                    if (emitter->unknown_3c != 0 && emitter->unknown_3d != 0) {
+                    if (emitter->has_sounds != 0 && emitter->switch_state != 0) {
                         for (sound = 0; sound < 4; ++sound) {
                             if (type->sounds[sound] != -1 && type->sound_modes[sound] == 1) {
                                 PlaySfxById(type->sounds[sound], &emitter->position);
@@ -3756,10 +3756,10 @@ void UpdatePartEmits(f32 time) {
                     emitter->time_24 = emitter->time_28 + pause;
                     emission_time = emitter->time_24 + 0.001f;
                     emitter->time_20 = emission_time - interval + 0.001f;
-                    if (emitter->unknown_3d == 2) {
-                        emitter->unknown_3d = 0;
+                    if (emitter->switch_state == 2) {
+                        emitter->switch_state = 0;
                     }
-                    if (emitter->unknown_3c != 0 && emitter->unknown_3d != 0) {
+                    if (emitter->has_sounds != 0 && emitter->switch_state != 0) {
                         for (sound = 0; sound < 4; ++sound) {
                             if (type->sounds[sound] != -1 && type->sound_modes[sound] == 2) {
                                 PlaySfxById(type->sounds[sound], &emitter->position);
@@ -3771,7 +3771,7 @@ void UpdatePartEmits(f32 time) {
             if (partglobaltime + time <= emission_time) {
                 continue;
             }
-            if (emitter->unknown_3d != 0 && (type->maximum_distance == 0.0f || type->maximum_distance > emitter->camera_distance)) {
+            if (emitter->switch_state != 0 && (type->maximum_distance == 0.0f || type->maximum_distance > emitter->camera_distance)) {
                 params = Default_ADDPART;
                 params.model_scale = type->particle_scale;
                 position.x = NuRandFloatSeeded(&partseed) * 2.0f * type->position_random.x - type->position_random.x;
@@ -3858,7 +3858,7 @@ void UpdatePartEmits(f32 time) {
                 params.lighting_scale_z = type->lighting_scale.z;
                 params.effect_id_78 = type->kill_effect;
                 AddPart(&params);
-                if (emitter->unknown_3c != 0) {
+                if (emitter->has_sounds != 0) {
                     for (sound = 0; sound < 4; ++sound) {
                         if (type->sounds[sound] != -1 && type->sound_modes[sound] == 3) {
                             PlaySfxById(type->sounds[sound], &emitter->position);

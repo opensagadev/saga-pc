@@ -68,6 +68,7 @@ extern "C" {
     void MenuDrawPauseMain(MENU *);
     void MenuUpdatePauseMain(MENU *);
     void MenuDrawPauseRestart(MENU *);
+    void MenuUpdatePauseRestart(MENU *menu);
     void MenuDrawPauseExit(MENU *);
     void MenuUpdatePauseExit(MENU *);
     extern i16 dat_00880864;
@@ -76,6 +77,7 @@ extern "C" {
     void MenuDrawMiniKit(MENU *);
     void MenuUpdateBonusComplete(MENU *);
     void MenuUpdateBonusWin(MENU *);
+    void MenuDrawBonusWin(MENU *menu);
     void MenuUpdateMiniKit(MENU *);
     void MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r, u8 entry_g, u8 entry_b, u8 header_r, u8 header_g, u8 header_b,
                         u8 warn_r, u8 warn_g, u8 warn_b, u8 flash0_r, u8 flash0_g, u8 flash0_b, u8 flash1_r, u8 flash1_g, u8 flash1_b);

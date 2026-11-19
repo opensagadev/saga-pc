@@ -167,9 +167,6 @@ extern "C" {
     DAT_HANDLES NuDatHandles = {0};
     char *Trailer[6] = {"demointro", (char *)&tINTRO, NULL, "indy", (char *)&dat_008810c0, NULL};
     i32 PlayTrailer = -1;
-    // menu.cpp defines these two with a MENU_s parameter; the table holds MENU callbacks.
-    void MenuDrawBonusWin(MENU *);
-    void MenuUpdatePauseRestart(MENU *);
     MENUFNINFO GameMenuInfo[23] = {
         {MENU_TITLES, MenuEnterTitles, MenuDrawTitles, MenuUpdateTitles, NULL, -1, -1, 0, 0, 0, 0},
         {MENU_NEW_GAME, MenuEnterNewGame, MenuDrawNewGame, MenuUpdateNewGame, NULL, -1, -1, 0, 1, 0, 0},
@@ -294,7 +291,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     packet.frame_time = FRAMETIME;
     packet.paused = Paused;
     packet.pads = pads;
-    packet.pad_count = 2;
+    packet.controller_count = 2;
     theGameThings->ProcessThings(&packet);
     SAGA_SOUND_CHECK("before sound");
     LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: before sound world=%p", (void *)WORLD);

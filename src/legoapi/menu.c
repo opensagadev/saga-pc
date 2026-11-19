@@ -125,7 +125,7 @@ MENU *NewMenu(i32 menu_id, i32 menu_y, i32 unused) {
         menu->state_b4 = 1;
         menu->state_b0 = 0;
         menu->state_c0 = 0;
-        menu->unknown_50 = 0;
+        menu->enter_state = 0;
         menu->previous_menu = (i8)previous_index;
         menu->menu = (i16)selected;
         MenuStopDraw = 1;

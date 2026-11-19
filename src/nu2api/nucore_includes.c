@@ -8439,8 +8439,8 @@ i32 NuPadRead(FRAME_PAD *pad) {
         pad->analog_left_pad_up = g_nupadScannedPads[device].analog_left_pad_up;
         pad->analog_left_pad_down = g_nupadScannedPads[device].analog_left_pad_down;
 
-        pad->unknown_b0 = g_nupadScannedPads[device].unknown_82;
-        pad->unknown_b1 = g_nupadScannedPads[device].unknown_83;
+        pad->analog_aux_x = g_nupadScannedPads[device].unknown_82;
+        pad->analog_aux_y = g_nupadScannedPads[device].unknown_83;
 
         pad->is_valid = g_nupadScannedPads[device].is_valid;
 

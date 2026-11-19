@@ -937,7 +937,7 @@ extern "C" void MenuDrawPauseMain(MENU *menu) {
 
 extern "C" {
 
-    void MenuUpdatePauseRestart(MENU_s *menu) {
+    void MenuUpdatePauseRestart(MENU *menu) {
         if (menu->confirm_pressed != 0) {
             if (menu->selected_item == 0) {
                 Door_Reset();
@@ -1208,7 +1208,7 @@ extern "C" {
         }
     }
 
-    void MenuDrawBonusWin(MENU_s *unused0) {
+    void MenuDrawBonusWin(MENU *unused0) {
         if (MenuStopDraw == 0) {
             i32 green;
             i32 red;

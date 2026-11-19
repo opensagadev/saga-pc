@@ -329,9 +329,9 @@ void FileLoadSingleEffectType(DEBRIS_INFO *destination, i32 version, i8 category
         effect->sound_range_override = EdFileReadFloat();
     }
     if (version >= 24) {
-        effect->unknown_044 = EdFileReadFloat();
+        effect->camera_cutoff_radius = EdFileReadFloat();
     } else {
-        effect->unknown_044 = 0.5f;
+        effect->camera_cutoff_radius = 0.5f;
     }
     if (version < 7) {
         EdFileReadInt();
@@ -394,7 +394,7 @@ void FileLoadSingleEffectType(DEBRIS_INFO *destination, i32 version, i8 category
             effect->colour_keys[i].red = EdFileReadUnsignedChar();
             effect->colour_keys[i].green = EdFileReadUnsignedChar();
             effect->colour_keys[i].blue = EdFileReadUnsignedChar();
-            effect->colour_keys[i].unknown_7 = EdFileReadUnsignedChar();
+            effect->colour_keys[i].alpha_unused = EdFileReadUnsignedChar();
         }
     } else {
         for (i = 0; i < 8; ++i) {

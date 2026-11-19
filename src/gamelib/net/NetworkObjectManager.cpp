@@ -1780,6 +1780,7 @@ i32 NetPredictor::SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass 
         i16 short_value;
         i8 char_value;
     } member_data;
+
     u8 continuity_break = (replication_group >> 3) & 1;
     for (EdRef *member = object_class->members; member != NULL; member = member->next) {
         if (member->attributes & EDREF_ATTR_CLASS) {
@@ -1841,6 +1842,7 @@ i32 NetPredictor::SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass 
 
 i32 NetPredictor::DoPrediction(const EdClass *object_class, void *object, ReplicatorData &data, PredictorTime *time, i32 check_only) {
     i32 result = 0;
+
     /* One member value as GetMemberData writes it, read back by its type. */
     union {
         u8 bytes[16];
@@ -1849,6 +1851,7 @@ i32 NetPredictor::DoPrediction(const EdClass *object_class, void *object, Replic
         i16 short_value;
         i8 char_value;
     } member_data;
+
     for (EdRef *member = object_class->members; member != NULL; member = member->next) {
         if (member->attributes & EDREF_ATTR_CLASS) {
             EdClass *member_class = theRegistry.GetClass(member->type_id);

@@ -17,6 +17,6 @@ struct ThingProcessData {
     f32 frame_time;
     i32 paused;
     NUPAD_INIT_STATE **pads;
-    i32 pad_count;
+    i32 controller_count;
 };
 #endif

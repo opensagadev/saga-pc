@@ -20,7 +20,7 @@ ShaderCompilerDictionary::ShaderCompilerDictionary(VirtualStackAllocator &parent
     register_block_count = 0;
     emit_definitions = 1;
     output_suppressed = 0;
-    unknown_966 = 0;
+    emit_comments = 0;
     profile = PC_SHADER_MODEL_3_0;
     first_version = 8;
     second_version = 2;

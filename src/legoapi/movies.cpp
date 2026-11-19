@@ -83,7 +83,7 @@ extern "C" i32 Movie_CallBack(void) {
     pads[1] = GamePadStorage[1].pad;
     frame.frame_time = MovieFrameTime;
     frame.paused = Paused;
-    frame.pad_count = 2;
+    frame.controller_count = 2;
     frame.pads = pads;
     if (theGameThings != NULL) {
         theGameThings->ProcessThings(&frame);

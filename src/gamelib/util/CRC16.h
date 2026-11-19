@@ -246,7 +246,7 @@ struct ShaderCompilerDictionary {                  // size 0x9a4
     VirtualStackAllocator output_memory;           // 0x954
     u8 emit_definitions;                           // 0x964
     u8 output_suppressed;                          // 0x965
-    u8 unknown_966;                                // 0x966
+    u8 emit_comments;                              // 0x966
     u8 emit_semantics;                             // 0x967
     u8 emit_registers;                             // 0x968
     u8 emit_centroid;                              // 0x969

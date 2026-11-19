@@ -48,7 +48,7 @@ typedef struct FRAME_PAD {        // size 0xa4
     f32 right_y_unknown;          // 0x44
     f32 right_x_unknown2;         // 0x48
     f32 right_y_unknown2;         // 0x4c
-    u8 reserved50[0x20];          // 0x50
+    u8 reserved_50[0x20];         // 0x50
     u32 digital_buttons;          // 0x70
     u32 digital_buttons_prev;     // 0x74
     u32 digital_buttons_pressed;  // 0x78
@@ -65,9 +65,9 @@ typedef struct FRAME_PAD {        // size 0xa4
         };
     }; // 0x80
 
-    u8 reserved84[4];         // 0x84
+    u8 reserved_84[4];        // 0x84
     u8 deadzone;              // 0x88
-    u8 reserved89[7];         // 0x89
+    u8 reserved_89[7];        // 0x89
     u8 analog_right_x;        // 0x90
     u8 analog_right_y;        // 0x91
     u8 analog_left_x;         // 0x92
@@ -84,9 +84,9 @@ typedef struct FRAME_PAD {        // size 0xa4
     u8 analog_r1;             // 0x9d
     u8 analog_l2;             // 0x9e
     u8 analog_r2;             // 0x9f
-    u8 unknown_b0;            // 0xa0
-    u8 unknown_b1;            // 0xa1
-    u8 reserveda2[2];         // 0xa2
+    u8 analog_aux_x;          // 0xa0
+    u8 analog_aux_y;          // 0xa1
+    u8 reserved_a2[2];        // 0xa2
 } FRAME_PAD;
 
 #ifdef __cplusplus

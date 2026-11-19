@@ -623,7 +623,7 @@ void cbPtlChangeCameraCutOff(eduimenu_s *unused0, eduiitem_s *item, u32 unused2)
         return;
     }
     effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
-    effect->unknown_044 = ((edui_slider_s *)item)->value;
+    effect->camera_cutoff_radius = ((edui_slider_s *)item)->value;
 }
 
 void cbPtlChangeRepeatFlag(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
@@ -774,7 +774,7 @@ static void cbPtlCutOffMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2
     eduiMenuAddItem(ptlcutoffmenu, eduiItemSliderCreate(0, edblack, 0, cbPtlChangeSoundCutOff, 0.0f, 25.0f * edptl_superscale,
                                                         effect->sound_range_override, "SoundCutOff Rad"));
     eduiMenuAddItem(ptlcutoffmenu, eduiItemSliderCreate(0, edblack, 0, cbPtlChangeCameraCutOff, 0.0f, 5.0f * edptl_superscale,
-                                                        effect->unknown_044, "CameraCutOff Rad"));
+                                                        effect->camera_cutoff_radius, "CameraCutOff Rad"));
     eduiMenuAttach(parent, ptlcutoffmenu);
     ptlcutoffmenu->x = parent->x + 10;
     ptlcutoffmenu->y = parent->y + 40;
@@ -2019,23 +2019,23 @@ i32 edppSaveEffects(char *filename, u8 page) {
             EdFileWriteFloat(effecttypes[index].clip_extent);
             EdFileWriteFloat(effecttypes[index].sound_range);
             EdFileWriteFloat(effecttypes[index].sound_range_override);
-            EdFileWriteFloat(effecttypes[index].unknown_044);
+            EdFileWriteFloat(effecttypes[index].camera_cutoff_radius);
             EdFileWriteFloat(effecttypes[index].momentum_base);
             EdFileWriteNuVec((NUVEC *)&effecttypes[index].momentum_random_x);
             EdFileWriteNuVec(&effecttypes[index].emitter_random_extent);
             EdFileWriteNuVec(&effecttypes[index].emitter_velocity);
-            EdFileWriteFloat(effecttypes[index].unknown_070[0]);
-            EdFileWriteFloat(effecttypes[index].unknown_070[1]);
-            EdFileWriteFloat(effecttypes[index].unknown_070[2]);
-            EdFileWriteFloat(effecttypes[index].unknown_070[3]);
-            EdFileWriteFloat(effecttypes[index].unknown_070[4]);
-            EdFileWriteFloat(effecttypes[index].unknown_070[5]);
-            EdFileWriteFloat(effecttypes[index].unknown_070[6]);
-            EdFileWriteFloat(effecttypes[index].unknown_070[7]);
-            EdFileWriteFloat(effecttypes[index].unknown_070[8]);
-            EdFileWriteFloat(effecttypes[index].unknown_070[9]);
-            EdFileWriteFloat(effecttypes[index].unknown_070[10]);
-            EdFileWriteFloat(effecttypes[index].unknown_070[11]);
+            EdFileWriteFloat(effecttypes[index].file_parameters[0]);
+            EdFileWriteFloat(effecttypes[index].file_parameters[1]);
+            EdFileWriteFloat(effecttypes[index].file_parameters[2]);
+            EdFileWriteFloat(effecttypes[index].file_parameters[3]);
+            EdFileWriteFloat(effecttypes[index].file_parameters[4]);
+            EdFileWriteFloat(effecttypes[index].file_parameters[5]);
+            EdFileWriteFloat(effecttypes[index].file_parameters[6]);
+            EdFileWriteFloat(effecttypes[index].file_parameters[7]);
+            EdFileWriteFloat(effecttypes[index].file_parameters[8]);
+            EdFileWriteFloat(effecttypes[index].file_parameters[9]);
+            EdFileWriteFloat(effecttypes[index].file_parameters[10]);
+            EdFileWriteFloat(effecttypes[index].file_parameters[11]);
             EdFileWriteFloat(effecttypes[index].gravity);
             EdFileWriteFloat(effecttypes[index].particle_lifetime);
             EdFileWriteShort(effecttypes[index].texture_frames);
@@ -2051,7 +2051,7 @@ i32 edppSaveEffects(char *filename, u8 page) {
                 EdFileWriteUnsignedChar(effecttypes[index].colour_keys[key].red);
                 EdFileWriteUnsignedChar(effecttypes[index].colour_keys[key].green);
                 EdFileWriteUnsignedChar(effecttypes[index].colour_keys[key].blue);
-                EdFileWriteUnsignedChar(effecttypes[index].colour_keys[key].unknown_7);
+                EdFileWriteUnsignedChar(effecttypes[index].colour_keys[key].alpha_unused);
             }
             for (key = 0; key < 8; ++key) {
                 EdFileWriteFloat(effecttypes[index].alpha_keys[key].time);
