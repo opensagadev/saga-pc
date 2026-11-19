@@ -15347,8 +15347,8 @@ extern "C" {
         NUMTX *instance;
         NUMTX *draw_matrix;
         if (legacy != NULL) {
-            instance = &legacy->instance->matrix;
-            record = legacy->instance;
+            instance = (NUMTX *)legacy->instance;
+            record = (NUINSTANCE *)legacy->instance;
             draw_matrix = &record->animation->matrix;
             return draw_matrix != NULL ? draw_matrix : instance;
         }
