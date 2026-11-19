@@ -28,10 +28,11 @@ typedef struct nuglobalrndrstate_s { // size 0x1a4
     NUVEC ambient_intensity;         // 0x038
     NUVEC light_direction[3];        // 0x044
     NUVEC light_intensity[3];        // 0x068
-    u8 unknown_008c[4];              // 0x08c
+    f32 global_specular;             // 0x08c
     NUMTX specular_mtx;              // 0x090
     NUVEC specular_colour;           // 0x0d0
-    u8 unknown_00dc[0x18];           // 0x0dc
+    NUVEC specular_direction;        // 0x0dc
+    u8 unknown_00e8[0xc];            // 0x0e8
     i32 const_alpha_enabled;         // 0x0f4
     f32 const_alpha;                 // 0x0f8
     NUMTL *const_alpha_material;     // 0x0fc

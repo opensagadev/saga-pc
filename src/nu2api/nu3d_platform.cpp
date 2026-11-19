@@ -564,11 +564,6 @@ extern "C" {
     u32 PCGraphicsPostEffectWidth = 512;
     u32 PCGraphicsPostEffectHeight = 512;
 
-    typedef struct CAMERA_RENDER_SPECULAR_READER { // size 0xe8
-        u8 unknown_0000[0xdc];                     // 0x00
-        NUVEC direction;                           // 0xdc
-    } CAMERA_RENDER_SPECULAR_READER;
-
     static NUMTX RndrStateTransform = {0};
     f32 dat_0280d3a0 = 0;
     PC_GRAPHICS_FRAME_SCRATCH_VIEW PCGraphicsFrameScratchCount = {0};
@@ -1422,11 +1417,6 @@ extern "C" {
         NUMTX specular_mtx;                // 0x70
         NUVEC specular_colour;             // 0xb0
     } NUPRIM_LIGHT_PACKET;
-
-    typedef struct AMBIENT_SPECULAR_RENDER_VIEW { // size 0x90
-        u8 unknown_00[0x8c];                      // 0x00
-        f32 global_specular;                      // 0x8c
-    } AMBIENT_SPECULAR_RENDER_VIEW;
 
     // @@FUNCTIONS
 
@@ -3442,10 +3432,9 @@ extern "C" {
     }
 
     void NuRndrStateSetSpecularLightEx(const NUVEC *direction, const NUMTX *matrix, const NUVEC *colour) {
-        CAMERA_RENDER_SPECULAR_READER *state = (CAMERA_RENDER_SPECULAR_READER *)&render_state;
         render_state.specular_mtx = *matrix;
         render_state.specular_colour = *colour;
-        state->direction = *direction;
+        render_state.specular_direction = *direction;
         ++render_state.global_id;
         ++render_state.lights_id;
         render_state.light_packet_cache = NULL;
@@ -6019,8 +6008,7 @@ extern "C" {
     }
 
     i32 NuRndrSetAmbientLightSpecular(const NUVEC4 *colour) {
-        AMBIENT_SPECULAR_RENDER_VIEW *state = (AMBIENT_SPECULAR_RENDER_VIEW *)&render_state;
-        state->global_specular = colour->w;
+        render_state.global_specular = colour->w;
         PCGlobalLightingState.ambient = colour->xyz;
         NuRndrSetAmbientLightPS(&colour->xyz);
         return 0;
