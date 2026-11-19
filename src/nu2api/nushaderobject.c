@@ -89,7 +89,7 @@ void PCShaderProbeHLSLConstants(NuShaderObject *shader, ID3DXConstantTable *vert
                                                description.type_kind == D3DXPT_SAMPLERCUBE)) {
             parameter->register_index = (i16)(description.register_index + 0x101);
         }
-        if ((PCDeviceHardwareVertexProcessingPC != PC_SHADER_MODEL_3_0 && uniform->unknown_18 != 0) || uniform->register_index < 0) {
+        if ((PCDeviceHardwareVertexProcessingPC != PC_SHADER_MODEL_3_0 && uniform->binding_scope != 0) || uniform->register_index < 0) {
             PC_SHADER_PARAMETER_LOCAL *previous = shader->active_parameters;
             if (previous != NULL && parameter->register_index > previous->register_index) {
                 while (previous->next != NULL && previous->next->register_index <= parameter->register_index) {

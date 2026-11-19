@@ -39,12 +39,7 @@
 #include "nu2api/nuwin32/nu2api_windows.h"
 #include "nu2api/nuwin32/pcapi.h"
 #include "nu2api/save_folder.h"
-
-extern "C" {
-    void PcCreateCursorMaterial(void);
-}
-
-extern "C" void PcRegisterSaveMetadata(const void *);
+#include "gameframework/saveload.h"
 
 extern "C" {
     const char *NuHwSoundDfsName = "";
@@ -460,23 +455,23 @@ extern "C" void fun_006dc6f0(void) {
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
 }
 
-i32 PC_WINDOW_OPTIONS::fun_006dc710() {
+i32 PC_WINDOW_OPTIONS::GetClientWidth() {
     return client_width;
 }
 
-i32 PC_WINDOW_OPTIONS::fun_006dc720() {
+i32 PC_WINDOW_OPTIONS::GetClientHeight() {
     return client_height;
 }
 
-i32 PC_WINDOW_OPTIONS::fun_006dc730() {
+i32 PC_WINDOW_OPTIONS::GetWindowX() {
     return window_x;
 }
 
-i32 PC_WINDOW_OPTIONS::fun_006dc740() {
+i32 PC_WINDOW_OPTIONS::GetWindowY() {
     return window_y;
 }
 
-i32 PC_DEVICE_BACKEND::fun_006dc750() {
+i32 PC_DEVICE_BACKEND::IsWindowed() {
     return parameters.windowed == 1;
 }
 

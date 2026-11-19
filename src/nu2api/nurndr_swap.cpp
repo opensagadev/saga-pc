@@ -58,18 +58,18 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
     for (i32 i = 0; i < sceneParametersCount; ++i) {
         NURNDRLIBSCENE *scene = &sceneParameters[i];
         if (!PcWindowOptions.bloomenabled) {
-            scene->unknown_58 = 0;
+            scene->bloom_enabled = 0;
         }
         if (!PcWindowOptions.shadowsenabled) {
-            scene->unknown_48 = 0;
+            scene->deferred_shading_enabled = 0;
         }
         if (!PcWindowOptions.speedblurenabled) {
-            scene->unknown_188 = 0;
+            scene->speed_blur.enabled = 0;
         }
-        if ((scene->unknown_58 != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_BLOOM)) ||
-            (scene->unknown_ac != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_DOF)) ||
-            (scene->unknown_48 != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_DEFERRED)) ||
-            (scene->unknown_188 != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_SPEED_BLUR))) {
+        if ((scene->bloom_enabled != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_BLOOM)) ||
+            (scene->dof.enabled != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_DOF)) ||
+            (scene->deferred_shading_enabled != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_DEFERRED)) ||
+            (scene->speed_blur.enabled != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_SPEED_BLUR))) {
             last_effect_scene = i;
         }
     }
@@ -80,7 +80,7 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
         NURNDRLIBSCENE *scene = &sceneParameters[i];
         i32 rendered_effect = 0;
         PC_FRAMEBUFFER *destination = PcBootFramebuffers.slots[i >= last_effect_scene];
-        RenderFrameSceneFlags = scene->unknown_24;
+        RenderFrameSceneFlags = scene->render_frame_flags;
         NUVEC4 dimensions;
         dimensions.x = (f32)PS2_REZ_W;
         dimensions.y = (f32)PS2_REZ_H;
@@ -90,32 +90,32 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
             NURNDRLIGHTRECORD *light = static_cast<NURNDRLIGHTRECORD *>(scene->dyn_light_ptr);
             if (NuDynamicLightIsEnabled(light)) {
                 if (scene->scene_id != -1) {
-                    NuDynamicLightAddRenderScene(light, scene->unknown_40, scene->scene_id);
+                    NuDynamicLightAddRenderScene(light, scene->light_render_set, scene->scene_id);
                 }
-                if (scene->unknown_40 == 0) {
+                if (scene->light_render_set == 0) {
                     NuPostEffectAddDynamicLight(reinterpret_cast<NuDynamicLight *>(light));
                 }
             }
             scene->scene_id = -1;
         }
-        if (scene->unknown_ac != 0) {
+        if (scene->dof.enabled != 0) {
             NuPostEffectIsInitialised(NUPOSTEFFECT_DOF);
         }
-        if (scene->unknown_58 != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_BLOOM)) {
+        if (scene->bloom_enabled != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_BLOOM)) {
             NuPostEffectEnable(NUPOSTEFFECT_BLOOM);
             NuPostEffectBloom(reinterpret_cast<const NU_POST_BLOOM_PARAMETERS *>(&scene->burnout_parameters));
-            scene->unknown_58 = 0;
+            scene->bloom_enabled = 0;
             rendered_effect = 1;
         }
-        if (scene->unknown_48 != 0) {
+        if (scene->deferred_shading_enabled != 0) {
             NuPostEffectEnable(NUPOSTEFFECT_DEFERRED);
-            NuPostEffectDeferredShading(reinterpret_cast<const f32 *>(&scene->unknown_48));
-            scene->unknown_48 = 0;
+            NuPostEffectDeferredShading(reinterpret_cast<const f32 *>(&scene->deferred_shading_enabled));
+            scene->deferred_shading_enabled = 0;
             rendered_effect = 1;
         }
-        if (scene->unknown_188 != 0) {
+        if (scene->speed_blur.enabled != 0) {
             NuPostEffectEnable(NUPOSTEFFECT_SPEED_BLUR);
-            NuPostEffectSpeedBlur(reinterpret_cast<const NU_POST_SPEED_PARAMETERS *>(&scene->unknown_188));
+            NuPostEffectSpeedBlur(&scene->speed_blur);
             rendered_effect = 1;
         }
         if (i <= last_effect_scene) {
@@ -158,14 +158,15 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
             NuShaderManagerBindShader(NULL);
             PCDeviceResetSamplerDefaults();
         }
-        if (scene->unknown_214 != 0) {
-            FRAME_NATIVE_TEXTURE *texture = reinterpret_cast<FRAME_NATIVE_TEXTURE *>(NuTextureGetDimensions((i32)scene->unknown_214));
+        if (scene->backbuffer_copy_texture != 0) {
+            FRAME_NATIVE_TEXTURE *texture =
+                reinterpret_cast<FRAME_NATIVE_TEXTURE *>(NuTextureGetDimensions(scene->backbuffer_copy_texture));
             i32 index = (i32)((u32)texture - (u32)&FrameNativeTexturePool.records[0]) / (i32)sizeof(FRAME_NATIVE_TEXTURE);
             if ((u32)index <= 15u) {
                 GRAPHICS_RENDER_TEXTURE *render_texture = texture->render_texture;
                 if (render_texture != NULL) {
-                    i32 width = NuTexGetWidth((i32)scene->unknown_214);
-                    i32 height = NuTexGetHeight((i32)scene->unknown_214);
+                    i32 width = NuTexGetWidth(scene->backbuffer_copy_texture);
+                    i32 height = NuTexGetHeight(scene->backbuffer_copy_texture);
                     bool resize = width != PS2_REZ_W || height != PS2_REZ_H;
                     PC_EFFECT_SURFACE target;
                     target.Attach(render_texture, 0, false);

@@ -27,6 +27,9 @@ extern "C" {
     extern i32 NuFParGetLineW(struct nufpar_s *parser);
     extern i32 NuFParGetWordW(struct nufpar_s *parser);
     void NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end);
+    extern f32 NuFrameAccumulatedTime;
+    /* pc_fmv_leaves.cpp; the C++ units see it through pc_fmv_native.h. */
+    void FmvPlatformUpdate(void);
 #ifdef __cplusplus
 }
 #endif

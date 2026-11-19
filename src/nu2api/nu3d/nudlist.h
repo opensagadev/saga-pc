@@ -123,7 +123,8 @@ typedef struct nusortpri_s {      // size 0x24
     i32 sort_pri;                 // 0x00
     NUDISPLAYLISTITEM *items;     // 0x04
     struct nusortpri_s *sys_next; // 0x08
-    u8 opaque_0c_14[0x8];         // 0x0c
+    u8 opaque_0c_10[0x4];         // 0x0c
+    struct nusortpri_s *self;     // 0x10
     u32 flags;                    // 0x14
     u32 sort_flags;               // 0x18
 

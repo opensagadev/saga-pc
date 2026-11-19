@@ -5,43 +5,6 @@
 #include "nu2api/numath/nufloat.h"
 #include <stdio.h>
 
-#pragma pack(push, 1)
-
-struct TEXT_INPUT_BINDING { // size 0x4
-    u8 type;                // 0x0
-    u8 unknown_0001;        // 0x1
-    i16 value;              // 0x2
-};
-
-struct TEXT_INPUT_DEVICE {           // size 0x17c
-    u8 unknown_0000[0x6e];           // 0x000
-    TEXT_INPUT_BINDING bindings[32]; // 0x06e
-    u8 unknown_00ee[0x8e];           // 0x0ee
-};
-
-struct TEXT_INPUT_DEVICE_KIND { // size 0x6
-    i8 kind;                    // 0x0
-    u8 unknown_0001[5];         // 0x1
-};
-
-#pragma pack(pop)
-
-class TEXT_INPUT_MANAGER { // size 0x68b0
-  public:
-    u8 unknown_0000[0x4e34];                   // 0x0000
-    TEXT_INPUT_DEVICE devices[14];             // 0x4e34
-    u8 unknown_62fc[0x58];                     // 0x62fc
-    i32 custom_active;                         // 0x6354
-    TEXT_INPUT_BINDING custom_bindings[4][32]; // 0x6358
-    u8 unknown_6558[0x288];                    // 0x6558
-    u8 use_keyboard_override;                  // 0x67e0
-    u8 unknown_67e1[0x0f];                     // 0x67e1
-    TEXT_INPUT_DEVICE_KIND device_kind[32];    // 0x67f0
-    i32 ButtonName(i32 device, i32 button, char *destination, i32 custom, i32 custom_index, i32 use_callback, i32 alternate_labels,
-                   char *delimiters);
-    i32 fun_006d9dc0(i32 device, i32 button, char *destination, i32 custom, i32 custom_index);
-};
-
 extern "C" {
     i32 PcInput_GetCtrlStringPlayer(void) {
         return TextInputLastDeviceIndex;
@@ -54,8 +17,8 @@ extern "C" {
     i8 TextInputButtonLabelIndex[11] = {24, 23, 25, 22, 26, 27, 33, 32, 30, 31, 0};
 }
 
-i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i32 custom, i32 custom_index, i32 use_callback,
-                                   i32 alternate_labels, char *delimiters) {
+i32 PC_INPUT_RUNTIME::ButtonName(i32 device, i32 button, char *destination, i32 custom, i32 custom_index, i32 use_callback,
+                                 i32 alternate_labels, char *delimiters) {
     i32 result = 0;
     i32 open = 0;
     i32 close = 0;
@@ -82,13 +45,13 @@ i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i3
     i32 type;
     i32 value;
     if (custom != 0) {
-        type = custom_bindings[custom_index][button].type;
-        value = custom_bindings[custom_index][button].value;
+        type = auxiliary_bindings[custom_index][button].kind;
+        value = auxiliary_bindings[custom_index][button].value;
     } else {
-        type = devices[device].bindings[button].type;
+        type = devices[device].bindings[button].kind;
         value = devices[device].bindings[button].value;
     }
-    if (use_keyboard_override != 0 && custom_active == 0 && ((u32)(device - 10) <= 3 || device < 0) &&
+    if (keyboard_ui_override != 0 && mouse.custom_bindings_active == 0 && ((u32)(device - 10) <= 3 || device < 0) &&
         TextInputKeyboardOverride[button] > 0) {
         type = PC_BINDING_KEY;
         value = TextInputKeyboardOverride[button];
@@ -128,13 +91,13 @@ i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i3
             if (value < 0) {
                 break;
             }
-            TEXT_INPUT_DEVICE_KIND *kind = &device_kind[button];
-            if (kind->kind == 3 && type == PC_BINDING_JOYSTICK_AXIS) {
+            PC_INPUT_COMMAND *command = &commands[button];
+            if (command->active == 3 && type == PC_BINDING_JOYSTICK_AXIS) {
                 expected = 3;
             }
             if (simple != 0 && value < 8) {
                 char text[5] = "";
-                value = value * 2 + (kind->kind == expected);
+                value = value * 2 + (command->active == expected);
                 *destination = 0;
                 if (TextInputNameCallback != NULL) {
                     if (value == 13 || value == 14) {
@@ -153,14 +116,14 @@ i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i3
                 }
                 NuStrCpy(destination, labels->indexed_names[TextInputAxisLabelIndex[value]]);
             } else if (value < 6) {
-                if (kind->kind == expected) {
+                if (command->active == expected) {
                     sprintf(destination, "%s %s", labels->axis_names[value], labels->axis_positive);
                 } else {
                     sprintf(destination, "%s %s", labels->axis_names[value], labels->axis_negative);
                 }
             } else {
                 i32 reversed = NuLanguageGet() == NULANGUAGE_POLISH;
-                if (kind->kind == expected) {
+                if (command->active == expected) {
                     if (reversed == 0) {
                         sprintf(destination, labels->axis_format, value, labels->axis_positive);
                     } else {
@@ -177,14 +140,14 @@ i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i3
             break;
         }
         case 12:
-            if (device_kind[button].kind == 1) {
+            if (commands[button].active == 1) {
                 NuStrCpy(destination, labels->direction_positive[0]);
             } else {
                 NuStrCpy(destination, labels->direction_negative[0]);
             }
             break;
         case 13:
-            if (device_kind[button].kind == 1) {
+            if (commands[button].active == 1) {
                 NuStrCpy(destination, labels->direction_positive[1]);
             } else {
                 NuStrCpy(destination, labels->direction_negative[1]);
@@ -199,7 +162,7 @@ i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i3
             break;
         case PC_BINDING_MOUSE_AXIS_REVERSED:
             if ((u32)value <= 2) {
-                if (device_kind[button].kind == 2 || device_kind[button].kind == 3) {
+                if (commands[button].active == 2 || commands[button].active == 3) {
                     NuStrCpy(destination, labels->direction_positive[value]);
                 } else {
                     NuStrCpy(destination, labels->direction_negative[value]);
@@ -208,7 +171,7 @@ i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i3
             break;
         case PC_BINDING_MOUSE_AXIS:
             if ((u32)value <= 2) {
-                if (device_kind[button].kind == 2 || device_kind[button].kind == 3) {
+                if (commands[button].active == 2 || commands[button].active == 3) {
                     NuStrCpy(destination, labels->direction_negative[value]);
                 } else {
                     NuStrCpy(destination, labels->direction_positive[value]);
@@ -223,7 +186,7 @@ i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i3
             }
             break;
         default:
-            NuStrCpy(destination, labels->unknown);
+            NuStrCpy(destination, labels->fallback_name);
             break;
     }
     if (close != 0) {
@@ -235,7 +198,7 @@ i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i3
 }
 
 extern "C" i32 PcInput_GetCtrlInputString(i32 device, i32 button, char *destination) {
-    TEXT_INPUT_MANAGER *manager = (TEXT_INPUT_MANAGER *)nu_input_state;
+    PC_INPUT_RUNTIME *manager = nu_input_state;
     if (device < 0) {
         device = 0;
     }
@@ -249,9 +212,9 @@ extern "C" i32 PcInput_GetCtrlInputString(i32 device, i32 button, char *destinat
 
 extern "C" {
     void TextInputSetKeyboardOverride(i32 mode) {
-        TEXT_INPUT_MANAGER *manager = reinterpret_cast<TEXT_INPUT_MANAGER *>(nu_input_state);
-        i32 previous = (i8)manager->use_keyboard_override;
-        manager->use_keyboard_override = (u8)mode;
+        PC_INPUT_RUNTIME *manager = nu_input_state;
+        i32 previous = manager->keyboard_ui_override;
+        manager->keyboard_ui_override = (u8)mode;
         if (mode != previous) {
             nu_keyboard_repeat_countdown = 6;
         }
@@ -277,7 +240,7 @@ extern "C" {
 }
 
 extern "C" i32 AreaGetKeyboardOverride(void) {
-    return (i8)((TEXT_INPUT_MANAGER *)nu_input_state)->use_keyboard_override;
+    return nu_input_state->keyboard_ui_override;
 }
 
 extern "C" f32 fun_006d6360(f32 period, f32 time) {
@@ -299,16 +262,16 @@ extern "C" void fun_006d63e0(f32 *value, f32 target, f32 rate) {
 }
 
 extern "C" i32 fun_006d94b0(i32 player, i32 button, char *destination, i32, i32, i32 use_callback, i32 alternate_labels, char *delimiters) {
-    TEXT_INPUT_MANAGER *manager = (TEXT_INPUT_MANAGER *)nu_input_state;
+    PC_INPUT_RUNTIME *manager = nu_input_state;
     i32 port = NuPadGetPort(player);
     return manager->ButtonName(port, button, destination, 0, 0, use_callback, alternate_labels, delimiters);
 }
 
 extern "C" i32 PcInputBindingButtonName(i32 action, i32 port, char *destination, i32 auxiliary, i32 bank, i32 a, i32 b, char *c) {
-    return ((TEXT_INPUT_MANAGER *)nu_input_state)->ButtonName(action, port, destination, auxiliary, bank, a, b, c);
+    return nu_input_state->ButtonName(action, port, destination, auxiliary, bank, a, b, c);
 }
 
-i32 TEXT_INPUT_MANAGER::fun_006d9dc0(i32 device, i32 button, char *destination, i32 custom, i32 custom_index) {
+i32 PC_INPUT_RUNTIME::fun_006d9dc0(i32 device, i32 button, char *destination, i32 custom, i32 custom_index) {
     return ButtonName(device, button, destination, custom, custom_index, 1, 1, "()");
 }
 
@@ -320,7 +283,7 @@ extern "C" {
 }
 
 extern "C" char *TextInputActionLabel(i32 device, i32 action, i32 custom, i32 custom_index) {
-    ((TEXT_INPUT_MANAGER *)nu_input_state)->ButtonName(device, action, TextInputActionLabelBuffer, custom, custom_index, 1, 1, "()");
+    nu_input_state->ButtonName(device, action, TextInputActionLabelBuffer, custom, custom_index, 1, 1, "()");
     return TextInputActionLabelBuffer;
 }
 

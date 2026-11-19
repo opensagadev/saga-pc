@@ -833,11 +833,11 @@ static void CC_clear_sfx_misc(NUFPAR *parser) {
 }
 
 static void CC_cloak_up_angle(NUFPAR *parser) {
-    charconfig.runtime->unknown_05c = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
+    charconfig.runtime->lean_max = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
 }
 
 static void CC_cloak_down_angle(NUFPAR *parser) {
-    charconfig.runtime->unknown_060 = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
+    charconfig.runtime->lean_min = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
 }
 
 static void CC_viewrange(NUFPAR *parser) {
@@ -1419,15 +1419,15 @@ static void CC_hover_time(NUFPAR *parser) {
 }
 
 static void CC_maxheadturn(NUFPAR *parser) {
-    charconfig.runtime->unknown_050 = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
+    charconfig.runtime->head_yaw_limit = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
 }
 
 static void CC_maxheadtilt(NUFPAR *parser) {
-    charconfig.runtime->unknown_054 = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
+    charconfig.runtime->head_pitch_limit = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
 }
 
 static void CC_headrotrate(NUFPAR *parser) {
-    charconfig.runtime->unknown_058 = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
+    charconfig.runtime->head_turn_rate = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
 }
 
 static void CC_coin_value(NUFPAR *parser) {

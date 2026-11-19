@@ -14,11 +14,11 @@ i32 NuWindowsProcessMessages(void) {
 
 static i32 NuWindowsConfigValues[19] = {0};
 
-i32 *fun_006dd360(void) {
+i32 *NuWindowsGetConfigValues(void) {
     return NuWindowsConfigValues;
 }
 
-void fun_006dd370(i32 index, i32 value) {
+void NuWindowsSetConfigValue(i32 index, i32 value) {
     NuWindowsConfigValues[index] = value;
 }
 

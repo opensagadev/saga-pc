@@ -11,9 +11,9 @@ typedef struct NuKeyboardDevice NuKeyboardDevice;
 typedef struct PC_DI_FACTORY PC_DI_FACTORY;
 
 typedef struct NuKeyboardOwner {   // size 0x44
-    f32 unknown_0000;              // 0x00
-    i32 unknown_0004;              // 0x04
-    f32 unknown_0008;              // 0x08
+    f32 rescan_interval;           // 0x00
+    i32 rescan_count;              // 0x04
+    f32 rescan_timer;              // 0x08
     i32 device_count;              // 0x0c
     u8 unknown_0010_to_0020[0x10]; // 0x10
     NuKeyboardDevice *mouse;       // 0x20
@@ -108,7 +108,7 @@ struct TEXT_INPUT_LABELS { // size 0xc0
     char *direction_negative[3]; // 0xa0
     char *hat_names[3];          // 0xac
     char *hat_format;            // 0xb8
-    char *unknown;               // 0xbc
+    char *fallback_name;         // 0xbc
 };
 
 #ifdef __cplusplus
@@ -193,12 +193,23 @@ struct PC_DI_CAPS {               // size 0x2c
     DWORD ff_driver_version;      // 0x28
 };
 
-struct PC_DI_PROPERTY { // size 0x14
-    DWORD size;         // 0x00
-    DWORD header_size;  // 0x04
-    DWORD object;       // 0x08
-    DWORD how;          // 0x0c
-    DWORD data;         // 0x10
+/* DIPROPHEADER: every DirectInput property starts with it; SetProperty takes a pointer to it. */
+struct PC_DI_PROPERTY_HEADER { // size 0x10
+    DWORD size;                // 0x0
+    DWORD header_size;         // 0x4
+    DWORD object;              // 0x8
+    DWORD how;                 // 0xc
+};
+
+struct PC_DI_PROPERTY {           // size 0x14
+    PC_DI_PROPERTY_HEADER header; // 0x00
+    DWORD data;                   // 0x10
+};
+
+struct PC_DI_RANGE {              // size 0x18
+    PC_DI_PROPERTY_HEADER header; // 0x00
+    LONG minimum;                 // 0x10
+    LONG maximum;                 // 0x14
 };
 
 struct PC_DI_OBJECT_FORMAT { // size 0x10
@@ -227,23 +238,23 @@ struct PC_DI_INSTANCE {      // size 0x244
     u8 unknown_230[0x14];    // 0x230
 };
 
-struct PC_DI_DEVICE_METHODS {                                                              // size 0x68
-    void *unknown_00;                                                                      // 0x00
-    void *unknown_04;                                                                      // 0x04
-    ULONG(__stdcall *release)(NuKeyboardDevice *);                                         // 0x08
-    HRESULT(__stdcall *get_caps)(NuKeyboardDevice *, PC_DI_CAPS *);                        // 0x0c
-    void *unknown_10;                                                                      // 0x10
-    void *unknown_14;                                                                      // 0x14
-    HRESULT(__stdcall *set_property)(NuKeyboardDevice *, REFGUID, const PC_DI_PROPERTY *); // 0x18
-    HRESULT(__stdcall *acquire)(NuKeyboardDevice *);                                       // 0x1c
-    HRESULT(__stdcall *unacquire)(NuKeyboardDevice *);                                     // 0x20
-    HRESULT(__stdcall *get_state)(NuKeyboardDevice *, DWORD, void *);                      // 0x24
-    void *unknown_28;                                                                      // 0x28
-    HRESULT(__stdcall *set_format)(NuKeyboardDevice *, const PC_DI_DATA_FORMAT *);         // 0x2c
-    void *unknown_30;                                                                      // 0x30
-    HRESULT(__stdcall *set_cooperative_level)(NuKeyboardDevice *, HWND, DWORD);            // 0x34
-    void *unknown_38_60[11];                                                               // 0x38
-    HRESULT(__stdcall *poll)(NuKeyboardDevice *);                                          // 0x64
+struct PC_DI_DEVICE_METHODS {                                                                     // size 0x68
+    void *unknown_00;                                                                             // 0x00
+    void *unknown_04;                                                                             // 0x04
+    ULONG(__stdcall *release)(NuKeyboardDevice *);                                                // 0x08
+    HRESULT(__stdcall *get_caps)(NuKeyboardDevice *, PC_DI_CAPS *);                               // 0x0c
+    void *unknown_10;                                                                             // 0x10
+    void *unknown_14;                                                                             // 0x14
+    HRESULT(__stdcall *set_property)(NuKeyboardDevice *, REFGUID, const PC_DI_PROPERTY_HEADER *); // 0x18
+    HRESULT(__stdcall *acquire)(NuKeyboardDevice *);                                              // 0x1c
+    HRESULT(__stdcall *unacquire)(NuKeyboardDevice *);                                            // 0x20
+    HRESULT(__stdcall *get_state)(NuKeyboardDevice *, DWORD, void *);                             // 0x24
+    void *unknown_28;                                                                             // 0x28
+    HRESULT(__stdcall *set_format)(NuKeyboardDevice *, const PC_DI_DATA_FORMAT *);                // 0x2c
+    void *unknown_30;                                                                             // 0x30
+    HRESULT(__stdcall *set_cooperative_level)(NuKeyboardDevice *, HWND, DWORD);                   // 0x34
+    void *unknown_38_60[11];                                                                      // 0x38
+    HRESULT(__stdcall *poll)(NuKeyboardDevice *);                                                 // 0x64
 };
 
 struct NuKeyboardDevice {
@@ -304,7 +315,7 @@ struct PC_INPUT_MOUSE_RUNTIME { // size 0x5c
     u8 unknown_48;              // 0x48
     u8 port_activity[14];       // 0x49
     u8 unknown_57;              // 0x57
-    i32 unknown_58;             // 0x58
+    i32 custom_bindings_active; // 0x58
 };
 
 #pragma pack(push, 2)
@@ -326,18 +337,18 @@ struct PC_INPUT_CONFIG { // size 0x9c
         };
     }; // 0x44
 
-    u8 deadzone;           // 0x5a
-    u8 unknown_5b;         // 0x5b
-    u8 alternate_deadzone; // 0x5c
-    u8 unknown_5d;         // 0x5d
-    i16 key;               // 0x5e
-    u8 unknown_60[4];      // 0x60
+    u8 deadzone;                // 0x5a
+    u8 deadzone_high;           // 0x5b
+    u8 alternate_deadzone;      // 0x5c
+    u8 alternate_deadzone_high; // 0x5d
+    i16 key;                    // 0x5e
+    u8 unknown_60[4];           // 0x60
 
     union { // size 0x18
 
-        struct {                   // size 0x18
-            u8 axes[4][3];         // 0x64
-            u8 unknown_axes[4][3]; // 0x70
+        struct {                    // size 0x18
+            u8 axes[4][3];          // 0x64
+            u8 axis_bindings[4][3]; // 0x70
         };
 
         u8 all_axes[8][3];
@@ -353,7 +364,7 @@ struct PC_INPUT_COMMAND { // size 0x6
     i8 axis;              // 0x1
     i8 button;            // 0x2
     u8 unknown_03;        // 0x3
-    u16 unknown_04;       // 0x4
+    u16 value;            // 0x4
 };
 
 struct PC_INPUT_BINDING { // size 0x4
@@ -521,6 +532,9 @@ struct PC_INPUT_RUNTIME {          // size 0x68b4
     PC_INPUT_COMMAND commands[32]; // 0x67f0
     u8 *keyboard_state;            // 0x68b0
     PC_INPUT_RUNTIME();
+    i32 ButtonName(i32 device, i32 button, char *destination, i32 custom, i32 custom_index, i32 use_callback, i32 alternate_labels,
+                   char *delimiters);
+    i32 fun_006d9dc0(i32 device, i32 button, char *destination, i32 custom, i32 custom_index);
 
     i32 PollKeyboard() {
         if (!keyboard_polled) {
@@ -574,33 +588,33 @@ struct PC_INPUT_RUNTIME {          // size 0x68b4
     void WriteConfiguration(PC_INPUT_CONFIG *, i32, const char *);
     void SaveConfiguration();
     i32 fun_006d38b0(PC_INPUT_CONFIG *config);
-    void fun_006d3970(PC_INPUT_CONFIG *config);
+    void PromotePrimaryConfig(PC_INPUT_CONFIG *config);
     void fun_006d3980(i32);
     void fun_006d3b10(i32);
     i32 fun_006d49f0(i32 button);
     i32 fun_006d4a30(i32 axis, i32 active);
     void fun_006d4d20(i32 value);
-    i32 fun_006d4d50();
-    void fun_006d4d70();
+    i32 GetKeyboardUiOverride();
+    void ClearMouseAccumulation();
     i32 fun_006d4ef0(i32 action, i32 *active, i32 *axis, i32 *button, i32 *value);
     i32 fun_006d4f60(i32 active, i32 code);
-    void fun_006d4fc0(const char *keys);
+    void SetBlockedKeys(const char *keys);
     i32 fun_006d4fe0(i32 port, i32 kind, i32 value);
     i32 fun_006d6db0(i32 port, i32 index);
-    void fun_006d6eb0(i32 port, PC_INPUT_CONFIG *config);
-    PC_INPUT_CONFIG *fun_006d6ed0(u8 mask, i32 port);
+    void ExportPortConfig(i32 port, PC_INPUT_CONFIG *config);
+    PC_INPUT_CONFIG *FindPortConfig(u8 mask, i32 port);
     void fun_006d6ef0(u8 mask, i32 port, i32 key, i32 auxiliary, i32 auxiliary_port, i32 fallback);
     i32 fun_006d7410(i32 key, i32 port);
-    i32 fun_006d99e0(i32 port, u8 mask);
+    i32 HasConfig(i32 port, u8 mask);
     u32 fun_006d82d0(i32, u32 buttons, i32 key, i32 mouse_button, i32 axis, i32 direction, u32 bit);
-    void fun_006d35d0(u8 value);
-    void fun_006d35e0(i32 port, u8 value);
-    void fun_006d3600(i32 port);
-    i32 fun_006d3610();
-    void fun_006d3620();
-    void fun_006d3630(f32 threshold, i32 motion, f32 ramp);
+    void SetSuppressKey(u8 value);
+    void SetActionKeysActive(i32 port, u8 value);
+    void SetCapturedPort(i32 port);
+    i32 GetCapturedPort();
+    void ResetShutdownState();
+    void SetThresholds(f32 threshold, i32 motion, f32 ramp);
     void fun_006d36d0();
-    void fun_006d3710(i32 port, i32 *buttons, i32 *axes, i32 *povs);
+    void GetDeviceCounts(i32 port, i32 *buttons, i32 *axes, i32 *povs);
     i32 fun_006d3750(PC_INPUT_CONFIG *records, i32 count, PC_INPUT_CONFIG *config);
     i32 fun_006d37a0(i32 previous, i32 value);
     PC_INPUT_CONFIG *fun_006d4500(u8 mask, const char *name);
@@ -609,7 +623,7 @@ struct PC_INPUT_RUNTIME {          // size 0x68b4
     i32 fun_006d4de0(i32 port, i32 action, i32 auxiliary, i32 bank);
     void fun_006d4c90(u32 layout_id);
     void ResetInputRecords();
-    void fun_006d4e20(i32 value);
+    void SetCustomBindingsActive(i32 value);
     i32 GetInputRecordCount();
     i32 fun_006d4e40();
     i32 fun_006d4e50();

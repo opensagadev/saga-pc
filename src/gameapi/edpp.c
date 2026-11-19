@@ -2076,12 +2076,12 @@ i32 edppSaveEffects(char *filename, u8 page) {
                 EdFileWriteFloat(effecttypes[index].rotation_keys[key].value);
             }
             for (key = 0; key < 8; ++key) {
-                EdFileWriteFloat(effecttypes[index].field_218_keys[key].time);
-                EdFileWriteFloat(effecttypes[index].field_218_keys[key].value);
+                EdFileWriteFloat(effecttypes[index].scale_keys[key].time);
+                EdFileWriteFloat(effecttypes[index].scale_keys[key].value);
             }
             for (key = 0; key < 8; ++key) {
-                EdFileWriteFloat(effecttypes[index].field_258_keys[key].time);
-                EdFileWriteFloat(effecttypes[index].field_258_keys[key].value);
+                EdFileWriteFloat(effecttypes[index].extra_keys[key].time);
+                EdFileWriteFloat(effecttypes[index].extra_keys[key].value);
             }
             EdFileWriteFloat(effecttypes[index].texture_u0);
             EdFileWriteFloat(effecttypes[index].texture_v0);

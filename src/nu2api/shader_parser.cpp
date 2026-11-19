@@ -8,25 +8,25 @@
 #include <stdlib.h>
 
 // Copies a NUL-terminated string into the parse arena.
-#define ARENA_COPY_STRING(copy, string)                                                                                                    \
-    do {                                                                                                                                   \
-        VirtualStackAllocator *stack = arena;                                                                                              \
-        i32 length = (i32)strlen(string);                                                                                                  \
-        copy = reinterpret_cast<char *>(stack->cursor);                                                                                    \
-        stack->cursor += length + 1;                                                                                                       \
-        memcpy(copy, string, length + 1);                                                                                                  \
-    } while (0)
+__forceinline char *ShaderCompilerParser::CopyToArena(const char *string) {
+    VirtualStackAllocator *stack = arena;
+    i32 length = (i32)strlen(string);
+    char *copy = reinterpret_cast<char *>(stack->cursor);
+    stack->cursor += length + 1;
+    memcpy(copy, string, length + 1);
+    return copy;
+}
+
 // Links a new node at the current insertion point.
-#define APPEND_NODE(node)                                                                                                                  \
-    do {                                                                                                                                   \
-        if (tail == NULL) {                                                                                                                \
-            head = node;                                                                                                                   \
-            tail = &node->next;                                                                                                            \
-        } else {                                                                                                                           \
-            *tail = node;                                                                                                                  \
-            tail = &node->next;                                                                                                            \
-        }                                                                                                                                  \
-    } while (0)
+__forceinline void ShaderCompilerParser::AppendNode(ShaderParserNode *node) {
+    if (tail == NULL) {
+        head = node;
+        tail = &node->next;
+    } else {
+        *tail = node;
+        tail = &node->next;
+    }
+}
 
 void ShaderCompilerParser::FlushText() {
     i32 count = text.length;
@@ -46,7 +46,7 @@ void ShaderCompilerParser::FlushText() {
             // the real placement new would emit unmapped inline COMDATs.
             node = NULL;
         }
-        APPEND_NODE(node);
+        AppendNode(node);
         text.length = 0;
     }
 }
@@ -57,10 +57,10 @@ extern "C" void fun_0074bef0(void) {
 void ShaderCompilerParser::DefineMacro(const char *name, const char *value) {
     FlushText();
     char *copy_name;
-    ARENA_COPY_STRING(copy_name, name);
+    copy_name = CopyToArena(name);
     char *copy_value;
     if (value != NULL) {
-        ARENA_COPY_STRING(copy_value, value);
+        copy_value = CopyToArena(value);
     } else {
         copy_value = NULL;
     }
@@ -76,13 +76,13 @@ void ShaderCompilerParser::DefineMacro(const char *name, const char *value) {
         // the real placement new would emit unmapped inline COMDATs.
         node = NULL;
     }
-    APPEND_NODE(node);
+    AppendNode(node);
 }
 
 void ShaderCompilerParser::UndefineMacro(const char *name) {
     FlushText();
     char *copy;
-    ARENA_COPY_STRING(copy, name);
+    copy = CopyToArena(name);
     ShaderParserUndefNode *node = reinterpret_cast<ShaderParserUndefNode *>(arena->cursor);
     arena->cursor += sizeof(ShaderParserUndefNode);
     if (node != NULL) {
@@ -94,7 +94,7 @@ void ShaderCompilerParser::UndefineMacro(const char *name) {
         // the real placement new would emit unmapped inline COMDATs.
         node = NULL;
     }
-    APPEND_NODE(node);
+    AppendNode(node);
 }
 
 void ShaderCompilerParser::BeginIf(ShaderConditionNode *condition) {
@@ -112,7 +112,7 @@ void ShaderCompilerParser::BeginIf(ShaderConditionNode *condition) {
         // the real placement new would emit unmapped inline COMDATs.
         node = NULL;
     }
-    APPEND_NODE(node);
+    AppendNode(node);
     branches[branch_count++] = node;
     scopes[scope_count++] = node;
     tail = &node->if_true;
@@ -139,7 +139,7 @@ void ShaderCompilerParser::BeginElseIf(ShaderConditionNode *condition) {
         // the real placement new would emit unmapped inline COMDATs.
         node = NULL;
     }
-    APPEND_NODE(node);
+    AppendNode(node);
     branches[branch_count++] = node;
     tail = &node->if_true;
 }
@@ -222,7 +222,7 @@ void ShaderCompilerParser::fun_0074b330(const ShaderLexicalSlice &slice) {
 }
 
 void ShaderCompilerParser::fun_0074b6b0(ShaderParserNode *node) {
-    APPEND_NODE(node);
+    AppendNode(node);
 }
 
 void ShaderCompilerParser::SetShowDefinitions(u8 enabled) {
@@ -238,13 +238,13 @@ void ShaderCompilerParser::SetShowDefinitions(u8 enabled) {
         // the real placement new would emit unmapped inline COMDATs.
         node = NULL;
     }
-    APPEND_NODE(node);
+    AppendNode(node);
 }
 
 void ShaderCompilerParser::UseDeclaration(u32 flags, i32 depth, const char *name) {
     FlushText();
     char *copy;
-    ARENA_COPY_STRING(copy, name);
+    copy = CopyToArena(name);
     ShaderParserReference *node = reinterpret_cast<ShaderParserReference *>(arena->cursor);
     arena->cursor += sizeof(ShaderParserReference);
     if (node != NULL) {
@@ -258,17 +258,17 @@ void ShaderCompilerParser::UseDeclaration(u32 flags, i32 depth, const char *name
         // the real placement new would emit unmapped inline COMDATs.
         node = NULL;
     }
-    APPEND_NODE(node);
+    AppendNode(node);
 }
 
 void ShaderCompilerParser::AddDeclaration(u32 flags, i32 type, i32 count, const char *name, i32 semantic, const char *custom, i32 vertex,
                                           i32 pixel) {
     FlushText();
     char *copy;
-    ARENA_COPY_STRING(copy, name);
+    copy = CopyToArena(name);
     char *custom_copy;
     if (custom != NULL) {
-        ARENA_COPY_STRING(custom_copy, custom);
+        custom_copy = CopyToArena(custom);
     } else {
         custom_copy = NULL;
     }
@@ -290,7 +290,7 @@ void ShaderCompilerParser::AddDeclaration(u32 flags, i32 type, i32 count, const 
         // the real placement new would emit unmapped inline COMDATs.
         node = NULL;
     }
-    APPEND_NODE(node);
+    AppendNode(node);
 }
 
 void ShaderCompilerParser::EmitDeclarations(u32 flags) {
@@ -306,7 +306,7 @@ void ShaderCompilerParser::EmitDeclarations(u32 flags) {
         // the real placement new would emit unmapped inline COMDATs.
         node = NULL;
     }
-    APPEND_NODE(node);
+    AppendNode(node);
 }
 
 void ShaderCompilerParser::ParseDeclaration(ShaderCompilerBufferAllocator *input, i32 *cursor) {

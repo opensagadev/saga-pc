@@ -120,14 +120,14 @@ typedef struct FRAME_SCANNED_PAD { // size 0x84
     u8 analog_left_pad_right;      // 0x79
     u8 analog_left_pad_up;         // 0x7a
     u8 analog_left_pad_down;       // 0x7b
-    u8 unknown_7c;                 // 0x7c
-    u8 unknown_7d;                 // 0x7d
-    u8 unknown_7e;                 // 0x7e
-    u8 unknown_7f;                 // 0x7f
-    u8 unknown_80;                 // 0x80
-    u8 unknown_81;                 // 0x81
-    u8 unknown_82;                 // 0x82
-    u8 unknown_83;                 // 0x83
+    u8 raw_pad_left;               // 0x7c
+    u8 raw_pad_right;              // 0x7d
+    u8 raw_pad_up;                 // 0x7e
+    u8 raw_pad_down;               // 0x7f
+    u8 raw_extra_axis_x;           // 0x80
+    u8 raw_extra_axis_y;           // 0x81
+    u8 extra_axis_x;               // 0x82
+    u8 extra_axis_y;               // 0x83
 } FRAME_SCANNED_PAD;
 
 typedef union FRAME_RECORD_CURSOR {
@@ -236,6 +236,15 @@ typedef struct nualloc_manager_prefix_s { // size 0x10
     u32 block_count;                      // 0x8
     u32 used_bytes;                       // 0xc
 } NUALLOC_MANAGER_PREFIX;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void *NuAllocManagerAllocateAligned(NUALLOC_MANAGER_PREFIX *manager, u32 size, u32 alignment);
+    void NuAllocManagerFree(NUALLOC_MANAGER_PREFIX *manager, void *memory);
+#ifdef __cplusplus
+}
+#endif
 
 /* Header of a heap block. `size` payload bytes and a trailer follow it, so a block spans size + 16 bytes. */
 typedef struct nualloc_manager_block_s { // size 0xc

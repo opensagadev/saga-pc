@@ -18,7 +18,6 @@ extern "C" {
 #endif
     NUGSPLINE *NuSplineFind(struct NUGSCN_s *, char *);
     i32 NuSplineFindAllBeg(struct NUGSCN_s *scene, char *name, NUGSPLINE **results, i32 capacity);
-    extern const char AITransferLiteral7577dc[8];
 #ifdef __cplusplus
 }
 #endif

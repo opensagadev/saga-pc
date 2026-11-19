@@ -53,12 +53,12 @@ extern "C" {
         i16 icon;                        // 0x26
         void *special;                   // 0x28
         u32 score;                       // 0x2c
-        f32 unknown_30;                  // 0x30
+        f32 parameter_c4;                // 0x30
         f32 drift;                       // 0x34
         GAME_MESSAGE_CALLBACK delay_fn;  // 0x38
         GAME_MESSAGE_CALLBACK tick_fn;   // 0x3c
         GAME_MESSAGE_CALLBACK update_fn; // 0x40
-        void *unknown_44;                // 0x44
+        void *draw_fn;                   // 0x44
         GAME_MESSAGE_CALLBACK end_fn;    // 0x48
         i8 player_index;                 // 0x4c
         u8 allow_temporary;              // 0x4d

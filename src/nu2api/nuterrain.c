@@ -183,11 +183,11 @@ i32 NewPlatInst(void *object, i32 instance) {
         (CurrentTerrain->platforms[source_index].flags ^ CurrentTerrain->platforms[new_index].flags) & 1;
     CurrentTerrain->group_indices[CurrentTerrain->group_index_count] = CurrentTerrain->group_count;
     CurrentTerrain->group_index_count++;
-    CurrentTerrain->platforms[new_index].bounce_54 = 0.0f;
-    CurrentTerrain->platforms[new_index].bounce_58 = 0.0f;
-    CurrentTerrain->platforms[new_index].bounce_5c = 0.0f;
-    CurrentTerrain->platforms[new_index].bounce_64 = 0.0f;
-    CurrentTerrain->platforms[new_index].bounce_60 = 0.0f;
+    CurrentTerrain->platforms[new_index].bounce_impulse = 0.0f;
+    CurrentTerrain->platforms[new_index].bounce_offset = 0.0f;
+    CurrentTerrain->platforms[new_index].bounce_velocity = 0.0f;
+    CurrentTerrain->platforms[new_index].bounce_damping = 0.0f;
+    CurrentTerrain->platforms[new_index].bounce_spring = 0.0f;
     CurrentTerrain->group_count++;
     CurrentTerrain->platform_cell.group_count++;
     return new_index;
@@ -233,11 +233,11 @@ i32 NewPlatInstMSitu(void *object, i32 source) {
     CurrentTerrain->platforms[new_index].scene_object_index = source;
     CurrentTerrain->platforms[new_index].instance_flags = NULL;
     CurrentTerrain->platforms[new_index].flags &= ~TERRAIN_PLATFORM_FLAG_ROTATING;
-    CurrentTerrain->platforms[new_index].bounce_54 = 0.0f;
-    CurrentTerrain->platforms[new_index].bounce_58 = 0.0f;
-    CurrentTerrain->platforms[new_index].bounce_5c = 0.0f;
-    CurrentTerrain->platforms[new_index].bounce_64 = 0.0f;
-    CurrentTerrain->platforms[new_index].bounce_60 = 0.0f;
+    CurrentTerrain->platforms[new_index].bounce_impulse = 0.0f;
+    CurrentTerrain->platforms[new_index].bounce_offset = 0.0f;
+    CurrentTerrain->platforms[new_index].bounce_velocity = 0.0f;
+    CurrentTerrain->platforms[new_index].bounce_damping = 0.0f;
+    CurrentTerrain->platforms[new_index].bounce_spring = 0.0f;
     CurrentTerrain->group_indices[CurrentTerrain->group_index_count] = CurrentTerrain->group_count;
     CurrentTerrain->group_index_count++;
     CurrentTerrain->platform_cell.group_count++;
@@ -1290,81 +1290,70 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
             TERRAIN_POLYGON_INFO *surface = entry->shape;
             i32 facing;
             i32 side;
-/* InsideLineF(x, z, start, end), inlined (the start and end coordinates
- * are f32 parameter copies). */
-#define CAST_LINE(a, b)                                                                                                                    \
-    (line_x = surface->vertices[a].x, line_z = surface->vertices[a].z, end_x = surface->vertices[b].x, end_z = surface->vertices[b].z,     \
-     (x - line_x) * (end_z - line_z) + (z - line_z) * (line_x - end_x) < 0.0f ? 0 : 1)
-#define CAST_PLANE(n, v)                                                                                                                   \
-    quotient = ((z - surface->vertices[v].z) * surface->normals[n].z + (x - surface->vertices[v].x) * surface->normals[n].x) /             \
-               -surface->normals[n].y;                                                                                                     \
-    y = groups[group_index].origin.y + surface->vertices[v].y + quotient;                                                                  \
-    if (surface->material[1] != 0) {                                                                                                       \
-        if (y <= position->y && y > efloor_y && facing == 1) {                                                                             \
-            efloor_normal = surface->normals[n];                                                                                           \
-            efloor_poly = surface;                                                                                                         \
-            efloor_y = y;                                                                                                                  \
-            TerrainShadowFloorIndex = group_index;                                                                                         \
-        } else if (position->y < y && eroof_y >= y && (y != eroof_y || surface->normals[n].y < eroof_normal.y)) {                          \
-            eroof_normal = surface->normals[n];                                                                                            \
-            eroof_poly = surface;                                                                                                          \
-            eroof_y = y;                                                                                                                   \
-            eroof_group = group_index;                                                                                                     \
-        }                                                                                                                                  \
-    } else {                                                                                                                               \
-        if (y <= position->y && y > floor_y && facing == 1) {                                                                              \
-            floor_normal = surface->normals[n];                                                                                            \
-            floor_poly = surface;                                                                                                          \
-            floor_y = y;                                                                                                                   \
-            castnum = group_index;                                                                                                         \
-        } else if (position->y < y && roof_y >= y && (y != roof_y || surface->normals[n].y < roof_normal.y)) {                             \
-            roof_normal = surface->normals[n];                                                                                             \
-            roof_poly = surface;                                                                                                           \
-            roof_y = y;                                                                                                                    \
-            roof_group = group_index;                                                                                                      \
-        }                                                                                                                                  \
-    }
-            f32 line_x;
-            f32 line_z;
-            f32 end_x;
-            f32 end_z;
+            i32 plane;
+            i32 corner;
             f32 quotient;
             f32 y;
             if (surface->normals[1].y > 65535.0) {
                 /* Triangle: a single plane. */
                 if (surface->normals[0].y > 0.0f) {
-                    if (!CAST_LINE(1, 0) || !CAST_LINE(0, 2) || !CAST_LINE(2, 1)) {
+                    if (!InsideLineF(x, z, surface->vertices[1].x, surface->vertices[1].z, surface->vertices[0].x,
+                                     surface->vertices[0].z) ||
+                        !InsideLineF(x, z, surface->vertices[0].x, surface->vertices[0].z, surface->vertices[2].x,
+                                     surface->vertices[2].z) ||
+                        !InsideLineF(x, z, surface->vertices[2].x, surface->vertices[2].z, surface->vertices[1].x,
+                                     surface->vertices[1].z)) {
                         continue;
                     }
                     facing = 1;
                 } else if (surface->normals[0].y < 0.0f) {
-                    if (!CAST_LINE(0, 1) || !CAST_LINE(2, 0) || !CAST_LINE(1, 2)) {
+                    if (!InsideLineF(x, z, surface->vertices[0].x, surface->vertices[0].z, surface->vertices[1].x,
+                                     surface->vertices[1].z) ||
+                        !InsideLineF(x, z, surface->vertices[2].x, surface->vertices[2].z, surface->vertices[0].x,
+                                     surface->vertices[0].z) ||
+                        !InsideLineF(x, z, surface->vertices[1].x, surface->vertices[1].z, surface->vertices[2].x,
+                                     surface->vertices[2].z)) {
                         continue;
                     }
                     facing = 2;
                 } else {
                     continue;
                 }
-                CAST_PLANE(0, 0)
+                plane = 0;
+                corner = 0;
             } else {
                 /* Quad: two planes sharing the 1-2 edge. */
                 if (surface->normals[0].y > 0.0f) {
-                    side = CAST_LINE(2, 1);
+                    side =
+                        InsideLineF(x, z, surface->vertices[2].x, surface->vertices[2].z, surface->vertices[1].x, surface->vertices[1].z);
                     if (side != 0) {
-                        if (!CAST_LINE(1, 0) || !CAST_LINE(0, 2)) {
+                        if (!InsideLineF(x, z, surface->vertices[1].x, surface->vertices[1].z, surface->vertices[0].x,
+                                         surface->vertices[0].z) ||
+                            !InsideLineF(x, z, surface->vertices[0].x, surface->vertices[0].z, surface->vertices[2].x,
+                                         surface->vertices[2].z)) {
                             continue;
                         }
-                    } else if (!CAST_LINE(3, 1) || !CAST_LINE(2, 3)) {
+                    } else if (!InsideLineF(x, z, surface->vertices[3].x, surface->vertices[3].z, surface->vertices[1].x,
+                                            surface->vertices[1].z) ||
+                               !InsideLineF(x, z, surface->vertices[2].x, surface->vertices[2].z, surface->vertices[3].x,
+                                            surface->vertices[3].z)) {
                         continue;
                     }
                     facing = 1;
                 } else if (surface->normals[0].y < 0.0f) {
-                    side = CAST_LINE(1, 2);
+                    side =
+                        InsideLineF(x, z, surface->vertices[1].x, surface->vertices[1].z, surface->vertices[2].x, surface->vertices[2].z);
                     if (side != 0) {
-                        if (!CAST_LINE(0, 1) || !CAST_LINE(2, 0)) {
+                        if (!InsideLineF(x, z, surface->vertices[0].x, surface->vertices[0].z, surface->vertices[1].x,
+                                         surface->vertices[1].z) ||
+                            !InsideLineF(x, z, surface->vertices[2].x, surface->vertices[2].z, surface->vertices[0].x,
+                                         surface->vertices[0].z)) {
                             continue;
                         }
-                    } else if (!CAST_LINE(1, 3) || !CAST_LINE(3, 2)) {
+                    } else if (!InsideLineF(x, z, surface->vertices[1].x, surface->vertices[1].z, surface->vertices[3].x,
+                                            surface->vertices[3].z) ||
+                               !InsideLineF(x, z, surface->vertices[3].x, surface->vertices[3].z, surface->vertices[2].x,
+                                            surface->vertices[2].z)) {
                         continue;
                     }
                     facing = 2;
@@ -1372,13 +1361,43 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                     continue;
                 }
                 if (side == 0 && surface->normals[1].y != 0.0f) {
-                    CAST_PLANE(1, 3)
+                    plane = 1;
+                    corner = 3;
                 } else {
-                    CAST_PLANE(0, 0)
+                    plane = 0;
+                    corner = 0;
                 }
             }
-#undef CAST_PLANE
-#undef CAST_LINE
+            /* The height of the chosen plane under the point; keep the nearest floor below and roof above. */
+            quotient = ((z - surface->vertices[corner].z) * surface->normals[plane].z +
+                        (x - surface->vertices[corner].x) * surface->normals[plane].x) /
+                       -surface->normals[plane].y;
+            y = groups[group_index].origin.y + surface->vertices[corner].y + quotient;
+            if (surface->material[1] != 0) {
+                if (y <= position->y && y > efloor_y && facing == 1) {
+                    efloor_normal = surface->normals[plane];
+                    efloor_poly = surface;
+                    efloor_y = y;
+                    TerrainShadowFloorIndex = group_index;
+                } else if (position->y < y && eroof_y >= y && (y != eroof_y || surface->normals[plane].y < eroof_normal.y)) {
+                    eroof_normal = surface->normals[plane];
+                    eroof_poly = surface;
+                    eroof_y = y;
+                    eroof_group = group_index;
+                }
+            } else {
+                if (y <= position->y && y > floor_y && facing == 1) {
+                    floor_normal = surface->normals[plane];
+                    floor_poly = surface;
+                    floor_y = y;
+                    castnum = group_index;
+                } else if (position->y < y && roof_y >= y && (y != roof_y || surface->normals[plane].y < roof_normal.y)) {
+                    roof_normal = surface->normals[plane];
+                    roof_poly = surface;
+                    roof_y = y;
+                    roof_group = group_index;
+                }
+            }
         }
         scan = entry;
     }
@@ -1762,12 +1781,12 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
 
     for (platform_index = 0; platform_index < terrain->max_platforms; ++platform_index) {
         terrain->platforms[platform_index].scene_object = NULL;
-        terrain->platforms[platform_index].unknown_44 = 0;
-        terrain->platforms[platform_index].bounce_54 = 0;
-        terrain->platforms[platform_index].bounce_58 = 0;
-        terrain->platforms[platform_index].bounce_5c = 0;
-        terrain->platforms[platform_index].bounce_64 = 0;
-        terrain->platforms[platform_index].bounce_60 = 0;
+        terrain->platforms[platform_index].motion_status = 0;
+        terrain->platforms[platform_index].bounce_impulse = 0;
+        terrain->platforms[platform_index].bounce_offset = 0;
+        terrain->platforms[platform_index].bounce_velocity = 0;
+        terrain->platforms[platform_index].bounce_damping = 0;
+        terrain->platforms[platform_index].bounce_spring = 0;
         terrain->platforms[platform_index].flags &= ~TERRAIN_PLATFORM_FLAG_DISPLAY_LIST_BACKED;
     }
 
@@ -2152,26 +2171,6 @@ void TerrainSetPlatConnectTol(f32 tolerance) {
     TerConTol = tolerance;
 }
 
-typedef struct TERRAIN_PLATFORM_LIFECYCLE { // size 0x6c
-    NUMTX previous_matrix;                  // 0x00
-    NUMTX *scene_matrix;                    // 0x40
-    i32 motion_status;                      // 0x44
-    i16 terrain_group_index;                // 0x48
-    i16 scene_object_index;                 // 0x4a
-    u32 flags;                              // 0x4c
-    i16 bounce_frames;                      // 0x50
-    u8 unknown_52[2];                       // 0x52
-    f32 bounce_impulse;                     // 0x54
-    f32 bounce_offset;                      // 0x58
-    f32 bounce_velocity;                    // 0x5c
-    f32 bounce_spring;                      // 0x60
-    f32 bounce_damping;                     // 0x64
-    u32 *instance_flags;                    // 0x68
-} TERRAIN_PLATFORM_LIFECYCLE;
-
-/* The platform table seen through the lifecycle view. */
-#define TERRAIN_PLATFORM_LIFECYCLES ((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)
-
 void noterraininit(void) {
     terraincnt = 0;
     curSphereter = 0;
@@ -2203,8 +2202,8 @@ void TerrainPlatformOldUpdate(void) {
     CurrentTerrain->removed_platform_count = 0;
     curSphereter = 0;
     for (i = 0; i < CurrentTerrain->max_platforms; ++i) {
-        if (TERRAIN_PLATFORM_LIFECYCLES[i].scene_matrix != NULL) {
-            TERRAIN_PLATFORM_LIFECYCLES[i].previous_matrix = *TERRAIN_PLATFORM_LIFECYCLES[i].scene_matrix;
+        if (CurrentTerrain->platforms[i].scene_object != NULL) {
+            CurrentTerrain->platforms[i].previous_matrix = *CurrentTerrain->platforms[i].scene_object;
         }
     }
 }
@@ -2316,7 +2315,7 @@ void TerrainPlatformNewUpdate(void) {
     for (i = 0; i < CurrentTerrain->platform_cell.group_count; ++i, ++group_index) {
         TERRAIN_GROUP *group = &CurrentTerrain->groups[*group_index];
         i32 index = group->scene_index;
-        TERRAIN_PLATFORM_LIFECYCLE *platform = &(TERRAIN_PLATFORM_LIFECYCLES[index]);
+        TERRAIN_PLATFORM *platform = &CurrentTerrain->platforms[index];
         if (platform->instance_flags != NULL) {
             if ((platform->flags & TERRAIN_PLATFORM_FLAG_DISPLAY_LIST_BACKED) != 0) {
                 if ((*platform->instance_flags & 2) == 0) {
@@ -2329,39 +2328,39 @@ void TerrainPlatformNewUpdate(void) {
         if (group->chunk_type == 0) {
             continue;
         }
-        if (platform->scene_matrix != NULL) {
+        if (platform->scene_object != NULL) {
             if (platform->bounce_frames != 0) {
                 if (platform->bounce_frames > 124) {
-                    (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_velocity =
-                        ((TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_impulse -
-                         (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_damping * (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_velocity) +
-                        (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_velocity;
+                    CurrentTerrain->platforms[index].bounce_velocity =
+                        (CurrentTerrain->platforms[index].bounce_impulse -
+                         CurrentTerrain->platforms[index].bounce_damping * CurrentTerrain->platforms[index].bounce_velocity) +
+                        CurrentTerrain->platforms[index].bounce_velocity;
                 } else {
-                    (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_velocity =
-                        (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_velocity -
-                        (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_damping * (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_velocity;
+                    CurrentTerrain->platforms[index].bounce_velocity =
+                        CurrentTerrain->platforms[index].bounce_velocity -
+                        CurrentTerrain->platforms[index].bounce_damping * CurrentTerrain->platforms[index].bounce_velocity;
                 }
-                offset = (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_offset;
+                offset = CurrentTerrain->platforms[index].bounce_offset;
                 offset_bits = *(u32 *)&offset & 0x7fffffff;
-                (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_velocity =
-                    (-(TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_offset * *(f32 *)&offset_bits *
-                         (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_spring * 0.5 -
-                     (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_offset * (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_spring) +
-                    (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_velocity;
-                (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_offset += (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_velocity;
-                --(TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_frames;
-                (TERRAIN_PLATFORM_LIFECYCLES[index]).scene_matrix->m31 += (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_offset;
+                CurrentTerrain->platforms[index].bounce_velocity =
+                    (-CurrentTerrain->platforms[index].bounce_offset * *(f32 *)&offset_bits *
+                         CurrentTerrain->platforms[index].bounce_spring * 0.5 -
+                     CurrentTerrain->platforms[index].bounce_offset * CurrentTerrain->platforms[index].bounce_spring) +
+                    CurrentTerrain->platforms[index].bounce_velocity;
+                CurrentTerrain->platforms[index].bounce_offset += CurrentTerrain->platforms[index].bounce_velocity;
+                --CurrentTerrain->platforms[index].bounce_frames;
+                CurrentTerrain->platforms[index].scene_object->m31 += CurrentTerrain->platforms[index].bounce_offset;
             }
-            group->origin.x = (TERRAIN_PLATFORM_LIFECYCLES[index]).scene_matrix->m30;
-            group->origin.y = (TERRAIN_PLATFORM_LIFECYCLES[index]).scene_matrix->m31;
-            group->origin.z = (TERRAIN_PLATFORM_LIFECYCLES[index]).scene_matrix->m32;
+            group->origin.x = CurrentTerrain->platforms[index].scene_object->m30;
+            group->origin.y = CurrentTerrain->platforms[index].scene_object->m31;
+            group->origin.z = CurrentTerrain->platforms[index].scene_object->m32;
         }
-        if (((TERRAIN_PLATFORM_LIFECYCLES[index]).flags & 2) != 0) {
-            (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_frames = 128;
+        if ((CurrentTerrain->platforms[index].flags & 2) != 0) {
+            CurrentTerrain->platforms[index].bounce_frames = 128;
         }
-        (TERRAIN_PLATFORM_LIFECYCLES[index]).flags &= ~2U;
-        (TERRAIN_PLATFORM_LIFECYCLES[index]).motion_status = 0;
-        if (((TERRAIN_PLATFORM_LIFECYCLES[index]).flags & 1) != 0) {
+        CurrentTerrain->platforms[index].flags &= ~2U;
+        CurrentTerrain->platforms[index].motion_status = 0;
+        if ((CurrentTerrain->platforms[index].flags & 1) != 0) {
             if (group->origin.x - group->radius > max_x || group->radius + group->origin.x < min_x ||
                 group->origin.z - group->radius > max_z) {
                 continue;
@@ -2523,11 +2522,11 @@ void terrainpickupinit(char *path, void **buffer) {
     }
     for (i = 0; i < 32; ++i) {
         terrain->platforms[i].scene_object = NULL;
-        terrain->platforms[i].bounce_54 = 0;
-        terrain->platforms[i].bounce_58 = 0;
-        terrain->platforms[i].bounce_5c = 0;
-        terrain->platforms[i].bounce_64 = 0;
-        terrain->platforms[i].bounce_60 = 0;
+        terrain->platforms[i].bounce_impulse = 0;
+        terrain->platforms[i].bounce_offset = 0;
+        terrain->platforms[i].bounce_velocity = 0;
+        terrain->platforms[i].bounce_damping = 0;
+        terrain->platforms[i].bounce_spring = 0;
     }
     for (i = 0; i < 128; ++i) {
         terrain->group_for_type[i] = -1;
@@ -2706,11 +2705,11 @@ i32 AddPickupTerrRot(i32 type, NUMTX *matrix, NUMTX *previous, i32 rotating) {
     CurrentTerrain->platforms[found].instance_flags = NULL;
     CurrentTerrain->group_indices[CurrentTerrain->group_index_count] = CurrentTerrain->group_count;
     ++CurrentTerrain->group_index_count;
-    CurrentTerrain->platforms[found].bounce_54 = 0;
-    CurrentTerrain->platforms[found].bounce_58 = 0;
-    CurrentTerrain->platforms[found].bounce_5c = 0;
-    CurrentTerrain->platforms[found].bounce_64 = 0;
-    CurrentTerrain->platforms[found].bounce_60 = 0;
+    CurrentTerrain->platforms[found].bounce_impulse = 0;
+    CurrentTerrain->platforms[found].bounce_offset = 0;
+    CurrentTerrain->platforms[found].bounce_velocity = 0;
+    CurrentTerrain->platforms[found].bounce_damping = 0;
+    CurrentTerrain->platforms[found].bounce_spring = 0;
     CurrentTerrain->platforms[found].flags &= ~TERRAIN_PLATFORM_FLAG_COLLIDED;
     if (CurrentTerrain->active_platform_count < 96) {
         CurrentTerrain->active_platform_groups[CurrentTerrain->active_platform_count] = CurrentTerrain->group_count;
@@ -2768,11 +2767,11 @@ i32 NewPlatPickupInst(void *object, i32 type) {
     CurrentTerrain->platforms[index].instance_flags = NULL;
     CurrentTerrain->group_indices[CurrentTerrain->group_index_count] = CurrentTerrain->group_count;
     CurrentTerrain->group_index_count++;
-    CurrentTerrain->platforms[index].bounce_54 = 0;
-    CurrentTerrain->platforms[index].bounce_58 = 0;
-    CurrentTerrain->platforms[index].bounce_5c = 0;
-    CurrentTerrain->platforms[index].bounce_64 = 0;
-    CurrentTerrain->platforms[index].bounce_60 = 0;
+    CurrentTerrain->platforms[index].bounce_impulse = 0;
+    CurrentTerrain->platforms[index].bounce_offset = 0;
+    CurrentTerrain->platforms[index].bounce_velocity = 0;
+    CurrentTerrain->platforms[index].bounce_damping = 0;
+    CurrentTerrain->platforms[index].bounce_spring = 0;
     CurrentTerrain->platforms[index].flags &= ~TERRAIN_PLATFORM_FLAG_COLLIDED;
     CurrentTerrain->group_count++;
     CurrentTerrain->platform_cell.group_count++;
@@ -2895,6 +2894,19 @@ void TerrDrawSitu(TERRAIN_POLYGON_INFO *terrain, NUVEC *situation) {
     }
 }
 
+/* Debug lines between the a..b and c..d edges of a platform shape, at both edge ends (a == b fans from one corner). */
+static __forceinline void TerrDrawEdgeLines(const NUVEC4 *points, i16 index, i32 a, i32 b, i32 c, i32 d, i32 colour) {
+    i32 i;
+    for (i = 0; i <= 1; ++i) {
+        f32 t = (f32)i;
+        const NUVEC *origin = &CurrentTerrain->groups[index].origin;
+        NuRndrLine3dDbg(
+            origin->x + points[a].x + (points[b].x - points[a].x) * t, origin->y + points[a].y + (points[b].y - points[a].y) * t,
+            origin->z + points[a].z + (points[b].z - points[a].z) * t, origin->x + points[c].x + (points[d].x - points[c].x) * t,
+            origin->y + points[c].y + (points[d].y - points[c].y) * t, origin->z + points[c].z + (points[d].z - points[c].z) * t, colour);
+    }
+}
+
 void TerrDrawPlat(TERRAIN_POLYGON_INFO *terrain, i16 index) {
     TERRAIN_PLATFORM *platform;
     i32 i;
@@ -2905,25 +2917,6 @@ void TerrDrawPlat(TERRAIN_POLYGON_INFO *terrain, i16 index) {
     f32 t;
     i8 blue = (i8)(index & 0xf0);
     i8 green = (i8)(index << 4);
-
-#define TERRAIN_TDP_LINE(a, b, c, d)                                                                                                       \
-    for (i = 0; i <= 1; ++i) {                                                                                                             \
-        t = (f32)i;                                                                                                                        \
-        origin = &CurrentTerrain->groups[index].origin;                                                                                    \
-        NuRndrLine3dDbg(                                                                                                                   \
-            origin->x + points[a].x + (points[b].x - points[a].x) * t, origin->y + points[a].y + (points[b].y - points[a].y) * t,          \
-            origin->z + points[a].z + (points[b].z - points[a].z) * t, origin->x + points[c].x + (points[d].x - points[c].x) * t,          \
-            origin->y + points[c].y + (points[d].y - points[c].y) * t, origin->z + points[c].z + (points[d].z - points[c].z) * t, colour); \
-    }
-#define TERRAIN_TDP_FAN(a, c, d)                                                                                                           \
-    for (i = 0; i <= 1; ++i) {                                                                                                             \
-        t = (f32)i;                                                                                                                        \
-        origin = &CurrentTerrain->groups[index].origin;                                                                                    \
-        NuRndrLine3dDbg(origin->x + points[a].x, origin->y + points[a].y, origin->z + points[a].z,                                         \
-                        origin->x + points[c].x + (points[d].x - points[c].x) * t,                                                         \
-                        origin->y + points[c].y + (points[d].y - points[c].y) * t,                                                         \
-                        origin->z + points[c].z + (points[d].z - points[c].z) * t, colour);                                                \
-    }
 
     platform = &CurrentTerrain->platforms[CurrentTerrain->groups[index].scene_index];
     if (platform->instance_flags != NULL) {
@@ -2958,17 +2951,15 @@ void TerrDrawPlat(TERRAIN_POLYGON_INFO *terrain, i16 index) {
     }
 
     if (terrain->normals[1].y > 65535.0) {
-        TERRAIN_TDP_FAN(0, 1, 2);
-        TERRAIN_TDP_FAN(1, 0, 2);
+        TerrDrawEdgeLines(points, index, 0, 0, 1, 2, colour);
+        TerrDrawEdgeLines(points, index, 1, 1, 0, 2, colour);
     } else {
-        TERRAIN_TDP_LINE(0, 1, 2, 3);
-        TERRAIN_TDP_LINE(0, 2, 1, 3);
+        TerrDrawEdgeLines(points, index, 0, 1, 2, 3, colour);
+        TerrDrawEdgeLines(points, index, 0, 2, 1, 3, colour);
     }
     origin = &CurrentTerrain->groups[index].origin;
     NuRndrLine3dDbg(origin->x + points[0].x, origin->y + points[0].y, origin->z + points[0].z, origin->x + points[0].x + normal->x,
                     origin->y + points[0].y + normal->y, origin->z + points[0].z + normal->z, (green << 8) + blue);
-#undef TERRAIN_TDP_FAN
-#undef TERRAIN_TDP_LINE
 }
 
 void TerrDrawPlatCol(TERRAIN_POLYGON_INFO *terrain, i16 index, i32 colour) {
@@ -2978,25 +2969,6 @@ void TerrDrawPlatCol(TERRAIN_POLYGON_INFO *terrain, i16 index, i32 colour) {
     const NUVEC *origin;
     i32 i;
     f32 t;
-
-#define TERRAIN_TDP_LINE(a, b, c, d)                                                                                                       \
-    for (i = 0; i <= 1; ++i) {                                                                                                             \
-        t = (f32)i;                                                                                                                        \
-        origin = &CurrentTerrain->groups[index].origin;                                                                                    \
-        NuRndrLine3dDbg(                                                                                                                   \
-            origin->x + points[a].x + (points[b].x - points[a].x) * t, origin->y + points[a].y + (points[b].y - points[a].y) * t,          \
-            origin->z + points[a].z + (points[b].z - points[a].z) * t, origin->x + points[c].x + (points[d].x - points[c].x) * t,          \
-            origin->y + points[c].y + (points[d].y - points[c].y) * t, origin->z + points[c].z + (points[d].z - points[c].z) * t, colour); \
-    }
-#define TERRAIN_TDP_FAN(a, c, d)                                                                                                           \
-    for (i = 0; i <= 1; ++i) {                                                                                                             \
-        t = (f32)i;                                                                                                                        \
-        origin = &CurrentTerrain->groups[index].origin;                                                                                    \
-        NuRndrLine3dDbg(origin->x + points[a].x, origin->y + points[a].y, origin->z + points[a].z,                                         \
-                        origin->x + points[c].x + (points[d].x - points[c].x) * t,                                                         \
-                        origin->y + points[c].y + (points[d].y - points[c].y) * t,                                                         \
-                        origin->z + points[c].z + (points[d].z - points[c].z) * t, colour);                                                \
-    }
 
     platform = &CurrentTerrain->platforms[CurrentTerrain->groups[index].scene_index];
     if (platform->instance_flags != NULL) {
@@ -3029,8 +3001,8 @@ void TerrDrawPlatCol(TERRAIN_POLYGON_INFO *terrain, i16 index, i32 colour) {
     }
 
     if (terrain->normals[1].y > 65535.0) {
-        TERRAIN_TDP_FAN(0, 1, 2);
-        TERRAIN_TDP_FAN(1, 0, 2);
+        TerrDrawEdgeLines(points, index, 0, 0, 1, 2, colour);
+        TerrDrawEdgeLines(points, index, 1, 1, 0, 2, colour);
     } else {
         points[3].x = terrain->vertices[3].x;
         points[3].y = terrain->vertices[3].y;
@@ -3043,8 +3015,8 @@ void TerrDrawPlatCol(TERRAIN_POLYGON_INFO *terrain, i16 index, i32 colour) {
         normals[1].w = 0.0f;
         NuVec4MtxTransformVU0(&normals[0], &normals[0],
                               (CurrentTerrain->platforms[CurrentTerrain->groups[index].scene_index].scene_object));
-        TERRAIN_TDP_LINE(0, 1, 2, 3);
-        TERRAIN_TDP_LINE(0, 2, 1, 3);
+        TerrDrawEdgeLines(points, index, 0, 1, 2, 3, colour);
+        TerrDrawEdgeLines(points, index, 0, 2, 1, 3, colour);
         origin = &CurrentTerrain->groups[index].origin;
         NuRndrLine3dDbg(origin->x + points[3].x, origin->y + points[3].y, origin->z + points[3].z, origin->x + points[3].x + normals[1].x,
                         origin->y + points[3].y + normals[1].y, origin->z + points[3].z + normals[1].z, 0xff);
@@ -3052,8 +3024,6 @@ void TerrDrawPlatCol(TERRAIN_POLYGON_INFO *terrain, i16 index, i32 colour) {
     origin = &CurrentTerrain->groups[index].origin;
     NuRndrLine3dDbg(origin->x + points[0].x, origin->y + points[0].y, origin->z + points[0].z, origin->x + points[0].x + normals[0].x,
                     origin->y + points[0].y + normals[0].y, origin->z + points[0].z + normals[0].z, 0xff);
-#undef TERRAIN_TDP_FAN
-#undef TERRAIN_TDP_LINE
 }
 
 typedef struct terrain_debug_source_link_s { // size 0x4
@@ -3730,13 +3700,13 @@ void TerrainRemoveWallSpline(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET *terrain) {
 void PlatInstBounce(i32 index, f32 impulse, f32 spring, f32 damping) {
     if (index >= 0) {
         if (index < CurrentTerrain->max_platforms) {
-            if (TERRAIN_PLATFORM_LIFECYCLES[index].bounce_impulse == 0.0f) {
-                TERRAIN_PLATFORM_LIFECYCLES[index].bounce_offset = 0.0f;
-                TERRAIN_PLATFORM_LIFECYCLES[index].bounce_velocity = 0.0f;
+            if (CurrentTerrain->platforms[index].bounce_impulse == 0.0f) {
+                CurrentTerrain->platforms[index].bounce_offset = 0.0f;
+                CurrentTerrain->platforms[index].bounce_velocity = 0.0f;
             }
-            TERRAIN_PLATFORM_LIFECYCLES[index].bounce_impulse = impulse;
-            TERRAIN_PLATFORM_LIFECYCLES[index].bounce_spring = spring;
-            TERRAIN_PLATFORM_LIFECYCLES[index].bounce_damping = damping;
+            CurrentTerrain->platforms[index].bounce_impulse = impulse;
+            CurrentTerrain->platforms[index].bounce_spring = spring;
+            CurrentTerrain->platforms[index].bounce_damping = damping;
         }
     }
 }

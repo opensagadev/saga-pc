@@ -41,8 +41,6 @@ typedef struct attracto_progress_recovered_s { // size 0x2c
     u32 filled[1];                             // 0x28
 } ATTRACTO_PROGRESS;
 
-extern void Batarang_GetSightInfo(i32, i32 *, i32 *, i32 *, char *);
-
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 AttractoFabs(f32 f) {
     f32 rv;

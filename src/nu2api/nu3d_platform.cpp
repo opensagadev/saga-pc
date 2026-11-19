@@ -94,6 +94,9 @@
 #include "nu2api/nuwin32/d3dCalls.h"
 #include "nu2api/nuwin32/d3dCore.h"
 #include "nu2api/nuwin32/pcapi.h"
+#include "nu2api/nuwin32/nu2api_windows.h"
+#include "nu2api/nucore/nucore_includes.h"
+#include "nu2api/pc_fmv_native.h"
 #include <float.h>
 #include <stdio.h>
 #include <string.h>
@@ -107,11 +110,11 @@ extern "C" {
     i32 NuPrimCSPos = 0;
     f32 NuPrimXBias = 0;
     f32 NuPrimYBias = 0;
-    struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialDebrisPrograms = NULL;
-    struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialGlassPrograms = NULL;
-    struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialFaceOnDecalPrograms = NULL;
-    struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialFaceOnPrograms = NULL;
-    struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialDefaultPrograms = NULL;
+    struct POST_SHADER_PROGRAM *NuDisplayMaterialDebrisPrograms = NULL;
+    struct POST_SHADER_PROGRAM *NuDisplayMaterialGlassPrograms = NULL;
+    struct POST_SHADER_PROGRAM *NuDisplayMaterialFaceOnDecalPrograms = NULL;
+    struct POST_SHADER_PROGRAM *NuDisplayMaterialFaceOnPrograms = NULL;
+    struct POST_SHADER_PROGRAM *NuDisplayMaterialDefaultPrograms = NULL;
     PC_TEXTURE_RESOURCE *NuDisplayMaterialDebrisDeclaration = NULL;
     PC_TEXTURE_RESOURCE *NuDisplayMaterialFaceOnDeclaration = NULL;
     PC_TEXTURE_RESOURCE *NuDisplayMaterialDefaultDeclaration = NULL;
@@ -147,24 +150,6 @@ extern "C" {
 
     // @@PREAMBLE
     struct POST_SHADER_PROGRAM;
-    extern const DWORD dat_007662d8[168];
-    extern const DWORD dat_00766578[94];
-    extern const DWORD dat_007666f0[75];
-    extern const DWORD dat_00766820[261];
-    extern const DWORD dat_00766c38[168];
-    extern const DWORD dat_00766ed8[94];
-    extern const DWORD dat_00767050[75];
-    extern const DWORD dat_00767180[261];
-    extern const DWORD dat_00767598[85];
-    extern const DWORD dat_007676f0[566];
-    extern const DWORD dat_00767fc8[554];
-    extern const DWORD dat_00768870[155];
-    extern const DWORD dat_00768ae0[143];
-    extern const DWORD dat_00768d20[48];
-    extern const DWORD dat_00768de0[180];
-    extern const DWORD dat_007690b0[131];
-    extern const DWORD dat_007692c0[175];
-    extern const DWORD dat_00769580[100];
 
     typedef struct SCENE_TEXTURE_PACKET_B0 { // size 0x14
         i32 kind;                            // 0x00
@@ -177,18 +162,6 @@ extern "C" {
     } SCENE_TEXTURE_PACKET_AE;
 
     /* numtl PS half. */
-
-    typedef struct FRAME_MTL_ANIM_SET {  // size 0x10
-        NUDISPLAY_LIST *scene;           // 0x0
-        i32 material_count;              // 0x4
-        i32 *material_indices;           // 0x8
-        struct FRAME_MTL_ANIM_SET *next; // 0xc
-    } FRAME_MTL_ANIM_SET;
-
-    typedef struct FRAME_MTL_SCENE {          // size 0x15c
-        u8 reserved00[0x158];                 // 0x000
-        i32 shader_texture_animation_enabled; // 0x158
-    } FRAME_MTL_SCENE;
 
     i32 NuMainRendererControl = 1;
 
@@ -645,17 +618,6 @@ extern "C" {
     f32 NuPrimXScale = 1.0f;
     f32 NuPrimYScale = 1.0f;
 
-    typedef struct PC_TRANSFORM_MATERIAL_VIEW PC_TRANSFORM_MATERIAL_VIEW;
-
-    struct PC_TRANSFORM_MATERIAL_VIEW {   // size 0x9c
-        u8 unknown_00[0x30];              // 0x00
-        PC_TRANSFORM_MATERIAL_VIEW *next; // 0x30
-        u8 unknown_34[0x2c];              // 0x34
-        f32 transform_scale;              // 0x60
-        u8 unknown_64[0x35];              // 0x64
-        u8 transform_kind;                // 0x99
-    };
-
     static VARIPTR rndrstream_b = {0};
     f32 NuCameraProjectionGlobalOffsetX = 0;
     DWA_WEIGHT_BLOCK DwaWeightPool[60669] = {0};
@@ -862,17 +824,6 @@ extern "C" {
 
     extern "C" PC_GEOMETRY_BASIS *PcGeometryTransforms;
     extern "C" PC_GEOMETRY_OUTPUT *PcGeometryOutput;
-
-    typedef struct PC_SHADER_HANDLE_VIEW { // size 0x2
-        i16 handle;                        // 0x0
-    } PC_SHADER_HANDLE_VIEW;
-
-    struct PC_MATERIAL_DEVICE_CAPS_VIEW { // size 0x655
-        u8 unknown_000[0x654];            // 0x000
-        u8 shader_caps;                   // 0x654
-        i32 ShaderVariant16();
-        i32 ShaderVariant1();
-    };
 
     extern "C" {
         extern const DWORD dat_00769710[76] = {
@@ -1149,23 +1100,17 @@ extern "C" {
     }
 
     extern "C" void Nu360MtlInit(void) {
-        NuDisplayMaterialDebrisPrograms =
-            reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreate(2, dat_00769710, dat_00769840));
+        NuDisplayMaterialDebrisPrograms = PostShaderProgramCreate(2, dat_00769710, dat_00769840);
         if (PCDeviceHardwareVertexProcessingPC > 1) {
-            NuDisplayMaterialGlassPrograms =
-                reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreate(2, dat_007698f0, dat_00769a58));
+            NuDisplayMaterialGlassPrograms = PostShaderProgramCreate(2, dat_007698f0, dat_00769a58);
         } else {
-            NuDisplayMaterialGlassPrograms =
-                reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreate(2, dat_00769c48, dat_00769da8));
+            NuDisplayMaterialGlassPrograms = PostShaderProgramCreate(2, dat_00769c48, dat_00769da8);
         }
         if (PCDeviceHardwareVertexProcessingPC > 1) {
-            NuDisplayMaterialFaceOnDecalPrograms =
-                reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreate(2, dat_00769e80, dat_0076a3c8));
+            NuDisplayMaterialFaceOnDecalPrograms = PostShaderProgramCreate(2, dat_00769e80, dat_0076a3c8);
         }
-        NuDisplayMaterialFaceOnPrograms =
-            reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreate(2, dat_00769e80, dat_0076a298));
-        NuDisplayMaterialDefaultPrograms =
-            reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreate(2, dat_0076a538, dat_0076a5e8));
+        NuDisplayMaterialFaceOnPrograms = PostShaderProgramCreate(2, dat_00769e80, dat_0076a298);
+        NuDisplayMaterialDefaultPrograms = PostShaderProgramCreate(2, dat_0076a538, dat_0076a5e8);
         PCDeviceCreateVertexDeclaration(NuMaterialFaceOnElements, &NuDisplayMaterialFaceOnDeclaration);
         PCDeviceCreateVertexDeclaration(NuMaterialDebrisElements, &NuDisplayMaterialDebrisDeclaration);
         PCDeviceCreateVertexDeclaration(NuMaterialDefaultElements, &NuDisplayMaterialDefaultDeclaration);
@@ -1268,8 +1213,6 @@ extern "C" {
         i32 count;                               // 0x00
         NUVEC4 values[1];                        // 0x04
     } PC_DL_VERTEX_OFFSETS_READER;
-
-    extern PC_DISPLAY_ITEM_HANDLER PCDisplayShadowItemHandlers[49];
 
     /* PC-only table slot 0xad. */
     typedef struct PC_DL_AD_COLOURS { // size 0x3c
@@ -1441,11 +1384,6 @@ extern "C" {
         i32 NuLgtArcLaserFrame = 0;
     }
 
-    extern f32 NuFrameAccumulatedTime;
-    extern const char *GetPCStartupMessage(void);
-    extern void FmvPlatformUpdate(void);
-
-    typedef struct screengrab_tile_params_s SCREENGRAB_TILE_PARAMS;
     PC_BUFFER_RESOURCE *NuWaterVertexBuffer = 0;
 
     typedef struct nuprim_packet_s { // size 0x38
@@ -1536,7 +1474,7 @@ extern "C" {
         vertex->v = v;
     }
 
-    i32 PC_DEVICE_BACKEND::fun_005f7860() {
+    i32 PC_DEVICE_BACKEND::GetMultisampleQuality() {
         return quality[multisample_index];
     }
 
@@ -1548,7 +1486,7 @@ extern "C" {
         return &parameters;
     }
 
-    u16 PC_DEVICE_BACKEND::fun_005f7890() {
+    u16 PC_DEVICE_BACKEND::GetTargetCount() {
         return target_count;
     }
 
@@ -1557,7 +1495,7 @@ extern "C" {
     }
 
     void PC_DEVICE_BACKEND::fun_005f78c0() {
-        PCDeviceSetVertexDeclaration(declaration6ac);
+        PCDeviceSetVertexDeclaration(screen_colour_uv_declaration);
     }
 
     static i32 fun_005f7900(i32 mode) {
@@ -1694,7 +1632,7 @@ extern "C" {
         return texture->unknown_10;
     }
 
-    i32 fun_005f7cb0(GRAPHICS_RENDER_TEXTURE *texture) {
+    i32 PCGraphicsTextureGetFormat(GRAPHICS_RENDER_TEXTURE *texture) {
         return texture->format;
     }
 
@@ -1702,8 +1640,8 @@ extern "C" {
         texture->flags = (texture->flags & ~0xffu) | (((u32)high & 0xfu) << 4) | ((u32)low & 0xfu);
     }
 
-    void PCGraphicsEffectTextureSetField24(GRAPHICS_RENDER_TEXTURE *texture, i32 value) {
-        texture->unknown_24 = (u32)value;
+    void PCGraphicsEffectTextureSetSamplerExtra(GRAPHICS_RENDER_TEXTURE *texture, i32 value) {
+        texture->sampler_extra = (u32)value;
     }
 
     /* Sampler fields packed into GRAPHICS_RENDER_TEXTURE::flags. */
@@ -1775,7 +1713,7 @@ extern "C" {
         texture->pool = 0;
         texture->resource = NULL;
         texture->external_id = -1;
-        texture->unknown_24 = 0;
+        texture->sampler_extra = 0;
         texture->flags = 0x012449d0;
         if (texture->surface != NULL) {
             texture->surface->methods->release(texture->surface);
@@ -1809,11 +1747,11 @@ extern "C" {
         texture->usage = description.usage & 1;
         texture->pool = description.pool;
         texture->external_id = id;
-        texture->unknown_24 = 0;
+        texture->sampler_extra = 0;
         texture->flags = 0x012449d0;
     }
 
-    i32 fun_005f8450(GRAPHICS_RENDER_TEXTURE *texture) {
+    i32 PCGraphicsTextureGetExternalId(GRAPHICS_RENDER_TEXTURE *texture) {
         return texture->external_id;
     }
 
@@ -1835,7 +1773,7 @@ extern "C" {
         texture->pool = pool;
         texture->external_id = -1;
         texture->surface = NULL;
-        texture->unknown_24 = 0;
+        texture->sampler_extra = 0;
         texture->flags = 0x012449d0;
         if (format == PC_GRAPHICS_FORMAT_D24S8) {
             texture->pool = 0;
@@ -1975,7 +1913,7 @@ extern "C" {
         return &NuDisplayHandlerTint;
     }
 
-    void *fun_005f8920(void) {
+    void *NuDisplayHandlerGetMaterial(void) {
         return NuDisplayHandlerMaterial;
     }
 
@@ -2034,7 +1972,7 @@ extern "C" {
     void fun_005f8b50(void) {
     }
 
-    void fun_005f8b60(PC_FRAMEBUFFER *framebuffer, i32 index, u32 colour) {
+    void PCFramebufferSetClearColour(PC_FRAMEBUFFER *framebuffer, i32 index, u32 colour) {
         framebuffer->clear_colour[index] = colour;
     }
 
@@ -2407,7 +2345,7 @@ extern "C" {
         PCDeviceSetRenderState(D3DRS_BLENDOP, 1);
         PCDeviceSetRenderState(D3DRS_SRCBLEND, 5);
         PCDeviceSetRenderState(D3DRS_DESTBLEND, 6);
-        PCDeviceSetVertexDeclaration(PCDeviceBackend.declaration6ac);
+        PCDeviceSetVertexDeclaration(PCDeviceBackend.screen_colour_uv_declaration);
         PCDeviceSetStreamSource(0, RendererQuadVertexBuffer, 0, 0x1c);
         PCDeviceDrawPrimitive(6, 0, 2);
     }
@@ -3517,7 +3455,7 @@ extern "C" {
         render_state.camera_matrix = *view;
         render_state.projection_0154 = projection->m00;
         render_state.projection_0158 = projection->m11;
-        render_state.projection_015c = projection->m22;
+        render_state.projection_m22 = projection->m22;
         render_state.projection_0160 = projection->m23;
         render_state.projection_0164 = projection->m32;
         NuVpGetPosition2(&render_state.viewport_x, &render_state.viewport_y);
@@ -3545,7 +3483,7 @@ extern "C" {
         render_state.fog_value_0170 = near_distance;
         render_state.fog_value_0174 = far_distance;
         render_state.fog_pointer_0178 = colour;
-        render_state.fog_value_017c = density;
+        render_state.fog_density = density;
         render_state.fog_packet_cache = NULL;
         ++render_state.global_id;
         ++render_state.fog_id;
@@ -3588,8 +3526,8 @@ extern "C" {
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
         cursor = NuDisplayListStreamCursor;
         packet = cursor->f32_ptr;
-        if (state->state_00f4 != 0) {
-            *packet = state->state_00f8;
+        if (state->const_alpha_enabled != 0) {
+            *packet = state->const_alpha;
         } else {
             *packet = 1.0f;
         }
@@ -3627,7 +3565,7 @@ extern "C" {
             *field = state->fog_value_0174;
             cursor->void_ptr = field + 1;
             field = cursor->f32_ptr;
-            *field = state->fog_value_017c;
+            *field = state->fog_density;
             cursor->void_ptr = field + 1;
         }
         return packet;
@@ -3684,7 +3622,7 @@ extern "C" {
     }
 
     void RndrStateResetGlobalState(NUGLOBALRNDRSTATE *state) {
-        state->state_00f4 = 0;
+        state->const_alpha_enabled = 0;
         state->state_0100 = 0;
         state->fog_packet_cache = NULL;
         state->light_packet_cache = NULL;
@@ -3702,7 +3640,7 @@ extern "C" {
     }
 
     void RndrStateResetSharedGlobalState(void) {
-        render_state.state_00f4 = 0;
+        render_state.const_alpha_enabled = 0;
         render_state.state_0100 = 0;
         render_state.fog_packet_cache = NULL;
         render_state.light_packet_cache = NULL;
@@ -3735,22 +3673,22 @@ extern "C" {
     }
 
     void RndrStateSetConstAlphaTint(i32 alpha_enabled, i32 tint_enabled, f32 alpha, const NUVEC *tint, NUMTL *material) {
-        render_state.state_00f8 = alpha;
+        render_state.const_alpha = alpha;
         render_state.const_alpha_material = material;
         ++render_state.global_id;
         ++render_state.konst_id;
-        render_state.state_00f4 = alpha_enabled;
+        render_state.const_alpha_enabled = alpha_enabled;
         render_state.konst_packet_cache = NULL;
     }
 
     void NuRndrStateGetTransform(NUMTX *output, const NUMTL *material) {
-        const PC_TRANSFORM_MATERIAL_VIEW *selected = (const PC_TRANSFORM_MATERIAL_VIEW *)material;
+        const NUMTL *selected = material;
         f32 scale;
         NUVEC scaling;
         if (selected->next != NULL) {
             selected = selected->next;
         }
-        if (selected->transform_kind != 0x81 && selected->transform_kind != 0x85) {
+        if (selected->material_kind != 0x81 && selected->material_kind != 0x85) {
             *output = RndrStateTransform;
             return;
         }
@@ -4834,9 +4772,9 @@ extern "C" {
     }
 
     void NuMtlUpdatePS(NUMTL *mtl) {
-        PC_MATERIAL_DEVICE_CAPS_VIEW *device = reinterpret_cast<PC_MATERIAL_DEVICE_CAPS_VIEW *>(&PCDeviceBackend);
-        PC_SHADER_HANDLE_VIEW *shader;
-        PC_SHADER_HANDLE_VIEW *variant;
+        PC_DEVICE_BACKEND *device = &PCDeviceBackend;
+        NuShaderObject *shader;
+        NuShaderObject *variant;
         NudxFw_D3DBeginCriticalSection();
         if (mtl->texture_id > 0) {
             mtl->shader.diffuse_map_ids[0] = mtl->texture_id;
@@ -4857,19 +4795,13 @@ extern "C" {
             NuShaderManagerReleaseShader(PCShaderRecordFromHandle(mtl->shader.shader_handles[1]));
         }
         if ((mtl->attribs2 & 0x800000) != 0 && mtl->display_list == NULL) {
-            shader = reinterpret_cast<PC_SHADER_HANDLE_VIEW *>(
-                NuShaderManagerRetrieveShader(reinterpret_cast<const PC_SHADER_FILTER_DESC_VIEW *>(&mtl->shader),
-                                              reinterpret_cast<const PC_SHADER_FILTER_MATERIAL_VIEW *>(mtl)));
-            mtl->shader.shader_handles[0] = shader->handle;
+            shader = NuShaderManagerRetrieveShader(&mtl->shader, mtl);
+            mtl->shader.shader_handles[0] = (i16)shader->marker;
         } else {
-            shader = reinterpret_cast<PC_SHADER_HANDLE_VIEW *>(NuShaderManagerRetrieveShaderVariant(
-                reinterpret_cast<const PC_SHADER_FILTER_DESC_VIEW *>(&mtl->shader),
-                reinterpret_cast<const PC_SHADER_FILTER_MATERIAL_VIEW *>(mtl), device->ShaderVariant16()));
-            variant = reinterpret_cast<PC_SHADER_HANDLE_VIEW *>(NuShaderManagerRetrieveShaderVariant(
-                reinterpret_cast<const PC_SHADER_FILTER_DESC_VIEW *>(&mtl->shader),
-                reinterpret_cast<const PC_SHADER_FILTER_MATERIAL_VIEW *>(mtl), device->ShaderVariant1()));
-            mtl->shader.shader_handles[0] = shader->handle;
-            mtl->shader.shader_handles[1] = variant->handle;
+            shader = NuShaderManagerRetrieveShaderVariant(&mtl->shader, mtl, device->ShaderVariant16());
+            variant = NuShaderManagerRetrieveShaderVariant(&mtl->shader, mtl, device->ShaderVariant1());
+            mtl->shader.shader_handles[0] = (i16)shader->marker;
+            mtl->shader.shader_handles[1] = (i16)variant->marker;
         }
         mtl->vertex_declaration = NuGetVertexDeclaration(mtl->shader.vertex_format);
         if (mtl->texture_id == 0) {
@@ -6116,7 +6048,7 @@ extern "C" {
                 memset(&projection.m01, 0, sizeof(projection) - sizeof(projection.m00));
                 projection.m00 = global->projection_0154;
                 projection.m11 = global->projection_0158;
-                projection.m22 = global->projection_015c;
+                projection.m22 = global->projection_m22;
                 projection.m23 = global->projection_0160;
                 projection.m32 = global->projection_0164;
                 NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
@@ -6337,9 +6269,9 @@ extern "C" {
 
         render_state.global_id++;
         render_state.konst_id++;
-        render_state.state_00f8 = 0;
+        render_state.const_alpha = 0;
         render_state.const_alpha_material = NULL;
-        render_state.state_00f4 = 0;
+        render_state.const_alpha_enabled = 0;
         render_state.konst_packet_cache = NULL;
         DisplayListUpdateRenderState(list, &render_state);
 
@@ -7050,7 +6982,7 @@ extern "C" {
         f32 u1;
         f32 v1;
         i32 i;
-        if (material->particle_type_tag == -105) {
+        if (material->material_kind == 0x97) {
             u0 = 0.0f;
             u1 = 1.0f;
             v1 = 1.0f;
@@ -7225,7 +7157,7 @@ extern "C" {
             NuDebrisLastHeader = NULL;
             return;
         }
-        if (material == NULL || (material->particle_type_tag == -105 && PCDeviceHardwareVertexProcessingPC < 2)) {
+        if (material == NULL || (material->material_kind == 0x97 && PCDeviceHardwareVertexProcessingPC < 2)) {
             return;
         }
         if (header != NuDebrisLastHeader) {
@@ -7456,11 +7388,11 @@ extern "C" {
 extern "C" void PCGraphicsResolveFramebuffer(i32) {
 }
 
-GRAPHICS_RENDER_TEXTURE *PC_EFFECT_SURFACE::fun_005f7af0() {
+GRAPHICS_RENDER_TEXTURE *PC_EFFECT_SURFACE::GetTexture() {
     return texture;
 }
 
-u16 PC_EFFECT_SURFACE::fun_005f7b00() {
+u16 PC_EFFECT_SURFACE::GetLevel() {
     return level;
 }
 
@@ -7468,11 +7400,11 @@ u32 PC_EFFECT_SURFACE::fun_005f7b10() {
     return unknown_10;
 }
 
-u16 PC_EFFECT_SURFACE::fun_005f7b20() {
+u16 PC_EFFECT_SURFACE::GetWidth() {
     return width;
 }
 
-u16 PC_EFFECT_SURFACE::fun_005f7b30() {
+u16 PC_EFFECT_SURFACE::GetHeight() {
     return height;
 }
 
@@ -7566,7 +7498,7 @@ extern "C" {
         nudlist_field_9d8 = 0;
         nudlist_field_e80 = 0;
         sort_list = NULL;
-        nudlist_field_fc8 = 0;
+        PCMaterialAnimSets = NULL;
         PCDisplayList2d.first = &nudlist_2d_static;
         {
             VARIPTR end;
@@ -7716,7 +7648,7 @@ extern "C" {
         }
     }
 
-    void *fun_00602e70(PC_GOBJ_REGISTRY_AUX *aux) {
+    void *PCGobjRegistryAuxPayload(PC_GOBJ_REGISTRY_AUX *aux) {
         return aux->payload;
     }
 
@@ -8196,7 +8128,7 @@ extern "C" {
         if (FrameShaderMaterialFirstCall != 0) {
             for (i = 0; i < nudlist_field_9d8; ++i) {
                 NUDISPLAY_LIST *scene = PCDisplayScenes[i];
-                if (((FRAME_MTL_SCENE *)scene->gscene)->shader_texture_animation_enabled != 0) {
+                if (scene->gscene->shader_texture_animation_enabled != 0) {
                     i32 j;
                     for (j = 0; j < (i32)scene->material_count; ++j) {
                         NUMTL *material = scene->display_materials[j];
@@ -8283,42 +8215,38 @@ extern "C" {
         u8 unknown_14[8];                   // 0x14
     } RENDERER_SCREEN_VERTEX;
 
-#define QUAD_VERTEX ((RENDERER_SCREEN_VERTEX *)data)
-
     void NuRndrQuadBufferInit(void) {
-        void *data;
+        RENDERER_SCREEN_VERTEX *quad;
         if (RendererQuadVertexBuffer != NULL) {
             RendererQuadVertexBuffer->methods->release(RendererQuadVertexBuffer);
             RendererQuadVertexBuffer = NULL;
         }
         PCDeviceCreateVertexBuffer(0x70, 0, 0, 1, &RendererQuadVertexBuffer);
-        if (RendererQuadVertexBuffer->methods->lock(RendererQuadVertexBuffer, 0, 0, &data, 0) < 0) {
+        if (RendererQuadVertexBuffer->methods->lock(RendererQuadVertexBuffer, 0, 0, (void **)&quad, 0) < 0) {
             return;
         }
-        QUAD_VERTEX[0].x = 0.0f;
-        QUAD_VERTEX[0].y = 0.0f;
-        QUAD_VERTEX[0].z = 0.5f;
-        QUAD_VERTEX[1].x = (f32)PCDeviceBackend.parameters.width;
-        QUAD_VERTEX[1].y = 0.0f;
-        QUAD_VERTEX[1].z = 0.5f;
-        QUAD_VERTEX[2].x = (f32)PCDeviceBackend.parameters.width;
-        QUAD_VERTEX[2].y = (f32)PCDeviceBackend.parameters.height;
-        QUAD_VERTEX[2].z = 0.5f;
-        QUAD_VERTEX[3].x = 0.0f;
-        QUAD_VERTEX[3].y = (f32)PCDeviceBackend.parameters.height;
-        QUAD_VERTEX[3].z = 0.5f;
-        QUAD_VERTEX[3].attribute_bits = 0x4b000000;
-        QUAD_VERTEX[2].attribute_bits = 0x4b000000;
-        QUAD_VERTEX[1].attribute_bits = 0x4b000000;
-        QUAD_VERTEX[0].attribute_bits = 0x4b000000;
-        QUAD_VERTEX[3].w = 1.0f;
-        QUAD_VERTEX[2].w = 1.0f;
-        QUAD_VERTEX[1].w = 1.0f;
-        QUAD_VERTEX[0].w = 1.0f;
+        quad[0].x = 0.0f;
+        quad[0].y = 0.0f;
+        quad[0].z = 0.5f;
+        quad[1].x = (f32)PCDeviceBackend.parameters.width;
+        quad[1].y = 0.0f;
+        quad[1].z = 0.5f;
+        quad[2].x = (f32)PCDeviceBackend.parameters.width;
+        quad[2].y = (f32)PCDeviceBackend.parameters.height;
+        quad[2].z = 0.5f;
+        quad[3].x = 0.0f;
+        quad[3].y = (f32)PCDeviceBackend.parameters.height;
+        quad[3].z = 0.5f;
+        quad[3].attribute_bits = 0x4b000000;
+        quad[2].attribute_bits = 0x4b000000;
+        quad[1].attribute_bits = 0x4b000000;
+        quad[0].attribute_bits = 0x4b000000;
+        quad[3].w = 1.0f;
+        quad[2].w = 1.0f;
+        quad[1].w = 1.0f;
+        quad[0].w = 1.0f;
         RendererQuadVertexBuffer->methods->unlock(RendererQuadVertexBuffer);
     }
-
-#undef QUAD_VERTEX
 
     void NuRndrGeometryBuffersInit(void) {
         u16 *indices;
@@ -8691,7 +8619,7 @@ extern "C" {
         }
     }
 
-    void fun_00604930(i32 enabled) {
+    void PCClipSetExtentsEnabled(i32 enabled) {
         PCClipExtentsEnabled = enabled;
     }
 

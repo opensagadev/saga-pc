@@ -293,11 +293,11 @@ typedef struct PLAYERCHARACTERCONFIG {                                   // size
 
     f32 jump_hold_duration;      // 0x048
     f32 collision_origin_radius; // 0x04c
-    f32 unknown_050;             // 0x050
-    f32 unknown_054;             // 0x054
-    f32 unknown_058;             // 0x058
-    f32 unknown_05c;             // 0x05c
-    f32 unknown_060;             // 0x060
+    f32 head_yaw_limit;          // 0x050
+    f32 head_pitch_limit;        // 0x054
+    f32 head_turn_rate;          // 0x058
+    f32 lean_max;                // 0x05c
+    f32 lean_min;                // 0x060
     f32 viewdistance;            // 0x064
     f32 heardistance;            // 0x068
     f32 maxviewheight;           // 0x06c

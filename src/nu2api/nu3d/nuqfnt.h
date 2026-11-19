@@ -19,7 +19,8 @@ typedef struct vufntchar_s { // size 0xc
 } VUFNTCHAR;
 
 struct vufnt_s {                                // size 0x4c
-    u8 unknown_0000[8];                         // 0x00
+    u8 unknown_0000[6];                         // 0x00
+    u16 flags;                                  // 0x06
     i32 size;                                   // 0x08
     i32 glyph_count;                            // 0x0c
     i32 unicode_count;                          // 0x10

@@ -175,18 +175,12 @@ typedef struct SPECIAL_LAYER_s {
     u32 mask;
 } SPECIAL_LAYER;
 
-extern i32 movegamecamera_forcesock;
-
 typedef union DRAW_ATTACHMENTS_PACKET {
     ANIMPACKET packet;
     u32 words[18];
 } DRAW_ATTACHMENTS_PACKET;
 
 extern i32 GameKeepMergeAction;
-
-void Grapple_DrawLine(GAMEOBJECT *);
-void SuperCarry_DrawObject(GAMEOBJECT *);
-void TransformDrawTarget(NUVEC *, f32, f32);
 
 static void GameDrawMtxCopy(NUMTX *destination, const NUMTX *source) {
     destination->m00 = source->m00;

@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <string.h>
 
-void ShaderCompilerBase::Prepare(const PC_SHADER_FILTER_DESC_VIEW *descriptor, ShaderCompilerDictionary *dictionary) {
+void ShaderCompilerBase::Prepare(const NUSHADERMTLDESC *descriptor, ShaderCompilerDictionary *dictionary) {
     PC_SHADER_MATERIAL_FILTER_VIEW filter;
     filter.Initialize(descriptor, NULL, 0, 0);
     Configure(&filter, dictionary);
@@ -21,7 +21,7 @@ void ShaderCompilerBase::Prepare(const PC_SHADER_FILTER_DESC_VIEW *descriptor, S
 
 void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, ShaderCompilerDictionary *definitions) {
     u8 used_uvs[4] = {0, 0, 0, 0};
-    const PC_SHADER_FILTER_DESC_VIEW *descriptor = filter->descriptor;
+    const NUSHADERMTLDESC *descriptor = filter->descriptor;
     const i32 profile = definitions->profile;
     const char *uv_functions[4] = {"FUNC_UVSET_0", "FUNC_UVSET_1", "FUNC_UVSET_2", "FUNC_UVSET_3"};
     const char *uv_names[4] = {"varying_uvSet0", "varying_uvSet1", "varying_uvSet2", "varying_uvSet3"};
@@ -113,7 +113,7 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shade
         definitions->AddDefinition("SURFACE_TYPE", "SURFACE_SMOOTH", 0);
     }
     if (filter->variant == 0 && (filter->descriptor->layer_flags & (PC_SHADER_LAYER_NORMAL_MAP | PC_SHADER_LAYER_PARALLAX_MAP)) &&
-        filter->descriptor->normal_threshold > filter->parameter) {
+        filter->descriptor->lightmap_tids[1] > filter->parameter) {
         definitions->AddDefinition(
             "SURFACE_TYPE2", filter->descriptor->layer_flags & PC_SHADER_LAYER_PARALLAX_MAP ? "SURFACE_PARALLAX_MAP" : "SURFACE_NORMAL_MAP",
             0);
@@ -121,7 +121,7 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shade
     } else {
         definitions->AddDefinition("SURFACE_TYPE2", "SURFACE_SMOOTH", 0);
     }
-    if ((filter->variant == 0 || filter->descriptor->override_mode != 0) && (filter->descriptor->vertex_format & 0x100)) {
+    if ((filter->variant == 0 || filter->descriptor->shadow_set != 0) && (filter->descriptor->vertex_format & 0x100)) {
         definitions->AddDefinition("LAYER0_COLORSET", "0", 0);
     }
     if (filter->HasLayer(0)) {
@@ -139,7 +139,7 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shade
     // The three layer paths are distinct and ordered. Their record indices are fixed 1,2,3.
     if (filter->HasLayer(1) && profile != PC_SHADER_MODEL_1_1) {
         definitions->AddDefinition("COMBINE_OP_1", combine[descriptor->blend_ops[0]], 1);
-        if ((filter->variant == 0 || filter->descriptor->override_mode != 0) && ((filter->descriptor->vertex_format >> 9) & 3) >= 1) {
+        if ((filter->variant == 0 || filter->descriptor->shadow_set != 0) && ((filter->descriptor->vertex_format >> 9) & 3) >= 1) {
             definitions->AddDefinition("LAYER1_ALPHA", NULL, 0);
             definitions->AddDefinition("LAYER1_COLORSET", "varying_colorSet1", 1);
         }
@@ -152,7 +152,7 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shade
     }
     if (filter->HasLayer(2) && profile != PC_SHADER_MODEL_1_1) {
         definitions->AddDefinition("COMBINE_OP_2", combine[descriptor->blend_ops[1]], 1);
-        if ((0 == filter->variant || filter->descriptor->override_mode != 0) && ((filter->descriptor->vertex_format >> 9) & 3) >= 2) {
+        if ((0 == filter->variant || filter->descriptor->shadow_set != 0) && ((filter->descriptor->vertex_format >> 9) & 3) >= 2) {
             definitions->AddDefinition("LAYER2_ALPHA", NULL, 0);
             definitions->AddDefinition("LAYER1_COLORSET", "varying_colorSet1", 1);
         }
@@ -165,7 +165,7 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shade
     }
     if (filter->HasLayer(3) && profile != PC_SHADER_MODEL_1_1) {
         definitions->AddDefinition("COMBINE_OP_3", combine[descriptor->blend_ops[2]], 1);
-        if ((filter->variant == 0 || filter->descriptor->override_mode != 0) && ((filter->descriptor->vertex_format >> 9) & 3) > 2) {
+        if ((filter->variant == 0 || filter->descriptor->shadow_set != 0) && ((filter->descriptor->vertex_format >> 9) & 3) > 2) {
             definitions->AddDefinition("LAYER3_ALPHA", NULL, 0);
             definitions->AddDefinition("LAYER1_COLORSET", "varying_colorSet1", 1);
         }
@@ -213,18 +213,18 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shade
         definitions->AddDefinition("CAR_PAINT", NULL, 0);
     }
     definitions->AddDefinition("LIGHTING_LIGHTS_COUNT", "3", 0);
-    if (filter->variant == 0 && ((i32)filter->descriptor->flags < 0) && descriptor->texture_units > 0) {
+    if (filter->variant == 0 && ((i32)filter->descriptor->flags < 0) && descriptor->texture_unit_count > 0) {
         if (profile == PC_SHADER_MODEL_1_1) {
             u32 selector = (descriptor->selectors >> 2) & 3;
             if (selector == 0) {
-                definitions->AddDefinition("LIGHTMAP_UVSET", uv_names[descriptor->texture_units - 1], 1);
-                used_uvs[descriptor->texture_units - 1] = (u8)profile;
+                definitions->AddDefinition("LIGHTMAP_UVSET", uv_names[descriptor->texture_unit_count - 1], 1);
+                used_uvs[descriptor->texture_unit_count - 1] = (u8)profile;
             } else {
                 definitions->AddDefinition("LIGHTMAP_UVSET", uv_names[selector], 1);
                 used_uvs[selector] = 1;
             }
         } else {
-            definitions->AddDefinition("LIGHTMAP_UVSET", uv_names[descriptor->texture_units - 1], 1);
+            definitions->AddDefinition("LIGHTMAP_UVSET", uv_names[descriptor->texture_unit_count - 1], 1);
         }
         definitions->AddDefinition("LIGHTMAP_STAGE",
                                    !PcWindowOptions.usehires || (filter->variant == 0 && (i32)filter->descriptor->flags < 0 &&
@@ -253,7 +253,7 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shade
         if (profile != PC_SHADER_MODEL_1_1) {
             definitions->AddDefinition("REFLECTIVITY_STAGE", NULL, 0);
         }
-        if (filter->variant == 0 && filter->descriptor->specular_threshold > filter->parameter) {
+        if (filter->variant == 0 && filter->descriptor->specular_map_tid > filter->parameter) {
             definitions->AddDefinition("SPECULAR_UVSET", uv_names[descriptor->sampler_indices[1] - 1], 1);
             used_uvs[0] = 1;
         } else {
@@ -261,7 +261,7 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shade
         }
         if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_REFLECTIVITY2)) {
             definitions->AddDefinition("REFLECTIVITY_STAGE2", NULL, 0);
-            if (filter->descriptor->surface_threshold > filter->parameter) {
+            if (filter->descriptor->lightmap_tids[0] > filter->parameter) {
                 definitions->AddDefinition("LAYER1_UVSET", uv_names[descriptor->sampler_indices[2] - 1], 1);
             } else {
                 definitions->AddDefinition("SPECULAR_SPECULARENABLE2", NULL, 0);
@@ -288,7 +288,7 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shade
         }
     }
     definitions->AddDefinition("UVSET_COUNT", numbers[uv_count], 0);
-    definitions->AddDefinition("NUMTCs", numbers[descriptor->texture_units], 0);
+    definitions->AddDefinition("NUMTCs", numbers[descriptor->texture_unit_count], 0);
     if (filter->first_path) {
         definitions->AddDefinition("NORMAL_OUTPUT", "1", 1);
         if ((filter->descriptor->vertex_format & 0xc) &&
@@ -349,7 +349,7 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shade
     definitions->AddDefinition("SKIN_WORLD", NULL, 0);
 }
 
-void ShaderCompilerHLSLPc::Prepare(const PC_SHADER_FILTER_DESC_VIEW *descriptor, ShaderCompilerDictionary *dictionary) {
+void ShaderCompilerHLSLPc::Prepare(const NUSHADERMTLDESC *descriptor, ShaderCompilerDictionary *dictionary) {
     PC_SHADER_MATERIAL_FILTER_VIEW filter;
     filter.Initialize(descriptor, NULL, 0, 0);
     Configure(&filter, dictionary);
@@ -395,11 +395,11 @@ void ShaderCompilerBase::SetForceMode(bool force) {
     dictionary.force_mode = force;
 }
 
-bool ShaderCompilerBase::fun_00745290() {
+bool ShaderCompilerBase::GetDictionaryForceMode() {
     return dictionary.force_mode;
 }
 
-i32 ShaderCompilerBase::fun_007452a0() {
+i32 ShaderCompilerBase::GetDictionaryProfile() {
     return dictionary.profile;
 }
 

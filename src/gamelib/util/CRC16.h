@@ -72,8 +72,8 @@ struct ShaderSourceNode {        // size 0x24
     i32 expansion_state;         // 0x20
     ShaderSourceNode(u32, i32, i32, const char *, i32, const char *, i32, i32);
     const char *SemanticName();
-    i32 fun_00746620();
-    const char *fun_00746630();
+    i32 GetComponentCount();
+    const char *GetTypeName();
 };
 
 struct ShaderRegisterBlock { // size 0x14
@@ -282,7 +282,7 @@ struct ShaderCompilerDictionary {                  // size 0x9a4
     const char *RenderASTName(ShaderSourceNode *);
     ShaderSourceNode *FindASTExact(const char *, u32);
     ShaderSourceNode *FindASTUniform(const char *);
-    void fun_00748810(i32 stage);
+    void SetOutputStage(i32 stage);
     void fun_00748820();
     void fun_00748840();
     void EmitType(ShaderCompilerBufferAllocator *);
@@ -291,7 +291,7 @@ struct ShaderCompilerDictionary {                  // size 0x9a4
     void EmitAttribute(ShaderCompilerBufferAllocator *);
     void EmitProgram(ShaderCompilerBufferAllocator *);
     void AddASTDefinition(ShaderSourceNode *);
-    void fun_007451c0(bool force);
+    void SetForceMode(bool force);
     void fun_00746940(ShaderConditionNode *node, char *text);
     void fun_00746bf0(const char *name);
 };

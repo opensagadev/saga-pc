@@ -89,7 +89,6 @@ typedef struct custom_material_update_s {
     u8 material_tag;
 } CUSTOM_MATERIAL_UPDATE;
 
-extern NUVEC CustomisePos[2];
 i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *, ANIMPACKET *, NUMTX *, NUMTX *, NUMTX *, NUMTX *, GAMEOBJECT *, u32);
 
 /* Native customiser menu drawing and private matrix helpers; append to customise.c. */

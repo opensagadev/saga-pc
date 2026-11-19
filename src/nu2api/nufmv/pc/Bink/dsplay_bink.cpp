@@ -9,34 +9,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct RADFMV_DEVICE_METHODS {                                                                        // size 0x168
-    void *unknown_000[2];                                                                             // 0x000
-    ULONG(__stdcall *release)(PC_D3D9_DEVICE *);                                                      // 0x008
-    void *unknown_00c[14];                                                                            // 0x00c
-    HRESULT(__stdcall *present)(PC_D3D9_DEVICE *, const RECT *, const RECT *, HWND, const RGNDATA *); // 0x044
-    void *unknown_048[5];                                                                             // 0x048
-    HRESULT(__stdcall *create_texture)                                                                // 0x05c
-    (PC_D3D9_DEVICE *, u32, u32, u32, u32, u32, u32, RADFMV_TEXTURE **, HANDLE *);
-    void *unknown_060[17];                                                                // 0x060
-    HRESULT(__stdcall *begin_scene)(PC_D3D9_DEVICE *);                                    // 0x0a4
-    HRESULT(__stdcall *end_scene)(PC_D3D9_DEVICE *);                                      // 0x0a8
-    HRESULT(__stdcall *clear)(PC_D3D9_DEVICE *, u32, const void *, u32, u32, f32, u32);   // 0x0ac
-    void *unknown_0b0[39];                                                                // 0x0b0
-    HRESULT(__stdcall *draw_primitive_up)(PC_D3D9_DEVICE *, u32, u32, const void *, u32); // 0x14c
-    void *unknown_150[5];                                                                 // 0x150
-    HRESULT(__stdcall *set_fvf)(PC_D3D9_DEVICE *, u32);                                   // 0x164
-};
-
-struct RADFMV_FACTORY_METHODS {                                                         // size 0x2c
-    void *unknown_000[10];                                                              // 0x00
-    HRESULT(__stdcall *check_format)(GRAPHICS_FACTORY *, u32, u32, u32, u32, u32, u32); // 0x28
-};
-
-#define RAD_DEVICE_METHODS(device) reinterpret_cast<const RADFMV_DEVICE_METHODS *>((device)->methods)
-#define RAD_FACTORY_METHODS(factory) reinterpret_cast<const RADFMV_FACTORY_METHODS *>((factory)->methods)
-
 extern "C" i32 RadFmvCheckFormat(GRAPHICS_FACTORY *factory, u32 format, u32 display_format) {
-    return RAD_FACTORY_METHODS(factory)->check_format(factory, 0, 1, display_format, 0, 3, format) >= 0;
+    return factory->methods->check_device_format(factory, 0, 1, display_format, 0, 3, format) >= 0;
 }
 
 extern "C" i32 RadFmvInitializeFormats(GRAPHICS_FACTORY *factory, u32 display_format, RADFMV_CONTEXT *context) {
@@ -109,7 +83,7 @@ extern "C" RADFMV_CONTEXT *RadFmvOpen(HWND window) {
 extern "C" void RadFmvClose(RADFMV_CONTEXT *context) {
     if (context) {
         if (context->device) {
-            RAD_DEVICE_METHODS(context->device)->release(context->device);
+            context->device->methods->release(context->device);
             context->device = NULL;
         }
         if (context->factory) {
@@ -126,15 +100,15 @@ extern "C" const char *RadFmvDescribe(void) {
 
 extern "C" void RadFmvBeginScene(RADFMV_CONTEXT *context) {
     if (context) {
-        RAD_DEVICE_METHODS(context->device)->clear(context->device, 0, NULL, 1, 0xff000000, 1.0f, 0);
-        RAD_DEVICE_METHODS(context->device)->begin_scene(context->device);
+        context->device->methods->clear(context->device, 0, NULL, 1, 0xff000000, 1.0f, 0);
+        context->device->methods->begin_scene(context->device);
     }
 }
 
 extern "C" void RadFmvEndScene(RADFMV_CONTEXT *context) {
     if (context) {
-        RAD_DEVICE_METHODS(context->device)->end_scene(context->device);
-        RAD_DEVICE_METHODS(context->device)->present(context->device, NULL, NULL, NULL, NULL);
+        context->device->methods->end_scene(context->device);
+        context->device->methods->present(context->device, NULL, NULL, NULL, NULL);
     }
 }
 
@@ -177,8 +151,8 @@ static u32 RadFmvRoundTexture(u32 size) {
 RADFMV_TEXTURE *RadFmvCreateTexture(PC_D3D9_DEVICE *device, u32 format, u32 pitch, u32 bytes, u32 width, u32 height) {
     RADFMV_TEXTURE *texture = NULL;
     RADFMV_LOCK locked;
-    if (RAD_DEVICE_METHODS(device)->create_texture(device, width, height, 1, 0x200, format, 0, &texture, NULL) < 0) {
-        if (RAD_DEVICE_METHODS(device)->create_texture(device, width, height, 1, 0, format, 1, &texture, NULL) < 0) {
+    if (device->methods->create_texture(device, width, height, 1, 0x200, format, 0, &texture, NULL) < 0) {
+        if (device->methods->create_texture(device, width, height, 1, 0, format, 1, &texture, NULL) < 0) {
             return texture;
         }
     }
@@ -227,8 +201,8 @@ static void RadFmvDrawQuad(PC_D3D9_DEVICE *device, f32 x, f32 y, f32 x_scale, f3
     vertices[3].v = 1;
     SAGA_SKIN_CALL(skin_trace_invalidate, (unsigned)device);
     device->methods->set_vertex_shader(device, NULL);
-    RAD_DEVICE_METHODS(device)->set_fvf(device, 0x1c4);
-    RAD_DEVICE_METHODS(device)->draw_primitive_up(device, 5, 2, vertices, 32);
+    device->methods->set_fvf(device, 0x1c4);
+    device->methods->draw_primitive_up(device, 5, 2, vertices, 32);
 }
 
 static void RadFmvDrawOutline(PC_D3D9_DEVICE *device, f32 x, f32 y, f32 xs, f32 ys, i32 w, i32 h) {
@@ -263,8 +237,8 @@ static void RadFmvDrawOutline(PC_D3D9_DEVICE *device, f32 x, f32 y, f32 xs, f32 
     device->methods->set_texture_stage_state(device, 0, 5, 0);
     SAGA_SKIN_CALL(skin_trace_invalidate, (unsigned)device);
     device->methods->set_vertex_shader(device, NULL);
-    RAD_DEVICE_METHODS(device)->set_fvf(device, 0x1c4);
-    RAD_DEVICE_METHODS(device)->draw_primitive_up(device, 2, 6, vertices, 32);
+    device->methods->set_fvf(device, 0x1c4);
+    device->methods->draw_primitive_up(device, 2, 6, vertices, 32);
 }
 
 static void RadFmvSetDrawState(RADFMV_IMAGE *image, f32 alpha) {

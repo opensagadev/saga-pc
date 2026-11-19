@@ -226,6 +226,7 @@ extern "C" {
 
     extern PC_DISPLAY_ITEM_HANDLER PCDisplayItemHandlerPrefix[49];
     extern PC_DISPLAY_ITEM_HANDLER *CurrentItemTable;
+    extern PC_DISPLAY_ITEM_HANDLER PCDisplayShadowItemHandlers[49];
 #ifdef __cplusplus
 }
 #endif
@@ -389,6 +390,8 @@ extern "C" {
         u8 joint_index;                  // 0xf
     };
 
+    typedef struct PC_HG_SHADOW_PACKET PC_HG_SHADOW_PACKET;
+
     struct PC_HG_SHADOW_PACKET { // size 0x68
         NUMTX matrix;            // 0x00
         void *ellipse;           // 0x40
@@ -429,7 +432,9 @@ extern "C" {
 }
 #endif
 
-struct PC_HG_SHADOW_STATE_VIEW { // size 0x10
+typedef struct PC_HG_SHADOW_STATE PC_HG_SHADOW_STATE;
+
+struct PC_HG_SHADOW_STATE { // size 0x10
 
     union { // size 0xc
 
@@ -457,7 +462,7 @@ struct PC_HG_SHADOW_STATE_VIEW { // size 0x10
 extern "C" {
 #endif
     extern struct numtl_s *dat_02854d00;
-    extern struct PC_HG_SHADOW_STATE_VIEW PCShadowState;
+    extern struct PC_HG_SHADOW_STATE PCShadowState;
     void NuHGobjSubmitShadowGroups(struct NUHGOBJ_EVAL *, NUMTX *, NUMTX *);
 
     typedef struct NATIVE_PARTICLE_PACKET { // size 0x14
@@ -488,11 +493,11 @@ extern "C" {
 
     extern GRAPHICS_RENDER_TEXTURE PCGraphicsRenderTextures[32];
 
-    extern struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialDebrisPrograms;
-    extern struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialGlassPrograms;
-    extern struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialFaceOnDecalPrograms;
-    extern struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialFaceOnPrograms;
-    extern struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialDefaultPrograms;
+    extern struct POST_SHADER_PROGRAM *NuDisplayMaterialDebrisPrograms;
+    extern struct POST_SHADER_PROGRAM *NuDisplayMaterialGlassPrograms;
+    extern struct POST_SHADER_PROGRAM *NuDisplayMaterialFaceOnDecalPrograms;
+    extern struct POST_SHADER_PROGRAM *NuDisplayMaterialFaceOnPrograms;
+    extern struct POST_SHADER_PROGRAM *NuDisplayMaterialDefaultPrograms;
 #ifdef __cplusplus
 }
 #endif

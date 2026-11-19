@@ -339,11 +339,11 @@ i32 NuKeyboard_db(i32 key) {
     return 0;
 }
 
-i32 fun_006d6c80(void) {
+i32 NuKeyboardGetPreviousKeyIndex(void) {
     return nu_keyboard_previous_key_index;
 }
 
-i32 fun_006d6c90(void) {
+i32 NuKeyboardGetKeyIndex(void) {
     return nu_keyboard_key_index;
 }
 

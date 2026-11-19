@@ -1,3 +1,4 @@
+#include "nu2api/nucore/NuNetEmu.h"
 #include "nu2api/nucore/common.h"
 
 /* RefPack decompressor, the counterpart of refpack. Returns

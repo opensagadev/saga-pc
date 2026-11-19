@@ -47,8 +47,8 @@ struct PC_GEOMETRY_PUBLISH_RECORD {          // size 0x28
  * "NuMtx"); this unit keeps the out-of-line copies of their members. */
 struct NuMtx : NUMTX {
     NuMtx();
-    NuMtx fun_005c6a00();
-    NuMtx fun_005c6a20(NuMtx &other);
+    NuMtx Inverse();
+    NuMtx Multiply(NuMtx &other);
 };
 
 struct NuVec : NUVEC {
@@ -58,10 +58,10 @@ struct NuVec : NUVEC {
     NuVec(const NuVec &other);
     NuVec(const NUVEC &other);
     NuVec &operator=(const NuVec &other);
-    NuVec fun_005c68e0(NuMtx &matrix);
+    NuVec TransformH(NuMtx &matrix);
     NuVec operator/(const NuVec &other) const;
     NuVec operator-() const;
-    f32 fun_005c69c0() const;
+    f32 LengthSquared() const;
 };
 
 struct PC_GEOMETRY_PUBLISH_SORT_ITEM { // size 0xc
@@ -185,11 +185,11 @@ extern "C" PC_GEOMETRY_PUBLISH_RECORD *fun_005c6470(PC_GEOMETRY_PUBLISH_FORMAT *
     return NULL;
 }
 
-extern "C" NUDISPLAYLIST *fun_005c6680(void) {
+extern "C" NUDISPLAYLIST *NuDisplayList2dGet(void) {
     return &PCDisplayList2d;
 }
 
-extern "C" VARIPTR *fun_005c6690(void) {
+extern "C" VARIPTR *NuDisplayListStreamAlign16(void) {
     NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
     return NuDisplayListStreamCursor;
 }
@@ -221,7 +221,7 @@ NuVec &NuVec::operator=(const NuVec &other) {
     return *this;
 }
 
-NuVec NuVec::fun_005c68e0(NuMtx &matrix) {
+NuVec NuVec::TransformH(NuMtx &matrix) {
     NuVec result;
     NuVecMtxTransformH(&result, this, &matrix);
     return result;
@@ -242,29 +242,29 @@ extern "C" NUVEC *fun_005c6950(NUVEC *out, const NUVEC *a, const NUVEC *b) {
     return out;
 }
 
-extern "C" f32 fun_005c6990(const NUVEC *a, const NUVEC *b) {
+extern "C" f32 NuGeometryVecDot(const NUVEC *a, const NUVEC *b) {
     return a->y * b->y + a->x * b->x + a->z * b->z;
 }
 
-f32 NuVec::fun_005c69c0() const {
+f32 NuVec::LengthSquared() const {
     return x * x + y * y + z * z;
 }
 
 NuMtx::NuMtx() {
 }
 
-NuMtx NuMtx::fun_005c6a00() {
+NuMtx NuMtx::Inverse() {
     NuMtx result;
     NuMtxInvH(&result, this);
     return result;
 }
 
-NuMtx NuMtx::fun_005c6a20(NuMtx &other) {
+NuMtx NuMtx::Multiply(NuMtx &other) {
     NuMtx result;
     NuMtxMulH(&result, this, &other);
     return result;
 }
 
-extern "C" f32 fun_005c6b30(const NUVEC4 *plane, const NUVEC *point) {
-    return fun_005c6990(&plane->xyz, point) + plane->w;
+extern "C" f32 NuGeometryPlaneDistance(const NUVEC4 *plane, const NUVEC *point) {
+    return NuGeometryVecDot(&plane->xyz, point) + plane->w;
 }

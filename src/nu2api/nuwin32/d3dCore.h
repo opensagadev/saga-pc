@@ -238,11 +238,11 @@ struct PC_EFFECT_SURFACE {                                                      
     void Attach(struct GRAPHICS_RENDER_TEXTURE *, i32, bool);
     static void ReleaseResources();
     static void RestoreResources();
-    struct GRAPHICS_RENDER_TEXTURE *fun_005f7af0();
-    u16 fun_005f7b00();
+    struct GRAPHICS_RENDER_TEXTURE *GetTexture();
+    u16 GetLevel();
     u32 fun_005f7b10();
-    u16 fun_005f7b20();
-    u16 fun_005f7b30();
+    u16 GetWidth();
+    u16 GetHeight();
     void fun_005fb920(PC_EFFECT_SURFACE *source);
 #endif
 };
@@ -263,8 +263,8 @@ typedef struct PC_DEVICE_BACKEND {          // size 0x700
     u8 multithreaded;                       // 0x5fa
     u8 unknown_5fb;                         // 0x5fb
     HRESULT present_result;                 // 0x5fc
-    u32 state600;                           // 0x600
-    u32 state604;                           // 0x604
+    u32 enabled_option_0;                   // 0x600
+    u32 enabled_option_1;                   // 0x604
     GRAPHICS_DISPLAY_MODE desktop_mode;     // 0x608
     u32 mode_count;                         // 0x618
     GRAPHICS_DISPLAY_MODE *modes;           // 0x61c
@@ -273,7 +273,7 @@ typedef struct PC_DEVICE_BACKEND {          // size 0x700
     f32 aspect;                             // 0x628
     u32 active_aspect_mode;                 // 0x62c
     f32 active_aspect;                      // 0x630
-    u8 feature634;                          // 0x634
+    u8 active_feature;                      // 0x634
     u8 unknown_635[3];                      // 0x635
     i32 multisample_index;                  // 0x638
     u8 multisample_tested;                  // 0x63c
@@ -285,47 +285,49 @@ typedef struct PC_DEVICE_BACKEND {          // size 0x700
         u8 shader_caps;
     }; // 0x654
 
-    u32 render_target_flags;                     // 0x658
-    u8 requested_windowed;                       // 0x65c
-    u8 unknown_65d[3];                           // 0x65d
-    u32 requested_mode;                          // 0x660
-    u8 requested_feature;                        // 0x664
-    u8 unknown_665[3];                           // 0x665
-    i32 requested_multisample;                   // 0x668
-    u16 requested_target_count;                  // 0x66c
-    u8 saved_windowed;                           // 0x66e
-    u8 unknown_66f;                              // 0x66f
-    u32 saved_mode;                              // 0x670
-    u8 saved_feature;                            // 0x674
-    u8 unknown_675[3];                           // 0x675
-    i32 saved_multisample;                       // 0x678
-    u16 saved_target_count;                      // 0x67c
-    u16 unknown_67e;                             // 0x67e
-    i32 saved_aspect;                            // 0x680
-    PC_TEXTURE_RESOURCE *declaration684;         // 0x684
-    struct PC_BUFFER_RESOURCE *buffer688;        // 0x688
-    PC_TEXTURE_RESOURCE *declaration68c;         // 0x68c
-    struct PC_BUFFER_RESOURCE *buffer690;        // 0x690
-    struct PC_BUFFER_RESOURCE *buffer694;        // 0x694
-    struct PC_BUFFER_RESOURCE *buffer698;        // 0x698
-    u32 state69c;                                // 0x69c
-    i32 state6a0;                                // 0x6a0
-    i32 state6a4;                                // 0x6a4
-    i32 state6a8;                                // 0x6a8
-    PC_TEXTURE_RESOURCE *declaration6ac;         // 0x6ac
-    PC_TEXTURE_RESOURCE *back_buffer;            // 0x6b0
-    struct GRAPHICS_RENDER_TEXTURE *textures[4]; // 0x6b4
-    PC_TEXTURE_RESOURCE *target_surfaces[4];     // 0x6c4
-    i32 target_kinds[4];                         // 0x6d4
-    u16 target_count;                            // 0x6e4
-    u16 unknown_6e6;                             // 0x6e6
-    PC_TEXTURE_RESOURCE *current_surface;        // 0x6e8
-    PC_TEXTURE_RESOURCE *depth_surface;          // 0x6ec
-    PC_TEXTURE_RESOURCE *target_cache[4];        // 0x6f0
+    u32 render_target_flags;                           // 0x658
+    u8 requested_windowed;                             // 0x65c
+    u8 unknown_65d[3];                                 // 0x65d
+    u32 requested_mode;                                // 0x660
+    u8 requested_feature;                              // 0x664
+    u8 unknown_665[3];                                 // 0x665
+    i32 requested_multisample;                         // 0x668
+    u16 requested_target_count;                        // 0x66c
+    u8 saved_windowed;                                 // 0x66e
+    u8 unknown_66f;                                    // 0x66f
+    u32 saved_mode;                                    // 0x670
+    u8 saved_feature;                                  // 0x674
+    u8 unknown_675[3];                                 // 0x675
+    i32 saved_multisample;                             // 0x678
+    u16 saved_target_count;                            // 0x67c
+    u16 unknown_67e;                                   // 0x67e
+    i32 saved_aspect;                                  // 0x680
+    PC_TEXTURE_RESOURCE *screen_uv_declaration;        // 0x684
+    struct PC_BUFFER_RESOURCE *triangle_buffer;        // 0x688
+    PC_TEXTURE_RESOURCE *position_uv_declaration;      // 0x68c
+    struct PC_BUFFER_RESOURCE *quad_buffer;            // 0x690
+    struct PC_BUFFER_RESOURCE *grid_vertex_buffer;     // 0x694
+    struct PC_BUFFER_RESOURCE *grid_index_buffer;      // 0x698
+    u32 grid_rows;                                     // 0x69c
+    i32 grid_columns;                                  // 0x6a0
+    i32 grid_vertex_count;                             // 0x6a4
+    i32 grid_triangle_count;                           // 0x6a8
+    PC_TEXTURE_RESOURCE *screen_colour_uv_declaration; // 0x6ac
+    PC_TEXTURE_RESOURCE *back_buffer;                  // 0x6b0
+    struct GRAPHICS_RENDER_TEXTURE *textures[4];       // 0x6b4
+    PC_TEXTURE_RESOURCE *target_surfaces[4];           // 0x6c4
+    i32 target_kinds[4];                               // 0x6d4
+    u16 target_count;                                  // 0x6e4
+    u16 unknown_6e6;                                   // 0x6e6
+    PC_TEXTURE_RESOURCE *current_surface;              // 0x6e8
+    PC_TEXTURE_RESOURCE *depth_surface;                // 0x6ec
+    PC_TEXTURE_RESOURCE *target_cache[4];              // 0x6f0
 
 #ifdef __cplusplus
     PC_DEVICE_BACKEND();
     ~PC_DEVICE_BACKEND();
+    i32 ShaderVariant16();
+    i32 ShaderVariant1();
     void Shutdown();
     void DrawPostEffectQuad();
     void DrawPostEffectIndexed();
@@ -367,21 +369,21 @@ typedef struct PC_DEVICE_BACKEND {          // size 0x700
     void CopyCurrentSurface(struct GRAPHICS_RENDER_TEXTURE *);
 
     GRAPHICS_DISPLAY_MODE *fun_00509090(i32 index);
-    i32 fun_005090a0();
+    i32 GetMultisampleIndex();
     u8 SupportsMultisample(i32);
     u8 HasRequestedModeChanged();
     void RestoreSavedMode();
 
     u8 fun_005090e0();
-    u32 fun_00509110();
-    i32 fun_00509120();
-    void fun_00509130(i32 multisample);
+    u32 GetRequestedMode();
+    i32 GetRequestedMultisample();
+    void SetRequestedMultisample(i32 multisample);
     void fun_00509140(i32 mode);
-    GRAPHICS_RENDER_TEXTURE *fun_005c2190(u16 index);
-    i32 fun_005f7860();
+    GRAPHICS_RENDER_TEXTURE *GetTargetTexture(u16 index);
+    i32 GetMultisampleQuality();
     GRAPHICS_CAPS *fun_005f7870();
     GRAPHICS_PRESENT_PARAMETERS *fun_005f7880();
-    u16 fun_005f7890();
+    u16 GetTargetCount();
     i32 fun_005f78a0();
     void fun_005f78c0();
     u16 fun_006e2140();
@@ -394,10 +396,10 @@ typedef struct PC_DEVICE_BACKEND {          // size 0x700
     u32 fun_006df060();
     u32 fun_006df070();
     i32 fun_006e18d0();
-    void fun_006e18e0(u8 feature);
-    void fun_006e18f0(u16 count);
-    i32 fun_006e1900();
-    i32 fun_006dc750();
+    void SetRequestedFeature(u8 feature);
+    void SetRequestedTargetCount(u16 count);
+    i32 GetDeviceType();
+    i32 IsWindowed();
     GRAPHICS_DISPLAY_MODE *fun_006daee0();
     u32 fun_006dbae0();
     u32 fun_006dbaf0();

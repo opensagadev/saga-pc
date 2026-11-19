@@ -28,7 +28,7 @@ extern "C" {
     void PCGraphicsFramebufferAction(i32);
     i32 PCGraphicsEffectTextureMipCount(GRAPHICS_RENDER_TEXTURE *);
     void PCGraphicsClearFramebuffer(u32, i32);
-    void PCGraphicsEffectTextureSetField24(GRAPHICS_RENDER_TEXTURE *, i32);
+    void PCGraphicsEffectTextureSetSamplerExtra(GRAPHICS_RENDER_TEXTURE *, i32);
     void PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE *, i32, i32, i32);
     void PCGraphicsEffectTextureSetLowNibbles(GRAPHICS_RENDER_TEXTURE *, i32, i32);
     void PCGraphicsEffectTextureSetWrapFields(GRAPHICS_RENDER_TEXTURE *, i32, i32);

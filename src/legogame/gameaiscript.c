@@ -1846,7 +1846,7 @@ f32 Condition_PSP(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, cha
 }
 
 f32 Condition_BoltsDontGetDeflectedBack(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (packet != NULL && packet->owner != NULL && (packet->owner->objptr->unknown_ef0 & APIOBJECT_BOLTS_DONT_GET_DEFLECTED_BACK) != 0) {
+    if (packet != NULL && packet->owner != NULL && (packet->owner->objptr->bolt_flags & APIOBJECT_BOLTS_DONT_GET_DEFLECTED_BACK) != 0) {
         return 1.0f;
     }
     return 0.0f;
@@ -4505,10 +4505,11 @@ i32 Action_EngageOpponent(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
         }
     } else {
         stopping_distance = (goal_range < opponent->ai_packet.mover_height ? goal_range : opponent->ai_packet.mover_height);
-        if ((object->unknown_ef2 & 1) == 0) {
+        if ((object->turning_flags & 1) == 0) {
             processor->action_data_1 &= (u8)(~AIENGAGE_BACKING_OFF);
         }
-        if ((object->unknown_ef2 & 1) != 0 && (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TURNING_CIRCLE) != 0) {
+        if ((object->turning_flags & 1) != 0 &&
+            (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TURNING_CIRCLE) != 0) {
             if ((processor->action_data_1 & AIENGAGE_BACKING_OFF) != 0) {
                 if (distance_squared > (goal_range + aitol) * (goal_range + aitol)) {
                     processor->action_data_1 &= (u8)(~AIENGAGE_BACKING_OFF);
@@ -4562,7 +4563,7 @@ i32 Action_EngageOpponent(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
         return 0;
     }
     character_flags_2 = object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TURNING_CIRCLE;
-    if (character_flags_2 != 0 && (object->unknown_ef2 & 1) != 0) {
+    if (character_flags_2 != 0 && (object->turning_flags & 1) != 0) {
         return 0;
     }
     if (object->model_draw_result == 0 && (processor->action_data_1 & AIENGAGE_OFFSCREEN) == 0) {

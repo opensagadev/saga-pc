@@ -393,7 +393,7 @@ extern "C" {
                     freechunkcontrols[freechunkcontrolsptr]->owner = NULL;
                     freechunkcontrols[freechunkcontrolsptr]->effect_index = key->effect_index;
                     freechunkcontrols[freechunkcontrolsptr]->rotation_y = 0;
-                    freechunkcontrols[freechunkcontrolsptr]->unknown_01e = 0;
+                    freechunkcontrols[freechunkcontrolsptr]->frame = 0;
                     freechunkcontrols[freechunkcontrolsptr]->collision_plane = key->collision_plane;
                     freechunkcontrols[freechunkcontrolsptr]->restitution = key->reflection_scale;
                     freechunkcontrols[freechunkcontrolsptr]->particle_index = key->particle_cursor % 32;
@@ -477,7 +477,7 @@ extern "C" {
                 freechunkcontrols[freechunkcontrolsptr]->owner = NULL;
                 freechunkcontrols[freechunkcontrolsptr]->effect_index = key->effect_index;
                 freechunkcontrols[freechunkcontrolsptr]->rotation_y = key->reflection_y;
-                freechunkcontrols[freechunkcontrolsptr]->unknown_01e = 0;
+                freechunkcontrols[freechunkcontrolsptr]->frame = 0;
                 freechunkcontrols[freechunkcontrolsptr]->collision_plane = key->collision_plane;
                 freechunkcontrols[freechunkcontrolsptr]->restitution = key->reflection_scale;
                 freechunkcontrols[freechunkcontrolsptr]->particle_index = key->particle_cursor % 32;

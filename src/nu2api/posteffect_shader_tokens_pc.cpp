@@ -1,3 +1,4 @@
+#include "nu2api/nucamera_dlist.h"
 #include "nu2api/nucore/common.h"
 
 extern "C" {

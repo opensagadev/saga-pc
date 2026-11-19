@@ -79,10 +79,10 @@ typedef struct PC_WINDOW_OPTIONS { // size 0x460
     i32 GetDesiredBloomMethod();
     i32 GetDesiredShadowMethod();
     u8 GetSpeedBlurSupported();
-    i32 fun_006dc710();
-    i32 fun_006dc720();
-    i32 fun_006dc730();
-    i32 fun_006dc740();
+    i32 GetClientWidth();
+    i32 GetClientHeight();
+    i32 GetWindowX();
+    i32 GetWindowY();
     void SetMouseSensitivity(i32 value);
     void SetInvertY(u8 value);
     void SetVibration(u8 value);
@@ -92,11 +92,11 @@ typedef struct PC_WINDOW_OPTIONS { // size 0x460
     void SetShadowsEnabled(u8);
     void SetBloomEnabled(u8);
     void SetUseHiresPending(u8);
-    u8 fun_00509030();
-    u8 fun_00509040();
-    u8 fun_00509050();
-    u8 fun_00509060();
-    u8 fun_00509070();
+    u8 IsBloomEnabled();
+    u8 AreShadowsEnabled();
+    u8 IsSpeedBlurEnabled();
+    u8 IsHiresEnabled();
+    u8 IsHiresPending();
     u8 fun_00509080();
 #endif
 } PC_WINDOW_OPTIONS;

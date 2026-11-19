@@ -11,8 +11,6 @@
 
 /* Network condition emulator. */
 
-i32 unref(u8 *source, u8 *destination);
-
 NuNetEmu theNuNetEmu;
 
 NuNetEmu::PackStats::PackStats(const char *name) : NetStats(name) {
@@ -214,7 +212,7 @@ NuNetEmu::NuNetEmu() : first_packet(NULL), last_packet(NULL), packet_count(0), r
     unpacked_size = 0;
     packed_size = 0;
     SetConditions(CONDITIONS_NORMAL);
-    unknown_00 = 0x200;
+    packet_byte_limit = 0x200;
 }
 
 i32 NuNetEmu::SplitSendPacket(EmuPacket *packet) {

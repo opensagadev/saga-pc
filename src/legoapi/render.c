@@ -178,10 +178,10 @@ void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER *parameters) {
                                           parameters->direction_near_scale);
                         }
                     }
-                    do {
+                    {
                         const u32 component = NuPrim2DAddCLR(0, 255, brightness);
                         colour = ((u32)(u8)component | ((u32)(u8)component << 8) | ((u32)(u8)component << 16) | ((u32)128 << 24));
-                    } while (0);
+                    }
                     if (NuPrimNeedsOverbrightening != 0) {
                         converted = ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000u) + (colour & 0xff00);
                     } else {
@@ -222,10 +222,10 @@ void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER *parameters) {
                                           parameters->direction_near_scale);
                         }
                     }
-                    do {
+                    {
                         const u32 component = NuPrim2DAddCLR(0, 255, brightness);
                         colour = ((u32)(u8)component | ((u32)(u8)component << 8) | ((u32)(u8)component << 16) | ((u32)128 << 24));
-                    } while (0);
+                    }
                     if (NuPrimNeedsOverbrightening != 0) {
                         converted = ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000u) + (colour & 0xff00);
                     } else {
@@ -266,10 +266,10 @@ void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER *parameters) {
                                           parameters->direction_near_scale);
                         }
                     }
-                    do {
+                    {
                         const u32 component = NuPrim2DAddCLR(0, 255, brightness);
                         colour = ((u32)(u8)component | ((u32)(u8)component << 8) | ((u32)(u8)component << 16) | ((u32)128 << 24));
-                    } while (0);
+                    }
                     if (NuPrimNeedsOverbrightening != 0) {
                         converted = ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000u) + (colour & 0xff00);
                     } else {
@@ -310,10 +310,10 @@ void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER *parameters) {
                                           parameters->direction_near_scale);
                         }
                     }
-                    do {
+                    {
                         const u32 component = NuPrim2DAddCLR(0, 255, brightness);
                         colour = ((u32)(u8)component | ((u32)(u8)component << 8) | ((u32)(u8)component << 16) | ((u32)128 << 24));
-                    } while (0);
+                    }
                     if (NuPrimNeedsOverbrightening != 0) {
                         converted = ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000u) + (colour & 0xff00);
                     } else {
@@ -354,10 +354,10 @@ void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER *parameters) {
                                           parameters->direction_near_scale);
                         }
                     }
-                    do {
+                    {
                         const u32 component = NuPrim2DAddCLR(0, 255, brightness);
                         colour = ((u32)(u8)component | ((u32)(u8)component << 8) | ((u32)(u8)component << 16) | ((u32)128 << 24));
-                    } while (0);
+                    }
                     if (NuPrimNeedsOverbrightening != 0) {
                         converted = ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000u) + (colour & 0xff00);
                     } else {
@@ -398,10 +398,10 @@ void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER *parameters) {
                                           parameters->direction_near_scale);
                         }
                     }
-                    do {
+                    {
                         const u32 component = NuPrim2DAddCLR(0, 255, brightness);
                         colour = ((u32)(u8)component | ((u32)(u8)component << 8) | ((u32)(u8)component << 16) | ((u32)128 << 24));
-                    } while (0);
+                    }
                     if (NuPrimNeedsOverbrightening != 0) {
                         converted = ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000u) + (colour & 0xff00);
                     } else {

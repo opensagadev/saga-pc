@@ -38,12 +38,12 @@ i32 PC_SHADER_MATERIAL_FILTER_VIEW::fun_00744330() const {
 }
 
 bool PC_SHADER_MATERIAL_FILTER_VIEW::fun_00744340() const {
-    return descriptor->override_mode != 0;
+    return descriptor->shadow_set != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::fun_00744350(i32 layer) const {
     if (layer == 0) {
-        return descriptor->override_mode & 1;
+        return descriptor->shadow_set & 1;
     }
     return 0;
 }

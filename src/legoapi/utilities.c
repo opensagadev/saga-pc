@@ -1602,7 +1602,7 @@ void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, 
     if (object_id != -1) {
         special = &world->level_objects[object_id].special;
         if (ObjTabList != NULL) {
-            use_alpha = ObjTabList[object_id].unknown_01;
+            use_alpha = ObjTabList[object_id].use_alpha;
         }
     }
     if (scale != 1.0f) {

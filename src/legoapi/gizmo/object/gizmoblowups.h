@@ -60,21 +60,21 @@ typedef struct GIZMOBLOWUPTYPE {        // size 0x100
     f32 animation_time_scale;           // 0x78
     u32 animation_flags;                // 0x7c
     u32 effect_flags;                   // 0x80
-    f32 unknown_084;                    // 0x84
+    f32 scale;                          // 0x84
     f32 animation_start_frame;          // 0x88
     f32 animation_end_frame;            // 0x8c
     f32 animation_base_frame;           // 0x90
-    f32 unknown_094;                    // 0x94
-    f32 unknown_098;                    // 0x98
-    f32 unknown_09c;                    // 0x9c
+    f32 gravity;                        // 0x94
+    f32 bounce;                         // 0x98
+    f32 spin;                           // 0x9c
     i16 particle_types[9];              // 0xa0
     u16 instance_count;                 // 0xb2
     GAMEANTINODEDATA anti_node_data;    // 0xb4
     char name[32];                      // 0xd8
-    u8 unknown_0f8;                     // 0xf8
-    u8 unknown_0f9;                     // 0xf9
-    u8 unknown_0fa;                     // 0xfa
-    u8 unknown_0fb;                     // 0xfb
+    u8 debris_count;                    // 0xf8
+    u8 debris_type;                     // 0xf9
+    u8 has_physics;                     // 0xfa
+    u8 collidable;                      // 0xfb
     u8 animation_runtime_flags;         // 0xfc
     u8 unknown_fd[3];                   // 0xfd
 } GIZMOBLOWUPTYPE;
@@ -172,7 +172,7 @@ typedef struct GIZMOBLOWUP { // size 0x114
     NUVEC bounds_min;    // 0x058
     NUVEC bounds_max;    // 0x064
     NUVEC decal_offset;  // 0x070
-    NUVEC unknown_07c;   // 0x07c
+    NUVEC file_offset;   // 0x07c
     NUVEC shadow_offset; // 0x088
 
     union { // size 0x4
@@ -201,7 +201,7 @@ typedef struct GIZMOBLOWUP { // size 0x114
     f32 proximity_delay;   // 0x0b8
     f32 animation_time;    // 0x0bc
     f32 decal_scale;       // 0x0c0
-    f32 unknown_0c4;       // 0x0c4
+    f32 file_scale;        // 0x0c4
     f32 animation_offset;  // 0x0c8
     f32 respawn_timer;     // 0x0cc
     f32 respawn_period;    // 0x0d0

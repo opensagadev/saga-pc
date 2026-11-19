@@ -63,7 +63,6 @@ typedef struct PICKUP_RESET_PROGRESS { // size 0x100
 
 extern const f64 GameObjectNearFloorNoFloorHeight;
 extern i32 turret_gizmotype_id;
-extern i32 gizbuildit_gizmotype_id;
 
 static NUMTX *PickupSetRotationX(NUMTX *matrix, i32 angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
@@ -224,7 +223,7 @@ static void GizmoPickups_DrawList(WORLDINFO *world, GIZMOPICKUP *pickup, i32 cou
             if (AreaPickupScale != 1.0f) {
                 NuMtxPreScaleU(&matrix, AreaPickupScale);
             }
-            if (pickup->unknown_14[1] & 8) {
+            if (pickup->type_flags[1] & 8) {
                 ResetShadowMapRendering();
             }
             pickup->state_drawn = NuSpecialDrawAt(&world->level_objects[model_index].special, &matrix) != 0;
@@ -233,7 +232,7 @@ static void GizmoPickups_DrawList(WORLDINFO *world, GIZMOPICKUP *pickup, i32 cou
                 NuSpecialDrawAt(&world->level_objects[type->overlay_model_id].special, &matrix);
                 EnableShadowMapRendering(0);
             }
-            if (pickup->unknown_14[1] & 8) {
+            if (pickup->type_flags[1] & 8) {
                 EnableShadowMapRendering(0);
             }
         }
@@ -275,7 +274,7 @@ void GizmoPickups_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data
     i32 i;
     for (i = 0; i < w->pickup_runtime_sys->pickup_count; ++i) {
         struct GIZMOPICKUP *pickup = &w->pickup_runtime_sys->pickups[i];
-        if (pickup->unknown_14[1] & 2) {
+        if (pickup->type_flags[1] & 2) {
             AddGizmo(giz, type, NULL, pickup);
         }
     }
@@ -594,9 +593,9 @@ i32 GizmoPickups_Load(void *world_ptr, void *unused) {
         for (index = 0; index < world->pickup_runtime_sys->pickup_count; ++index, ++pickup) {
             EdFileRead(pickup->name, sizeof(pickup->name));
             EdFileReadNuVec(&pickup->position);
-            pickup->unknown_14[0] = (u8)EdFileReadChar();
+            pickup->type_flags[0] = (u8)EdFileReadChar();
             if (version >= 2) {
-                pickup->unknown_14[1] = (u8)EdFileReadChar();
+                pickup->type_flags[1] = (u8)EdFileReadChar();
             }
             if (version >= 4) {
                 pickup->activation_group = (u8)EdFileReadChar();
@@ -760,7 +759,7 @@ static GIZMOPICKUP *GizmoPickups_CollideList(GAMEOBJECT *object, GIZMOPICKUP *pi
         type = &GizmoPickupSys->types[pickup->type_index];
         if ((type->flags & 0x10) != 0 || (pickup->flags & GIZMOPICKUP_STATE_ACTIVE) == 0 ||
             (pickup->flags & GIZMOPICKUP_STATE_COLLECTED) != 0 || (pickup->flags & GIZMOPICKUP_STATE_ENABLED) == 0 ||
-            ((pickup->flags & GIZMOPICKUP_STATE_DRAWN) == 0 && (pickup->unknown_14[1] & 4) == 0)) {
+            ((pickup->flags & GIZMOPICKUP_STATE_DRAWN) == 0 && (pickup->type_flags[1] & 4) == 0)) {
             continue;
         }
         if ((pickup->flags & GIZMOPICKUP_STATE_ALTERNATE_TYPE) != 0 && GizmoPickupSys->alternate_type != -1) {
@@ -769,7 +768,7 @@ static GIZMOPICKUP *GizmoPickups_CollideList(GAMEOBJECT *object, GIZMOPICKUP *pi
         if (type->disabled != 0) {
             continue;
         }
-        if ((pickup->unknown_14[1] & 4) != 0) {
+        if ((pickup->type_flags[1] & 4) != 0) {
             return pickup;
         }
         if (type->score > 0) {
@@ -920,7 +919,7 @@ void MiniKitDetector(NUVEC *position) {
     message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_ONE_FRAME | GAMEMSG_BEHIND_CAMERA;
     message.scale = 0.6f;
     message.slot_flags = 4;
-    message.unknown_44 = ((void *)(GameMsg_Draw_MiniKitDetector));
+    message.draw_fn = ((void *)(GameMsg_Draw_MiniKitDetector));
     AddGameMsg(&message);
 }
 

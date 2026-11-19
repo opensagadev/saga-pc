@@ -231,7 +231,7 @@ bool SoundVoiceManagerPC::FindLoopVoice(NUVEC *position, i32 sample_id, i32 *voi
         return false;
     }
     for (index = 0; index < 64; ++index) {
-        if (voices[index].sample_id == sample_id && voices[index].sound_key == (i32)position && voices[index].unknown_19 == 0) {
+        if (voices[index].sample_id == sample_id && voices[index].sound_key == (i32)position && voices[index].hold_expired == 0) {
             *voice_id = index;
             return true;
         }
@@ -280,13 +280,13 @@ extern "C" void PCSoundPlayPositionedLoop(NUVEC *position, i32 sample_id, i32 vo
         return;
     }
     slot = &SoundVoiceManager.voices[voice_id];
-    slot->unknown_28 = PCSoundUpdateClock;
-    slot->unknown_1c = nusound_fade_start;
-    slot->unknown_20 = nusound_fade_end;
+    slot->start_clock = PCSoundUpdateClock;
+    slot->fade_start = nusound_fade_start;
+    slot->fade_end = nusound_fade_end;
     slot->sound_key = (i32)position;
-    slot->unknown_18 = 1;
+    slot->fading = 1;
     slot->volume_index = scaled_volume;
-    slot->unknown_2c = NuSound3LoopHoldTime;
+    slot->hold_time = NuSound3LoopHoldTime;
     if (!reused) {
         SoundVoiceManager.Setup3DVoice(voice_id, &relative, 1);
         table_index = attenuated_volume;
@@ -456,13 +456,13 @@ void SoundVoiceManagerPC::StopVoice(i32 voice_id) {
 }
 
 void SoundVoiceManagerPC::fun_00697700(i32 voice_id, i32 sound_key, i32, f32 unknown_1c, f32 unknown_20, i32 volume_index) {
-    voices[voice_id].unknown_1c = unknown_1c;
-    voices[voice_id].unknown_20 = unknown_20;
+    voices[voice_id].fade_start = unknown_1c;
+    voices[voice_id].fade_end = unknown_20;
     voices[voice_id].sound_key = sound_key;
     voices[voice_id].volume_index = volume_index;
-    voices[voice_id].unknown_28 = PCSoundUpdateClock;
-    voices[voice_id].unknown_18 = 1;
-    voices[voice_id].unknown_2c = NuSound3LoopHoldTime;
+    voices[voice_id].start_clock = PCSoundUpdateClock;
+    voices[voice_id].fading = 1;
+    voices[voice_id].hold_time = NuSound3LoopHoldTime;
 }
 
 void SoundVoiceManagerPC::StopAllVoices(void) {
@@ -499,12 +499,12 @@ void SoundVoiceManagerPC::UpdateVoices(void) {
             ++PCSoundLoopVoiceCount;
             voices[voice_id].voice->vtable->get_status(voices[voice_id].voice, &status);
             if (voices[voice_id].sound_key != 0 && (status & 4) != 0) {
-                i32 elapsed = (i32)((u32)PCSoundUpdateClock - (u32)voices[voice_id].unknown_28);
+                i32 elapsed = (i32)((u32)PCSoundUpdateClock - (u32)voices[voice_id].start_clock);
                 if (elapsed < 0) {
                     elapsed = (i32)((u32)elapsed - 0x80000000u);
                 }
-                voices[voice_id].unknown_19 = elapsed > voices[voice_id].unknown_2c;
-                if (voices[voice_id].unknown_19 != 0) {
+                voices[voice_id].hold_expired = elapsed > voices[voice_id].hold_time;
+                if (voices[voice_id].hold_expired != 0) {
                     LONG volume = 0;
                     voices[voice_id].voice->vtable->get_volume(voices[voice_id].voice, &volume);
                     volume += (i32)(nuapi.frame_time * -3500.0);
@@ -514,7 +514,7 @@ void SoundVoiceManagerPC::UpdateVoices(void) {
                         PCSoundSetRawVolume(voices[voice_id].voice, volume);
                     }
                 }
-                voices[voice_id].unknown_18 = 0;
+                voices[voice_id].fading = 0;
             }
         }
     }

@@ -216,10 +216,10 @@ i32 AddPARTEffect(i32 effect, NUVEC *position) {
             part_emits[i].rotation_2c = 0;
             part_emits[i].page = part_types[effect].page;
             part_emits[i].shots_remaining = 0;
-            part_emits[i].unknown_33 = 0;
-            part_emits[i].switch_type = 0;
-            part_emits[i].switch_id = 0;
-            part_emits[i].switch_state = 1;
+            part_emits[i].variant = 0;
+            part_emits[i].trigger_type = 0;
+            part_emits[i].trigger_id = 0;
+            part_emits[i].state = 1;
             return i;
         }
     }

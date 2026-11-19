@@ -1155,7 +1155,7 @@ i32 NetworkObjectManager::PushObject(NetworkObject *object, NetPeerPush *push, i
             data.start = data.cursor = (u8 *)object->replicator_data + offset;
             data.end = data.start + size;
             offset += size;
-            if (limit > theNuNetEmu.unknown_00 && (replicator->replication_group & 0x40) == 0) {
+            if (limit > theNuNetEmu.packet_byte_limit && (replicator->replication_group & 0x40) == 0) {
                 permit = 0;
             }
             if ((permit || force) && replicator->AllowPush(object->object_class, object->object, data, force, 0) &&
@@ -1209,7 +1209,7 @@ void NetworkObjectManager::Update() {
             } else {
                 limit = theNuNetEmu.queued_bytes;
             }
-            while (index < local_object_count && limit < theNuNetEmu.unknown_00) {
+            while (index < local_object_count && limit < theNuNetEmu.packet_byte_limit) {
                 NetworkObject *object = local_objects[index++];
                 if (object == NULL || object->object == NULL) {
                     continue;

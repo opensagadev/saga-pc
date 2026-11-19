@@ -23,13 +23,8 @@
 #include "nu2api/nuwin32/d3dCalls.h"
 #include "nu2api/nuwin32/d3dCore.h"
 #include "nu2api/nuwin32/pcapi.h"
-
-extern "C" {
-    i32 GameReleaseResources(void);
-    i32 GameRestoreResources(void);
-    void NuFmvTextureRelease(void);
-    void NuFmvTextureRestore(void);
-}
+#include "nu2api/pc_fmv_native.h"
+#include "legoapi/core/input/gamepads.h"
 
 /* The D3DX matrix type with its sixteen-float constructor (only the parts used here). */
 struct D3DXMATRIX { // size 0x40
@@ -79,11 +74,11 @@ i32 PC_DEVICE_BACKEND::fun_006df050() {
 }
 
 u32 PC_DEVICE_BACKEND::fun_006df060() {
-    return state600;
+    return enabled_option_0;
 }
 
 u32 PC_DEVICE_BACKEND::fun_006df070() {
-    return state604;
+    return enabled_option_1;
 }
 
 extern "C" {
@@ -169,7 +164,7 @@ extern "C" i32 fun_006df250(void) {
     return PCDeviceBackend.parameters.windowed == 0;
 }
 
-extern "C" u32 fun_006df260(void) {
+extern "C" u32 PCDeviceGetBackBufferWidth(void) {
     return PCDeviceBackend.parameters.width;
 }
 
@@ -207,7 +202,7 @@ extern "C" f32 PcInputAspectRatio(void) {
     return value;
 }
 
-extern "C" u32 fun_006df2f0(void) {
+extern "C" u32 PCDeviceGetBackBufferHeight(void) {
     return PCDeviceBackend.parameters.height;
 }
 
@@ -234,8 +229,8 @@ extern "C" {
         f32 width;
         va_start(args, format);
         width = NuQFntPrintLenV(system_qfont, format, args);
-        x += fun_005d0920();
-        y = y - fun_005d0930() * 0.5;
+        x += NuQFntGetLengthScale();
+        y = y - NuQFntGetHeightScale() * 0.5;
         switch (align) {
             case 0x10:
                 NuQFntMove(system_qfont, x, y, 0.0f);
@@ -271,8 +266,8 @@ extern "C" {
         }
         NuQFntSetColour(system_qfont, 0x80000000);
         NuQFntPrintV(system_qfont, format, args);
-        x += fun_005d0920();
-        y = y - fun_005d0930() * 0.5;
+        x += NuQFntGetLengthScale();
+        y = y - NuQFntGetHeightScale() * 0.5;
         switch (align) {
             case 0x10:
                 NuQFntMove(system_qfont, x, y, 0.0f);
@@ -446,11 +441,11 @@ extern "C" PC_TEXTURE_LEVEL_DESC *fun_006dfcc0(PC_TEXTURE_RESOURCE *texture, u32
 }
 
 extern "C" u32 fun_006dfcf0(void) {
-    return PCDeviceBackend.state600;
+    return PCDeviceBackend.enabled_option_0;
 }
 
 extern "C" u32 fun_006dfd00(void) {
-    return PCDeviceBackend.state604;
+    return PCDeviceBackend.enabled_option_1;
 }
 
 extern "C" void fun_006dfd20(void) {

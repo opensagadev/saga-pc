@@ -45,6 +45,7 @@
 #include <string.h>
 #include "gamelib/util/CRC16.h"
 #include "nu2api/nufile_pc.h"
+#include "nu2api/nucore_pc_includes.h"
 
 static char *NuFParBufferBase = 0;
 void (*fnInterpreterError)(NUFPAR *parser) = 0;
@@ -75,16 +76,6 @@ NUDATOPENFILEINFO *unpack_file_odi = 0;
 i32 NuApiTextLine = 0;
 static i32 read_buffer_decoded_size = 0;
 NUFPAR NuFParRecords[4] = {0};
-
-// Fetch one control bit; the marker bit refills the buffer from the next input byte.
-#define NUPP_GETBIT()                                                                                                                      \
-    bits += bits;                                                                                                                          \
-    bit = (bits >> 8) & 1;                                                                                                                 \
-    bits &= 0xff;                                                                                                                          \
-    if (bits == 0) {                                                                                                                       \
-        bits = bit + *src++ * 2;                                                                                                           \
-        bit = (bits >> 8) & 1;                                                                                                             \
-    }
 
 struct NUPPHEADER {    // size 0xc
     u32 magic;         // 0x0
@@ -188,12 +179,6 @@ static u32 bitcount = 0;
 static i32 NUAPI_PADREC_DEFAULT_BUFFERSIZE = 0x500000;
 i32 min_delay = 20;
 f32 FrameStartupDelay = 6.0f;
-
-extern f32 NuFrameAccumulatedTime;
-extern const char *GetPCStartupMessage(void);
-extern void FmvPlatformUpdate(void);
-
-typedef void (*NUDEBUGMSGFUNCTION)(char *, ...);
 
 static void DecryptData(PC_FILEPAKHDR *header, u32 length, const u8 *key, i32 key_length);
 static void AquireFileBuffer(FILEINFO *info);
@@ -594,6 +579,19 @@ void NuFileInit(i32 device_id) {
     NuFileInitEx(device_id, 1, 0);
 }
 
+// Fetch one control bit; the marker bit refills the buffer from the next input byte.
+static __forceinline u32 NuPPGetBit(u32 *bits, u8 **src) {
+    u32 bit;
+    *bits += *bits;
+    bit = (*bits >> 8) & 1;
+    *bits &= 0xff;
+    if (*bits == 0) {
+        *bits = bit + *(*src)++ * 2;
+        bit = (*bits >> 8) & 1;
+    }
+    return bit;
+}
+
 // RNC method 2 decoder; the header is skipped since NuPPLoadBuffer already knows the sizes.
 void NuPPUnpack(void *source, void *destination) {
     u8 *src;
@@ -641,20 +639,20 @@ void NuPPUnpack(void *source, void *destination) {
         }
         length = 2;
         distance = 0;
-        NUPP_GETBIT();
+        bit = NuPPGetBit(&bits, &src);
         if (bit == 0) {
-            NUPP_GETBIT();
+            bit = NuPPGetBit(&bits, &src);
             length = bit + 4;
-            NUPP_GETBIT();
+            bit = NuPPGetBit(&bits, &src);
             if (bit != 0) {
                 length--;
-                NUPP_GETBIT();
+                bit = NuPPGetBit(&bits, &src);
                 length = length * 2 + bit;
                 count = length - 9;
                 if (count == 0) {
                     // Literal run of 12..72 bytes copied in groups of four.
                     for (count += 3; count >= 0; count--) {
-                        NUPP_GETBIT();
+                        bit = NuPPGetBit(&bits, &src);
                         distance = distance * 2 + bit;
                     }
                     run = distance + 2;
@@ -675,16 +673,16 @@ void NuPPUnpack(void *source, void *destination) {
                 }
             }
         } else {
-            NUPP_GETBIT();
+            bit = NuPPGetBit(&bits, &src);
             if (bit == 0) {
                 goto copy_match;
             }
             length = 3;
-            NUPP_GETBIT();
+            bit = NuPPGetBit(&bits, &src);
             if (bit != 0) {
                 length = *src++;
                 if (length == 0) {
-                    NUPP_GETBIT();
+                    bit = NuPPGetBit(&bits, &src);
                     if (bit != 0) {
                         continue;
                     }
@@ -699,15 +697,15 @@ void NuPPUnpack(void *source, void *destination) {
                 length += 8;
             }
         }
-        NUPP_GETBIT();
+        bit = NuPPGetBit(&bits, &src);
         if (bit != 0) {
-            NUPP_GETBIT();
+            bit = NuPPGetBit(&bits, &src);
             distance = bit;
-            NUPP_GETBIT();
+            bit = NuPPGetBit(&bits, &src);
             if (bit != 0) {
-                NUPP_GETBIT();
+                bit = NuPPGetBit(&bits, &src);
                 distance = (distance * 2 + bit) | 4;
-                NUPP_GETBIT();
+                bit = NuPPGetBit(&bits, &src);
                 if (bit != 0) {
                     goto swap_offset;
                 }
@@ -716,7 +714,7 @@ void NuPPUnpack(void *source, void *destination) {
             } else {
                 distance = 1;
             }
-            NUPP_GETBIT();
+            bit = NuPPGetBit(&bits, &src);
             distance = distance * 2 + bit;
         swap_offset:
             distance = (distance >> 8) | (u8)distance << 8;
@@ -1488,7 +1486,7 @@ i32 fun_004ef6c0(void) {
     return 0;
 }
 
-NUALLOC_ARENA *fun_004ef6d0(void) {
+NUALLOC_ARENA *NuAllocGetArena(void) {
     return NuAllocArena;
 }
 
@@ -2371,7 +2369,7 @@ NUDATHDR *NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_out, i16 m
                 NuStrCat(formatted_name, filepath);
                 NuStrCat(formatted_name, ";1");
             }
-            header->unknown_b4 = 0;
+            header->start_lsn = 0;
             nufile_buffering_enabled = saved_buffering;
             return header;
         }
@@ -7549,7 +7547,7 @@ void fun_004f4080(void) {
     nuapi.frame_end_state = 1;
 }
 
-void fun_004f4090(u8 enabled) {
+void NuPadSetCorrectDeadZoning(u8 enabled) {
     UseCorrectDeadZoning = enabled;
 }
 
@@ -8113,10 +8111,10 @@ void NuPadProcessReadData(FRAME_SCANNED_PAD *pad) {
     if ((pad->analog_button_flags & 1) != 0) {
         // The right-hand side values never appear to be written. This may be a
         // platform difference.
-        pad->analog_left_pad_left = pad->unknown_7c;
-        pad->analog_left_pad_right = pad->unknown_7d;
-        pad->analog_left_pad_up = pad->unknown_7e;
-        pad->analog_left_pad_down = pad->unknown_7f;
+        pad->analog_left_pad_left = pad->raw_pad_left;
+        pad->analog_left_pad_right = pad->raw_pad_right;
+        pad->analog_left_pad_up = pad->raw_pad_up;
+        pad->analog_left_pad_down = pad->raw_pad_down;
     } else {
         ramp_rate_normal = FramePadRampRate / 30.0f;
 
@@ -8151,15 +8149,15 @@ void NuPadProcessReadData(FRAME_SCANNED_PAD *pad) {
     }
 
     if ((pad->analog_button_flags & 2) != 0) {
-        pad->unknown_82 = pad->unknown_80;
-        pad->unknown_83 = pad->unknown_81;
+        pad->extra_axis_x = pad->raw_extra_axis_x;
+        pad->extra_axis_y = pad->raw_extra_axis_y;
     } else {
-        pad->unknown_82 = 0x7f;
-        pad->unknown_83 = 0x7f;
+        pad->extra_axis_x = 0x7f;
+        pad->extra_axis_y = 0x7f;
     }
 }
 
-i32 fun_004f4780(void) {
+i32 NuPadGetMaxGamePads(void) {
     return MaxGamePads;
 }
 
@@ -8183,7 +8181,7 @@ void NuPadSetValid(i32 port, i32 valid) {
     g_nupadScannedPads[port].is_valid = (u8)valid;
 }
 
-i32 fun_004f4360(void) {
+i32 NuPadGetProfilePort(void) {
     return FramePadProfilePort;
 }
 
@@ -8203,7 +8201,7 @@ void NuPadUpdatePads(void) {
             i, &g_nupadScannedPads[i].analog_left_x, &g_nupadScannedPads[i].analog_left_y, &g_nupadScannedPads[i].analog_right_x,
             &g_nupadScannedPads[i].analog_right_y, &g_nupadScannedPads[i].analog_l1, &g_nupadScannedPads[i].analog_l2,
             &g_nupadScannedPads[i].analog_r1, &g_nupadScannedPads[i].analog_r2, &g_nupadScannedPads[i].digital_buttons,
-            &g_nupadScannedPads[i].unknown_7c, &g_nupadScannedPads[i].analog_button_flags);
+            &g_nupadScannedPads[i].raw_pad_left, &g_nupadScannedPads[i].analog_button_flags);
 
         NuPadRecordPlay(g_nupadScannedPads + i);
 
@@ -8439,8 +8437,8 @@ i32 NuPadRead(FRAME_PAD *pad) {
         pad->analog_left_pad_up = g_nupadScannedPads[device].analog_left_pad_up;
         pad->analog_left_pad_down = g_nupadScannedPads[device].analog_left_pad_down;
 
-        pad->analog_aux_x = g_nupadScannedPads[device].unknown_82;
-        pad->analog_aux_y = g_nupadScannedPads[device].unknown_83;
+        pad->extra_axis_x = g_nupadScannedPads[device].extra_axis_x;
+        pad->extra_axis_y = g_nupadScannedPads[device].extra_axis_y;
 
         pad->is_valid = g_nupadScannedPads[device].is_valid;
 
@@ -8757,8 +8755,6 @@ void NuVideoSetBrightness(f32 brightness) {
     nuapi.video_brightness = brightness;
     NuVideoSetBrightnessPS();
 }
-
-typedef void (*NUONLINEACHIEVEMENTCALLBACK)(i32, i32);
 
 i32 NuOnlineAchievementAchieved(i32 achievement, NUONLINEACHIEVEMENTCALLBACK callback) {
     return NuOnlineAchievementAchievedPS(achievement, callback);
@@ -9211,9 +9207,9 @@ i32 NuDatGetFileInfo(NUDATHDR *header, char *name, i64 *position, i32 *length) {
     index = NuDatFileFindTree(header, name);
     if (index >= 0) {
         file_position = NuDatCalcPos(header, header->file_info[index].file_offset);
-        if (nufile_lsn_allowed != 0 && header->unknown_b4 != 0) {
+        if (nufile_lsn_allowed != 0 && header->start_lsn != 0) {
             if (position != NULL) {
-                *position = header->unknown_b4 + (i32)(file_position / 0x800);
+                *position = header->start_lsn + (i32)(file_position / 0x800);
             }
             if (length != NULL) {
                 *length = header->file_info[index].file_len;

@@ -292,39 +292,15 @@ struct PC_DI_JOYSTATE2 {          // size 0x110
     LONG force_sliders[2];        // 0x108
 };
 
-struct PC_DI_RANGE {   // size 0x18
-    DWORD size;        // 0x00
-    DWORD header_size; // 0x04
-    DWORD object;      // 0x08
-    DWORD how;         // 0x0c
-    LONG minimum;      // 0x10
-    LONG maximum;      // 0x14
-};
-
-/* TODO(header): the DirectInput device is called through its C++ interface in retail. */
+/* DirectInput's C++ device interface, as far as ConfigureJoystickRanges calls it. */
 struct PC_DI_DEVICE_INTERFACE {
     virtual HRESULT __stdcall QueryInterface(REFIID, void **) = 0;
     virtual ULONG __stdcall AddRef(void) = 0;
     virtual ULONG __stdcall Release(void) = 0;
     virtual HRESULT __stdcall GetCapabilities(PC_DI_CAPS *) = 0;
     virtual HRESULT __stdcall EnumObjects(void *, void *, DWORD) = 0;
-    virtual HRESULT __stdcall GetProperty(REFGUID, PC_DI_PROPERTY *) = 0;
-    virtual HRESULT __stdcall SetProperty(REFGUID, const PC_DI_PROPERTY *) = 0;
-    virtual HRESULT __stdcall Acquire(void) = 0;
-    virtual HRESULT __stdcall Unacquire(void) = 0;
-    virtual HRESULT __stdcall GetDeviceState(DWORD, void *) = 0;
-    virtual HRESULT __stdcall GetDeviceData(DWORD, void *, DWORD *, DWORD) = 0;
-    virtual HRESULT __stdcall SetDataFormat(const PC_DI_DATA_FORMAT *) = 0;
-    virtual HRESULT __stdcall SetEventNotification(HANDLE) = 0;
-    virtual HRESULT __stdcall SetCooperativeLevel(HWND, DWORD) = 0;
-};
-
-struct PC_DI_FACTORY_INTERFACE {
-    virtual HRESULT __stdcall QueryInterface(REFIID, void **) = 0;
-    virtual ULONG __stdcall AddRef(void) = 0;
-    virtual ULONG __stdcall Release(void) = 0;
-    virtual HRESULT __stdcall CreateDevice(REFGUID, NuKeyboardDevice **, IUnknown *) = 0;
-    virtual HRESULT __stdcall EnumDevices(DWORD, BOOL(__stdcall *)(const PC_DI_INSTANCE *, void *), void *, DWORD) = 0;
+    virtual HRESULT __stdcall GetProperty(REFGUID, PC_DI_PROPERTY_HEADER *) = 0;
+    virtual HRESULT __stdcall SetProperty(REFGUID, const PC_DI_PROPERTY_HEADER *) = 0;
 };
 
 extern "C" void ConfigureJoystickRanges(NuKeyboardDevice *device) {
@@ -332,76 +308,77 @@ extern "C" void ConfigureJoystickRanges(NuKeyboardDevice *device) {
         return;
     }
     PC_DI_RANGE range;
+    // MATCH-EXCEPTION: retail calls SetProperty through the C++ interface (method loaded before the arguments).
     PC_DI_DEVICE_INTERFACE *input = (PC_DI_DEVICE_INTERFACE *)device;
-    range.size = 24;
-    range.header_size = 16;
-    range.how = 1;
+    range.header.size = 24;
+    range.header.header_size = 16;
+    range.header.how = 1;
     range.minimum = -32768;
     range.maximum = 32767;
-    range.object = offsetof(PC_DI_JOYSTATE2, x);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, y);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, z);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, rx);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, ry);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, rz);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, sliders[0]);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, sliders[1]);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, velocity_x);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, velocity_y);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, velocity_z);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, angular_velocity_x);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, angular_velocity_y);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, angular_velocity_z);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, velocity_sliders[0]);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, velocity_sliders[1]);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, acceleration_x);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, acceleration_y);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, acceleration_z);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, angular_acceleration_x);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, angular_acceleration_y);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, angular_acceleration_z);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, acceleration_sliders[0]);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, acceleration_sliders[1]);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, force_x);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, force_y);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, force_z);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, torque_x);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, torque_y);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, torque_z);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, force_sliders[0]);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = offsetof(PC_DI_JOYSTATE2, force_sliders[1]);
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, x);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, y);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, z);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, rx);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, ry);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, rz);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, sliders[0]);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, sliders[1]);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, velocity_x);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, velocity_y);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, velocity_z);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, angular_velocity_x);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, angular_velocity_y);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, angular_velocity_z);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, velocity_sliders[0]);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, velocity_sliders[1]);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, acceleration_x);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, acceleration_y);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, acceleration_z);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, angular_acceleration_x);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, angular_acceleration_y);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, angular_acceleration_z);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, acceleration_sliders[0]);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, acceleration_sliders[1]);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, force_x);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, force_y);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, force_z);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, torque_x);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, torque_y);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, torque_z);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, force_sliders[0]);
+    input->SetProperty(*(const GUID *)4, &range.header);
+    range.header.object = offsetof(PC_DI_JOYSTATE2, force_sliders[1]);
+    input->SetProperty(*(const GUID *)4, &range.header);
 }
 
 i32 PcInputSelectedPort = -1;
@@ -716,7 +693,7 @@ extern "C" BOOL __stdcall InputEnumDevices(const PC_DI_INSTANCE *instance, void 
             return TRUE;
         }
         NuKeyboardDevice *device;
-        if (((PC_DI_FACTORY_INTERFACE *)nu_keyboard_owner.factory)->CreateDevice(instance->instance, &device, NULL) < 0) {
+        if (nu_keyboard_owner.factory->methods->create_device(nu_keyboard_owner.factory, instance->instance, &device, NULL) < 0) {
             return TRUE;
         }
         i32 port;
@@ -734,7 +711,7 @@ extern "C" BOOL __stdcall InputEnumDevices(const PC_DI_INSTANCE *instance, void 
         }
         PC_DI_CAPS caps;
         caps.size = sizeof(caps);
-        HRESULT result = ((PC_DI_DEVICE_INTERFACE *)device)->GetCapabilities(&caps);
+        HRESULT result = device->methods->get_caps(device, &caps);
         record->button_count = (i8)caps.buttons;
         record->capabilities_valid = result == 0;
         record->pov_count = (u8)caps.povs;
@@ -754,9 +731,9 @@ extern "C" BOOL __stdcall InputEnumDevices(const PC_DI_INSTANCE *instance, void 
             (NuStrIStr((char *)instance->product_name, "P2600") != NULL || NuStrIStr((char *)instance->product_name, "P2900") != NULL)) {
             record->button_count -= 2;
         }
-        ((PC_DI_DEVICE_INTERFACE *)device)->SetDataFormat(&PcJoystickDataFormat);
-        ((PC_DI_DEVICE_INTERFACE *)device)->SetCooperativeLevel(PCInputInstance, 9);
-        ((PC_DI_DEVICE_INTERFACE *)device)->Acquire();
+        device->methods->set_format(device, &PcJoystickDataFormat);
+        device->methods->set_cooperative_level(device, PCInputInstance, 9);
+        device->methods->acquire(device);
         ConfigureJoystickRanges(device);
         state->BindPreferredConfig(7, port);
         ++nu_keyboard_owner.device_count;
@@ -808,18 +785,18 @@ void NuKeyboardOwner::Setup(HWND window, HINSTANCE instance) {
         mouse->methods->set_cooperative_level(mouse, window, 5);
         mouse->methods->set_format(mouse, &PcMouseDataFormat);
         PC_DI_PROPERTY property;
-        property.header_size = 16;
-        property.size = 20;
-        property.how = 0;
-        property.object = 0;
+        property.header.header_size = 16;
+        property.header.size = 20;
+        property.header.how = 0;
+        property.header.object = 0;
         property.data = 0;
-        mouse->methods->set_property(mouse, *(const GUID *)2, &property);
-        property.size = 20;
-        property.header_size = 16;
-        property.object = 0;
-        property.how = 0;
+        mouse->methods->set_property(mouse, *(const GUID *)2, &property.header);
+        property.header.size = 20;
+        property.header.header_size = 16;
+        property.header.object = 0;
+        property.header.how = 0;
         property.data = 16;
-        mouse->methods->set_property(mouse, *(const GUID *)1, &property);
+        mouse->methods->set_property(mouse, *(const GUID *)1, &property.header);
         mouse->methods->acquire(mouse);
     } else {
         mouse_axes = 0;
@@ -829,13 +806,13 @@ void NuKeyboardOwner::Setup(HWND window, HINSTANCE instance) {
     PcInput_EnableKeyboards(NULL, 0);
     device_count = 0;
     PcXInputDeviceCount = 0;
-    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(3, InputEnumDevices, NULL, 1);
-    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(2, InputEnumDevices, NULL, 1);
-    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(4, InputEnumDevices, NULL, 1);
-    nu_keyboard_owner.unknown_0000 = 0.2f;
-    nu_keyboard_owner.unknown_0008 = 0.2f;
+    factory->methods->enum_devices(factory, 3, InputEnumDevices, NULL, 1);
+    factory->methods->enum_devices(factory, 2, InputEnumDevices, NULL, 1);
+    factory->methods->enum_devices(factory, 4, InputEnumDevices, NULL, 1);
+    nu_keyboard_owner.rescan_interval = 0.2f;
+    nu_keyboard_owner.rescan_timer = 0.2f;
     PcInputSelectedPort = -1;
-    nu_keyboard_owner.unknown_0004 = 3;
+    nu_keyboard_owner.rescan_count = 3;
 }
 
 void NuKeyboardOwner::Shutdown() {
@@ -1728,9 +1705,9 @@ void NuKeyboardOwner::RescanDevices() {
     }
     device_count = 0;
     PcXInputDeviceCount = 0;
-    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(3, InputEnumDevices, NULL, 1);
-    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(2, InputEnumDevices, NULL, 1);
-    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(4, InputEnumDevices, NULL, 1);
+    factory->methods->enum_devices(factory, 3, InputEnumDevices, NULL, 1);
+    factory->methods->enum_devices(factory, 2, InputEnumDevices, NULL, 1);
+    factory->methods->enum_devices(factory, 4, InputEnumDevices, NULL, 1);
 }
 
 extern "C" void fun_006da360(i32 player) {
@@ -1745,9 +1722,9 @@ extern "C" void fun_006da360(i32 player) {
 /* Add out-of-line definitions to existing pc_input.cpp. The actual global
    nu_keyboard_owner in data.cpp then uses genuine VC8 CRT construction/destruction. */
 void NuKeyboardOwner::ScheduleRescan(f32 interval, i32 repetitions) {
-    unknown_0000 = interval;
-    unknown_0004 = repetitions;
-    unknown_0008 = interval;
+    rescan_interval = interval;
+    rescan_count = repetitions;
+    rescan_timer = interval;
 }
 
 i32 NuKeyboardOwner::fun_006d5970() {
@@ -1819,10 +1796,10 @@ u8 *NuKeyboardOwner::PollKeyboard() {
 }
 
 NuKeyboardOwner::NuKeyboardOwner() {
-    unknown_0000 = 0.0f;
-    unknown_0008 = 0.0f;
+    rescan_interval = 0.0f;
+    rescan_timer = 0.0f;
     mouse_enabled = 1;
-    unknown_0004 = 0;
+    rescan_count = 0;
     device_count = 0;
     mouse_cooperative = 1;
     poll_status = 0;
@@ -1833,9 +1810,9 @@ NuKeyboardOwner::NuKeyboardOwner() {
 }
 
 NuKeyboardOwner::~NuKeyboardOwner() {
-    unknown_0000 = 0.0f;
-    unknown_0004 = 0;
-    unknown_0008 = 0.0f;
+    rescan_interval = 0.0f;
+    rescan_count = 0;
+    rescan_timer = 0.0f;
     device_count = 0;
 }
 
@@ -1907,7 +1884,7 @@ extern "C" f32 fun_006d5c60(void) {
 }
 
 extern "C" void fun_006d5c70(f32 threshold, i32 motion, f32 ramp) {
-    nu_input_state->fun_006d3630(threshold, motion, ramp);
+    nu_input_state->SetThresholds(threshold, motion, ramp);
 }
 
 extern "C" i32 fun_006d5ca0(i32 device, i32 binding, i32 auxiliary, i32 auxiliary_port) {

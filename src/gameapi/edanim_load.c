@@ -344,13 +344,13 @@ i32 edanimLoadPage(char *path, NUGSCN *scene) {
             spring = AnimParams[slot].bounce_spring;
             damping = AnimParams[slot].bounce_damping;
             if (item >= 0 && item < CurrentTerrain->max_platforms) {
-                if (CurrentTerrain->platforms[item].bounce_54 == 0.0f) {
-                    CurrentTerrain->platforms[item].bounce_58 = 0.0f;
-                    CurrentTerrain->platforms[item].bounce_5c = 0.0f;
+                if (CurrentTerrain->platforms[item].bounce_impulse == 0.0f) {
+                    CurrentTerrain->platforms[item].bounce_offset = 0.0f;
+                    CurrentTerrain->platforms[item].bounce_velocity = 0.0f;
                 }
-                CurrentTerrain->platforms[item].bounce_54 = impulse;
-                CurrentTerrain->platforms[item].bounce_60 = spring;
-                CurrentTerrain->platforms[item].bounce_64 = damping;
+                CurrentTerrain->platforms[item].bounce_impulse = impulse;
+                CurrentTerrain->platforms[item].bounce_spring = spring;
+                CurrentTerrain->platforms[item].bounce_damping = damping;
             }
         }
         AnimParams[slot].page = (i8)page;

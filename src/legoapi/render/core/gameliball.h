@@ -634,7 +634,7 @@ extern "C" {
 typedef struct TERRAIN_PLATFORM { // size 0x6c
     NUMTX previous_matrix;        // 0x00
     struct numtx_s *scene_object; // 0x40
-    u32 unknown_44;               // 0x44
+    i32 motion_status;            // 0x44
     i16 terrain_group_index;      // 0x48
     i16 scene_object_index;       // 0x4a
 
@@ -647,12 +647,13 @@ typedef struct TERRAIN_PLATFORM { // size 0x6c
         };
     }; // 0x4c
 
-    u8 unknown_50[4];    // 0x50
-    f32 bounce_54;       // 0x54
-    f32 bounce_58;       // 0x58
-    f32 bounce_5c;       // 0x5c
-    f32 bounce_60;       // 0x60
-    f32 bounce_64;       // 0x64
+    i16 bounce_frames;   // 0x50
+    u8 pad_52[2];        // 0x52
+    f32 bounce_impulse;  // 0x54
+    f32 bounce_offset;   // 0x58
+    f32 bounce_velocity; // 0x5c
+    f32 bounce_spring;   // 0x60
+    f32 bounce_damping;  // 0x64
     u32 *instance_flags; // 0x68
 } TERRAIN_PLATFORM;
 
@@ -883,7 +884,7 @@ extern "C" {
         i32 particle_index;                             // 0x14
         f32 collision_time;                             // 0x18
         i16 effect_index;                               // 0x1c
-        i16 unknown_01e;                                // 0x1e
+        i16 frame;                                      // 0x1e
         i16 rotation_y;                                 // 0x20
         i16 unknown_022;                                // 0x22
         f32 collision_plane;                            // 0x24

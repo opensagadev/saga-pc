@@ -106,7 +106,7 @@ void ShaderCompilerBufferAllocator::WriteBytes(i32 offset, const void *source, i
     memcpy(data + offset, source, count);
 }
 
-void ShaderCompilerDictionary::fun_00748810(i32 stage) {
+void ShaderCompilerDictionary::SetOutputStage(i32 stage) {
     output_stage = stage;
 }
 

@@ -9,38 +9,9 @@
 #define _ov_header_fseek_wrap fun_00699020
 #include "vorbis/vorbisfile.h"
 #undef _ov_header_fseek_wrap
+#include "nu2api/oggreader.h"
 #include <stdio.h>
 #include "nu2api/nu3d/nushaderobject.h"
-
-#pragma pack(push, 4)
-
-class OggReader : public WavReader { // size 0x338
-  public:
-    OggReader(void);
-    virtual ~OggReader(void);
-    virtual HRESULT Open(NUDATHDR *, char *, WAVEFORMATEX *);
-    virtual HRESULT Unknown08(u32, u32);
-    virtual HRESULT Close(void);
-    virtual WAVEFORMATEX *GetFormat(void);
-    virtual i32 GetSize(void);
-    virtual HRESULT Reset(void);
-    virtual HRESULT Read(void *, u32, u32 *);
-    virtual i32 SeekTime(f32);
-    static u32 ReadCallback(void *, u32, u32, void *);
-    static i32 SeekCallback(void *, i64, i32);
-    static i32 CloseCallback(void *);
-    // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
-    static long TellCallback(void *);
-    u8 compressed;                  // 0x040
-    u8 unknown_041[7];              // 0x041
-    OggVorbis_File vorbis_state;    // 0x048
-    PC_OGG_CACHE_RECORD *cache;     // 0x318
-    i32 position;                   // 0x31c
-    WAVEFORMATEX compressed_format; // 0x320
-    u8 unknown_332[6];              // 0x332
-};
-
-#pragma pack(pop)
 
 extern "C" void NuSound3GetStreamInfo(i32 stream_index, void *info) {
 }
@@ -353,7 +324,7 @@ extern "C" i32 NuSoundGetStereoStreamStatus(i32 stream) {
 }
 
 void SoundQueue::CancelPause(void) {
-    if (this == NULL || unknown_03f4 == 0) {
+    if (this == NULL || stream_running == 0) {
         return;
     }
     EnterCriticalSection(&volume_lock);
@@ -362,7 +333,7 @@ void SoundQueue::CancelPause(void) {
         buffer->vtable->play(buffer, 0, 0, 1);
     }
     LeaveCriticalSection(&volume_lock);
-    unknown_03f4 = 0;
+    stream_running = 0;
     LeaveCriticalSection(&operation_lock);
 }
 
@@ -371,7 +342,7 @@ SoundQueue::~SoundQueue(void) {
         return;
     }
     if (active != 0) {
-        if (unknown_03f4 != 0) {
+        if (stream_running != 0) {
             CancelPause();
         }
         if (active != 0) {
@@ -616,19 +587,19 @@ DWORD SoundQueue::Run(void) {
                         pending_bytes = 0;
                         decoded_bytes = 0;
                         buffer_write_position = 0;
-                        unknown_0004 = -1;
+                        decoder_state = -1;
                         decoder->Close();
                         WAVEFORMATEX format;
                         if (SUCCEEDED(decoder->Open(NULL, current_path, &format))) {
                             if (wave_format.nSamplesPerSec != format.nSamplesPerSec || wave_format.nChannels != format.nChannels) {
                                 SetFormat(&format);
                             }
-                            unknown_0004 = 1;
+                            decoder_state = 1;
                         }
                         break;
                     }
                     case SOUNDQUEUE_CMD_PLAY:
-                        if ((i32)unknown_0004 < 0) {
+                        if ((i32)decoder_state < 0) {
                             if (timer_id != 0) {
                                 timeKillEvent(timer_id);
                             }
@@ -734,7 +705,7 @@ DWORD SoundQueue::Run(void) {
                     LeaveCriticalSection(&volume_lock);
                 }
             }
-        } else if (wait == WAIT_OBJECT_0 && (i32)unknown_0004 >= 0) {
+        } else if (wait == WAIT_OBJECT_0 && (i32)decoder_state >= 0) {
             FillBuffer((u32)(buffer_seconds * wave_format.nAvgBytesPerSec) >> 2, 0);
             if (pending_bytes > 0 && stream_state == SOUNDQUEUE_STATE_PLAYING) {
                 IDirectSoundBuffer *buffer = volume_sink;
@@ -849,9 +820,9 @@ SoundQueue::SoundQueue(IDirectSound8 *factory_value, i32 mode) {
     count = 0;
     read_index = 0;
     write_index = 0;
-    unknown_0004 = -1;
+    decoder_state = -1;
     loop_flags = 0;
-    unknown_03f4 = 0;
+    stream_running = 0;
     requested_volume = 0;
     applied_volume = 1;
     decoder = new OggReader;
@@ -886,7 +857,7 @@ void SoundQueue::SuspendForFocus(void) {
         buffer->vtable->stop(buffer);
     }
     LeaveCriticalSection(&volume_lock);
-    unknown_03f4 = 1;
+    stream_running = 1;
 }
 
 extern "C" void NuSound3SuspendForFocus(void) {

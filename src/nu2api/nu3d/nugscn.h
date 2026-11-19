@@ -67,7 +67,9 @@ typedef struct NUGSCN_s {                                      // size 0x20c
     struct nudisplay_list_s *display_list;                     // 0x110
     u32 unknown_0114[10];                                      // 0x114
     u8 *instance_visibility_flags;                             // 0x13c
-    u32 unknown_0140[10];                                      // 0x140
+    u32 unknown_0140[6];                                       // 0x140
+    i32 shader_texture_animation_enabled;                      // 0x158
+    u32 unknown_015c[3];                                       // 0x15c
     i32 character_version_selector;                            // 0x168
     u32 unknown_016c[0x19];                                    // 0x16c
     struct SCENE_FIXUP_NATIVE *native_scene;                   // 0x1d0

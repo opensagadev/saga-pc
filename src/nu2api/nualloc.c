@@ -47,9 +47,6 @@ extern u32 NuAllocHeaderMetadata[3];
 
 /* PC manager prefix and block header touched by the allocator. */
 
-void *NuAllocManagerAllocateAligned(NUALLOC_MANAGER_PREFIX *manager, u32 size, u32 alignment);
-void NuAllocManagerFree(NUALLOC_MANAGER_PREFIX *manager, void *memory);
-
 static NUALLOC_ARENA NuAllocArenaStorage;
 NUALLOC_RECORD *NuAllocRecordHead = 0;
 u32 NuAllocTrackedBytes = 0;

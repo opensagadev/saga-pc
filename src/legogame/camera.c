@@ -68,7 +68,6 @@ extern struct nuvec_s *shopcampos;
 extern f32 CamStopBlend;
 extern NUVEC GunshipAOffset;
 extern f32 PodCamDist;
-extern i32 movegamecamera_forcesock;
 extern i32 netcamera;
 extern f32 testmovef;
 extern f32 CamTitlesSplineEnd;
@@ -1301,7 +1300,7 @@ mode_selected:
             camera->target_mtx = camera->render_mtx;
         } else {
             NuMtxSetRotationZ(&camera->mtx, roll);
-            NuMtxRotateX(&camera->mtx, pitch + ((u16)(camera->unknown_214)));
+            NuMtxRotateX(&camera->mtx, pitch + ((u16)(camera->adjusted_pitch_offset)));
             NuMtxRotateY(&camera->mtx, yaw + ((u16)(camera->adjusted_yaw_offset)));
             NuMtxTranslate(&camera->mtx, &camera->position);
             camera->render_mtx = camera->mtx;

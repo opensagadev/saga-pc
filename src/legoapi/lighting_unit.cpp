@@ -258,7 +258,7 @@ extern "C" {
     }
 
     RTL_SET *rtlGetEnvSet(void) {
-        return (RTL_SET *)WORLD->rtl_set;
+        return WORLD->rtl_set;
     }
 
     void SetZeroLights(void) {
@@ -555,7 +555,7 @@ extern "C" void RenderShadowLights(i32 paused) {
         NuRndrBeginScene(1);
         currentScene.dyn_light_count = 1;
         currentScene.dyn_light_ptr = PCShadowCurrentLight;
-        currentScene.unknown_40 = 0;
+        currentScene.light_render_set = 0;
         if (WORLD->current_gscn != NULL) {
             PCShadowCurrentLight->RenderSceneShadow(WORLD->current_gscn);
         }
@@ -660,7 +660,7 @@ extern "C" void SetShadowLight(void) {
         WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_SUPER_BONUS) != 0 && (WORLD->current_level->flags & LEVEL_STATUS) == 0;
     if (CutStopInfo != NULL) {
         direction = WORLD->shadow_editor->direction;
-        secondary_strength = WORLD->shadow_editor->unknown_0c;
+        secondary_strength = WORLD->shadow_editor->secondary_strength;
         eye = center;
         eye.x -= ShadowLightEyeDistance * direction.x;
         eye.y -= ShadowLightEyeDistance * direction.y;
@@ -738,7 +738,7 @@ extern "C" void SetShadowLight(void) {
         ShadowLightSplitCount = 1;
         splits[1] = distance + (range - distance) * interpolation;
     }
-    f32 parameter = WORLD->shadow_editor->unknown_0c;
+    f32 parameter = WORLD->shadow_editor->secondary_strength;
     if (alternate) {
         parameter = secondary_strength;
     }

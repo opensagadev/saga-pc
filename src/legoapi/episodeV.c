@@ -1552,47 +1552,47 @@ void HothBattleE_Init(WORLDINFO *world) {
 
 i32 HothBattle_StartNewWave() {
     i32 type;
-    if (melee.unknown_2 != 0) {
-        switch (melee.unknown_1) {
+    if (melee.restart != 0) {
+        switch (melee.phase) {
             case 1:
                 melee.waves[0].character_id = dat_007f18b4;
-                melee.waves[0].unknown_18 = 11;
-                melee.waves[0].unknown_19 = 11;
+                melee.waves[0].creature_type_a = 11;
+                melee.waves[0].creature_type_b = 11;
                 NuStrCpy(melee.waves[0].name, "Probe");
                 melee.creature_count = 1;
                 break;
             case 2:
                 melee.waves[0].character_id = id_ATST_LOWRES;
-                melee.waves[0].unknown_18 = 11;
-                melee.waves[0].unknown_19 = 11;
+                melee.waves[0].creature_type_a = 11;
+                melee.waves[0].creature_type_b = 11;
                 NuStrCpy(melee.waves[0].name, "rider");
                 melee.creature_count = 1;
                 break;
             case 3:
                 melee.waves[0].character_id = id_ATAT;
-                melee.waves[0].unknown_18 = 2;
-                melee.waves[0].unknown_19 = 2;
+                melee.waves[0].creature_type_a = 2;
+                melee.waves[0].creature_type_b = 2;
                 NuStrCpy(melee.waves[0].name, "ATAT");
                 melee.creature_count = 1;
                 break;
             case 4:
                 melee.waves[0].character_id = dat_007f18b4;
-                melee.waves[0].unknown_18 = 4;
-                melee.waves[0].unknown_19 = 4;
+                melee.waves[0].creature_type_a = 4;
+                melee.waves[0].creature_type_b = 4;
                 NuStrCpy(melee.waves[0].name, "Probe");
                 melee.waves[1].character_id = id_ATST_LOWRES;
-                melee.waves[1].unknown_18 = 6;
-                melee.waves[1].unknown_19 = 6;
+                melee.waves[1].creature_type_a = 6;
+                melee.waves[1].creature_type_b = 6;
                 NuStrCpy(melee.waves[1].name, "rider");
                 melee.waves[2].character_id = id_ATAT;
-                melee.waves[2].unknown_18 = 1;
-                melee.waves[2].unknown_19 = 1;
+                melee.waves[2].creature_type_a = 1;
+                melee.waves[2].creature_type_b = 1;
                 NuStrCpy(melee.waves[2].name, "ATAT");
                 melee.creature_count = 3;
                 break;
         }
     }
-    melee.unknown_2 = 0;
+    melee.restart = 0;
     if (MiniCutCam != 0) {
         return 0;
     }

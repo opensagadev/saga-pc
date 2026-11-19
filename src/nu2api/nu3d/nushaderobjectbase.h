@@ -41,6 +41,7 @@ extern "C" {
 #endif
     void PCShaderObjectCreateHLSLPc(NuShaderObject *);
     void PCShaderObjectDestroyHLSLPc(NuShaderObject *);
+    void NuShaderObjectBaseUpdateWaterTable(NuShaderObject *shader, struct PC_SHADER_WATER_MATERIAL_VIEW *material);
 #ifdef __cplusplus
 }
 #endif

@@ -25,7 +25,7 @@ typedef struct nubridge_s {      // size 0xb0c
     u8 in_range;                 // 0xae4
     u8 was_drawn;                // 0xae5
     i8 platform_count;           // 0xae6
-    u8 unknown_ae7;              // 0xae7
+    u8 special_spacing;          // 0xae7
     u32 colour;                  // 0xae8
     u16 contact_frames;          // 0xaec
     i16 rotation_y;              // 0xaee
@@ -34,8 +34,8 @@ typedef struct nubridge_s {      // size 0xb0c
     f32 gravity;                 // 0xaf8
     f32 damping;                 // 0xafc
     f32 load_multiplier;         // 0xb00
-    f32 unknown_b04;             // 0xb04
-    f32 unknown_b08;             // 0xb08
+    f32 half_width;              // 0xb04
+    f32 height_offset;           // 0xb08
 } NUBRIDGE;
 
 #ifdef __cplusplus

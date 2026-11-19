@@ -334,8 +334,8 @@ extern "C" {
         RTL_FOG_MIGRATION *previous = (RTL_FOG_MIGRATION *)GameFogSet;
         RTL_FOG_MIGRATION *fog;
         f32 blend;
-        if (world->rtl_set != NULL && !(CUTSTOPGAME != 0 && CutStopInfo != NULL && (((CUTINFO *)CutStopInfo)->flags & 4) != 0)) {
-            fog = rtlGetFogSet((RTL_SET *)world->rtl_set, &pNuCam->mtx.translation);
+        if (world->rtl_set != NULL && !(CUTSTOPGAME != 0 && CutStopInfo != NULL && (CutStopInfo->flags & CUTINFO_NO_FOG) != 0)) {
+            fog = rtlGetFogSet(world->rtl_set, &pNuCam->mtx.translation);
         } else {
             fog = NULL;
         }
@@ -433,7 +433,7 @@ extern "C" {
 }
 
 extern "C" void GameDisplaySettings(LEVEL_DISPLAY *display, i32 *colours) {
-    CUTINFO *cut = (CUTINFO *)CutStopInfo;
+    CUTINFO *cut = CutStopInfo;
     i32 top_r;
     i32 top_g;
     i32 top_b;
@@ -447,7 +447,7 @@ extern "C" void GameDisplaySettings(LEVEL_DISPLAY *display, i32 *colours) {
     } else {
         pNuCam->near_clip = display->near_clip;
     }
-    cut = (CUTINFO *)CutStopInfo;
+    cut = CutStopInfo;
     if (cut != NULL && cut->camera_far_clip != 0) {
         pNuCam->far_clip = (f32)cut->camera_far_clip;
     } else {

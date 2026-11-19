@@ -4,8 +4,8 @@
 
 #include "gamelib/util/CRC16.h"
 #include "gamelib/util/gamelib_util_types.h"
+#include "nu2api/nu3d/numtl.h"
 
-struct PC_SHADER_FILTER_DESC_VIEW;
 struct PC_SHADER_MATERIAL_FILTER_VIEW;
 
 #ifdef __cplusplus
@@ -32,7 +32,7 @@ class ShaderBuilderGen { // size 0xbd0
     virtual void SetSaveDirectory(const char *);
     virtual void SetProfile(i32, i32, i32);
     virtual void SetForceMode(bool);
-    virtual void Prepare(const struct PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionary *);
+    virtual void Prepare(const NUSHADERMTLDESC *, ShaderCompilerDictionary *);
     virtual void Configure(struct PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionary *);
     bool LoadSource(const char *, i32);
     void *ParseSource(const char *, i32, ShaderCompilerBufferAllocator *, i32, VirtualStackAllocator *);
@@ -42,8 +42,8 @@ class ShaderBuilderGen { // size 0xbd0
     i32 CompileEffect(const char *source, i32 length, void *output, i32 unused);
     void Generate(struct PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerBufferAllocator *, ShaderCompilerBufferAllocator *);
     void fun_00745270(const char *name, i32 count);
-    bool fun_00745290();
-    i32 fun_007452a0();
+    bool GetDictionaryForceMode();
+    i32 GetDictionaryProfile();
 };
 
 typedef ShaderBuilderGen ShaderCompilerBase;
@@ -55,7 +55,7 @@ class HLSLShaderBuilder : public ShaderBuilderGen { // size 0xbd0
     virtual ~HLSLShaderBuilder() {
     }
 
-    virtual void Prepare(const struct PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionary *);
+    virtual void Prepare(const NUSHADERMTLDESC *, ShaderCompilerDictionary *);
     virtual void Configure(struct PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionary *);
 };
 

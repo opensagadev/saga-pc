@@ -26,6 +26,17 @@ PC_VERTEX_DECL_ENTRY *PCVertexDeclarationFindSlot(const PC_VERTEX_DECL_ENTRY *ke
 i32 PCVertexDeclarationCountPC = 0;
 PC_VERTEX_DECL_ENTRY PCVertexDeclarationCachePC[256] = {0};
 
+// Fills one vertex element of stream 0 at the given byte offset; returns the offset after it.
+static __forceinline i32 PCVertexElementSet(PC_VERTEX_ELEMENT *element, i32 offset, u8 type, u8 usage, u8 usage_index, i32 byte_count) {
+    element->stream = 0;
+    element->offset = (u16)offset;
+    element->type = type;
+    element->method = 0;
+    element->usage = usage;
+    element->usage_index = usage_index;
+    return offset + byte_count;
+}
+
 PC_TEXTURE_RESOURCE *NuGetVertexDeclaration(u32 descriptor) {
     PC_VERTEX_DECL_ENTRY key;
     PC_VERTEX_DECL_ENTRY *record;
@@ -84,22 +95,13 @@ PC_TEXTURE_RESOURCE *NuGetVertexDeclaration(u32 descriptor) {
         instanced = (descriptor >> 22) & 1;
         offset = 0;
         element_count = 0;
-#define VERTEX_ELEMENT(type_value, usage_value, index_value, byte_count)                                                                   \
-    elements[element_count].stream = 0;                                                                                                    \
-    elements[element_count].offset = (u16)offset;                                                                                          \
-    elements[element_count].type = type_value;                                                                                             \
-    elements[element_count].method = 0;                                                                                                    \
-    elements[element_count].usage = usage_value;                                                                                           \
-    elements[element_count].usage_index = index_value;                                                                                     \
-    ++element_count;                                                                                                                       \
-    offset += byte_count
-        VERTEX_ELEMENT(D3DDECLTYPE_FLOAT3, D3DDECLUSAGE_POSITION, 0, 12);
+        offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_FLOAT3, D3DDECLUSAGE_POSITION, 0, 12);
         switch (normal) {
             case 1:
-                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT3, D3DDECLUSAGE_NORMAL, 0, 12);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_FLOAT3, D3DDECLUSAGE_NORMAL, 0, 12);
                 break;
             case 2:
-                VERTEX_ELEMENT(D3DDECLTYPE_UBYTE4N, D3DDECLUSAGE_NORMAL, 0, 4);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_UBYTE4N, D3DDECLUSAGE_NORMAL, 0, 4);
                 if (PCDeviceHardwareVertexProcessingPC <= 1) {
                     elements[element_count - 1].type = D3DDECLTYPE_D3DCOLOR;
                 }
@@ -107,10 +109,10 @@ PC_TEXTURE_RESOURCE *NuGetVertexDeclaration(u32 descriptor) {
         }
         switch (tangent) {
             case 1:
-                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT3, D3DDECLUSAGE_TANGENT, 0, 12);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_FLOAT3, D3DDECLUSAGE_TANGENT, 0, 12);
                 break;
             case 2:
-                VERTEX_ELEMENT(D3DDECLTYPE_UBYTE4N, D3DDECLUSAGE_TANGENT, 0, 4);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_UBYTE4N, D3DDECLUSAGE_TANGENT, 0, 4);
                 if (PCDeviceHardwareVertexProcessingPC <= 1) {
                     elements[element_count - 1].type = D3DDECLTYPE_D3DCOLOR;
                 }
@@ -118,59 +120,59 @@ PC_TEXTURE_RESOURCE *NuGetVertexDeclaration(u32 descriptor) {
         }
         switch (binormal) {
             case 1:
-                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT3, D3DDECLUSAGE_TANGENT, 1, 12);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_FLOAT3, D3DDECLUSAGE_TANGENT, 1, 12);
                 break;
             case 2:
-                VERTEX_ELEMENT(D3DDECLTYPE_UBYTE4N, D3DDECLUSAGE_TANGENT, 1, 4);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_UBYTE4N, D3DDECLUSAGE_TANGENT, 1, 4);
                 if (PCDeviceHardwareVertexProcessingPC <= 1) {
                     elements[element_count - 1].type = D3DDECLTYPE_D3DCOLOR;
                 }
                 break;
         }
         if (diffuse) {
-            VERTEX_ELEMENT(D3DDECLTYPE_D3DCOLOR, D3DDECLUSAGE_COLOR, 0, 4);
+            offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_D3DCOLOR, D3DDECLUSAGE_COLOR, 0, 4);
         }
         if (specular) {
-            VERTEX_ELEMENT(D3DDECLTYPE_D3DCOLOR, D3DDECLUSAGE_COLOR, 1, 4);
+            offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_D3DCOLOR, D3DDECLUSAGE_COLOR, 1, 4);
         }
         switch (texture_mode) {
             case 1:
-                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT2, D3DDECLUSAGE_TEXCOORD, 0, 8);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_FLOAT2, D3DDECLUSAGE_TEXCOORD, 0, 8);
                 break;
             case 2:
-                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT4, D3DDECLUSAGE_TEXCOORD, 0, 16);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_FLOAT4, D3DDECLUSAGE_TEXCOORD, 0, 16);
                 break;
             case 3:
-                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT4, D3DDECLUSAGE_TEXCOORD, 0, 16);
-                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT2, D3DDECLUSAGE_TEXCOORD, 1, 8);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_FLOAT4, D3DDECLUSAGE_TEXCOORD, 0, 16);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_FLOAT2, D3DDECLUSAGE_TEXCOORD, 1, 8);
                 break;
             case 4:
-                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT4, D3DDECLUSAGE_TEXCOORD, 0, 16);
-                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT4, D3DDECLUSAGE_TEXCOORD, 1, 16);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_FLOAT4, D3DDECLUSAGE_TEXCOORD, 0, 16);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_FLOAT4, D3DDECLUSAGE_TEXCOORD, 1, 16);
                 break;
         }
         switch (half_texture_mode) {
             case 1:
-                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT16_2, D3DDECLUSAGE_TEXCOORD, 0, 4);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_FLOAT16_2, D3DDECLUSAGE_TEXCOORD, 0, 4);
                 break;
             case 2:
-                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT16_4, D3DDECLUSAGE_TEXCOORD, 0, 8);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_FLOAT16_4, D3DDECLUSAGE_TEXCOORD, 0, 8);
                 break;
             case 3:
-                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT16_4, D3DDECLUSAGE_TEXCOORD, 0, 8);
-                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT16_2, D3DDECLUSAGE_TEXCOORD, 1, 4);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_FLOAT16_4, D3DDECLUSAGE_TEXCOORD, 0, 8);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_FLOAT16_2, D3DDECLUSAGE_TEXCOORD, 1, 4);
                 break;
             case 4:
-                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT16_4, D3DDECLUSAGE_TEXCOORD, 0, 8);
-                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT16_4, D3DDECLUSAGE_TEXCOORD, 1, 8);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_FLOAT16_4, D3DDECLUSAGE_TEXCOORD, 0, 8);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_FLOAT16_4, D3DDECLUSAGE_TEXCOORD, 1, 8);
                 break;
         }
         switch (weights) {
             case 1:
-                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT2, D3DDECLUSAGE_BLENDWEIGHT, 0, 8);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_FLOAT2, D3DDECLUSAGE_BLENDWEIGHT, 0, 8);
                 break;
             case 2:
-                VERTEX_ELEMENT(D3DDECLTYPE_UBYTE4N, D3DDECLUSAGE_BLENDWEIGHT, 0, 4);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_UBYTE4N, D3DDECLUSAGE_BLENDWEIGHT, 0, 4);
                 if (PCDeviceHardwareVertexProcessingPC <= 1) {
                     elements[element_count - 1].type = D3DDECLTYPE_D3DCOLOR;
                 }
@@ -178,21 +180,21 @@ PC_TEXTURE_RESOURCE *NuGetVertexDeclaration(u32 descriptor) {
         }
         switch (colour2) {
             case 1:
-                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT3, D3DDECLUSAGE_BLENDINDICES, 0, 12);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_FLOAT3, D3DDECLUSAGE_BLENDINDICES, 0, 12);
                 break;
             case 2:
-                VERTEX_ELEMENT(D3DDECLTYPE_UBYTE4, D3DDECLUSAGE_BLENDINDICES, 0, 4);
+                offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_UBYTE4, D3DDECLUSAGE_BLENDINDICES, 0, 4);
                 if (PCDeviceHardwareVertexProcessingPC <= 1) {
                     elements[element_count - 1].type = D3DDECLTYPE_D3DCOLOR;
                 }
                 break;
         }
         if (skinned) {
-            VERTEX_ELEMENT(D3DDECLTYPE_UBYTE4N, D3DDECLUSAGE_TEXCOORD, 6, 4);
+            offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_UBYTE4N, D3DDECLUSAGE_TEXCOORD, 6, 4);
             if (PCDeviceHardwareVertexProcessingPC <= 1) {
                 elements[element_count - 1].type = D3DDECLTYPE_D3DCOLOR;
             }
-            VERTEX_ELEMENT(D3DDECLTYPE_D3DCOLOR, D3DDECLUSAGE_TEXCOORD, 7, 0);
+            offset = PCVertexElementSet(&elements[element_count++], offset, D3DDECLTYPE_D3DCOLOR, D3DDECLUSAGE_TEXCOORD, 7, 0);
         }
         if (instanced) {
             elements[element_count].stream = 1;
@@ -213,5 +215,4 @@ PC_TEXTURE_RESOURCE *NuGetVertexDeclaration(u32 descriptor) {
         PCDeviceCreateVertexDeclaration(elements, &record->resource);
     }
     return record->resource;
-#undef VERTEX_ELEMENT
 }

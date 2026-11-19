@@ -2,6 +2,9 @@
 
 #include "nu2api/nucore/common.h"
 
+typedef void (*NUDEBUGMSGFUNCTION)(char *, ...);
+typedef void (*NUONLINEACHIEVEMENTCALLBACK)(i32, i32);
+
 #ifdef __cplusplus
 extern "C" {
 #endif

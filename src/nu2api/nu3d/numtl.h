@@ -26,7 +26,7 @@ typedef struct nushadermtldesc_s { // size 0x208
     u8 unknown_028[0xc];           // 0x028
     i32 lightmap_tids[2];          // 0x034
     u8 unknown_03c[0x8];           // 0x03c
-    u8 colour[3];                  // 0x044
+    u8 blend_ops[3];               // 0x044 per-layer combine ops (0xff: layer off)
     u8 unknown_047;                // 0x047
     i32 specular_map_tid;          // 0x048
     i32 normal_map_tid;            // 0x04c
@@ -34,9 +34,12 @@ typedef struct nushadermtldesc_s { // size 0x208
     i32 shine_map_tid;             // 0x054
     i32 vtf_height_map_tid;        // 0x058
     i32 vtf_normal_map_tid;        // 0x05c
-    u8 unknown_060[0x48];          // 0x060
+    u8 unknown_060[0x28];          // 0x060
+    f32 shininess;                 // 0x088
+    u8 unknown_08c[0x1c];          // 0x08c
     u8 texture_unit_count;         // 0x0a8
-    u8 unknown_0a9[0x63];          // 0x0a9
+    u8 sampler_indices[6];         // 0x0a9
+    u8 unknown_0af[0x5d];          // 0x0af
     i32 animation_ids[4];          // 0x10c -1: layer not animated
     f32 animation_offsets[4][2];   // 0x11c
     u32 vertex_format;             // 0x13c
@@ -48,7 +51,8 @@ typedef struct nushadermtldesc_s { // size 0x208
     u8 shadow_set;                 // 0x1b4
     u8 unknown_1b5[3];             // 0x1b5
     u32 layer_flags;               // 0x1b8 PC_SHADER_LAYER_*
-    u8 unknown_1bc[0x28];          // 0x1bc
+    u32 selectors;                 // 0x1bc
+    u8 unknown_1c0[0x24];          // 0x1c0
     i32 extra_texture;             // 0x1e4
     i32 environment_texture;       // 0x1e8
     u8 unknown_1ec[0x1c];          // 0x1ec
@@ -101,9 +105,11 @@ typedef struct numtl_s { // size 0x2c4
     union { // size 0x2
         u16 flags;
 
-        struct {             // size 0x2
-            i16 : 2;         // 0x000:0
-            i16 flag_04 : 1; // 0x000:2
+        struct {                // size 0x2
+            i16 : 2;            // 0x000:0
+            i16 flag_04 : 1;    // 0x000:2
+            i16 : 1;            // 0x000:3
+            i16 sort_layer : 8; // 0x000:4 major display sort key
         };
     }; // 0x000
 
@@ -131,7 +137,7 @@ typedef struct numtl_s { // size 0x2c4
     f32 diffuse_r;                                  // 0x054
     f32 diffuse_g;                                  // 0x058
     f32 diffuse_b;                                  // 0x05c
-    u8 unknown_060[0x4];                            // 0x060
+    f32 transform_scale;                            // 0x060
     f32 effect_scale;                               // 0x064
     u8 unknown_068[0x8];                            // 0x068
     f32 opacity;                                    // 0x070
@@ -144,7 +150,7 @@ typedef struct numtl_s { // size 0x2c4
     f32 delta_u;                                    // 0x080
     f32 delta_v;                                    // 0x084
     u8 unknown_088[0x11];                           // 0x088
-    i8 particle_type_tag;                           // 0x099
+    u8 material_kind;                               // 0x099 0x97 glass, 0x90 streak, 0x81/0x85 transformed
     u8 override_slot;                               // 0x09a
     u8 unknown_09b[0x19];                           // 0x09b
     NUSHADERMTLDESC shader;                         // 0x0b4

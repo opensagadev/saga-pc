@@ -60,7 +60,7 @@ static void SockParMidRangeOuter(NUFPAR *parser, void *context) {
 }
 
 static void SockParMidforceYscale(NUFPAR *parser, void *context) {
-    sockpar_sock->unknown_7c = NuFParGetFloat(parser);
+    sockpar_sock->look_scale = NuFParGetFloat(parser);
 }
 
 static void SockParMidforce(NUFPAR *parser, void *context) {
@@ -82,7 +82,7 @@ static void SockParMidForceDown(NUFPAR *parser, void *context) {
 }
 
 static void SockParMidForceYScale(NUFPAR *parser, void *context) {
-    sockpar_sock->unknown_7c = NuFParGetFloat(parser);
+    sockpar_sock->look_scale = NuFParGetFloat(parser);
 }
 
 static void SockParCamScaleLateral(NUFPAR *parser, void *context) {
@@ -94,8 +94,8 @@ static void SockParCamLookRatio(NUFPAR *parser, void *context) {
     if (ratio < 0.0f) {
         ratio = 0.0f;
     }
-    sockpar_sock->unknown_80 = ratio;
-    sockpar_sock->unknown_84 = ratio;
+    sockpar_sock->look_width = ratio;
+    sockpar_sock->look_height = ratio;
     sockpar_sock->look_ratio_xz = ratio;
     sockpar_sock->look_ratio_y = ratio;
 }
@@ -105,7 +105,7 @@ static void SockParCamLockRatioY(NUFPAR *parser, void *context) {
     if (ratio < 0.0f) {
         ratio = 0.0f;
     }
-    sockpar_sock->unknown_84 = ratio;
+    sockpar_sock->look_height = ratio;
     sockpar_sock->look_ratio_y = ratio;
 }
 
@@ -517,9 +517,9 @@ void SockSysFindInScene(SOCKSYS *sock_sys, NUGSCN *gscn) {
             if (sock->cam != NULL) {
                 continue;
             }
-            sock->unknown_7c = 1.0f;
-            sock->unknown_80 = 1.0f;
-            sock->unknown_84 = 1.0f;
+            sock->look_scale = 1.0f;
+            sock->look_width = 1.0f;
+            sock->look_height = 1.0f;
             sock->look_ratio_xz = 1.0f;
             sock->look_ratio_y = 1.0f;
             sock->camera_position_seek = 5.0f;
@@ -915,13 +915,13 @@ void SockSys_GenerateData(SOCKSYS *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
         }
 
         if (sock->mid != NULL) {
-            sock->loop_length = SockSplineLength(sock->mid, sock->unknown_33);
+            sock->loop_length = SockSplineLength(sock->mid, sock->looped);
         } else {
             i32 segment_count;
 
             sock->loop_length = 0.0f;
             segment_count = sock->length;
-            if (sock->unknown_33 != 0) {
+            if (sock->looped != 0) {
                 ++segment_count;
             }
             for (segment_index = 0; segment_index < segment_count; ++segment_index) {
@@ -960,11 +960,11 @@ void SockSys_GenerateData(SOCKSYS *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
                 SetSockBit(sock, other_index);
             } else {
                 segment_count = sock->length;
-                if (sock->unknown_33 != 0) {
+                if (sock->looped != 0) {
                     ++segment_count;
                 }
                 other_segment_count = other->length;
-                if (other->unknown_33 != 0) {
+                if (other->looped != 0) {
                     ++other_segment_count;
                 }
                 for (segment = 0; segment < segment_count; ++segment) {
@@ -1118,7 +1118,7 @@ static void FillSockPosition(SOCKSYS *sock_sys, SOCKPOSITION *position) {
     position->midpoint_rotation.y = (u16)((f32)delta * position->ratio + sock->mid_rotations[segment].y);
 
     position->distance = (f32)position->segment + position->ratio;
-    position->normalized_distance = position->distance / (f32)(sock->unknown_33 != 0 ? sock->length + 1 : sock->length);
+    position->normalized_distance = position->distance / (f32)(sock->looped != 0 ? sock->length + 1 : sock->length);
 }
 
 static f32 BestSockPosition(SOCKSYS *sock_sys, NUVEC *point, SOCKPOSITION *result, i32 sock_index, i32 prior_segment) {
@@ -1464,7 +1464,7 @@ void MoveSockPosition(SOCKSYS *system, SOCKPOSITION *source, f32 distance, SOCKP
 
     sock = &system->socks[result->sock_index];
     point = &result->midpoint;
-    if (sock->unknown_33 != 0) {
+    if (sock->looped != 0) {
         length = sock->length + 1;
     } else {
         length = sock->length;
@@ -1474,7 +1474,7 @@ void MoveSockPosition(SOCKSYS *system, SOCKPOSITION *source, f32 distance, SOCKP
         f32 remaining;
 
         result->next_segment = (i16)(result->segment + 1);
-        if (result->next_segment == length && sock->unknown_33 != 0) {
+        if (result->next_segment == length && sock->looped != 0) {
             result->next_segment = 0;
         }
         if (sock->mid != NULL) {
@@ -1491,7 +1491,7 @@ void MoveSockPosition(SOCKSYS *system, SOCKPOSITION *source, f32 distance, SOCKP
             result->ratio = 0.0f;
             distance -= remaining;
             if (direction == 1) {
-                if (sock->unknown_33 != 0) {
+                if (sock->looped != 0) {
                     ++result->segment;
                     if (result->segment == length) {
                         result->segment = 0;
@@ -1503,7 +1503,7 @@ void MoveSockPosition(SOCKSYS *system, SOCKPOSITION *source, f32 distance, SOCKP
                     ++result->segment;
                 }
             } else {
-                if (sock->unknown_33 != 0) {
+                if (sock->looped != 0) {
                     --result->segment;
                     if (result->segment == -1) {
                         result->segment = sock->length;
@@ -1677,10 +1677,10 @@ void SockRotationMatrix(SOCKSYS *system, SOCKPOSITION *position, NUMTX *out, i32
             sock->camera_vertical_ratio = sock->camera_lateral_ratio + (1.0f - sock->camera_lateral_ratio) * (1.0f - 1.0f / height);
         }
         if (width > 1.0f) {
-            sock->look_ratio_xz = sock->unknown_80 / width;
+            sock->look_ratio_xz = sock->look_width / width;
         }
         if (height > 1.0f) {
-            sock->look_ratio_y = sock->unknown_84 / height;
+            sock->look_ratio_y = sock->look_height / height;
         }
     } else {
         sock->camera_vertical_ratio = sock->camera_lateral_ratio;
@@ -1753,7 +1753,7 @@ void SetSockPostion(SOCKSYS *system, SOCKPOSITION *position, i32 index, i32 segm
         return;
     }
     sock = &system->socks[index];
-    if (sock->unknown_33 != 0) {
+    if (sock->looped != 0) {
         length = sock->length + 1;
         if (segment > length) {
             segment = 0;
@@ -1776,7 +1776,7 @@ void SetSockPostion(SOCKSYS *system, SOCKPOSITION *position, i32 index, i32 segm
     position->segment = (i16)segment;
     position->ratio = fraction;
     position->next_segment = (i16)(segment + 1);
-    if (position->next_segment == length && sock->unknown_33 != 0) {
+    if (position->next_segment == length && sock->looped != 0) {
         position->next_segment = 0;
     }
     position->candidate_count = 1;

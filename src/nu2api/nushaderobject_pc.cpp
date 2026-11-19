@@ -22,8 +22,7 @@
 #include "nu2api/nuwin32/d3dApiCalls.h"
 #include "nu2api/nuwin32/d3dCalls.h"
 #include "nu2api/nuwin32/d3dCore.h"
-
-extern "C" void NuShaderObjectBaseUpdateWaterTable(NuShaderObject *shader, PC_SHADER_WATER_MATERIAL_VIEW *material);
+#include "nu2api/nu3d/nushaderobjectbase.h"
 
 void PCShaderNativeUnInit(NuShaderObject *shader) {
     if (shader->vertex_shader != NULL) {
@@ -174,15 +173,15 @@ void PC_SHADER_PARAMETER_LOCAL::SetMatrixValues(i32 first_element, i32 count, co
     }
 }
 
-i32 PC_SHADER_PARAMETER_LOCAL::fun_00742180() {
+i32 PC_SHADER_PARAMETER_LOCAL::GetRegisterIndex() {
     return register_index;
 }
 
-PC_SHADER_PARAMETER_LOCAL *PC_SHADER_PARAMETER_LOCAL::fun_00742190() {
+PC_SHADER_PARAMETER_LOCAL *PC_SHADER_PARAMETER_LOCAL::GetNext() {
     return next;
 }
 
-void PC_SHADER_PARAMETER_LOCAL::fun_007421a0(PC_SHADER_PARAMETER_LOCAL *parameter) {
+void PC_SHADER_PARAMETER_LOCAL::SetNext(PC_SHADER_PARAMETER_LOCAL *parameter) {
     next = parameter;
 }
 
@@ -924,7 +923,7 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
         }
         if (shader->version != 4) {
             ShaderUniformRecord *uniform = &ShaderUniformRecords[semantic];
-            if (uniform->unknown_18 != 0) {
+            if (uniform->binding_scope != 0) {
                 switch ((i32)(parameter->metadata << 4) >> 28) {
                     case 1:
                         parameter->SetValues(0, 1, uniform->values);

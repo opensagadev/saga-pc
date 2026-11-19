@@ -140,4 +140,6 @@ extern "C" {
     void NuFmvStopSound(i32);
     IDirectSound8 *NuFmvGetSoundFactory(void);
     extern void (*FmvDrawCallback)(void);
+    void NuFmvTextureRelease(void);
+    void NuFmvTextureRestore(void);
 }
