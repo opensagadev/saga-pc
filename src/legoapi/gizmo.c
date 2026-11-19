@@ -419,7 +419,7 @@ GIZMO *AddGizmo(void *system_ptr, i32 type_id, char *name, void *object) {
     if (object != NULL) {
         gizmo->object = object;
     }
-    gizmo->unknown_04 = 0;
+    gizmo->user_index = 0;
     gizmo->type_id = (u8)type_id;
     ++set->count;
     return gizmo;

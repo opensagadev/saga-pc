@@ -23,12 +23,12 @@
 #include "nu2api/numath/nuvec.h"
 
 typedef struct CAMERA_JUDDER_FIELDS { // size 0x128
-    u8 unknown_000[0x11c];            // 0x000
+    u8 reserved_00[0x11c];            // 0x000
     NUVEC position;                   // 0x11c
 } CAMERA_JUDDER_FIELDS;
 
 typedef struct LEVEL_JUDDER_FIELDS { // size 0xce
-    u8 unknown_000[0xcd];            // 0x00
+    u8 reserved_00[0xcd];            // 0x00
     u8 maximum_distance;             // 0xcd
 } LEVEL_JUDDER_FIELDS;
 
@@ -350,7 +350,7 @@ void GameCam_Reset(GAMECAMERA *camera) {
     MiniCutCam = 0;
     camera->position_seek = (f32)WORLD->current_level->cam_pos_seek;
     camera->angle_seek = (f32)WORLD->current_level->cam_angle_seek;
-    camera->unknown_1b8 = 0;
+    camera->seek_override = 0;
     camera->pullback_target = camera->pullback = 0.0f;
     camera->lateral_target = camera->lateral = 0.0f;
     camera->adjusted_yaw_offset = camera->adjusted_pitch_offset = 0.0f;

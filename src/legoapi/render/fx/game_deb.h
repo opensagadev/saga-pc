@@ -21,7 +21,7 @@ typedef struct BURN_PARAMETERS { // size 0x54
     f32 end_angle;               // 0x0c
     f32 max_intensity;           // 0x10
     f32 intensity;               // 0x14
-    i32 unknown_18;              // 0x18
+    i32 intensity_mode;              // 0x18
     f32 dispersion;              // 0x1c
     f32 fragment_glow;           // 0x20
     f32 threshold;               // 0x24
@@ -34,8 +34,8 @@ typedef struct BURN_PARAMETERS { // size 0x54
     f32 source_outer_radius;     // 0x40
     f32 source_outer_intensity;  // 0x44
     f32 source_falloff_power;    // 0x48
-    f32 unknown_4c;              // 0x4c
-    f32 unknown_50;              // 0x50
+    f32 source_fade_start;              // 0x4c
+    f32 source_fade_end;              // 0x50
 } BURN_PARAMETERS;
 
 #ifdef __cplusplus

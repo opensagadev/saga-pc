@@ -6045,11 +6045,11 @@ extern "C" void NuOcclusionManagerSetEnabled(i32 enabled) {
 }
 
 extern "C" void NuOcclusionManagerSetOccluderDotProductThreshold(f32 threshold) {
-    g_OcclusionManager.unknown_158 = threshold;
+    g_OcclusionManager.occluder_dot_threshold = threshold;
 }
 
 extern "C" void NuOcclusionManagerSetOccluderScreenSpaceThreshold(f32 threshold) {
-    g_OcclusionManager.unknown_15c = threshold;
+    g_OcclusionManager.occluder_screen_threshold = threshold;
 }
 
 /* Original legoapi/render/light/occlusion.cpp family; public material APIs
@@ -6100,10 +6100,10 @@ void OcclusionManager::Init(u32 capacity, VARIPTR *buffer, VARIPTR buffer_end) {
     if (capacity != 0) {
         sets[0].Init(capacity, buffer, buffer_end);
         sets[1].Init(capacity, buffer, buffer_end);
-        unknown_158 = 0.3f;
+        occluder_dot_threshold = 0.3f;
         building_set = &sets[0];
         current_set = &sets[1];
-        unknown_15c = -1.0f;
+        occluder_screen_threshold = -1.0f;
         initialized = true;
         enabled = true;
     }
@@ -6212,7 +6212,7 @@ extern "C" {
 }
 
 OcclusionManager::OcclusionManager()
-    : initialized(false), enabled(true), building_set(NULL), current_set(NULL), unknown_158(0.3f), unknown_15c(-1.0f) {
+    : initialized(false), enabled(true), building_set(NULL), current_set(NULL), occluder_dot_threshold(0.3f), occluder_screen_threshold(-1.0f) {
 }
 
 OcclusionManager g_OcclusionManager;
@@ -6275,18 +6275,18 @@ void OcclusionManager::AddOccluder(const NUVEC *a, const NUVEC *b, const NUVEC *
     if (!initialized || !enabled || building_set->count >= building_set->capacity) {
         return;
     }
-    if (unknown_158 > 0.0f || unknown_15c > 0.0f) {
+    if (occluder_dot_threshold > 0.0f || occluder_screen_threshold > 0.0f) {
         __declspec(align(16)) NUVEC4 projected[4];
         NuVec4MtxTransform(&projected[0], a, &vpmtx);
         NuVec4MtxTransform(&projected[1], b, &vpmtx);
         NuVec4MtxTransform(&projected[2], c, &vpmtx);
-        if (unknown_158 > 0.0f) {
+        if (occluder_dot_threshold > 0.0f) {
             NUVEC normal;
             OccluderCross(&normal, projected[1] - projected[0], projected[2] - projected[0]);
             NuVecNorm(&normal, &normal);
             f32 z = normal.z;
             u32 bits = *reinterpret_cast<u32 *>(&z) & 0x7fffffff;
-            if (*reinterpret_cast<f32 *>(&bits) < unknown_158) {
+            if (*reinterpret_cast<f32 *>(&bits) < occluder_dot_threshold) {
                 return;
             }
         }
@@ -6319,9 +6319,9 @@ void OcclusionManager::AddOccluder(const NUVEC *a, const NUVEC *b, const NUVEC *
                 min_depth = projected[i].w;
             }
         }
-        if (unknown_15c > 0.0f) {
+        if (occluder_screen_threshold > 0.0f) {
             f32 area = (max_y - min_y) * (max_x - min_x);
-            if (area * 0.25 < unknown_15c) {
+            if (area * 0.25 < occluder_screen_threshold) {
                 return;
             }
         }
@@ -13138,11 +13138,11 @@ bool OcclusionManager::fun_005c5290() {
 }
 
 void OcclusionManager::fun_005c52b0(f32 threshold) {
-    unknown_158 = threshold;
+    occluder_dot_threshold = threshold;
 }
 
 void OcclusionManager::fun_005c52c0(f32 threshold) {
-    unknown_15c = threshold;
+    occluder_screen_threshold = threshold;
 }
 
 OccluderSet *OcclusionManager::GetCurrentSet() {
@@ -17065,7 +17065,7 @@ extern "C" {
         currentScene.burnout_flare = flare;
         currentScene.burnout_threshold = threshold;
         currentScene.burnout_parameters.enabled = 1;
-        currentScene.burnout_parameters.unknown_18 = 0;
+        currentScene.burnout_parameters.intensity_mode = 0;
         currentScene.burnout_parameters.source_available = 0;
         currentScene.burnout_parameters.start_angle = 0.0f;
         currentScene.burnout_parameters.min_intensity = 0.0f;

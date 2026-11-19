@@ -46,15 +46,15 @@ static void *Shadow_ReserveBufferSpace(void *world_ptr) {
     world->shadow_editor->direction.y = -10.0f;
     world->shadow_editor->direction.z = -2.0f;
     world->shadow_editor->secondary_strength = 0.3f;
-    world->shadow_editor->unknown_10 = 2.0f;
-    world->shadow_editor->unknown_14 = 0.5f;
+    world->shadow_editor->secondary_spread = 2.0f;
+    world->shadow_editor->secondary_falloff = 0.5f;
     world->shadow_editor->shadow_bias = 0.0005f;
-    world->shadow_editor->unknown_1c = 0.01f;
-    world->shadow_editor->unknown_20 = 22.0f;
+    world->shadow_editor->shadow_softness = 0.01f;
+    world->shadow_editor->shadow_distance = 22.0f;
     world->shadow_editor->coefficient_0 = 0.5f;
     world->shadow_editor->coefficient_1 = 0.0f;
     world->shadow_editor->coefficient_2 = 0.0f;
-    world->shadow_editor->unknown_30 = -2.0f;
+    world->shadow_editor->height_offset = -2.0f;
     world->shadow_editor->preset = 0;
     return world->shadow_editor;
 }
@@ -66,27 +66,27 @@ static void Shadow_ApplyPreset(EDGIZSHADOW *shadow, i32 preset) {
             break;
         case 1:
             shadow->preset = 1;
-            shadow->unknown_10 = 2.0f;
-            shadow->unknown_14 = 0.1f;
+            shadow->secondary_spread = 2.0f;
+            shadow->secondary_falloff = 0.1f;
             shadow->shadow_bias = 0.0005f;
-            shadow->unknown_1c = 0.01f;
-            shadow->unknown_20 = 6.0f;
+            shadow->shadow_softness = 0.01f;
+            shadow->shadow_distance = 6.0f;
             shadow->coefficient_0 = 1.3f;
             shadow->coefficient_1 = 0.0f;
             shadow->coefficient_2 = 0.75f;
-            shadow->unknown_30 = -2.0f;
+            shadow->height_offset = -2.0f;
             break;
         case 2:
             shadow->preset = 2;
-            shadow->unknown_10 = 2.0f;
-            shadow->unknown_14 = 0.1f;
+            shadow->secondary_spread = 2.0f;
+            shadow->secondary_falloff = 0.1f;
             shadow->shadow_bias = 0.0005f;
-            shadow->unknown_1c = 0.01f;
-            shadow->unknown_20 = 25.0f;
+            shadow->shadow_softness = 0.01f;
+            shadow->shadow_distance = 25.0f;
             shadow->coefficient_0 = 0.5f;
             shadow->coefficient_1 = 0.0f;
             shadow->coefficient_2 = 0.5f;
-            shadow->unknown_30 = -15.0f;
+            shadow->height_offset = -15.0f;
             break;
     }
 }
@@ -107,23 +107,23 @@ static i32 Shadow_Load(void *world_ptr, void *data) {
         EdFileReadNuVec(&shadow->direction);
         shadow->secondary_strength = EdFileReadFloat();
         if (version >= 2) {
-            shadow->unknown_10 = EdFileReadFloat();
-            shadow->unknown_14 = EdFileReadFloat();
+            shadow->secondary_spread = EdFileReadFloat();
+            shadow->secondary_falloff = EdFileReadFloat();
         } else {
-            shadow->unknown_10 = 2.0f;
-            shadow->unknown_14 = 0.5f;
+            shadow->secondary_spread = 2.0f;
+            shadow->secondary_falloff = 0.5f;
         }
         if (version >= 3) {
             shadow->shadow_bias = EdFileReadFloat();
-            shadow->unknown_1c = EdFileReadFloat();
+            shadow->shadow_softness = EdFileReadFloat();
         } else {
             shadow->shadow_bias = 0.0005f;
-            shadow->unknown_1c = 0.01f;
+            shadow->shadow_softness = 0.01f;
         }
         if (version >= 4) {
-            shadow->unknown_20 = EdFileReadFloat();
+            shadow->shadow_distance = EdFileReadFloat();
         } else {
-            shadow->unknown_20 = 22.0f;
+            shadow->shadow_distance = 22.0f;
         }
         if (version >= 5) {
             (void)EdFileReadFloat();
@@ -135,7 +135,7 @@ static i32 Shadow_Load(void *world_ptr, void *data) {
             shadow->coefficient_2 = EdFileReadFloat();
         }
         if (version >= 7) {
-            shadow->unknown_30 = EdFileReadFloat();
+            shadow->height_offset = EdFileReadFloat();
         }
         if (version >= 8) {
             shadow->preset = EdFileReadInt();

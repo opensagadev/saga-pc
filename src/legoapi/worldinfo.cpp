@@ -71,14 +71,14 @@ extern "C" {
     typedef struct level_progress_transfer_s { // size 0x2e28
         SCENEPROGRESS scene_progress;          // 0x0000
         u32 flags;                             // 0x2800
-        u8 unknown_2804[0x20];                 // 0x2804
+        u8 reserved_2804[0x20];                 // 0x2804
         WORLD_SCRIPT_PROGRESS scripts[32];     // 0x2824
         GIZFLOWPROGRESS giz_flow_progress;     // 0x2c24
         char disabled_effect_names[12][16];    // 0x2d68
     } LEVEL_PROGRESS_TRANSFER;
 
     typedef struct world_resource_icons_reader_s { // size 0x2968
-        u8 unknown_0000[0x2964];                   // 0x0000
+        u8 reserved_00[0x2964];                   // 0x0000
         NUGSCN *icons_scene;                       // 0x2964
     } WORLD_RESOURCE_ICONS_READER;
 

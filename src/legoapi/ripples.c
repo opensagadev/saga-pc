@@ -49,7 +49,7 @@ struct ripple_node_s {     // size 0x80
     f32 lifetime;          // 0x6c
     f32 delay;             // 0x70
     u16 flags;             // 0x74
-    u8 unknown_76[2];      // 0x76
+    u8 reserved_76[2];      // 0x76
     RIPPLE_NODE *next;     // 0x78
     RIPPLE_NODE *previous; // 0x7c
 };

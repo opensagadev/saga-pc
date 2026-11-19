@@ -13,7 +13,7 @@ struct STATUS_STAGE_s;
 struct WORLDINFO_s;
 
 typedef struct PAD_INPUT {
-    u8 unknown_00[0x92];
+    u8 reserved_00[0x92];
     u8 analog_left_x;
     u8 analog_left_y;
 } PAD_INPUT;
@@ -60,9 +60,9 @@ extern "C" {
 typedef struct minikit_piece_s { // size 0x68
     nuhspecial_s special;        // 0x00
     NUMTX matrix;                // 0x0c
-    u8 unknown_4c[0x18];         // 0x4c
+    u8 reserved_4c[0x18];         // 0x4c
     u8 direction;                // 0x64
-    u8 unknown_65_b[0x1];        // 0x65
+    u8 reserved_65[0x1];        // 0x65
     u8 enabled;                  // 0x66
     u8 direction_index;          // 0x67
 } MINIKIT_PIECE;

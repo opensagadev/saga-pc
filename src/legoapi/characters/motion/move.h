@@ -378,7 +378,7 @@ typedef struct PLAYERCHARACTERCONFIG {                                   // size
             u32 no_start_punch_sfx : 1;       // 0x098:4
             u32 single_jump_slam : 1;         // 0x098:5
             u32 dont_draw_rider : 1;          // 0x098:6
-            u32 unknown_098_7 : 1;            // 0x098:7
+            u32 reserved_98_7 : 1;            // 0x098:7
         };
     }; // 0x098
 
@@ -413,7 +413,7 @@ typedef struct PLAYERCHARACTERCONFIG {                                   // size
     u8 hitpoints;         // 0x0f4
     u8 shield_hitpoints;  // 0x0f5
     u8 blob_shadow_alpha; // 0x0f6
-    u8 unknown_0f7;       // 0x0f7
+    u8 reserved_f7;       // 0x0f7
     i8 weapon_joints[4];  // 0x0f8
 
     union { // size 0x4
@@ -441,7 +441,7 @@ typedef struct PLAYERCHARACTERCONFIG {                                   // size
 
     union { // size 0x1
         i8 head_locator;
-        u8 unknown_010e;
+        u8 reserved_10e;
     }; // 0x10e
 
     union { // size 0x1

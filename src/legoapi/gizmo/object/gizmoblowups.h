@@ -56,7 +56,7 @@ typedef struct GIZMOBLOWUPTYPE {        // size 0x100
     nuhspecial_s decal_special;         // 0x3c
     nuhspecial_s shadow_special;        // 0x48
     nuhspecial_s burst_special;         // 0x54
-    u8 unknown_60[0x18];                // 0x60
+    u8 reserved_60[0x18];                // 0x60
     f32 animation_time_scale;           // 0x78
     u32 animation_flags;                // 0x7c
     u32 effect_flags;                   // 0x80
@@ -76,7 +76,7 @@ typedef struct GIZMOBLOWUPTYPE {        // size 0x100
     u8 has_physics;                     // 0xfa
     u8 collidable;                      // 0xfb
     u8 animation_runtime_flags;         // 0xfc
-    u8 unknown_fd[3];                   // 0xfd
+    u8 reserved_fd[3];                   // 0xfd
 } GIZMOBLOWUPTYPE;
 
 /* GizmoBlowupBlowup hit_type: what hit the blowup, by caller. 10 (GizmoBlowUp_Hit for an explosion with flag
@@ -157,14 +157,14 @@ typedef struct GIZMOBLOWUP { // size 0x114
         NUMTX transform;
 
         struct {                 // size 0x40
-            u8 unknown_00[0x30]; // 0x000
+            u8 reserved_00[0x30]; // 0x000
             NUVEC position;      // 0x030
-            u32 unknown_3c;      // 0x03c
+            u32 reserved_3c;      // 0x03c
         };
     }; // 0x000
 
     union { // size 0xc
-        u8 unknown_40[0xc];
+        u8 reserved_40[0xc];
         NUVEC screen_position;
     }; // 0x040
 
@@ -180,13 +180,13 @@ typedef struct GIZMOBLOWUP { // size 0x114
 
         struct {                       // size 0x4
             u32 blown_up : 1;          // 0x094:0
-            u32 unknown_status_1 : 13; // 0x094:1
+            u32 reserved_94_1 : 13; // 0x094:1
             u32 visible : 1;           // 0x094:14
-            u32 unknown_status_15 : 8; // 0x094:15
+            u32 reserved_94_15 : 8; // 0x094:15
             u32 active : 1;            // 0x094:23
-            u32 unknown_status_24 : 4; // 0x094:24
+            u32 reserved_94_24 : 4; // 0x094:24
             u32 secondary_output : 1;  // 0x094:28
-            u32 unknown_status_29 : 3; // 0x094:29
+            u32 reserved_94_29 : 3; // 0x094:29
         };
     }; // 0x094
 
@@ -230,14 +230,14 @@ typedef struct GIZMOBLOWUP { // size 0x114
     }; // 0x102
 
     i16 burst_platform_id; // 0x104
-    u8 unknown_106[6];     // 0x106
-    u8 unknown_10c;        // 0x10c
+    u8 reserved_106[6];     // 0x106
+    u8 file_flags;        // 0x10c
     u8 score_multiplier;   // 0x10d
     u8 damage;             // 0x10e
     u8 initial_state;      // 0x10f
     u8 remaining_health;   // 0x110
     u8 initial_health;     // 0x111
-    u8 unknown_112[2];     // 0x112
+    u8 reserved_112[2];     // 0x112
 } GIZMOBLOWUP;
 
 #ifdef __cplusplus

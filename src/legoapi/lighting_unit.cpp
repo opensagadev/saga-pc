@@ -648,7 +648,7 @@ extern "C" void SetShadowLight(void) {
         if (Players_AveragePos(&center, NULL) == 0) {
             return;
         }
-        ShadowLightFocusHeight = WORLD->shadow_editor->unknown_30;
+        ShadowLightFocusHeight = WORLD->shadow_editor->height_offset;
     }
     if (WORLD->shadow_editor == NULL) {
         return;
@@ -718,7 +718,7 @@ extern "C" void SetShadowLight(void) {
     view_direction.w = 1.0f;
     f64 weight = 1.0 < 1.0 + (f64)view_direction.y ? 1.0 : 1.0 + (f64)view_direction.y;
     f32 distance = NuVecDist(&camera_position, &target, NULL);
-    f32 range = WORLD->shadow_editor->unknown_20;
+    f32 range = WORLD->shadow_editor->shadow_distance;
     f32 weight32 = weight;
     f32 interpolation = NuPow(weight32, ShadowLightBlendPower);
     if (alternate) {
@@ -743,12 +743,12 @@ extern "C" void SetShadowLight(void) {
         parameter = secondary_strength;
     }
     PCShadowCurrentLight->SetParameterf(0, parameter);
-    PCShadowCurrentLight->SetParameterf(1, WORLD->shadow_editor->unknown_10);
-    PCShadowCurrentLight->SetParameterf(2, WORLD->shadow_editor->unknown_14);
-    PCShadowCurrentLight->SetParameterf(12, WORLD->shadow_editor->unknown_1c);
+    PCShadowCurrentLight->SetParameterf(1, WORLD->shadow_editor->secondary_spread);
+    PCShadowCurrentLight->SetParameterf(2, WORLD->shadow_editor->secondary_falloff);
+    PCShadowCurrentLight->SetParameterf(12, WORLD->shadow_editor->shadow_softness);
     PCShadowCurrentLight->SetParameterf(9, WORLD->shadow_editor->shadow_bias);
     PCShadowCurrentLight->SetParameterf(6, ShadowLightWarp);
-    PCShadowCurrentLight->SetParameterf(17, WORLD->shadow_editor->unknown_1c);
+    PCShadowCurrentLight->SetParameterf(17, WORLD->shadow_editor->shadow_softness);
     PCShadowCurrentLight->SetParameterf(15, WORLD->shadow_editor->shadow_bias);
     PCShadowCurrentLight->SetParameterf(8, ShadowLightWarp);
     PCShadowCurrentLight->SetParameterf(19, splits[split_count - 1] * ShadowLightSplitScale);

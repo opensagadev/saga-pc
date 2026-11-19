@@ -222,13 +222,13 @@ i32 ProcessConditionFlowBox(GIZFLOW *flow, FLOWBOX *box, u8 frame) {
 
 i32 CheckOutputConditionFlowBox(GIZFLOW *system, FLOWBOX *box, u8 output) {
     typedef struct FlowCheckFlags { // size 0x2
-        u16 unknown_00 : 10;
+        u16 reserved_00 : 10;
         u16 output_state : 1;
-        u16 unknown_0b : 5;
+        u16 reserved_0b : 5;
     } FlowCheckFlags;
 
     typedef struct FlowCheckBox { // size 0xc
-        u8 unknown_00[0xa];
+        u8 reserved_00[0xa];
         FlowCheckFlags flags; // 0xa
     } FlowCheckBox;
 
@@ -359,9 +359,9 @@ i32 ProcessActionFlowBox(GIZFLOW *system, FLOWBOX *box, u8 frame) {
 }
 
 typedef struct GIZFLOW_BOX_LOADER_PREFIX { // size 0xc
-    u8 unknown_000[4];                     // 0x0
+    u8 reserved_00[4];                     // 0x0
     u8 assist_id;                          // 0x4
-    u8 unknown_005[5];                     // 0x5
+    u8 reserved_05[5];                     // 0x5
     u16 state_flags;                       // 0xa
 } GIZFLOW_BOX_LOADER_PREFIX;
 
@@ -540,15 +540,15 @@ void ResetGizFlow(GIZFLOW *system, GIZFLOWPROGRESS *progress) {
     typedef struct FlowResetFlags { // size 0x2
         u16 active : 1;
         u16 completed : 1;
-        u16 unknown_02 : 3;
+        u16 reserved_02 : 3;
         u16 latched : 1;
-        u16 unknown_06 : 4;
+        u16 reserved_06 : 4;
         u16 output_state : 1;
-        u16 unknown_0b : 5;
+        u16 reserved_0b : 5;
     } FlowResetFlags;
 
     typedef struct FlowResetBox { // size 0xc
-        u8 unknown_00[0xa];
+        u8 reserved_00[0xa];
         FlowResetFlags flags; // 0xa
     } FlowResetBox;
 
@@ -778,18 +778,18 @@ static void GizFlowConfigGizmo(NUFPAR *parser) {
             u16 value;
 
             struct {
-                u16 unknown_00 : 2;
+                u16 reserved_00 : 2;
                 u16 start_invisible : 1;
                 u16 end_invisible : 1;
                 u16 end_deactivated : 1;
-                u16 unknown_05 : 1;
+                u16 reserved_05 : 1;
                 u16 reverse : 1;
                 u16 reverse_invisible : 1;
-                u16 unknown_08 : 4;
+                u16 reserved_08 : 4;
                 u16 output_only : 1;
                 u16 freeplay_enabled : 1;
                 u16 story_enabled : 1;
-                u16 unknown_0f : 1;
+                u16 reserved_0f : 1;
             } bits;
         } FlowGizmoFlags;
 

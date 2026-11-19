@@ -29,7 +29,7 @@
 #include "nu2api/numath/numtx.h"
 
 typedef struct CHARACTER_SCENE_WORLD {     // size 0x2984
-    u8 unknown_0000[0x2980];               // 0x0000
+    u8 reserved_00[0x2980];               // 0x0000
     KILLPARTS_CHARSCENE *character_scenes; // 0x2980
 } CHARACTER_SCENE_WORLD;
 
@@ -44,14 +44,14 @@ typedef void (*CHARACTER_UPDATE_CALLBACK)(GAMEOBJECT *);
 typedef struct character_callback_writer_s {
     i32 name_id;
     u32 model_flags;
-    u8 unknown_08[0x10];
+    u8 reserved_08[0x10];
     CHARACTER_UPDATE_CALLBACK move;
     CHARACTER_UPDATE_CALLBACK animate;
     CHARACTER_UPDATE_CALLBACK post_animate;
 } CHARACTER_CALLBACK_WRITER;
 
 struct KILLPARTS_WORLD_SCENES {
-    u8 unknown_0[0x2980];
+    u8 reserved_00[0x2980];
     KILLPARTS_CHARSCENE *character_scenes;
 };
 

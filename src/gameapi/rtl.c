@@ -82,7 +82,7 @@ void rtlResetEx(RTL_DATA *data, i32 reset_cached) {
         lighting_data->directional_strengths[index] = lighting_data->ambient_strengths[index];
     }
     lighting_data->anti_light_count = 0;
-    lighting_data->unknown_120 = 1.0f;
+    lighting_data->light_scale = 1.0f;
     lighting_data->ambient = black;
     lighting_data->intensity_vectors[2] = lighting_data->ambient;
     lighting_data->intensity_vectors[1] = lighting_data->intensity_vectors[2];
@@ -1078,7 +1078,7 @@ void edrtlInitBurnset(BURN_SET *set) {
     set->parameters.end_angle = 180.0f;
     set->parameters.max_intensity = 1.0f;
     set->parameters.intensity = 0.0f;
-    set->parameters.unknown_18 = 0;
+    set->parameters.intensity_mode = 0;
     set->parameters.dispersion = 0.0f;
     set->parameters.fragment_glow = 4.0f;
     set->parameters.threshold = 0.0f;
@@ -1091,8 +1091,8 @@ void edrtlInitBurnset(BURN_SET *set) {
     set->parameters.source_outer_radius = 180.0f;
     set->parameters.source_outer_intensity = 0.0f;
     set->parameters.source_falloff_power = 1.0f;
-    set->parameters.unknown_4c = 0.0f;
-    set->parameters.unknown_50 = 0.0f;
+    set->parameters.source_fade_start = 0.0f;
+    set->parameters.source_fade_end = 0.0f;
     set->parameters_copy = set->parameters;
     set->overshooting_up = 0;
     set->overshooting_down = 0;

@@ -29,7 +29,7 @@ extern "C" {
         /* also the fighter's model for playback splines */
         i32 id;          // 0x524
         i32 enabled;     // 0x528
-        u32 unknown_52c; // 0x52c
+        u32 reserved_52c; // 0x52c
     } FLIGHT_SPLINE_RESOURCE;
 
     void CalcSplinePointFromDist(FLIGHT_SPLINE_RESOURCE *spline, NUVEC4 *result, f32 distance);

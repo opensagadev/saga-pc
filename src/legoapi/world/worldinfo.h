@@ -14,7 +14,7 @@ typedef struct ARCADE_MENU_ENTRY_s { // size 0x8
     i16 *text;                       // 0x0
     i8 index;                        // 0x4
     u8 count;                        // 0x5
-    u16 unknown_06;                  // 0x6
+    u16 reserved_06;                  // 0x6
 } ARCADE_MENU_ENTRY;
 
 /* REPLACE existing ARCADE_ITEM 24-byte declaration, preserve every old field. */
@@ -26,15 +26,15 @@ typedef struct ARCADE_ITEM_s { // size 0x28
             i16 *level_text;                      // 0x00
             i8 level;                             // 0x04
             u8 level_count;                       // 0x05
-            u16 unknown_06;                       // 0x06
+            u16 reserved_06;                       // 0x06
             i16 *mode_text;                       // 0x08
             i8 mode;                              // 0x0c
             u8 mode_count;                        // 0x0d
-            u16 unknown_0e;                       // 0x0e
+            u16 reserved_0e;                       // 0x0e
             i16 *play_text;                       // 0x10
             i8 play;                              // 0x14
             u8 play_count;                        // 0x15
-            u16 unknown_16;                       // 0x16
+            u16 reserved_16;                       // 0x16
             ARCADE_MENU_ENTRY reset_points_entry; // 0x18
             ARCADE_MENU_ENTRY launch_entry;       // 0x20
         };
@@ -61,7 +61,7 @@ typedef struct AREA_LEVEL_LOAD { // size 0x8
     i16 first_level;             // 0x2
     i16 second_level;            // 0x4
     u8 flags;                    // 0x6
-    u8 unknown_07;               // 0x7
+    u8 reserved_07;               // 0x7
 } AREA_LEVEL_LOAD;
 
 #ifdef __cplusplus

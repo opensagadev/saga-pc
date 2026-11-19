@@ -2014,7 +2014,7 @@ i32 edppSaveEffects(char *filename, u8 page) {
             EdFileWriteChar(effecttypes[index].cutscene_only);
             EdFileWriteChar(effecttypes[index].particle_type);
             EdFileWriteChar(effecttypes[index].camera_facing);
-            EdFileWriteFloat(effecttypes[index].unknown_030);
+            EdFileWriteFloat(effecttypes[index].fade_delay);
             EdFileWriteFloat(effecttypes[index].cut_on);
             EdFileWriteFloat(effecttypes[index].clip_extent);
             EdFileWriteFloat(effecttypes[index].sound_range);

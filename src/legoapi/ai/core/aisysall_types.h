@@ -14,7 +14,7 @@ typedef struct EDAIAREA_s { // size 0x48
     NUVEC position;    // 0x18
     NUVEC size;        // 0x24
     i16 rotation;      // 0x30
-    u8 unknown_32;     // 0x32
+    u8 reserved_32;     // 0x32
     u8 flags;          // 0x33
-    u8 unknown_34[20]; // 0x34
+    u8 reserved_34[20]; // 0x34
 } EDAIAREA_s;

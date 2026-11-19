@@ -113,7 +113,7 @@ typedef struct level_data_s { // size 0x130
     char name[0x20];          // 0x040
 
     union { // size 0x2
-        i16 unknown_0060;
+        i16 override_index;
         u16 title_text_id;
     }; // 0x060
 
@@ -140,7 +140,7 @@ typedef struct level_data_s { // size 0x130
     i16 max_ter_platforms; // 0x098
     i16 max_ter_groups;    // 0x09a
     i16 music_other_index; // 0x09c
-    i16 unknown_009e;      // 0x09e
+    i16 secondary_index;      // 0x09e
     u8 mipmap_mode;        // 0x0a0
     u8 blob_shadow_alpha;  // 0x0a1
 
@@ -211,7 +211,7 @@ typedef struct level_data_s { // size 0x130
     u8 max_bombgens;               // 0x107
     u8 max_bridges;                // 0x108
     u8 max_plugs;                  // 0x109
-    u8 unknown_010a[6];            // 0x10a
+    u8 reserved_10a[6];            // 0x10a
     f32 wind_speed;                // 0x110
     f32 wind_size;                 // 0x114
     i32 music_tracks[6];           // 0x118

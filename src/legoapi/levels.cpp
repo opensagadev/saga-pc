@@ -51,12 +51,12 @@ extern "C" {
 }
 
 typedef struct WORLD_OBJECT_SETUP_READER { // size 0x2968
-    u8 unknown_0000[0x2964];               // 0x0000
+    u8 reserved_00[0x2964];               // 0x0000
     NUGSCN *icons_gscn;                    // 0x2964
 } WORLD_OBJECT_SETUP_READER;
 
 typedef struct menu_mission_reader_s { // size 0x13
-    u8 unknown_00[0x12];               // 0x00
+    u8 reserved_00[0x12];               // 0x00
     i8 active_count;                   // 0x12
 } MENU_MISSION_READER;
 
@@ -154,7 +154,7 @@ extern "C" {
 
                 current_level->dir[0] = '\0';
                 current_level->name[0] = '\0';
-                current_level->unknown_0060 = -1;
+                current_level->override_index = -1;
                 current_level->index = (i16)level_count;
                 current_level->flags = 0xe;
                 current_level->callbacks[0] = NULL;
@@ -180,7 +180,7 @@ extern "C" {
                 current_level->max_ter_platforms = 0x80;
                 current_level->max_ter_groups = 0x100;
                 current_level->music_other_index = -1;
-                current_level->unknown_009e = -1;
+                current_level->secondary_index = -1;
                 current_level->mipmap_mode = 3;
                 current_level->blob_shadow_alpha = 0x7f;
                 current_level->dfs_mode = -1;

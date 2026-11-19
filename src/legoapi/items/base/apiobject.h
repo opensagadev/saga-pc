@@ -54,24 +54,23 @@ typedef struct APIOBJECTSYS {     // size 0x218
         struct {                   // size 0x8
             u8 flags;              // 0x210
             u8 state_211[3];       // 0x211
-            u8 unknown_214_b[0x4]; // 0x214
+            u8 reserved_214[0x4]; // 0x214
         };
 
-        struct {               // size 0x8
-            u32 flags_word;    // 0x210
-            u8 unknown_214[4]; // 0x214
+        struct {            // size 0x4
+            u32 flags_word; // 0x210
         };
     }; // 0x210
 } APIOBJECTSYS;
 
 typedef struct CHARACTER_ANIMATION_LOCATOR { // size 0x4c
-    u8 unknown_00[0x14];                     // 0x00
+    u8 reserved_00[0x14];                     // 0x00
     f32 blend_out_time;                      // 0x14
     f32 playback_rate;                       // 0x18
     f32 movement_speed;                      // 0x1c
     f32 movement_rate_cap;                   // 0x20
     f32 action_speed;                        // 0x24
-    u8 unknown_28[0x20];                     // 0x28
+    u8 reserved_28[0x20];                     // 0x28
     u16 misc_flags;                          // 0x48
     i8 locator;                              // 0x4a
 } CHARACTER_ANIMATION_LOCATOR;
@@ -87,7 +86,7 @@ typedef struct TORPEDOPACKET { // size 0x88
     u8 ricochet_count;         // 0x02
     u8 pickup_state;           // 0x03
     u8 target_type;            // 0x04
-    u8 unknown_05[3];          // 0x05
+    u8 reserved_05[3];          // 0x05
     f32 pickup_timer;          // 0x08
     f32 ricochet_time;         // 0x0c
     f32 steal_timer;           // 0x10
@@ -512,7 +511,7 @@ struct AIPACKET { // size 0x20c
             f32 params[4];                           // 0x014
             f32 script_timer;                        // 0x024
             AISCRIPTPROCESSSTACK param_stack[2];     // 0x028
-            u8 unknown_50[0x4];                      // 0x050
+            u8 reserved_50[0x4];                      // 0x050
             struct AIREFSCRIPT *active_refs[4];      // 0x054
             i32 active_ref_count;                    // 0x064
             u8 action_data_1;                        // 0x068
@@ -527,12 +526,12 @@ struct AIPACKET { // size 0x20c
             void *area;                              // 0x0a0 (the creature's area)
             struct AILOCATOR *locator;               // 0x0a4
             struct AILOCATORSET *locator_set;        // 0x0a8
-            u8 unknown_ac[0x4];                      // 0x0ac
+            u8 reserved_ac[0x4];                      // 0x0ac
             u8 creature_set;                         // 0x0b0
-            u8 unknown_0b1[0x17];                    // 0x0b1
+            u8 reserved_b1[0x17];                    // 0x0b1
 
             union { // size 0x4
-                u8 unknown_0c8[4];
+                u8 reserved_c8[4];
                 void *takeover_script_link;
             }; // 0x0c8
 
@@ -559,12 +558,12 @@ struct AIPACKET { // size 0x20c
 
     i16 animation_override_from; // 0x126
     i16 animation_override_to;   // 0x128
-    u8 unknown_12a[0x6];         // 0x12a
+    u8 reserved_12a[0x6];         // 0x12a
     u32 route_mask_low;          // 0x130
     u32 route_mask_high;         // 0x134
 
     union { // size 0x1
-        u8 unknown_138;
+        u8 reserved_138;
         u8 creature_index;
     }; // 0x138
 
@@ -579,7 +578,7 @@ struct AIPACKET { // size 0x20c
     u8 reset_mode;                // 0x13e
     u8 goal_speed_mode;           // 0x13f
     u8 movement_stopped;          // 0x140
-    u8 unknown_141;               // 0x141
+    u8 reserved_141;               // 0x141
     u8 divert_search_index;       // 0x142
     u8 divert_node_index;         // 0x143
     struct AIGROUP *group;        // 0x144
@@ -611,14 +610,14 @@ struct AIPACKET { // size 0x20c
     NUVEC left_diversion;                             // 0x1a4
 
     union { // size 0x4
-        u8 unknown_1b0[4];
+        u8 reserved_1b0[4];
         struct AILOCATOR *respawn_locator;
     }; // 0x1b0
 
     NUVEC fallback_destination;     // 0x1b4
     f32 fallback_stopping_distance; // 0x1c0
     f32 movement_parameter;         // 0x1c4
-    u8 unknown_1c8[4];              // 0x1c8
+    u8 reserved_1c8[4];              // 0x1c8
     AIPATHINFO fallback_path_info;  // 0x1cc
     NUVEC *movement_look_target;    // 0x1e4
 
@@ -645,7 +644,7 @@ struct AIPACKET { // size 0x20c
     i32 frame_state;            // 0x1f8
     u32 respawn_count;          // 0x1fc
     f32 spawn_delay;            // 0x200
-    u8 unknown_204[4];          // 0x204
+    u8 reserved_204[4];          // 0x204
     f32 time_off_path;          // 0x208
 };
 
@@ -654,7 +653,7 @@ struct AIPACKET { // size 0x20c
 typedef struct APIOBJECT {                          // size 0x2b8
     struct gameobject_s *owner;                     // 0x000
     AIPACKET *ai;                                   // 0x004
-    u8 unknown_008[0x48];                           // 0x008
+    u8 reserved_08[0x48];                           // 0x008
     struct CHARACTER_MODEL_LAYERS *character_model; // 0x050
     struct characterdata_s *character_data;         // 0x054
     u16 facing_angle;                               // 0x058
@@ -666,20 +665,20 @@ typedef struct APIOBJECT {                          // size 0x2b8
     NUVEC start_position;                           // 0x08c
     NUVEC initial_position;                         // 0x098
     f32 scaled_radius;                              // 0x0a4
-    u8 unknown_a8[0x4];                             // 0x0a8
+    u8 reserved_a8[0x4];                             // 0x0a8
     f32 collision_radius;                           // 0x0ac
 
-    u8 unknown_0b0[0xc8];           // 0x0b0
+    u8 reserved_b0[0xc8];           // 0x0b0
     NUVEC collision_min;            // 0x178
     NUVEC collision_max;            // 0x184
-    u8 unknown_190[0x24];           // 0x190
+    u8 reserved_190[0x24];           // 0x190
     NUVEC last_safe_position;       // 0x1b4
     NUVEC previous_position;        // 0x1c0
     NUVEC respawn_position;         // 0x1cc
     f32 respawn_timer;              // 0x1d8
     f32 bounds_radius;              // 0x1dc
     f32 bounds_half_height;         // 0x1e0
-    u8 unknown_1e4[0x4];            // 0x1e4
+    u8 reserved_1e4[0x4];            // 0x1e4
     u32 collision_identity_mask[2]; // 0x1e8
     u32 collision_contact_mask[2];  // 0x1f0
 
@@ -695,11 +694,11 @@ typedef struct APIOBJECT {                          // size 0x2b8
         };
     }; // 0x1fc
 
-    u8 unknown_200[0xc];                                          // 0x200
+    u8 reserved_200[0xc];                                          // 0x200
     nuhspecial_s collision_special;                               // 0x20c
-    u8 unknown_218_b[0x8];                                        // 0x218
+    u8 reserved_218[0x8];                                        // 0x218
     f32 water_height;                                             // 0x220
-    u8 unknown_224[0x4];                                          // 0x224
+    u8 reserved_224[0x4];                                          // 0x224
     f32 velocity_magnitude;                                       // 0x228
     f32 horizontal_velocity_magnitude;                            // 0x22c
     f32 view_distance;                                            // 0x230
@@ -707,28 +706,28 @@ typedef struct APIOBJECT {                          // size 0x2b8
     f32 max_view_height;                                          // 0x238
     f32 min_view_height;                                          // 0x23c
     f32 ai_visibility_extension;                                  // 0x240
-    u8 unknown_244[0x18];                                         // 0x244
+    u8 reserved_244[0x18];                                         // 0x244
     f32 previous_animation_root_time;                             // 0x25c
     f32 previous_blend_target_root_time;                          // 0x260
     struct CHARACTERANIM_CONFIG *previous_animation_root_info;    // 0x264
     struct CHARACTERANIM_CONFIG *previous_blend_target_root_info; // 0x268
-    u8 unknown_26c[0xc];                                          // 0x26c
+    u8 reserved_26c[0xc];                                          // 0x26c
     u16 pitch_angle;                                              // 0x278
-    u8 unknown_27a[0x2];                                          // 0x27a
+    u8 reserved_27a[0x2];                                          // 0x27a
     u16 roll_angle;                                               // 0x27c
     i16 supporting_platform_id;                                   // 0x27e
     i8 locator_name_index;                                        // 0x280
     u8 grounded;                                                  // 0x281
-    u8 unknown_282[9];                                            // 0x282
+    u8 reserved_282[9];                                            // 0x282
     u8 dead;                                                      // 0x28b
-    u8 unknown_28c;                                               // 0x28c
+    u8 reserved_28c;                                               // 0x28c
     u8 object_id;                                                 // 0x28d
-    u8 unknown_28e[0x4];                                          // 0x28e
+    u8 reserved_28e[0x4];                                          // 0x28e
     u16 ai_collision_priority;                                    // 0x292
     u16 ai_resolved_collision_priority;                           // 0x294
-    u8 unknown_296[0x2];                                          // 0x296
+    u8 reserved_296[0x2];                                          // 0x296
     struct APIOBJECT *collision_link;                             // 0x298
-    u8 unknown_29c[0x4];                                          // 0x29c
+    u8 reserved_29c[0x4];                                          // 0x29c
     u32 collision_exclusion_mask[2];                              // 0x2a0
     u64 awareness;                                                // 0x2a8
     u32 ai_area_mask[2];                                          // 0x2b0
@@ -765,7 +764,7 @@ typedef struct CHARACTERANIM_CONFIG { // size 0x4c
     u8 priority;                      // 0x0b
     u8 minimum_repetitions;           // 0x0c
     u8 maximum_repetitions;           // 0x0d
-    u8 unknown_0e[2];                 // 0x0e
+    u8 reserved_0e[2];                 // 0x0e
     f32 blend_in_time;                // 0x10
     f32 blend_out_time;               // 0x14
     f32 playback_rate;                // 0x18
@@ -789,7 +788,7 @@ typedef struct CHARACTERANIM_CONFIG { // size 0x4c
     NUVEC root_translation; // 0x3c
     u16 misc_flags;         // 0x48
     u8 locator;             // 0x4a
-    u8 unknown_4b;          // 0x4b
+    u8 reserved_4b;          // 0x4b
 } CHARACTERANIM_CONFIG;
 
 typedef struct CHARACTER_MODEL_LAYERS { // size 0x54
@@ -918,8 +917,8 @@ typedef struct PLAYERPACKET {        // size 0x788
             NUVEC launch_origin;           // 0x090
             NUVEC context_position_offset; // 0x09c
             f32 context_animation_timer;   // 0x0a8
-            f32 unknown_770;               // 0x0ac
-            u8 unknown_774[0x4];           // 0x0b0
+            f32 reserved_ac;               // 0x0ac
+            u8 reserved_b0[0x4];           // 0x0b0
         };
 
         struct {           // size 0x30
@@ -978,8 +977,8 @@ typedef struct PLAYERPACKET {        // size 0x788
         void *net_wait_info; /* the network wait request of a lever, teleport or hat machine */
 
         struct {                 // size 0x4
-            u8 unknown_7a0[0x3]; // 0x0dc
-            u8 unknown_7a3;      // 0x0df
+            u8 reserved_dc[0x3]; // 0x0dc
+            u8 reserved_df;      // 0x0df
         };
     }; // 0x0dc
 
@@ -993,7 +992,7 @@ typedef struct PLAYERPACKET {        // size 0x788
     u8 combo_input_latched;       // 0x0ec
 
     union { // size 0x1
-        u8 unknown_07b1;
+        u8 reserved_7b1;
         u8 landing_followup;
     }; // 0x0ed
 
@@ -1019,7 +1018,7 @@ typedef struct PLAYERPACKET {        // size 0x788
             u8 context_flags;        // 0x0f8
             i8 context_variant_bits; // 0x0f9
             u8 jump_flags;           // 0x0fa
-            u8 unknown_7bf[0x1];     // 0x0fb
+            u8 reserved_fb[0x1];     // 0x0fb
         };
 
         struct {                      // size 0x4
@@ -1034,7 +1033,7 @@ typedef struct PLAYERPACKET {        // size 0x788
     f32 tag_cooldown;                        // 0x0fc
     i8 tag_player_index;                     // 0x100
     u8 tag_flags;                            // 0x101
-    u8 unknown_07c6[2];                      // 0x102
+    u8 reserved_102[2];                      // 0x102
     struct gameobject_s *pending_tag_target; // 0x104
 
     union { // size 0x4
@@ -1099,12 +1098,12 @@ typedef struct PLAYERPACKET {        // size 0x788
     struct SUIT_LAYERS *suit;             // 0x5f8
 
     union { // size 0x4
-        struct gameobject_s *unknown_cc0;
+        struct gameobject_s *reserved_cc0;
         struct player_batarang_slot_s *batarang;
     }; // 0x5fc
     struct TORPEDOPACKET *torpedo;         // 0x600
     struct gameobject_s *collision_target; // 0x604
-    u8 unknown_0ccc[4];                    // 0x608
+    u8 reserved_608[4];                    // 0x608
 
     union { // size 0x4
         struct gameobject_s *takeover_source;
@@ -1118,7 +1117,7 @@ typedef struct PLAYERPACKET {        // size 0x788
     struct bolt_s *incoming_bolt;          // 0x640
     struct bolt_s *blocked_bolt;           // 0x644
 
-    i32 unknown_d0c;                         // 0x648
+    i32 spawn_state;                         // 0x648
     struct gameobject_s *force_throw_target; // 0x64c
 
     void *glow_object; // 0x650
@@ -1178,7 +1177,7 @@ typedef struct PLAYERPACKET {        // size 0x788
     f32 use_cooldown;                // 0x6ec
     f32 fall_hover_height;           // 0x6f0
     f32 pre_reset_hover_height;      // 0x6f4
-    f32 field_dbc;                   // 0x6f8
+    f32 hover_blend;                   // 0x6f8
     f32 sabre_contact_sfx_timer;     // 0x6fc
     f32 platform_push_timer;         // 0x700
     f32 speed_boost;                 // 0x704
@@ -1213,7 +1212,7 @@ typedef struct PLAYERPACKET {        // size 0x788
 
         struct {               // size 0x4
             u8 ai_state_flags; // 0x75c
-            u8 unknown_e21;    // 0x75d
+            u8 reserved_75d;    // 0x75d
             /* bit 0 the weapon is out (weapon_animation) */
             u8 weapon_flags; // 0x75e
             /* bit 0 is APIOBJECT_FORCE_BLOCKED, read as a byte */
@@ -1256,7 +1255,7 @@ typedef struct PLAYERPACKET {        // size 0x788
     u8 weapon_draw_state;    // 0x76f
     u8 sabre_flags;          // 0x770
     u8 sabre_damage;         // 0x771
-    u8 unknown_0e36;         // 0x772
+    u8 reserved_772;         // 0x772
     u8 wall_run_state;       // 0x773
     u8 shield_hitpoints;     // 0x774
 
@@ -1277,7 +1276,7 @@ typedef struct PLAYERPACKET {        // size 0x788
     u8 raw_surface_id;      // 0x77e
     i8 blade_index;         // 0x77f
     i8 blade_states[4];     // 0x780
-    f32 unknown_e48;        // 0x784
+    f32 creature_timer;        // 0x784
 } PLAYERPACKET;
 
 typedef struct gameobject_s { // size 0x10d8
@@ -1291,9 +1290,9 @@ typedef struct gameobject_s { // size 0x10d8
         };
 
         struct {                             // size 0x40
-            u8 unknown_0000_animation[0x39]; // 0x0000
+            u8 reserved_00[0x39]; // 0x0000
             u8 anim_blending;                // 0x0039
-            u8 unknown_003a[4];              // 0x003a
+            u8 reserved_3a[4];              // 0x003a
             i16 animation_index;             // 0x003e
         };
     }; // 0x0000
@@ -1330,7 +1329,7 @@ typedef struct gameobject_s { // size 0x10d8
     f32 respawn_timer;              // 0x01d8
     f32 bounds_radius;              // 0x01dc
     f32 bounds_half_height;         // 0x01e0
-    u8 unknown_01e4[4];             // 0x01e4
+    u8 reserved_1e4[4];             // 0x01e4
     u32 collision_identity_mask[2]; // 0x01e8
     u32 collision_contact_mask[2];  // 0x01f0
     u32 flags_1f8;                  // 0x01f8
@@ -1342,7 +1341,7 @@ typedef struct gameobject_s { // size 0x10d8
 
         struct {              // size 0x2
             u8 flags_1fc_low; // 0x01fc
-            u8 unknown_1fd;   // 0x01fd
+            u8 reserved_1fd;   // 0x01fd
         };
 
         struct {                           // size 0x4
@@ -1365,18 +1364,18 @@ typedef struct gameobject_s { // size 0x10d8
 
         struct {                      // size 0xc
             f32 movement_direction_x; // 0x0200
-            u8 unknown_0204[4];       // 0x0204
+            u8 reserved_204[4];       // 0x0204
             f32 movement_direction_z; // 0x0208
         };
     }; // 0x0200
 
-    u8 unknown_020c[0xc];      // 0x020c
+    u8 reserved_20c[0xc];      // 0x020c
     f32 previous_floor_height; // 0x0218
     f32 floor_height;          // 0x021c
     f32 water_height;          // 0x0220
 
     union { // size 0x4
-        u8 unknown_0224[4];
+        u8 reserved_224[4];
         f32 roof_height;
     }; // 0x0224
 
@@ -1409,7 +1408,7 @@ typedef struct gameobject_s { // size 0x10d8
     i8 ground_layer;          // 0x0283
 
     union { // size 0x1
-        u8 unknown_0284;
+        u8 reserved_284;
         i8 roof_surface_id;
     }; // 0x0284
 
@@ -1424,11 +1423,11 @@ typedef struct gameobject_s { // size 0x10d8
     u8 model_draw_result; // 0x0288
 
     union { // size 0x2
-        u8 unknown_0289[2];
+        u8 reserved_289[2];
 
         struct {             // size 0x2
             u8 effect_flags; // 0x0289
-            u8 unknown_028a; // 0x028a
+            u8 reserved_28a; // 0x028a
         };
     }; // 0x0289
 
@@ -1438,7 +1437,7 @@ typedef struct gameobject_s { // size 0x10d8
     u8 object_id; // 0x028d
 
     union { // size 0xa
-        u8 unknown_028e[0xa];
+        u8 reserved_28e[0xa];
 
         struct {                                // size 0xa
             u16 surface_effect_count;           // 0x028e
@@ -1449,7 +1448,7 @@ typedef struct gameobject_s { // size 0x10d8
         };
     }; // 0x028e
     struct APIOBJECT *collision_link; // 0x0298
-    u8 unknown_29c[0x4];              // 0x029c
+    u8 reserved_29c[0x4];              // 0x029c
 
     union { // size 0x8 one bit per object id this object does not collide with
         u32 collision_exclusion_mask[2];
@@ -1469,34 +1468,34 @@ typedef struct gameobject_s { // size 0x10d8
         AIPACKET ai_packet;
 
         struct {                     // size 0x158
-            u8 unknown_02c8[0x14c];  // 0x02c8
+            u8 reserved_2c8[0x14c];  // 0x02c8
             NUVEC ai_terrain_origin; // 0x0414
         };
     }; // 0x02c8
 
-    u8 unknown_4d4[0x4];      // 0x04d4
+    u8 reserved_4d4[0x4];      // 0x04d4
     RTL_DATA lighting_packet; // 0x04d8
-    u8 unknown_61c[0xc];      // 0x061c
+    u8 reserved_61c[0xc];      // 0x061c
     /* the speeder chase bike riders are lit full white */
     NUVEC light_intensity[2]; // 0x0628
-    u8 unknown_640[0x21];     // 0x0640
-    u8 unknown_661;           // 0x0661
+    u8 reserved_640[0x21];     // 0x0640
+    u8 reserved_661;           // 0x0661
     i16 sock_segment;         // 0x0662
-    u8 unknown_664[0xc];      // 0x0664
+    u8 reserved_664[0xc];      // 0x0664
 
     union { // size 0x38
         SOCKPOSITION sock_position;
 
         struct {                  // size 0x30
-            u8 unknown_0670;      // 0x0670
+            u8 reserved_670;      // 0x0670
             u8 sock_index;        // 0x0671
-            u8 unknown_672[0x14]; // 0x0672
+            u8 reserved_672[0x14]; // 0x0672
             u16 yrot;             // 0x0686
-            u8 unknown_688[0x4];  // 0x0688
-            f32 unknown_68c;      // 0x068c
-            u8 unknown_690[0x6];  // 0x0690
+            u8 reserved_688[0x4];  // 0x0688
+            f32 reserved_68c;      // 0x068c
+            u8 reserved_690[0x6];  // 0x0690
             u16 sock_heading;     // 0x0696
-            u8 unknown_0698[8];   // 0x0698
+            u8 reserved_698[8];   // 0x0698
         };
     }; // 0x0670
 
@@ -1518,7 +1517,7 @@ typedef struct gameobject_s { // size 0x10d8
     NUVEC render_offset;                   // 0x0e94
 
     union { // size 0xc
-        NUVEC unknown_ea0;
+        NUVEC reserved_ea0;
         struct gameobject_s *aim_target;
 
         struct {                                     // size 0xc
@@ -1549,7 +1548,7 @@ typedef struct gameobject_s { // size 0x10d8
     f32 run_speed_override;        // 0x0ed4
     f32 walk_speed_override;       // 0x0ed8
     f32 jump_destination_distance; // 0x0edc
-    f32 unknown_ee0;               // 0x0ee0
+    f32 reserved_ee0;               // 0x0ee0
     f32 tag_reset_timer;           // 0x0ee4
     f32 pause_context_state;       // 0x0ee8
 
@@ -1576,7 +1575,7 @@ typedef struct gameobject_s { // size 0x10d8
 
         struct {              // size 0x4
             u8 bolt_flags;    // 0x0ef0
-            u8 unknown_ef1;   // 0x0ef1
+            u8 reserved_ef1;   // 0x0ef1
             u8 turning_flags; // 0x0ef2
             u8 flags_ef3;     // 0x0ef3
         };
@@ -1609,9 +1608,9 @@ typedef struct gameobject_s { // size 0x10d8
 
         struct {            // size 0x4
             u8 ai_flags;    // 0x0ef8
-            u8 unknown_ef9; // 0x0ef9
-            u8 field_efa;   // 0x0efa
-            u8 field_efb;   // 0x0efb
+            u8 reserved_ef9; // 0x0ef9
+            u8 reserved_efa;   // 0x0efa
+            u8 reserved_efb;   // 0x0efb
         };
     }; // 0x0ef8
 
@@ -1623,7 +1622,7 @@ typedef struct gameobject_s { // size 0x10d8
             /* what can_use_object is used for (GameObjectSetCanUse) */
             u8 use_action;        // 0x0f00
             u8 use_action_frames; // 0x0f01
-            u8 unknown_f02[0x2];  // 0x0f02
+            u8 reserved_f02[0x2];  // 0x0f02
         };
 
         u32 use_action_word;
@@ -1639,7 +1638,7 @@ typedef struct gameobject_s { // size 0x10d8
     f32 offscreen_time;    // 0x0f10
 
     union { // size 0x4
-        u32 unknown_f14;
+        u32 reserved_f14;
         AILOCATOR *doomed_escape_locator;
     }; // 0x0f14
 
@@ -1708,7 +1707,7 @@ typedef struct gameobject_s { // size 0x10d8
     i16 level_object_index;   // 0x1070
 
     union { // size 0x6
-        u8 unknown_1072[6];
+        u8 reserved_1072[6];
         u8 ai_frame_event;
         u8 input_flags; /* also the AI grapple trigger: 1 toward the ground position, 2 away */
         AI_SPECIAL_PROGRESS special_move_progress_view;
@@ -1738,26 +1737,26 @@ typedef struct gameobject_s { // size 0x10d8
     u8 helper_wait;        // 0x1087
     u8 helper_retry_delay; // 0x1088
     u8 route_search_index; // 0x1089
-    u8 unknown_108a[2];    // 0x108a
+    u8 reserved_108a[2];    // 0x108a
 
     union { // size 0x4
 
         struct {                // size 0x4
-            u8 unknown_108c[2]; // 0x108c
-            u8 unknown_108e;    // 0x108e
-            u8 unknown_108f;    // 0x108f
+            u8 reserved_108c[2]; // 0x108c
+            u8 reserved_108e;    // 0x108e
+            u8 reserved_108f;    // 0x108f
         };
 
-        u32 field_108c;
+        u32 creature_flags;
         struct ai_helper_slot_s *indy_connection_helper;
     }; // 0x108c
 
     union { // size 0x4
 
         struct {                // size 0x4
-            u8 unknown_1090[2]; // 0x1090
-            u8 unknown_1092;    // 0x1092
-            u8 unknown_1093;    // 0x1093
+            u8 reserved_1090[2]; // 0x1090
+            u8 reserved_1092;    // 0x1092
+            u8 reserved_1093;    // 0x1093
         };
 
         f32 special_move_timer;
@@ -1766,9 +1765,9 @@ typedef struct gameobject_s { // size 0x10d8
     union { // size 0x4
 
         struct {                // size 0x4
-            u8 unknown_1094;    // 0x1094
-            u8 unknown_1095;    // 0x1095
-            u8 unknown_1096[2]; // 0x1096
+            u8 reserved_1094;    // 0x1094
+            u8 reserved_1095;    // 0x1095
+            u8 reserved_1096[2]; // 0x1096
         };
 
         struct AIPATHNODE *special_move_source;
@@ -1777,9 +1776,9 @@ typedef struct gameobject_s { // size 0x10d8
     union { // size 0xc
 
         struct {                  // size 0xc
-            u32 unknown_1098;     // 0x1098
-            u32 unknown_109c;     // 0x109c
-            u8 unknown_10a0[0x4]; // 0x10a0
+            u32 reserved_1098;     // 0x1098
+            u32 reserved_109c;     // 0x109c
+            u8 reserved_10a0[0x4]; // 0x10a0
         };
 
         NUVEC special_move_look_position;
@@ -1790,7 +1789,7 @@ typedef struct gameobject_s { // size 0x10d8
     void (*move_override)(struct gameobject_s *); // 0x10b0
 
     union { // size 0x4
-        u8 unknown_10b4[4];
+        u8 reserved_10b4[4];
         struct climb_slot_s *indy_climb;
     }; // 0x10b4
 

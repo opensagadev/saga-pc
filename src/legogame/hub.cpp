@@ -138,7 +138,7 @@ typedef struct hub_episode_info_s {
     const char *door_name;
     const char *lock_on_name;
     i32 force_open;
-    u32 unknown_10;
+    u32 reserved_10;
     EPISODEDATA *data;
     GIZMO *door;
     nuhspecial_s lock_on;
@@ -1555,7 +1555,7 @@ extern "C" void Hub_InitMiniKits(WORLDINFO *world) {
             f32 height;
             kit->position.y = 2000000.0f;
             kit->scale = 0;
-            kit->unknown_10 = 0;
+            kit->display_timer = 0;
             kit->rotation = (u16)qrand();
             for (info = HubAreaInfo; info->area_name != NULL; ++info) {
                 if (info->area != NULL && info->area->index == i) {

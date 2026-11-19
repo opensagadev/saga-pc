@@ -313,7 +313,7 @@ void Player_ResetContexts(PLAYERPACKET *packet) {
     packet->pad->runtime_flags &= ~GAMEPAD_AI_FORCE_PUSH;
     packet->flags_e20 &= ~0x400;
     packet->force_action_target = 0;
-    packet->unknown_d0c = 0;
+    packet->spawn_state = 0;
     packet->combo_style = (u8)(qrand() / 0x8000);
     packet->quick_shoot_timer = 0.0f;
     packet->torpedo_fire_cooldown = 0.0f;
@@ -885,7 +885,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
     object->player.wall_run_state = 0;
     object->previous_floor_height = 2000000.0f;
     object->effect_flags = 0;
-    object->player.field_dbc = 0.0f;
+    object->player.hover_blend = 0.0f;
     object->offscreen_time = 0.0f;
     object->player.camera_screen_position.z = -1.0f;
     object->player.detonator_hold_time = 0.0f;

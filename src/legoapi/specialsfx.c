@@ -310,7 +310,7 @@ void FileLoadSingleEffectType(DEBRIS_INFO *destination, i32 version, i8 category
         effect->camera_facing = (u8)(EdFileReadChar());
     }
 
-    effect->unknown_030 = EdFileReadFloat();
+    effect->fade_delay = EdFileReadFloat();
     if (version < 6) {
         effect->cut_on = 0.0f;
         effect->clip_extent = 25.0f;

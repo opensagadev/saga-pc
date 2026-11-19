@@ -180,11 +180,11 @@ typedef struct HOTH_ANTINODE {
 
 struct MUSIC_PAIR_ARENA {
     i32 prefix_word;
-    u8 unknown_004[0x18];
+    u8 reserved_04[0x18];
     i16 action_first;
-    u8 unknown_01e[0x1a];
+    u8 reserved_1e[0x1a];
     i16 ambient_first;
-    u8 unknown_03a[2];
+    u8 reserved_3a[2];
 };
 
 typedef struct {       // size 0x100
@@ -196,9 +196,9 @@ typedef struct {       // size 0x100
 
 typedef struct area_gizmo_s { // size 0x8
     void *object;             // 0x0
-    i16 unknown_0004;         // 0x4
+    i16 reserved_04;         // 0x4
     u8 type_id;               // 0x6
-    u8 unknown_0007;          // 0x7
+    u8 reserved_07;          // 0x7
 } AREA_GIZMO;
 
 typedef struct area_gizmoset_s { // size 0x14
@@ -206,49 +206,49 @@ typedef struct area_gizmoset_s { // size 0x14
     i32 count;                   // 0x04
     i32 max_count;               // 0x08
     void *gizmos;                // 0x0c
-    void *unknown_0010;          // 0x10
+    void *reserved_10;          // 0x10
 } AREA_GIZMOSET;
 
 typedef struct area_gizmotype_s {         // size 0x9c
-    u8 unknown_0000[0x44];                // 0x00
+    u8 reserved_00[0x44];                // 0x00
     char *(*get_gizmo_name)(void *gizmo); // 0x44
-    u8 unknown_0048[0x54];                // 0x48
+    u8 reserved_48[0x54];                // 0x48
 } AREA_GIZMOTYPE;
 
 typedef struct character_ai_capabilities_s {
-    u8 unknown_00[0x44];
+    u8 reserved_00[0x44];
     u32 path_capabilities;
 } CHARACTER_AI_CAPABILITIES;
 
 typedef struct coin_reset_packet_s { // size 0x10
-    u8 unknown_00[4];                // 0x0
+    u8 reserved_00[4];                // 0x0
     f32 scale;                       // 0x4
-    u8 unknown_08[2];                // 0x8
+    u8 reserved_08[2];                // 0x8
     u8 active;                       // 0xa
-    u8 unknown_0b;                   // 0xb
+    u8 reserved_0b;                   // 0xb
     f32 double_score_timer;          // 0xc
 } COIN_RESET_PACKET;
 
 typedef struct cut_load_character_animation_s { // size 0x10
     u32 character_id;                           // 0x0
     void *animation;                            // 0x4
-    u8 unknown_08[8];                           // 0x8
+    u8 reserved_08[8];                           // 0x8
 } CUT_LOAD_CHARACTER_ANIMATION;
 
 struct cut_load_character_instance_s { // size 0x18
     void *model;                       // 0x00
-    u8 unknown_04[8];                  // 0x04
+    u8 reserved_04[8];                  // 0x04
     f32 frame_a;                       // 0x0c
-    u8 unknown_10[5];                  // 0x10
+    u8 reserved_10[5];                  // 0x10
     u8 animation_a;                    // 0x15
     u8 animation_b;                    // 0x16
-    u8 unknown_17;                     // 0x17
+    u8 reserved_17;                     // 0x17
 };
 
 typedef struct reaction_fields_s { // size 0x77c
-    u8 unknown_000[0x750];         // 0x000
+    u8 reserved_00[0x750];         // 0x000
     f32 animation_speed;           // 0x750
-    u8 unknown_754[0x778 - 0x754]; // 0x754
+    u8 reserved_754[0x778 - 0x754]; // 0x754
     f32 reaction_duration;         // 0x778
 } REACTION_FIELDS;
 
@@ -268,12 +268,12 @@ typedef struct {
 } BUILD_PROGRESS_RECORD;
 
 typedef struct CLOUDCITY_PANEL_FLAGS_VIEW {
-    u8 unknown_00[0x62];
+    u8 reserved_00[0x62];
     u8 flags;
 } CLOUDCITY_PANEL_FLAGS_VIEW;
 
 typedef struct CUT_PLAYER_INST_ANIM {
-    u8 unknown_00[0x4c];
+    u8 reserved_00[0x4c];
     f32 time;
     u32 flags;
 } CUT_PLAYER_INST_ANIM;
@@ -288,15 +288,15 @@ typedef union TAGSCRIPTSTATE { // size 0xcc
     u32 words[0x33];
 
     struct {                   // size 0xb4
-        u32 unknown_000[0x2c]; // 0x00
+        u32 reserved_00[0x2c]; // 0x00
         u8 creature_set;       // 0xb0
     } fields;
 } TAGSCRIPTSTATE;
 
 typedef struct startup_object_light_s { // size 0x10d8
-    u8 unknown_000[0x1fc];              // 0x0000
+    u8 reserved_00[0x1fc];              // 0x0000
     u32 flags;                          // 0x01fc
-    u8 unknown_200[0xc04];              // 0x0200
+    u8 reserved_200[0xc04];              // 0x0200
     i32 dynamic_light_id;               // 0x0e04
-    u8 unknown_e08[0x2d0];              // 0x0e08
+    u8 reserved_e08[0x2d0];              // 0x0e08
 } STARTUP_OBJECT_LIGHT;

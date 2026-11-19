@@ -524,7 +524,7 @@ void ResetPlayerPacket(PLAYERPACKET *packet, CHARACTERDATA *character) {
     packet->suspension_normal = v010;
     packet->hit_cooldown = 0.0f;
     packet->combo_input_timer = 0.0f;
-    packet->unknown_e48 = 0.0f;
+    packet->creature_timer = 0.0f;
 }
 
 void SetFlicker(GAMEOBJECT *object, f32 duration) {
@@ -543,7 +543,7 @@ void ResetPlayerAI(GAMEOBJECT *object) {
     object->ai_packet.path_target = NULL;
     object->helper_type = 0;
     object->helper_wait = 0;
-    object->field_108c = 0;
+    object->creature_flags = 0;
     object->helper_retry_delay = 0;
     object->can_use_object = NULL;
     object->use_action_word = 0;

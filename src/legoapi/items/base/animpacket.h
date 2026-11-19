@@ -11,7 +11,7 @@ typedef struct animpacket_s {   // size 0x44
     f32 blend_duration;         // 0x0c
     f32 blend_source_time;      // 0x10
     f32 blend_target_time;      // 0x14
-    u32 unknown_18[6];          // 0x18
+    u32 reserved_18[6];          // 0x18
     u8 flags;                   // 0x30
     u8 blending;                // 0x31
     i16 blend_source_animation; // 0x32
@@ -22,9 +22,9 @@ typedef struct animpacket_s {   // size 0x44
     u8 reversed_3c;             // 0x3c
     u8 reversed_3d;             // 0x3d
     u8 reversed_3e;             // 0x3e
-    u8 unknown_3f;              // 0x3f
-    u8 unknown_40;              // 0x40
-    u8 unknown_41;              // 0x41
+    u8 reserved_3f;              // 0x3f
+    u8 reserved_40;              // 0x40
+    u8 reserved_41;              // 0x41
     i16 overlay_animation;      // 0x42
 } ANIMPACKET;
 

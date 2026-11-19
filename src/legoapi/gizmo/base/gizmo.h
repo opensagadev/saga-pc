@@ -47,9 +47,9 @@ typedef struct gizmo_s { // size 0x8
         struct NUPORTAL *portal;
     }; // 0x0
 
-    i16 unknown_04; // 0x4
+    i16 user_index; // 0x4
     u8 type_id;     // 0x6
-    u8 unknown_07;  // 0x7
+    u8 reserved_07;  // 0x7
 } GIZMO;
 
 struct gizmoset_s;

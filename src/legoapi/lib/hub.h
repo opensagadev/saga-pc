@@ -32,7 +32,7 @@ typedef struct FADEINFO { // size 0x2c
     i32 stage;            // 0x10
     FadeBase *fades[4];   // 0x14
     i32 pending_type;     // 0x24
-    i32 unknown_28;       // 0x28
+    i32 reserved_28;       // 0x28
 } FADEINFO;
 
 #ifdef __cplusplus
@@ -42,17 +42,17 @@ extern "C" {
     typedef struct collection_area_save_s { // size 0xc
 
         union { // size 0x4
-            u8 unknown_00[4];
+            u8 reserved_00[4];
 
             struct {              // size 0x4
                 u8 complete;      // 0x0
                 u8 area_complete; // 0x1
-                u8 unknown_02[2]; // 0x2
+                u8 reserved_02[2]; // 0x2
             };
         }; // 0x0
 
         u8 minikit_complete; // 0x4
-        u8 unknown_05[7];    // 0x5
+        u8 reserved_05[7];    // 0x5
     } COLLECTION_AREA_SAVE;
 
     i32 Percent_UpdateHint(HINT *);
@@ -293,7 +293,7 @@ typedef struct area_data_s {                    // size 0x9c
 
     i16 text_id;         // 0x94
     u8 text_id_value;    // 0x96
-    u8 unknown_0097;     // 0x97
+    u8 reserved_97;     // 0x97
     i16 *hub_player_ids; // 0x98
 } AREA_DATA;
 

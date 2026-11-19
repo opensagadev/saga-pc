@@ -18,18 +18,18 @@ struct anakin_door_s {                     // size 0x140
     NUMTX original_matrix;                 // 0x080
     NUMTX original_secondary_matrix;       // 0x0c0
     NUVEC direction;                       // 0x100
-    f32 unknown_10c;                       // 0x10c
+    f32 reserved_10c;                       // 0x10c
     struct nuhspecial_s special;           // 0x110
     struct nuhspecial_s secondary_special; // 0x11c
     f32 minimum_offset;                    // 0x128
     f32 offset;                            // 0x12c
     f32 speed;                             // 0x130
-    f32 unknown_134;                       // 0x134
+    f32 open_delay;                       // 0x134
     u8 active;                             // 0x138
     u8 flags;                              // 0x139
     i16 has_secondary;                     // 0x13a
     i16 platform_id;                       // 0x13c
-    u8 unknown_13e[2];                     // 0x13e
+    u8 reserved_13e[2];                     // 0x13e
 };
 
 struct starfighter_s {                        // size 0x128
@@ -93,9 +93,9 @@ struct anakin_door_setup_s { // size 0x28
     f32 initial_offset;      // 0x08
     f32 speed;               // 0x0c
     i16 flags;               // 0x10
-    u8 unknown_12[2];        // 0x12
+    u8 reserved_12[2];        // 0x12
     NUVEC direction;         // 0x14
-    f32 unknown_20;          // 0x20
+    f32 open_delay;          // 0x20
     f32 minimum_offset;      // 0x24
 };
 

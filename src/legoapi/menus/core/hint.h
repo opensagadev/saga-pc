@@ -13,45 +13,32 @@ typedef struct HINT { // size 0x1c
             u32 price;            // 0x04
             f32 display_duration; // 0x08
         };
-
-        u8 unknown_duration_prefix[8];
-        u8 unknown_price_prefix[4];
-
-        struct {                   // size 0xc
-            u8 unknown3_prefix[3]; // 0x00
-            u8 unknown_3[9];       // 0x03
-        };
-
-        struct {                           // size 0xc
-            u8 unknown_price_prefix_08[8]; // 0x00
-            u8 unknown_price_suffix[4];    // 0x08
-        };
     }; // 0x00
 
     f32 repeat_delay; // 0x0c
 
     union { // size 0x4
         i32 (*update_fn)(struct HINT *);
-        u8 unknown_10[4];
+        u8 reserved_10[4];
     }; // 0x10
 
     u8 completed;     // 0x14
-    u8 unknown_15[3]; // 0x15
+    u8 reserved_15[3]; // 0x15
     f32 cooldown;     // 0x18
 } HINT;
 
 typedef struct HINTSYS { // size 0x20
 
     union { // size 0x4
-        u8 unknown_0[4];
+        u8 reserved_00[4];
         void (*draw_fn)(HINT *, i32);
     }; // 0x00
 
     HINT *hints;         // 0x04
     HINT *active_hint;   // 0x08
-    u8 unknownc;         // 0x0c
+    u8 reserved_0c;         // 0x0c
     u8 state;            // 0x0d
-    u8 unknowne[2];      // 0x0e
+    u8 reserved_0e[2];      // 0x0e
     u32 *save_bits;      // 0x10
     i32 save_word_count; // 0x14
     f32 display_elapsed; // 0x18

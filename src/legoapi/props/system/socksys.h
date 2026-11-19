@@ -25,7 +25,7 @@ typedef struct socksegment_s { // size 0x80
 } SOCKSEGMENT;
 
 typedef struct sockposition_s { // size 0x38
-    u8 unknown_00;              // 0x00
+    u8 reserved_00;              // 0x00
     i8 sock_index;              // 0x01
     i16 segment;                // 0x02
     f32 ratio;                  // 0x04
@@ -103,19 +103,19 @@ typedef struct sock_s {          // size 0x13c
     NUVEC center;                    // 0x058
     f32 extent;                      // 0x064
     u16 flags;                       // 0x068
-    u8 unknown_6a;                   // 0x06a
-    u8 unknown_6b;                   // 0x06b
-    u8 unknown_6c;                   // 0x06c
+    u8 reserved_6a;                   // 0x06a
+    u8 reserved_6b;                   // 0x06b
+    u8 reserved_6c;                   // 0x06c
     u8 look_ahead_segments;          // 0x06d
     u16 input_yaw;                   // 0x06e
 
     union { // size 0x4
 
         struct {           // size 0x4
-            u8 unknown_70; // 0x070
-            u8 unknown_71; // 0x071
-            u8 unknown_72; // 0x072
-            u8 unknown_73; // 0x073
+            u8 reserved_70; // 0x070
+            u8 reserved_71; // 0x071
+            u8 reserved_72; // 0x072
+            u8 reserved_73; // 0x073
         };
 
         f32 current_speed;
@@ -124,10 +124,10 @@ typedef struct sock_s {          // size 0x13c
     union { // size 0x4
 
         struct {           // size 0x4
-            u8 unknown_74; // 0x074
-            u8 unknown_75; // 0x075
-            u8 unknown_76; // 0x076
-            u8 unknown_77; // 0x077
+            u8 reserved_74; // 0x074
+            u8 reserved_75; // 0x075
+            u8 reserved_76; // 0x076
+            u8 reserved_77; // 0x077
         };
 
         f32 mid_force_inner_radius;
@@ -136,10 +136,10 @@ typedef struct sock_s {          // size 0x13c
     union { // size 0x4
 
         struct {           // size 0x4
-            u8 unknown_78; // 0x078
-            u8 unknown_79; // 0x079
-            u8 unknown_7a; // 0x07a
-            u8 unknown_7b; // 0x07b
+            u8 reserved_78; // 0x078
+            u8 reserved_79; // 0x079
+            u8 reserved_7a; // 0x07a
+            u8 reserved_7b; // 0x07b
         };
 
         f32 mid_force_outer_radius;
@@ -174,8 +174,8 @@ typedef struct sock_s {          // size 0x13c
     f32 overlap_blend_ratio;        // 0x0f4
     struct nuhspecial_s *objects;   // 0x0f8
     u16 object_count;               // 0x0fc
-    u8 unknown_fe;                  // 0x0fe
-    u8 unknown_ff;                  // 0x0ff
+    u8 reserved_fe;                  // 0x0fe
+    u8 reserved_ff;                  // 0x0ff
 
     struct {            // size 0x2
         u8 value;       // 0x100
@@ -183,12 +183,12 @@ typedef struct sock_s {          // size 0x13c
     } blend_entries[8]; // 0x100
 
     union { // size 0x4
-        u32 unknown_110;
+        u32 reserved_110;
         u32 blend_count;
     }; // 0x110
 
     union { // size 0x28
-        u8 unknown_114[40];
+        u8 reserved_114[40];
 
         struct {                             // size 0x28
             f32 camera_character_close_lift; // 0x114

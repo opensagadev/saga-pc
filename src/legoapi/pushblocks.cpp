@@ -47,24 +47,24 @@ extern "C" ADDGIZMOTYPE Default_ADDGIZMOTYPE;
 extern "C" char *PushBlocksName;
 
 typedef struct PUSH_SUPPORT_BLOCK_VIEW {
-    u8 unknown_000[0x24];
+    u8 reserved_00[0x24];
     nuhspecial_s special;
     GAMEOBJECT *pushing_object;
-    u8 unknown_034[0x58 - 0x34];
+    u8 reserved_34[0x58 - 0x34];
     NUVEC *position;
-    u8 unknown_05c[0xb0 - 0x5c];
+    u8 reserved_5c[0xb0 - 0x5c];
     NUVEC bounds_min;
     NUVEC bounds_max;
     u32 packed_state_flags;
-    u8 unknown_0cc[4];
+    u8 reserved_cc[4];
     u8 completed_snap_positions;
     u8 end_position_count;
     u8 output_count;
-    u8 unknown_0d3;
+    u8 reserved_d3;
 } PUSH_SUPPORT_BLOCK_VIEW;
 
 typedef struct PUSH_SUPPORT_WORLD_VIEW {
-    u8 unknown_000[0x46bc];
+    u8 reserved_00[0x46bc];
     PUSH_SUPPORT_BLOCK_VIEW *blocks;
     i32 count;
 } PUSH_SUPPORT_WORLD_VIEW;
@@ -92,7 +92,7 @@ typedef struct PUSH_RUNTIME_BLOCK_VIEW {
     nuhspecial_s special;
     GAMEOBJECT *pushing_object;
     i32 platform_id;
-    u8 unknown_038[8];
+    u8 reserved_38[8];
     f32 snap_distance;
     char name[16];
     NUVEC *snap_positions;
@@ -113,28 +113,28 @@ typedef struct PUSH_RUNTIME_BLOCK_VIEW {
     };
 
     u32 packed_state_flags;
-    u8 unknown_0cc[4];
+    u8 reserved_cc[4];
     u8 completed_snap_positions;
     u8 end_position_count;
     u8 output_count;
-    u8 unknown_0d3;
+    u8 reserved_d3;
 } PUSH_RUNTIME_BLOCK_VIEW;
 
 typedef struct PUSH_RUNTIME_LEVEL_VIEW {
-    u8 unknown_000[0xff];
+    u8 reserved_00[0xff];
     u8 max_push_blocks;
 } PUSH_RUNTIME_LEVEL_VIEW;
 
 typedef struct PUSH_RUNTIME_WORLD_VIEW {
-    u8 unknown_000[0x104];
+    u8 reserved_00[0x104];
     VARIPTR giz_buffer;
-    u8 unknown_108[0x128 - 0x108];
+    u8 reserved_108[0x128 - 0x108];
     PUSH_RUNTIME_LEVEL_VIEW *current_level;
-    u8 unknown_12c[0x13c - 0x12c];
+    u8 reserved_12c[0x13c - 0x12c];
     NUGSCN *current_gscn;
-    u8 unknown_140[0x2ac8 - 0x140];
+    u8 reserved_140[0x2ac8 - 0x140];
     void *gizmo_sys;
-    u8 unknown_2acc[0x46bc - 0x2acc];
+    u8 reserved_2acc[0x46bc - 0x2acc];
     PUSH_RUNTIME_BLOCK_VIEW *blocks;
     i32 count;
 } PUSH_RUNTIME_WORLD_VIEW;

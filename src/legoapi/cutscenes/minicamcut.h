@@ -72,24 +72,24 @@ extern "C" {
             u8 mode;                      // 0x382
             u8 easing;                    // 0x383
             u8 borders;                   // 0x384
-            u8 unknown_385_b[0x3];        // 0x385
+            u8 reserved_385[0x3];        // 0x385
             f32 distance;                 // 0x388
             u16 pitch;                    // 0x38c
             u16 yaw;                      // 0x38e
             u16 roll;                     // 0x390
-            u8 unknown_392[0x2];          // 0x392
+            u8 reserved_392[0x2];          // 0x392
             f32 target_distance;          // 0x394
             u16 target_pitch;             // 0x398
             u16 target_yaw;               // 0x39a
             u16 target_roll;              // 0x39c
-            u8 unknown_39e[0x2];          // 0x39e
+            u8 reserved_39e[0x2];          // 0x39e
             NUVEC focus_velocity;         // 0x3a0
             NUVEC position_velocity;      // 0x3ac
             f32 start_distance;           // 0x3b8
             u16 start_pitch;              // 0x3bc
             u16 start_yaw;                // 0x3be
             u16 start_roll;               // 0x3c0
-            u8 unknown_3c2[0x2];          // 0x3c2
+            u8 reserved_3c2[0x2];          // 0x3c2
             NUVEC *focus;                 // 0x3c4
             NUVEC focus_offset;           // 0x3c8
             NUVEC target;                 // 0x3d4

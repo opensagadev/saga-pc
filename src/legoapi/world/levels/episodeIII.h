@@ -13,12 +13,12 @@ typedef union LEVEL_INST_ANIM_RESET_VIEW { // size 0x30
     NUINSTANIM *animations[12];
 
     struct {                    // size 0x30
-        u8 unknown_00[0x20];    // 0x00
+        u8 reserved_00[0x20];    // 0x00
         f32 miscellaneous_time; // 0x20
         u16 target_deg_mid;     // 0x24
-        u16 unknown_26;         // 0x26
+        u16 reserved_26;         // 0x26
         u16 target_deg_far;     // 0x28
-        u8 unknown_2a[6];       // 0x2a
+        u8 reserved_2a[6];       // 0x2a
     } fields;
 } LEVEL_INST_ANIM_RESET_VIEW;
 
@@ -71,7 +71,7 @@ extern "C" {
 typedef struct cruiserd_lift_anim_s { // size 0x60
     NUMTX matrix;                     // 0x00
     f32 tfactor;                      // 0x40
-    u8 unknown_44[8];                 // 0x44
+    u8 reserved_44[8];                 // 0x44
     f32 ltime;                        // 0x4c
     u32 playing : 1;                  // 0x50:0
     u32 flags_rest : 31;              // 0x50:1

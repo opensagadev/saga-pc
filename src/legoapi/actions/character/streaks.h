@@ -29,7 +29,7 @@ extern "C" {
         STREAK_NODE *nodes;         // 0x08
         u16 index;                  // 0x0c
         u8 flags;                   // 0x0e
-        u8 unknown_0f;              // 0x0f
+        u8 reserved_0f;              // 0x0f
         i32 has_new_node;           // 0x10
         void **owner_slot;          // 0x14
         u32 colour;                 // 0x18

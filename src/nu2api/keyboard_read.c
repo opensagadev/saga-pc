@@ -379,8 +379,8 @@ void do_Pad_flymode_camera(edcam_s *camera, f32 delta_time, FRAME_PAD *pad) {
     NuVecMtxRotate(&offset, &offset, &rotation);
     NuVecAdd(&old_opposite, &camera->position, &offset);
 
-    yaw_delta = (i32)((f64)NuPs2ApplyDeadZone(pad->analog_right_x, 32) * camera->pad_yaw_speed * delta_time * 64.0);
-    pitch_delta = (i32)((f64)NuPs2ApplyDeadZone(pad->analog_right_y, 32) * camera->pad_pitch_speed * delta_time * 32.0);
+    yaw_delta = (i32)((f64)NuPs2ApplyDeadZone(pad->analog_right_x, 32) * camera->stick_yaw_speed * delta_time * 64.0);
+    pitch_delta = (i32)((f64)NuPs2ApplyDeadZone(pad->analog_right_y, 32) * camera->stick_pitch_speed * delta_time * 32.0);
     if (camera->freedoms & EDCAM_FREEDOM_INVERT_PAD_PITCH) {
         pitch_delta = -pitch_delta;
     }
@@ -471,12 +471,12 @@ void do_Pad_Standard_camera(edcam_s *camera, f32 delta_time, FRAME_PAD *pad) {
         camera->distance = MIN(-camera->minimum_distance, camera->distance);
     }
     if (camera->freedoms & EDCAM_FREEDOM_PITCH) {
-        camera->pitch += (i32)((f32)(NuPs2ApplyDeadZone(pad_pitch_axis, 32) * camera->pad_pitch_speed) * delta_time * -64.0);
+        camera->pitch += (i32)((f32)(NuPs2ApplyDeadZone(pad_pitch_axis, 32) * camera->stick_pitch_speed) * delta_time * -64.0);
         camera->pitch = MIN(0x4000, camera->pitch);
         camera->pitch = MAX(-0x4000, camera->pitch);
     }
     if (camera->freedoms & EDCAM_FREEDOM_YAW) {
-        camera->yaw += (i32)((f32)(NuPs2ApplyDeadZone(pad_yaw_axis, 32) * camera->pad_yaw_speed) * delta_time * -64.0);
+        camera->yaw += (i32)((f32)(NuPs2ApplyDeadZone(pad_yaw_axis, 32) * camera->stick_yaw_speed) * delta_time * -64.0);
     }
     if (camera->freedoms & EDCAM_FREEDOM_POSITION_Y) {
         movement.y += (f32)pad->analog_l1 * camera->position_speed.y * move_speed * frame_scale * 0.5;

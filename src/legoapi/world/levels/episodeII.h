@@ -100,7 +100,7 @@ typedef struct JEDIB_STATE {                    // size 0x63f0
     struct gizaimessage_s *msg_restrain[3];     // 0x63b8
     i16 wave_ids[6];                            // 0x63c4
     u8 wave_spawned[6];                         // 0x63d0
-    u8 pad_63d6[2];                             // 0x63d6
+    u8 reserved_63d6[2];                             // 0x63d6
     GAMEOBJECT *boss;                           // 0x63d8
     f32 wave_timer;                             // 0x63dc
 
@@ -113,7 +113,7 @@ typedef struct JEDIB_NETPACKET { // size 0x20
     i16 state;                   // 0x00
     i16 phase;                   // 0x02
     i16 count;                   // 0x04
-    i16 pad_06;                  // 0x06
+    i16 reserved_06;                  // 0x06
     i16 ids[8];                  // 0x08
     u8 spawned[8];               // 0x18
 } JEDIB_NETPACKET;

@@ -118,7 +118,7 @@ SPLINEPOS fireBackPos = {0};
 f32 FireDeltaPosition = 0.0f;
 
 typedef struct sarlacc_panel_s { // size 0x63
-    u8 unknown_00[0x62];         // 0x00
+    u8 reserved_00[0x62];         // 0x00
     u8 state_flags;              // 0x62
 } SARLACC_PANEL;
 

@@ -374,7 +374,7 @@ typedef struct CUT_VISIBLE_LOCATOR { // size 0x5c
     NUVEC pivot;                     // 0x40
     f32 scale;                       // 0x4c
     NUANIMDATA2 *animation;          // 0x50
-    u32 unknown_54;                  // 0x54
+    u32 reserved_54;                  // 0x54
     u8 flags;                        // 0x58
 } CUT_VISIBLE_LOCATOR;
 

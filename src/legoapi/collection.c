@@ -58,9 +58,9 @@ i32 Collection_Got(i32 id) {
 }
 
 typedef struct collection_variant_reader_s { // size 0x120
-    u8 unknown_00[0x116];                    // 0x000
+    u8 reserved_00[0x116];                    // 0x000
     i8 variant_type;                         // 0x116
-    u8 unknown_117[9];                       // 0x117
+    u8 reserved_117[9];                       // 0x117
 } COLLECTION_VARIANT_READER;
 
 i32 Collection_GotAnyOfType(i32 type, u32 flags) {
@@ -112,9 +112,9 @@ void CollectAllCharacters(i32 only_story) {
 
 typedef struct collection_buyable_reader_s { // size 0x1c
     i16 id;                                  // 0x00
-    u8 unknown_02[6];                        // 0x02
+    u8 reserved_02[6];                        // 0x02
     u8 can_buy;                              // 0x08
-    u8 unknown_09[0x13];                     // 0x09
+    u8 reserved_09[0x13];                     // 0x09
 } COLLECTION_BUYABLE_READER;
 
 void Collection_CreateMaster(char *name, i16 *title_id, COLLECTION_BUILD *collection, i32 columns, f32 scale) {
@@ -322,9 +322,9 @@ void Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
 /* Append to existing collection.c after its canonical static CollectCount/CollectList. */
 
 typedef struct SHOP_UNLOCK_AREA { // size 0xc
-    u8 unknown_00;                // 0x0
+    u8 reserved_00;                // 0x0
     u8 area_complete;             // 0x1
-    u8 unknown_02[10];            // 0x2
+    u8 reserved_02[10];            // 0x2
 } SHOP_UNLOCK_AREA;
 
 COLLECTID *CollectIDUnlocked(i32 id) {

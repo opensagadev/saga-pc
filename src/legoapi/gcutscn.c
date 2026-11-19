@@ -606,9 +606,9 @@ typedef struct cut_trigger_entry_s { // size 0x34
     i32 kind;                        // 0x04
     i16 threshold;                   // 0x08
     u8 initial_state;                // 0x0a
-    u8 unknown_0b;                   // 0x0b
+    u8 reserved_0b;                   // 0x0b
     u8 flags;                        // 0x0c
-    u8 unknown_0d[3];                // 0x0d
+    u8 reserved_0d[3];                // 0x0d
     f32 radius;                      // 0x10
     NUVEC min;                       // 0x14
     NUVEC max;                       // 0x20
@@ -632,10 +632,10 @@ typedef struct cut_trigger_state_s { // size 0x4
 
 typedef struct cut_trigger_scene_instance_s { // size 0x50
     NUMTX matrix;                             // 0x00
-    i32 unknown_40;                           // 0x40
+    i32 reserved_40;                           // 0x40
     u32 flags;                                // 0x44
     NUMTX *animated_matrix;                   // 0x48
-    u32 unknown_4c;                           // 0x4c
+    u32 reserved_4c;                           // 0x4c
 } CUT_TRIGGER_SCENE_INSTANCE;
 
 typedef struct cut_trigger_set_s CUT_TRIGGER_SET;

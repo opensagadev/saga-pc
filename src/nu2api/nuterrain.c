@@ -1552,7 +1552,7 @@ i32 ReadTerrain(unsigned char *base_path, i32 first_group, i16 **buffer, TERRSET
     *buffer += 2;
     group_count = 0;
     for (i = 0; i < chunk->chunk_count; ++i) {
-        if (chunk[i].unknown_16 == 0x1ca) {
+        if (chunk[i].scene_index == 0x1ca) {
             TerrainDiagnosticNoOpPC(path);
         }
     }
@@ -1564,7 +1564,7 @@ i32 ReadTerrain(unsigned char *base_path, i32 first_group, i16 **buffer, TERRSET
             case TERRAIN_CHUNK_GROUP_SECONDARY:
                 terrain->groups[first_group].group_info = chunk[i].group_info;
                 terrain->groups[first_group].chunk_type = chunk[i].chunk_type;
-                terrain->groups[first_group].scene_index = chunk[i].unknown_16;
+                terrain->groups[first_group].scene_index = chunk[i].scene_index;
                 ++group_count;
                 terrain->groups[first_group].origin.x = chunk[i].origin.x;
                 terrain->groups[first_group].origin.y = chunk[i].origin.y;
@@ -1779,7 +1779,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
         terrain->track_slots[slot].wall_contact_state = TERRAIN_TRACK_CONTACT_NONE;
     }
 
-    terrain->unknown_064 = NULL;
+    terrain->user_data = NULL;
     terrain->active_platform_count = 0;
     terrain->removed_platform_count = 0;
 
@@ -2466,7 +2466,7 @@ i32 ReadTerrainPickup(unsigned char *base_path, i16 **buffer, TERRAIN_PICKUP_SET
                     terrain->group_for_type[terrain->groups[group_count].group_info] = (i16)group_count;
                 }
                 terrain->groups[group_count].chunk_type = chunk->chunk_type;
-                terrain->groups[group_count].scene_index = (i16)chunk->unknown_16;
+                terrain->groups[group_count].scene_index = (i16)chunk->scene_index;
                 terrain->groups[group_count].origin.x = chunk->origin.x;
                 terrain->groups[group_count].origin.y = chunk->origin.y;
                 terrain->groups[group_count].origin.z = chunk->origin.z;

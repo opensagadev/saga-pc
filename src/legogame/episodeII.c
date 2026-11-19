@@ -62,7 +62,7 @@
 
 /* The Factory B paint puzzle state shared with the network partner (SetLevelHack(4)). */
 typedef struct factoryb_netpacket_s { // size 0x4
-    u8 unknown_0;                     // 0x0 cleared every update
+    u8 state;                     // 0x0 cleared every update
     i8 paint_try;                     // 0x1 painttry, the paint lights that are lit
     u8 cylinder_up;                   // 0x2 the bonus cylinder rose (stage 4)
     i8 paint_target;                  // 0x3 painttarget, 0 or the target colour + 3
@@ -264,7 +264,7 @@ void UpdatePaintPuzzle(WORLDINFO *world) {
         default:
             break;
     }
-    factoryb_netpacket->unknown_0 = 0;
+    factoryb_netpacket->state = 0;
     factoryb_netpacket->paint_try = (i8)painttry;
     factoryb_netpacket->paint_target = (i8)painttarget;
     if (factoryb_netpacket->cylinder_up == 1 && played_sound == 0) {

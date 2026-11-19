@@ -66,7 +66,7 @@ struct HOTHBATTLE_MELEE_s { // size 0xc8
 
     union { // size 0x1
         u8 current_wave;
-        u8 unknown_0;
+        u8 reserved_00;
     }; // 0x00
 
     union { // size 0x1
@@ -79,14 +79,14 @@ struct HOTHBATTLE_MELEE_s { // size 0xc8
         u8 restart;
     }; // 0x02
 
-    u8 unknown_3; // 0x03
+    u8 reserved_03; // 0x03
 
     union { // size 0x1
         i8 transition_phase;
-        i8 unknown_4;
+        i8 reserved_04;
     }; // 0x04
 
-    u8 unknown_5[3];                              // 0x05
+    u8 reserved_05[3];                              // 0x05
     f32 wave_delay;                               // 0x08
     struct HOTHBATTLE_MELEE_WAVE_s waves[4];      // 0x0c
     struct gameobject_s *background_creatures[6]; // 0xac

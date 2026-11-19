@@ -7,9 +7,9 @@
 typedef struct giztimer_s { // size 0x1c
     f32 time_remaining;     // 0x00
     f32 start_time;         // 0x04
-    u8 unknown_008[2];      // 0x08
+    u8 reserved_08[2];      // 0x08
     u8 flags;               // 0x0a
-    u8 unknown_00b;         // 0x0b
+    u8 reserved_0b;         // 0x0b
     char name[16];          // 0x0c
 } GIZTIMER;
 

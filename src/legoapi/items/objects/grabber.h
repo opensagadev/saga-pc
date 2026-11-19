@@ -13,7 +13,7 @@
 typedef struct grabber_s {                          // size 0x568
     NUMTX matrix;                                   // 0x000
     NUMTX grab_matrix;                              // 0x040
-    u8 unknown_080[0x440 - 0x80];                   // 0x080
+    u8 reserved_80[0x440 - 0x80];                   // 0x080
     NUMTX carried_matrix;                           // 0x440
     NUVEC initial_position;                         // 0x480
     NUVEC grab_position;                            // 0x48c
@@ -21,7 +21,7 @@ typedef struct grabber_s {                          // size 0x568
     NUVEC target_velocity;                          // 0x4a4
     struct CHARACTER_MODEL_LAYERS *character_model; // 0x4b0
     ANIMPACKET animation;                           // 0x4b4
-    u8 unknown_4f8[4];                              // 0x4f8
+    u8 reserved_4f8[4];                              // 0x4f8
     nuhspecial_s special;                           // 0x4fc
     nuhspecial_s shadow_special;                    // 0x508
     struct gameobject_s *victim;                    // 0x514
@@ -58,7 +58,7 @@ typedef struct grabber_s {                          // size 0x568
     i16 platform_id;   // 0x560
     u8 move_xy;        // 0x562
     u8 invert_x;       // 0x563
-    u8 unknown_564[4]; // 0x564
+    u8 reserved_564[4]; // 0x564
 } GRABBER;
 
 #ifdef __cplusplus

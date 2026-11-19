@@ -23,7 +23,7 @@ extern "C" {
         f32 distance;        // 0x14
         f32 height;          // 0x18
         f32 zoom_step;       // 0x1c
-        u32 unknown_20;      // 0x20
+        u32 reserved_20;      // 0x20
         GAMEPAD *gamepad;    // 0x24
     } VIEWCAM;
 

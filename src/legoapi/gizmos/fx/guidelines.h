@@ -17,7 +17,7 @@ typedef struct guideline_record_s { // size 0x24
         };
     }; // 0x20
 
-    u8 unknown_21[3]; // 0x21
+    u8 reserved_21[3]; // 0x21
 } GUIDELINE_RECORD;
 
 struct WORLDINFO_s;

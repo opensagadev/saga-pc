@@ -389,7 +389,7 @@ PART *AddPart(ADDPART *parameters) {
     part->velocity = *parameters->velocity;
     part->time_remaining = part->initial_time = parameters->fade_time;
     part->player_mask = -1;
-    part->unknown_20b = -1;
+    part->effect_slot = -1;
     part->scale_time = 0.0f;
     part->time_step = parameters->time_step;
     part->active = (part->active & ~PART_STATE_SCALING_DOWN) | PART_STATE_SCALING_UP;
@@ -481,7 +481,7 @@ PART *AddPart(ADDPART *parameters) {
     part->effect_id_1f4 = parameters->effect_id_78;
     part->effect_scale = parameters->effect_scale;
     part->previous_transform = part->transform;
-    part->unknown_210 = 0;
+    part->user_word = 0;
     part->first_frame = 1;
     part->force_flags = 0;
     part->trail_state = 0;
@@ -960,9 +960,9 @@ void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32
                     i32 outer_y, i32 colour, NUMTL *material);
 
 typedef struct PART_TERRAIN_STATE { // size 0x20c
-    u8 unknown_000[0x200];          // 0x000
+    u8 reserved_00[0x200];          // 0x000
     u32 platform_id;                // 0x200
-    u8 unknown_204[5];              // 0x204
+    u8 reserved_204[5];              // 0x204
     i8 impact_material;             // 0x209
 } PART_TERRAIN_STATE;
 

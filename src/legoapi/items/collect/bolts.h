@@ -90,7 +90,7 @@ typedef struct bolt_s {         // size 0x138
     u8 index;                    // 0x103
     i8 impact_surface;           // 0x104
     i8 owner_surface;            // 0x105
-    u16 unknown_106;             // 0x106
+    u16 reserved_106;             // 0x106
     NUVEC bounds_min;            // 0x108
     NUVEC bounds_max;            // 0x114
     NUVEC hit_normal;            // 0x120

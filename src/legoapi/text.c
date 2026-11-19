@@ -1301,7 +1301,7 @@ void MenuSmartTextEx(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u3
 }
 
 typedef struct text_crawl_mission_view_s { // size 0x8
-    u8 unknown_00[4];                      // 0x0
+    u8 reserved_00[4];                      // 0x0
     i16 name_id;                           // 0x4
     i16 text_id;                           // 0x6
 } TEXT_CRAWL_MISSION_VIEW;

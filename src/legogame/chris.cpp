@@ -94,7 +94,7 @@ extern "C" {
     /* The PC keeps eight additional bytes at the end of each fighter record. */
     typedef struct DOGFIGHT_FIGHTER { // size 0x130
         starfighter_s fields;         // 0x000
-        u8 unknown_128[8];            // 0x128
+        u8 reserved_128[8];            // 0x128
     } DOGFIGHT_FIGHTER;
 
     typedef struct DOGFIGHT_GROUP {   // size 0x680
@@ -103,7 +103,7 @@ extern "C" {
         NUVEC4 velocity;              // 0x630
         NUVEC4 camera_position;       // 0x640
         NUVEC4 target;                // 0x650
-        u8 unknown_660[8];            // 0x660
+        u8 reserved_660[8];            // 0x660
         i32 active;                   // 0x668
         i32 state;                    // 0x66c
         u32 reset_colour;             // 0x670
@@ -116,7 +116,7 @@ extern "C" {
         NUMTX matrix;               // 0x00
         u16 flags;                  // 0x40
         u16 enabled;                // 0x42
-        u8 unknown_44[4];           // 0x44
+        u8 reserved_44[4];           // 0x44
         u32 colour;                 // 0x48
         f32 scale;                  // 0x4c
     } DOGFIGHT_CROSS;
@@ -133,7 +133,7 @@ extern "C" {
     } DOGFIGHT_DOOR;
 
     typedef struct DOGFIGHT_RESET_RECORD { // size 0x60
-        u8 unknown[0x60];                  // 0x00
+        u8 reserved_00[0x60];                  // 0x00
     } DOGFIGHT_RESET_RECORD;
 
     typedef struct DOGFIGHT_RESET_BUFFER { // size 0xc
@@ -145,7 +145,7 @@ extern "C" {
     typedef struct DOGFIGHT_COIN_RECORD { // size 0x10
         i32 spline_id;                    // 0x0
         f32 spawn_time;                   // 0x4
-        u8 unknown_08[8];                 // 0x8
+        u8 reserved_08[8];                 // 0x8
     } DOGFIGHT_COIN_RECORD;
 
     typedef struct DOGFIGHT_ACTION_STATE { // size 0x30
@@ -154,9 +154,9 @@ extern "C" {
         DOGFIGHT_ACTION *current;          // 0x14
         i32 next_index;                    // 0x18
         i32 command;                       // 0x1c
-        u32 unknown_20;                    // 0x20
+        u32 reserved_20;                    // 0x20
         f32 timer;                         // 0x24
-        u32 unknown_28;                    // 0x28
+        u32 reserved_28;                    // 0x28
         struct DOGFIGHT_SPACE *owner;      // 0x2c
     } DOGFIGHT_ACTION_STATE;
 
@@ -168,13 +168,13 @@ extern "C" {
         DOGFIGHT_FIGHTER queued_fighters[96];     // 0x564d0
         DOGFIGHT_RESET_RECORD reset_records[256]; // 0x5d6d0
         DOGFIGHT_RESET_BUFFER reset_buffer;       // 0x636d0
-        u8 unknown_636dc[4];                      // 0x636dc
+        u8 reserved_636dc[4];                      // 0x636dc
         NUVEC4 origin_start;                      // 0x636e0
         NUVEC4 origin_end;                        // 0x636f0
         NUVEC4 direction;                         // 0x63700
         f32 direction_length;                     // 0x63710
         f32 inverse_direction_length;             // 0x63714
-        u8 unknown_63718[4];                      // 0x63718
+        u8 reserved_63718[4];                      // 0x63718
         f32 door_time;                            // 0x6371c
         f32 door_countdown;                       // 0x63720
         f32 door_elapsed;                         // 0x63724
@@ -183,7 +183,7 @@ extern "C" {
         f32 value_one_b;                          // 0x63730
         i32 coin_history_count;                   // 0x63734
         DOGFIGHT_COIN_RECORD coin_history[256];   // 0x63738
-        u8 unknown_64738[8];                      // 0x64738
+        u8 reserved_64738[8];                      // 0x64738
     } DOGFIGHT_SPACE;
 
     NUVEC4 DogfightDrawScale = {0.0f, 0.0f, 0.0f, 0.0f};
@@ -225,9 +225,9 @@ extern "C" {
         NUMTX matrix;                    // 0x00
         NUVEC4 velocity;                 // 0x40
         f32 duration;                    // 0x50
-        u32 unknown_54;                  // 0x54
+        u32 reserved_54;                  // 0x54
         i32 type;                        // 0x58
-        u32 unknown_5c;                  // 0x5c
+        u32 reserved_5c;                  // 0x5c
     } DOGFIGHT_QUICK_BOLT;
 
     typedef struct DOGFIGHT_QUICK_BUFFER { // size 0xc
@@ -2276,7 +2276,7 @@ extern "C" {
             door->offset = setup->initial_offset;
             door->speed = setup->speed;
             door->minimum_offset = setup->minimum_offset;
-            door->unknown_134 = setup->unknown_20;
+            door->open_delay = setup->open_delay;
             ++door;
             ++count;
         }

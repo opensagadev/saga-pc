@@ -62,7 +62,7 @@ typedef struct GIZMOPICKUP { // size 0x2c
     }; // 0x17
 
     u8 activation_group; // 0x18
-    u8 unknown_19[3];    // 0x19
+    u8 reserved_19[3];    // 0x19
     f32 floor;           // 0x1c
     u16 shadow_x;        // 0x20
     u16 shadow_z;        // 0x22
@@ -111,8 +111,8 @@ typedef struct PICKUP_TYPE_SYSTEM {  // size 0x10
     i8 minikit_type;                 // 0xa
     i8 gizmo_type_id;                // 0xb
     i8 alternate_type;               // 0xc
-    i8 unknown_0d;                   // 0xd
-    i16 unknown_0e;                  // 0xe
+    i8 reserved_0d;                   // 0xd
+    i16 reserved_0e;                  // 0xe
 } PICKUP_TYPE_SYSTEM;
 
 #ifdef __cplusplus

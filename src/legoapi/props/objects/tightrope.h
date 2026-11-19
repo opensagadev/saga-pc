@@ -39,7 +39,7 @@ struct TIGHTROPE_s { // size 0x48
     u8 start_post_variant; // 0x30
     u8 end_post_variant;   // 0x31
     i8 show_start_post;    // 0x32
-    u8 pad_33;             // 0x33
+    u8 reserved_33;             // 0x33
     NUVEC direction;       // 0x34
 
     union { // size 0x4
