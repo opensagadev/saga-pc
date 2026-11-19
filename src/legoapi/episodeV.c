@@ -1626,8 +1626,8 @@ void HothBattleE_UpdateWave(void) {
             }
             melee.wave_delay = 0.0f;
             sprintf(state, "CamCut_%d", melee.next_wave);
-            if (AIScriptSetBaseScriptStateByName(&((HOTH_WORLD_SCRIPT *)WORLD)->processor, state) != 0) {
-                AIScriptProcess(WORLD->ai_sys, NULL, NULL, &((HOTH_WORLD_SCRIPT *)WORLD)->processor, FRAMETIME);
+            if (AIScriptSetBaseScriptStateByName(&WORLD->script_processors[0].processor, state) != 0) {
+                AIScriptProcess(WORLD->ai_sys, NULL, NULL, &WORLD->script_processors[0].processor, FRAMETIME);
             }
             melee.transition_phase = 0;
             melee.wave_delay = 0.0f;

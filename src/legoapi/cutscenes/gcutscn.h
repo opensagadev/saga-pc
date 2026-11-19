@@ -423,12 +423,15 @@ typedef struct cut_load_trigger_instance_s {
     CUT_LOAD_TRIGGER_STATE *states;
 } CUT_LOAD_TRIGGER_INSTANCE;
 
+/* A locator function by name (CutFindLocatorFunction): reset when its scene restarts, update every frame. */
 struct cut_locator_function_entry_s { // size 0x14
     char *name;                       // 0x00
     u32 unknown_04;                   // 0x04
     void (*reset)(struct instnugcutscene_s *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *,
                   CUT_LOAD_LOCATOR *); // 0x08
-    u8 unknown_0c[8];                  // 0x0c
+    u32 unknown_0c;                    // 0x0c
+    void (*update)(struct instnugcutscene_s *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *, f32, NUMTX *,
+                   i32); // 0x10
 };
 
 /* cut_script_node_s.type: the cut scene script command each node holds (CutScriptParseBlock keywords). */

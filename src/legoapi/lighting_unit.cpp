@@ -287,30 +287,30 @@ extern "C" {
     }
 
     void InitGameObjectLights(void) {
-        STARTUP_OBJECT_LIGHT *objects;
+        GAMEOBJECT *objects;
         i32 index;
         for (index = 0; index < 64; ++index) {
-            ((STARTUP_OBJECT_LIGHT *)Obj)[index].dynamic_light_id = -1;
+            Obj[index].player.dynamic_light_id = -1;
         }
-        objects = (STARTUP_OBJECT_LIGHT *)Obj;
+        objects = Obj;
         for (index = 0; index < HIGHGAMEOBJECT; ++index) {
-            if ((objects[index].flags & 1) && (objects[index].flags & 0x1000)) {
-                objects[index].dynamic_light_id = rtlDynamicAlloc();
-                if (objects[index].dynamic_light_id != -1) {
-                    rtlDynamicSetType(objects[index].dynamic_light_id, RTL_LIGHT_POINT);
-                    rtlDynamicEnable(objects[index].dynamic_light_id, 0);
+            if ((objects[index].flags_1fc_word & APIOBJECT_FLAG_IN_USE) && (objects[index].flags_1fc_word & APIOBJECT_FLAG_CHARACTER)) {
+                objects[index].player.dynamic_light_id = rtlDynamicAlloc();
+                if (objects[index].player.dynamic_light_id != -1) {
+                    rtlDynamicSetType(objects[index].player.dynamic_light_id, RTL_LIGHT_POINT);
+                    rtlDynamicEnable(objects[index].player.dynamic_light_id, 0);
                 }
             }
         }
     }
 
     void FreeGameObjectLights(void) {
-        STARTUP_OBJECT_LIGHT *objects = (STARTUP_OBJECT_LIGHT *)Obj;
+        GAMEOBJECT *objects = Obj;
         i32 i;
         for (i = 0; i < HIGHGAMEOBJECT; ++i) {
-            if ((objects[i].flags & 1) && (objects[i].flags & 0x1000) && objects[i].dynamic_light_id != -1) {
-                rtlDynamicFree(objects[i].dynamic_light_id);
-                objects[i].dynamic_light_id = -1;
+            if ((objects[i].flags_1fc_word & APIOBJECT_FLAG_IN_USE) && (objects[i].flags_1fc_word & APIOBJECT_FLAG_CHARACTER) && objects[i].player.dynamic_light_id != -1) {
+                rtlDynamicFree(objects[i].player.dynamic_light_id);
+                objects[i].player.dynamic_light_id = -1;
             }
         }
     }

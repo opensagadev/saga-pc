@@ -120,28 +120,6 @@ void CutGetJointOverrideMatrix(NUHGOBJ_EVAL *hierarchy, i32 index, NUMTX *matrix
     NuMtxTransposeR(matrix, matrix);
 }
 
-typedef struct CUT_UPDATE_LOCATOR_MATRIX { // size 0x64
-    NUMTX matrix;                          // 0x00
-    NUVEC pivot;                           // 0x40
-    f32 scale;                             // 0x4c
-    NUANIMDATA2 *animation;                // 0x50
-    u32 unknown_54;                        // 0x54
-    u8 flags;                              // 0x58
-    u8 type;                               // 0x59
-    u8 joint;                              // 0x5a
-    u8 self;                               // 0x5b
-    u8 unknown_5c[8];                      // 0x5c
-} CUT_UPDATE_LOCATOR_MATRIX;
-
-typedef struct CUT_UPDATE_ENTRY { // size 0x14
-    char *name;                   // 0x00
-    u32 unknown_04;               // 0x04
-    u32 unknown_08;               // 0x08
-    u32 unknown_0c;               // 0x0c
-    void (*update)(INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *, f32, NUMTX *,
-                   i32); // 0x10
-} CUT_UPDATE_ENTRY;
-
 f32 CutSceneDebrisAxisSize = 0;
 i32 CutSceneDebrisProcessMode = 0;
 
@@ -407,7 +385,7 @@ void instNuGCutLocatorUpdate(INSTNUGCUTSCENE *owner, CUT_LOAD_LOCATOR_SYSTEM *sy
         }
     } else if ((type->flags & CUTLOCATOR_FUNCTION) != 0) {
         if (type->function_index != 0xffff) {
-            CUT_UPDATE_ENTRY *entry = &((CUT_UPDATE_ENTRY *)CutSceneLocatorFunctions)[type->function_index];
+            CUT_LOCATOR_FUNCTION_ENTRY *entry = &CutSceneLocatorFunctions[type->function_index];
             if (entry->update != NULL) {
                 entry->update(owner, system, instance, locator, frame, parent, paused);
             }

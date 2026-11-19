@@ -15,11 +15,6 @@ extern "C" {
 }
 #endif
 
-typedef struct HOTH_WORLD_SCRIPT {
-    u8 reserved[0x2b00];
-    AISCRIPTPROCESS processor;
-} HOTH_WORLD_SCRIPT;
-
 typedef struct {
     BUILD_PROGRESS_RECORD *records;
     u16 count;

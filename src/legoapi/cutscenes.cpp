@@ -120,15 +120,6 @@ typedef struct CUT_DRAW_RIGID {
     u8 flags;
 } CUT_DRAW_RIGID;
 
-typedef struct CUT_DRAW_LOCATOR_ENTRY { // size 0x14
-    char *name;                         // 0x00
-    u32 unknown_04;                     // 0x04
-    u32 unknown_08;                     // 0x08
-    u32 unknown_0c;                     // 0x0c
-    void (*update)(INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *, f32, NUMTX *,
-                   i32); // 0x10
-} CUT_DRAW_LOCATOR_ENTRY;
-
 struct FADEINFO_s;
 
 extern "C" {
@@ -1717,12 +1708,12 @@ extern "C" {
         }
     }
 
-    static CUT_DRAW_LOCATOR_ENTRY cutscene_locatorfns[] = {{const_cast<char *>("blaster"), 0, 0, 0, LocatorFunction_Blaster},
-                                                           {NULL, 0, 0, 0, NULL}};
+    static CUT_LOCATOR_FUNCTION_ENTRY cutscene_locatorfns[] = {{const_cast<char *>("blaster"), 0, NULL, 0, LocatorFunction_Blaster},
+                                                           {NULL, 0, NULL, 0, NULL}};
 
     void CutScenes_InitSystem(CUT_DRAW_SETTINGS *system) {
         CutSceneSys = system;
-        NuGCutSceneSysInit(reinterpret_cast<CUT_LOCATOR_FUNCTION_ENTRY *>(cutscene_locatorfns));
+        NuGCutSceneSysInit(cutscene_locatorfns);
         NuSetCutSceneCharacterRenderFn(reinterpret_cast<CUT_DRAW_RENDER_CALLBACK>(CutScene_DrawCharacter));
         NuSetCutSceneFindCharactersFn(CutScene_FindCharacters);
         NuSetCutSceneCharacterCreateDataFn(CutScene_CreateCharacterInstance);
