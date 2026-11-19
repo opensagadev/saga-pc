@@ -1467,7 +1467,7 @@ typedef struct debris_collision_effect_s { // size 0x428
     DEBRIS_FLOAT_KEY torus_keys1[8];       // 0x310
     DEBRIS_FLOAT_KEY torus_keys2[8];       // 0x350
     DEBRIS_FLOAT_KEY torus_keys3[8];       // 0x390
-    u8 reserved_3d0[0x58];                  // 0x3d0
+    u8 reserved_3d0[0x58];                 // 0x3d0
 } DEBRIS_COLLISION_EFFECT;
 
 NUVEC debris_collide_pt = {0};

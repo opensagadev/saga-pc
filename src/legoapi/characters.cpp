@@ -29,7 +29,7 @@
 #include "nu2api/numath/numtx.h"
 
 typedef struct CHARACTER_SCENE_WORLD {     // size 0x2984
-    u8 reserved_00[0x2980];               // 0x0000
+    u8 reserved_00[0x2980];                // 0x0000
     KILLPARTS_CHARSCENE *character_scenes; // 0x2980
 } CHARACTER_SCENE_WORLD;
 

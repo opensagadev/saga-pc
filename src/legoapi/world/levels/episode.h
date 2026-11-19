@@ -11,7 +11,7 @@ typedef struct episode_data_s { // size 0x1c
     u8 area_count;              // 0x18
     u8 regular_areas;           // 0x19
     u8 index;                   // 0x1a
-    u8 reserved_1b;            // 0x1b
+    u8 reserved_1b;             // 0x1b
 } EPISODEDATA;
 
 #ifdef __cplusplus

@@ -103,8 +103,8 @@ extern "C" {
         f32 time_38;                 // 0x38
         u8 enabled;                  // 0x3c
         u8 state;                    // 0x3d
-        u8 reserved_3e;               // 0x3e
-        u8 reserved_3f;               // 0x3f
+        u8 reserved_3e;              // 0x3e
+        u8 reserved_3f;              // 0x3f
         f32 camera_distance;         // 0x40
         i16 trigger_type;            // 0x44
         i16 trigger_id;              // 0x46
@@ -250,7 +250,7 @@ extern "C" {
         i8 momentum_adjustment_type; // 0x02d
         i8 particle_type;            // 0x02e
         u8 status;                   // 0x02f
-        f32 fade_delay;             // 0x030
+        f32 fade_delay;              // 0x030
         f32 cut_on;                  // 0x034
         f32 clip_extent;             // 0x038
         f32 sound_range;             // 0x03c
@@ -317,7 +317,7 @@ extern "C" {
         i8 trail_count;                           // 0x410
         i8 radial_segments;                       // 0x411
         i8 camera_facing;                         // 0x412
-        u8 reserved_413;                           // 0x413
+        u8 reserved_413;                          // 0x413
         f32 trail_time;                           // 0x414
         f32 scale_in_time;                        // 0x418
         f32 radial_floor;                         // 0x41c

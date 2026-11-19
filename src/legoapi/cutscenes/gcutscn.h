@@ -30,20 +30,20 @@ typedef struct CUT_LOCATOR_ANIMATION { // size 0x54
 
 typedef struct CUT_CHARACTER_ANIMATION { // size 0x64
     NUMTX base_matrix;                   // 0x00
-    u8 reserved_40[4];                    // 0x40
+    u8 reserved_40[4];                   // 0x40
     struct ANI3_HEADER *animation;       // 0x44
     struct NUANIMDATA2 *face_animation;  // 0x48
     struct NUANIMDATA2 *extra_animation; // 0x4c
-    u8 reserved_50[0x4];                  // 0x50
+    u8 reserved_50[0x4];                 // 0x50
     void *locator;                       // 0x54
     f32 animation_rate;                  // 0x58
     u8 flags;                            // 0x5c
     u8 animation_index;                  // 0x5d
     u8 has_locator;                      // 0x5e
-    u8 reserved_5f;                       // 0x5f
+    u8 reserved_5f;                      // 0x5f
     u8 locator_index;                    // 0x60
     u8 blend_time;                       // 0x61
-    u8 reserved_62;                       // 0x62
+    u8 reserved_62;                      // 0x62
     i8 start_frame;                      // 0x63
 } CUT_CHARACTER_ANIMATION;
 
@@ -128,13 +128,13 @@ extern "C" {
 
 typedef struct CUT_LOCATOR_GENERIC {        // size 0x54
     NUMTX base_matrix;                      // 0x00
-    u8 reserved_40[16];                   // 0x40
+    u8 reserved_40[16];                     // 0x40
     struct NUANIMDATA2_SKELETAL *animation; // 0x50
 } CUT_LOCATOR_GENERIC;
 
 typedef struct CUT_RIGID_GENERIC {          // size 0x50
     NUMTX base_matrix;                      // 0x00
-    u8 reserved_40[12];                   // 0x40
+    u8 reserved_40[12];                     // 0x40
     struct NUANIMDATA2_SKELETAL *animation; // 0x4c
 } CUT_RIGID_GENERIC;
 
@@ -149,16 +149,16 @@ typedef struct CUT_CHARACTER_GENERIC {      // size 0x64
     struct NUANIMDATA2_SKELETAL *animation; // 0x44
     struct NUANIMDATA2 *face_animation;     // 0x48
     struct NUANIMDATA2 *extra_animation;    // 0x4c
-    u8 reserved_50[0x4];                     // 0x50
+    u8 reserved_50[0x4];                    // 0x50
     void *locator;                          // 0x54
     f32 animation_rate;                     // 0x58
     u8 flags;                               // 0x5c
     u8 animation_index;                     // 0x5d
     u8 has_locator;                         // 0x5e
-    u8 reserved_5f;                          // 0x5f
+    u8 reserved_5f;                         // 0x5f
     u8 locator_index;                       // 0x60
     u8 blend_time;                          // 0x61
-    u8 reserved_62;                          // 0x62
+    u8 reserved_62;                         // 0x62
     i8 start_frame;                         // 0x63
 } CUT_CHARACTER_GENERIC;
 
@@ -184,12 +184,12 @@ typedef struct cut_load_locator_s { // size 0x64
     NUVEC pivot;                    // 0x40
     f32 scale;                      // 0x4c
     void *animation;                // 0x50
-    u32 reserved_54;                 // 0x54
+    u32 reserved_54;                // 0x54
     u8 flags;                       // 0x58
     u8 type_index;                  // 0x59
-    u8 reserved_5a;                  // 0x5a
+    u8 reserved_5a;                 // 0x5a
     u8 tracks_self;                 // 0x5b
-    u8 reserved_5c[8];               // 0x5c
+    u8 reserved_5c[8];              // 0x5c
 } CUT_LOAD_LOCATOR;
 
 /* cut_load_locator_type_s.flags: what drives the locators of the type, from CutSceneLocatorFixUp and the locator
@@ -203,9 +203,9 @@ typedef struct cut_load_locator_s { // size 0x64
 typedef struct cut_load_locator_type_s { // size 0xc
     char *name;                          // 0x0
     u8 flags;                            // 0x4
-    u8 reserved_05;                       // 0x5
+    u8 reserved_05;                      // 0x5
     u16 function_index;                  // 0x6
-    u32 reserved_08;                      // 0x8
+    u32 reserved_08;                     // 0x8
 } CUT_LOAD_LOCATOR_TYPE;
 
 typedef struct cut_load_locator_system_s { // size 0xc
@@ -213,7 +213,7 @@ typedef struct cut_load_locator_system_s { // size 0xc
     CUT_LOAD_LOCATOR_TYPE *types;          // 0x4
     u8 count;                              // 0x8
     u8 type_count;                         // 0x9
-    u8 reserved_0a[2];                      // 0xa
+    u8 reserved_0a[2];                     // 0xa
 } CUT_LOAD_LOCATOR_SYSTEM;
 
 typedef struct cut_load_rigid_s { // size 0x5c
@@ -232,7 +232,7 @@ typedef struct cut_load_rigid_s { // size 0x5c
     u8 flags;         // 0x58
     u8 uses_locator;  // 0x59
     u8 locator_index; // 0x5a
-    u8 reserved_5b;    // 0x5b
+    u8 reserved_5b;   // 0x5b
 } CUT_LOAD_RIGID;
 
 /* CUT_LOAD_RIGID.flags */
@@ -254,13 +254,13 @@ struct cut_load_character_s {  // size 0x64
     void *extra_animation;     // 0x4c
     void *model;               // 0x50
     CUT_LOAD_LOCATOR *locator; // 0x54
-    u32 reserved_58;            // 0x58
+    u32 reserved_58;           // 0x58
     u8 flags;                  // 0x5c
-    u8 reserved_5d;             // 0x5d
+    u8 reserved_5d;            // 0x5d
     u8 uses_locator;           // 0x5e
-    u8 reserved_5f;             // 0x5f
+    u8 reserved_5f;            // 0x5f
     u8 locator_index;          // 0x60
-    u8 reserved_61[3];          // 0x61
+    u8 reserved_61[3];         // 0x61
 };
 
 typedef struct cut_load_character_system_s {
@@ -271,10 +271,10 @@ typedef struct cut_load_character_system_s {
 typedef struct cut_load_camera_s { // size 0x50
     NUMTX matrix;                  // 0x00
     u8 flags;                      // 0x40
-    u8 reserved_41;                 // 0x41
+    u8 reserved_41;                // 0x41
     u8 animation_node;             // 0x42
     u8 focus_flags;                // 0x43
-    u8 reserved_44[12];             // 0x44
+    u8 reserved_44[12];            // 0x44
 } CUT_LOAD_CAMERA;
 
 typedef struct cut_load_camera_system_s { // size 0x24
@@ -290,7 +290,7 @@ typedef struct cut_load_camera_system_s { // size 0x24
 
 typedef struct cut_load_trigger_event_s { // size 0xc
     i16 index;                            // 0x0
-    u16 reserved_02;                       // 0x2
+    u16 reserved_02;                      // 0x2
     char *name;                           // 0x4
     STATE_ANIM *state_animation;          // 0x8
 } CUT_LOAD_TRIGGER_EVENT;
@@ -323,7 +323,7 @@ struct cut_scene_load_s {                                        // size 0x5c
     u32 flags;                                                   // 0x38
     i32 stream_buffer_size;                                      // 0x3c
     u8 last_stream;                                              // 0x40
-    u8 reserved_41;                                               // 0x41
+    u8 reserved_41;                                              // 0x41
     u16 total_stream_frames;                                     // 0x42
     struct NUGSCN_s *scene;                                      // 0x44
     void *extra_scene;                                           // 0x48
@@ -338,13 +338,13 @@ typedef struct cut_load_camera_target_s { // size 0x10
     f32 start_frame;                      // 0x4
     f32 duration;                         // 0x8
     i8 target_index;                      // 0xc
-    u8 reserved_0d[3];                     // 0xd
+    u8 reserved_0d[3];                    // 0xd
 } CUT_LOAD_CAMERA_TARGET;
 
 typedef struct cut_load_camera_state_s { // size 0x4
     u8 flags;                            // 0x0
     u8 event_index;                      // 0x1
-    u8 reserved_02[2];                    // 0x2
+    u8 reserved_02[2];                   // 0x2
 } CUT_LOAD_CAMERA_STATE;
 
 typedef struct cut_load_camera_instance_s { // size 0x10
@@ -357,14 +357,14 @@ typedef struct cut_load_camera_instance_s { // size 0x10
     u8 target_count;                        // 0xc
     u8 focus_state_index;                   // 0xd
     i8 focus_index;                         // 0xe
-    u8 reserved_0f;                          // 0xf
+    u8 reserved_0f;                         // 0xf
 } CUT_LOAD_CAMERA_INSTANCE;
 
 typedef struct cut_load_rigid_instance_s { // size 0x10
     nuhspecial_s special;                  // 0x0
     u8 state_index;                        // 0xc
     u8 visible;                            // 0xd
-    u8 reserved_0e[2];                      // 0xe
+    u8 reserved_0e[2];                     // 0xe
 } CUT_LOAD_RIGID_INSTANCE;
 
 typedef struct cut_load_rigid_instance_system_s {
@@ -376,7 +376,7 @@ typedef struct cut_load_character_instance_system_s {
 } CUT_LOAD_CHARACTER_INSTANCE_SYSTEM;
 
 typedef struct cut_load_focus_target_s { // size 0x18
-    u32 reserved_00[5];                   // 0x00
+    u32 reserved_00[5];                  // 0x00
     CUT_LOAD_LOCATOR *self;              // 0x14
 } CUT_LOAD_FOCUS_TARGET;
 
@@ -396,17 +396,17 @@ typedef struct cut_load_locator_instance_s { // size 0x8
 
 typedef struct cut_load_trigger_entry_s { // size 0x34
     char *name;                           // 0x00
-    u8 reserved_04[0x30];                  // 0x04
+    u8 reserved_04[0x30];                 // 0x04
 } CUT_LOAD_TRIGGER_ENTRY;
 
 typedef struct cut_load_trigger_flag_s { // size 0x4
-    u16 reserved_00;                      // 0x0
+    u16 reserved_00;                     // 0x0
     u8 flags;                            // 0x2
-    u8 reserved_03;                       // 0x3
+    u8 reserved_03;                      // 0x3
 } CUT_LOAD_TRIGGER_FLAG;
 
 typedef struct cut_load_trigger_owner_s { // size 0x10
-    u8 reserved_00[8];                     // 0x0
+    u8 reserved_00[8];                    // 0x0
     i32 count;                            // 0x8
 
     union { // size 0x4
@@ -417,7 +417,7 @@ typedef struct cut_load_trigger_owner_s { // size 0x10
 
 typedef struct cut_load_trigger_state_s { // size 0x4
     u8 state_index;                       // 0x0
-    u8 reserved_01[3];                     // 0x1
+    u8 reserved_01[3];                    // 0x1
 } CUT_LOAD_TRIGGER_STATE;
 
 typedef struct cut_load_trigger_instance_s {
@@ -427,10 +427,10 @@ typedef struct cut_load_trigger_instance_s {
 
 struct cut_locator_function_entry_s { // size 0x14
     char *name;                       // 0x00
-    u32 reserved_04;                   // 0x04
+    u32 reserved_04;                  // 0x04
     void (*reset)(struct instnugcutscene_s *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *,
                   CUT_LOAD_LOCATOR *); // 0x08
-    u8 reserved_0c[8];                  // 0x0c
+    u8 reserved_0c[8];                 // 0x0c
 };
 
 /* cut_script_node_s.type: the cut scene script command each node holds (CutScriptParseBlock keywords). */

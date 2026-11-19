@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "gameapi/ai/aisys/aipath.h"
 #include "gameapi/ai/aisys/aisys.h"
+#include "legoapi/gizmos/object/gizpanel.h"
 #include "gameapi/ai/aisys/gameaiscript.h"
 #include "gameapi/edptl.h"
 #include "globals.h"
@@ -946,7 +947,7 @@ void CloudCityEscapeA_Update(WORLDINFO *world) {
         LevFlag.cloud_city.started = 1;
     }
     TerSurface[14].flags = 0x2002;
-    if (LevGizPanel == NULL || (((CLOUDCITY_PANEL_FLAGS_VIEW *)LevGizPanel)->flags & 2) == 0) {
+    if (LevGizPanel == NULL || (LevGizPanel->flags & 2) == 0) {
         for (i = 1; i <= 3; ++i) {
             if (NuSpecialExistsFn(&LevHSpecial[i])) {
                 animation = NuSpecialGetInstAnim(&LevHSpecial[i]);

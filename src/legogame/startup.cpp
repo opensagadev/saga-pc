@@ -100,16 +100,8 @@ static i32 PcInputCommandAllowed(i32 port, i32 command) {
     return 1;
 }
 
-class Fade;
-class FadeWipe;
-class FadeStillWipe;
-class FadeStill;
 extern "C" {
     extern FADEINFO_s *pFadeInfo;
-    extern Fade fade;
-    extern FadeWipe fadeWipe;
-    extern FadeStillWipe fadeStillWipe;
-    extern FadeStill fadeStill;
 }
 
 extern "C" {
@@ -922,10 +914,10 @@ extern "C" {
 
             LevelProgress_ReserveBufferSpace(&permbuffer_ptr, permbuffer_end);
             FadeSys.Init();
-            FadeSys.AddFade((FadeBase *)&fade);
-            FadeSys.AddFade((FadeBase *)&fadeWipe);
-            FadeSys.AddFade((FadeBase *)&fadeStillWipe);
-            FadeSys.AddFade((FadeBase *)&fadeStill);
+            FadeSys.AddFade(&fade);
+            FadeSys.AddFade(&fadeWipe);
+            FadeSys.AddFade(&fadeStillWipe);
+            FadeSys.AddFade(&fadeStill);
             pFadeInfo = &FadeSys;
             LevelObjects_InitForGame(ObjTab, &permbuffer_ptr, &permbuffer_end, 0x2ee, 0x1f40);
             LevelSplines_InitForGame(LevelSplinesTable);

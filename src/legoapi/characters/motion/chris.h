@@ -27,8 +27,8 @@ extern "C" {
         i32 target_id; // 0x51c
         i32 object_id; // 0x520
         /* also the fighter's model for playback splines */
-        i32 id;          // 0x524
-        i32 enabled;     // 0x528
+        i32 id;           // 0x524
+        i32 enabled;      // 0x528
         u32 reserved_52c; // 0x52c
     } FLIGHT_SPLINE_RESOURCE;
 

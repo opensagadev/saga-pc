@@ -36,7 +36,7 @@ typedef struct level_sfx_entry_s { // size 0x10
     NUVEC position;                // 0x0
     i16 id;                        // 0xc
     u8 references;                 // 0xe
-    u8 reserved_0f;               // 0xf
+    u8 reserved_0f;                // 0xf
 } LEVELSFXENTRY;
 
 typedef struct BOLTTYPE_s { // size 0xa4
@@ -51,10 +51,10 @@ typedef struct BOLTTYPE_s { // size 0xa4
     union { // size 0x10
 
         struct {                   // size 0x10
-            i32 reserved_28;        // 0x28
+            i32 reserved_28;       // 0x28
             i32 hit_debris_packed; // 0x2c
-            i32 reserved_30;        // 0x30
-            i32 reserved_34;        // 0x34
+            i32 reserved_30;       // 0x30
+            i32 reserved_34;       // 0x34
         };
 
         struct {                         // size 0x10
@@ -66,10 +66,10 @@ typedef struct BOLTTYPE_s { // size 0xa4
     }; // 0x28
 
     i16 hit_part_debris;                                           // 0x38
-    i16 reserved_3a;                                                // 0x3a
+    i16 reserved_3a;                                               // 0x3a
     u8 damage;                                                     // 0x3c
     i8 reflect_type;                                               // 0x3d
-    u16 reserved_3e;                                                // 0x3e
+    u16 reserved_3e;                                               // 0x3e
     u32 spread;                                                    // 0x40
     void (*init_callback)(struct bolt_s *bolt);                    // 0x44
     void (*update_callback)(struct bolt_s *bolt);                  // 0x48
@@ -170,7 +170,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct APIOBJECTSYS *object_sys;         // 0x298c
     u8 room_visibility_flag;                 // 0x2990
     u8 rooms_visible[0x100];                 // 0x2991
-    u8 reserved_2a91[3];                      // 0x2a91
+    u8 reserved_2a91[3];                     // 0x2a91
     u8 *rooms_visible_ptr;                   // 0x2a94
     i32 page_pp;                             // 0x2a98
     i32 page_part;                           // 0x2a9c
@@ -221,12 +221,12 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct SPECIAL_RESOURCE_ENTRY *special_sfx;          // 0x46d0
     i32 special_sfx_event_count;                         // 0x46d4
     struct SPECIAL_RESOURCE_EVENT *special_sfx_events;   // 0x46d8
-    char reserved_46dc[4];                                      // 0x46dc
+    char reserved_46dc[4];                               // 0x46dc
     struct GIZSPINNER_s *spinners;                       // 0x46e0
     i32 spinner_count;                                   // 0x46e4
     struct gameanimobjpool_s *spinner_anim_pool;         // 0x46e8
     struct grabber_s *grabber;                           // 0x46ec
-    u8 reserved_46f0[0x4];                                // 0x46f0
+    u8 reserved_46f0[0x4];                               // 0x46f0
     struct ripple_effect_s *ripple_effects;              // 0x46f4
     i32 ripple_effect_count;                             // 0x46f8
 
@@ -240,7 +240,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
         i32 ripple_effect_of_type[2]; /* indexed by LookupRippleEffectIndex */
     }; // 0x46fc
 
-    u8 reserved_4704[0xc];                               // 0x4704
+    u8 reserved_4704[0xc];                              // 0x4704
     LEVELSFXENTRY level_sfx[64];                        // 0x4710
     i32 level_sfx_count;                                // 0x4b10
     BOLTTYPE bolt_types[8];                             // 0x4b14
@@ -265,7 +265,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     i32 techno_count;                                   // 0x507c
     struct GRAPPLE_MOTION *grapples;                    // 0x5080
     i32 grapple_count;                                  // 0x5084
-    u8 reserved_5088[0x8];                               // 0x5088
+    u8 reserved_5088[0x8];                              // 0x5088
     struct SHARD_s *shards;                             // 0x5090
     i32 shard_count;                                    // 0x5094
     struct attracto_s *attractos;                       // 0x5098
@@ -283,7 +283,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct GIZMOBLOWUP *gizmo_blowups;                  // 0x50c8
     i32 blowup_target_count;                            // 0x50cc
     struct GIZMOBLOWUP **blowup_targets;                // 0x50d0
-    char reserved_50d4[20];                                   // 0x50d4
+    char reserved_50d4[20];                             // 0x50d4
     struct numtx_s *gizmo_blowup_mtx_buffer;            // 0x50e8
     struct minicut_s *minicuts;                         // 0x50ec
     struct minicut_part_s *minicut_parts;               // 0x50f0
@@ -309,7 +309,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct TRAFFICANIMSYS_s *trafficanim_sys;                    // 0x5168
     struct carry_plug_sys_s *plug_sys;                           // 0x516c
     u32 belt_active;                                             // 0x5170
-    char reserved_5174[56];                                             // 0x5174
+    char reserved_5174[56];                                      // 0x5174
 } WORLDINFO;
 
 typedef struct TORPEDO_MACHINE { // size 0x2c
@@ -317,7 +317,7 @@ typedef struct TORPEDO_MACHINE { // size 0x2c
     NUVEC position;              // 0x10
     f32 activation_time;         // 0x1c
     u16 y_rotation;              // 0x20
-    u8 reserved_22[9];            // 0x22
+    u8 reserved_22[9];           // 0x22
 
     union { // size 0x1
         u8 flags;
@@ -388,7 +388,7 @@ typedef struct PORTALDOOR_s PORTALDOOR_s;
 struct HUBMINIKIT_s {         // size 0x7c
     NUVEC position;           // 0x00
     f32 scale;                // 0x0c
-    f32 display_timer;           // 0x10
+    f32 display_timer;        // 0x10
     i32 phase_x;              // 0x14
     i32 rate_x;               // 0x18
     i32 phase_y;              // 0x1c
@@ -419,7 +419,7 @@ struct PORTALDOOR_s {            // size 0x10
     struct nuhspecial_s special; // 0x0
     u16 flags;                   // 0xc
     u8 portal_id;                // 0xe
-    u8 reserved_0f;                   // 0xf
+    u8 reserved_0f;              // 0xf
 };
 
 typedef struct level_sfx_gizmotype_s {

@@ -22,7 +22,7 @@ extern "C" {
         u32 character_flags;                 // 0x10
         i16 character_id;                    // 0x14
         u8 index;                            // 0x16
-        u8 reserved_17;                       // 0x17
+        u8 reserved_17;                      // 0x17
     } SUIT_INITIALIZER_RECORD;
 
 #ifdef __cplusplus
@@ -62,14 +62,14 @@ struct SIGNAL_s {          // size 0x94
         };
     }; // 0x6a
 
-    u8 reserved_6b;                            // 0x6b
+    u8 reserved_6b;                       // 0x6b
     f32 radius;                           // 0x6c
     f32 scale;                            // 0x70
     NUVEC normal;                         // 0x74
     struct SUIT_INITIALIZER_RECORD *suit; // 0x80
     NUVEC target_position;                // 0x84
     i16 platform_id;                      // 0x90
-    u16 reserved_92;                           // 0x92
+    u16 reserved_92;                      // 0x92
 };
 
 /* SIGNAL_s.flags, the bitfields */

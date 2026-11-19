@@ -125,7 +125,7 @@ extern "C" {
         i32 sock_location;                           // 0x4
         f32 sock_ratio;                              // 0x8
         i16 angle;                                   // 0xc
-        u8 reserved_0e[2];                            // 0xe
+        u8 reserved_0e[2];                           // 0xe
     } PLAYER_START_INITIALIZER_RECORD;
 
     NUVEC *Player_StartPos(GAMEOBJECT *);
@@ -178,11 +178,11 @@ extern "C" {
  * apart from readonly pointee qualification required by the source literals. */
 struct player_item_type_reset_s { // size 0xc
     i16 id;                       // 0x0
-    u8 reserved_02[2];             // 0x2
+    u8 reserved_02[2];            // 0x2
     const char *bolt_name;        // 0x4
-    u8 reserved_08;                // 0x8
+    u8 reserved_08;               // 0x8
     i8 bolt_id;                   // 0x9
-    u8 reserved_0a[2];             // 0xa
+    u8 reserved_0a[2];            // 0xa
 };
 
 #ifdef __cplusplus

@@ -126,7 +126,7 @@ struct CUT_LOAD_LIST_ENTRY { // size 0xc
     char *directory;         // 0x0
     char *name;              // 0x4
     i16 level;               // 0x8
-    u8 reserved_0a[2];        // 0xa
+    u8 reserved_0a[2];       // 0xa
 };
 
 typedef struct CUT_DRAW_LOCATOR CUT_DRAW_LOCATOR;
@@ -148,17 +148,17 @@ typedef struct CUT_DRAW_CHARACTER { // size 0x64
     u8 flags;           // 0x5c
     u8 animation_index; // 0x5d
     u8 locator_count;   // 0x5e
-    u8 reserved_5f;      // 0x5f
+    u8 reserved_5f;     // 0x5f
     u8 locator_index;   // 0x60
     u8 blend_time;      // 0x61
-    u8 reserved_62;      // 0x62
+    u8 reserved_62;     // 0x62
     i8 start_frame;     // 0x63
 } CUT_DRAW_CHARACTER;
 
 typedef struct CUT_DRAW_CHAR_INSTANCE { // size 0x18
     void *character_model;              // 0x00
     f32 blend_progress;                 // 0x04
-    u8 reserved_08[4];                   // 0x08
+    u8 reserved_08[4];                  // 0x08
     f32 animation_frame_a;              // 0x0c
     f32 animation_frame_b;              // 0x10
     u8 flags;                           // 0x14
@@ -182,9 +182,9 @@ struct CUT_DRAW_LOCATOR { // size 0x64
     }; // 0x00
 
     u8 reserved_54[4]; // 0x54
-    u8 flags;         // 0x58
-    u8 type_index;    // 0x59
-    u8 joint_index;   // 0x5a
+    u8 flags;          // 0x58
+    u8 type_index;     // 0x59
+    u8 joint_index;    // 0x5a
     u8 reserved_5b[9]; // 0x5b
 };
 
@@ -204,33 +204,33 @@ typedef struct CUT_DRAW_LOCATOR_INSTANCE_SYS {
 } CUT_DRAW_LOCATOR_INSTANCE_SYS;
 
 typedef struct CUT_DRAW_SCENE {           // size 0x20
-    u8 reserved_00[8];                     // 0x00
+    u8 reserved_00[8];                    // 0x00
     f32 duration;                         // 0x08
-    u8 reserved_0c[0x10];                  // 0x0c
+    u8 reserved_0c[0x10];                 // 0x0c
     CUT_DRAW_LOCATOR_SYS *locator_system; // 0x1c
 } CUT_DRAW_SCENE;
 
 typedef struct CUT_DRAW_INSTANCE {                   // size 0xac
-    u8 reserved_00[0x18];                             // 0x00
+    u8 reserved_00[0x18];                            // 0x00
     NUMTX matrix;                                    // 0x18
-    u8 reserved_58[0x30];                             // 0x58
+    u8 reserved_58[0x30];                            // 0x58
     u32 flags;                                       // 0x88
-    u8 reserved_8c[0x1c];                             // 0x8c
+    u8 reserved_8c[0x1c];                            // 0x8c
     CUT_DRAW_LOCATOR_INSTANCE_SYS *locator_instance; // 0xa8
 } CUT_DRAW_INSTANCE;
 
 typedef struct CUT_DRAW_OBJECT { // size 0xf8
-    u8 reserved_00[0xb8];         // 0x00
+    u8 reserved_00[0xb8];        // 0x00
     NUMTX matrix;                // 0xb8
 } CUT_DRAW_OBJECT;
 
 typedef struct CUT_DRAW_HIERARCHY {    // size 0x1a1
-    u8 reserved_00[0x1a0];              // 0x000
+    u8 reserved_00[0x1a0];             // 0x000
     u8 suppress_shadow_surface_points; // 0x1a0
 } CUT_DRAW_HIERARCHY;
 
 typedef struct CUT_DRAW_CAMERA { // size 0xf8
-    u8 reserved_00[0xb8];         // 0x00
+    u8 reserved_00[0xb8];        // 0x00
     NUMTX render_matrix;         // 0xb8
 } CUT_DRAW_CAMERA;
 
@@ -244,18 +244,18 @@ typedef struct CUT_DRAW_CHAR_INSTANCE_SYSTEM {
 } CUT_DRAW_CHAR_INSTANCE_SYSTEM;
 
 typedef struct CUT_DRAW_REGISTRATION_SCENE { // size 0x20
-    u8 reserved_00[0x18];                     // 0x00
+    u8 reserved_00[0x18];                    // 0x00
     CUT_DRAW_CHARACTER_SYSTEM *characters;   // 0x18
     CUT_DRAW_LOCATOR_SYS *locators;          // 0x1c
 } CUT_DRAW_REGISTRATION_SCENE;
 
 typedef struct CUT_DRAW_REGISTRATION_INSTANCE { // size 0xa8
-    u8 reserved_00[0x18];                        // 0x00
+    u8 reserved_00[0x18];                       // 0x00
     NUMTX matrix;                               // 0x18
     CUT_DRAW_REGISTRATION_SCENE *scene;         // 0x58
-    u8 reserved_5c[0x2c];                        // 0x5c
+    u8 reserved_5c[0x2c];                       // 0x5c
     u32 flags;                                  // 0x88
-    u8 reserved_8c[0x18];                        // 0x8c
+    u8 reserved_8c[0x18];                       // 0x8c
     CUT_DRAW_CHAR_INSTANCE_SYSTEM *characters;  // 0xa4
 } CUT_DRAW_REGISTRATION_INSTANCE;
 
@@ -266,14 +266,14 @@ typedef struct CUT_DRAW_RIGID {
 
 typedef struct CUT_DRAW_LOCATOR_ENTRY { // size 0x14
     char *name;                         // 0x00
-    u32 reserved_04;                     // 0x04
-    u32 reserved_08;                     // 0x08
-    u32 reserved_0c;                     // 0x0c
+    u32 reserved_04;                    // 0x04
+    u32 reserved_08;                    // 0x08
+    u32 reserved_0c;                    // 0x0c
     void (*update)(INSTNUGCUTSCENE *, CUT_DRAW_LOCATOR_SYS *, CUT_DRAW_LOCATOR_INSTANCE *, CUT_DRAW_LOCATOR *, f32, NUMTX *, i32); // 0x10
 } CUT_DRAW_LOCATOR_ENTRY;
 
 typedef struct CUT_CONTROLLER_PROGRESS { // size 0x2801
-    u8 reserved_00[0x2800];               // 0x0000
+    u8 reserved_00[0x2800];              // 0x0000
     u8 scene_flags;                      // 0x2800
 } CUT_CONTROLLER_PROGRESS;
 

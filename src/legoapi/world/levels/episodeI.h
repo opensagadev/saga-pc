@@ -30,17 +30,17 @@ typedef struct PODSPRINT {                 // size 0x94
     i16 pacemaker_laps;                    // 0x8c laps the pacemaker finished; each slows it by speed_step_msg
     i8 ai_state;                           // 0x8e
     i8 ai_index;                           // 0x8f
-    u8 reserved_90[2];                      // 0x90
+    u8 reserved_90[2];                     // 0x90
 
     union { // size 0x2
         u16 flags;
 
         struct {                     // size 0x2
             i16 halfway : 1;         // 0x92:0
-            i16 reserved_92_1 : 1;       // 0x92:1
+            i16 reserved_92_1 : 1;   // 0x92:1
             i16 finished : 2;        // 0x92:2
             i16 reset_requested : 1; // 0x92:4
-            i16 reserved_92_5 : 11;      // 0x92:5
+            i16 reserved_92_5 : 11;  // 0x92:5
         } bits;
     }; // 0x92
 } PODSPRINT;
@@ -153,7 +153,7 @@ typedef struct client_mines_s { // size 0x318
     NUVEC positions[64];        // 0x000
     MINE_BITS present;          // 0x300
     MINE_BITS exploded;         // 0x308
-    u32 reserved_310[2];         // 0x310
+    u32 reserved_310[2];        // 0x310
 } CLIENT_MINES;
 
 typedef struct gungan_a_s { // size 0x114
@@ -163,6 +163,6 @@ typedef struct gungan_a_s { // size 0x114
     AILOCATOR *targets[32]; // 0x084
     f32 spawn_timer;        // 0x104
     i16 model_index;        // 0x108
-    i16 reserved_10a;        // 0x10a
+    i16 reserved_10a;       // 0x10a
     i16 models[4];          // 0x10c
 } GUNGAN_A;

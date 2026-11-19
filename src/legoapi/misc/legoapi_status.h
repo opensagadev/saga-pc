@@ -60,9 +60,9 @@ extern "C" {
 typedef struct minikit_piece_s { // size 0x68
     nuhspecial_s special;        // 0x00
     NUMTX matrix;                // 0x0c
-    u8 reserved_4c[0x18];         // 0x4c
+    u8 reserved_4c[0x18];        // 0x4c
     u8 direction;                // 0x64
-    u8 reserved_65[0x1];        // 0x65
+    u8 reserved_65[0x1];         // 0x65
     u8 enabled;                  // 0x66
     u8 direction_index;          // 0x67
 } MINIKIT_PIECE;

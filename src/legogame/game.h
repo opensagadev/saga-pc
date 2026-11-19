@@ -250,7 +250,7 @@ extern "C" {
 typedef struct ANIM_REDIRECT { // size 0x8
     const char *name;          // 0x0
     i16 animation_id;          // 0x4
-    u8 reserved_06[2];              // 0x6
+    u8 reserved_06[2];         // 0x6
 } ANIM_REDIRECT;
 
 #ifdef __cplusplus

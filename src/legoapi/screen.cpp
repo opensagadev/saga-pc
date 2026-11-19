@@ -62,7 +62,7 @@ extern "C" NUMTL *ScreenFadeMtl;
 extern "C" f32 CutSceneCameraFocalLength;
 
 typedef struct CUT_BORDER_RECORD { // size 0x54
-    u8 reserved_00[0x50];           // 0x00
+    u8 reserved_00[0x50];          // 0x00
     u32 flags;                     // 0x50
 } CUT_BORDER_RECORD;
 

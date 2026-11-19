@@ -22,7 +22,7 @@ extern "C" {
         i32 alternate_bounty; // 0x0c
         u16 time;             // 0x10
         i8 index;             // 0x12
-        u8 reserved_13[5];     // 0x13
+        u8 reserved_13[5];    // 0x13
     };
     typedef struct mission_data_s MISSIONDATA;
 #ifdef __cplusplus

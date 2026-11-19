@@ -17,42 +17,6 @@ extern "C" {
     FadeSystem FadeSys;
 }
 
-class Fade : public FadeBase {
-  public:
-    void Init(FADEINFO_s *state);
-    void InitFade();
-    void UpdateFade();
-    void DrawFade();
-    FADETYPE_VALUE GetFadeType() const;
-};
-
-class FadeWipe : public FadeBase {
-  public:
-    void Init(FADEINFO_s *state);
-    void InitFade();
-    void UpdateFade();
-    void DrawFade();
-    FADETYPE_VALUE GetFadeType() const;
-};
-
-class FadeStillWipe : public FadeBase {
-  public:
-    void Init(FADEINFO_s *state);
-    void InitFade();
-    void UpdateFade();
-    void DrawFade();
-    FADETYPE_VALUE GetFadeType() const;
-};
-
-class FadeStill : public FadeBase {
-  public:
-    void Init(FADEINFO_s *state);
-    void InitFade();
-    void UpdateFade();
-    void DrawFade();
-    FADETYPE_VALUE GetFadeType() const;
-};
-
 extern "C" {
 
     Fade fade;

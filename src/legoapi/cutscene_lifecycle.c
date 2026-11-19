@@ -36,22 +36,22 @@ static INSTNUGCUTSCENE *active_cutscene_instances = 0;
 i32 CutSceneLookupAllDebrisPages = 0;
 
 typedef struct cut_sound_voice_lifecycle_s { // size 0x88
-    u8 reserved_00[0x80];                     // 0x00
+    u8 reserved_00[0x80];                    // 0x00
     f32 first;                               // 0x80
     f32 second;                              // 0x84
 } CUT_SOUND_VOICE_LIFECYCLE;
 
 typedef struct cut_sound_owner_lifecycle_s { // size 0x10
-    u8 reserved_00[0xc];                      // 0x0
+    u8 reserved_00[0xc];                     // 0x0
     CUT_SOUND_VOICE_LIFECYCLE **voices;      // 0xc
 } CUT_SOUND_OWNER_LIFECYCLE;
 
 typedef struct cut_sound_handle_lifecycle_s { // size 0x14
     CUT_SOUND_OWNER_LIFECYCLE *owner;         // 0x00
-    u8 reserved_04[4];                         // 0x04
+    u8 reserved_04[4];                        // 0x04
     i16 active;                               // 0x08
     u16 third_voice;                          // 0x0a
-    u8 reserved_0c[2];                         // 0x0c
+    u8 reserved_0c[2];                        // 0x0c
     u16 first_voice;                          // 0x0e
     u16 second_voice;                         // 0x10
 } CUT_SOUND_HANDLE_LIFECYCLE;

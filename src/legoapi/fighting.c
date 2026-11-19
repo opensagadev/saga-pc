@@ -29,29 +29,6 @@
 #include <string.h>
 #include <stdio.h>
 
-typedef struct PUNCH_BLOWUP_VIEW { // size 0x114
-    u8 reserved_00[0x4c];           // 0x000
-    NUVEC mid_position;            // 0x04c
-    NUVEC bounds_min;              // 0x058
-    NUVEC bounds_max;              // 0x064
-    u8 reserved_70[0x24];           // 0x070
-    u32 status_flags;              // 0x094
-    u32 draw_flags;                // 0x098
-    u32 secondary_flags;           // 0x09c
-    u8 reserved_a0[8];              // 0x0a0
-    f32 target_scale;              // 0x0a8
-    u8 reserved_ac[0x56];           // 0x0ac
-    i16 platform_id;               // 0x102
-    u8 reserved_104[0x10];          // 0x104
-} PUNCH_BLOWUP_VIEW;
-
-typedef struct blowup_movement_s {
-    u8 reserved_00[0x4c];
-    NUVEC mid_position;
-    u8 reserved_58[0x50];
-    f32 target_radius;
-} BLOWUP_MOVEMENT;
-
 i32 ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 gap) {
     NUVEC forward;
     NUVEC difference;
@@ -439,7 +416,7 @@ const f64 PlayerStepOuterAction = 2.25;
 
 i32 StepBackFromTarget(GAMEOBJECT *object) {
     NUVEC *target_position;
-    BLOWUP_MOVEMENT *blowup = (BLOWUP_MOVEMENT *)object->player.blowup_target;
+    GIZMOBLOWUP *blowup = object->player.blowup_target;
     f32 inner_distance;
     f32 outer_distance;
     f32 speed;
@@ -450,11 +427,11 @@ i32 StepBackFromTarget(GAMEOBJECT *object) {
         if ((LEGOCONTEXT_COMBO != -1 && object->player.character_context == LEGOCONTEXT_COMBO) ||
             (LEGOCONTEXT_JUMP != -1 && object->player.character_context == LEGOCONTEXT_JUMP &&
              object->player.action_movement_state == JUMP_KIND_LUNGE)) {
-            inner_distance = object->collision_radius * PlayerStepInnerAction + blowup->target_radius;
-            outer_distance = object->collision_radius * PlayerStepOuterAction + blowup->target_radius;
+            inner_distance = object->collision_radius * PlayerStepInnerAction + blowup->target_scale;
+            outer_distance = object->collision_radius * PlayerStepOuterAction + blowup->target_scale;
         } else {
-            inner_distance = object->collision_radius * 0.75 + blowup->target_radius;
-            outer_distance = object->collision_radius * 1.25 + blowup->target_radius;
+            inner_distance = object->collision_radius * 0.75 + blowup->target_scale;
+            outer_distance = object->collision_radius * 1.25 + blowup->target_scale;
         }
     } else {
         if (!(object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) || object->player.force_target == NULL) {
@@ -551,7 +528,7 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
     f32 impulse;
     u16 angle;
     i32 damage;
-    PUNCH_BLOWUP_VIEW *blowup;
+    GIZMOBLOWUP *blowup;
     attacker->player.context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
     if (LEGOCONTEXT_PUNCH != -1 && attacker->player.character_context == LEGOCONTEXT_PUNCH) {
         if (attacker->character_model->animations[attacker->player.context_animation] != NULL) {
@@ -620,7 +597,7 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
             }
         }
     } else {
-        blowup = (PUNCH_BLOWUP_VIEW *)attacker->player.blowup_target;
+        blowup = attacker->player.blowup_target;
         if (blowup == NULL || (blowup->status_flags & 1) || !(blowup->status_flags & 0x4000) || !(blowup->status_flags & 0x800000) ||
             attacker->collision_max.y < blowup->bounds_min.y || attacker->collision_min.y > blowup->bounds_max.y) {
             goto finish;

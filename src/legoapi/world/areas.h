@@ -19,7 +19,7 @@ typedef struct area_supercounter_pickup_s { // size 0x30
     char position_name[16];                 // 0x1c
     i16 level_index;                        // 0x2c
     u8 use_special;                         // 0x2e
-    u8 reserved_2f;                        // 0x2f
+    u8 reserved_2f;                         // 0x2f
 } AREA_SUPERCOUNTER_PICKUP;
 
 #ifdef __cplusplus

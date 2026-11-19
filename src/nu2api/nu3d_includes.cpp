@@ -6212,7 +6212,8 @@ extern "C" {
 }
 
 OcclusionManager::OcclusionManager()
-    : initialized(false), enabled(true), building_set(NULL), current_set(NULL), occluder_dot_threshold(0.3f), occluder_screen_threshold(-1.0f) {
+    : initialized(false), enabled(true), building_set(NULL), current_set(NULL), occluder_dot_threshold(0.3f),
+      occluder_screen_threshold(-1.0f) {
 }
 
 OcclusionManager g_OcclusionManager;

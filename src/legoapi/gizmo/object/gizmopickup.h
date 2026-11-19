@@ -49,7 +49,7 @@ extern "C" {
         u32 flags;                       // 0x18
         f32 duration;                    // 0x1c
         f32 delay;                       // 0x20
-        u16 reserved_24;                  // 0x24
+        u16 reserved_24;                 // 0x24
         i16 icon;                        // 0x26
         void *special;                   // 0x28
         u32 score;                       // 0x2c

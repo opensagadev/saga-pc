@@ -18,13 +18,13 @@
 #include "nu2api/numath/numtx.h"
 
 typedef struct terrain_player_platform_record_s { // size 0x14
-    u8 reserved_00[0xe];                            // 0x00
+    u8 reserved_00[0xe];                          // 0x00
     i16 platform_id;                              // 0x0e
     GAMEOBJECT *object;                           // 0x10
 } TERRAIN_PLAYER_PLATFORM_RECORD;
 
 typedef struct terrain_player_platform_sys_s { // size 0x1c
-    u8 reserved_00[4];                           // 0x00
+    u8 reserved_00[4];                         // 0x00
     i32 count;                                 // 0x04
     TERRAIN_PLAYER_PLATFORM_RECORD entries[1]; // 0x08
 } TERRAIN_PLAYER_PLATFORM_SYS;
@@ -57,7 +57,7 @@ typedef struct CHAR_PLATFORM_SYSTEM { // size 0x1c
 } CHAR_PLATFORM_SYSTEM;
 
 typedef struct CHAR_PLATFORM_WORLD {         // size 0x2ae0
-    u8 reserved_00[0x2adc];                    // 0x0000
+    u8 reserved_00[0x2adc];                  // 0x0000
     CHAR_PLATFORM_SYSTEM *char_platform_sys; // 0x2adc
 } CHAR_PLATFORM_WORLD;
 

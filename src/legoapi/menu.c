@@ -254,12 +254,12 @@ void DrawMenuButtonPrompts(i32 confirm, i32 cancel, i32 enabled, u32 red, u32 gr
 }
 
 typedef struct menu_draw_state_s { // size 0xb0
-    u8 reserved_00[0x0e];           // 0x00
+    u8 reserved_00[0x0e];          // 0x00
     i16 first_row;                 // 0x0e
-    u8 reserved_10[2];              // 0x10
+    u8 reserved_10[2];             // 0x10
     i16 last_row;                  // 0x12
     i16 menu;                      // 0x14
-    u8 reserved_16[0x76];           // 0x16
+    u8 reserved_16[0x76];          // 0x16
     i32 draw_item;                 // 0x8c
     f32 item_scale;                // 0x90
     f32 draw_x;                    // 0x94
@@ -267,7 +267,7 @@ typedef struct menu_draw_state_s { // size 0xb0
     f32 draw_z;                    // 0x9c
     f32 draw_offset;               // 0xa0
     f32 centre_offset;             // 0xa4
-    u8 reserved_a8[4];              // 0xa8
+    u8 reserved_a8[4];             // 0xa8
     i32 paused;                    // 0xac
 } MENU_DRAW_STATE;
 

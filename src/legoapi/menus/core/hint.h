@@ -22,9 +22,9 @@ typedef struct HINT { // size 0x1c
         u8 reserved_10[4];
     }; // 0x10
 
-    u8 completed;     // 0x14
+    u8 completed;      // 0x14
     u8 reserved_15[3]; // 0x15
-    f32 cooldown;     // 0x18
+    f32 cooldown;      // 0x18
 } HINT;
 
 typedef struct HINTSYS { // size 0x20
@@ -36,9 +36,9 @@ typedef struct HINTSYS { // size 0x20
 
     HINT *hints;         // 0x04
     HINT *active_hint;   // 0x08
-    u8 reserved_0c;         // 0x0c
+    u8 reserved_0c;      // 0x0c
     u8 state;            // 0x0d
-    u8 reserved_0e[2];      // 0x0e
+    u8 reserved_0e[2];   // 0x0e
     u32 *save_bits;      // 0x10
     i32 save_word_count; // 0x14
     f32 display_elapsed; // 0x18

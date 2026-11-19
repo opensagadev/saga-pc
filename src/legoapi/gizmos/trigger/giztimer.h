@@ -18,8 +18,8 @@ extern "C" {
 #endif
     GIZMO *createGizTimer(void *, f32, i32, char *);
     extern i32 giztimer_gizmotype_id;
-    void GizTimer_Activate(GIZMO *gizmo, i32 unknown);
-    void GizTimer_AddGizmos(struct gizmosys_s *gizmo_sys, i32 unknown_1, void *world_info, void *unknown2);
+    void GizTimer_Activate(GIZMO *gizmo, i32 active);
+    void GizTimer_AddGizmos(struct gizmosys_s *gizmo_sys, i32 type_id, void *world_info, void *unused);
     char *GizTimer_GetGizmoName(GIZMO *gizmo);
     i32 GizTimer_GetMaxGizmos(void *world_info);
     i32 GizTimer_GetNumOutputs(GIZMO *gizmo);

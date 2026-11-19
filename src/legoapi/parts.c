@@ -962,7 +962,7 @@ void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32
 typedef struct PART_TERRAIN_STATE { // size 0x20c
     u8 reserved_00[0x200];          // 0x000
     u32 platform_id;                // 0x200
-    u8 reserved_204[5];              // 0x204
+    u8 reserved_204[5];             // 0x204
     i8 impact_material;             // 0x209
 } PART_TERRAIN_STATE;
 

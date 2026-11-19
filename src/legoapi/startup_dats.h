@@ -29,7 +29,7 @@ typedef struct area_gizmosys_prefix_s { // size 0x4
 
 typedef struct area_gizmotypes_s {  // size 0xc
     i32 count;                      // 0x0
-    i32 reserved_04;               // 0x4
+    i32 reserved_04;                // 0x4
     struct area_gizmotype_s *types; // 0x8
 } AREA_GIZMOTYPES;
 

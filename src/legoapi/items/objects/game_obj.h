@@ -169,7 +169,7 @@ struct PART { // size 0x220
     u16 rotation_y;               // 0x13a
     u16 rotation_z;               // 0x13c
     i16 part_id;                  // 0x13e
-    u16 reserved_140;              // 0x140
+    u16 reserved_140;             // 0x140
     u8 rotation_axes[2];          // 0x142
     u32 active;                   // 0x144
     nuhspecial_s special;         // 0x148
@@ -196,7 +196,7 @@ struct PART { // size 0x220
     i32 effect_id_1f4;            // 0x1f4
     i32 effect_id_1f8;            // 0x1f8
     f32 effect_scale;             // 0x1fc
-    u32 reserved_200;              // 0x200
+    u32 reserved_200;             // 0x200
     u16 damage;                   // 0x204
     i8 player_mask;               // 0x206
     u8 hostility_group;           // 0x207
@@ -279,7 +279,7 @@ typedef struct ADDPART {            // size 0xc8
 typedef struct KILLPARTS_BIKE { // size 0x34
     SPLINEPOS spline_position;  // 0x00
     u8 active;                  // 0x20
-    u8 reserved_21[3];           // 0x21
+    u8 reserved_21[3];          // 0x21
     struct gameobject_s *rider; // 0x24
     NUVEC rider_position;       // 0x28
 } KILLPARTS_BIKE;

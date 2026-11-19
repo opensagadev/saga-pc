@@ -19,10 +19,10 @@ void NuVecMtxTransformVU0(NUVEC *out, NUVEC *v, NUMTX *m) {
 i32 DebrisNuASin(f32 sin) {
     f32 abs;
     f32 sqrt;
-    f32 unknown_a;
-    f32 unknown_b;
-    f32 unknown_c;
-    f32 unknown_d;
+    f32 clamped;
+    f32 range_sign;
+    f32 value_sign;
+    f32 octant;
 
     union {
         f32 value;
@@ -34,20 +34,20 @@ i32 DebrisNuASin(f32 sin) {
     abs = magnitude.value;
     sqrt = NuFsqrt(1.0f - sin * sin);
 
-    unknown_a = MIN(sqrt, abs);
+    clamped = MIN(sqrt, abs);
 
-    unknown_b = MAX(MIN((abs - 0.70710677f) * 3.40282e+38f, 1.0f), -1.0f);
+    range_sign = MAX(MIN((abs - 0.70710677f) * 3.40282e+38f, 1.0f), -1.0f);
 
-    unknown_c = MIN(sin * 3.40282e+38f, 1.0f);
-    unknown_c = MAX(unknown_c, -1.0f);
+    value_sign = MIN(sin * 3.40282e+38f, 1.0f);
+    value_sign = MAX(value_sign, -1.0f);
 
-    unknown_d = unknown_b * unknown_c + unknown_c;
+    octant = range_sign * value_sign + value_sign;
 
-    return (NEG_3_OVER_40 * POW2(unknown_b * unknown_c * unknown_a) * POW3(unknown_b * unknown_c * unknown_a) +
-            (unknown_d * 0.785398f - (unknown_b * unknown_c * unknown_a) +
-             NEG_1_OVER_6 * (unknown_b * unknown_c * unknown_a) * POW2(unknown_b * unknown_c * unknown_a)) +
-            NEG_5_OVER_112 * POW3(unknown_b * unknown_c * unknown_a) * POW4(unknown_b * unknown_c * unknown_a) +
-            NEG_35_OVER_1152 * POW4(unknown_b * unknown_c * unknown_a) * POW5(unknown_b * unknown_c * unknown_a)) *
+    return (NEG_3_OVER_40 * POW2(range_sign * value_sign * clamped) * POW3(range_sign * value_sign * clamped) +
+            (octant * 0.785398f - (range_sign * value_sign * clamped) +
+             NEG_1_OVER_6 * (range_sign * value_sign * clamped) * POW2(range_sign * value_sign * clamped)) +
+            NEG_5_OVER_112 * POW3(range_sign * value_sign * clamped) * POW4(range_sign * value_sign * clamped) +
+            NEG_35_OVER_1152 * POW4(range_sign * value_sign * clamped) * POW5(range_sign * value_sign * clamped)) *
            10430.4f;
 }
 

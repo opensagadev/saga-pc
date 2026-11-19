@@ -140,7 +140,7 @@ typedef struct level_data_s { // size 0x130
     i16 max_ter_platforms; // 0x098
     i16 max_ter_groups;    // 0x09a
     i16 music_other_index; // 0x09c
-    i16 secondary_index;      // 0x09e
+    i16 secondary_index;   // 0x09e
     u8 mipmap_mode;        // 0x0a0
     u8 blob_shadow_alpha;  // 0x0a1
 

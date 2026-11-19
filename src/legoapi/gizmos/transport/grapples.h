@@ -34,7 +34,7 @@ typedef struct GRAPPLE_MOTION { // size 0xf8
         };
     }; // 0x1e
 
-    u8 reserved_1f;                // 0x1f
+    u8 reserved_1f;               // 0x1f
     u16 y_rotation;               // 0x20
     u16 x_rotation;               // 0x22
     NUVEC ground_position;        // 0x24

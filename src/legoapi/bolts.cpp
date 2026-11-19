@@ -73,19 +73,19 @@ extern "C" {
         char name[16];               // 0x00
         f32 speed;                   // 0x10
         f32 lifetime;                // 0x14
-        f32 reserved_18;              // 0x18
+        f32 reserved_18;             // 0x18
         f32 radius;                  // 0x1c
         f32 scale;                   // 0x20
-        f32 reserved_24;              // 0x24
+        f32 reserved_24;             // 0x24
         i16 object_ids[3];           // 0x28
         i16 debris_id;               // 0x2e
         i16 moving_debris[2];        // 0x30
         i16 moving_debris_counts[2]; // 0x34
         i16 hit_part_debris;         // 0x38
-        i16 reserved_3a;              // 0x3a
+        i16 reserved_3a;             // 0x3a
         u8 damage;                   // 0x3c
-        u8 reserved_3d;               // 0x3d
-        u16 reserved_3e;              // 0x3e
+        u8 reserved_3d;              // 0x3d
+        u16 reserved_3e;             // 0x3e
         i32 spread;                  // 0x40
         void *callbacks[7];          // 0x44
         u32 flags_60;                // 0x60
@@ -1907,8 +1907,8 @@ static i32 Bolt_HitPlatPrivate(BOLT *bolt, u8 *hit_flags) {
     if (blowup != NULL) {
         if ((blowup->draw_flags & BLOWUP_OPTION_SHOOTABLE) != 0) {
             if ((exclude & 1) != 0 && bolt->owner != NULL) {
-                i32 field_028_positive = bolt->owner->character_data->game_character->hover_height > 0.0f;
-                if ((blowup->draw_flags & BLOWUP_OPTION_RIDER_BOLTS_ONLY) != 0 && field_028_positive) {
+                i32 rider_hovers = bolt->owner->character_data->game_character->hover_height > 0.0f;
+                if ((blowup->draw_flags & BLOWUP_OPTION_RIDER_BOLTS_ONLY) != 0 && rider_hovers) {
                     return 0;
                 }
             }

@@ -316,47 +316,46 @@ extern "C" {
     }
 
     void LightGameObject(GAMEOBJECT *object, void *set) {
-        GAME_LIGHT_VIEW *view = (GAME_LIGHT_VIEW *)object;
         f32 surface_fade;
         i32 index;
-        rtlResetEx(&view->light_data, 1);
-        rtlApplySetScale(set, &view->light_data, &object->collision_position, NULL, -1, 1.0f);
-        surface_fade = object->floor_height != 2000000.0f && (TerSurface[view->floor_surface].flags & 8) != 0 ? 1.0f : 0.0f;
+        rtlResetEx(&object->lighting_packet, 1);
+        rtlApplySetScale(set, &object->lighting_packet, &object->collision_position, NULL, -1, 1.0f);
+        surface_fade = object->floor_height != 2000000.0f && (TerSurface[object->floor_surface].flags & 8) != 0 ? 1.0f : 0.0f;
         if (object->flags_ef0 & 0x80) {
             object->player.surface_flag8_scale = surface_fade;
         } else {
             object->player.surface_flag8_scale = SeekLinearF(object->player.surface_flag8_scale, surface_fade, (f32)((f64)FRAMETIME * 3.0));
         }
         if (object->flags_ef0 & 0x80) {
-            view->lighting_state.ambient = view->light_data.ambient;
+            object->lighting_state.ambient = object->lighting_packet.ambient;
         } else {
-            view->lighting_state.ambient.x = SeekValF(view->lighting_state.ambient.x, view->light_data.ambient.x, 5.0f);
-            view->lighting_state.ambient.y = SeekValF(view->lighting_state.ambient.y, view->light_data.ambient.y, 5.0f);
-            view->lighting_state.ambient.z = SeekValF(view->lighting_state.ambient.z, view->light_data.ambient.z, 5.0f);
+            object->lighting_state.ambient.x = SeekValF(object->lighting_state.ambient.x, object->lighting_packet.ambient.x, 5.0f);
+            object->lighting_state.ambient.y = SeekValF(object->lighting_state.ambient.y, object->lighting_packet.ambient.y, 5.0f);
+            object->lighting_state.ambient.z = SeekValF(object->lighting_state.ambient.z, object->lighting_packet.ambient.z, 5.0f);
         }
         for (index = 0; index < 3; ++index) {
             if (object->flags_ef0 & 0x80) {
-                view->lighting_state.intensity[index] = view->light_data.intensity_vectors[index];
-                view->lighting_state.direction[index] = view->light_data.direction[index];
+                object->lighting_state.intensity[index] = object->lighting_packet.intensity_vectors[index];
+                object->lighting_state.direction[index] = object->lighting_packet.direction[index];
             } else {
-                view->lighting_state.intensity[index].x =
-                    SeekValF(view->lighting_state.intensity[index].x, view->light_data.intensity_vectors[index].x, 5.0f);
-                view->lighting_state.intensity[index].y =
-                    SeekValF(view->lighting_state.intensity[index].y, view->light_data.intensity_vectors[index].y, 5.0f);
-                view->lighting_state.intensity[index].z =
-                    SeekValF(view->lighting_state.intensity[index].z, view->light_data.intensity_vectors[index].z, 5.0f);
-                view->lighting_state.direction[index].x =
-                    SeekValF(view->lighting_state.direction[index].x, view->light_data.direction[index].x, 5.0f);
-                view->lighting_state.direction[index].y =
-                    SeekValF(view->lighting_state.direction[index].y, view->light_data.direction[index].y, 5.0f);
-                view->lighting_state.direction[index].z =
-                    SeekValF(view->lighting_state.direction[index].z, view->light_data.direction[index].z, 5.0f);
+                object->lighting_state.intensity[index].x =
+                    SeekValF(object->lighting_state.intensity[index].x, object->lighting_packet.intensity_vectors[index].x, 5.0f);
+                object->lighting_state.intensity[index].y =
+                    SeekValF(object->lighting_state.intensity[index].y, object->lighting_packet.intensity_vectors[index].y, 5.0f);
+                object->lighting_state.intensity[index].z =
+                    SeekValF(object->lighting_state.intensity[index].z, object->lighting_packet.intensity_vectors[index].z, 5.0f);
+                object->lighting_state.direction[index].x =
+                    SeekValF(object->lighting_state.direction[index].x, object->lighting_packet.direction[index].x, 5.0f);
+                object->lighting_state.direction[index].y =
+                    SeekValF(object->lighting_state.direction[index].y, object->lighting_packet.direction[index].y, 5.0f);
+                object->lighting_state.direction[index].z =
+                    SeekValF(object->lighting_state.direction[index].z, object->lighting_packet.direction[index].z, 5.0f);
             }
-            if (view->lighting_state.direction[index].x != 0.0f || view->lighting_state.direction[index].y != 0.0f ||
-                view->lighting_state.direction[index].z != 0.0f) {
-                NuVecNorm(&view->lighting_state.direction[index], &view->lighting_state.direction[index]);
+            if (object->lighting_state.direction[index].x != 0.0f || object->lighting_state.direction[index].y != 0.0f ||
+                object->lighting_state.direction[index].z != 0.0f) {
+                NuVecNorm(&object->lighting_state.direction[index], &object->lighting_state.direction[index]);
             } else {
-                view->lighting_state.direction[index] = view->light_data.direction[index];
+                object->lighting_state.direction[index] = object->lighting_packet.direction[index];
             }
         }
         object->flags_ef0 &= ~0x80u;
@@ -364,7 +363,6 @@ extern "C" {
 
     void SetCreatureLights(APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
-        GAME_LIGHT_VIEW *view = (GAME_LIGHT_VIEW *)owner;
         NUVEC ambient;
         NUVEC intensity[3];
         NUVEC direction[3];
@@ -378,19 +376,19 @@ extern "C" {
             return;
         }
         if (owner->dead != 0) {
-            SetLights(&view->light_data.intensity_vectors[0], &view->light_data.direction[0], &view->light_data.intensity_vectors[1],
-                      &view->light_data.direction[1], &view->light_data.intensity_vectors[2], &view->light_data.direction[2],
-                      &view->light_data.ambient);
+            SetLights(&owner->lighting_packet.intensity_vectors[0], &owner->lighting_packet.direction[0],
+                      &owner->lighting_packet.intensity_vectors[1], &owner->lighting_packet.direction[1],
+                      &owner->lighting_packet.intensity_vectors[2], &owner->lighting_packet.direction[2], &owner->lighting_packet.ambient);
             return;
         }
         red = green = blue = 1.0f;
-        ambient = view->lighting_state.ambient;
-        intensity[0] = view->lighting_state.intensity[0];
-        direction[0] = view->lighting_state.direction[0];
-        intensity[1] = view->lighting_state.intensity[1];
-        direction[1] = view->lighting_state.direction[1];
-        intensity[2] = view->lighting_state.intensity[2];
-        direction[2] = view->lighting_state.direction[2];
+        ambient = owner->lighting_state.ambient;
+        intensity[0] = owner->lighting_state.intensity[0];
+        direction[0] = owner->lighting_state.direction[0];
+        intensity[1] = owner->lighting_state.intensity[1];
+        direction[1] = owner->lighting_state.direction[1];
+        intensity[2] = owner->lighting_state.intensity[2];
+        direction[2] = owner->lighting_state.direction[2];
         if (owner->vehicle_hit_timer > 0.0f) {
             f32 flash = (f32)(owner->vehicle_hit_timer / (f64)0.4f);
             red = (f32)(((f64)Lighting_RedFlashRed - 1.0) * flash + 1.0);

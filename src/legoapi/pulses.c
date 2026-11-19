@@ -55,7 +55,7 @@ struct level_sfx_pulse_prefix_s {    // size 0x20
     f32 hit_direction_radius_origin; // 0x18
     i16 debris_hit_player;           // 0x1c
     u8 radial_hit_direction;         // 0x1e
-    u8 reserved_1f;                   // 0x1f
+    u8 reserved_1f;                  // 0x1f
 };
 
 void Pulses_AddSfx(LEVEL_SFX_PULSE *system, i32 *ids, i32 *count, i32 capacity) {

@@ -16,9 +16,9 @@
 #include "nu2api/nucore/nustring.h"
 
 typedef struct HINT_CANCEL { // size 0x1c
-    u8 reserved_00[8];        // 0x00
+    u8 reserved_00[8];       // 0x00
     f32 display_duration;    // 0x08
-    u8 reserved_0c[0xc];      // 0x0c
+    u8 reserved_0c[0xc];     // 0x0c
     f32 cooldown;            // 0x18
 } HINT_CANCEL;
 

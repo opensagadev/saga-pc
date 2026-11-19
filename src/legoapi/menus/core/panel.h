@@ -17,7 +17,7 @@ extern "C" {
         f32 scale;                        // 0x4
         i16 last_coin;                    // 0x8
         u8 multiplier;                    // 0xa
-        u8 reserved_0b;                    // 0xb
+        u8 reserved_0b;                   // 0xb
         f32 multiplier_time;              // 0xc
     } PLAYER_COIN_PACKET;
 

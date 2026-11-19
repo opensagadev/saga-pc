@@ -16,7 +16,7 @@ struct gizmosys_s;
 typedef struct level_script_process_s { // size 0xdc
     char name[16];                      // 0x00
     AISCRIPTPROCESS processor;          // 0x10
-    u8 reserved_d8[4];                   // 0xd8
+    u8 reserved_d8[4];                  // 0xd8
 } LEVEL_SCRIPT_PROCESS;
 #ifdef __cplusplus
 extern "C" {

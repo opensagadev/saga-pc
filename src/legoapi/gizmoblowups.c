@@ -72,25 +72,25 @@ typedef struct respawn_particle_types_s { // size 0xa8
 } RESPAWN_PARTICLE_TYPES;
 
 typedef struct blowup_effect_instance_s { // size 0x110
-    u8 reserved_00[0x7c];                  // 0x000
+    u8 reserved_00[0x7c];                 // 0x000
     NUVEC effect_offset;                  // 0x07c
-    u8 reserved_88[0xa0 - 0x88];           // 0x088
+    u8 reserved_88[0xa0 - 0x88];          // 0x088
     i32 pickup_value;                     // 0x0a0
-    u8 reserved_a4[0xee - 0xa4];           // 0x0a4
+    u8 reserved_a4[0xee - 0xa4];          // 0x0a4
     u16 launch_pitch;                     // 0x0ee
     u16 launch_yaw;                       // 0x0f0
-    u8 reserved_f2[0x10d - 0xf2];          // 0x0f2
+    u8 reserved_f2[0x10d - 0xf2];         // 0x0f2
     i8 pickup_multiplier;                 // 0x10d
 } BLOWUP_EFFECT_INSTANCE;
 
 typedef struct blowup_effect_type_s {   // size 0xfc
     nuhspecial_s alternate_specials[4]; // 0x00
-    u8 reserved_30[0x94 - 0x30];         // 0x30
+    u8 reserved_30[0x94 - 0x30];        // 0x30
     f32 fragment_gravity;               // 0x94
     f32 fragment_speed;                 // 0x98
-    u8 reserved_9c[4];                   // 0x9c
+    u8 reserved_9c[4];                  // 0x9c
     i16 particle_types[7];              // 0xa0
-    u8 reserved_ae[0xfa - 0xae];         // 0xae
+    u8 reserved_ae[0xfa - 0xae];        // 0xae
     u8 fragment_count;                  // 0xfa
 } BLOWUP_EFFECT_TYPE;
 
@@ -102,13 +102,13 @@ typedef struct {              // size 0x100
 } BLOWUP_RESET_PROGRESS;
 
 typedef struct {           // size 0x4c
-    u8 reserved_00[0x40];   // 0x00
+    u8 reserved_00[0x40];  // 0x00
     NUVEC screen_position; // 0x40
 } BLOWUP_SCREEN_DRAW;
 
-typedef struct {         // size 0x48
+typedef struct {          // size 0x48
     u8 reserved_00[0x44]; // 0x00
-    f32 first_frame;     // 0x44
+    f32 first_frame;      // 0x44
 } BLOWUP_ANIM_FIRST_DRAW;
 
 char SpinnerOutputBuffer[14] = "100% Complete";
@@ -117,7 +117,7 @@ i32 MAXBLOWUPRANDSPANG = 60;
 char TurretOutputBuffer[32] = {0};
 char *GizmoRegistryGizTurretsNamePtr = "GizTurret";
 
-LEVEL_INST_ANIM_RESET_VIEW LevInstAnimReset = {0};
+LEVEL_INST_ANIM_RESET LevInstAnimReset = {0};
 
 void SetLevelExBlowupFlags(u32 flags) {
     EXBLOWUPFLAGS = flags;

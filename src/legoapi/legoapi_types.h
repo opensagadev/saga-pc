@@ -118,8 +118,8 @@ typedef struct terrain_surface_s { // size 0xc
     union { // size 0x4
         u32 reserved_08;
 
-        struct {                          // size 0x4
-            u16 object_id;                // 0x8
+        struct {             // size 0x4
+            u16 object_id;   // 0x8
             u16 reserved_0a; // 0xa
         };
     }; // 0x8
@@ -166,7 +166,7 @@ typedef struct cut_player_state_s { // size 0x10
 typedef struct CUT_LOAD_SFX { // size 0x14
     i16 id;                   // 0x00
     u8 flags;                 // 0x02
-    u8 reserved_03;            // 0x03
+    u8 reserved_03;           // 0x03
     f32 frame;                // 0x04
     NUVEC position;           // 0x08
 } CUT_LOAD_SFX;
@@ -190,7 +190,7 @@ typedef struct CUT_LOAD_SUBTITLE { // size 0x28
     u8 blue;                       // 0x04
     u8 alpha;                      // 0x05
     u8 alignment;                  // 0x06
-    u8 reserved_07;                 // 0x07
+    u8 reserved_07;                // 0x07
     f32 start_frame;               // 0x08
     f32 end_frame;                 // 0x0c
     f32 x;                         // 0x10
@@ -207,7 +207,7 @@ typedef struct cutinfo_s {                  // size 0x190
     char name[64];                          // 0x008
     CUT_PLAYER_STATE *player_states;        // 0x048
     u8 player_state_count;                  // 0x04c
-    u8 reserved_4d[3];                       // 0x04d
+    u8 reserved_4d[3];                      // 0x04d
     u32 flags;                              // 0x050
     f32 previous_frame;                     // 0x054
     f32 current_frame;                      // 0x058
@@ -267,16 +267,16 @@ struct FADETYPE {        // size 0x4
 #endif
 
 typedef struct OCCLUDERSET_s { // size 0xa0
-    u8 reserved_00[0xc];      // 0x00
+    u8 reserved_00[0xc];       // 0x00
     u32 count;                 // 0x0c
     u8 queries_prepared;       // 0x10
-    u8 reserved_11[0x8f];     // 0x11
+    u8 reserved_11[0x8f];      // 0x11
 } OCCLUDERSET;
 
 typedef struct OCCLUSIONMANAGER_s { // size 0x170
     u8 initialized;                 // 0x000
     u8 enabled;                     // 0x001
-    u8 reserved_02[0xe];           // 0x002
+    u8 reserved_02[0xe];            // 0x002
     OCCLUDERSET sets[2];            // 0x010
     OCCLUDERSET *building_set;      // 0x150
     OCCLUDERSET *current_set;       // 0x154
@@ -347,7 +347,7 @@ struct CHARPIVOT {         // size 0x14
     f32 start_frame;       // 0x08
     f32 end_frame;         // 0x0c
     u16 character_id;      // 0x10
-    u8 reserved_12[2];      // 0x12
+    u8 reserved_12[2];     // 0x12
 };
 
 typedef struct CHARPIVOT CHARPIVOT;
@@ -438,7 +438,7 @@ struct SNIPER_s {   // size 0x20
 
 struct PODSPRINTNETPACKET_s { // size 0xa
     i16 ai_state;             // 0x0
-    char reserved_02[4];           // 0x2
+    char reserved_02[4];      // 0x2
     i16 speed;                // 0x6
     i16 speed2;               // 0x8
 };
@@ -481,8 +481,8 @@ struct edcam_s {              // size 0x94
     i32 snapped_pitch;        // 0x50
     i32 snapped_yaw;          // 0x54
     NUVEC position_speed;     // 0x58
-    i32 stick_pitch_speed;      // 0x64
-    i32 stick_yaw_speed;        // 0x68
+    i32 stick_pitch_speed;    // 0x64
+    i32 stick_yaw_speed;      // 0x68
     f32 distance_speed;       // 0x6c
     f32 minimum_distance;     // 0x70
     f32 mouse_pitch_speed;    // 0x74
@@ -562,12 +562,12 @@ class NetLogFile { // size 0x2114
     ~NetLogFile();
     i32 Flush();
 
-    i32 state;          // 0x0000
-    char name[0x100];   // 0x0004
-    i32 mode;           // 0x0104
+    i32 state;           // 0x0000
+    char name[0x100];    // 0x0004
+    i32 mode;            // 0x0104
     u32 reserved_108[2]; // 0x0108
-    i32 count;          // 0x0110
-    u8 buffer[0x2000];  // 0x0114
+    i32 count;           // 0x0110
+    u8 buffer[0x2000];   // 0x0114
 };
 #endif
 
@@ -591,9 +591,9 @@ typedef struct gamecamera_s { // size 0x230
     union { // size 0x38
         SOCKPOSITION sock_position;
 
-        struct {           // size 0x2
+        struct {            // size 0x2
             u8 reserved_00; // 0x000
-            u8 sock;       // 0x001
+            u8 sock;        // 0x001
         };
     }; // 0x000
 
@@ -610,13 +610,13 @@ typedef struct gamecamera_s { // size 0x230
     NUVEC blend_end_position;         // 0x14c
     NUVEC blend_destination_position; // 0x158
     NUVEC blend_start_target;         // 0x164
-    u8 reserved_170[0xc];              // 0x170
+    u8 reserved_170[0xc];             // 0x170
     NUVEC blend_end_target;           // 0x17c
     NUVEC blend_destination_target;   // 0x188
     NUVEC shake_offset;               // 0x194
     NUVEC shake_direction;            // 0x1a0
     NUVEC shake_target;               // 0x1ac
-    i32 seek_override;                  // 0x1b8
+    i32 seek_override;                // 0x1b8
     f32 blend_time;                   // 0x1bc
     f32 blend_duration;               // 0x1c0
     f32 blend_curve;                  // 0x1c4
@@ -672,7 +672,7 @@ struct AITRIGGERSET_TARGET { // size 0x3c
 struct GIZSPINNERARM_s { // size 0x44
     NUMTX matrix;        // 0x00
     i16 platform_id;     // 0x40
-    u8 reserved_42[2];    // 0x42
+    u8 reserved_42[2];   // 0x42
 };
 
 struct GIZPANEL_s {    // size 0x9c
@@ -680,7 +680,7 @@ struct GIZPANEL_s {    // size 0x9c
     char name[16];     // 0x40
     NUVEC position;    // 0x50
     u16 y_rotation;    // 0x5c
-    u8 reserved_5e[3];  // 0x5e
+    u8 reserved_5e[3]; // 0x5e
     u8 model_variant;  // 0x61
     u8 state_flags[2]; // 0x62
     f32 flash_timer;   // 0x64
@@ -701,7 +701,7 @@ struct GIZPANEL_s {    // size 0x9c
     }; // 0x68
 
     u8 draw_flags;                                     // 0x69
-    u8 reserved_6a[2];                                  // 0x6a
+    u8 reserved_6a[2];                                 // 0x6a
     NUVEC floor_position;                              // 0x6c
     NUVEC target_offset;                               // 0x78
     u16 target_x_rotation;                             // 0x84
@@ -721,14 +721,14 @@ struct GIZBUILDITANIMDATA_s { // size 0xc8
     NUMTX draw_mtx;           // 0x80
     f32 wobble_time;          // 0xc0
     u8 wobble_axis;           // 0xc4
-    u8 reserved_c5;                // 0xc5
+    u8 reserved_c5;           // 0xc5
     u8 was_drawn;             // 0xc6
-    u8 reserved_c7;                // 0xc7
+    u8 reserved_c7;           // 0xc7
 };
 
 typedef struct TERRAIN_INDEX_LEVEL {   // size 0x80c
     i16 cache_age;                     // 0x000
-    u8 reserved_02[2];                  // 0x002
+    u8 reserved_02[2];                 // 0x002
     f32 center_x;                      // 0x004
     f32 center_z;                      // 0x008
     TERRAIN_SCAN_WORD scan_words[512]; // 0x00c
@@ -737,15 +737,15 @@ typedef struct TERRAIN_INDEX_LEVEL {   // size 0x80c
 typedef struct TERRAIN_SET {                    // size 0xa490
     struct TERRAIN_GROUP *groups;               // 0x0000
     u8 reserved_04[0x60];                       // 0x0004
-    void *user_data;                          // 0x0064
+    void *user_data;                            // 0x0064
     struct TERRAIN_PLATFORM *platforms;         // 0x0068
     i16 active_platform_groups[96];             // 0x006c
     i32 active_platform_count;                  // 0x012c
     f32 platform_query_min_x;                   // 0x0130
-    u8 reserved_134[4];                          // 0x0134
+    u8 reserved_134[4];                         // 0x0134
     f32 platform_query_min_z;                   // 0x0138
     f32 platform_query_max_x;                   // 0x013c
-    u8 reserved_140[4];                          // 0x0140
+    u8 reserved_140[4];                         // 0x0140
     f32 platform_query_max_z;                   // 0x0144
     struct TERRAIN_SPATIAL_NODE *spatial_nodes; // 0x0148
     i16 group_count;                            // 0x014c
@@ -816,7 +816,7 @@ struct OccluderSet { // size 0xa0
     u32 capacity;                         // 0x08
     u32 count;                            // 0x0c
     bool queries_prepared;                // 0x10
-    u8 reserved_11[15];                    // 0x11
+    u8 reserved_11[15];                   // 0x11
     NUMTX projection_matrix;              // 0x20
     NUMTX query_matrix;                   // 0x60
     bool IsOccludedOBB(const NUVEC *, const NUVEC *, const NUMTX *);
@@ -836,17 +836,17 @@ struct OcclusionManager { // size 0x170
     OcclusionManager();
     ~OcclusionManager();
     void Init(u32, VARIPTR *, VARIPTR);
-    bool initialized;          // 0x000
-    bool enabled;              // 0x001
-    u8 reserved_02[14];         // 0x002
-    OccluderSet sets[2];       // 0x010
-    OccluderSet *building_set; // 0x150
-    OccluderSet *current_set;  // 0x154
-    f32 occluder_dot_threshold;           // 0x158
-    f32 occluder_screen_threshold;           // 0x15c
-    u32 occluded_count;        // 0x160
-    u32 query_count;           // 0x164
-    u8 reserved_168[8];         // 0x168
+    bool initialized;              // 0x000
+    bool enabled;                  // 0x001
+    u8 reserved_02[14];            // 0x002
+    OccluderSet sets[2];           // 0x010
+    OccluderSet *building_set;     // 0x150
+    OccluderSet *current_set;      // 0x154
+    f32 occluder_dot_threshold;    // 0x158
+    f32 occluder_screen_threshold; // 0x15c
+    u32 occluded_count;            // 0x160
+    u32 query_count;               // 0x164
+    u8 reserved_168[8];            // 0x168
     bool IsOccludedOBB(const NUVEC *, const NUVEC *, const NUMTX *);
     bool IsOccludedSphere(const NUVEC *, f32);
     void EndFrame();
@@ -911,7 +911,7 @@ struct AITRIGGERSET_s { // size 0x214
     i8 trigger_indices[8]; // 0x204
 
     u8 trigger_count; // 0x20c
-    u8 reserved_20d;   // 0x20d
+    u8 reserved_20d;  // 0x20d
     /* one bit per trigger a player holds */
     u16 occupied; // 0x20e
 
@@ -933,7 +933,7 @@ struct AITRIGGERSETSYS_s {          // size 0x4304
     i8 assigned_set[64]; // 0x4280
     /* per object id, the trigger in that set */
     i8 assigned_trigger[64]; // 0x42c0
-    i32 reserved_4300;        // 0x4300
+    i32 reserved_4300;       // 0x4300
 };
 
 struct shopitem_s {              // size 0x74
@@ -979,8 +979,8 @@ struct AIPATHCNXCONTROLLER_s {    // size 0xa8
     union { // size 0x2
         u16 flags_word;
 
-        struct {       // size 0x2
-            u8 flags;  // 0xa6
+        struct {            // size 0x2
+            u8 flags;       // 0xa6
             u8 reserved_a7; // 0xa7
         };
     }; // 0xa6
@@ -1052,6 +1052,49 @@ class FadeSystem : public FADEINFO_s { // size 0x2c
     i32 SetFade(FADETYPE const &type, u32 frames);
     i32 AddFade(FadeBase *fade);
 };
+
+class Fade : public FadeBase {
+  public:
+    void Init(FADEINFO_s *state);
+    void InitFade();
+    void UpdateFade();
+    void DrawFade();
+    FADETYPE_VALUE GetFadeType() const;
+};
+
+class FadeWipe : public FadeBase {
+  public:
+    void Init(FADEINFO_s *state);
+    void InitFade();
+    void UpdateFade();
+    void DrawFade();
+    FADETYPE_VALUE GetFadeType() const;
+};
+
+class FadeStillWipe : public FadeBase {
+  public:
+    void Init(FADEINFO_s *state);
+    void InitFade();
+    void UpdateFade();
+    void DrawFade();
+    FADETYPE_VALUE GetFadeType() const;
+};
+
+class FadeStill : public FadeBase {
+  public:
+    void Init(FADEINFO_s *state);
+    void InitFade();
+    void UpdateFade();
+    void DrawFade();
+    FADETYPE_VALUE GetFadeType() const;
+};
+
+extern "C" {
+    extern Fade fade;
+    extern FadeWipe fadeWipe;
+    extern FadeStillWipe fadeStillWipe;
+    extern FadeStill fadeStill;
+}
 
 #endif
 
@@ -1140,7 +1183,7 @@ struct LEVER_s {                             // size 0xa8
     }; // 0x9c
 
     char model_variant; // 0x9e
-    u8 reserved_9f[9];   // 0x9f
+    u8 reserved_9f[9];  // 0x9f
 };
 
 struct TRAFFICANIMSYS_s {                        // size 0x77e4
@@ -1268,7 +1311,7 @@ struct gameanimobjpool_s {     // size 0x14
     u16 object_data_size;      // 0x00
     u16 active_count;          // 0x02
     u16 capacity;              // 0x04
-    u16 reserved_06;            // 0x06
+    u16 reserved_06;           // 0x06
     GAMEANIMOBJ *objects;      // 0x08
     GAMEANIMOBJ *free_objects; // 0x0c
     void *object_data;         // 0x10
@@ -1523,14 +1566,14 @@ extern "C" {
         f32 time;                   // 0x1c
         f32 duration;               // 0x20
         u32 flags;                  // 0x24
-        u8 reserved_28[2];           // 0x28
+        u8 reserved_28[2];          // 0x28
         u16 random_angle;           // 0x2a
         i16 effect_id;              // 0x2c
         u16 hit_flags;              // 0x2e
         u16 kill_count;             // 0x30 hits that killed
         u8 damage;                  // 0x32
         i8 player_index;            // 0x33 credited player without an owner (0, 1), -1 none
-        u8 reserved_34[4];           // 0x34
+        u8 reserved_34[4];          // 0x34
     } EXPLOSION;
 
     extern EXPLOSION Explosions[8];
@@ -1547,7 +1590,7 @@ struct CABLE_s {                 // size 0x1ec
     f32 segment_lengths[15];     // 0x188
     f32 max_length;              // 0x1c4
     f32 total_length;            // 0x1c8
-    u8 reserved_1cc[4];           // 0x1cc
+    u8 reserved_1cc[4];          // 0x1cc
     f32 slack;                   // 0x1d0
     f32 pull_time;               // 0x1d4
     u8 wrap_indices[15];         // 0x1d8
@@ -1669,7 +1712,7 @@ struct STATUSPACKET_s {                                                         
     u32 coins_remaining[2];                                                                  // 0x084
     u32 coins_collected[2];                                                                  // 0x08c
     i32 new_minikits;                                                                        // 0x094
-    u32 reserved_98;                                                                          // 0x098
+    u32 reserved_98;                                                                         // 0x098
 
     union { // size 0x4
         u16 player_models[2];
@@ -1680,8 +1723,8 @@ struct STATUSPACKET_s {                                                         
         };
     }; // 0x09c
 
-    i16 area_id;   // 0x0a0
-    i8 episode_id; // 0x0a2
+    i16 area_id;    // 0x0a0
+    i8 episode_id;  // 0x0a2
     u8 reserved_a3; // 0x0a3
 
     union { // size 0x2
@@ -1747,12 +1790,12 @@ struct STATUSPACKET_s {                                                         
     u8 displayed_gold_bricks;                // 0x0be
     u8 completion_shown;                     // 0x0bf
     i8 pending_area;                         // 0x0c0
-    u8 reserved_c1[7];                        // 0x0c1
+    u8 reserved_c1[7];                       // 0x0c1
     i8 stage_types[40];                      // 0x0c8
     u8 gold_brick_enabled[40];               // 0x0f0
     i16 next_area;                           // 0x118
     i8 chapter;                              // 0x11a
-    u8 reserved_11b[1];                       // 0x11b
+    u8 reserved_11b[1];                      // 0x11b
     struct STATUS_STAGE_s *previous_stage_2; // 0x11c
     struct STATUS_STAGE_s *previous_stage;   // 0x120
     struct STATUS_STAGE_s *stage;            // 0x124
@@ -1808,7 +1851,7 @@ struct STATUS_STAGE_s {                                                         
     i32 type;                                                                                    // 0x0c
     i16 panel_object;  // 0x10 level object drawn on the background grid
     u8 shown;          // 0x12
-    u8 reserved_13;         // 0x13
+    u8 reserved_13;    // 0x13
     i32 step;          // 0x14
     f32 step_time;     // 0x18
     f32 step_duration; // 0x1c
@@ -1854,7 +1897,7 @@ struct STATUS_STAGE_s {                                                         
 #define TURRET_FLAG_ROTATION_SOUND_PLAYING 0x800
 
 struct GIZTURRET_s {                          // size 0x13c
-    u8 reserved_00[8];                         // 0x000
+    u8 reserved_00[8];                        // 0x000
     char name[16];                            // 0x008
     struct gameanimset_s *anim_set;           // 0x018
     struct gameanimobj_s *primary_anim_obj;   // 0x01c
@@ -1914,9 +1957,9 @@ struct GIZTURRET_s {                          // size 0x13c
     u8 muzzle_count;     // 0x130
     u8 shots_required;   // 0x131
     u8 shots_fired;      // 0x132
-    u8 reserved_133;      // 0x133
+    u8 reserved_133;     // 0x133
     u16 y_rotation;      // 0x134
-    u8 reserved_136[2];   // 0x136
+    u8 reserved_136[2];  // 0x136
     i16 destroy_sfx;     // 0x138
 
     union { // size 0x2
@@ -1947,9 +1990,9 @@ struct GIZSPECIAL_s {               // size 0x28
     union { // size 0x1
         u8 flags;
 
-        struct {                 // size 0x1
-            u8 is_reversed : 1;  // 0x24:0
-            u8 is_active : 1;    // 0x24:1
+        struct {                  // size 0x1
+            u8 is_reversed : 1;   // 0x24:0
+            u8 is_active : 1;     // 0x24:1
             u8 reserved_24_2 : 6; // 0x24:2
         };
     }; // 0x24
@@ -1967,7 +2010,7 @@ struct GIZOBSTACLESYS_s {                // size 0x14
     u16 count;                           // 0x08
     u16 capacity;                        // 0x0a
     u16 active_gizmo_count;              // 0x0c
-    u16 reserved_0e;                      // 0x0e
+    u16 reserved_0e;                     // 0x0e
     struct gameanimobjpool_s *anim_pool; // 0x10
 };
 
@@ -1979,7 +2022,7 @@ struct CHARPLATFORM_s {          // size 0x14
 };
 
 struct CHARPLATFORMSYS_s {              // size 0x1c
-    i32 reserved_00;                     // 0x00
+    i32 reserved_00;                    // 0x00
     i32 platform_count;                 // 0x04
     struct CHARPLATFORM_s platforms[1]; // 0x08
 };
@@ -1989,7 +2032,7 @@ struct GIZBUILDITSYS_s {                 // size 0x14
     u16 count;                           // 0x04
     u16 capacity;                        // 0x06
     u16 max_animation_objects;           // 0x08
-    u16 reserved_0a;                      // 0x0a
+    u16 reserved_0a;                     // 0x0a
     struct gameanimobjpool_s *anim_pool; // 0x0c
     struct gameanimobj_s **anim_objects; // 0x10
 };
@@ -2058,19 +2101,19 @@ struct pushblock_s { // size 0xd4
             u8 flags_0cb;         // 0xcb
         };
 
-        struct {                           // size 0x4
-            u32 flag_000 : 1;              // 0xc8:0
-            u32 reserved_c8_1 : 5; // 0xc8:1
-            u32 flag_006 : 1;              // 0xc8:6
-            u32 flag_007 : 1;              // 0xc8:7
-            u32 reserved_c8_8 : 4; // 0xc8:8
-            u32 animation_positions : 3;   // 0xc8:12
-            u32 reserved_c8_15 : 3; // 0xc8:15
-            u32 push_visible : 1;          // 0xc8:18
-            u32 reserved_c8_19 : 5; // 0xc8:19
-            u32 push_active : 1;           // 0xc8:24
-            u32 progress_state : 1;        // 0xc8:25
-            u32 reserved_c8_26 : 6; // 0xc8:26
+        struct {                         // size 0x4
+            u32 flag_000 : 1;            // 0xc8:0
+            u32 reserved_c8_1 : 5;       // 0xc8:1
+            u32 flag_006 : 1;            // 0xc8:6
+            u32 flag_007 : 1;            // 0xc8:7
+            u32 reserved_c8_8 : 4;       // 0xc8:8
+            u32 animation_positions : 3; // 0xc8:12
+            u32 reserved_c8_15 : 3;      // 0xc8:15
+            u32 push_visible : 1;        // 0xc8:18
+            u32 reserved_c8_19 : 5;      // 0xc8:19
+            u32 push_active : 1;         // 0xc8:24
+            u32 progress_state : 1;      // 0xc8:25
+            u32 reserved_c8_26 : 6;      // 0xc8:26
         };
     }; // 0xc8
 
@@ -2087,7 +2130,7 @@ struct GIZTURRETSYS_s {                  // size 0x10
     u16 count;                           // 0x8
     u16 capacity;                        // 0xa
     i8 opponent_cursor;                  // 0xc
-    i8 reserved_0d[3];                    // 0xd
+    i8 reserved_0d[3];                   // 0xd
 };
 
 /* GIZSPINNER_s.state_flags: the level file's options (0x2, 0x4, 0x400, 0x800 set at reset, 0x4000, 0x8000) and the
@@ -2123,7 +2166,7 @@ struct GIZSPINNER_s {                       // size 0x304
 
         struct { // size 0x8
             /* the anim set's completion ratio */
-            f32 progress;   // 0x070
+            f32 progress;    // 0x070
             u32 reserved_74; // 0x074
         };
     }; // 0x070
@@ -2200,18 +2243,18 @@ extern "C" {
 }
 #endif
 
-struct nugraph_s {    // size 0x5c
-    i8 interpolation; // 0x00
-    i8 point_count;   // 0x01
-    u8 reserved_02[2];     // 0x02
-    f32 x[8];         // 0x04
-    f32 y[8];         // 0x24
-    f32 x_scale;      // 0x44
-    f32 y_scale;      // 0x48
-    f32 x_extent;     // 0x4c
-    f32 y_extent;     // 0x50
-    f32 x_offset;     // 0x54
-    f32 y_offset;     // 0x58
+struct nugraph_s {     // size 0x5c
+    i8 interpolation;  // 0x00
+    i8 point_count;    // 0x01
+    u8 reserved_02[2]; // 0x02
+    f32 x[8];          // 0x04
+    f32 y[8];          // 0x24
+    f32 x_scale;       // 0x44
+    f32 y_scale;       // 0x48
+    f32 x_extent;      // 0x4c
+    f32 y_extent;      // 0x50
+    f32 x_offset;      // 0x54
+    f32 y_offset;      // 0x58
 };
 
 #ifdef __cplusplus

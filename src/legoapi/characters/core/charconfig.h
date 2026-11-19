@@ -94,7 +94,7 @@ typedef struct CHARCONFIG {                // size 0xfc8
     }; // 0x00c
 
     u8 named_layers;                         // 0x010
-    u8 reserved_11[3];                        // 0x011
+    u8 reserved_11[3];                       // 0x011
     i32 effect_count;                        // 0x014
     CHARACTER_EFFECT_CONFIG *effect_scratch; // 0x018
     i16 character_id;                        // 0x01c

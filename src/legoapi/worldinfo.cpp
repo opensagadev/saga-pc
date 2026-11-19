@@ -63,25 +63,6 @@
 
 extern "C" {
 
-    typedef struct world_script_progress_s { // size 0x20
-        char name[16];                       // 0x00
-        f32 params[4];                       // 0x10
-    } WORLD_SCRIPT_PROGRESS;
-
-    typedef struct level_progress_transfer_s { // size 0x2e28
-        SCENEPROGRESS scene_progress;          // 0x0000
-        u32 flags;                             // 0x2800
-        u8 reserved_2804[0x20];                 // 0x2804
-        WORLD_SCRIPT_PROGRESS scripts[32];     // 0x2824
-        GIZFLOWPROGRESS giz_flow_progress;     // 0x2c24
-        char disabled_effect_names[12][16];    // 0x2d68
-    } LEVEL_PROGRESS_TRANSFER;
-
-    typedef struct world_resource_icons_reader_s { // size 0x2968
-        u8 reserved_00[0x2964];                   // 0x0000
-        NUGSCN *icons_scene;                       // 0x2964
-    } WORLD_RESOURCE_ICONS_READER;
-
     void PC_SPECIAL_SHADOW_LIGHT::SetEnabled(i32 enabled) {
         if (enabled != 0 && this->enabled == 0) {
             i32 index;
@@ -207,7 +188,6 @@ extern "C" {
 
     void WorldInfo_Dump(WORLDINFO *world) {
         i32 index;
-        WORLD_RESOURCE_ICONS_READER *resource = (WORLD_RESOURCE_ICONS_READER *)world;
         Customiser_DumpAll(Game_Customiser, world);
         if (world->cutscene_sys != NULL) {
             for (index = 0; index < world->cutscene_sys->count; ++index) {
@@ -217,9 +197,9 @@ extern "C" {
         CharacterMiniKits_Dump(world);
         CharScenes_LevelDump(world);
         CutScenes_Destroy(world->cutscene_sys);
-        if (resource->icons_scene != NULL) {
-            NuGScnRemove(resource->icons_scene);
-            resource->icons_scene = NULL;
+        if (world->icons_scene != NULL) {
+            NuGScnRemove(world->icons_scene);
+            world->icons_scene = NULL;
         }
         if (world->page_pp != -1) {
             edppStopPage((i8)(u8)world->page_pp);

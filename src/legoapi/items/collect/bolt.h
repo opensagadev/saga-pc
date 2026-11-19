@@ -15,10 +15,10 @@ typedef struct GAMEDEBRISENTRY { // size 0x14
 
 /* Minimum shared consumer records; offsets verified, no item allocation extent claimed. */
 typedef struct vehicle_weapon_item_s { // size 0xa
-    u8 reserved_00[2];                  // 0x0
+    u8 reserved_00[2];                 // 0x0
     u8 start_ammo;                     // 0x2
     u8 start_field_03;                 // 0x3
-    u8 reserved_04[4];                  // 0x4
+    u8 reserved_04[4];                 // 0x4
     u8 type;                           // 0x8
     i8 bolt_override;                  // 0x9
 } VEHICLE_WEAPON_ITEM;

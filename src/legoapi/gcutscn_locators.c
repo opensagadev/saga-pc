@@ -20,30 +20,30 @@
 
 typedef struct CUT_LOOKAT_TEXTURE { // size 0x20
     char *name;                     // 0x00
-    u32 reserved_04;                 // 0x04
+    u32 reserved_04;                // 0x04
     i16 *frames;                    // 0x08
     i16 frame_count;                // 0x0c
-    i16 reserved_0e;                 // 0x0e
+    i16 reserved_0e;                // 0x0e
     NUMTL *material;                // 0x10
-    u8 reserved_14[12];              // 0x14
+    u8 reserved_14[12];             // 0x14
 } CUT_LOOKAT_TEXTURE;
 
 typedef struct CUT_LOOKAT_HIERARCHY { // size 0x68
-    u8 reserved_00[12];                // 0x00
+    u8 reserved_00[12];               // 0x00
     NUMTL **materials;                // 0x0c
     i32 material_count;               // 0x10
-    u8 reserved_14[0x4c];              // 0x14
+    u8 reserved_14[0x4c];             // 0x14
     i32 texture_count;                // 0x60
     CUT_LOOKAT_TEXTURE *textures;     // 0x64
 } CUT_LOOKAT_HIERARCHY;
 
 typedef struct CUT_LOOKAT_MATERIAL { // size 0x9b
-    u8 reserved_00[0x9a];             // 0x00
+    u8 reserved_00[0x9a];            // 0x00
     u8 type;                         // 0x9a
 } CUT_LOOKAT_MATERIAL;
 
 typedef struct CUT_LOOKAT_LOCATOR_INFO { // size 0x60
-    u8 reserved_00[0x5b];                 // 0x00
+    u8 reserved_00[0x5b];                // 0x00
     u8 character_id;                     // 0x5b
     u8 joint;                            // 0x5c
     u8 material;                         // 0x5d
@@ -153,19 +153,19 @@ typedef struct CUT_UPDATE_LOCATOR_MATRIX { // size 0x64
     NUVEC pivot;                           // 0x40
     f32 scale;                             // 0x4c
     NUANIMDATA2 *animation;                // 0x50
-    u32 reserved_54;                        // 0x54
+    u32 reserved_54;                       // 0x54
     u8 flags;                              // 0x58
     u8 type;                               // 0x59
     u8 joint;                              // 0x5a
     u8 self;                               // 0x5b
-    u8 reserved_5c[8];                      // 0x5c
+    u8 reserved_5c[8];                     // 0x5c
 } CUT_UPDATE_LOCATOR_MATRIX;
 
 typedef struct CUT_UPDATE_ENTRY { // size 0x14
     char *name;                   // 0x00
-    u32 reserved_04;               // 0x04
-    u32 reserved_08;               // 0x08
-    u32 reserved_0c;               // 0x0c
+    u32 reserved_04;              // 0x04
+    u32 reserved_08;              // 0x08
+    u32 reserved_0c;              // 0x0c
     void (*update)(INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *, f32, NUMTX *,
                    i32); // 0x10
 } CUT_UPDATE_ENTRY;
@@ -298,7 +298,7 @@ static void CutSceneLocatorVfxUpdate(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LOCATOR
 }
 
 typedef struct CUT_LOOKAT_MATERIAL_VALUES { // size 0x88
-    u8 reserved_00[0x80];                    // 0x00
+    u8 reserved_00[0x80];                   // 0x00
     f32 look_x;                             // 0x80
     f32 look_y;                             // 0x84
 } CUT_LOOKAT_MATERIAL_VALUES;
