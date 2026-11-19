@@ -773,7 +773,7 @@ extern "C" {
 
     void NuAnimBuffProceduralAnimation(ANI3_BUFFER *buffer, NUHGOBJ_EVAL *object, i32 override_count, NUHGOBJ_JOINT_OVERRIDE *overrides) {
         i32 i;
-        ANI3_BUFFER *target = buffer != NULL ? buffer : (ANI3_BUFFER *)globalbuffer;
+        ANI3_BUFFER *target = buffer != NULL ? buffer : globalbuffer;
         for (i = 0; i < override_count; ++i) {
             NUHGOBJ_JOINT_OVERRIDE *item = &overrides[i];
             ANI3_JOINT *joint;
@@ -826,7 +826,7 @@ extern "C" {
         if (buffer == NULL) {
             return;
         }
-        buffer->max_joints = globalbuffer->scratch_joint_capacity;
+        buffer->max_joints = globalbuffer->max_joints;
         buffer->joint_count = 0;
         buffer->joints = (ANI3_JOINT *)NuScratchAlloc32((buffer->max_joints + 1) * 3 * 16);
         buffer->joints = (ANI3_JOINT *)(((u32)buffer->joints + 15) & ~15u);
@@ -970,10 +970,7 @@ extern "C" {
         return scene->end_frame_lookup[(animation_instance->flags >> 22) - 1].end_frame;
     }
 
-    i32 findrange(NUGSCN *scene, i32 first_joint) {
-        // This helper's original C++ ABI names nugscn_s, but animation callers
-        // pass the hierarchy object whose joint table starts at the same offsets.
-        NUHGOBJ_EVAL *object = ((NUHGOBJ_EVAL *)(scene));
+    i32 findrange(NUHGOBJ_EVAL *object, i32 first_joint) {
         i32 joint_count = object->joint_count;
         NUHGOBJ_EVAL_JOINT *joints = object->joints;
         i32 parent_index = joints[first_joint].parent_index;
@@ -2975,17 +2972,17 @@ extern "C" {
      * nu2api/nucore/nuanim.cpp and nucore_plain.cpp. No separate helper outline
      * or allocation provider is invented. */
     void NuAnimInit(i32 max_joints, VARIPTR *buffer, VARIPTR end) {
-        ANI3_GLOBALBUFFER *header;
+        ANI3_BUFFER *header;
         buildBitCountTable();
         MaxAnimJoints = max_joints;
 
-        header = (ANI3_GLOBALBUFFER *)((buffer->addr + 15u) & ~15u);
-        buffer->addr = ((buffer->addr + 15u) & ~15u) + sizeof(ANI3_GLOBALBUFFER);
+        header = (ANI3_BUFFER *)((buffer->addr + 15u) & ~15u);
+        buffer->addr = ((buffer->addr + 15u) & ~15u) + sizeof(ANI3_BUFFER);
         header->joints = (ANI3_JOINT *)((buffer->addr + 15u) & ~15u);
         buffer->addr = ((buffer->addr + 15u) & ~15u) + (u32)max_joints * sizeof(ANI3_JOINT);
         header->joint_flags = buffer->u8_ptr;
         buffer->addr += (u32)max_joints;
-        header->scratch_joint_capacity = (i16)max_joints;
+        header->max_joints = (i16)max_joints;
         header->joint_count = 0;
         globalbuffer = header;
     }
@@ -3229,7 +3226,7 @@ extern "C" {
         quaternions = (NUQUAT *)(((u32)quaternions + 15u) & ~15u);
         rotation = quaternions;
         identity.w = 1.0f;
-        evaluated = buffer != NULL ? buffer : (ANI3_BUFFER *)globalbuffer;
+        evaluated = buffer != NULL ? buffer : globalbuffer;
         if (AnimBuffEvalData != NULL && AnimBuffEvalJoint != NULL) {
             memset(callback_data, 0, object->joint_count * sizeof(void *));
             for (index = 0; AnimBuffEvalData[index] != NULL; ++index) {
@@ -3369,7 +3366,7 @@ extern "C" {
         u8 flags;
         u8 *joint_flags;
 
-        current = buffer != NULL ? buffer : (ANI3_BUFFER *)globalbuffer;
+        current = buffer != NULL ? buffer : globalbuffer;
         if (current->use_quaternions != 0) {
             NuAnimBuffEvaluate_3_QuatB(NULL, current, object, matrices, animation, root_fn, root_translation, root_data);
             return;
@@ -3483,12 +3480,12 @@ extern "C" {
                                 NUHGOBJ_EVAL *object, NUVEC *root_translation) {
         i32 end_joint;
         if (buffer == NULL) {
-            buffer = ((ANI3_BUFFER *)(globalbuffer));
+            buffer = globalbuffer;
         }
         buffer->joint_count = object->joint_count;
 
         if (first_joint != 0) {
-            end_joint = findrange(((NUGSCN *)(object)), first_joint) + 1;
+            end_joint = findrange(object, first_joint) + 1;
         } else {
             end_joint = object->joint_count;
         }
@@ -7814,24 +7811,23 @@ extern "C" {
 /* Original numtl module (generic material code and its render helpers). */
 extern "C" {
 
-    typedef struct material_cleanup_flags_s { // size 0x2
-        i16 flags;                            // 0x0
-    } MATERIAL_CLEANUP_FLAGS;
+    typedef struct PC_MATERIAL_VARIANT_RECORD PC_MATERIAL_VARIANT_RECORD;
 
-    typedef struct material_override_cleanup_s { // size 0x8
-        NUMTL *material;                         // 0x0
-        NUMTL *original;                         // 0x4
-    } MATERIAL_OVERRIDE_CLEANUP;
+    struct PC_MATERIAL_VARIANT_RECORD { // size 0xc
+        NUMTL *material;                // 0x0
+        NUMTL *original;                // 0x4
+        u32 vertex_descriptor;          // 0x8
+    };
 
     void NuMtlDestroy(NUMTL *material) {
-        MATERIAL_OVERRIDE_CLEANUP *entry;
-        ((MATERIAL_CLEANUP_FLAGS *)material)->flags &= ~1;
+        PC_MATERIAL_VARIANT_RECORD *entry;
+        material->flags &= ~1;
         NuDisplayListDestroyMtl(material);
-        entry = (MATERIAL_OVERRIDE_CLEANUP *)NuLstGetNext(g_overrideList, NULL);
+        entry = (PC_MATERIAL_VARIANT_RECORD *)NuLstGetNext(g_overrideList, NULL);
         while (entry != NULL) {
-            MATERIAL_OVERRIDE_CLEANUP *next = (MATERIAL_OVERRIDE_CLEANUP *)NuLstGetNext(g_overrideList, (NULNKHDR *)entry);
+            PC_MATERIAL_VARIANT_RECORD *next = (PC_MATERIAL_VARIANT_RECORD *)NuLstGetNext(g_overrideList, (NULNKHDR *)entry);
             if (entry->original == material) {
-                ((MATERIAL_CLEANUP_FLAGS *)entry->material)->flags &= ~1;
+                entry->material->flags &= ~1;
                 NuDisplayListDestroyMtl(entry->material);
                 NuLstFree((NULNKHDR *)entry);
             }
@@ -7843,14 +7839,6 @@ extern "C" {
         NuMtlUpdatePS(material);
         ++material->version;
     }
-
-    typedef struct PC_MATERIAL_VARIANT_RECORD PC_MATERIAL_VARIANT_RECORD;
-
-    struct PC_MATERIAL_VARIANT_RECORD { // size 0xc
-        NUMTL *material;                // 0x0
-        NUMTL *original;                // 0x4
-        u32 vertex_descriptor;          // 0x8
-    };
 
     void NuShaderMtlDescInit(NUSHADERMTLDESC *desc) {
         if (desc == NULL) {
@@ -9123,8 +9111,8 @@ extern "C" {
         for (;;) {
         }
     found:
-        /* The folded no-op diagnostic takes the freed allocation as its argument. */
-        PCSpecialEmptyHandler(scene->allocation);
+        /* The folded no-op diagnostic takes the scene name as its argument. */
+        PCSpecialEmptyHandler(scene->name);
         for (i = 0; i < scene->sort_count; ++i) {
             NUSORTPRI *previous = NULL;
             NUSORTPRI *sort;
@@ -10778,11 +10766,6 @@ extern "C" void NuDisplayListHtmlEnd(void) {
     }
 }
 
-/* The debug-name projection reads one pointer at scene+0. */
-typedef struct PC_DISPLAY_DEBUG_NAME_READER { // size 0x4
-    const char *name;                         // 0x0
-} PC_DISPLAY_DEBUG_NAME_READER;
-
 extern "C" {
     static void DisplayListPrintItems(NUDISPLAYLISTITEM *item, u32 flags, i32 type_count, i32 *types, i32 file_handle);
 }
@@ -10793,8 +10776,8 @@ extern "C" void NuDisplayListDrawRenderScene(i32 scene_id) {
     for (i32 index = 0; index < count; ++index) {
         NUSORTPRI *sort = PCSafeRenderScenes[scene_id]->sort_pris[index];
         if (nudlist_field_fe4 != 0) {
-            if (sort->display_scene != NULL && reinterpret_cast<PC_DISPLAY_DEBUG_NAME_READER *>(sort->display_scene)->name != NULL) {
-                NuHtmlHeading("Display Scene : %s (sort: %d)", reinterpret_cast<PC_DISPLAY_DEBUG_NAME_READER *>(sort->display_scene)->name,
+            if (sort->display_scene != NULL && sort->display_scene->name != NULL) {
+                NuHtmlHeading("Display Scene : %s (sort: %d)", sort->display_scene->name,
                               sort->sort_pri);
             } else {
                 NuHtmlHeading("Display Scene : UNKNOWN (sort: %d)", sort->sort_pri);
@@ -12551,14 +12534,14 @@ extern "C" {
         JointProcAnimFn = callback;
     }
 
-    ANI3_GLOBALBUFFER *NuAnimBuffCreate(i32 max_joints, VARIPTR *buffer, VARIPTR) {
-        ANI3_GLOBALBUFFER *anim_buffer = (ANI3_GLOBALBUFFER *)((buffer->addr + 15) & ~15u);
-        buffer->addr = ((buffer->addr + 15) & ~15u) + sizeof(ANI3_GLOBALBUFFER);
+    ANI3_BUFFER *NuAnimBuffCreate(i32 max_joints, VARIPTR *buffer, VARIPTR) {
+        ANI3_BUFFER *anim_buffer = (ANI3_BUFFER *)((buffer->addr + 15) & ~15u);
+        buffer->addr = ((buffer->addr + 15) & ~15u) + sizeof(ANI3_BUFFER);
         anim_buffer->joints = (ANI3_JOINT *)((buffer->addr + 15) & ~15u);
         buffer->addr = ((buffer->addr + 15) & ~15u) + max_joints * 48;
         anim_buffer->joint_flags = buffer->u8_ptr;
         buffer->addr += max_joints;
-        anim_buffer->scratch_joint_capacity = max_joints;
+        anim_buffer->max_joints = max_joints;
         anim_buffer->joint_count = 0;
         return anim_buffer;
     }
@@ -12573,7 +12556,7 @@ extern "C" {
     ANI3_EVAL_CALLBACK AnimBuffEvalCB = 0;
     void **AnimBuffEvalData = 0;
     i32 *AnimBuffEvalJoint = 0;
-    ANI3_GLOBALBUFFER *globalbuffer = 0;
+    ANI3_BUFFER *globalbuffer = 0;
     NUJOINTPROCANIMFN JointProcAnimFn = 0;
     i32 NumQuatPushes = 0;
 
@@ -13001,8 +12984,8 @@ extern "C" {
 
     void fun_005e0ad0(NUSORTPRI *sort) {
         if (nudlist_field_fe4 != 0) {
-            if (sort->display_scene != NULL && reinterpret_cast<PC_DISPLAY_DEBUG_NAME_READER *>(sort->display_scene)->name != NULL) {
-                NuHtmlHeading("Display Scene : %s (sort: %d)", reinterpret_cast<PC_DISPLAY_DEBUG_NAME_READER *>(sort->display_scene)->name,
+            if (sort->display_scene != NULL && sort->display_scene->name != NULL) {
+                NuHtmlHeading("Display Scene : %s (sort: %d)", sort->display_scene->name,
                               sort->sort_pri);
             } else {
                 NuHtmlHeading("Display Scene : UNKNOWN (sort: %d)", sort->sort_pri);
@@ -16687,7 +16670,7 @@ extern "C" {
         NUVEC root_translation;
         f32 adjusted_time;
         root_translation.x = root_translation.y = root_translation.z = 0.0f;
-        buffer.max_joints = globalbuffer->scratch_joint_capacity;
+        buffer.max_joints = globalbuffer->max_joints;
         buffer.joint_count = 0;
         buffer.joints = (ANI3_JOINT *)(((u32)NuScratchAlloc32((buffer.max_joints + 1) * 48) + 15u) & ~15u);
         buffer.joint_flags = (u8 *)NuScratchAlloc32(buffer.max_joints);
@@ -16711,7 +16694,7 @@ extern "C" {
         f32 adjusted_time_a;
         f32 adjusted_time_b;
         u8 quaternion_mode;
-        buffer.max_joints = globalbuffer->scratch_joint_capacity;
+        buffer.max_joints = globalbuffer->max_joints;
         buffer.joint_count = 0;
         buffer.joints = (ANI3_JOINT *)(((u32)NuScratchAlloc32((buffer.max_joints + 1) * 48) + 15u) & ~15u);
         buffer.joint_flags = (u8 *)NuScratchAlloc32(buffer.max_joints);

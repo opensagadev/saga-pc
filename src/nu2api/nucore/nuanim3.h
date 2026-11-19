@@ -32,7 +32,7 @@ extern "C" {
     extern void **AnimBuffEvalData;
     extern i32 *AnimBuffEvalJoint;
     f32 NuAnimEndFrameOld(void *animation_data);
-    extern ANI3_GLOBALBUFFER *globalbuffer;
+    extern ANI3_BUFFER *globalbuffer;
     f32 CalcValue1648(char *, i32, i32, f32, ANI3_SCALEMIN *);
     void CalcValue1648Get2Values(char *, i32, i32, ANI3_SCALEMIN *, f32 *, f32 *);
     void ANI_Ani3ExtractAllNodeCurves(ANI3_HEADER *, f32, f32 *, i32, char *);

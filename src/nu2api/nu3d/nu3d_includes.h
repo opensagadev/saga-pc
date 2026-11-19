@@ -716,27 +716,14 @@ typedef struct ANI3_BUFFER { // size 0x10
     i16 max_joints;          // 0x4
     u8 use_quaternions;      // 0x6
     u8 pad_07;               // 0x7
-    ANI3_JOINT *joints;      // 0x8
-    u8 *joint_flags;         // 0xc
-} ANI3_BUFFER;
-
-typedef struct ANI3_GLOBALBUFFER { // size 0x10
 
     union { // size 0x4
-        u8 unknown_00[4];
-        i32 joint_count;
-    }; // 0x0
-
-    i16 scratch_joint_capacity; // 0x4
-    u8 unknown_06[2];           // 0x6
-
-    union { // size 0x4
-        f32 *animation_values;
         ANI3_JOINT *joints;
+        f32 *animation_values;
     }; // 0x8
 
     u8 *joint_flags; // 0xc
-} ANI3_GLOBALBUFFER;
+} ANI3_BUFFER;
 
 typedef void (*ANI3_ROOT_CALLBACK)(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
 typedef void (*ANI3_EVAL_CALLBACK)(NUMTX *, void *, NUQUAT *);
@@ -912,7 +899,7 @@ extern "C" {
 #endif
 
 typedef struct nudisplay_list_s {            // size 0x90
-    void *allocation;                        // 0x00
+    const char *name;                        // 0x00
     i32 item_count;                          // 0x04
     struct nudisplaylistitem_s *items;       // 0x08
     f32 *fade_ranges;                        // 0x0c
@@ -1231,7 +1218,7 @@ extern "C" {
     NUVISIBILITYRESULT *NuVisiEvaluate(NUGSCN *, void *);
     void NuVisiInstTree(NUVISIBILITYRESULT *, NUGSCN *);
     NUGSCN *PCGraphicsSceneReadClones(VARIPTR *, VARIPTR, char *, i32);
-    i32 findrange(struct NUGSCN_s *arg0, i32 arg1);
+    i32 findrange(struct NUHGOBJ_EVAL *object, i32 first_joint);
     void NuSpecialSetDrawPos(struct nuhspecial_s *special, struct nuvec_s *pos);
 #ifdef __cplusplus
 }
