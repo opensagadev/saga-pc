@@ -8240,7 +8240,7 @@ address,symbol,size,ctype
 0x5eaa80,_NuQFntInit,67,"void __cdecl(VARIPTR *, VARIPTR)"
 0x5eaad0,_NuQFntSetPointSize,220,"void __cdecl(VUFNT *, f32, f32)"
 0x5eabb0,_NuQFntMove,74,"void __cdecl(VUFNT*,f32,f32,f32)"
-0x5eac00,_NuQFntCreate,868,"VUFNT *__cdecl(FONT_LEGACY_READER *,i32,i32,VARIPTR *,VARIPTR *)"
+0x5eac00,_NuQFntCreate,868,"VUFNT *__cdecl(NUQFNT_LEGACY_FONT *,i32,i32,VARIPTR *,VARIPTR *)"
 0x5eaf70,_NuQFntDuplicate,288,"VUFNT *__cdecl(VUFNT *,i32,i32,VARIPTR *,VARIPTR *)"
 0x5eb090,_NuQFntLoadPtr,434,"VUFNT *__cdecl(char *,char *,i32,i32,VARIPTR *,VARIPTR *)"
 0x005eb250,_NuQFntPrintCharW,1210,"void __cdecl (VUFNT *, u16 *, u32)"

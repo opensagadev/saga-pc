@@ -5397,7 +5397,7 @@ extern "C" {
         return NULL;
     }
 
-    VUFNT *NuQFntCreate(FONT_LEGACY_READER *font, i32 flags, i32 options, VARIPTR *buffer, VARIPTR *end) {
+    VUFNT *NuQFntCreate(NUQFNT_LEGACY_FONT *font, i32 flags, i32 options, VARIPTR *buffer, VARIPTR *end) {
         i32 sort_priority = options >> 16;
         options &= 0xffff;
         f32 width = (f32)NuTextureDimensions[font->material->texture_id - 1]->width;

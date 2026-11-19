@@ -395,28 +395,10 @@ extern "C" {
     extern i32 noscenespecials;
     extern i32 VisibilityPortalFilterEnabled;
 
-    typedef struct render_post_bloom_reader_s { // size 0x4c
-        u8 unknown_00[4];                       // 0x00
-        f32 near_angle;                         // 0x04
-        f32 near_scale;                         // 0x08
-        f32 far_angle;                          // 0x0c
-        f32 far_scale;                          // 0x10
-        f32 intensity;                          // 0x14
-        i32 clear_screen;                       // 0x18
-        f32 blur_iterations;                    // 0x1c
-        f32 blend;                              // 0x20
-        f32 threshold;                          // 0x24
-        i32 directional;                        // 0x28
-        NUVEC direction;                        // 0x2c
-        f32 direction_near_angle;               // 0x38
-        f32 direction_far_scale;                // 0x3c
-        f32 direction_far_angle;                // 0x40
-        f32 direction_near_scale;               // 0x44
-        f32 direction_bias;                     // 0x48
-    } RENDER_POST_BLOOM_READER;
+    typedef struct NU_POST_BLOOM_PARAMETERS NU_POST_BLOOM_PARAMETERS;
 
     i16 RenderPostASin(f32);
-    void DrawAlphaGrid(i32, i32, RENDER_POST_BLOOM_READER *);
+    void DrawAlphaGrid(i32, i32, NU_POST_BLOOM_PARAMETERS *);
 
     void NuTexAnimSetSignals(u32 signals);
     void NuTexAnimProcess(f32 frame_time);
@@ -479,8 +461,6 @@ extern "C" {
 
 /* Working accessed-field views only, not original allocation extents.
  * Pointer-only parameter types remain opaque until an actual read is consumed. */
-typedef struct NU_POST_BLOOM_PARAMETERS NU_POST_BLOOM_PARAMETERS;
-
 struct NU_POST_BLOOM_PARAMETERS { // size 0x54
     i32 enabled;                  // 0x00
     f32 near_angle;               // 0x04
@@ -488,7 +468,7 @@ struct NU_POST_BLOOM_PARAMETERS { // size 0x54
     f32 far_angle;                // 0x0c
     f32 far_scale;                // 0x10
     f32 intensity;                // 0x14
-    f32 unknown_18;               // 0x18
+    i32 clear_screen;             // 0x18
     f32 blur_iterations;          // 0x1c
     f32 blend;                    // 0x20
     f32 threshold;                // 0x24
@@ -1032,7 +1012,7 @@ extern "C" {
     extern NUMTL *PCMaterialPool;
     void NuRndrRectUV2diZ(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, NUMTL *material, i32 z);
 
-    typedef struct FONT_LEGACY_READER { // size 0x1520
+    typedef struct NUQFNT_LEGACY_FONT { // size 0x1520
         u8 unknown_00[12];              // 0x0000
         i16 height;                     // 0x000c
         u8 unknown_0e[6];               // 0x000e
@@ -1042,7 +1022,7 @@ extern "C" {
         i32 glyph_count;                // 0x001c
         u8 character_map[256];          // 0x0020
         FONT_LEGACY_GLYPH glyphs[256];  // 0x0120
-    } FONT_LEGACY_READER;
+    } NUQFNT_LEGACY_FONT;
 
     extern NUMTL **PCDisplayMaterialAddQueue;
     NUDISPLAYLISTITEM *NuDisplayListCreateMtlDlist(NUDISPLAYLISTITEM *, NUMTL *, VARIPTR *, VARIPTR);
@@ -1060,7 +1040,7 @@ extern "C" {
     extern NUDISPLAY_LIST *PCDisplayScenes[256];
     extern NUDISPLAY_LIST PCDynamicDisplayScene;
 
-    void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, RENDER_POST_BLOOM_READER *parameters);
+    void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, NU_POST_BLOOM_PARAMETERS *parameters);
 
     i32 NuDynamicLightIsEnabled(NURNDRLIGHTRECORD *records);
 

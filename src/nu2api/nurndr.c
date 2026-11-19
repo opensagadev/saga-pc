@@ -1136,7 +1136,7 @@ void RenderPostClearScreen(void) {
     NuPrimSetCoordinateSystem(restore_mode);
 }
 
-void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, RENDER_POST_BLOOM_READER *parameters) {
+void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, NU_POST_BLOOM_PARAMETERS *parameters) {
     f32 inv_col = 1.0f / (cols - 1);
     f32 inv_row = 1.0f / (rows - 1);
     f32 x0 = 0.0f * inv_row * 2.0f - 1.0f;

@@ -12,7 +12,7 @@
 #include "nu2api/nushadermtldesc_gen.h"
 #include "nu2api/nustencilshadows_PC.h"
 
-void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER *parameters) {
+void DrawAlphaGrid(i32 rows, i32 cols, NU_POST_BLOOM_PARAMETERS *parameters) {
     f32 inv_col = 1.0f / (cols - 1);
     f32 inv_row = 1.0f / (rows - 1);
     f32 x0 = 0.0f * inv_row * 2.0f - 1.0f;

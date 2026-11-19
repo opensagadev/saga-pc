@@ -3980,14 +3980,14 @@ function:IntroText_Draw,function,IntroText_Draw,11789,11789,1,legoapi/lib/text.h
 function:SetQFont2D,function,SetQFont2D,11790,11790,1,legoapi/menus/core/text.h,android,SetQFont2D
 struct:FONT_LEGACY_GLYPH,struct,FONT_LEGACY_GLYPH,11792,11798,8,nu2api/nu3d/nu3d_includes.h,type-users,used by its saga.h users only there
 assert:-#2953,assert,,11800,11800,2,nu2api/nu3d/nu3d_includes.h,follow-type,FONT_LEGACY_GLYPH
-struct:FONT_LEGACY_READER,struct,FONT_LEGACY_READER,11802,11812,12,nu2api/nu3d/nu3d_includes.h,users,FONT_LEGACY_READER: only nu2api/nu3d_includes.cpp android-path
-assert:-#2954,assert,,11814,11814,2,nu2api/nu3d/nu3d_includes.h,follow-type,FONT_LEGACY_READER
-assert:-#2955,assert,,11815,11815,1,nu2api/nu3d/nu3d_includes.h,follow-type,FONT_LEGACY_READER
-assert:-#2956,assert,,11816,11816,1,nu2api/nu3d/nu3d_includes.h,follow-type,FONT_LEGACY_READER
-assert:-#2957,assert,,11817,11817,1,nu2api/nu3d/nu3d_includes.h,follow-type,FONT_LEGACY_READER
-assert:-#2958,assert,,11818,11818,1,nu2api/nu3d/nu3d_includes.h,follow-type,FONT_LEGACY_READER
-assert:-#2959,assert,,11819,11819,1,nu2api/nu3d/nu3d_includes.h,follow-type,FONT_LEGACY_READER
-assert:-#2960,assert,,11820,11820,1,nu2api/nu3d/nu3d_includes.h,follow-type,FONT_LEGACY_READER
+struct:NUQFNT_LEGACY_FONT,struct,NUQFNT_LEGACY_FONT,11802,11812,12,nu2api/nu3d/nu3d_includes.h,users,NUQFNT_LEGACY_FONT: only nu2api/nu3d_includes.cpp android-path
+assert:-#2954,assert,,11814,11814,2,nu2api/nu3d/nu3d_includes.h,follow-type,NUQFNT_LEGACY_FONT
+assert:-#2955,assert,,11815,11815,1,nu2api/nu3d/nu3d_includes.h,follow-type,NUQFNT_LEGACY_FONT
+assert:-#2956,assert,,11816,11816,1,nu2api/nu3d/nu3d_includes.h,follow-type,NUQFNT_LEGACY_FONT
+assert:-#2957,assert,,11817,11817,1,nu2api/nu3d/nu3d_includes.h,follow-type,NUQFNT_LEGACY_FONT
+assert:-#2958,assert,,11818,11818,1,nu2api/nu3d/nu3d_includes.h,follow-type,NUQFNT_LEGACY_FONT
+assert:-#2959,assert,,11819,11819,1,nu2api/nu3d/nu3d_includes.h,follow-type,NUQFNT_LEGACY_FONT
+assert:-#2960,assert,,11820,11820,1,nu2api/nu3d/nu3d_includes.h,follow-type,NUQFNT_LEGACY_FONT
 function:NuMtlSetRenderPlane,function,NuMtlSetRenderPlane,11822,11822,2,nu2api/nu3d/numtl.h,android,NuMtlSetRenderPlane
 variable:create_qfont2dlower,variable,create_qfont2dlower,11823,11823,1,gameapi/apitext.h,users,create_qfont2dlower: only gameapi/gamemenuall.cpp[apitext.c] pc-path
 variable:create_qfont2dz,variable,create_qfont2dz,11824,11824,1,gameapi/apitext.h,users,create_qfont2dz: only gameapi/gamemenuall.cpp[apitext.c] pc-path
