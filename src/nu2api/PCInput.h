@@ -569,7 +569,7 @@ struct PC_INPUT_RUNTIME {          // size 0x68b4
     void ExportPortConfig(i32 port, PC_INPUT_CONFIG *config);
     PC_INPUT_CONFIG *FindPortConfig(u8 mask, i32 port);
     void fun_006d6ef0(u8 mask, i32 port, i32 key, i32 auxiliary, i32 auxiliary_port, i32 fallback);
-    i32 fun_006d7410(i32 key, i32 port);
+    i32 SelectConfigurationKey(i32 key, i32 port);
     i32 HasConfig(i32 port, u8 mask);
     u32 fun_006d82d0(i32, u32 buttons, i32 key, i32 mouse_button, i32 axis, i32 direction, u32 bit);
     void SetSuppressKey(u8 value);

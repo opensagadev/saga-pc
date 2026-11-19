@@ -509,19 +509,19 @@ struct PC_POST_DATA_PORT_ENTRY { // size 0x28
     char name[32];               // 0x04
     i32 references;              // 0x24
 
-    bool fun_005c2090(const char *other);
+    bool NameEquals(const char *other);
     void fun_005c20b0(const char *other, void *value);
-    void fun_005c20e0();
-    i32 fun_005c20f0();
-    void fun_005c2100(void *value);
-    void *fun_005c2110();
+    void PortReleaseReference();
+    i32 PortReferenceCount();
+    void SetData(void *value);
+    void *GetData();
 };
 
 struct PC_POST_DATA_PORT_MANAGER {        // size 0x2800
     PC_POST_DATA_PORT_ENTRY entries[256]; // 0x0000
     PC_POST_DATA_PORT_MANAGER();
     PC_POST_DATA_PORT_ENTRY *fun_005c2120(i32 index);
-    void *fun_005c2160(i32 index);
+    void *GetEntryData(i32 index);
     ~PC_POST_DATA_PORT_MANAGER();
     i32 Register(const char *name, void *data);
 };
@@ -1361,8 +1361,8 @@ struct PC_SPECIAL_SHADOW_LIGHT {      // size 0x828
     NUDISPLAYLIST *fun_005c2ee0(i32 set, NUMTL *material);
     void fun_005c6d90(NUMTX *view, NUMTX *projection);
     i32 GetActiveRenderSetCount();
-    NUMTX *fun_005c2f30();
-    NUMTX *fun_005c2f40();
+    NUMTX *GetView();
+    NUMTX *GetProjection();
     f32 GetParameterf(i32 parameter);
     void SetParameteri(i32 parameter, i32 value);
     i32 GetParameteri(i32 parameter);

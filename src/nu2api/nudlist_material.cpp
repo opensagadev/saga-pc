@@ -58,7 +58,7 @@ static void PCDisplayHandlerSetZMode(i32 mode) {
     }
 }
 
-extern "C" void fun_005f8a30(void) {
+extern "C" void NuDisplayListPerfEndEvent(void) {
     D3DPERF_EndEvent();
 }
 

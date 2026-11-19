@@ -3375,7 +3375,7 @@ address,symbol,size,ctype
 0x004fdf80,_NuStringTableLoadTXT,899,"i32 __cdecl (char *, VARIPTR *, VARIPTR)"
 0x004fe310,_NuStringTableLoad,114,"i32 __cdecl (char *, VARIPTR *, VARIPTR)"
 0x004fe390,_NuStringFilterLoad,659,"void __cdecl (char*, VARIPTR*, VARIPTR)"
-0x4fe630,_fun_004fe630,5,
+0x4fe630,_NuStrFind,5,
 0x004fe640,_bgProcDataOversize,1,void __cdecl (i32)
 0x004fe650,_FileDirectoryError,1,
 0x4fe660,?NucorePcIncludesVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
@@ -7266,15 +7266,15 @@ address,symbol,size,ctype
 0x5c2050,_fun_005c2050,28,
 0x5c2070,_fun_005c2070,10,
 0x5c2080,_fun_005c2080,1,
-0x5c2090,?fun_005c2090@PC_POST_DATA_PORT_ENTRY@@QAE_NPBD@Z,27,
+0x5c2090,?NameEquals@PC_POST_DATA_PORT_ENTRY@@QAE_NPBD@Z,27,
 0x5c20b0,?fun_005c20b0@PC_POST_DATA_PORT_ENTRY@@QAEXPBDPAX@Z,46,
-0x5c20e0,?fun_005c20e0@PC_POST_DATA_PORT_ENTRY@@QAEXXZ,5,
-0x5c20f0,?fun_005c20f0@PC_POST_DATA_PORT_ENTRY@@QAEHXZ,4,
-0x5c2100,?fun_005c2100@PC_POST_DATA_PORT_ENTRY@@QAEXPAX@Z,9,
-0x5c2110,?fun_005c2110@PC_POST_DATA_PORT_ENTRY@@QAEPAXXZ,3,
+0x5c20e0,?PortReleaseReference@PC_POST_DATA_PORT_ENTRY@@QAEXXZ,5,
+0x5c20f0,?PortReferenceCount@PC_POST_DATA_PORT_ENTRY@@QAEHXZ,4,
+0x5c2100,?SetData@PC_POST_DATA_PORT_ENTRY@@QAEXPAX@Z,9,
+0x5c2110,?GetData@PC_POST_DATA_PORT_ENTRY@@QAEPAXXZ,3,
 0x5c2120,?fun_005c2120@PC_POST_DATA_PORT_MANAGER@@QAEPAUPC_POST_DATA_PORT_ENTRY@@H@Z,18,
 0x5c2140,_fun_005c2140,17,
-0x5c2160,?fun_005c2160@PC_POST_DATA_PORT_MANAGER@@QAEPAXH@Z,13,
+0x5c2160,?GetEntryData@PC_POST_DATA_PORT_MANAGER@@QAEPAXH@Z,13,
 0x5c2170,_fun_005c2170,23,
 0x5c2190,?GetTargetTexture@PC_DEVICE_BACKEND@@QAEPAUGRAPHICS_RENDER_TEXTURE@@G@Z,15,
 0x5c21a0,_fun_005c21a0,24,
@@ -7306,13 +7306,13 @@ address,symbol,size,ctype
 0x5c2450,_fun_005c2450,17,
 0x5c2470,_PCDeviceGetVertexProcessing,6,
 0x5c2480,_fun_005c2480,63,
-0x5c24c0,_fun_005c24c0,6,
-0x5c24d0,_fun_005c24d0,6,
+0x5c24c0,_PcGeometryGetViewMatrix,6,
+0x5c24d0,_PcGeometryGetProjectionMatrix,6,
 0x5c24e0,_fun_005c24e0,47,
 0x5c2510,_fun_005c2510,256,
 0x5c2610,_fun_005c2610,140,
 0x5c26a0,_fun_005c26a0,100,
-0x5c2710,_fun_005c2710,5,
+0x5c2710,_PCPerfEndEvent,5,
 0x5c2720,_fun_005c2720,28,
 0x5c2740,_fun_005c2740,28,
 0x5c2760,_NuShaderProgramMakeCurrent,98,normalized source ABI; native private ESI program
@@ -7338,16 +7338,16 @@ address,symbol,size,ctype
 0x5c2ed0,_fun_005c2ed0,1,
 0x5c2ee0,?fun_005c2ee0@PC_SPECIAL_SHADOW_LIGHT@@QAEPAUnudisplaylist_s@@HPAUnumtl_s@@@Z,53,
 0x5c2f20,?GetActiveRenderSetCount@PC_SPECIAL_SHADOW_LIGHT@@QAEHXZ,7,
-0x5c2f30,?fun_005c2f30@PC_SPECIAL_SHADOW_LIGHT@@QAEPAUnumtx_s@@XZ,7,
-0x5c2f40,?fun_005c2f40@PC_SPECIAL_SHADOW_LIGHT@@QAEPAUnumtx_s@@XZ,7,
+0x5c2f30,?GetView@PC_SPECIAL_SHADOW_LIGHT@@QAEPAUnumtx_s@@XZ,7,
+0x5c2f40,?GetProjection@PC_SPECIAL_SHADOW_LIGHT@@QAEPAUnumtx_s@@XZ,7,
 0x5c2f50,?GetParameterf@PC_SPECIAL_SHADOW_LIGHT@@QAEMH@Z,185,
 0x5c3010,?SetParameteri@PC_SPECIAL_SHADOW_LIGHT@@QAEXHH@Z,40,
 0x5c3040,?GetParameteri@PC_SPECIAL_SHADOW_LIGHT@@QAEHH@Z,37,
 0x5c3070,?fun_005c3070@PC_SPECIAL_SHADOW_LIGHT@@QAEXHH@Z,39,
 0x5c30a0,?setEnabled@NuDeferredFilterGen@@QAEX_N@Z,10,
-0x5c30b0,?fun_005c30b0@NuDeferredFilterGen@@QAEXPAUNuDynamicLight@@@Z,18,
+0x5c30b0,?AddDynamicLight@NuDeferredFilterGen@@QAEXPAUNuDynamicLight@@@Z,18,
 0x5c30d0,?getDynamicLightCount@NuDeferredFilterGen@@QAEHXZ,4,
-0x5c30e0,?fun_005c30e0@NuDeferredFilterGen@@QAEXPBM@Z,30,
+0x5c30e0,?SetParameters@NuDeferredFilterGen@@QAEXPBM@Z,30,
 0x5c3100,?setEnabled@NuMotionAccumFilterGen@@QAEX_N@Z,10,
 0x5c3110,?fun_005c3110@NuMotionAccumFilterGen@@QAEXHMM@Z,24,
 0x5c3130,?setEnabled@NuSpeedBlurFilterGen@@QAEX_N@Z,10,
@@ -7417,7 +7417,7 @@ address,symbol,size,ctype
 0x5c5260,?GetCapacity@OccluderSet@@QAEIXZ,4,
 0x5c5270,?QueriesPrepared@OccluderSet@@QAE_NXZ,4,
 0x5c5280,?IsInitialized@OcclusionManager@@QAE_NXZ,3,
-0x5c5290,?fun_005c5290@OcclusionManager@@QAE_NXZ,20,
+0x5c5290,?IsActive@OcclusionManager@@QAE_NXZ,20,
 0x5c52b0,?fun_005c52b0@OcclusionManager@@QAEXM@Z,13,
 0x5c52c0,?fun_005c52c0@OcclusionManager@@QAEXM@Z,13,
 0x5c52d0,?GetCurrentSet@OcclusionManager@@QAEPAUOccluderSet@@XZ,7,
@@ -8211,7 +8211,7 @@ address,symbol,size,ctype
 0x5e8850,_NuDynamicLightTestShadowExtrusionsSpecial,20,
 0x5e8870,_fun_005e8870,31,
 0x5e8890,_NuDynamicLightTestShadowExtrusionsExtent,158,
-0x5e8930,_fun_005e8930,20,
+0x5e8930,_PCFrustumClipSetTestBoxes,20,
 0x5e8950,?SetupCustomCameraFrustum@PC_SPECIAL_SHADOW_LIGHT@@QAEXPAUnucamera_s@@PBMH@Z,649,thiscall camera splits count RET12
 0x5e8be0,?resetGeometry@NuDynamicLight@@QAEXXZ,122,void __thiscall NuDynamicLight::resetGeometry(void)
 0x5e8c60,_PostShadowBuildBasis,318,cdecl
@@ -8324,8 +8324,8 @@ address,symbol,size,ctype
 0x005f2800,_NuOcclusionManagerInit,26,"void __cdecl(u32,VARIPTR*,VARIPTR)"
 0x5f2820,_NuOcclusionManagerIsOccludedSphere,30,"i32 __cdecl (const NUVEC *, f32)"
 0x5f2840,_NuOcclusionManagerIsOccludedOBB,32,"i32 __cdecl (const NUVEC *, const NUVEC *, const NUMTX *)"
-0x5f2860,_fun_005f2860,25,
-0x5f2880,_fun_005f2880,9,
+0x5f2860,_PCSpecialShadowLightSetupFrustum,25,
+0x5f2880,_NuDynamicLightResetGeometry,9,
 0x5f2890,_fun_005f2890,59,
 0x5f28d0,?ComputeShadowMatrix@PC_SPECIAL_SHADOW_LIGHT@@QAEXPAUnurndrlightrecord_s@@@Z,1862,thiscall
 0x5f3020,?Clone@PC_SPECIAL_SHADOW_LIGHT@@QAEPAU1@PATvariptr_u@@T2@@Z,169,
@@ -8379,12 +8379,12 @@ address,symbol,size,ctype
 0x5f6470,_NuQFntPrintJustifiedRSW,1345,"f32 __cdecl (void *, VUFNT *, u16 *, f32, f32, f32, f32, f32, f32, f32, u32, NUMTX *)"
 0x5f69c0,_NuQFntPrintJustifiedW,110,"f32 __cdecl (VUFNT *, u16 *, f32, f32, f32, f32, f32, f32, f32, u32, NUMTX *)"
 0x5f6a30,_NuGScnRndr,65,
-0x5f6a80,_fun_005f6a80,15,
-0x5f6a90,_fun_005f6a90,24,
+0x5f6a80,_PCSpecialShadowLightRenderScene,15,
+0x5f6a90,_PCSpecialShadowLightCreate,24,
 0x5f6ab0,?RenderShadow@PC_SPECIAL_SHADOW_LIGHT@@QAEXHPAUPC_FRAMEBUFFER@@@Z,419,thiscall native index and framebuffer
 0x5f6c60,?render@NuDeferredFilterGen@@UAEXXZ,1975,complete native deferred render
 0x5f7420,_NuDynamicLightCreate,24,struct PC_SPECIAL_SHADOW_LIGHT *__cdecl(void)
-0x5f7440,_fun_005f7440,18,
+0x5f7440,_PCSqrtf,18,
 0x5f7460,_fun_005f7460,3,
 0x5f7470,_fun_005f7470,3,
 0x5f7480,_fun_005f7480,14,
@@ -8412,11 +8412,11 @@ address,symbol,size,ctype
 0x005f77d0,_NuLgtSetVertexColor,108,
 0x5f7840,_fun_005f7840,22,
 0x5f7860,?GetMultisampleQuality@PC_DEVICE_BACKEND@@QAEHXZ,14,
-0x5f7870,?fun_005f7870@PC_DEVICE_BACKEND@@QAEPAUGRAPHICS_CAPS@@XZ,4,
-0x5f7880,?fun_005f7880@PC_DEVICE_BACKEND@@QAEPAUGRAPHICS_PRESENT_PARAMETERS@@XZ,7,
+0x5f7870,?GetCaps@PC_DEVICE_BACKEND@@QAEPAUGRAPHICS_CAPS@@XZ,4,
+0x5f7880,?GetPresentParameters@PC_DEVICE_BACKEND@@QAEPAUGRAPHICS_PRESENT_PARAMETERS@@XZ,7,
 0x5f7890,?GetTargetCount@PC_DEVICE_BACKEND@@QAEGXZ,8,
-0x5f78a0,?fun_005f78a0@PC_DEVICE_BACKEND@@QAEHXZ,23,
-0x5f78c0,?fun_005f78c0@PC_DEVICE_BACKEND@@QAEXXZ,14,
+0x5f78a0,?RequiresPow2Textures@PC_DEVICE_BACKEND@@QAEHXZ,23,
+0x5f78c0,?SetScreenColourUvDeclaration@PC_DEVICE_BACKEND@@QAEXXZ,14,
 0x5f78d0,_fun_005f78d0,14,
 0x5f78e0,_fun_005f78e0,23,
 0x5f7900,_fun_005f7900,56,
@@ -8459,7 +8459,7 @@ address,symbol,size,ctype
 0x5f8460,_PCGraphicsEffectTextureSampler,8,
 0x5f8470,_PCGraphicsResizeEffectTexture,223,
 0x5f8550,_PCGraphicsBindEffectTexture,41,
-0x5f8580,_fun_005f8580,28,
+0x5f8580,_PCGraphicsEffectSetTexture,28,
 0x5f85a0,_PCGraphicsReleaseEffectTextures,195,
 0x5f8670,_PCGraphicsRestoreEffectTextures,106,
 0x5f86e0,_fun_005f86e0,5,
@@ -8470,21 +8470,21 @@ address,symbol,size,ctype
 0x5f8730,_fun_005f8730,3,
 0x5f8740,_fun_005f8740,5,
 0x5f8750,_fun_005f8750,16,
-0x5f8760,_fun_005f8760,6,
+0x5f8760,_PCDeviceHardwareVertexProcessingGet,6,
 0x5f8770,_fun_005f8770,12,
 0x5f8780,_fun_005f8780,16,
-0x5f8790,_fun_005f8790,6,
-0x5f87a0,_fun_005f87a0,6,
-0x5f87b0,_fun_005f87b0,6,
-0x5f87c0,_fun_005f87c0,6,
+0x5f8790,_NuRndrGetViewMatrix,6,
+0x5f87a0,_NuRndrGetProjectionMatrix,6,
+0x5f87b0,_NuRndrGetViewProjectionMatrix,6,
+0x5f87c0,_NuRndrGetDistanceOrigin,6,
 0x5f87d0,_fun_005f87d0,47,
-0x5f8800,_fun_005f8800,6,
+0x5f8800,_NuDisplayGetHandlerTint,6,
 0x5f8810,_fun_005f8810,256,
 0x5f8910,_fun_005f8910,6,
 0x5f8920,_NuDisplayHandlerGetMaterial,6,
 0x005f8930,?PCDisplayHandlerSetZMode@@YAXH@Z,140,
 0x5f89c0,_fun_005f89c0,100,
-0x5f8a30,_fun_005f8a30,5,
+0x5f8a30,_NuDisplayListPerfEndEvent,5,
 0x5f8a40,_PcGetDefaultFramebuffer,6,
 0x005f8a50,_PCGraphicsGetBoundFramebuffer,6,PC_FRAMEBUFFER *__cdecl(void)
 0x5f8a60,_NuFramebufferGetObject,12,PC_FRAMEBUFFER *__cdecl(i32)
@@ -8599,7 +8599,7 @@ address,symbol,size,ctype
 0x5fb800,_fun_005fb800,1,
 0x5fb810,?Reset@PC_EFFECT_SURFACE@@QAEXXZ,81,
 0x5fb870,?Attach@PC_EFFECT_SURFACE@@QAEXPAUGRAPHICS_RENDER_TEXTURE@@H_N@Z,170,
-0x5fb920,?fun_005fb920@PC_EFFECT_SURFACE@@QAEXPAU1@@Z,61,
+0x5fb920,?CopyFrom@PC_EFFECT_SURFACE@@QAEXPAU1@@Z,61,
 0x5fb960,?ReleaseResources@PC_EFFECT_SURFACE@@SAXXZ,64,
 0x5fb9a0,?RestoreResources@PC_EFFECT_SURFACE@@SAXXZ,190,
 0x5fba60,?initTextureResources@NuDeferredFilter@@UAEXHH@Z,5,native exactVT binding; unimplemented extent unclaimed
@@ -8610,14 +8610,14 @@ address,symbol,size,ctype
 0x5fbb30,?ResizeTextures@NuSpeedBlurFilter@@QAEXHH@Z,3,
 0x5fbb40,_PcGeometryBackendAvailable,13,i32 __cdecl(void)
 0x5fbb50,_PcInitializeDynamicGeometryBuffers,404,"i32 __cdecl (PC_DYNAMIC_GEOMETRY *, i32)"
-0x5fbcf0,_fun_005fbcf0,36,
-0x5fbd20,_fun_005fbd20,22,
+0x5fbcf0,_PCDynamicGeometryLock,36,
+0x5fbd20,_PCDynamicGeometryUnlock,22,
 0x5fbd40,_fun_005fbd40,63,
 0x5fbd80,_PcTransformDynamicGeometry,1704,"u8 __cdecl (PC_GEOMETRY_SKIN *, PC_GEOMETRY_MESH *, u32 *)"
 0x5fc430,_PcUpdateGeometryDistances,601,"i32 __cdecl (PC_GEOMETRY_OUTPUT *, PC_GEOMETRY_SORT_ITEM *, i32)"
 0x5fc690,_fun_005fc690,454,
 0x5fc860,_fun_005fc860,82,
-0x5fc8c0,_fun_005fc8c0,6,
+0x5fc8c0,_NuDisplayList2dGetPlatform,6,
 0x5fc8d0,_fun_005fc8d0,21,
 0x5fc8f0,_fun_005fc8f0,21,
 0x5fc910,_fun_005fc910,21,
@@ -8649,7 +8649,7 @@ address,symbol,size,ctype
 0x005fd0d0,_RndrStateCopyGlobalState,46,void __cdecl (NUGLOBALRNDRSTATE *)
 0x005fd100,_RndrStateResetGlobalState,89,void __cdecl (NUGLOBALRNDRSTATE *)
 0x005fd160,_RndrStateResetSharedGlobalState,80,void __cdecl (void)
-0x5fd1b0,_fun_005fd1b0,6,
+0x5fd1b0,_NuRndrGetGlobalState,6,
 0x5fd1c0,_NuRndrStateInit,91,void __cdecl(void)
 0x005fd220,_RndrStateSetConstAlphaTint,58,"void __cdecl (i32, i32, f32, const NUVEC *, NUMTL *)"
 0x5fd260,_NuRndrStateGetTransform,194,"void __cdecl(NUMTX *, const NUMTL *)"
@@ -8681,10 +8681,10 @@ address,symbol,size,ctype
 0x5fe450,_NuRndrDwaRelease,1,void __cdecl(void)
 0x5fe460,_fun_005fe460,6,
 0x5fe470,_fun_005fe470,40,
-0x5fe4a0,_fun_005fe4a0,16,
+0x5fe4a0,_PCFogSetDensity,16,
 0x5fe4b0,_fun_005fe4b0,32,
 0x5fe4d0,_fun_005fe4d0,36,
-0x5fe500,_fun_005fe500,28,
+0x5fe500,_PCFogSetRange,28,
 0x5fe520,_fun_005fe520,16,
 0x5fe530,_fun_005fe530,36,
 0x5fe560,_fun_005fe560,8,
@@ -8722,7 +8722,7 @@ address,symbol,size,ctype
 0x5fecb0,_NuRndrLine3dDbgFlush,1,
 0x5fecc0,_fun_005fecc0,5,
 0x5fecd0,_fun_005fecd0,5,
-0x5fece0,_fun_005fece0,38,
+0x5fece0,_NuHGobjRndrMtxSimple,38,
 0x5fed10,_NuRndrShadPolys,353,void __cdecl(NUMTL *)
 0x5fee80,_NuRndrAddShadow,104,"void __cdecl(NUVEC *,f32,i32,i32,i32,i32)"
 0x005feef0,_NuRndrShadowInit,5,void __cdecl(u8 *)
@@ -8748,7 +8748,7 @@ address,symbol,size,ctype
 0x5ff070,_NuRndrScreenGrabTileEnd,1,"void __cdecl(void **)"
 0x5ff080,_NuVpRestore,115,
 0x5ff100,_fun_005ff100,445,
-0x5ff2c0,_fun_005ff2c0,12,
+0x5ff2c0,_NuVpInitIdentityMatrix,12,
 0x5ff2d0,_NuVpBuildScalingTemplate,189,
 0x5ff390,_NuVpUpdate,715,
 0x5ff660,_RenderPostViewportSet,227,"void __cdecl(f32,f32,f32,f32,f32,f32,f32,f32)"
@@ -8899,16 +8899,16 @@ address,symbol,size,ctype
 0x603e30,_fun_00603e30,11,
 0x603e40,_fun_00603e40,60,
 0x603e80,_fun_00603e80,65,
-0x603ed0,_fun_00603ed0,23,
-0x603ef0,_fun_00603ef0,23,
+0x603ed0,_NuCameraCopyViewMatrix,23,
+0x603ef0,_NuCameraCopyProjectionMatrix,23,
 0x00603f10,_NuVecMtxTransformBlock,497,"void __cdecl (NUVEC *, NUVEC *, NUMTX *, i32)"
 0x00604110,_PCVecMtxTransformClipBlocks,456,"void __cdecl (NUVEC4BLOCK *, NUVEC4BLOCK *, NUMTX *, i32, u32 *)"
 0x006042e0,_NuCameraClipTestExtents,1608,"i32 __cdecl (NUVEC *, NUVEC *, NUMTX *, f32, i32)"
 0x604930,_PCClipSetExtentsEnabled,10,
 0x604940,_fun_00604940,302,
-0x604a70,_fun_00604a70,6,
+0x604a70,_NuCameraGetScreenMatrix,6,
 0x00604a80,_NuCameraSetProjectionMtx,200,"void __cdecl (NUMTX *, f32, f32, f32, f32)"
-0x604b50,_fun_00604b50,33,
+0x604b50,_NuCameraClipTestExtentsDefault,33,
 0x604b80,_fun_00604b80,23,
 0x604ba0,_fun_00604ba0,71,
 0x604bf0,_fun_00604bf0,1,
@@ -13442,7 +13442,7 @@ address,symbol,size,ctype
 0x6d7040,?ResolveAuxiliaryConflicts@PC_INPUT_RUNTIME@@QAEHHH@Z,603,
 0x6d72a0,?SelectConfiguration@PC_INPUT_RUNTIME@@QAEHHHH@Z,170,
 0x6d7350,?InstallDropInConfiguration@PC_INPUT_RUNTIME@@QAEEHH@Z,188,"u8 __thiscall(i32,i32)"
-0x6d7410,?fun_006d7410@PC_INPUT_RUNTIME@@QAEHHH@Z,19,
+0x6d7410,?SelectConfigurationKey@PC_INPUT_RUNTIME@@QAEHHH@Z,19,
 0x6d7430,?ClearOtherBankConflicts@PC_INPUT_RUNTIME@@QAEXHH@Z,173,
 0x6d74e0,?SampleDevice@PC_INPUT_RUNTIME@@QAEHHPAUPC_INPUT_RAW_SAMPLE@@@Z,1140,"i32 __thiscall(i32,PC_INPUT_RAW_SAMPLE*)"
 0x6d7960,?PollKeyboard@PC_INPUT_RUNTIME@@QAEHXZ,42,i32 __thiscall(void)
@@ -13574,7 +13574,7 @@ address,symbol,size,ctype
 0x6dc6b0,_NuKeyboardDevicePresent,12,
 0x6dc6c0,_fun_006dc6c0,28,
 0x6dc6e0,_fun_006dc6e0,15,
-0x6dc6f0,_fun_006dc6f0,28,
+0x6dc6f0,_NuPrimPopCoordinateSystem,28,
 0x6dc710,?GetClientWidth@PC_WINDOW_OPTIONS@@QAEHXZ,7,
 0x6dc720,?GetClientHeight@PC_WINDOW_OPTIONS@@QAEHXZ,7,
 0x6dc730,?GetWindowX@PC_WINDOW_OPTIONS@@QAEHXZ,7,
@@ -13661,7 +13661,7 @@ address,symbol,size,ctype
 0x6de9a0,_NuPs2VideoScreenDump,1,"void __cdecl(char *, i32, f32, f32, i32, i32, i32)"
 0x6de9b0,_fun_006de9b0,4,
 0x6de9c0,_fun_006de9c0,6,
-0x6de9d0,_fun_006de9d0,16,
+0x6de9d0,_NuDebugPadRead,16,
 0x6de9e0,_fun_006de9e0,1,
 0x6de9f0,_fun_006de9f0,1,
 0x6dea00,_fun_006dea00,1,
@@ -13787,9 +13787,9 @@ address,symbol,size,ctype
 0x6dff30,_fun_006dff30,1,
 0x6dff40,_PCNativeErrorHook,1,"void __cdecl (char *)"
 0x6dff50,_fun_006dff50,28,
-0x6dff70,?fun_006dff70@PC_NATIVE_DEBUG_STATE@@QAEPAU1@XZ,3,
+0x6dff70,?DebugState@PC_NATIVE_DEBUG_STATE@@QAEPAU1@XZ,3,
 0x6dff80,?Shutdown@PC_NATIVE_DEBUG_STATE@@QAEXXZ,31,void __thiscall(void)
-0x6dffa0,?fun_006dffa0@PC_NATIVE_DEBUG_STATE@@QAEXE@Z,10,
+0x6dffa0,?SetDebugEnabled@PC_NATIVE_DEBUG_STATE@@QAEXE@Z,10,
 0x6dffb0,_fun_006dffb0,1,
 0x6dffc0,?InitializeHeader@PC_NATIVE_DEBUG_STATE@@QAEXXZ,104,void __thiscall(void)
 0x006e0030,_PCNativeDebugPrint,72,"void __cdecl (PC_NATIVE_DEBUG_STATE *, const char *, ...)"

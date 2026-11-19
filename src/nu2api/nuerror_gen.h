@@ -47,8 +47,8 @@ typedef struct PC_NATIVE_DEBUG_STATE {      // size 0x508
     void UpdateGeometry();
     void Initialize();
     void Shutdown();
-    PC_NATIVE_DEBUG_STATE *fun_006dff70();
-    void fun_006dffa0(u8 value);
+    PC_NATIVE_DEBUG_STATE *DebugState();
+    void SetDebugEnabled(u8 value);
 #endif
 } PC_NATIVE_DEBUG_STATE;
 

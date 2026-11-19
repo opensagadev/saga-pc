@@ -7255,7 +7255,7 @@ void NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
     NumBadWords = i;
 }
 
-char *fun_004fe630(const char *text, const char *pattern) {
+char *NuStrFind(const char *text, const char *pattern) {
     return strstr(text, pattern);
 }
 

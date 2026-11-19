@@ -66,7 +66,7 @@ i32 fun_006de9c0(void) {
     return 1;
 }
 
-i32 fun_006de9d0(FRAME_PAD *pad) {
+i32 NuDebugPadRead(FRAME_PAD *pad) {
     return GamePadReadBackend(pad, -1);
 }
 

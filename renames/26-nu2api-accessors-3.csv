@@ -1,0 +1,52 @@
+old,new,evidence
+fun_006dc6f0,NuPrimPopCoordinateSystem,pops NuPrimCoordSystemStack and sets that coordinate system
+fun_006d7410,SelectConfigurationKey,SelectConfiguration(port, key, key)
+fun_005c24c0,PcGeometryGetViewMatrix,returns &PcGeometryViewMatrix
+fun_005c24d0,PcGeometryGetProjectionMatrix,returns &PcGeometryProjectionMatrix
+fun_005f8790,NuRndrGetViewMatrix,returns &PcGeometryViewMatrix (platform copy)
+fun_005f87a0,NuRndrGetProjectionMatrix,returns &PcGeometryProjectionMatrix (platform copy)
+fun_005f87b0,NuRndrGetViewProjectionMatrix,returns &PcGeometryViewProjectionMatrix
+fun_005f87c0,NuRndrGetDistanceOrigin,returns &PcGeometryDistanceOrigin
+fun_005f8800,NuDisplayGetHandlerTint,returns &NuDisplayHandlerTint
+fun_005c2710,PCPerfEndEvent,D3DPERF_EndEvent
+fun_005f8a30,NuDisplayListPerfEndEvent,D3DPERF_EndEvent (material unit copy)
+fun_005c2f30,GetView,returns &view
+fun_005c2f40,GetProjection,returns &projection
+fun_005c30b0,AddDynamicLight,appends to dynamic_lights
+fun_005c30e0,SetParameters,copies the parameter block
+fun_005c2090,NameEquals,NuStrCmp(name, other) == 0
+fun_005c20e0,PortReleaseReference,--references
+fun_005c20f0,PortReferenceCount,returns references
+fun_005c2100,SetData,data = value
+fun_005c2110,GetData,returns data
+fun_005c2160,GetEntryData,returns entries[index].data
+fun_005c5290,IsActive,initialized && enabled
+fun_005f7440,PCSqrtf,sqrt of a float
+fun_005f2860,PCSpecialShadowLightSetupFrustum,light->SetupCustomCameraFrustum
+fun_005f2880,NuDynamicLightResetGeometry,light->resetGeometry
+fun_005f6a80,PCSpecialShadowLightRenderScene,light->RenderSceneShadow
+fun_005f6a90,PCSpecialShadowLightCreate,placement-new from dynamicLightPool
+fun_005e8930,PCFrustumClipSetTestBoxes,clip_set->TestBoxes
+fun_005f7870,GetCaps,returns &caps
+fun_005f7880,GetPresentParameters,returns &parameters
+fun_005f78a0,RequiresPow2Textures,texture caps without non-pow2 support
+fun_005f78c0,SetScreenColourUvDeclaration,sets screen_colour_uv_declaration
+fun_005f8580,PCGraphicsEffectSetTexture,effect set_texture with the render texture resource
+fun_005f8760,PCDeviceHardwareVertexProcessingGet,returns PCDeviceHardwareVertexProcessingPC
+fun_005fbcf0,PCDynamicGeometryLock,locks the geometry vertex buffer
+fun_005fbd20,PCDynamicGeometryUnlock,unlocks the geometry vertex buffer
+fun_005fc8c0,NuDisplayList2dGetPlatform,returns &PCDisplayList2d
+fun_005fd1b0,NuRndrGetGlobalState,returns &render_state
+fun_005ff2c0,NuVpInitIdentityMatrix,NuMtxSetIdentity(&NuVpIdentityMatrix)
+fun_005fe4a0,PCFogSetDensity,D3DRS_FOGDENSITY
+fun_005fe500,PCFogSetRange,D3DRS_FOGSTART and D3DRS_FOGEND
+fun_00603ed0,NuCameraCopyViewMatrix,copies vmtx
+fun_00603ef0,NuCameraCopyProjectionMatrix,copies pmtx
+fun_00604a70,NuCameraGetScreenMatrix,returns &smtx
+fun_00604b50,NuCameraClipTestExtentsDefault,NuCameraClipTestExtents with the clipping matrix
+fun_004fe630,NuStrFind,strstr
+fun_006de9d0,NuDebugPadRead,GamePadReadBackend(pad, -1)
+fun_006dff70,DebugState,returns this
+fun_006dffa0,SetDebugEnabled,enabled = value
+fun_005fece0,NuHGobjRndrMtxSimple,NuHGobjRndrMtxDwa without the extra arguments
+fun_005fb920,CopyFrom,stretch-copies the source surface

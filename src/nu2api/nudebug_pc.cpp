@@ -15,7 +15,7 @@
 extern "C" void PCNativeErrorHook(char *text) {
 }
 
-PC_NATIVE_DEBUG_STATE *PC_NATIVE_DEBUG_STATE::fun_006dff70() {
+PC_NATIVE_DEBUG_STATE *PC_NATIVE_DEBUG_STATE::DebugState() {
     return this;
 }
 
@@ -255,7 +255,7 @@ void PC_NATIVE_DEBUG_STATE::Shutdown() {
     }
 }
 
-void PC_NATIVE_DEBUG_STATE::fun_006dffa0(u8 value) {
+void PC_NATIVE_DEBUG_STATE::SetDebugEnabled(u8 value) {
     enabled = value;
 }
 

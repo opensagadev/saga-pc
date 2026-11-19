@@ -451,7 +451,7 @@ extern "C" i32 NuKeyboardDevicePresent(i32 index) {
     return nu_keyboard_owner.device_present[index];
 }
 
-extern "C" void fun_006dc6f0(void) {
+extern "C" void NuPrimPopCoordinateSystem(void) {
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
 }
 

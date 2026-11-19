@@ -1472,11 +1472,11 @@ extern "C" {
         return quality[multisample_index];
     }
 
-    GRAPHICS_CAPS *PC_DEVICE_BACKEND::fun_005f7870() {
+    GRAPHICS_CAPS *PC_DEVICE_BACKEND::GetCaps() {
         return &caps;
     }
 
-    GRAPHICS_PRESENT_PARAMETERS *PC_DEVICE_BACKEND::fun_005f7880() {
+    GRAPHICS_PRESENT_PARAMETERS *PC_DEVICE_BACKEND::GetPresentParameters() {
         return &parameters;
     }
 
@@ -1484,11 +1484,11 @@ extern "C" {
         return target_count;
     }
 
-    i32 PC_DEVICE_BACKEND::fun_005f78a0() {
+    i32 PC_DEVICE_BACKEND::RequiresPow2Textures() {
         return (caps.texture_caps & D3DPTEXTURECAPS_POW2) == 0 && (caps.texture_caps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL) == 0;
     }
 
-    void PC_DEVICE_BACKEND::fun_005f78c0() {
+    void PC_DEVICE_BACKEND::SetScreenColourUvDeclaration() {
         PCDeviceSetVertexDeclaration(screen_colour_uv_declaration);
     }
 
@@ -1845,7 +1845,7 @@ extern "C" {
         const PC_EFFECT_METHODS *methods; // 0x0
     };
 
-    void fun_005f8580(GRAPHICS_RENDER_TEXTURE *texture, PC_EFFECT *effect, const char *parameter) {
+    void PCGraphicsEffectSetTexture(GRAPHICS_RENDER_TEXTURE *texture, PC_EFFECT *effect, const char *parameter) {
         effect->methods->set_texture(effect, parameter, texture->resource);
     }
 
@@ -1883,27 +1883,27 @@ extern "C" {
         }
     }
 
-    i32 fun_005f8760(void) {
+    i32 PCDeviceHardwareVertexProcessingGet(void) {
         return PCDeviceHardwareVertexProcessingPC;
     }
 
-    NUMTX *fun_005f8790(void) {
+    NUMTX *NuRndrGetViewMatrix(void) {
         return &PcGeometryViewMatrix;
     }
 
-    NUMTX *fun_005f87a0(void) {
+    NUMTX *NuRndrGetProjectionMatrix(void) {
         return &PcGeometryProjectionMatrix;
     }
 
-    NUMTX *fun_005f87b0(void) {
+    NUMTX *NuRndrGetViewProjectionMatrix(void) {
         return &PcGeometryViewProjectionMatrix;
     }
 
-    NUVEC4 *fun_005f87c0(void) {
+    NUVEC4 *NuRndrGetDistanceOrigin(void) {
         return &PcGeometryDistanceOrigin;
     }
 
-    NUVEC4 *fun_005f8800(void) {
+    NUVEC4 *NuDisplayGetHandlerTint(void) {
         return &NuDisplayHandlerTint;
     }
 
@@ -3027,7 +3027,7 @@ extern "C" {
         }
     }
 
-    void PC_EFFECT_SURFACE::fun_005fb920(PC_EFFECT_SURFACE *source) {
+    void PC_EFFECT_SURFACE::CopyFrom(PC_EFFECT_SURFACE *source) {
         bool resize = width != source->width || height != source->height;
         PCDeviceStretchRect(source->surface, NULL, surface, NULL, resize ? 2 : 0);
     }
@@ -3132,12 +3132,12 @@ extern "C" {
         return 1;
     }
 
-    i32 fun_005fbcf0(PC_DYNAMIC_GEOMETRY *geometry, void **data) {
+    i32 PCDynamicGeometryLock(PC_DYNAMIC_GEOMETRY *geometry, void **data) {
         PCDeviceLockVertexBuffer(0, 0, data, 0x2000, geometry->vertex_buffer);
         return 1;
     }
 
-    i32 fun_005fbd20(PC_DYNAMIC_GEOMETRY *geometry) {
+    i32 PCDynamicGeometryUnlock(PC_DYNAMIC_GEOMETRY *geometry) {
         PCDeviceUnlockVertexBuffer(geometry->vertex_buffer);
         return 1;
     }
@@ -3375,7 +3375,7 @@ extern "C" {
         return 1;
     }
 
-    NUDISPLAYLIST *fun_005fc8c0(void) {
+    NUDISPLAYLIST *NuDisplayList2dGetPlatform(void) {
         return &PCDisplayList2d;
     }
 
@@ -3649,7 +3649,7 @@ extern "C" {
         memset(&render_state.konst_id, 0xff, sizeof(render_state.konst_id));
     }
 
-    NUGLOBALRNDRSTATE *fun_005fd1b0(void) {
+    NUGLOBALRNDRSTATE *NuRndrGetGlobalState(void) {
         return &render_state;
     }
 
@@ -4119,7 +4119,7 @@ extern "C" {
         vport_inval = 1;
     }
 
-    void fun_005ff2c0(void) {
+    void NuVpInitIdentityMatrix(void) {
         NuMtxSetIdentity(&NuVpIdentityMatrix);
     }
 
@@ -7535,7 +7535,7 @@ extern "C" {
         dat_02854cb0 = 0;
     }
 
-    void fun_005fe4a0(u32 density) {
+    void PCFogSetDensity(u32 density) {
         PCDeviceSetRenderState(D3DRS_FOGDENSITY, density);
     }
 
@@ -7553,7 +7553,7 @@ extern "C" {
         }
     }
 
-    void fun_005fe500(u32 start, u32 end) {
+    void PCFogSetRange(u32 start, u32 end) {
         PCDeviceSetRenderState(D3DRS_FOGSTART, start);
         PCDeviceSetRenderState(D3DRS_FOGEND, end);
     }
@@ -7855,7 +7855,7 @@ extern "C" {
         PCGraphicsRenderTextureAllocationError();
     }
 
-    i32 fun_005fece0(NUHGOBJ_EVAL *eval, NUMTX *world, i32 count, i16 *indices, NUMTX *matrices) {
+    i32 NuHGobjRndrMtxSimple(NUHGOBJ_EVAL *eval, NUMTX *world, i32 count, i16 *indices, NUMTX *matrices) {
         return NuHGobjRndrMtxDwa(eval, world, count, indices, matrices, NULL, 0);
     }
 
@@ -8497,12 +8497,12 @@ extern "C" {
         }
     }
 
-    NUMTX *fun_00603ed0(NUMTX *matrix) {
+    NUMTX *NuCameraCopyViewMatrix(NUMTX *matrix) {
         *matrix = vmtx;
         return matrix;
     }
 
-    NUMTX *fun_00603ef0(NUMTX *matrix) {
+    NUMTX *NuCameraCopyProjectionMatrix(NUMTX *matrix) {
         *matrix = pmtx;
         return matrix;
     }
@@ -8615,7 +8615,7 @@ extern "C" {
         PCClipExtentsEnabled = enabled;
     }
 
-    NUMTX *fun_00604a70(void) {
+    NUMTX *NuCameraGetScreenMatrix(void) {
         return &smtx;
     }
 
@@ -8636,7 +8636,7 @@ extern "C" {
         pmtx.m21 = NuCameraProjectionGlobalOffsetY;
     }
 
-    i32 fun_00604b50(NUVEC *min, NUVEC *max) {
+    i32 NuCameraClipTestExtentsDefault(NUVEC *min, NUVEC *max) {
         return NuCameraClipTestExtents(min, max, NuCameraGetClippingMtx(), 0.0f, 0);
     }
 

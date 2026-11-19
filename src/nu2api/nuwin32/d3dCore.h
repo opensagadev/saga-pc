@@ -243,7 +243,7 @@ struct PC_EFFECT_SURFACE {                                                      
     u32 GetFace();
     u16 GetWidth();
     u16 GetHeight();
-    void fun_005fb920(PC_EFFECT_SURFACE *source);
+    void CopyFrom(PC_EFFECT_SURFACE *source);
 #endif
 };
 
@@ -381,11 +381,11 @@ typedef struct PC_DEVICE_BACKEND {          // size 0x700
     void fun_00509140(i32 mode);
     GRAPHICS_RENDER_TEXTURE *GetTargetTexture(u16 index);
     i32 GetMultisampleQuality();
-    GRAPHICS_CAPS *fun_005f7870();
-    GRAPHICS_PRESENT_PARAMETERS *fun_005f7880();
+    GRAPHICS_CAPS *GetCaps();
+    GRAPHICS_PRESENT_PARAMETERS *GetPresentParameters();
     u16 GetTargetCount();
-    i32 fun_005f78a0();
-    void fun_005f78c0();
+    i32 RequiresPow2Textures();
+    void SetScreenColourUvDeclaration();
     u16 fun_006e2140();
     void fun_006e22c0();
     HRESULT fun_006e22e0(PC_EFFECT_SURFACE *target, i32 filter);

@@ -15,9 +15,9 @@ class NuDeferredFilterGen : public NuPostFilter { // size 0x2f8
   public:
     NuDeferredFilterGen();
     void setEnabled(bool enable);
-    void fun_005c30b0(NuDynamicLight *light);
+    void AddDynamicLight(NuDynamicLight *light);
     i32 getDynamicLightCount();
-    void fun_005c30e0(const f32 *parameters);
+    void SetParameters(const f32 *parameters);
     virtual void initResources();
     virtual void destroyResources();
     virtual void initTextureResources(i32, i32);

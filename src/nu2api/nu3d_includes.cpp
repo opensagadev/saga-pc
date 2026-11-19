@@ -11580,15 +11580,15 @@ extern "C" i32 PCDeviceGetVertexProcessing(void) {
     return PCDeviceHardwareVertexProcessingPC;
 }
 
-extern "C" NUMTX *fun_005c24c0(void) {
+extern "C" NUMTX *PcGeometryGetViewMatrix(void) {
     return &PcGeometryViewMatrix;
 }
 
-extern "C" NUMTX *fun_005c24d0(void) {
+extern "C" NUMTX *PcGeometryGetProjectionMatrix(void) {
     return &PcGeometryProjectionMatrix;
 }
 
-extern "C" void fun_005c2710(void) {
+extern "C" void PCPerfEndEvent(void) {
     D3DPERF_EndEvent();
 }
 
@@ -12091,11 +12091,11 @@ i32 PC_SPECIAL_SHADOW_LIGHT::GetActiveRenderSetCount() {
     return active_render_set_count;
 }
 
-NUMTX *PC_SPECIAL_SHADOW_LIGHT::fun_005c2f30() {
+NUMTX *PC_SPECIAL_SHADOW_LIGHT::GetView() {
     return &view;
 }
 
-NUMTX *PC_SPECIAL_SHADOW_LIGHT::fun_005c2f40() {
+NUMTX *PC_SPECIAL_SHADOW_LIGHT::GetProjection() {
     return &projection;
 }
 
@@ -12165,7 +12165,7 @@ void NuDeferredFilterGen::setEnabled(bool enable) {
     enabled = enable;
 }
 
-void NuDeferredFilterGen::fun_005c30b0(NuDynamicLight *light) {
+void NuDeferredFilterGen::AddDynamicLight(NuDynamicLight *light) {
     dynamic_lights[dynamic_light_count++] = light;
 }
 
@@ -12173,7 +12173,7 @@ i32 NuDeferredFilterGen::getDynamicLightCount() {
     return dynamic_light_count;
 }
 
-void NuDeferredFilterGen::fun_005c30e0(const f32 *parameters) {
+void NuDeferredFilterGen::SetParameters(const f32 *parameters) {
     memcpy(this->parameters, parameters, sizeof(this->parameters));
 }
 
@@ -13063,7 +13063,7 @@ extern "C" PC_POST_DATA_PORT_MANAGER PostResourceManager;
 extern "C" PC_FRAMEBUFFER *PostBlurFramebuffer;
 extern "C" PC_FRAMEBUFFER *PostCopyFramebuffer;
 
-bool PC_POST_DATA_PORT_ENTRY::fun_005c2090(const char *other) {
+bool PC_POST_DATA_PORT_ENTRY::NameEquals(const char *other) {
     return NuStrCmp(name, other) == 0;
 }
 
@@ -13073,19 +13073,19 @@ void PC_POST_DATA_PORT_ENTRY::fun_005c20b0(const char *other, void *value) {
     data = value;
 }
 
-void PC_POST_DATA_PORT_ENTRY::fun_005c20e0() {
+void PC_POST_DATA_PORT_ENTRY::PortReleaseReference() {
     --references;
 }
 
-i32 PC_POST_DATA_PORT_ENTRY::fun_005c20f0() {
+i32 PC_POST_DATA_PORT_ENTRY::PortReferenceCount() {
     return references;
 }
 
-void PC_POST_DATA_PORT_ENTRY::fun_005c2100(void *value) {
+void PC_POST_DATA_PORT_ENTRY::SetData(void *value) {
     data = value;
 }
 
-void *PC_POST_DATA_PORT_ENTRY::fun_005c2110() {
+void *PC_POST_DATA_PORT_ENTRY::GetData() {
     return data;
 }
 
@@ -13095,7 +13095,7 @@ PC_POST_DATA_PORT_ENTRY *PC_POST_DATA_PORT_MANAGER::fun_005c2120(i32 index) {
     return entry;
 }
 
-void *PC_POST_DATA_PORT_MANAGER::fun_005c2160(i32 index) {
+void *PC_POST_DATA_PORT_MANAGER::GetEntryData(i32 index) {
     return entries[index].data;
 }
 
@@ -13134,7 +13134,7 @@ bool OcclusionManager::IsInitialized() {
     return initialized;
 }
 
-bool OcclusionManager::fun_005c5290() {
+bool OcclusionManager::IsActive() {
     return initialized && enabled;
 }
 
@@ -16428,11 +16428,11 @@ extern "C" i32 NuOcclusionManagerIsOccludedSphere(const NUVEC *center, f32 radiu
     return g_OcclusionManager.IsOccludedSphere(center, radius) ? 1 : 0;
 }
 
-extern "C" void fun_005f2860(PC_SPECIAL_SHADOW_LIGHT *light, NUCAMERA *camera, const f32 *splits, i32 count) {
+extern "C" void PCSpecialShadowLightSetupFrustum(PC_SPECIAL_SHADOW_LIGHT *light, NUCAMERA *camera, const f32 *splits, i32 count) {
     light->SetupCustomCameraFrustum(camera, splits, count);
 }
 
-extern "C" void fun_005f2880(NuDynamicLight *light) {
+extern "C" void NuDynamicLightResetGeometry(NuDynamicLight *light) {
     light->resetGeometry();
 }
 
@@ -16546,11 +16546,11 @@ extern "C" PC_SPECIAL_SHADOW_LIGHT *NuDynamicLightClone(PC_SPECIAL_SHADOW_LIGHT 
     return light->Clone(arena, end);
 }
 
-extern "C" void fun_005f6a80(PC_SPECIAL_SHADOW_LIGHT *light, NUGSCN *scene) {
+extern "C" void PCSpecialShadowLightRenderScene(PC_SPECIAL_SHADOW_LIGHT *light, NUGSCN *scene) {
     light->RenderSceneShadow(scene);
 }
 
-extern "C" PC_SPECIAL_SHADOW_LIGHT *fun_005f6a90(void) {
+extern "C" PC_SPECIAL_SHADOW_LIGHT *PCSpecialShadowLightCreate(void) {
     return new (dynamicLightPool.allocate()) PC_SPECIAL_SHADOW_LIGHT;
 }
 
@@ -16558,7 +16558,7 @@ extern "C" PC_SPECIAL_SHADOW_LIGHT *NuDynamicLightCreate(void) {
     return new (dynamicLightPool.allocate()) PC_SPECIAL_SHADOW_LIGHT;
 }
 
-extern "C" f32 fun_005f7440(f32 value) {
+extern "C" f32 PCSqrtf(f32 value) {
     return (f32)sqrt((f64)value);
 }
 
@@ -17567,7 +17567,7 @@ extern "C" i32 NuDynamicLightTestShadowExtrusionsExtent(PCFrustumClipSet *light,
     return light->TestBoxes(&minimum, &maximum);
 }
 
-extern "C" i32 fun_005e8930(PCFrustumClipSet *clip_set, const NUVEC *minimum, const NUVEC *maximum) {
+extern "C" i32 PCFrustumClipSetTestBoxes(PCFrustumClipSet *clip_set, const NUVEC *minimum, const NUVEC *maximum) {
     return clip_set->TestBoxes(minimum, maximum);
 }
 

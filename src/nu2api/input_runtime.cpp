@@ -169,7 +169,7 @@ u8 PC_INPUT_RUNTIME::InstallDropInConfiguration(i32 port, i32 player_index) {
     return ResolveAuxiliaryConflicts(player_index, 3) == 0;
 }
 
-i32 PC_INPUT_RUNTIME::fun_006d7410(i32 key, i32 port) {
+i32 PC_INPUT_RUNTIME::SelectConfigurationKey(i32 key, i32 port) {
     return SelectConfiguration(port, key, key);
 }
 
