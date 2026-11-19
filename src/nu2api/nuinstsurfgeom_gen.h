@@ -11,14 +11,14 @@ extern "C" {
 }
 #endif
 
-typedef struct PC_GEOMETRY_PUBLISH_FORMAT PC_GEOMETRY_PUBLISH_FORMAT;
-typedef struct PC_GEOMETRY_PUBLISH_RECORD PC_GEOMETRY_PUBLISH_RECORD;
+struct PC_GEOMETRY_PUBLISH_FORMAT;
+struct PC_GEOMETRY_PUBLISH_RECORD;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 PcRegisterDynamicGeometry(PC_GEOMETRY_PUBLISH_FORMAT *);
+    i32 PcRegisterDynamicGeometry(struct PC_GEOMETRY_PUBLISH_FORMAT *);
     extern i32 PcGeometryRegistryCount;
-    extern PC_GEOMETRY_PUBLISH_RECORD *PcGeometryRegistry;
+    extern struct PC_GEOMETRY_PUBLISH_RECORD *PcGeometryRegistry;
     extern i32 PcGeometryMatrixCapacity;
     extern i32 PcGeometryOutputCapacity;
 #ifdef __cplusplus

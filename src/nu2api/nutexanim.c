@@ -96,36 +96,6 @@ PC_TEXTURE_ANIM_ENV *NuTexAnimEnvCreate(VARIPTR *buffer, NUMTL *material, u16 *t
     return environment;
 }
 
-struct TEXTURE_ANIM_PROGRAM {       // size 0x1bc
-    TEXTURE_ANIM_PROGRAM *next;     // 0x000
-    TEXTURE_ANIM_PROGRAM *previous; // 0x004
-    char name[32];                  // 0x008
-    i32 on_signal[32];              // 0x028
-    i32 off_signal[32];             // 0x0a8
-    u32 on_mask;                    // 0x128
-    u32 off_mask;                   // 0x12c
-    i16 label_ids[32];              // 0x130
-    i16 label_offsets[32];          // 0x170
-    i32 label_count;                // 0x1b0
-    i16 instruction_count;          // 0x1b4
-    u16 flags;                      // 0x1b6
-    u16 mask;                       // 0x1b8
-    i16 instructions[1];            // 0x1ba
-};
-
-struct TEXTURE_ANIMATION {            // size 0x20
-    TEXTURE_ANIMATION *next;          // 0x00
-    TEXTURE_ANIMATION *previous;      // 0x04
-    u16 *texture_ids;                 // 0x08
-    i16 texture_count;                // 0x0c
-    u8 flags;                         // 0x0e
-    u8 reserved_0f;                   // 0x0f
-    NUMTL *material;                  // 0x10
-    PC_TEXTURE_ANIM_ENV *environment; // 0x14
-    char *name;                       // 0x18
-    char *program_name;               // 0x1c
-};
-
 typedef struct TEXTURE_ANIM_MATERIAL { // size 0xbc
     u8 unknown_00[0x74];               // 0x00
     i16 texture_id;                    // 0x74

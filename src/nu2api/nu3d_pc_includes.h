@@ -7,6 +7,9 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/nustencilshadows_PC.h"
 
+struct PC_GEOMETRY_BASIS_SOURCE;
+struct PC_GEOMETRY_MORPH_WEIGHTS;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -26,7 +29,7 @@ extern "C" {
     void NuRndrStateGetTransform(NUMTX *, const NUMTL *);
     void NuRndrStateSetTransform(const NUMTX *);
     void NuRndrInit(VARIPTR *, VARIPTR);
-    u8 PcInitializeGeometryBasis(PC_GEOMETRY_BASIS_SOURCE *, NUMTX *, PC_GEOMETRY_MORPH_WEIGHTS *);
+    u8 PcInitializeGeometryBasis(struct PC_GEOMETRY_BASIS_SOURCE *, NUMTX *, struct PC_GEOMETRY_MORPH_WEIGHTS *);
     void NuDisplayListReflection(void *);
     void NuDisplayListDrawGeometry(void *);
     void NuDisplayListMaterial(void *);
