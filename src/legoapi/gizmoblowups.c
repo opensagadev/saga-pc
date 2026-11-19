@@ -165,23 +165,23 @@ u32 RemapAllTypeFlagsToBlowupFlags(u32 flags) {
 i32 InitGizmoBlowupTypes(WORLDINFO *world) {
     world->gizmo_blowup_types = NULL;
     world->gizmo_blowup_type_count = 0;
-    if ((u16)world->current_level->max_gizmoblowuptypes == 0) {
+    if (world->current_level->max_gizmoblowuptypes == 0) {
         return 0;
     }
     world->gizmo_blowup_types =
-        GameBufferAlloc(&world->giz_buffer, &world->buffer_end, (u16)world->current_level->max_gizmoblowuptypes * sizeof(GIZMOBLOWUPTYPE));
+        GameBufferAlloc(&world->giz_buffer, &world->buffer_end, world->current_level->max_gizmoblowuptypes * sizeof(GIZMOBLOWUPTYPE));
     return world->gizmo_blowup_types != NULL;
 }
 
 i32 InitGizmoBlowups(WORLDINFO *world) {
     world->gizmo_blowups = NULL;
     world->gizmo_blowup_count = 0;
-    if ((u16)world->current_level->max_gizmoblowups == 0) {
+    if (world->current_level->max_gizmoblowups == 0) {
         return 0;
     }
     world->giz_buffer.addr = (world->giz_buffer.addr + 0xf) & ~0xfu;
     world->gizmo_blowups =
-        GameBufferAlloc(&world->giz_buffer, &world->buffer_end, (u16)world->current_level->max_gizmoblowups * sizeof(GIZMOBLOWUP));
+        GameBufferAlloc(&world->giz_buffer, &world->buffer_end, world->current_level->max_gizmoblowups * sizeof(GIZMOBLOWUP));
     return world->gizmo_blowups != NULL;
 }
 
@@ -202,7 +202,7 @@ void *gizmoblowup_reservebuffers(WORLDINFO *world) {
 i32 Blowup_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = world_ptr;
     if (world != NULL) {
-        return (u16)world->current_level->max_gizmoblowups;
+        return world->current_level->max_gizmoblowups;
     }
     return 0;
 }
@@ -423,7 +423,7 @@ GIZMOBLOWUPTYPE *GizmoBlowupTypeAdd(WORLDINFO *world, nuhspecial_s *special, i32
             return NULL;
         }
     }
-    if (world->gizmo_blowup_type_count >= (u16)world->current_level->max_gizmoblowuptypes) {
+    if (world->gizmo_blowup_type_count >= world->current_level->max_gizmoblowuptypes) {
         return NULL;
     }
     type = &world->gizmo_blowup_types[world->gizmo_blowup_type_count];
@@ -468,10 +468,10 @@ void GizmoBlowupTypeRemove(GIZMOBLOWUPTYPE *type, WORLDINFO *world) {
     if (type < types) {
         return;
     }
-    if (type > types + (u16)world->current_level->max_gizmoblowuptypes) {
+    if (type > types + world->current_level->max_gizmoblowuptypes) {
         return;
     }
-    last_allocated_type = types + (u16)world->current_level->max_gizmoblowuptypes - 1;
+    last_allocated_type = types + world->current_level->max_gizmoblowuptypes - 1;
     if (type < last_allocated_type) {
         for (moved_type = type + 1; moved_type <= last_allocated_type; ++moved_type) {
             for (i = 0; i < world->gizmo_blowup_count; ++i) {
@@ -1196,7 +1196,7 @@ i32 gizmoblowup_Load(void *world_ptr, void *data) {
     if (world->gizmo_blowup_types == NULL || world->gizmo_blowups == NULL) {
         return 0;
     }
-    memset(world->gizmo_blowup_types, 0, (u16)world->current_level->max_gizmoblowuptypes * sizeof(GIZMOBLOWUPTYPE));
+    memset(world->gizmo_blowup_types, 0, world->current_level->max_gizmoblowuptypes * sizeof(GIZMOBLOWUPTYPE));
     if (world->gizmo_blowup_count != 0) {
         return 0;
     }
