@@ -1262,7 +1262,7 @@ void eduiRenderInteracts(void);
 
 /* Renders the active editor module (the main menu without one) and the
  * cursor's interact boxes. */
-void fun_006299e0(void) {
+void edmainRenderAll(void) {
     if (edmain_cursor_enabled) {
         eduiFlushInteracts();
     }
@@ -1940,7 +1940,7 @@ void eduiProcessCursorDefault(f32 delta_time, FRAME_PAD *pad) {
     edui_cursor_buttons_db = (edui_cursor_buttons ^ edui_cursor_buttons_old) & edui_cursor_buttons;
 }
 
-void fun_00627540(f32 delta_time, FRAME_PAD *pad) {
+void EduiUpdateCursor(f32 delta_time, FRAME_PAD *pad) {
     if (pad != NULL && eduiUsedAlgPad(pad) && !(pad->digital_buttons & PAD_BUTTON_CROSS)) {
         edui_cursor_x = 320.0f;
         edui_cursor_y = 112.0f;
@@ -4442,7 +4442,7 @@ static i32 EduiProcessLockedInteraction(eduimenu_s *menu) {
     return eduiInteractLocked != NULL;
 }
 
-static i32 fun_006272a0(eduimenu_s *menu, edui_interact_s *interact) {
+static i32 EduiProcessMenuInteract(eduimenu_s *menu, edui_interact_s *interact) {
     i32 result = 0;
     if (interact->menu == menu) {
         if (EduiInteractPressed(interact) && EduiInteractionContainsCursor(interact)) {
@@ -4483,7 +4483,7 @@ i32 eduiProcessInteracts(eduimenu_s *menu, FRAME_PAD *pad) {
         } else {
             interact = &eduiInteracts[numInteracts - 1];
             for (index = 0; index < numInteracts; index++, interact--) {
-                if (fun_006272a0(menu, interact)) {
+                if (EduiProcessMenuInteract(menu, interact)) {
                     return 1;
                 }
             }
@@ -5093,7 +5093,7 @@ void TestMenu(FRAME_PAD *pad) {
     eduiMenuRender(testmenu0);
 }
 
-void fun_0062a4b0(f32 delta_time, FRAME_PAD *pad) {
+void edmainProcessMainMenu(f32 delta_time, FRAME_PAD *pad) {
     eduiitem_s *item;
     if (ed_main_menu) {
         for (item = ed_main_menu->first; item; item = item->next) {
@@ -5134,6 +5134,6 @@ i32 edmainProcess(f32 delta_time, FRAME_PAD *pad) {
         eduiSetActiveMenu(ed_main_menu);
         eduiSetDefaultActiveMenu(ed_main_menu);
     }
-    fun_0062a4b0(delta_time, pad);
+    edmainProcessMainMenu(delta_time, pad);
     return editor_return;
 }

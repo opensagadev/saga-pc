@@ -1445,7 +1445,7 @@ f32 VuVec::Dot(const VuVec &other) const {
 }
 
 /* A scaling matrix with the vector's components on the diagonal. */
-void VuMtx::fun_006b8470(const VuVec &scale) {
+void VuMtx::SetScale(const VuVec &scale) {
     f32 value;
     matrix.m00 = scale.x;
     matrix.m01 = 0.0f;
@@ -4870,7 +4870,7 @@ ClassObjectListEntry *ClassObjectList::GetFirst() {
 }
 
 /* A NULL position appends the entry. */
-void ClassObjectList::fun_006c1450(ClassObjectListEntry *entry, ClassObjectListEntry *position) {
+void ClassObjectList::InsertEntryAfter(ClassObjectListEntry *entry, ClassObjectListEntry *position) {
     if (position != NULL) {
         entry->previous = position;
         entry->next = position->next;

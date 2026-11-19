@@ -5311,7 +5311,7 @@ static i32 AIMoveFindNearestSpecialRouteNode(AIPATH *path, NUVEC *destination, i
     return 0;
 }
 
-i32 fun_0051d290(AISYS *system, AIPATH *path, AIPATH *target) {
+i32 AIPathSpecialRouteReaches(AISYS *system, AIPATH *path, AIPATH *target) {
     i32 index;
     i32 route_index;
     AIPATHSPECIALROUTE *route;
@@ -5322,7 +5322,7 @@ i32 fun_0051d290(AISYS *system, AIPATH *path, AIPATH *target) {
             if (route->paths[route_index] == target) {
                 return 1;
             }
-            if (fun_0051d290(system, path, target)) {
+            if (AIPathSpecialRouteReaches(system, path, target)) {
                 return 1;
             }
         }
@@ -6714,7 +6714,7 @@ static void AIPathDirectionXZ(NUVEC *direction, NUVEC *from, NUVEC *to, f32 leng
     direction->z = (to->z - from->z) / length;
 }
 
-static i32 fun_00520a00(AIPACKET *packet, AIPATHCNX *connection, AIPATHNODE **start, AIPATHNODE **end, NUVEC *direction) {
+static i32 AIOrientConnection(AIPACKET *packet, AIPATHCNX *connection, AIPATHNODE **start, AIPATHNODE **end, NUVEC *direction) {
     *start = &packet->path_info.path->nodes[connection->node_indices[0]];
     *end = &packet->path_info.path->nodes[connection->node_indices[1]];
     if (((*end)->position.z - (*start)->position.z) * direction->z + ((*end)->position.x - (*start)->position.x) * direction->x < 0.0) {
@@ -6744,7 +6744,7 @@ void FindAIDirectionedRandomPointOnNetwork2D(AIPACKET *packet, NUVEC *position, 
         *result = packet->owner->position;
         return;
     }
-    fun_00520a00(packet, connection, &start, &end, direction);
+    AIOrientConnection(packet, connection, &start, &end, direction);
     AIPathDirectionXZ(&delta, &start->position, &end->position, connection->horizontal_distance);
     if (flags & 2) {
         distance *= connection->horizontal_distance;
@@ -6764,8 +6764,9 @@ void FindAIDirectionedRandomPointOnNetwork2D(AIPACKET *packet, NUVEC *position, 
             if (connection != junction->connections[i]) {
                 AIPATHNODE *candidate_start;
                 AIPATHNODE *candidate_end;
-                i32 reverse = fun_00520a00(packet, junction->connections[i], &candidate_start, &candidate_end, direction);
-                AIPathDirectionXZ(&delta, &candidate_start->position, &candidate_end->position, junction->connections[i]->horizontal_distance);
+                i32 reverse = AIOrientConnection(packet, junction->connections[i], &candidate_start, &candidate_end, direction);
+                AIPathDirectionXZ(&delta, &candidate_start->position, &candidate_end->position,
+                                  junction->connections[i]->horizontal_distance);
                 if ((junction->connections[i]->traversal_flags[reverse] & (AIPATHCNX_PERMANENT_BLOCK | AIPATHCNX_TEMPORARY_BLOCK)) == 0) {
                     f32 dot = direction->z * delta.z + direction->x * delta.x;
                     if (dot > best_dot) {
@@ -6783,7 +6784,7 @@ void FindAIDirectionedRandomPointOnNetwork2D(AIPACKET *packet, NUVEC *position, 
             } else {
                 distance -= old_length;
             }
-            fun_00520a00(packet, connection, &start, &end, direction);
+            AIOrientConnection(packet, connection, &start, &end, direction);
             AIPathDirectionXZ(&delta, &start->position, &end->position, connection->horizontal_distance);
         }
     }

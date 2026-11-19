@@ -665,7 +665,7 @@ i32 NetworkObjectManager::GetPeerStatus() {
     return status;
 }
 
-void NetworkObjectManager::ReplicatorList::fun_00612f70(NetReplicator *replicator, NetReplicator *after) {
+void NetworkObjectManager::ReplicatorList::InsertReplicatorAfter(NetReplicator *replicator, NetReplicator *after) {
     if (after != NULL) {
         replicator->previous = after;
         replicator->next = after->next;

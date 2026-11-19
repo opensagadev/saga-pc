@@ -60,7 +60,8 @@ extern "C" {
     void EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f32 min_radius, f32 max_radius, f32 radius_scale,
                          f32 radius_bias);
     void EdDrawPolyAxis(NUMTX *transform, f32 size, i32 opacity);
-    void EdDrawPolyCylinderEx(struct VuVec *start, struct VuVec *end, i32 sides, i32 colour, i32 cap_colour, f32 radius, f32 limit, f32 offset);
+    void EdDrawPolyCylinderEx(struct VuVec *start, struct VuVec *end, i32 sides, i32 colour, i32 cap_colour, f32 radius, f32 limit,
+                              f32 offset);
     void EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_angle, i32 last_angle, i32 colour, i32 segments);
     void EdDrawPolyTri(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour);
     extern f32 rtl_helper_radius;
@@ -665,7 +666,7 @@ struct ClassObjectList {         // size 0xc
     i32 count;                   // 0x8
 
     ClassObjectListEntry *GetFirst();
-    void fun_006c1450(ClassObjectListEntry *entry, ClassObjectListEntry *position);
+    void InsertEntryAfter(ClassObjectListEntry *entry, ClassObjectListEntry *position);
     void Remove(ClassObjectListEntry *entry);
     i32 GetObjectCount();
     i32 GetAveragePosition(struct VuVec &average);

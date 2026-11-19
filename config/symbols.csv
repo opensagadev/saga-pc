@@ -4061,7 +4061,7 @@ address,symbol,size,ctype
 0x0051cbc0,_RowMoveTowards,1388,"i32 __cdecl (AIGROUP *, AIROW *, AIROW *, APIOBJECT *)"
 0x0051d130,_FormationMove,192,
 0x0051d1f0,_AIMoveFindNearestSpecialRouteNode,148,
-0x51d290,_fun_0051d290,125,
+0x51d290,_AIPathSpecialRouteReaches,125,
 0x0051d310,_AIMoveFindDivertNode,492,
 0x0051d500,_AIMoveApplyDivertNode,218,
 0x0051d5e0,_AIMoveChooseExitNodePath,367,"i32 __cdecl (AISYS *, AIPACKET *)"
@@ -4106,7 +4106,7 @@ address,symbol,size,ctype
 0x005206b0,_AISysSetPathCylinderCheck,16,void __cdecl (i32)
 0x005206c0,_aieditor_Render,787,"void __cdecl (f32, f32)"
 0x5209e0,_AIPathDirectionXZ,32,
-0x520a00,_fun_00520a00,136,
+0x520a00,_AIOrientConnection,136,
 0x520a90,_FindAIDirectionedRandomPointOnNetwork2D,890,
 0x520e10,_areaEditorCreateArea,131,
 0x520ea0,_areaEditorDestroyArea,54,
@@ -9486,7 +9486,7 @@ address,symbol,size,ctype
 0x612f40,_fun_00612f40,3,
 0x612f50,_fun_00612f50,13,
 0x612f60,_fun_00612f60,3,
-0x612f70,?fun_00612f70@ReplicatorList@NetworkObjectManager@@QAEXPAVNetReplicator@@0@Z,101,
+0x612f70,?InsertReplicatorAfter@ReplicatorList@NetworkObjectManager@@QAEXPAVNetReplicator@@0@Z,101,
 0x612fe0,_fun_00612fe0,6,
 0x612ff0,??$Allocate@I@ReplicatorData@@QAEPAII@Z,27,
 0x613010,??$Allocate@UPredictorTime@NetPredictor@@@ReplicatorData@@QAEPAUPredictorTime@NetPredictor@@I@Z,27,
@@ -9961,10 +9961,10 @@ address,symbol,size,ctype
 0x6271a0,_eduiSetActiveMenu,68,
 0x6271f0,_eduiClearActiveMenu,59,eduimenu_s *__cdecl (void)
 0x627230,_cbInteractMenuKeySelect,98,
-0x6272a0,_fun_006272a0,126,
+0x6272a0,_EduiProcessMenuInteract,126,
 0x627320,_eduiProcessInteracts,125,
 0x6273a0,_eduiProcessCursorDefault,406,
-0x627540,_fun_00627540,261,
+0x627540,_EduiUpdateCursor,261,
 0x627650,_eduiProcessCursor,22,
 0x627670,_eduiItemColourSliderCreate,243,
 0x627770,_eduiItemFileSelCreate,172,"eduiitem_s *__cdecl (u32, void *, void *, char *)"
@@ -10011,7 +10011,7 @@ address,symbol,size,ctype
 0x629610,_AddColourPick,466,"void __cdecl(eduimenu_s *, eduiitem_s *, f32 *, f32 *, f32 *, u32 *)"
 0x6297f0,_CreateColourPicker,427,
 0x6299a0,_edmainRegister,51,
-0x6299e0,_fun_006299e0,77,
+0x6299e0,_edmainRenderAll,77,
 0x629a30,_cbMMEditorConfig,73,
 0x629a80,_cbmcfgCancel,12,
 0x629a90,_edmainCreateMenus,620,
@@ -10024,7 +10024,7 @@ address,symbol,size,ctype
 0x62a3a0,_edmainInitEx,96,
 0x62a400,_eduiMenuProcess,116,
 0x62a480,_TestMenu,45,
-0x62a4b0,_fun_0062a4b0,66,
+0x62a4b0,_edmainProcessMainMenu,66,
 0x62a500,_edmainProcess,217,
 0x0062a5e0,_PCCharacterSystemExistingNoOp,1,void __cdecl(void)
 0x62a5f0,_PCCharacterModelDiagnosticNoOp,1,void __cdecl(void)
@@ -12357,7 +12357,7 @@ address,symbol,size,ctype
 0x6b83f0,?Component@VuVec@@QAEAAMH@Z,10,
 0x6b8400,?DividedBy@VuVec@@QBE?AU1@M@Z,57,
 0x6b8440,?Dot@VuVec@@QBEMABU1@@Z,35,
-0x6b8470,?fun_006b8470@VuMtx@@QAEXABUVuVec@@@Z,91,
+0x6b8470,?SetScale@VuMtx@@QAEXABUVuVec@@@Z,91,
 0x6b84d0,_fun_006b84d0,12,
 0x6b84e0,_fun_006b84e0,29,
 0x6b8500,_fun_006b8500,1,
@@ -12790,7 +12790,7 @@ address,symbol,size,ctype
 0x6c1420,_fun_006c1420,3,
 0x6c1430,_fun_006c1430,13,
 0x6c1440,?GetFirst@ClassObjectList@@QAEPAUClassObjectListEntry@@XZ,3,
-0x6c1450,?fun_006c1450@ClassObjectList@@QAEXPAUClassObjectListEntry@@0@Z,94,
+0x6c1450,?InsertEntryAfter@ClassObjectList@@QAEXPAUClassObjectListEntry@@0@Z,94,
 0x6c14b0,?Remove@ClassObjectList@@QAEXPAUClassObjectListEntry@@@Z,63,
 0x6c14f0,?GetObjectCount@ClassObjectList@@QAEHXZ,4,
 0x6c1500,??0?$CSListLink@VPropertyMenu@@@@QAE@XZ,20,

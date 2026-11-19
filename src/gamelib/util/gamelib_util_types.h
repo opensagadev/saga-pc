@@ -736,7 +736,7 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
         ReplicatorList() : head(NULL), tail(NULL), count(0) {
         }
 
-        void fun_00612f70(NetReplicator *replicator, NetReplicator *after);
+        void InsertReplicatorAfter(NetReplicator *replicator, NetReplicator *after);
 
         NetReplicator *head; // 0xd1b4
         NetReplicator *tail; // 0xd1b8

@@ -6,7 +6,7 @@ config/oddscan-budget.json dense-function 1196 new layout class (tools/oddscan.p
 config/oddscan-budget.json long-function 21 new layout class (tools/oddscan.py group h), counted after the stricter clang-format style
 config/oddscan-budget.json long-file 12 new layout class (tools/oddscan.py group h), counted after the stricter clang-format style
 config/oddscan-budget.json data-file 6 new layout class (tools/oddscan.py group h), counted after the stricter clang-format style
-config/oddscan-budget.json address-name 2272 rename batch 1: fun_0041aec0 and fun_006272a0 (source and map row each) and the keyboard-state accessors fun_006d4e20/40/50 replace address- and offset-named provisional names
+config/oddscan-budget.json address-name 2272 rename batch 1: fun_0041aec0 and EduiProcessMenuInteract (source and map row each) and the keyboard-state accessors fun_006d4e20/40/50 replace address- and offset-named provisional names
 config/oddscan-budget.json data-file 7 one declarator per declaration (tools/onedecl.py) grows one file of declarations over 200 lines
 config/oddscan-budget.json dense-function 1216 one declarator per declaration (tools/onedecl.py): split local declarations lengthen 20 functions past 40 lines without a blank line
 config/oddscan-budget.json local-extern 51 one declarator per declaration (tools/onedecl.py): the class counts lines, split extern declarations in function bodies are 30 more lines
