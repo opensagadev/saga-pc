@@ -1439,7 +1439,7 @@ extern "C" {
     extern i32 dat_00806b88;
     extern i32 dat_00806b8c;
     extern i32 dat_00806b90;
-    extern i32 dat_00806b94;
+    extern i32 NuDebugGeometrySortOutput;
     extern i32 dat_0080b6e4;
     extern i32 NuDebugDisabled;
     extern i32 motionBlurAccumActiveThisFrame;
@@ -1447,7 +1447,7 @@ extern "C" {
     extern i32 nuqfnt_initialised;
     extern u8 PostBloomAttachPending;
     extern u8 dat_009737ff;
-    extern void *dat_00971ad8;
+    extern void *NuTexScratchBlock;
     void NuDisplayListHtmlEnd(void);
     void NuRndrArenaBuildShadowVolumes(i32 unused0, i32 unused1);
     void NuRndrInitLeaf(VARIPTR *buffer, VARIPTR end);

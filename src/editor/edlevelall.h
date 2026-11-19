@@ -561,7 +561,7 @@ struct ClassObject {   // size 0xc
     void ClearObject();
     i32 IsValid();
 
-    bool fun_006b89f0(ClassObject &other) {
+    bool IsSameObject(ClassObject &other) {
         return object == other.object && reference == other.reference;
     }
 

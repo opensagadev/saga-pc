@@ -709,7 +709,7 @@ i32 EdStream::SerialiseI32(i32 &value) {
 
 template NetPredictor::PredictorData *ReplicatorData::Allocate<NetPredictor::PredictorData>(u32);
 
-void NETMESSAGE::fun_00613090(const u8 &value) {
+void NETMESSAGE::PrependByte(const u8 &value) {
     if (data != NULL) {
         read_offset--;
         PCByteCopy(data->bytes + read_offset, &value, 1);
@@ -1526,9 +1526,9 @@ void NetworkObjectManager::Stop() {
 i32 NetworkObjectManager::RemoteCall(i32 call_id, NETMESSAGE message, const V2Peer *peer) {
     NETMESSAGE outgoing(message);
     u8 header = call_id;
-    outgoing.fun_00613090(header);
+    outgoing.PrependByte(header);
     header = 7;
-    outgoing.fun_00613090(header);
+    outgoing.PrependByte(header);
     if (peer != NULL) {
         if (peer->local) {
             ((void (*)(NETMESSAGE &))registered_calls[call_id - 1].callback)(message);

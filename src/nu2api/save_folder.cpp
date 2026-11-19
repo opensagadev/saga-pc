@@ -32,7 +32,7 @@ extern "C" void NuHwSetParameter33(void *value) {
     NuHwParameter33 = value;
 }
 
-extern "C" void fun_006dddc0(void) {
+extern "C" void NuHwCallParameter33(void) {
     if (NuHwParameter33 != NULL) {
         ((void (*)(void))NuHwParameter33)();
     }

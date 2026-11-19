@@ -781,7 +781,7 @@ extern "C" {
     } PC_GEOMETRY_SORT_ITEM;
 
     extern "C" NUVEC4 PcGeometryDistanceOrigin;
-    extern "C" i32 dat_00806b94;
+    extern "C" i32 NuDebugGeometrySortOutput;
 
     typedef struct PC_GEOMETRY_INPUT { // size 0x70
         PC_GEOMETRY_CORNER corners[4]; // 0x00
@@ -3367,7 +3367,7 @@ extern "C" {
     }
 
     i32 PCDynamicGeometryCopyOutput(PC_DYNAMIC_GEOMETRY *geometry, PC_GEOMETRY_OUTPUT *output, i32 count) {
-        if (dat_00806b94 == 1) {
+        if (NuDebugGeometrySortOutput == 1) {
             for (i32 i = 0; i < count; i++) {
                 output[i] = PcGeometryOutput[geometry->sort_items[i].output_index];
             }
@@ -4856,7 +4856,7 @@ extern "C" {
     void fun_00601790(void) {
     }
 
-    void fun_006017a0(NUMTL *material, i32 plane) {
+    void NuMtlSetRenderPlaneUi(NUMTL *material, i32 plane) {
     }
 
     void fun_006017b0(void) {
@@ -4906,7 +4906,7 @@ extern "C" {
         dat_0280d3a0 = second;
     }
 
-    void fun_00601a20(void) {
+    void NuLgtStateReset(void) {
         NuLgtStateUnknown = 0;
         NuLgtStateEnabled = 0;
     }
@@ -4955,7 +4955,7 @@ extern "C" {
         NuLgtArcMtl[type].v1 = v1;
     }
 
-    i32 fun_00601de0(void) {
+    i32 NuAllocAlignedStub(void) {
         return 0;
     }
 
@@ -7256,19 +7256,19 @@ extern "C" {
         NuMainFilterGen::initResources();
         POST_SHADER_PROGRAM *last_program;
         if (PCDeviceHardwareVertexProcessingPC > 1) {
-            programs[6] = PostShaderProgramCreate(2, dat_007662d8, dat_00766578);
-            programs[8] = PostShaderProgramCreate(2, dat_00766820, dat_00766578);
-            platform_programs[0] = PostShaderProgramCreate(2, dat_007662d8, dat_007666f0);
-            last_program = PostShaderProgramCreate(2, dat_00766820, dat_007666f0);
+            programs[6] = PostShaderProgramCreate(2, NuMainFilterVertexShader, NuMainFilterPixelShader);
+            programs[8] = PostShaderProgramCreate(2, NuMainFilterVertexShader2, NuMainFilterPixelShader);
+            platform_programs[0] = PostShaderProgramCreate(2, NuMainFilterVertexShader, NuMainFilterPlatformPixelShader);
+            last_program = PostShaderProgramCreate(2, NuMainFilterVertexShader2, NuMainFilterPlatformPixelShader);
             platform_uniforms[0] = 0x82;
             platform_uniforms[1] = 0x88;
             platform_uniforms[2] = 0x89;
             platform_uniforms[3] = 0x8a;
         } else {
-            programs[6] = PostShaderProgramCreate(2, dat_00766c38, dat_00766ed8);
-            programs[8] = PostShaderProgramCreate(2, dat_00767180, dat_00766ed8);
-            platform_programs[0] = PostShaderProgramCreate(2, dat_00766c38, dat_00767050);
-            last_program = PostShaderProgramCreate(2, dat_00767180, dat_00767050);
+            programs[6] = PostShaderProgramCreate(2, NuMainFilterVertexShaderSw, NuMainFilterPixelShaderSw);
+            programs[8] = PostShaderProgramCreate(2, NuMainFilterVertexShader2Sw, NuMainFilterPixelShaderSw);
+            platform_programs[0] = PostShaderProgramCreate(2, NuMainFilterVertexShaderSw, NuMainFilterPlatformPixelShaderSw);
+            last_program = PostShaderProgramCreate(2, NuMainFilterVertexShader2Sw, NuMainFilterPlatformPixelShaderSw);
             platform_uniforms[0] = 0;
             platform_uniforms[1] = 1;
             platform_uniforms[2] = 2;
@@ -7280,20 +7280,20 @@ extern "C" {
 
     void NuDeferredFilter::initResources() {
         NuDeferredFilterGen::initResources();
-        programs[0] = PostShaderProgramCreate(2, dat_00767598, dat_007676f0);
-        programs[1] = PostShaderProgramCreate(2, dat_00767598, dat_00767fc8);
-        programs[2] = PostShaderProgramCreate(2, dat_00768d20, dat_00768870);
-        programs[3] = PostShaderProgramCreate(2, dat_00768d20, dat_00768ae0);
+        programs[0] = PostShaderProgramCreate(2, NuDeferredFilterVertexShader, NuDeferredFilterPixelShader0);
+        programs[1] = PostShaderProgramCreate(2, NuDeferredFilterVertexShader, NuDeferredFilterPixelShader1);
+        programs[2] = PostShaderProgramCreate(2, NuDeferredFilterVertexShader2, NuDeferredFilterPixelShader2);
+        programs[3] = PostShaderProgramCreate(2, NuDeferredFilterVertexShader2, NuDeferredFilterPixelShader3);
     }
 
     void NuSpeedBlurFilter::initResources() {
         NuPostFilterGen::initResources();
         POST_SHADER_PROGRAM *program;
         if (PCDeviceHardwareVertexProcessingPC > 1) {
-            program = PostShaderProgramCreate(2, dat_00768de0, dat_007690b0);
+            program = PostShaderProgramCreate(2, NuSpeedBlurFilterVertexShader, NuSpeedBlurFilterPixelShader);
             platform_uniform = 0x80;
         } else {
-            program = PostShaderProgramCreate(2, dat_007692c0, dat_00769580);
+            program = PostShaderProgramCreate(2, NuSpeedBlurFilterVertexShaderSw, NuSpeedBlurFilterPixelShaderSw);
             platform_uniform = 0;
         }
         programs[0] = program;
@@ -7651,13 +7651,13 @@ extern "C" {
     void fun_00602e90(void) {
     }
 
-    void fun_00602f30(PC_GOBJ_REGISTRY_AUX *aux) {
+    void PcGobjRegistryAuxClearPayload(PC_GOBJ_REGISTRY_AUX *aux) {
         if (aux != NULL && aux->payload != NULL) {
             aux->payload = NULL;
         }
     }
 
-    void fun_006030d0(NUGOBJ *gobj) {
+    void NuGobjVisitGeoms(NUGOBJ *gobj) {
         for (NUGEOM *geom = gobj->geom; geom != NULL; geom = geom->next) {
         }
     }

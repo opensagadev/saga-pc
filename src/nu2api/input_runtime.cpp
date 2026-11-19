@@ -1468,7 +1468,7 @@ i32 PC_INPUT_RUNTIME::IsActionBound(i32 port, i32 action, i32 auxiliary, i32 ban
     return devices[port].bindings[action].kind != PC_BINDING_NONE;
 }
 
-extern "C" i32 fun_006d5d40(i32 port, i32 kind, i32 value) {
+extern "C" i32 PcInputHasBinding(i32 port, i32 kind, i32 value) {
     return nu_input_state->HasBinding(port, kind, value);
 }
 
@@ -1537,7 +1537,7 @@ extern "C" i32 PcInputPlayerOnKeyboardPort(i32 player) {
     return port >= 10 && port <= 13;
 }
 
-extern "C" void fun_006d5e30(void (*callback)(PC_INPUT_RUNTIME *)) {
+extern "C" void PcInputSetStateInitializedCallback(void (*callback)(PC_INPUT_RUNTIME *)) {
     PcInputStateInitializedCallback = callback;
 }
 

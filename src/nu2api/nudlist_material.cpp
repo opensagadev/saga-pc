@@ -214,7 +214,7 @@ static void PCDisplayHandlerBindPrograms(struct POST_SHADER_PROGRAM *programs) {
     }
 }
 
-extern "C" void fun_005fa110(char *dst, const char *src) {
+extern "C" void NuDlistCopyChar(char *dst, const char *src) {
     *dst = *src;
 }
 

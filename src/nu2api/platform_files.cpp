@@ -9,7 +9,7 @@
 
 extern "C" void fun_0050ed40(i32, i32, i32);
 
-extern "C" void fun_006dd400(void) {
+extern "C" void PcLoadPlatformOptions(void) {
     PcWindowOptions.Load();
     fun_0050ed40(0, 0, 0);
 }
@@ -31,7 +31,7 @@ extern "C" char *PcGetUserFolder(const char *unused_company, const char *unused_
 const char *PcCompanyName = "TTales";
 const char *PcProductName = "GameTitle";
 
-extern "C" i32 fun_006dd460(const char *name, const char *prefix, i32 use_user_folder, void *buffer, i32 size) {
+extern "C" i32 PcReadUserFile(const char *name, const char *prefix, i32 use_user_folder, void *buffer, i32 size) {
     char path[256];
     if (use_user_folder == 1) {
         strcpy(path, PcGetUserFolder(PcCompanyName, PcProductName));
@@ -54,7 +54,7 @@ extern "C" i32 fun_006dd460(const char *name, const char *prefix, i32 use_user_f
     return 1;
 }
 
-extern "C" i32 fun_006dd690(const char *name, const char *prefix, i32 use_user_folder, const void *buffer, i32 size) {
+extern "C" i32 PcWriteUserFile(const char *name, const char *prefix, i32 use_user_folder, const void *buffer, i32 size) {
     char path[256];
     if (use_user_folder == 1) {
         strcpy(path, PcGetUserFolder(PcCompanyName, PcProductName));

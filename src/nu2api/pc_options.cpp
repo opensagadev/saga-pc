@@ -422,7 +422,7 @@ void PC_DEVICE_BACKEND::SetRequestedWindowed(u8 windowed) {
     requested_windowed = windowed;
 }
 
-extern "C" i32 fun_006dbb10(void) {
+extern "C" i32 PcOptionsGetHardwareVertexProcessing(void) {
     return PCDeviceHardwareVertexProcessingPC;
 }
 

@@ -529,10 +529,10 @@ extern "C" {
 #ifdef __cplusplus
         FRAME_NATIVE_TEXTURE *Allocate();
         FRAME_NATIVE_TEXTURE_POOL *ResetTextures();
-        i32 fun_00605170(FRAME_NATIVE_TEXTURE *record);
+        i32 ContainsRecord(FRAME_NATIVE_TEXTURE *record);
         void SetTextureOccupied(i32 index, bool set);
         i32 IsTextureOccupied(i32 index);
-        void fun_0060a010(FRAME_NATIVE_TEXTURE *record);
+        void ReleaseRecord(FRAME_NATIVE_TEXTURE *record);
 #endif
     } FRAME_NATIVE_TEXTURE_POOL;
 

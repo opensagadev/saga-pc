@@ -57,7 +57,7 @@ FRAME_NATIVE_TEXTURE_POOL *FRAME_NATIVE_TEXTURE_POOL::ResetTextures() {
     return this;
 }
 
-i32 FRAME_NATIVE_TEXTURE_POOL::fun_00605170(FRAME_NATIVE_TEXTURE *record) {
+i32 FRAME_NATIVE_TEXTURE_POOL::ContainsRecord(FRAME_NATIVE_TEXTURE *record) {
     u32 index = record - records;
     return index <= 15;
 }
@@ -92,7 +92,7 @@ void POST_SHADER_PROGRAM_POOL::SetProgramOccupied(i32 index, bool set) {
     }
 }
 
-void FRAME_NATIVE_TEXTURE_POOL::fun_0060a010(FRAME_NATIVE_TEXTURE *record) {
+void FRAME_NATIVE_TEXTURE_POOL::ReleaseRecord(FRAME_NATIVE_TEXTURE *record) {
     i32 index = record - records;
     occupied[index >> 3] &= ~(1 << (index & 7));
     cursor = index;

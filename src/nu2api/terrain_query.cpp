@@ -2388,7 +2388,7 @@ extern "C" void NewTerrAxisFreedom(TERRAIN_AXIS_FREEDOM_SHAPE *shape, NUVEC *pos
     TerrainSideClamp(&axis, position);
 }
 
-extern "C" i32 fun_0067bf00(i32 instance) {
+extern "C" i32 TerrainHasPlatformForInstance(i32 instance) {
     TERRAIN_SET *terrain = CurrentTerrain;
     i32 index = -1;
     i32 i;
@@ -2404,7 +2404,7 @@ extern "C" i32 fun_0067bf00(i32 instance) {
     return 1;
 }
 
-extern "C" void fun_0067bee0(NUVEC *v) {
+extern "C" void TerrainVecZero(NUVEC *v) {
     v->x = 0.0f;
     v->y = 0.0f;
     v->z = 0.0f;

@@ -3668,7 +3668,7 @@ void eduiInitMaterials(void) {
 void eduiSetRenderPlane(i32 plane) {
     i32 i;
     for (i = 0; i < 4; i++) {
-        fun_006017a0(uimtls[i], plane);
+        NuMtlSetRenderPlaneUi(uimtls[i], plane);
     }
 }
 

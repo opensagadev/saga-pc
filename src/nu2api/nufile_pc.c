@@ -90,7 +90,7 @@ i32 DEV_FormatName(NUFILE_DEVICE *device, char *formatted_name, char *path, i32 
     return 0;
 }
 
-i32 fun_004ff280(NUFILE_DEVICE *device) {
+i32 DEVHOST_InterrogateAlt(NUFILE_DEVICE *device) {
     device->status = 1;
     return 1;
 }
@@ -104,7 +104,7 @@ NUFILE_DEVICE host_device = {
     0, 0, 0x0e, 0, '\\', 0x400, -1, -1, -1, {0}, {0}, 4, 6, {0}, "Host pc filesystem", {0}, {0}, {0}, DEV_FormatName, DEVHOST_Interrogate,
 };
 
-i32 fun_004ff2a0(NUFILE_DEVICE *device) {
+i32 DEVHOST_InterrogateAlt2(NUFILE_DEVICE *device) {
     device->status = 1;
     return 1;
 }

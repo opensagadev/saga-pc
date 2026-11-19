@@ -109,7 +109,7 @@ extern "C" {
     void edpartEmitMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
     void edpartInstanceMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
     void edpartInstanceSettingsMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
-    extern const char dat_0076b274[4];
+    extern const char edpartSoundModeOffText[4];
     extern i32 edpart_copy_source[8];
     extern i32 edpart_copy_source_count;
     extern i32 edpart_part_list;
@@ -118,7 +118,7 @@ extern "C" {
     extern NUVEC edpart_copy_source_vec;
     void edpartChangeMaxLifeMenu(struct eduimenu_s *menu, struct eduiitem_s *unused1, u32 unused2);
     void edpartInstanceOrientMenu(struct eduimenu_s *menu, struct eduiitem_s *unused1, u32 unused2);
-    extern const char dat_0076b274[4];
+    extern const char edpartSoundModeOffText[4];
     extern struct numtl_s *edpart_mtl;
     extern i8 edpart_effect_list;
     extern i32 edpart_refrotz;

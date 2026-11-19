@@ -284,7 +284,7 @@ struct ShaderCompilerDictionary {                  // size 0x9a4
     ShaderSourceNode *FindASTUniform(const char *);
     void SetOutputStage(i32 stage);
     void ResetScratch();
-    void fun_00748840();
+    void ResetDefinitionExpansion();
     void EmitType(ShaderCompilerBufferAllocator *);
     void EmitRegister(ShaderCompilerBufferAllocator *);
     void EmitVertexInput(ShaderCompilerBufferAllocator *);
@@ -292,8 +292,8 @@ struct ShaderCompilerDictionary {                  // size 0x9a4
     void EmitProgram(ShaderCompilerBufferAllocator *);
     void AddASTDefinition(ShaderSourceNode *);
     void SetForceMode(bool force);
-    void fun_00746940(ShaderConditionNode *node, char *text);
-    void fun_00746bf0(const char *name);
+    void AppendConditionText(ShaderConditionNode *node, char *text);
+    void RemoveProgram(const char *name);
 };
 
 #endif

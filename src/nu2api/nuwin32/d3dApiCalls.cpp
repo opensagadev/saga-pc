@@ -136,7 +136,7 @@ extern "C" void PCDeviceSetMode(u32 width, u32 height, u32 refresh, i32 windowed
     PCDeviceBackend.CreateOrResetDevice(reposition_window);
 }
 
-extern "C" void fun_006df1e0(u32 width, u32 height, u32 refresh) {
+extern "C" void PcRequestDisplayMode(u32 width, u32 height, u32 refresh) {
     PCDeviceBackend.RequestDisplayMode(width, height, refresh);
 }
 
@@ -224,7 +224,7 @@ extern "C" {
         return PCFrameLoadingYieldEnabledPC;
     }
 
-    void fun_006df340(u32 colour, f32 x, f32 y, i32 align, const char *format, ...) {
+    void PcDrawDebugTextf(u32 colour, f32 x, f32 y, i32 align, const char *format, ...) {
         va_list args;
         f32 width;
         va_start(args, format);
@@ -296,21 +296,21 @@ extern "C" {
         } else {
             fps = 0.0f;
         }
-        fun_006df340(0x80008080, x, y, 0x10, "FPS %3.1f", fps);
+        PcDrawDebugTextf(0x80008080, x, y, 0x10, "FPS %3.1f", fps);
         y += line_height;
-        fun_006df340(0x80008080, x, y, 0x10, "Scene Gobj drawn %d of %d", PcFrameStats.scene_gobjs_drawn, PcFrameStats.scene_gobjs);
+        PcDrawDebugTextf(0x80008080, x, y, 0x10, "Scene Gobj drawn %d of %d", PcFrameStats.scene_gobjs_drawn, PcFrameStats.scene_gobjs);
         y += line_height;
-        fun_006df340(0x80008080, x, y, 0x10, "Opaque Geoms drawn %d", PcFrameStats.opaque_geoms_drawn);
+        PcDrawDebugTextf(0x80008080, x, y, 0x10, "Opaque Geoms drawn %d", PcFrameStats.opaque_geoms_drawn);
         y += line_height;
-        fun_006df340(0x80008080, x, y, 0x10, "Trans Geoms drawn %d", PcFrameStats.trans_geoms_drawn);
+        PcDrawDebugTextf(0x80008080, x, y, 0x10, "Trans Geoms drawn %d", PcFrameStats.trans_geoms_drawn);
         y += line_height;
-        fun_006df340(0x80008080, x, y, 0x10, "Total 3d geoms drawn %d", PcFrameStats.geoms_drawn);
+        PcDrawDebugTextf(0x80008080, x, y, 0x10, "Total 3d geoms drawn %d", PcFrameStats.geoms_drawn);
         y += line_height;
-        fun_006df340(0x80008080, x, y, 0x10, "Total DIP calls %d", PcFrameStats.indexed_primitive_calls);
+        PcDrawDebugTextf(0x80008080, x, y, 0x10, "Total DIP calls %d", PcFrameStats.indexed_primitive_calls);
         y += line_height;
-        fun_006df340(0x80008080, x, y, 0x10, "Total DP calls %d", PcFrameStats.primitive_calls);
+        PcDrawDebugTextf(0x80008080, x, y, 0x10, "Total DP calls %d", PcFrameStats.primitive_calls);
         y += line_height;
-        fun_006df340(0x80008080, x, y, 0x10, "Blank 3d Gobjs drawn %d", PcFrameStats.blank_gobjs_drawn);
+        PcDrawDebugTextf(0x80008080, x, y, 0x10, "Blank 3d Gobjs drawn %d", PcFrameStats.blank_gobjs_drawn);
         NuQFntPopPrintMode();
         NuQFntPopCoordinateSystem();
         PcFrameStatsReset();
@@ -366,7 +366,7 @@ extern "C" void PCDeviceResetSamplerDefaults(void) {
     } while (stage != PCDeviceBackend.caps.sampler_count);
 }
 
-extern "C" void fun_006dfa70(f32 gamma) {
+extern "C" void PcSetGammaPower(f32 gamma) {
     u16 ramp[3][256];
     i32 i;
     for (i = 0; i != 256; ++i) {
@@ -383,7 +383,7 @@ extern "C" void fun_006dfa70(f32 gamma) {
     PCDeviceSetGammaRamp(ramp);
 }
 
-extern "C" void fun_006dfb30(f32 gamma) {
+extern "C" void PcSetGammaContrast(f32 gamma) {
     u16 ramp[3][256];
     i32 i;
     for (i = 0; i != 256; ++i) {
@@ -532,7 +532,7 @@ extern "C" void PCDebugDrawFrameStatsDefault(void) {
     PCDebugDrawFrameStats(0.0f, 160.0f);
 }
 
-extern "C" void fun_006dfec0(u32 width, u32 height) {
+extern "C" void PcCaptureScreenshot(u32 width, u32 height) {
     PcFreeApiCallBuffer();
     PcApiCallBufferCount = PCDeviceBackend.CaptureScreenshot(width, height, &PcApiCallBuffer);
 }

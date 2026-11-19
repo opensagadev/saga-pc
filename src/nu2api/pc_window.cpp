@@ -256,7 +256,7 @@ extern "C" void ParsePlatformArguments(char *command_line) {
     }
 }
 
-extern "C" BOOL fun_006dd0e0(void) {
+extern "C" BOOL PcIsWindowsVistaOrLater(void) {
     OSVERSIONINFOEXA info;
     DWORDLONG condition;
     memset(&info, 0, sizeof(info));
@@ -534,7 +534,7 @@ extern "C" void PcCreateCursorMaterial(void) {
     NuMtlUpdate(PcCursorMaterial);
 }
 
-extern "C" void fun_006ddfa0(f32 size) {
+extern "C" void PcDrawMouseCursor(f32 size) {
     f32 x = PcInputMouseX();
     f32 y = PcInputMouseY();
     f32 width;

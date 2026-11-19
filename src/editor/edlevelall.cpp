@@ -1505,7 +1505,7 @@ void ClassEditor::SetSphereColour(i32 value) {
 }
 
 i32 ClassEditor::IsCurrentObject(ClassObject &object) {
-    return current_object.fun_006b89f0(object);
+    return current_object.IsSameObject(object);
 }
 
 ClassObjectList &ClassEditor::SelectedObjects() {
@@ -3104,7 +3104,7 @@ void cbEdLevelEditorSelect(eduimenu_s *, eduiitem_s *item, u32) {
     edLevelDestroyActiveMenu = 1;
 }
 
-extern "C" void fun_006bc990(void) {
+extern "C" void edLevelCloseActiveMenu(void) {
     eduiSetCameraEnabled(1);
     if (edLevelActiveMenu != NULL) {
         if (edLevelActiveMenu->parent != NULL) {
@@ -11172,7 +11172,7 @@ extern "C" void fun_006d3080(void) {
 extern "C" void fun_006d3090(void) {
 }
 
-extern "C" i32 fun_006d3110(void) {
+extern "C" i32 edLevelGetHardwareVertexProcessing(void) {
     return PCDeviceHardwareVertexProcessingPC;
 }
 

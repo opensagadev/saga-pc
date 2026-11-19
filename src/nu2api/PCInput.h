@@ -582,7 +582,7 @@ struct PC_INPUT_RUNTIME {          // size 0x68b4
     void GetDeviceCounts(i32 port, i32 *buttons, i32 *axes, i32 *povs);
     i32 FindConfigRecord(PC_INPUT_CONFIG *records, i32 count, PC_INPUT_CONFIG *config);
     i32 ConfigChecksumStep(i32 previous, i32 value);
-    PC_INPUT_CONFIG *fun_006d4500(u8 mask, const char *name);
+    PC_INPUT_CONFIG *FindConfigByName(u8 mask, const char *name);
     void SetPreferredKey(i32 key);
     i32 fun_006d4790(i32);
     i32 IsActionBound(i32 port, i32 action, i32 auxiliary, i32 bank);

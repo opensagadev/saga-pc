@@ -86,7 +86,7 @@ void *TerrainGetCur(void) {
     return CurrentTerrain;
 }
 
-void fun_0066cbd0(void (*function)(void *argument), void *argument) {
+void PlatCallbackAdd(void (*function)(void *argument), void *argument) {
     if (PlatCodeCallback < 8) {
         PlatCallback[PlatCodeCallback].function = function;
         PlatCallback[PlatCodeCallback].argument = argument;
@@ -94,7 +94,7 @@ void fun_0066cbd0(void (*function)(void *argument), void *argument) {
     }
 }
 
-void fun_0066cc00(void (*function)(void *argument)) {
+void PlatCallbackRemove(void (*function)(void *argument)) {
     i32 i;
     for (i = 0; i < PlatCodeCallback; ++i) {
         if (PlatCallback[i].function == function) {
@@ -3378,7 +3378,8 @@ i32 TerrainSkinCreateInfo(NUMTX *matrix, const TERRAIN_SKIN_BLEND *blend, const 
     return CurrentTerrain->group_count - 1;
 }
 
-i32 fun_006816a0(NUMTX *matrix, const TERRAIN_SKIN_BLEND *blend, const NUVEC4 *sample_rows, f32 scale, i32 source_scene_index, i16 mode) {
+i32 TerrainSkinCreateInfoCurrent(NUMTX *matrix, const TERRAIN_SKIN_BLEND *blend, const NUVEC4 *sample_rows, f32 scale,
+                                 i32 source_scene_index, i16 mode) {
     return TerrainSkinCreateInfo(matrix, blend, sample_rows, scale, source_scene_index, mode, CurrentTerrain);
 }
 

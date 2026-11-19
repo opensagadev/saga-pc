@@ -17,7 +17,7 @@ extern "C" {
     }
 }
 
-i32 PC_SHADER_MATERIAL_FILTER::fun_007442d0() const {
+i32 PC_SHADER_MATERIAL_FILTER::HasVertexRaw() const {
     return (descriptor->vertex_format & 0x40000) != 0;
 }
 
@@ -29,11 +29,11 @@ bool PC_SHADER_MATERIAL_FILTER::HasVertexSkinAlt() const {
     return (descriptor->vertex_format & 0x30000) != 0 && (descriptor->vertex_format & 0x400000) != 0;
 }
 
-i32 PC_SHADER_MATERIAL_FILTER::fun_00744320() const {
+i32 PC_SHADER_MATERIAL_FILTER::HasVertexGroup() const {
     return (descriptor->vertex_format & 0x80000) != 0;
 }
 
-i32 PC_SHADER_MATERIAL_FILTER::fun_00744330() const {
+i32 PC_SHADER_MATERIAL_FILTER::HasWaterCoefAmplitude() const {
     return (descriptor->vertex_format & 0x1000000) != 0;
 }
 
@@ -41,7 +41,7 @@ bool PC_SHADER_MATERIAL_FILTER::HasShadowSet() const {
     return descriptor->shadow_set != 0;
 }
 
-i32 PC_SHADER_MATERIAL_FILTER::fun_00744350(i32 layer) const {
+i32 PC_SHADER_MATERIAL_FILTER::HasShadowSetLayer(i32 layer) const {
     if (layer == 0) {
         return descriptor->shadow_set & 1;
     }
@@ -52,18 +52,18 @@ i32 PC_SHADER_MATERIAL_FILTER::IsBaseVariant() const {
     return variant == 0;
 }
 
-i32 PC_SHADER_MATERIAL_FILTER::fun_00744380() const {
+i32 PC_SHADER_MATERIAL_FILTER::HasVertexPlant() const {
     return (descriptor->vertex_format & 0x2000000) != 0;
 }
 
-i32 PC_SHADER_MATERIAL_FILTER::fun_00744390() const {
+i32 PC_SHADER_MATERIAL_FILTER::HasPrelightFx() const {
     if (variant != 0) {
         return 0;
     }
     return (descriptor->layer_flags & PC_SHADER_LAYER_PRELIGHT_FX) != 0;
 }
 
-i32 PC_SHADER_MATERIAL_FILTER::fun_007443b0() const {
+i32 PC_SHADER_MATERIAL_FILTER::HasGlowOutput() const {
     if (variant != 0) {
         return 0;
     }

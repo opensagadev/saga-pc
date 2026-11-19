@@ -658,7 +658,7 @@ void ShaderCompilerParser::SetIncludeDirectories(const char *paths) {
     strcpy(include_directories, paths);
 }
 
-extern "C" bool fun_0074b2f0(ShaderCompilerBufferAllocator *line, i32 *position) {
+extern "C" bool ShaderLineIsDirective(ShaderCompilerBufferAllocator *line, i32 *position) {
     for (i32 i = 0; i < line->length; ++i) {
         u8 c = line->data[i];
         if (c != ' ' && c != '\t') {

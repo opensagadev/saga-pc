@@ -115,7 +115,7 @@ void ShaderCompilerDictionary::ResetScratch() {
     program_count = 0;
 }
 
-void ShaderCompilerDictionary::fun_00748840() {
+void ShaderCompilerDictionary::ResetDefinitionExpansion() {
     for (i32 i = 0; i < definition_count; ++i) {
         definitions[i]->expansion_state = 0;
     }

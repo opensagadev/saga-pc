@@ -230,7 +230,7 @@ extern "C" {
     void NuMtlRegisterForOverride(NUMTL *, u32 *, i32);
     NUMTL *NuMtlFindVariantMtl(NUMTL *, NUMTL *);
 
-    void fun_006017a0(NUMTL *, i32);
+    void NuMtlSetRenderPlaneUi(NUMTL *, i32);
     void NuMtlSetRenderPlane(NUMTL *, i32);
     void NuMtlUpdatePS(NUMTL *);
 

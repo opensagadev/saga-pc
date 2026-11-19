@@ -4,7 +4,7 @@
 #include "nu2api/nuprim_gen.h"
 #include "nu2api/nustencilshadows_PC.h"
 
-extern i32 dat_009739d4;
+extern i32 NuWindDlistValue;
 
 const f64 nu_wind_phase_scale = 1.0 / 256.0;
 
@@ -19,10 +19,10 @@ void NuWindAnimate(NUWIND *wind, f32 frame_time) {
     }
 }
 
-i32 dat_009739d4 = 0;
+i32 NuWindDlistValue = 0;
 
 void NuWindSetDlistValue(i32 value) {
-    dat_009739d4 = value;
+    NuWindDlistValue = value;
 }
 
 VARIPTR *NuWindDlistCursor(void) {

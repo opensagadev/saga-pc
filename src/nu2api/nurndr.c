@@ -559,7 +559,7 @@ void NuRndrAxisArrowsMtx(NUMTX *matrix, f32 length, NUMTL *material) {
     NuPrim3DEnd();
 }
 
-void fun_005c2050(void) {
+void NuPrimPopCoordinateSystem3(void) {
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
 }
 

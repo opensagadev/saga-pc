@@ -16,7 +16,7 @@
 extern "C" void NuSound3GetStreamInfo(i32 stream_index, void *info) {
 }
 
-extern "C" i32 fun_00698a50(i32 stream, i32 alternate, char *text, i32 size) {
+extern "C" i32 NuStreamGetStatusText(i32 stream, i32 alternate, char *text, i32 size) {
     i32 status;
     if (alternate) {
         stream += 0x18;

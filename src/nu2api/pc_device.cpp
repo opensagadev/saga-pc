@@ -389,7 +389,7 @@ i32 PC_DEVICE_BACKEND::GetDeviceType() {
     return caps.device_type;
 }
 
-extern "C" i32 fun_006e1910(void) {
+extern "C" i32 PcDeviceGetHardwareVertexProcessing(void) {
     return PCDeviceHardwareVertexProcessingPC;
 }
 

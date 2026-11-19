@@ -385,12 +385,12 @@ i32 PC_SHADER_MATERIAL_FILTER::HasSelector1() const {
     return (descriptor->selectors & 2) != 0;
 }
 
-extern "C" i32 fun_007454b0(void) {
+extern "C" i32 NuShaderManagerGetHardwareVertexProcessing(void) {
     return PCDeviceHardwareVertexProcessingPC;
 }
 
-void NuShaderObject::fun_00745470(const u32 *key, i32 index, const char *vertex_source, i32 vertex_length, const char *pixel_source,
-                                  i32 pixel_length, i32 version) {
+void NuShaderObject::InitHLSL(const u32 *key, i32 index, const char *vertex_source, i32 vertex_length, const char *pixel_source,
+                              i32 pixel_length, i32 version) {
     PCShaderObjectInitHLSLPc(this, key, index, vertex_source, vertex_length, pixel_source, pixel_length, version);
 }
 
@@ -524,8 +524,8 @@ void ShaderManagerHLSLPc::AdaptDescriptor(const NUSHADERMTLDESC *input, const NU
 }
 
 /* Builds (or rebuilds in place) the shader object for a precompiled key. */
-void ShaderManagerHLSL::fun_007459a0(i32 flags, i32 selector, const char *vertex_text, i32 vertex_length, const char *pixel_text,
-                                     i32 pixel_length) {
+void ShaderManagerHLSL::BuildPrecompiledShader(i32 flags, i32 selector, const char *vertex_text, i32 vertex_length, const char *pixel_text,
+                                               i32 pixel_length) {
     u32 key = 0;
     NuShaderObjectKeyGenerate4(&key, flags, selector);
     NuShaderObject *shader = NULL;

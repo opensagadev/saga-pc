@@ -210,15 +210,15 @@ struct PC_SHADER_MATERIAL_FILTER {
     bool HasEnvironmentTexture() const;
     i32 HasSurfaceLayerAbove() const;
     i32 HasSurfaceLayerAtOrBelow() const;
-    i32 fun_007442d0() const;
-    i32 fun_00744320() const;
-    i32 fun_00744330() const;
+    i32 HasVertexRaw() const;
+    i32 HasVertexGroup() const;
+    i32 HasWaterCoefAmplitude() const;
     bool HasShadowSet() const;
-    i32 fun_00744350(i32 layer) const;
+    i32 HasShadowSetLayer(i32 layer) const;
     i32 IsBaseVariant() const;
-    i32 fun_00744380() const;
-    i32 fun_00744390() const;
-    i32 fun_007443b0() const;
+    i32 HasVertexPlant() const;
+    i32 HasPrelightFx() const;
+    i32 HasGlowOutput() const;
 
     // Inline forms of the layer and type predicates (the shader key generator inlines these; the out-of-line ones
     // above reread the descriptor the same way).
@@ -273,15 +273,15 @@ class NuShaderObject { // size 0x4d8
     struct PC_TEXTURE_RESOURCE *pixel_shader;     // 0x4d0
     u32 stage_flags;                              // 0x4d4
 
-    void fun_00741250();
-    bool fun_00741260() const;
-    void fun_00741270();
-    void fun_007412a0();
-    void fun_007412b0();
-    i32 fun_007412c0() const;
-    u32 *fun_007412d0();
-    void fun_00745470(const u32 *key, i32 index, const char *vertex_source, i32 vertex_length, const char *pixel_source, i32 pixel_length,
-                      i32 version);
+    void ShaderUnInit();
+    bool HasMarker() const;
+    void BindShaders();
+    void IncRefCount();
+    void DecRefCount();
+    i32 GetRefCount() const;
+    u32 *GetKeyAddress();
+    void InitHLSL(const u32 *key, i32 index, const char *vertex_source, i32 vertex_length, const char *pixel_source, i32 pixel_length,
+                  i32 version);
     i32 GetMarker();
 };
 

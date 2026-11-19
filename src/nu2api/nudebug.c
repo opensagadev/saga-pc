@@ -44,7 +44,7 @@ void NuDebugToggle(void) {
         NuDebugDisabled = 1;
         enabled = 0;
     }
-    dat_00806b94 = enabled;
+    NuDebugGeometrySortOutput = enabled;
     dat_00806b90 = enabled;
     dat_00806b8c = enabled;
     dat_00806b88 = enabled;

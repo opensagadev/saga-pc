@@ -1230,7 +1230,7 @@ void edpartCancelSoundControlMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edpart_soundcontrol_menu = NULL;
 }
 
-const char dat_0076b274[4] = "Off";
+const char edpartSoundModeOffText[4] = "Off";
 
 void edpartSoundControlMenu(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type != NULL) {
@@ -1238,7 +1238,7 @@ void edpartSoundControlMenu(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
         if (edpart_soundcontrol_menu != NULL) {
             eduiMenuAddItem(edpart_soundcontrol_menu,
                             eduiItemCheckCreate((item->data << 16) + 0, edblack, edpart_nearest_type->sound_modes[item->data] == 0, 1,
-                                                edpartSetSoundControl, ((char *)dat_0076b274)));
+                                                edpartSetSoundControl, ((char *)edpartSoundModeOffText)));
             if (edui_last_item->highlighted) {
                 edpart_soundcontrol_menu->selected = edui_last_item;
             }

@@ -5,8 +5,8 @@
 #include "nu2api/nufile/nufile.h"
 #include "nu2api/numath/numtx.h"
 
-// nu3d_platform.cpp defines fun_00601de0 as an empty i32 (void) leaf; this unit calls it as an allocator.
-void *fun_00601de0(i32 size, i32 alignment);
+// nu3d_platform.cpp defines NuAllocAlignedStub as an empty i32 (void) leaf; this unit calls it as an allocator.
+void *NuAllocAlignedStub(i32 size, i32 alignment);
 
 STATE_ANIM *StateAnimFixPtrs(STATE_ANIM *state, i32 delta) {
     state = state ? (STATE_ANIM *)((u32)state + delta) : NULL;
@@ -71,7 +71,7 @@ void ReadInstAnimBlockDlist(NUFILE file, NUGSCN *scene) {
         }
     }
     if (scene->num_instance_animations != 0) {
-        scene->instance_animation_matrices = fun_00601de0(scene->num_instance_animations * sizeof(NUMTX), 0x10);
+        scene->instance_animation_matrices = NuAllocAlignedStub(scene->num_instance_animations * sizeof(NUMTX), 0x10);
     }
 }
 
@@ -107,6 +107,6 @@ void ReadInstAnimBlock(NUFILE file, NUGSCN *scene) {
         }
     }
     if (scene->num_instance_animations != 0) {
-        scene->instance_animation_matrices = fun_00601de0(scene->num_instance_animations * sizeof(NUMTX), 0x10);
+        scene->instance_animation_matrices = NuAllocAlignedStub(scene->num_instance_animations * sizeof(NUMTX), 0x10);
     }
 }

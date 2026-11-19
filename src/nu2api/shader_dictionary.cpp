@@ -716,17 +716,17 @@ void ShaderRegisterBlock::SetRegisterBlock(const char *block_name, i32 count) {
     register_count = count;
 }
 
-void ShaderCompilerDictionary::fun_00746940(ShaderConditionNode *node, char *text) {
+void ShaderCompilerDictionary::AppendConditionText(ShaderConditionNode *node, char *text) {
     if (node->left != NULL) {
-        fun_00746940(node->left, text);
+        AppendConditionText(node->left, text);
     }
     strcat(text, node->token);
     if (node->right != NULL) {
-        fun_00746940(node->right, text);
+        AppendConditionText(node->right, text);
     }
 }
 
-void ShaderCompilerDictionary::fun_00746bf0(const char *name) {
+void ShaderCompilerDictionary::RemoveProgram(const char *name) {
     i32 i;
     for (i = 0; i < program_count; ++i) {
         if (strcmp(programs[i]->name, name) == 0) {

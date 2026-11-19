@@ -84,15 +84,15 @@ extern "C" void fun_00741180() {
 extern "C" void fun_00741200() {
 }
 
-void NuShaderObject::fun_00741250() {
+void NuShaderObject::ShaderUnInit() {
     PCShaderNativeUnInit(this);
 }
 
-bool NuShaderObject::fun_00741260() const {
+bool NuShaderObject::HasMarker() const {
     return marker >= 0;
 }
 
-void NuShaderObject::fun_00741270() {
+void NuShaderObject::BindShaders() {
     PCDeviceSetVertexShader(vertex_shader);
     PCDeviceSetPixelShader(pixel_shader);
 }
@@ -106,18 +106,18 @@ VirtualStackAllocator::~VirtualStackAllocator() {
     }
 }
 
-void NuShaderObject::fun_007412a0() {
+void NuShaderObject::IncRefCount() {
     ref_count++;
 }
 
-void NuShaderObject::fun_007412b0() {
+void NuShaderObject::DecRefCount() {
     ref_count--;
 }
 
-i32 NuShaderObject::fun_007412c0() const {
+i32 NuShaderObject::GetRefCount() const {
     return ref_count;
 }
 
-u32 *NuShaderObject::fun_007412d0() {
+u32 *NuShaderObject::GetKeyAddress() {
     return &key;
 }

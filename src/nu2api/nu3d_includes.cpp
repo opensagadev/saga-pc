@@ -10880,7 +10880,7 @@ extern "C" {
     i32 dat_00806b88 = 1;
     i32 dat_00806b8c = 1;
     i32 dat_00806b90 = 1;
-    i32 dat_00806b94 = 1;
+    i32 NuDebugGeometrySortOutput = 1;
     f32 nuspecial_const_alpha = 1.0f;
     /* Static-shadow frustum topology and mutable extrusion distance. */
     i32 PostShadowCubeFaceIndices[6][4] = {{0, 1, 2, 3}, {3, 2, 6, 7}, {7, 6, 5, 4}, {4, 5, 1, 0}, {1, 5, 6, 2}, {4, 0, 3, 7}};
@@ -11248,7 +11248,7 @@ extern "C" {
         NuDisplayHandlerPixelShaderCache = NULL;
     }
 
-    f32 fun_005c27e0(f32 value) {
+    f32 RenderPostLog2(f32 value) {
         return RenderPostLog(value) * 3.321928024291992;
     }
 }
@@ -13650,12 +13650,12 @@ extern "C" {
         }
     }
 
-    void *fun_005e5680(void) {
-        return dat_00971ad8;
+    void *NuTexGetScratchBlock(void) {
+        return NuTexScratchBlock;
     }
 
-    void fun_005e5690(VARIPTR *buffer) {
-        dat_00971ad8 = reinterpret_cast<void *>((buffer->addr + 15) & ~15);
+    void NuTexReserveScratchBlock(VARIPTR *buffer) {
+        NuTexScratchBlock = reinterpret_cast<void *>((buffer->addr + 15) & ~15);
         buffer->addr = ((buffer->addr + 15) & ~15) + 0x40;
     }
 
@@ -14611,7 +14611,7 @@ extern "C" {
     f32 zx = 0;
     void *PCDisplayClipSet = 0;
     i32 PCDisplayClipGroupIndex = 0;
-    void *dat_00971ad8 = 0;
+    void *NuTexScratchBlock = 0;
     i16 NuPortalCameraRoom = 0;
     NUMTX VisibilityPrimaryAbsoluteMatrix = {0};
     NUCAMERA NuPortalRestoreCamera = {0};
@@ -15478,9 +15478,9 @@ extern "C" {
         }
     }
 
-    void fun_005cfea0(nuhspecial_s *special) {
+    void NuSpecialVisitGobjGeoms(nuhspecial_s *special) {
         if (special->special != NULL) {
-            fun_006030d0((special->scene->objects[NUSPECIAL_LEGACY_OF(special)->instance->object_index]));
+            NuGobjVisitGeoms((special->scene->objects[NUSPECIAL_LEGACY_OF(special)->instance->object_index]));
         }
     }
 
@@ -16373,15 +16373,15 @@ static LightObjectPool<NUDISPLAYLISTITEM> dlistItemPool;
 static LightObjectPool<PC_SPECIAL_SHADOW_LIGHT> dynamicLightPool;
 static LightObjectPool<NURNDRLIBSTATE> rndrStatePool;
 
-extern "C" void *fun_005f5a10(size_t, LightObjectPool<NUDISPLAYLISTITEM> *pool) {
+extern "C" void *LightObjectPoolNewDisplayListItem(size_t, LightObjectPool<NUDISPLAYLISTITEM> *pool) {
     return pool->allocate();
 }
 
-extern "C" void *fun_005f5a20(size_t, LightObjectPool<NURNDRLIBSTATE> *pool) {
+extern "C" void *LightObjectPoolNewRndrLibState(size_t, LightObjectPool<NURNDRLIBSTATE> *pool) {
     return pool->allocate();
 }
 
-extern "C" void *fun_005f5a30(size_t, LightObjectPool<PC_SPECIAL_SHADOW_LIGHT> *pool) {
+extern "C" void *LightObjectPoolNewSpecialShadowLight(size_t, LightObjectPool<PC_SPECIAL_SHADOW_LIGHT> *pool) {
     return pool->allocate();
 }
 
@@ -17508,7 +17508,7 @@ extern "C" void NuDynamicLightTestShadowExtrusionsSpecial(PCFrustumClipSet *ligh
     light->TestSpecial(special, matrix);
 }
 
-extern "C" i32 fun_005e8870(PCFrustumClipSet *light, const NUVEC *center, const NUVEC *extent, i32 group_index) {
+extern "C" i32 PCFrustumClipSetTestCenterExtentC(PCFrustumClipSet *light, const NUVEC *center, const NUVEC *extent, i32 group_index) {
     return light->TestCenterExtent(center, extent, group_index) ? 1 : 0;
 }
 

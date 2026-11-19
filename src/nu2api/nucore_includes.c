@@ -4393,7 +4393,7 @@ typedef struct NUMEMHIGHBLOCK {  // size 0x10
 } NUMEMHIGHBLOCK;
 
 static NUMEMHIGHBLOCK *freep = 0;
-i32 dat_0091eeec = 0;
+i32 NuStrMatchCount = 0;
 NUSTRINGBANK StringBank[3] = {0};
 i16 CurrentStringBank = 0;
 u8 UseCorrectDeadZoning = 0;
@@ -5355,7 +5355,7 @@ char *NuStrIStr(char *text, char *substring) {
 
 void NuStrCountMatch(const char *a, const char *b) {
     if (NuStrCmp(a, b) == 0) {
-        ++dat_0091eeec;
+        ++NuStrMatchCount;
     }
 }
 

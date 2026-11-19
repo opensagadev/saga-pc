@@ -1,0 +1,103 @@
+old,new,evidence
+dat_00784dfc,PcDiGuidPov,DirectInput GUID_POV (a36d02f2-c9f3-11cf-bfc7-444553540000)
+dat_00784e0c,PcDiGuidKey,DirectInput GUID_Key (55728220-d33c-11cf-bfc7-444553540000)
+dat_00784e2c,PcDiGuidSlider,DirectInput GUID_Slider (a36d02e4-...)
+dat_00784e3c,PcDiGuidRzAxis,DirectInput GUID_RzAxis (a36d02e3-...)
+dat_00784e4c,PcDiGuidRyAxis,DirectInput GUID_RyAxis (a36d02f5-...)
+dat_00784e5c,PcDiGuidRxAxis,DirectInput GUID_RxAxis (a36d02f4-...)
+dat_00784e6c,PcDiGuidZAxis,DirectInput GUID_ZAxis (a36d02e2-...)
+dat_00784e7c,PcDiGuidYAxis,DirectInput GUID_YAxis (a36d02e1-...)
+dat_00784e8c,PcDiGuidXAxis,DirectInput GUID_XAxis (a36d02e0-...)
+dat_007662d8,NuMainFilterVertexShader,vertex tokens of NuMainFilter programs[6] and platform_programs[0] (hardware vertex processing)
+dat_00766820,NuMainFilterVertexShader2,vertex tokens of NuMainFilter programs[8] and platform_programs[1] (hardware vertex processing)
+dat_00766578,NuMainFilterPixelShader,pixel tokens of NuMainFilter programs[6] and programs[8] (hardware vertex processing)
+dat_007666f0,NuMainFilterPlatformPixelShader,pixel tokens of NuMainFilter platform_programs (hardware vertex processing)
+dat_00766c38,NuMainFilterVertexShaderSw,software-vertex twin of NuMainFilterVertexShader
+dat_00767180,NuMainFilterVertexShader2Sw,software-vertex twin of NuMainFilterVertexShader2
+dat_00766ed8,NuMainFilterPixelShaderSw,software-vertex twin of NuMainFilterPixelShader
+dat_00767050,NuMainFilterPlatformPixelShaderSw,software-vertex twin of NuMainFilterPlatformPixelShader
+dat_00767598,NuDeferredFilterVertexShader,vertex tokens of NuDeferredFilter programs[0] and programs[1]
+dat_007676f0,NuDeferredFilterPixelShader0,pixel tokens of NuDeferredFilter programs[0]
+dat_00767fc8,NuDeferredFilterPixelShader1,pixel tokens of NuDeferredFilter programs[1]
+dat_00768d20,NuDeferredFilterVertexShader2,vertex tokens of NuDeferredFilter programs[2] and programs[3]
+dat_00768870,NuDeferredFilterPixelShader2,pixel tokens of NuDeferredFilter programs[2]
+dat_00768ae0,NuDeferredFilterPixelShader3,pixel tokens of NuDeferredFilter programs[3]
+dat_00768de0,NuSpeedBlurFilterVertexShader,vertex tokens of the NuSpeedBlurFilter program (hardware vertex processing)
+dat_007690b0,NuSpeedBlurFilterPixelShader,pixel tokens of the NuSpeedBlurFilter program (hardware vertex processing)
+dat_007692c0,NuSpeedBlurFilterVertexShaderSw,software-vertex twin of NuSpeedBlurFilterVertexShader
+dat_00769580,NuSpeedBlurFilterPixelShaderSw,software-vertex twin of NuSpeedBlurFilterPixelShader
+dat_00806b94,NuDebugGeometrySortOutput,set by NuDebugToggle; PCDynamicGeometryCopyOutput copies the sorted output only while it is 1
+dat_0091eeec,NuStrMatchCount,NuStrCountMatch increments it when the strings compare equal
+dat_00971ad8,NuTexScratchBlock,16-aligned 0x40-byte block carved from a stream by NuTexReserveScratchBlock
+fun_005e5680,NuTexGetScratchBlock,returns NuTexScratchBlock
+fun_005e5690,NuTexReserveScratchBlock,aligns the stream cursor to 16 and reserves 0x40 bytes for NuTexScratchBlock
+fun_004ff280,DEVHOST_InterrogateAlt,same body as DEVHOST_Interrogate (status = 1) directly before it
+fun_004ff2a0,DEVHOST_InterrogateAlt2,same body as DEVHOST_Interrogate (status = 1) directly after host_device
+fun_005e8870,PCFrustumClipSetTestCenterExtentC,C wrapper of PCFrustumClipSet::TestCenterExtent returning 0/1
+fun_005f5a10,LightObjectPoolNewDisplayListItem,operator-new style allocate from the NUDISPLAYLISTITEM pool
+fun_005f5a20,LightObjectPoolNewRndrLibState,operator-new style allocate from the NURNDRLIBSTATE pool
+fun_005f5a30,LightObjectPoolNewSpecialShadowLight,operator-new style allocate from the PC_SPECIAL_SHADOW_LIGHT pool
+fun_005fa110,NuDlistCopyChar,copies one character
+fun_006017a0,NuMtlSetRenderPlaneUi,empty PC stub; eduiSetRenderPlane calls it for each UI material with the plane
+fun_00601de0,NuAllocAlignedStub,empty PC stub; nustateanim calls it as an aligned allocator (size and 0x10)
+fun_006030d0,NuGobjVisitGeoms,walks the gobj's geom list and does nothing with them
+fun_005cfea0,NuSpecialVisitGobjGeoms,calls NuGobjVisitGeoms for the special's instance gobj
+fun_00605170,ContainsRecord,FRAME_NATIVE_TEXTURE_POOL: true when the record is one of the pool's 16 records
+fun_0060a010,ReleaseRecord,FRAME_NATIVE_TEXTURE_POOL: clears the record's occupied bit and moves the cursor to it
+fun_0066cbd0,PlatCallbackAdd,appends a function and argument to PlatCallback (at most 8)
+fun_0066cc00,PlatCallbackRemove,removes every PlatCallback entry with that function
+fun_0067bee0,TerrainVecZero,zeroes a vector
+fun_0067bf00,TerrainHasPlatformForInstance,1 when a terrain platform uses that scene instance
+fun_006816a0,TerrainSkinCreateInfoCurrent,TerrainSkinCreateInfo on CurrentTerrain
+fun_00698a50,NuStreamGetStatusText,writes Free/Playing/Busy for the stereo stream status
+fun_006d4500,FindConfigByName,PC_INPUT_RUNTIME: finds an input config by name in the masked tables
+fun_006d5ce0,PcInputClearBindings,resets the 32 bindings of a device or auxiliary port to none
+fun_006d5d40,PcInputHasBinding,forwards to PC_INPUT_RUNTIME::HasBinding
+fun_006d5e30,PcInputSetStateInitializedCallback,sets PcInputStateInitializedCallback
+fun_006d6b70,PcKeyboardKeyAutoRepeat,key held: fires at once then after 0.5 s and every 0.125 s
+fun_006dbb10,PcOptionsGetHardwareVertexProcessing,returns PCDeviceHardwareVertexProcessingPC
+fun_006e1910,PcDeviceGetHardwareVertexProcessing,returns PCDeviceHardwareVertexProcessingPC
+fun_00741860,NuShaderManagerGenGetHardwareVertexProcessing,returns PCDeviceHardwareVertexProcessingPC
+fun_007421c0,NuShaderObjectPcGetHardwareVertexProcessing,returns PCDeviceHardwareVertexProcessingPC
+fun_007454b0,NuShaderManagerGetHardwareVertexProcessing,returns PCDeviceHardwareVertexProcessingPC
+fun_006dd0e0,PcIsWindowsVistaOrLater,VerifyVersionInfoA for major.minor >= 6.0
+fun_006dd400,PcLoadPlatformOptions,loads PcWindowOptions and the text options
+fun_006dd460,PcReadUserFile,reads a file from the user folder (or prefix) into a buffer
+fun_006dd690,PcWriteUserFile,writes a buffer to a file in the user folder (or prefix)
+fun_006dddc0,NuHwCallParameter33,calls the hook stored by NuHwSetParameter33
+fun_006ddfa0,PcDrawMouseCursor,draws PcCursorMaterial at the mouse position
+fun_006df1e0,PcRequestDisplayMode,forwards to PCDeviceBackend.RequestDisplayMode
+fun_006df340,PcDrawDebugTextf,prints formatted debug text (FPS and frame stats) with system_qfont
+fun_006dfa70,PcSetGammaPower,builds a pow(level gamma) gamma ramp
+fun_006dfb30,PcSetGammaContrast,builds a contrast gamma ramp around 0.5
+fun_006dfec0,PcCaptureScreenshot,captures a screenshot into PcApiCallBuffer
+fun_00741250,ShaderUnInit,NuShaderObject: PCShaderNativeUnInit(this)
+fun_00741260,HasMarker,NuShaderObject: marker >= 0
+fun_00741270,BindShaders,NuShaderObject: sets the vertex and pixel shader on the device
+fun_007412a0,IncRefCount,NuShaderObject: ref_count++
+fun_007412b0,DecRefCount,NuShaderObject: ref_count--
+fun_007412c0,GetRefCount,NuShaderObject: returns ref_count
+fun_007412d0,GetKeyAddress,NuShaderObject: returns &key
+fun_00745470,InitHLSL,NuShaderObject: forwards to PCShaderObjectInitHLSLPc
+fun_007459a0,BuildPrecompiledShader,ShaderManagerHLSL: builds or rebuilds the shader object for a precompiled key
+fun_007442d0,HasVertexRaw,vertex_format 0x40000 selects VERTEX_RAW
+fun_00744320,HasVertexGroup,vertex_format 0x80000 defines VERTEX_GROUP
+fun_00744330,HasWaterCoefAmplitude,vertex_format 0x1000000 defines WATERCOEF_AMPLITUDE
+fun_00744350,HasShadowSetLayer,shadow_set bit 0 for layer 0
+fun_00744380,HasVertexPlant,vertex_format 0x2000000 gates the VERTEX_TRANSFORM_PLANT wind paths
+fun_00744390,HasPrelightFx,base variant with PC_SHADER_LAYER_PRELIGHT_FX
+fun_007443b0,HasGlowOutput,base variant with PC_SHADER_LAYER_GLOW
+fun_00746940,AppendConditionText,ShaderCompilerDictionary: appends the condition tree's tokens in order
+fun_00746bf0,RemoveProgram,ShaderCompilerDictionary: removes a program by name (swap with last)
+fun_00748840,ResetDefinitionExpansion,ShaderCompilerDictionary: clears every definition's expansion_state
+fun_0074b2f0,ShaderLineIsDirective,true when the first non-blank character is '#'
+fun_005c27e0,RenderPostLog2,RenderPostLog(value) / log10(2)
+fun_00601a20,NuLgtStateReset,clears NuLgtStateUnknown and NuLgtStateEnabled
+fun_00602f30,PcGobjRegistryAuxClearPayload,clears the aux record's payload
+fun_005c2050,NuPrimPopCoordinateSystem3,pops NuPrimCoordSystemStack (same body as NuPrimPopCoordinateSystem2)
+dat_0076b274,edpartSoundModeOffText,"""Off"" item of the sound-control menu"
+dat_009739d4,NuWindDlistValue,set by NuWindSetDlistValue
+fun_006bc990,edLevelCloseActiveMenu,unlinks the active menu and requests its destruction
+fun_006d3110,edLevelGetHardwareVertexProcessing,returns PCDeviceHardwareVertexProcessingPC
+fun_00613090,PrependByte,NETMESSAGE: steps read_offset back and stores one byte there (member call; renamed by hand)
+fun_006b89f0,IsSameObject,ClassObject: same object and reference (member call; renamed by hand)

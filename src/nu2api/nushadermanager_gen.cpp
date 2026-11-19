@@ -136,7 +136,7 @@ extern "C" NuShaderObject *NuShaderManagerRetrieveShaderVariant(const NUSHADERMT
     return reinterpret_cast<ShaderManagerTemplate<NuShaderObject> *>(PCShaderSlots)->Retrieve(desc, material, variant, 0, false);
 }
 
-extern "C" i32 fun_00741860(void) {
+extern "C" i32 NuShaderManagerGenGetHardwareVertexProcessing(void) {
     return PCDeviceHardwareVertexProcessingPC;
 }
 

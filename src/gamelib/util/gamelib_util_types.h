@@ -226,7 +226,7 @@ struct NETMESSAGE { // size 0x10
     u32 GetReferenceCount() const;
     void SkipWrite(u32 size);
     void SkipRead(u32 size);
-    void fun_00613090(const u8 &value);
+    void PrependByte(const u8 &value);
 
     void Write8(const u8 &value) {
         if (data != NULL) {
