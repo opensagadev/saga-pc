@@ -41,7 +41,7 @@ i16 id_SNOWSPEEDER = -1;
 i16 id_TIEINTERCEPTOR = -1;
 i16 id_IMPERIALSHUTTLE = -1;
 i16 id_SENTRYDROID = -1;
-i16 id_KAMINOANDROID = -1;
+i16 id_KAMINO_DROID = -1;
 i16 id_MINIDROIDEKA = -1;
 i16 id_MINITIEINTERCEPTOR = -1;
 i16 id_MINITIEBOMBER = -1;
@@ -190,7 +190,7 @@ i32 BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
     if (id == id_SENTRYDROID) {
         return 0;
     }
-    if (id == id_KAMINOANDROID) {
+    if (id == id_KAMINO_DROID) {
         return 0;
     }
     return fallback;

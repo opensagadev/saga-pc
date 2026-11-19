@@ -3630,7 +3630,7 @@ variable:id_SNOWSPEEDER,variable,id_SNOWSPEEDER,11295,11295,1,legoapi/characters
 variable:id_TIEINTERCEPTOR,variable,id_TIEINTERCEPTOR,11296,11296,1,legoapi/characters/core/character.h,data-order,retail 0x7f1a28 between 0x7f1a20 and 0x7f1a30
 variable:id_IMPERIALSHUTTLE,variable,id_IMPERIALSHUTTLE,11297,11297,1,legoapi/characters/core/character.h,data-order,retail 0x7f1a2c between 0x7f1a20 and 0x7f1a30
 variable:id_SENTRYDROID,variable,id_SENTRYDROID,11298,11298,1,legoapi/characters/core/character.h,android,id_SENTRYDROID
-variable:id_KAMINOANDROID,variable,id_KAMINOANDROID,11299,11299,1,legoapi/items/collect/bolt.h,users,id_KAMINOANDROID: only legogame/bolt.c android-path
+variable:id_KAMINO_DROID,variable,id_KAMINO_DROID,11299,11299,1,legoapi/items/collect/bolt.h,users,id_KAMINO_DROID: only legogame/bolt.c android-path
 variable:id_NABOOSTARFIGHTER,variable,id_NABOOSTARFIGHTER,11300,11300,1,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.c (1) android-path
 variable:id_NABOOSTARFIGHTERLIME,variable,id_NABOOSTARFIGHTERLIME,11301,11301,1,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.c (1) android-path
 variable:id_SATIPO,variable,id_SATIPO,11302,11302,1,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.c (1) android-path

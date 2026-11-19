@@ -143,10 +143,6 @@
 extern "C" void FmvPlatformUpdate(void);
 
 extern "C" {
-    extern AREA_DATA *ANEWHOPE_ADATA;
-}
-
-extern "C" {
     extern char *TexAnimScriptNamesTitle[3];
     extern char *TexAnimScriptNamesGame[32];
 }
@@ -157,10 +153,6 @@ extern "C" {
 }
 /* Per-level callbacks installed by FixUpLevels. */
 extern "C" void LostTempleC_Reset(WORLDINFO *);
-extern "C" {
-    extern LEVELDATA *CLOUDCITYTRAPB_LDATA;
-}
-
 extern "C" {
     f32 WaitingForCharacterTime = 0;
 }

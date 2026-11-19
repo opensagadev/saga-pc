@@ -127,11 +127,6 @@ extern "C" char AreaFixUpName_Tatooine[];
 extern "C" char AreaFixUpName_Podsprint[];
 extern "C" char AreaFixUpName_Negotiations[];
 
-extern "C" {
-    extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0;
-    extern i32 LEGO_AIPATHCNX_VARIANT_FLAG1;
-}
-
 typedef struct hub_episode_info_s {
     i16 episode;
     u16 flags;

@@ -10760,7 +10760,7 @@ void LevelEditor::ProcessEvenWhenPaused(ThingProcessData *data) {
         return;
     }
     f32 t = data->frame_time;
-    FRAME_PAD *pad = reinterpret_cast<FRAME_PAD *>(data->pads[0]);
+    FRAME_PAD *pad = data->pads[0];
     text_length = 0;
     memset(info_text, 0, sizeof(info_text));
     memset(reserved_0xf00, 0, 0x80);

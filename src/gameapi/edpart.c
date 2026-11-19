@@ -282,8 +282,6 @@ void edpartScaleTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
-extern i8 edpart_effect_list;
-
 void edpartInitType(i32 index) {
     i32 i;
     for (i = 0; i < 8; ++i) {
@@ -615,8 +613,6 @@ void edpartGravMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         }
     }
 }
-
-extern i32 edpart_nearest_duplicates;
 
 void edpartSetInstanceType(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     i32 index;
@@ -1073,8 +1069,6 @@ void edpartDataMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
-extern NUMTL *edpart_mtl;
-extern NUMTL *edpart_boxmtl;
 extern i32 edpart_first_time_this_level;
 extern i32 edpart_curr;
 

@@ -15,7 +15,6 @@
 #include "legoapi/characters/motion/move.h"
 
 extern "C" i32 special_debug;
-extern "C" void PCSpecialEmptyHandler(...);
 extern "C" {
     SOCK *FindSock(SOCKSYS *sys, char *name) {
         if (sys != NULL) {

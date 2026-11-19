@@ -323,7 +323,7 @@ PC_INPUT_RUNTIME::PC_INPUT_RUNTIME() {
     preferred_key = 0;
     mouse.custom_bindings_active = 0;
     suppress_key_1 = 0;
-    blocked_keys[0] = (char)0xff;
+    blocked_keys[0] = '\xff';
     for (i32 i = 0; i < 14; ++i) {
         for (i32 j = 0; j < 32; ++j) {
             devices[i].reset_pairs[j].first = 0;

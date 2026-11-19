@@ -214,7 +214,7 @@ void SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
     velocity.y = mode == 2 ? SUPERCARRY_DROPSPEED_Y : SUPERCARRY_THROWSPEED_Y;
     params.velocity = &velocity;
     blowup = object->player.grapple;
-    params.special = &((GIZMOBLOWUP *)blowup)->type->animated_special;
+    params.special = &blowup->type->animated_special;
     params.start_radius = params.end_radius = (f32)(0.5 * blowup->target_scale);
     params.flags = PART_FLAG_DIE_WHEN_STOPPED | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_THROWN;
     if (!(blowup->secondary_flags & 4)) {

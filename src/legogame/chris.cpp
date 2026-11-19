@@ -197,8 +197,6 @@ extern "C" {
         {"door_to_c2", 583.72998f, 167.5f},
     };
 
-    extern void FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE *splines, i32 capacity);
-
     typedef struct DOGFIGHT_SPEEDUP { // size 0x8
         f32 distance;                 // 0x0
         f32 speed;                    // 0x4
@@ -324,10 +322,7 @@ extern "C" {
     void ProcessCurrentSpeed(WORLDINFO *world, DOGFIGHT_SPEEDUP *entry);
     void ResetSpaceFromWorld(WORLDINFO *world);
     void ChrisAnakinBInit();
-    void ChrisDogFightAReset(WORLDINFO *world);
-    void ChrisAllocLevelStuff(WORLDINFO *world);
     static i32 CollideBoltStarFighter(BOLT *bolt, starfighter_s *fighter, NUVEC *position, NUVEC *velocity);
-    i32 ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points);
     static void DrawSelectedSock(SOCKSYS *system, i32 radius, SOCKPOSITION *position, i32 mode, i32 count);
     void ChrisAnakinCInit();
     static void SpawnFlightFighter(FLIGHT_SPLINE_RESOURCE *spline, DOGFIGHT_FIGHTER *record);
@@ -335,9 +330,6 @@ extern "C" {
     void MakeWingFormation(NUVEC4 *start, NUVEC4 *target, f32 duration, i32 mode);
     static void ProcessFormationActions(DOGFIGHT_ACTION_STATE *state);
     static void ProcessSpaceLevel(DOGFIGHT_SPACE *space);
-    void ChrisDogFightAInit(WORLDINFO *world);
-    void ChrisDogFightAUpdate(WORLDINFO *world);
-    void ChrisDogFightADraw(WORLDINFO *world);
 
     static void CopyFlightMatrix(NUMTX *destination, const NUMTX *source) {
         destination->m00 = source->m00;

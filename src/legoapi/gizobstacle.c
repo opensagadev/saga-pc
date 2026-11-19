@@ -313,7 +313,7 @@ void *GizObstacles_ReserveBufferSpace(void *world_ptr) {
     for (i = 0; i < system->capacity; ++i) {
         system->obstacles[i].anim_set = GameAnimSet_Create(&world->giz_buffer, &world->buffer_end, system->anim_pool, world->game_anim_sys);
     }
-    world->giz_obstacle_sys = (GIZOBSTACLESYS_s *)system;
+    world->giz_obstacle_sys = system;
     return system;
 }
 

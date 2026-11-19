@@ -33,7 +33,7 @@ typedef struct weapon_ammo_s { // size 0x8
 extern "C" {
 #endif
     extern i16 id_FOURLOM;
-    extern i16 id_KAMINOANDROID;
+    extern i16 id_KAMINO_DROID;
     extern i16 id_NABOOSTARFIGHTER;
     extern i16 id_NABOOSTARFIGHTERLIME;
     extern i16 id_SATIPO;

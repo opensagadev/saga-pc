@@ -451,7 +451,7 @@ extern "C" {
             {const_cast<char *>("imperialshuttle"), &id_IMPERIALSHUTTLE},
             {const_cast<char *>("ugnaught"), &id_UGNAUGHT},
             {const_cast<char *>("sentrydroid"), &id_SENTRYDROID},
-            {const_cast<char *>("kaminoandroid"), &id_KAMINOANDROID},
+            {const_cast<char *>("kaminoandroid"), &id_KAMINO_DROID},
             {"stormtrooper", &id_STORMTROOPER},
             {const_cast<char *>("beachtrooper"), &id_BEACHTROOPER},
             {const_cast<char *>("ImperialShuttlePilot"), &id_IMPERIALSHUTTLEPILOT},
