@@ -310,3 +310,5 @@ config/castscan-budget.json record-pun 368 quick run, settled in the refix
 config/castscan-budget.json record-pun 373 quick run, settled in the refix
 config/oddscan-budget.json magic-flag 2489 quick run, settled in the refix
 config/oddscan-budget.json magic-state 4315 quick run, settled in the refix
+config/castscan-budget.json layout-compatible 57 quick run, settled in the refix
+config/castscan-budget.json redundant-identity 11 quick run, settled in the refix

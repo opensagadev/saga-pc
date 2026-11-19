@@ -153,17 +153,17 @@ extern "C" {
 #define CUTLOC_FINITE_SHOT 0x10 /* its debris effect fires once (AddScaledFiniteShotDebrisEffect) */
 #define CUTLOC_PERSISTENT 0x20  /* its debris effect is one instance that follows the locator (AddDebrisEffect) */
 
-typedef struct cut_load_locator_s { // size 0x64
-    NUMTX matrix;                   // 0x00
-    NUVEC pivot;                    // 0x40
-    f32 scale;                      // 0x4c
+typedef struct cut_load_locator_s {         // size 0x64
+    NUMTX matrix;                           // 0x00
+    NUVEC pivot;                            // 0x40
+    f32 scale;                              // 0x4c
     struct NUANIMDATA2_SKELETAL *animation; // 0x50
-    u32 unknown_54;                 // 0x54
-    u8 flags;                       // 0x58
-    u8 type_index;                  // 0x59
-    u8 joint_index;                 // 0x5a
-    u8 tracks_self;                 // 0x5b
-    u8 unknown_5c[8];               // 0x5c
+    u32 unknown_54;                         // 0x54
+    u8 flags;                               // 0x58
+    u8 type_index;                          // 0x59
+    u8 joint_index;                         // 0x5a
+    u8 tracks_self;                         // 0x5b
+    u8 unknown_5c[8];                       // 0x5c
 } CUT_LOAD_LOCATOR;
 
 /* cut_load_locator_type_s.flags: what drives the locators of the type, from CutSceneLocatorFixUp and the locator
@@ -190,13 +190,13 @@ typedef struct cut_load_locator_system_s { // size 0xc
     u8 unknown_0a[2];                      // 0xa
 } CUT_LOAD_LOCATOR_SYSTEM;
 
-typedef struct cut_load_rigid_s { // size 0x5c
-    NUMTX matrix;                 // 0x00
-    char *name;                   // 0x40
-    struct NUGSCN_s *scene;       // 0x44
-    void *special;                // 0x48
+typedef struct cut_load_rigid_s {           // size 0x5c
+    NUMTX matrix;                           // 0x00
+    char *name;                             // 0x40
+    struct NUGSCN_s *scene;                 // 0x44
+    void *special;                          // 0x48
     struct NUANIMDATA2_SKELETAL *animation; // 0x4c
-    STATE_ANIM *state_animation;  // 0x50
+    STATE_ANIM *state_animation;            // 0x50
 
     union { // size 0x4
         i32 index;
@@ -220,13 +220,13 @@ typedef struct cut_load_rigid_system_s {
     u16 unused;
 } CUT_LOAD_RIGID_SYSTEM;
 
-struct cut_load_character_s {           // size 0x64
-    NUMTX matrix;                       // 0x00
-    char *name;                         // 0x40
+struct cut_load_character_s {               // size 0x64
+    NUMTX matrix;                           // 0x00
+    char *name;                             // 0x40
     struct NUANIMDATA2_SKELETAL *animation; // 0x44
-    struct ANI3_HEADER *face_animation; // 0x48
-    struct NUANIMDATA2 *extra_animation; // 0x4c
-    void *model;                         // 0x50
+    struct ANI3_HEADER *face_animation;     // 0x48
+    struct NUANIMDATA2 *extra_animation;    // 0x4c
+    void *model;                            // 0x50
 
     union { // size 0x4
         i32 index;

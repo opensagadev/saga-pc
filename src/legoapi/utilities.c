@@ -926,8 +926,7 @@ void MoveSplinePosition(SPLINEPOS *position, f32 distance) {
                 if (position->segment >= points - 1) {
                     if (!position->looping) {
                         position->finished = 1;
-                        position->position =
-                            *((NUVEC *)((u8 *)(position->spline)->pts + position->segment * (position->spline)->pt_size));
+                        position->position = *((NUVEC *)((u8 *)(position->spline)->pts + position->segment * (position->spline)->pt_size));
                         position->segment--;
                         position->along = 1.0f;
                         position->segment_distance = position->segment_length;

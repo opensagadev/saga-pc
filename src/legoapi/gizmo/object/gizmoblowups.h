@@ -64,8 +64,8 @@ typedef struct GIZMOBLOWUPTYPE {        // size 0x100
     f32 animation_start_frame;          // 0x88
     f32 animation_end_frame;            // 0x8c
     f32 animation_base_frame;           // 0x90
-    f32 fragment_gravity;                        // 0x94
-    f32 fragment_speed;                         // 0x98
+    f32 fragment_gravity;               // 0x94
+    f32 fragment_speed;                 // 0x98
     f32 spin;                           // 0x9c
     i16 particle_types[9];              // 0xa0
     u16 instance_count;                 // 0xb2
@@ -73,7 +73,7 @@ typedef struct GIZMOBLOWUPTYPE {        // size 0x100
     char name[32];                      // 0xd8
     u8 debris_count;                    // 0xf8
     u8 debris_type;                     // 0xf9
-    u8 fragment_count;                     // 0xfa
+    u8 fragment_count;                  // 0xfa
     u8 collidable;                      // 0xfb
     u8 animation_runtime_flags;         // 0xfc
     u8 unknown_fd[3];                   // 0xfd

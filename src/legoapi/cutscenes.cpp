@@ -781,8 +781,8 @@ extern "C" {
 
     f32 DEFAULTFRAMETIME = 0;
 
-    static CUTSYS *CutScenesLoadListed(NUGSCN *gscn1, NUGSCN *gscn2, i32 fixup_mode, VARIPTR *buf, VARIPTR *buf_end, i32 area,
-                                             i32 level, WORLDINFO *world) {
+    static CUTSYS *CutScenesLoadListed(NUGSCN *gscn1, NUGSCN *gscn2, i32 fixup_mode, VARIPTR *buf, VARIPTR *buf_end, i32 area, i32 level,
+                                       WORLDINFO *world) {
         CUTSYS *sys;
         void *initial;
         CUTINFO *cut;
@@ -844,7 +844,7 @@ extern "C" {
 }
 
 extern "C" CUTSYS *CutScenes_Load(char *config, NUGSCN *gscn1, NUGSCN *gscn2, i32 param1, VARIPTR *buf, VARIPTR *buf_end, i32 param2,
-                                        i32 param3, WORLDINFO *world) {
+                                  i32 param3, WORLDINFO *world) {
     NUFPAR *fp;
     CUTSYS *sys;
     void *initial;
@@ -1378,8 +1378,8 @@ extern "C" {
         f32 animation_rate;
         f32 blend_time;
         f32 animation_start_frame;
-        NuGCutCharAnimProcess(character, frame, &world_matrix, &visible, &animation_index,
-                              &animation_rate, &blend_time, &animation_start_frame, &layer_mask);
+        NuGCutCharAnimProcess(character, frame, &world_matrix, &visible, &animation_index, &animation_rate, &blend_time,
+                              &animation_start_frame, &layer_mask);
         if (paused != 0) {
             animation_rate = 0.0f;
         }
@@ -1709,7 +1709,7 @@ extern "C" {
     }
 
     static CUT_LOCATOR_FUNCTION_ENTRY cutscene_locatorfns[] = {{const_cast<char *>("blaster"), 0, NULL, 0, LocatorFunction_Blaster},
-                                                           {NULL, 0, NULL, 0, NULL}};
+                                                               {NULL, 0, NULL, 0, NULL}};
 
     void CutScenes_InitSystem(CUT_DRAW_SETTINGS *system) {
         CutSceneSys = system;

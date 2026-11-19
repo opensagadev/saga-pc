@@ -251,4 +251,3 @@ typedef union TAGSCRIPTSTATE { // size 0xcc
         u8 creature_set;       // 0xb0
     } fields;
 } TAGSCRIPTSTATE;
-

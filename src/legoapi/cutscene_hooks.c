@@ -254,8 +254,8 @@ void NuGCutRigidCalcMtx(CUT_LOAD_RIGID *rigid, f32 frame, NUMTX *matrix) {
     }
 }
 
-void NuGCutCharAnimProcess(CUT_LOAD_CHARACTER *character, f32 frame, NUMTX *matrix, i32 *visible, u32 *animation_index,
-                           f32 *animation_rate, f32 *blend_time, f32 *start_frame, i32 *layer_mask) {
+void NuGCutCharAnimProcess(CUT_LOAD_CHARACTER *character, f32 frame, NUMTX *matrix, i32 *visible, u32 *animation_index, f32 *animation_rate,
+                           f32 *blend_time, f32 *start_frame, i32 *layer_mask) {
     NUANIM_TIME2 time;
     DWA_CURVE_CELL *curves;
     i8 *types;

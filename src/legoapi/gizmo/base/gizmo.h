@@ -81,16 +81,16 @@ typedef struct gizmofns_s {                                                     
     void *using_special_fn;                                                     // 0x40
     GIZMO_BOLT_HIT_PLAT_FN bolt_hit_plat_fn;                                    // 0x44
     struct gizmo_s *(*get_best_bolt_target_fn)(struct gizmoset_s *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32,
-                                               i32);                                   // 0x48
-    GIZMO_BOLT_HIT_FN bolt_hit_fn;                                                     // 0x4c
-    void *(*allocate_progress_data_fn)(union variptr_u *buffer, union variptr_u *end); // 0x50
-    void (*clear_progress_fn)(void *world, void *progress);                            // 0x54
-    void (*store_progress_fn)(void *world, void *data, void *progress);                // 0x58
-    void (*reset_fn)(void *world, void *data, void *progress);                         // 0x5c
-    void *(*reserve_buffer_space_fn)(void *world);                                     // 0x60
-    i32 (*load_fn)(void *world, void *data);                                           // 0x64
-    void (*post_load_fn)(void *world, void *data);                                     // 0x68
-    void (*add_level_sfx_fn)(struct WORLDINFO_s *world, void *data, i32 *ids, i32 *count, i32 capacity); // 0x6c
+                                               i32);                                       // 0x48
+    GIZMO_BOLT_HIT_FN bolt_hit_fn;                                                         // 0x4c
+    void *(*allocate_progress_data_fn)(union variptr_u *buffer, union variptr_u *end);     // 0x50
+    void (*clear_progress_fn)(void *world, void *progress);                                // 0x54
+    void (*store_progress_fn)(void *world, void *data, void *progress);                    // 0x58
+    void (*reset_fn)(void *world, void *data, void *progress);                             // 0x5c
+    void *(*reserve_buffer_space_fn)(void *world);                                         // 0x60
+    i32 (*load_fn)(void *world, void *data);                                               // 0x64
+    void (*post_load_fn)(void *world, void *data);                                         // 0x68
+    void (*add_level_sfx_fn)(void *world, void *data, i32 *ids, i32 *count, i32 capacity); // 0x6c
 } GIZMOFNS;
 
 typedef struct gizmotype_s { // size 0x9c

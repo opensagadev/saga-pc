@@ -304,8 +304,8 @@ static void CutSceneLocatorLookAtUpdate(CUT_LOAD_LOCATOR_INSTANCE *instance, CUT
         if (first != 0) {
             character = &owner->scene->character_system->characters[state->character - 1];
             character_instance = &owner->character_instance->characters[state->character - 1];
-            NuGCutCharAnimProcess(character, character_instance->frame_a, &character_matrix, &visible,
-                                  &animation_index, &animation_rate, &blend, &start, &layers);
+            NuGCutCharAnimProcess(character, character_instance->frame_a, &character_matrix, &visible, &animation_index, &animation_rate,
+                                  &blend, &start, &layers);
             if (visible == 0) {
                 return;
             }

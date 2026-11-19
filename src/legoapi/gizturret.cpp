@@ -1483,7 +1483,7 @@ extern "C" {
         addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))GizTurrets_ReserveBufferSpace;
         addtype->fns.load_fn = (i32(*)(void *, void *))GizTurrets_Load;
         addtype->fns.post_load_fn = (void (*)(void *, void *))GizTurrets_PostLoad;
-        addtype->fns.add_level_sfx_fn = (void *)GizTurrets_AddLevelSfx;
+        addtype->fns.add_level_sfx_fn = GizTurrets_AddLevelSfx;
         turret_gizmotype_id = type_id;
         return addtype;
     }

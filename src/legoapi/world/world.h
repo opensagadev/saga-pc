@@ -425,4 +425,3 @@ struct PORTALDOOR_s {            // size 0x10
     u8 portal_id;                // 0xe
     u8 pad_0f;                   // 0xf
 };
-

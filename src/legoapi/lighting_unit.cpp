@@ -308,7 +308,8 @@ extern "C" {
         GAMEOBJECT *objects = Obj;
         i32 i;
         for (i = 0; i < HIGHGAMEOBJECT; ++i) {
-            if ((objects[i].flags_1fc_word & APIOBJECT_FLAG_IN_USE) && (objects[i].flags_1fc_word & APIOBJECT_FLAG_CHARACTER) && objects[i].player.dynamic_light_id != -1) {
+            if ((objects[i].flags_1fc_word & APIOBJECT_FLAG_IN_USE) && (objects[i].flags_1fc_word & APIOBJECT_FLAG_CHARACTER) &&
+                objects[i].player.dynamic_light_id != -1) {
                 rtlDynamicFree(objects[i].player.dynamic_light_id);
                 objects[i].player.dynamic_light_id = -1;
             }

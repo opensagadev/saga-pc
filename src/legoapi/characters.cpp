@@ -124,8 +124,7 @@ extern "C" {
         for (i32 i = 0; i < CHARCOUNT; ++i) {
             world->character_scenes[i].scene = NULL;
             if ((KillPartsCharSceneArea == NULL || KillPartsCharSceneArea[i].scene == NULL) && (CDataList[i].flags & 1) != 0 &&
-                world->cutscene_sys != NULL &&
-                ((world->cutscene_sys->character_bits[i / 32] & (1 << (i & 31))) != 0)) {
+                world->cutscene_sys != NULL && ((world->cutscene_sys->character_bits[i / 32] & (1 << (i & 31))) != 0)) {
                 CharScene_Load(&world->character_scenes[i], i, &world->giz_buffer, world->buffer_end);
             }
         }

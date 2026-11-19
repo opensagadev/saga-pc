@@ -38294,7 +38294,7 @@ address,symbol,size,ctype
 0x803e14,_CUTSUBTITLEDEFAULT_FITWIDTH,4,f32
 0x803e18,_CutScene_ConfigKeywords,352,NUFPCOMJMP[44]
 0x803f78,_CutSceneMusicStartFrame,4,i32
-0x803f7c,_cutscene_locatorfns,40,CUT_DRAW_LOCATOR_ENTRY[2]
+0x803f7c,_cutscene_locatorfns,40,CUT_LOCATOR_FUNCTION_ENTRY[2]
 0x00804014,_BoltShootParameter,4,f32
 0x00804018,_GlobalBoltType_Default,164,BOLTTYPE
 0x008040bc,_BoltSys,4,BOLTSYS *
