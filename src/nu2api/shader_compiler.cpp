@@ -14,12 +14,12 @@
 #include <string.h>
 
 void ShaderCompilerBase::Prepare(const NUSHADERMTLDESC *descriptor, ShaderCompilerDictionary *dictionary) {
-    PC_SHADER_MATERIAL_FILTER_VIEW filter;
+    PC_SHADER_MATERIAL_FILTER filter;
     filter.Initialize(descriptor, NULL, 0, 0);
     Configure(&filter, dictionary);
 }
 
-void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, ShaderCompilerDictionary *definitions) {
+void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER *filter, ShaderCompilerDictionary *definitions) {
     u8 used_uvs[4] = {0, 0, 0, 0};
     const NUSHADERMTLDESC *descriptor = filter->descriptor;
     const i32 profile = definitions->profile;
@@ -350,12 +350,12 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shade
 }
 
 void ShaderCompilerHLSLPc::Prepare(const NUSHADERMTLDESC *descriptor, ShaderCompilerDictionary *dictionary) {
-    PC_SHADER_MATERIAL_FILTER_VIEW filter;
+    PC_SHADER_MATERIAL_FILTER filter;
     filter.Initialize(descriptor, NULL, 0, 0);
     Configure(&filter, dictionary);
 }
 
-void ShaderCompilerHLSLPc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, ShaderCompilerDictionary *dictionary) {
+void ShaderCompilerHLSLPc::Configure(PC_SHADER_MATERIAL_FILTER *filter, ShaderCompilerDictionary *dictionary) {
     ShaderCompilerBase::Configure(filter, dictionary);
     dictionary->AddDefinition("BUILD_VERTEX_SHADER", NULL, 0);
     dictionary->AddDefinition("BUILD_PIXEL_SHADER", NULL, 0);
@@ -429,7 +429,7 @@ bool ShaderCompilerBase::LoadSource(const char *source, i32 length) {
     return parsed_source != NULL;
 }
 
-void ShaderCompilerBase::Generate(PC_SHADER_MATERIAL_FILTER_VIEW *filter, ShaderCompilerBufferAllocator *vertex,
+void ShaderCompilerBase::Generate(PC_SHADER_MATERIAL_FILTER *filter, ShaderCompilerBufferAllocator *vertex,
                                   ShaderCompilerBufferAllocator *pixel) {
     ShaderCompilerDictionary *dict = &dictionary;
     for (i32 i = 0; i < dict->definition_count; ++i) {
@@ -707,7 +707,7 @@ void __stdcall ShaderParameterDefault(const PC_SHADER_DEFAULTS_VIEW *material, i
 }
 
 /* No caller. */
-bool PC_SHADER_MATERIAL_FILTER_VIEW::LacksVariantAndLayerFlag12() const {
+bool PC_SHADER_MATERIAL_FILTER::LacksVariantAndLayerFlag12() const {
     i32 flagged = variant != 0 || (descriptor->layer_flags & 0x1000) != 0;
     // MATCH-EXCEPTION: the u8 cast gives a byte test of the 0/1 value; flagged is 0 or 1 anyway.
     return (u8)flagged == 0;

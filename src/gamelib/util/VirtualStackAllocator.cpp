@@ -52,17 +52,17 @@ void VirtualStackAllocator::TakeFrom(VirtualStackAllocator &parent, u32 size) {
 
 /* A shader program key. */
 struct ShaderObjectKey {
-    ShaderObjectKey(const PC_SHADER_MATERIAL_FILTER_VIEW &filter, bool pixel_stage);
+    ShaderObjectKey(const PC_SHADER_MATERIAL_FILTER &filter, bool pixel_stage);
     bool operator==(const ShaderObjectKey &other) const;
 
     u32 key;
 };
 
-PC_SHADER_MATERIAL_FILTER_VIEW::PC_SHADER_MATERIAL_FILTER_VIEW(const NUSHADERMTLDESC *desc, const NUMTL *material, i32 flags, i32 variant) {
+PC_SHADER_MATERIAL_FILTER::PC_SHADER_MATERIAL_FILTER(const NUSHADERMTLDESC *desc, const NUMTL *material, i32 flags, i32 variant) {
     Initialize(desc, material, flags, variant);
 }
 
-ShaderObjectKey::ShaderObjectKey(const PC_SHADER_MATERIAL_FILTER_VIEW &filter, bool pixel_stage) {
+ShaderObjectKey::ShaderObjectKey(const PC_SHADER_MATERIAL_FILTER &filter, bool pixel_stage) {
     key = 0;
     NuShaderObjectKeyGenerate3(&key, &filter, pixel_stage != 0);
 }

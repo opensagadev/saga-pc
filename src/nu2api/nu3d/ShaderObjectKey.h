@@ -6,7 +6,7 @@
 #include "gamelib/util/gamelib_util_types.h"
 #include "nu2api/nu3d/numtl.h"
 
-struct PC_SHADER_MATERIAL_FILTER_VIEW;
+struct PC_SHADER_MATERIAL_FILTER;
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,14 +33,14 @@ class ShaderBuilderGen { // size 0xbd0
     virtual void SetProfile(i32, i32, i32);
     virtual void SetForceMode(bool);
     virtual void Prepare(const NUSHADERMTLDESC *, ShaderCompilerDictionary *);
-    virtual void Configure(struct PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionary *);
+    virtual void Configure(struct PC_SHADER_MATERIAL_FILTER *, ShaderCompilerDictionary *);
     bool LoadSource(const char *, i32);
     void *ParseSource(const char *, i32, ShaderCompilerBufferAllocator *, i32, VirtualStackAllocator *);
     void SaveFile(const char *suffix, const char *name, const void *data, i32 size);
     void *ParseFile(const char *name, ShaderCompilerBufferAllocator *buffer, i32 prefix, VirtualStackAllocator *memory);
     bool LoadFile(const char *name);
     i32 CompileEffect(const char *source, i32 length, void *output, i32 unused);
-    void Generate(struct PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerBufferAllocator *, ShaderCompilerBufferAllocator *);
+    void Generate(struct PC_SHADER_MATERIAL_FILTER *, ShaderCompilerBufferAllocator *, ShaderCompilerBufferAllocator *);
     void fun_00745270(const char *name, i32 count);
     bool GetDictionaryForceMode();
     i32 GetDictionaryProfile();
@@ -56,7 +56,7 @@ class HLSLShaderBuilder : public ShaderBuilderGen { // size 0xbd0
     }
 
     virtual void Prepare(const NUSHADERMTLDESC *, ShaderCompilerDictionary *);
-    virtual void Configure(struct PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionary *);
+    virtual void Configure(struct PC_SHADER_MATERIAL_FILTER *, ShaderCompilerDictionary *);
 };
 
 typedef HLSLShaderBuilder ShaderCompilerHLSLPc;

@@ -19,7 +19,7 @@ extern "C" {
     u32 ShaderProgramHashPC[4] = {1482109315U, 2845988928U, 4140572740U, 1211123114U};
 }
 
-extern "C" void NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MATERIAL_FILTER_VIEW *filter, i32 pixel_stage) {
+extern "C" void NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MATERIAL_FILTER *filter, i32 pixel_stage) {
     const NUSHADERMTLDESC *desc = filter->descriptor;
     PC_SHADER_KEY_BLOCK block;
     u64 layer_word;
@@ -110,7 +110,7 @@ extern "C" void NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MATERIAL_FI
 /* Builds the filter view for a descriptor and generates its key. No caller. */
 extern "C" void NuShaderObjectKeyGenerate(u32 *key, const NUSHADERMTLDESC *desc, const NUMTL *material, i32 flags, i32 variant,
                                           i32 pixel_stage) {
-    PC_SHADER_MATERIAL_FILTER_VIEW filter;
+    PC_SHADER_MATERIAL_FILTER filter;
     filter.Initialize(desc, material, flags, variant);
     NuShaderObjectKeyGenerate3(key, &filter, pixel_stage);
 }

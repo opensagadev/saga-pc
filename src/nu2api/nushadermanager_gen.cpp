@@ -10,7 +10,7 @@
 #include "nu2api/nu3d/nushaderobject.h"
 #include "nu2api/nuwin32/d3dCalls.h"
 
-template <> bool PC_SHADER_MANAGER_VIEW::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, NuShaderObject *, i32);
+template <> bool PC_SHADER_MANAGER_VIEW::CreateShader(const PC_SHADER_MATERIAL_FILTER *, bool, NuShaderObject *, i32);
 template <> void PC_SHADER_MANAGER_VIEW::AdaptDescriptor(const NUSHADERMTLDESC *, const NUMTL *);
 
 template <> NuShaderObject *PC_SHADER_MANAGER_VIEW::AllocateSlot(i32 *index) {
@@ -98,7 +98,7 @@ template <> NuShaderObject *PC_SHADER_MANAGER_VIEW::FindShader(const u32 *key) {
 template <>
 NuShaderObject *PC_SHADER_MANAGER_VIEW::Retrieve(const NUSHADERMTLDESC *desc, const NUMTL *material, i32 variant, i32 flags,
                                                  bool pixel_stage) {
-    PC_SHADER_MATERIAL_FILTER_VIEW filter;
+    PC_SHADER_MATERIAL_FILTER filter;
     u32 key;
     NuShaderObject *shader;
     i32 index;

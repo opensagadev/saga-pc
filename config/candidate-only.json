@@ -418,17 +418,17 @@
   },
   {
    "unit": "src/nu2api/nushaderkey.cpp",
-   "symbol": "?IsAlternateType@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ",
+   "symbol": "?IsAlternateType@PC_SHADER_MATERIAL_FILTER@@QBE_NXZ",
    "kind": "function"
   },
   {
    "unit": "src/nu2api/nushaderkey.cpp",
-   "symbol": "?IsPlainType@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ",
+   "symbol": "?IsPlainType@PC_SHADER_MATERIAL_FILTER@@QBE_NXZ",
    "kind": "function"
   },
   {
    "unit": "src/nu2api/nushaderkey.cpp",
-   "symbol": "?LayerBit@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEEH@Z",
+   "symbol": "?LayerBit@PC_SHADER_MATERIAL_FILTER@@QBEEH@Z",
    "kind": "function"
   },
   {

@@ -139,7 +139,7 @@
 #define SHADER_UNIFORM_SHADOW_CASTING_OBJECT 99
 
 #ifdef __cplusplus
-struct PC_SHADER_MATERIAL_FILTER_VIEW {
+struct PC_SHADER_MATERIAL_FILTER {
     const NUSHADERMTLDESC *descriptor;
     const NUMTL *material;
     i32 flags;
@@ -150,12 +150,12 @@ struct PC_SHADER_MATERIAL_FILTER_VIEW {
     i32 layer_count;
     i32 parameter;
 
-    PC_SHADER_MATERIAL_FILTER_VIEW() {
+    PC_SHADER_MATERIAL_FILTER() {
     }
 
-    PC_SHADER_MATERIAL_FILTER_VIEW(const NUSHADERMTLDESC *descriptor, i32 flags, i32 parameter);
+    PC_SHADER_MATERIAL_FILTER(const NUSHADERMTLDESC *descriptor, i32 flags, i32 parameter);
 
-    PC_SHADER_MATERIAL_FILTER_VIEW(const NUSHADERMTLDESC *desc, const NUMTL *material, i32 flags, i32 variant);
+    PC_SHADER_MATERIAL_FILTER(const NUSHADERMTLDESC *desc, const NUMTL *material, i32 flags, i32 variant);
     void Initialize(const NUSHADERMTLDESC *, const NUMTL *, i32, i32);
     bool UnfilteredHasLayer(i32) const;
     bool HasDiffuse(i32) const;
@@ -235,15 +235,15 @@ struct PC_SHADER_MATERIAL_FILTER_VIEW {
     }
 };
 #endif
-typedef struct PC_SHADER_MATERIAL_FILTER_VIEW PC_SHADER_MATERIAL_FILTER_VIEW;
+typedef struct PC_SHADER_MATERIAL_FILTER PC_SHADER_MATERIAL_FILTER;
 
-struct PC_SHADER_MATERIAL_FILTER_VIEW;
+struct PC_SHADER_MATERIAL_FILTER;
 struct PC_TEXTURE_RESOURCE;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuShaderObjectKeyGenerate3(u32 *, const struct PC_SHADER_MATERIAL_FILTER_VIEW *, i32);
+    void NuShaderObjectKeyGenerate3(u32 *, const struct PC_SHADER_MATERIAL_FILTER *, i32);
     void NuShaderObjectKeyGenerate4(u32 *, u32, i32);
 #ifdef __cplusplus
 }
@@ -289,7 +289,7 @@ template <class T> class ShaderManagerTemplate {
   public:
     ShaderManagerTemplate();
     virtual ~ShaderManagerTemplate();
-    virtual bool CreateShader(const struct PC_SHADER_MATERIAL_FILTER_VIEW *, bool, NuShaderObject *, i32);
+    virtual bool CreateShader(const struct PC_SHADER_MATERIAL_FILTER *, bool, NuShaderObject *, i32);
     virtual void AdaptDescriptor(const NUSHADERMTLDESC *, const NUMTL *);
     T slots[400];
     i32 last_allocated;

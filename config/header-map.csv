@@ -5496,7 +5496,7 @@ function:NuGetVertexDeclaration,function,NuGetVertexDeclaration,13514,13514,1,nu
 function:PCDeviceCreateVertexDeclaration,function,PCDeviceCreateVertexDeclaration,13515,13515,1,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (4) pc-path
 forward:PC_SHADER_FILTER_DESC_VIEW,forward,PC_SHADER_FILTER_DESC_VIEW,13516,13516,1,decomp.h,decomp,view type
 forward:PC_SHADER_FILTER_MATERIAL_VIEW,forward,PC_SHADER_FILTER_MATERIAL_VIEW,13517,13517,1,decomp.h,decomp,view type
-forward:PC_SHADER_MATERIAL_FILTER_VIEW,forward,PC_SHADER_MATERIAL_FILTER_VIEW,13518,13518,1,decomp.h,decomp,view type
+forward:PC_SHADER_MATERIAL_FILTER,forward,PC_SHADER_MATERIAL_FILTER,13518,13518,1,decomp.h,decomp,view type
 forward:NuShaderObject,forward,NuShaderObject,13520,13520,1,nu2api/nu3d/ShaderManager.h,android,NuShaderObject
 typedef:PC_SHADER_OBJECT_FULL_VIEW,typedef,PC_SHADER_OBJECT_FULL_VIEW,13521,13521,1,decomp.h,decomp,view type
 forward:PC_SHADER_OBJECT_FULL_VIEW,forward,PC_SHADER_OBJECT_FULL_VIEW,13523,13523,1,decomp.h,decomp,view type
@@ -11178,16 +11178,16 @@ assert:-#4387,assert,,22239,22239,1,decomp.h,follow-type,PC_SHADER_FILTER_DESC_V
 struct:PC_SHADER_FILTER_MATERIAL_VIEW,struct,PC_SHADER_FILTER_MATERIAL_VIEW,22241,22246,7,decomp.h,decomp,view type
 assert:-#4388,assert,,22248,22248,2,decomp.h,follow-type,PC_SHADER_FILTER_MATERIAL_VIEW
 assert:-#4389,assert,,22249,22249,1,decomp.h,follow-type,PC_SHADER_FILTER_MATERIAL_VIEW
-struct:PC_SHADER_MATERIAL_FILTER_VIEW,struct,PC_SHADER_MATERIAL_FILTER_VIEW,22251,22332,83,decomp.h,decomp,view type
-assert:-#4390,assert,,22334,22334,2,decomp.h,follow-type,PC_SHADER_MATERIAL_FILTER_VIEW
-assert:-#4391,assert,,22335,22335,1,decomp.h,follow-type,PC_SHADER_MATERIAL_FILTER_VIEW
-assert:-#4392,assert,,22336,22336,1,decomp.h,follow-type,PC_SHADER_MATERIAL_FILTER_VIEW
-assert:-#4393,assert,,22337,22337,1,decomp.h,follow-type,PC_SHADER_MATERIAL_FILTER_VIEW
-assert:-#4394,assert,,22338,22338,1,decomp.h,follow-type,PC_SHADER_MATERIAL_FILTER_VIEW
-assert:-#4395,assert,,22339,22339,1,decomp.h,follow-type,PC_SHADER_MATERIAL_FILTER_VIEW
-assert:-#4396,assert,,22340,22340,1,decomp.h,follow-type,PC_SHADER_MATERIAL_FILTER_VIEW
-assert:-#4397,assert,,22341,22341,1,decomp.h,follow-type,PC_SHADER_MATERIAL_FILTER_VIEW
-assert:-#4398,assert,,22342,22342,1,decomp.h,follow-type,PC_SHADER_MATERIAL_FILTER_VIEW
+struct:PC_SHADER_MATERIAL_FILTER,struct,PC_SHADER_MATERIAL_FILTER,22251,22332,83,decomp.h,decomp,view type
+assert:-#4390,assert,,22334,22334,2,decomp.h,follow-type,PC_SHADER_MATERIAL_FILTER
+assert:-#4391,assert,,22335,22335,1,decomp.h,follow-type,PC_SHADER_MATERIAL_FILTER
+assert:-#4392,assert,,22336,22336,1,decomp.h,follow-type,PC_SHADER_MATERIAL_FILTER
+assert:-#4393,assert,,22337,22337,1,decomp.h,follow-type,PC_SHADER_MATERIAL_FILTER
+assert:-#4394,assert,,22338,22338,1,decomp.h,follow-type,PC_SHADER_MATERIAL_FILTER
+assert:-#4395,assert,,22339,22339,1,decomp.h,follow-type,PC_SHADER_MATERIAL_FILTER
+assert:-#4396,assert,,22340,22340,1,decomp.h,follow-type,PC_SHADER_MATERIAL_FILTER
+assert:-#4397,assert,,22341,22341,1,decomp.h,follow-type,PC_SHADER_MATERIAL_FILTER
+assert:-#4398,assert,,22342,22342,1,decomp.h,follow-type,PC_SHADER_MATERIAL_FILTER
 assert:-#4399,assert,,22343,22343,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_DEVICE_BACKEND
 assert:-#4400,assert,,22344,22344,1,nu2api/nuwin32/pcapi.h,follow-type,PC_WINDOW_OPTIONS
 class:ShaderBuilderGen,class,ShaderBuilderGen,22346,22375,31,nu2api/nu3d/ShaderObjectKey.h,users,ShaderBuilderGen: only nu2api/ShaderObjectKey.cpp android-dir

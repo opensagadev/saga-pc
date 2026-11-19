@@ -164,7 +164,7 @@ config/standalone-budget.json non-standalone 233 module headers that now hold mo
 config/oddscan-budget.json decomp-type 20 new class: game and engine types still defined in src/decomp.h (target 0; budget only goes down)
 config/oddscan-budget.json view-type 181 two view typedefs moved from decomp.h, which view-type does not scan, to ShaderManager.h (no new view)
 config/oddscan-budget.json decomp-type 9 down from 20: nine more view types moved to their module headers (target 0)
-config/oddscan-budget.json decomp-type 7 down from 9: PC_SHADER_RECORD_VIEW and PC_SHADER_MATERIAL_FILTER_VIEW moved to their module headers (target 0)
+config/oddscan-budget.json decomp-type 7 down from 9: PC_SHADER_RECORD_VIEW and PC_SHADER_MATERIAL_FILTER moved to their module headers (target 0)
 config/oddscan-budget.json decomp-type 5 down from 7: the audio decoder view and its methods table fold into WavReader (target 0)
 config/castscan-budget.json declaration-type 1925 NuGScnDestroyPS reads native_scene as SCENE_FIXUP_NATIVE instead of the folded PC_GSCN_NATIVE_VIEW (view-type went down by the same cast)
 config/castscan-budget.json scalar-pun 305 NuGScnDestroyPS releases the SCENE_FIXUP_NATIVE buffer arrays through PCDeviceReleaseTexture, as the other buffer releases of nu3d_platform.cpp do (the folded view typed them as textures)
