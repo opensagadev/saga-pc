@@ -13,6 +13,7 @@ extern "C" {
 #endif
     struct TIGHTROPE_s *TightRope_InRange(GAMEOBJECT *, WORLDINFO *, NUVEC *);
     void TightRope_MoveCode(GAMEOBJECT *, i32);
+    i32 TightRope_SnapTo(GAMEOBJECT *, NUVEC *);
 #ifdef __cplusplus
 }
 #endif

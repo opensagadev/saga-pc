@@ -76,8 +76,6 @@ TECHNO *Technos_FindControllingTechno(GAMEOBJECT *object) {
 /* A call to this empty diagnostic is kept for each failed target lookup; it
  * is defined in techno_diagnostic.c because VC8 drops calls to an empty
  * body it can see. */
-void TechnoTargetDiagnostic(char *name);
-void TechnoMoveSpecialTarget(void);
 
 void *Technos_FindTgt(TECHNO *techno) {
     void *target;

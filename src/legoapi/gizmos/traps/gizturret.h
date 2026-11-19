@@ -2,8 +2,10 @@
 
 #include "nu2api/nucore/common.h"
 
+#include "legoapi/gizmo/base/gizmo.h"
 #include "legoapi/items/base/apiobject.h"
 #include "legoapi/menus/core/hint.h"
+#include "legoapi/world/world.h"
 
 struct GIZTURRETSYS_s;
 
@@ -14,6 +16,8 @@ extern "C" {
     void GizTurrets_OpponentSelection(struct GIZTURRETSYS_s *, i32, APIOBJECT **, i32, APIOBJECT **);
     extern i32 gizturret_test_ang;
     extern f32 gizturret_rapid_fire_rate;
+    ADDGIZMOTYPE *GizTurrets_RegisterGizmo(i32);
+    u32 GizTurrets_TotalScore(WORLDINFO *world);
 #ifdef __cplusplus
 }
 #endif

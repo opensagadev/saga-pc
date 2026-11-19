@@ -2,6 +2,9 @@
 
 #include "nu2api/nucore/common.h"
 
+#include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/world/world.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
@@ -42,3 +45,13 @@ typedef struct security_door_record_s { // size 0xc0
     f32 opening;           // 0xb4
     u8 unknown_b8[8];      // 0xb8
 } SECURITY_DOOR_RECORD;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    ADDGIZMOTYPE *SecurityDoors_RegisterGizmo(i32);
+    void SecurityDoor_MoveCode(WORLDINFO *, GAMEOBJECT *);
+    void SecurityDoors_InitTerrain(WORLDINFO *);
+#ifdef __cplusplus
+}
+#endif

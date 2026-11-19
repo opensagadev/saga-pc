@@ -178,12 +178,6 @@ extern f32 ShopNativeBigFactor[6];
 extern f32 ShopNativePush[6];
 extern f32 ShopNativeSubInitA;
 extern f32 ShopNativeSubInitB;
-extern f32 ShopTopBrickOffset;
-extern f32 ShopNativeSubNormCharPush;
-extern f32 ShopCodeExitPush;
-extern f32 ShopTopCodeOffset;
-extern f32 ShopTopExtraOffset;
-extern f32 ShopTopHintOffset;
 
 /* Shop state machine. */
 typedef struct SHOP_INPUT {
@@ -207,20 +201,11 @@ extern i32 ShopDrawLevel;
 extern i32 ShopOldDrawLevel;
 extern i32 ShopMenu;
 extern f32 ShopSlideTimer;
-extern char ShopUserCode[6];
 /* The interaction batch shares SHOP_INPUT and the Shop*Pc state above.
  * Movement mode is 1=left, 2=right. */
 extern i32 ShopMoveItems;
-extern i32 ShopSubMoveSfxLock;
 extern f32 ShopPurchasePulseDuration;
 extern AREA_DATA *ANEWHOPE_ADATA;
-extern i32 ShopCodeCharacter;
-extern i32 ShopCodeValid;
-extern i32 ShopCodeMoveSfxLock;
-extern i32 ShopCodeItemChanged;
-extern f32 ShopCodeRepeatTimer;
-extern f32 ShopCodeRepeatInterval;
-extern char ShopCodeCharacters[37];
 
 /* Same-unit matrix helpers, also kept as standalone copies (source in EAX, destination in ECX). */
 static void ShopMtxCopy(NUMTX *destination, const NUMTX *source) {

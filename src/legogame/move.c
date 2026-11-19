@@ -128,11 +128,10 @@
 #include "legoapi/actions/character/snake.h"
 #include "legoapi/actions/combat/whip.h"
 #include "legoapi/world/levels/episodeII.h"
+#include "legoapi/items/collect/detonator.h"
 
 extern i32 LandspeederExhaustJoints[3];
 
-void SecurityDoor_MoveCode(WORLDINFO *, GAMEOBJECT *);
-void Detonator_MoveCode(GAMEOBJECT *);
 void Transform_MoveCode(WORLDINFO *, GAMEOBJECT *);
 
 extern f32 DirectionalGrappleSeekScale;

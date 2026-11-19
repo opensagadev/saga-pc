@@ -112,42 +112,32 @@
 #include "legoapi/menus/screens/customise.h"
 #include "legoapi/menus/screens/missions.h"
 #include "legoapi/world/levels/hub.h"
+#include "legoapi/audio/radio.h"
+#include "legoapi/characters/motion/camera.h"
+#include "legoapi/characters/motion/charplatforms.h"
+#include "legoapi/gizmo/base/gizgame.h"
+#include "legoapi/items/collect/detonator.h"
+#include "legoapi/items/objects/gameobjects.h"
+#include "legoapi/items/objects/grabber.h"
+#include "legoapi/menus/screens/gamestatus_lsw.h"
+#include "legoapi/misc/utilities.h"
 
 extern "C" {
-    void Grabber_Update(WORLDINFO *world);
-    void Detonators_Update(void);
-    void UpdateRadios(void);
-    void Grabber_Draw(WORLDINFO *world);
-    void Detonators_Draw(void);
-    void SetDepthOfField(void);
     i32 BURNOUTON = 1;
 }
-
-extern "C" void DrawSaveSlots(MENU *, f32);
 
 struct FADEINFO_s;
 
 extern "C" {
     extern FADEINFO *pFadeInfo;
-    void GizmoSysSetGame(void);
-    void ResetCharacterBuffer(i32 keep);
-    void WorldInfo_Activate(void);
     void Movie_Play(char *name, VARIPTR *buffer, VARIPTR *end, f32 frame_time, void *callback, f32 volume);
     i32 CutScene_PlayingOrRequested(void *cutscene);
-    void DrawCutBorders(i32 widescreen);
-    void HandleStillRender(void);
-    void ViewCamSetActive(i32 camera, i32 mode);
     TIMER BonusTimer = {0};
 
     void WorldInfo_DrawScene(WORLDINFO *world);
     void PortalDoors_Update(WORLDINFO *world);
-    u8 IsGrabbingScreen(void);
     void GameDisplaySettings(LEVEL_DISPLAY *display, i32 *colours);
-    void SetTexAnimSignals(void);
-    void CharPlatforms_Update(CHARPLATFORMSYS_s *system);
     void TrafficAnimSys_Update(struct TRAFFICANIMSYS_s *system);
-    void MoveGameCamera(GAMECAMERA *camera);
-    void GameObjectToCameraDistances(void);
     void TrafficAnimSys_Draw(struct TRAFFICANIMSYS_s *system);
     void GizmoSysDraw(void *system, void *world, f32 delta_time);
 
@@ -640,7 +630,6 @@ static void NuMainRenderWorld(WORLDINFO *world) {
 
 extern "C" {
     u8 StatusPlayerActive[8] = {0};
-    void WorldInfo_ClearAllIfScreenFaded(void);
 }
 
 extern "C" {
@@ -988,7 +977,7 @@ extern "C" int NuMain(int argc, char **argv) {
             NuVideoRollingFrameRateReset();
             ClearPause();
             NuPause(0);
-            ViewCamSetActive(0, 0);
+            ViewCamSetActive(0, NULL);
             if (NewMode == 0 && PcWindowQuit == 0) {
                 FinishLoop(2);
             }

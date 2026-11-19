@@ -99,7 +99,6 @@ static i32 PcInputCommandAllowed(i32 port, i32 command) {
     return 1;
 }
 
-extern "C" void Movies_ConfigureList(char *, VARIPTR *, VARIPTR *);
 class Fade;
 class FadeWipe;
 class FadeStillWipe;

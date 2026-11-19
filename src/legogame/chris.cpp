@@ -90,10 +90,6 @@ static f32 ChrisVuVecLength(const VuVec &v) {
 }
 
 extern "C" {
-    extern const f32 DogfightOriginEndXPc;
-    extern const f32 DogfightOriginEndY;
-    extern const f32 DogfightOriginEndZ;
-    extern const f32 DogfightOriginStartX;
 
     /* The PC keeps eight additional bytes at the end of each fighter record. */
     typedef struct DOGFIGHT_FIGHTER { // size 0x130

@@ -101,3 +101,5 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | quick run: unused CAMERA_*/KEEP_SCREEN/PLAYER_RESET views out of nuvec.h (32635fafa; bisected, no source change in parts.c matters) | DebrisSetup2 | legoapi/parts.c | exact | 99.95 % |
 | nu2api cleanup batch (unit macros as functions, views merged, accessors named) | BoulderSpawn | legogame/episodeIII.c | exact | 83.28 % |
 | nu2api cleanup batch (unit macros as functions, views merged, accessors named) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | 90.96 % |
+| legogame cross-unit declarations from the owners' headers, legoapi headers standalone | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | 90.96 % | exact |
+| legogame views (customise.c records, hub.cpp pad readers, PODRACE_RESOURCE countdown) | BoulderSpawn | legogame/episodeIII.c | 83.28 % | exact |

@@ -122,6 +122,16 @@ extern "C" {
     void RetakeG_Init(WORLDINFO *);
     void RetakeG_Panel(WORLDINFO *);
     void RetakeG_Update(WORLDINFO *);
+    void AnakinsFlightB_Draw(WORLDINFO *);
+    void AnakinsFlightB_Update(WORLDINFO *);
+    void KaminoEGizmoMissing(char *name);
+    void MaulA_Update(WORLDINFO *);
+    void MaulD_Init(WORLDINFO *);
+    void MaulD_Update(WORLDINFO *);
+    void MaulE_Init(WORLDINFO *);
+    void MaulE_Update(WORLDINFO *);
+    void MaulF_Update(WORLDINFO *);
+    void RetakeG_Reset(WORLDINFO *);
 #ifdef __cplusplus
 }
 #endif
@@ -145,11 +155,6 @@ typedef struct client_mines_s { // size 0x318
     MINE_BITS exploded;         // 0x308
     u32 unknown_310[2];         // 0x310
 } CLIENT_MINES;
-
-typedef struct pod_race_countdown_reader_s { // size 0xb004
-    u8 unknown_0000[0xb000];                 // 0x0000
-    f32 lap_countdown;                       // 0xb000
-} POD_RACE_COUNTDOWN_READER;
 
 typedef struct gungan_a_s { // size 0x114
     i16 unknown_000;        // 0x000

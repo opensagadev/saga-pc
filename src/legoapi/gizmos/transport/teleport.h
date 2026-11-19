@@ -2,6 +2,7 @@
 
 #include "nu2api/nucore/common.h"
 
+#include "legoapi/gizmo/base/gizmo.h"
 #include "legoapi/items/base/apiobject.h"
 #include "legoapi/menus/core/hint.h"
 #include "legoapi/world/world.h"
@@ -46,6 +47,7 @@ extern "C" {
     void Teleports_UpdateBeforeGameObjects(WORLDINFO *);
     void Teleports_UpdateAfterGameObjects(WORLDINFO *);
     void Teleport_NetMoveCode(GAMEOBJECT *);
+    ADDGIZMOTYPE *Teleport_RegisterGizmo(i32);
 #ifdef __cplusplus
 }
 #endif

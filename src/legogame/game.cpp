@@ -145,6 +145,7 @@
 #include "legoapi/items/objects/grabber.h"
 #include "legoapi/items/objects/legoapi_traffic.h"
 #include "legoapi/world/world_shared.h"
+#include "legoapi/items/collect/detonator.h"
 
 static NUVEC BuckSnowmobForward = {0.0f, 0.0f, 1.0f};
 static f32 BuckSnowmobJumpDuration = 1.0f;
@@ -253,7 +254,6 @@ extern "C" {
 
 extern "C" {
     void Bolts_Reset(void);
-    void Detonators_Reset(void);
     extern i32 makebaddiesforgetinresetbits;
 }
 
