@@ -965,6 +965,12 @@ struct AIPATHCNXCONTROLLER_s {    // size 0xa8
 
     union { // size 0xc
         void *target;
+        struct instnugcutscene_s *target_cutscene;
+        struct GIZBUILDIT *target_buildit;
+        struct GIZMOBLOWUP *target_blowup;
+        struct FLOWBOX *target_flowbox;
+        struct gizobstacle_s *target_obstacle;
+        struct zipup_s *target_zipup;
         nuhspecial_s special;
         i32 fake_animation_id;
     }; // 0x0c

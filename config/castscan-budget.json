@@ -13,7 +13,7 @@
   "layout-compatible": 56,
   "function-pointer": 533,
   "field-address": 110,
-  "byte-pointer": 284,
+  "byte-pointer": 278,
   "record-pun": 373,
   "scalar-pun": 279,
   "int-pointer": 802,

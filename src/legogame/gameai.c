@@ -1487,7 +1487,7 @@ void AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *controller, i32
             }
             break;
         case AIPATHCNX_TARGET_CUTSCENE:
-            end = (i32)((INSTNUGCUTSCENE *)controller->target)->scene->duration;
+            end = (i32)controller->target_cutscene->scene->duration;
             break;
         case AIPATHCNX_TARGET_BUILDIT:
         case AIPATHCNX_TARGET_GIZMO:
@@ -1586,7 +1586,7 @@ void AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM *system) {
                 active = controller->on_frames[frame / 32] & (1 << (frame % 32));
                 break;
             case AIPATHCNX_TARGET_BUILDIT:
-                if (((GIZBUILDIT *)controller->target)->build_state != 2) {
+                if (controller->target_buildit->build_state != 2) {
                     active = 0;
                 }
                 break;
@@ -1596,12 +1596,12 @@ void AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM *system) {
                 }
                 break;
             case AIPATHCNX_TARGET_BLOWUP:
-                if ((((GIZMOBLOWUP *)controller->target)->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0) {
+                if ((controller->target_blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0) {
                     active = 0;
                 }
                 break;
             case AIPATHCNX_TARGET_FLOW:
-                if ((((FLOWBOX *)controller->target)->state_flags_low & 2) == 0) {
+                if ((controller->target_flowbox->state_flags_low & 2) == 0) {
                     active = 0;
                 }
                 break;
@@ -1627,12 +1627,12 @@ void AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM *system) {
                 }
                 break;
             case AIPATHCNX_TARGET_OBSTACLE:
-                if (((GIZOBSTACLE *)controller->target)->anim_set->state != GAMEANIMSET_STATE_AT_END) {
+                if (controller->target_obstacle->anim_set->state != GAMEANIMSET_STATE_AT_END) {
                     active = 0;
                 }
                 break;
             case AIPATHCNX_TARGET_ZIPUP:
-                zipup_flags = ((ZIPUP *)controller->target)->flags_word;
+                zipup_flags = controller->target_zipup->flags_word;
                 if ((zipup_flags & ZIPUP_FLAG_ACTIVE) == 0 || (zipup_flags & ZIPUP_FLAG_VISIBLE) == 0) {
                     active = 0;
                 }
