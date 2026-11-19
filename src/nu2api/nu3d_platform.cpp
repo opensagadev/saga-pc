@@ -142,7 +142,7 @@ extern "C" {
     NULGTVERTEX *NuDebrisVertexData = 0;
 }
 
-static f32 Nu3dPcIncludesVecLengthSq(const NUVEC &v) {
+static f32 Nu3dPcIncludesVuVecLengthSq(const VuVec &v) {
     return v.x * v.x + v.y * v.y + v.z * v.z;
 }
 
@@ -3318,7 +3318,7 @@ extern "C" {
             delta.x = origin.x - position->x;
             delta.y = origin.y - position->y;
             delta.z = origin.z - position->z;
-            output[i].distance_squared = Nu3dPcIncludesVecLengthSq(delta.xyz);
+            output[i].distance_squared = Nu3dPcIncludesVuVecLengthSq(*(VuVec *)&delta);
         }
         for (i32 i = 0; i < count; ++i) {
             items[i].distance_squared = output[items[i].output_index].distance_squared;

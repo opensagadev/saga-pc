@@ -123,12 +123,12 @@ static f32 Nu3dIncludesFabs(f32 f) {
 }
 
 /* Unit-length copy of a direction, as a point (w = 1). */
-static void Nu3dIncludesVec4Normalise(NUVEC4 &destination, NUVEC4 &source) {
+static void Nu3dIncludesVuVecNormalise(VuVec &destination, VuVec &source) {
     NuVecNorm(&destination.xyz, &source.xyz);
     destination.w = 1.0f;
 }
 
-static f32 Nu3dIncludesVecDot(const NUVEC &a, const NUVEC &b) {
+static f32 Nu3dIncludesVuVecDot(const VuVec &a, const VuVec &b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
@@ -5833,7 +5833,7 @@ bool OccluderSet::IsOccludedSphere(NUVEC const *center, f32 radius) {
             delta.x = projected.x - first.x;
             delta.y = projected.y - first.y;
             delta.z = 0.0f;
-            f32 distance = Nu3dIncludesVecDot(normal.xyz, delta);
+            f32 distance = Nu3dIncludesVuVecDot(*(VuVec *)&normal, *(VuVec *)&delta);
             if (distance - screen_radius < 0.0) {
                 break;
             }
@@ -12289,7 +12289,7 @@ void NuMainFilterGen::render() {
             f32 direction_y = source->y;
             f32 direction_z = source->z;
             __declspec(align(16)) NUVEC4 direction = {source->x, direction_y, direction_z, 1.0f};
-            Nu3dIncludesVec4Normalise(direction, direction);
+            Nu3dIncludesVuVecNormalise(*(VuVec *)&direction, *(VuVec *)&direction);
             direction.w = bloom->direction_bias;
             PCDeviceSetVertexShaderConstantsF(0x8a, &direction.x, 1);
         }
