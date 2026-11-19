@@ -59,34 +59,6 @@ typedef struct {       // size 0x100
     u32 completed[16]; // 0xc0
 } BLOWUP_PROGRESS;
 
-typedef struct respawn_particle_types_s { // size 0xa8
-    u8 unknown_000[0xa4];                 // 0x00
-    i16 initial_particle_types[2];        // 0xa4
-} RESPAWN_PARTICLE_TYPES;
-
-typedef struct blowup_effect_instance_s { // size 0x110
-    u8 unknown_00[0x7c];                  // 0x000
-    NUVEC effect_offset;                  // 0x07c
-    u8 unknown_88[0xa0 - 0x88];           // 0x088
-    i32 pickup_value;                     // 0x0a0
-    u8 unknown_a4[0xee - 0xa4];           // 0x0a4
-    u16 launch_pitch;                     // 0x0ee
-    u16 launch_yaw;                       // 0x0f0
-    u8 unknown_f2[0x10d - 0xf2];          // 0x0f2
-    i8 pickup_multiplier;                 // 0x10d
-} BLOWUP_EFFECT_INSTANCE;
-
-typedef struct blowup_effect_type_s {   // size 0xfc
-    nuhspecial_s alternate_specials[4]; // 0x00
-    u8 unknown_30[0x94 - 0x30];         // 0x30
-    f32 fragment_gravity;               // 0x94
-    f32 fragment_speed;                 // 0x98
-    u8 unknown_9c[4];                   // 0x9c
-    i16 particle_types[7];              // 0xa0
-    u8 unknown_ae[0xfa - 0xae];         // 0xae
-    u8 fragment_count;                  // 0xfa
-} BLOWUP_EFFECT_TYPE;
-
 typedef struct {              // size 0x100
     u32 blown_up[16];         // 0x00
     u32 activated[16];        // 0x40
@@ -387,7 +359,7 @@ u32 GizmoBlowups_TotalScore(WORLDINFO *world) {
     i32 i;
     if (blowup != NULL) {
         for (i = 0; i < world->gizmo_blowup_count; i++, blowup++) {
-            total += (i8)blowup->score_multiplier * blowup->score;
+            total += blowup->score_multiplier * blowup->score;
         }
     }
     return total;
@@ -527,8 +499,7 @@ void GizmoSortBlowups(WORLDINFO *world) {
 }
 
 void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP *blowup, i32 offset, i32 flags, GAMEOBJECT *object) {
-    BLOWUP_EFFECT_TYPE *type = (BLOWUP_EFFECT_TYPE *)blowup->type;
-    BLOWUP_EFFECT_INSTANCE *instance = (BLOWUP_EFFECT_INSTANCE *)blowup;
+    GIZMOBLOWUPTYPE *type = blowup->type;
     NUVEC effect_position = *position;
     i32 i;
     i32 j;
@@ -542,9 +513,9 @@ void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP *blowup, i32 offset, i3
     NUMTX matrix;
     ADDPART part;
     if (offset) {
-        effect_position.x += instance->effect_offset.x;
-        effect_position.y += instance->effect_offset.y;
-        effect_position.z += instance->effect_offset.z;
+        effect_position.x += blowup->file_offset.x;
+        effect_position.y += blowup->file_offset.y;
+        effect_position.z += blowup->file_offset.z;
     }
     if (flags & BLOWUP_EFFECT_DEBRIS) {
         for (i = 4; i < 7; ++i) {
@@ -562,10 +533,10 @@ void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP *blowup, i32 offset, i3
         }
     }
     if (flags & BLOWUP_EFFECT_PICKUPS) {
-        count = instance->pickup_multiplier * instance->pickup_value;
+        count = blowup->score_multiplier * blowup->score;
         direction = v010;
-        NuVecRotateX(&direction, &direction, instance->launch_pitch);
-        NuVecRotateY(&direction, &direction, instance->launch_yaw);
+        NuVecRotateX(&direction, &direction, blowup->pickup_x_rotation);
+        NuVecRotateY(&direction, &direction, blowup->pickup_y_rotation);
         hearts = count > 0 ? ReleaseHearts() : 0;
         AddPickups(count, hearts, 0, (blowup->draw_flags >> 8) & 1, position, &direction, 0.0f, -1, 1.5f, 2000000.0f, NULL, 1, 1);
     }
@@ -585,10 +556,10 @@ void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP *blowup, i32 offset, i3
                 velocity = v010;
                 random =
                     (i16)(qrand() * PlayerRandomScale * ((MAXBLOWUPRANDSPANG << 16) / 360) - ((i16)(MAXBLOWUPRANDSPANG * 0.5) << 16) / 360);
-                NuVecRotateX(&velocity, &velocity, instance->launch_pitch + random);
+                NuVecRotateX(&velocity, &velocity, blowup->pickup_x_rotation + random);
                 random =
                     (i16)(qrand() * PlayerRandomScale * ((MAXBLOWUPRANDSPANG << 16) / 360) - ((i16)(MAXBLOWUPRANDSPANG * 0.5) << 16) / 360);
-                NuVecRotateY(&velocity, &velocity, instance->launch_yaw + random);
+                NuVecRotateY(&velocity, &velocity, blowup->pickup_y_rotation + random);
                 NuVecScale(&velocity, &velocity, type->fragment_speed);
                 if (object != NULL) {
                     velocity.x += 0.75 * object->velocity.x;
@@ -1299,9 +1270,9 @@ i32 gizmoblowup_Load(void *world_ptr, void *data) {
                                             "BlowUpEmitObj", type.name);
                     }
                 }
-                type.has_physics = (u8)EdFileReadChar();
-                type.gravity = EdFileReadFloat();
-                type.bounce = EdFileReadFloat();
+                type.fragment_count = (u8)EdFileReadChar();
+                type.fragment_gravity = EdFileReadFloat();
+                type.fragment_speed = EdFileReadFloat();
             } else if (version >= 18) {
                 memset(text, 0, sizeof(text));
                 length = EdFileReadChar();
@@ -1310,13 +1281,13 @@ i32 gizmoblowup_Load(void *world_ptr, void *data) {
                     Gizmo_FindNuSpecial(world->current_gscn, &type.alternate_specials[0], text, 1, world->gizmo_sys, "BlowUpEmitObj",
                                         type.name);
                 }
-                type.has_physics = (u8)EdFileReadChar();
-                type.gravity = EdFileReadFloat();
-                type.bounce = EdFileReadFloat();
+                type.fragment_count = (u8)EdFileReadChar();
+                type.fragment_gravity = EdFileReadFloat();
+                type.fragment_speed = EdFileReadFloat();
             } else {
-                type.has_physics = 0;
-                type.gravity = -10.0f;
-                type.bounce = 1.0f;
+                type.fragment_count = 0;
+                type.fragment_gravity = -10.0f;
+                type.fragment_speed = 1.0f;
             }
             if (version >= 19) {
                 memset(text, 0, 16);
