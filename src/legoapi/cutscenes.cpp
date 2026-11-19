@@ -1302,7 +1302,7 @@ extern "C" {
 
     static void SetStopCutFlags(CUTINFO *cut) {
         CUTSTOPGAME = 1;
-        CutStopInfo = (CUTINFO *)cut;
+        CutStopInfo = cut;
         CUTDRAWWORLD = cut->flags & CUTINFO_DRAW_WORLD;
         CUTNOFOG = cut->flags & CUTINFO_NO_FOG;
         DebrisSetRenderGroup(cut->debris_render_group);
@@ -1354,7 +1354,7 @@ void CutScenes_Destroy(CUTSYS *system) {
 
 /* PC never lets a cutscene be skipped here: both outcomes of the test return 0. */
 i32 CutScene_IsSkippable(CUTINFO *cut) {
-    if (FadeSys.fade == 0.0f && cut != NULL && cut != (CUTINFO *)CutStopInfo) {
+    if (FadeSys.fade == 0.0f && cut != NULL && cut != CutStopInfo) {
         return 0;
     }
     return 0;
@@ -1400,7 +1400,7 @@ extern "C" {
             return;
         }
         SetLevelLights(world->rtl_set, 1.0f);
-        CUTINFO *cut = reinterpret_cast<CUTINFO *>(CutStopInfo);
+        CUTINFO *cut = CutStopInfo;
         if (cut != NULL) {
             const i32 fade_near = cut->blob_shadow_fade_near;
             const u8 alpha = cut->blob_shadow_alpha;
@@ -1426,8 +1426,7 @@ extern "C" {
         if (CUTDRAWWORLD != 0 && world->current_gscn != NULL) {
             SetLevelLights(world->rtl_set, 1.0f);
             NuGScnRndr3(world->current_gscn);
-            if (world->gizmo_sys != NULL && CutStopInfo != NULL &&
-                (reinterpret_cast<CUTINFO *>(CutStopInfo)->flags & CUTINFO_DRAW_GIZMO_SYS) != 0) {
+            if (world->gizmo_sys != NULL && CutStopInfo != NULL && (CutStopInfo->flags & CUTINFO_DRAW_GIZMO_SYS) != 0) {
                 GizmoSysDraw(world->gizmo_sys, world, FRAMETIME);
             }
         }
@@ -1894,7 +1893,7 @@ extern "C" {
 }
 
 extern "C" void CutScene_DrawSubtitles(void) {
-    CUTINFO *cut = reinterpret_cast<CUTINFO *>(CutStopInfo);
+    CUTINFO *cut = CutStopInfo;
     if (cut == NULL) {
         return;
     }
@@ -1919,7 +1918,7 @@ extern "C" void CutScene_DrawSubtitles(void) {
             SmartTextEx(TTab[subtitle->text_id], subtitle->x, subtitle->y, 1.0f, subtitle->x_scale, subtitle->y_scale, 1.0f,
                         subtitle->alignment, subtitle->red, subtitle->green, subtitle->blue, subtitle->max_width, 1, NULL, 0,
                         (i32)((f32)subtitle->alpha * alpha));
-            cut = reinterpret_cast<CUTINFO *>(CutStopInfo);
+            cut = CutStopInfo;
         }
     }
 }
@@ -2296,7 +2295,7 @@ extern "C" {
     void CutScenes_Update(WORLDINFO *world, i32 paused) {
         i32 active_before[32];
         if (CutScenePlayer != NULL && CutScenePlayer->active != NULL && CutStopInfo != NULL) {
-            CutScenePlayer_SetObjects(reinterpret_cast<CUTINFO *>(CutStopInfo));
+            CutScenePlayer_SetObjects(CutStopInfo);
         }
         CutInstEnd[0] = NULL;
         CutInstEndCount = 0;

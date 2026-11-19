@@ -58,8 +58,6 @@ f32 ZipUpMarkerOffsetZ = 0.9229f;
 f32 ZipUpMarkerOffsetY = 0.84f;
 static f32 ZipUpSwingOffsetLength = 1.9236159f;
 
-i32 ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distance_squared);
-
 typedef struct zipup_progress_s { // size 0x8
     u32 active_mask[1];           // 0x0
     u32 visible_mask[1];          // 0x4

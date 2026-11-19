@@ -258,7 +258,7 @@ extern "C" {
     }
 
     RTL_SET *rtlGetEnvSet(void) {
-        return (RTL_SET *)WORLD->rtl_set;
+        return WORLD->rtl_set;
     }
 
     void SetZeroLights(void) {

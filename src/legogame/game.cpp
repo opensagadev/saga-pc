@@ -2179,7 +2179,7 @@ extern "C" void CheckResetBits(void) {
             LevHSpecialExists |= (u64)1 << i;
         }
     }
-    WORLD->blowup_target_candidate_count = 0;
+    WORLD->blowup_target_count = 0;
     callback = WORLD->current_level->reset;
     if (callback != NULL) {
         callback(WORLD);

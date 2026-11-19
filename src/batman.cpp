@@ -883,7 +883,7 @@ extern "C" int NuMain(int argc, char **argv) {
             }
             frame_flag = 0;
             NuRndrSwapStreamBuffers();
-            // Three reads of the extern volatile vblank counter: each is a real load in the retail code.
+            // Three reads of the extern volatile vblank counter: the game loads it three times here.
             (void)nuvideo_global_vbcnt;
             (void)nuvideo_global_vbcnt;
             (void)nuvideo_global_vbcnt;

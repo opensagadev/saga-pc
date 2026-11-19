@@ -63,7 +63,6 @@ typedef struct PICKUP_RESET_PROGRESS { // size 0x100
 
 extern const f64 GameObjectNearFloorNoFloorHeight;
 extern i32 turret_gizmotype_id;
-extern i32 gizbuildit_gizmotype_id;
 
 static NUMTX *PickupSetRotationX(NUMTX *matrix, i32 angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];

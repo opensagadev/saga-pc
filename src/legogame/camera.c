@@ -68,7 +68,6 @@ extern struct nuvec_s *shopcampos;
 extern f32 CamStopBlend;
 extern NUVEC GunshipAOffset;
 extern f32 PodCamDist;
-extern i32 movegamecamera_forcesock;
 extern i32 netcamera;
 extern f32 testmovef;
 extern f32 CamTitlesSplineEnd;

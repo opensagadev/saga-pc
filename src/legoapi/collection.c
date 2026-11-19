@@ -327,9 +327,6 @@ typedef struct SHOP_UNLOCK_AREA { // size 0xc
     u8 unknown_02[10];            // 0x2
 } SHOP_UNLOCK_AREA;
 
-i32 Episodes_Completed(void);
-i32 AllMiniKitsDone(AREASAVE_s *);
-
 COLLECTID *CollectIDUnlocked(i32 id) {
     COLLECTID *entry;
     COLLECTID *list = CollectList;

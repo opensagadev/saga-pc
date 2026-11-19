@@ -1389,8 +1389,8 @@ void SarlaccPitC_Update(WORLDINFO *world) {
     WORLDINFO *script_world = world;
     if (LevGameObject[0] != NULL && SarlaccBlowUpTargetCount == 4) {
         if (LevGameObject[0]->player.rider != NULL) {
-            script_world->blowup_target_candidate_count = 4;
-            script_world->blowup_target_candidates = SarlaccBlowUpTargets;
+            script_world->blowup_target_count = 4;
+            script_world->blowup_targets = SarlaccBlowUpTargets;
             if (!SarlaccTakenOver) {
                 SarlaccTakenOver = 1;
             }
@@ -1410,8 +1410,8 @@ void SarlaccPitC_Update(WORLDINFO *world) {
             }
         } else if (SarlaccTakenOver) {
             SarlaccTakenOver = 0;
-            script_world->blowup_target_candidate_count = 0;
-            script_world->blowup_target_candidates = NULL;
+            script_world->blowup_target_count = 0;
+            script_world->blowup_targets = NULL;
         }
         if (!SarlaccRecharging) {
             if ((u32)SarlaccPower < 8 && LevGizmo[0] != NULL && GizmoGetOutput(world->gizmo_sys, LevGizmo[0], 0, 0) != 0) {

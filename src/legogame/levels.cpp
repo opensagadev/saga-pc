@@ -154,7 +154,6 @@ extern "C" {
 }
 /* Per-level callbacks installed by FixUpLevels. */
 extern "C" void LostTempleC_Reset(WORLDINFO *);
-extern "C" void LostTempleC_Update(WORLDINFO *);
 extern "C" void AnakinsFlightB_Update(WORLDINFO *);
 extern "C" void AnakinsFlightB_Draw(WORLDINFO *);
 extern "C" void RetakeG_Reset(WORLDINFO *);
@@ -201,7 +200,6 @@ extern "C" {
     void LoadTerrainFile(WORLDINFO *world);
 }
 
-extern "C" void Attractos_InitTerrain(WORLDINFO *);
 extern "C" void SecurityDoors_InitTerrain(WORLDINFO *);
 extern "C" void Signals_InitTerrain(WORLDINFO *);
 

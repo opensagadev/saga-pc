@@ -491,7 +491,7 @@ PART *AddPart(ADDPART *parameters) {
     part->damage = 1;
     if ((part->flags & PART_FLAG_REAL_TIME_LIGHTING) != 0 && parameters->lighting_handle != NULL && PartRTL != NULL) {
         part->lighting_handle = parameters->lighting_handle;
-        *parameters->lighting_handle = rtlDynamicAllocTemplate((RTL_SET *)PartRTL, parameters->lighting_id);
+        *parameters->lighting_handle = rtlDynamicAllocTemplate(PartRTL, parameters->lighting_id);
     }
     if (++part_slot_cursor == MAXPARTS) {
         part_slot_cursor = 0;

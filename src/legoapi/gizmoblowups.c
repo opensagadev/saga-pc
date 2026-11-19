@@ -1850,17 +1850,17 @@ GIZMOBLOWUP *GizmoBlowUp_Target(GAMEOBJECT *object, NUVEC *position, NUVEC *dire
         aim.y = 0.0f;
         NuVecNorm(&aim, &aim);
     }
-    if (world->blowup_target_candidate_count > 0) {
-        count = world->blowup_target_candidate_count;
+    if (world->blowup_target_count > 0) {
+        count = world->blowup_target_count;
     } else {
         count = world->gizmo_blowup_count;
     }
-    if (world->blowup_target_candidate_count == 0) {
+    if (world->blowup_target_count == 0) {
         blowup = world->gizmo_blowups;
     }
     for (i = 0; i < count; ++i, ++blowup) {
-        if (world->blowup_target_candidate_count != 0) {
-            blowup = world->blowup_target_candidates[i];
+        if (world->blowup_target_count != 0) {
+            blowup = world->blowup_targets[i];
         }
         if ((blowup->draw_flags & BLOWUP_OPTION_SHOOTABLE) == 0 || (blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0 ||
             (blowup->status_flags & 0x08800000) == 0 || (blowup->status_flags & BLOWUP_STATUS_VISIBLE) == 0) {

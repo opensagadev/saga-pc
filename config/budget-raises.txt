@@ -269,69 +269,6 @@ config/castscan-budget.json truncation 2125 EdFileWriteInt/Short/Char are declar
 config/castscan-budget.json byte-pointer 510 the heap manager and allocator records step by typed records: six existing (u32) offset casts of a payload (raw-offset -25) now cast the void * payload to its record pointer before the step (same casts, new class)
 config/castscan-budget.json embedded-base 911 NUGSCN_s.portal_boxes points at NUGSCN_INSTANCE_BOUNDS records: the existing (NUVEC4 *) cast of WORLD_PORTAL_BOUNDS in legogame/levels.cpp, which stepped a void * as vectors, now casts a record to its first member (same cast, new class)
 config/oddscan-budget.json pc-suffix 56 NuInitHardware's setup tags take the engine's own enum names (build/reference), whose PC tags are spelled NUAPI_SETUP_PC_*; the enum members and their NUHW_PC_* argument macros are kept in docs/pc-names.md
-config/oddscan-budget.json assert-offsetof-unit 115 quick run, settled in the refix
-config/oddscan-budget.json assert-sizeof 7 quick run, settled in the refix
-config/oddscan-budget.json comment-retail 19 quick run, settled in the refix
-config/oddscan-budget.json data-file 8 quick run, settled in the refix
-config/oddscan-budget.json declspec-align 193 quick run, settled in the refix
-config/oddscan-budget.json dense-function 1181 quick run, settled in the refix
-config/oddscan-budget.json do-while0 8 quick run, settled in the refix
-config/oddscan-budget.json long-function 23 quick run, settled in the refix
-config/oddscan-budget.json magic-bound 1587 quick run, settled in the refix
-config/oddscan-budget.json magic-flag 2514 quick run, settled in the refix
-config/oddscan-budget.json magic-mask 1044 quick run, settled in the refix
-config/oddscan-budget.json magic-state 4330 quick run, settled in the refix
-config/castscan-budget.json class-hierarchy 43 quick run, settled in the refix
-config/castscan-budget.json embedded-base 921 quick run, settled in the refix
-config/castscan-budget.json field-address 313 quick run, settled in the refix
-config/castscan-budget.json float-int 3119 quick run, settled in the refix
-config/castscan-budget.json float-width 3988 quick run, settled in the refix
-config/castscan-budget.json function-pointer 806 quick run, settled in the refix
-config/castscan-budget.json int-pointer 823 quick run, settled in the refix
-config/castscan-budget.json raw-offset 372 quick run, settled in the refix
-config/castscan-budget.json redundant-identity 56 quick run, settled in the refix
-config/castscan-budget.json redundant-implicit 68 quick run, settled in the refix
-config/castscan-budget.json scalar-pun 279 quick run, settled in the refix
-config/castscan-budget.json signedness 1916 quick run, settled in the refix
-config/castscan-budget.json size-literal 4 quick run, settled in the refix
-config/castscan-budget.json truncation 2189 quick run, settled in the refix
-config/castscan-budget.json view-type 173 quick run, settled in the refix
-config/castscan-budget.json widening 201 quick run, settled in the refix
-config/castscan-budget.json record-pun 595 quick run, settled in the refix
-config/oddscan-budget.json candidate-name 30 quick run, settled in the refix
-config/oddscan-budget.json magic-flag 2516 quick run, settled in the refix
-config/oddscan-budget.json magic-state 4332 quick run, settled in the refix
-config/castscan-budget.json redundant-identity 64 quick run, settled in the refix
-config/declscan-budget.json A 25 quick run, settled in the refix
-config/castscan-budget.json function-pointer 805 quick run, settled in the refix
-config/castscan-budget.json redundant-implicit 67 quick run, settled in the refix
-config/castscan-budget.json truncation 2187 quick run, settled in the refix
-config/oddscan-budget.json magic-flag 2518 quick run, settled in the refix
-config/castscan-budget.json other 7 quick run, settled in the refix
-config/oddscan-budget.json hex-name 436 quick run, settled in the refix
-config/oddscan-budget.json magic-flag 2529 quick run, settled in the refix
-config/oddscan-budget.json magic-mask 1051 quick run, settled in the refix
-config/oddscan-budget.json magic-state 4333 quick run, settled in the refix
-config/declscan-budget.json A 26 quick run, settled in the refix
-config/oddscan-budget.json dense-function 1183 quick run, settled in the refix
-config/oddscan-budget.json include-mid-file 9 quick run, settled in the refix
-config/castscan-budget.json redundant-identity 32 quick run, settled in the refix
-config/castscan-budget.json redundant-implicit 21 quick run, settled in the refix
-config/declscan-budget.json A 41 quick run, settled in the refix
-config/castscan-budget.json embedded-base 920 quick run, settled in the refix
-config/castscan-budget.json raw-offset 368 quick run, settled in the refix
-config/castscan-budget.json scalar-pun 277 quick run, settled in the refix
-config/castscan-budget.json truncation 2188 quick run, settled in the refix
-config/oddscan-budget.json candidate-name 28 quick run, settled in the refix
-config/oddscan-budget.json magic-mask 1041 quick run, settled in the refix
-config/oddscan-budget.json dense-function 1183 quick run, settled in the refix
-config/castscan-budget.json declaration-type 832 quick run, settled in the refix
-config/castscan-budget.json redundant-identity 20 quick run, settled in the refix
-config/declscan-budget.json A 42 quick run, settled in the refix
-config/castscan-budget.json truncation 2186 quick run, settled in the refix
-config/oddscan-budget.json magic-mask 1048 quick run, settled in the refix
-config/castscan-budget.json raw-offset 359 quick run, settled in the refix
-config/oddscan-budget.json magic-flag 2473 quick run, settled in the refix
 config/oddscan-budget.json match-exception 80 refix of SetPodMergeAnims: the original writes GAMEOBJECT.anim_overlay_weight through the anim_packet pointer its caller passes, past the end of ANIMPACKET (one site, marked)
 config/castscan-budget.json scalar-pun 278 the SetPodMergeAnims MATCH-EXCEPTION: the (f32 *) of the word after the ANIMPACKET (GAMEOBJECT.anim_overlay_weight)
 config/oddscan-budget.json data-file 9 nu2api cleanup batch: hardware_dispatch.cpp hands its local declarations to the headers, so its tables are now most of the file
@@ -345,3 +282,21 @@ config/castscan-budget.json function-pointer 535 nu2api cleanup batch: the NuTex
 config/castscan-budget.json layout-compatible 104 nu2api cleanup batch: AdaptDescriptor's descriptor and material views became NUSHADERMTLDESC and NUMTL, so the const casts count as layout-compatible
 config/castscan-budget.json scalar-pun 279 nu2api refix: NuRndrQuadBufferInit locks the vertex buffer straight into its typed vertex pointer, as the original reloads it
 config/castscan-budget.json truncation 2189 nu2api cleanup batch: casts in unit macro bodies (counted once per macro) now count at each site of the helper functions and NUMTL fields that replace them (NuMtlUpdatePS shader handles, ShaderAddDefinition, TerrainFinishScanGroup)
+config/oddscan-budget.json data-file 8 quick run: unit macros of legoapi (dc261c514), edlevelall, edpp, rtl, TTNetwork, apiobject (12a0ead14, 691a75f61) and edpart, edgra, apisave (1c1bce6cb) written out at their uses: render.c holds the DrawAlphaGrid vertex block written out six times
+config/oddscan-budget.json declspec-align 193 quick run: unit macros of legoapi (dc261c514), edlevelall, edpp, rtl, TTNetwork, apiobject (12a0ead14, 691a75f61) and edpart, edgra, apisave (1c1bce6cb) written out at their uses: the aligned locals of the edlevelall drawing macros (three VuVec previous) and render.c NUVEC4 direction are counted per use
+config/oddscan-budget.json dense-function 1182 quick run: unit macros of legoapi (dc261c514), edlevelall, edpp, rtl, TTNetwork, apiobject (12a0ead14, 691a75f61) and edpart, edgra, apisave (1c1bce6cb) written out at their uses: the macro bodies are counted in the functions that used them (edpart, carrying, objectsall, streaks, edgra, detonator, edlevelall, gizpanel)
+config/oddscan-budget.json long-function 23 quick run: unit macros of legoapi (dc261c514), edlevelall, edpp, rtl, TTNetwork, apiobject (12a0ead14, 691a75f61) and edpart, edgra, apisave (1c1bce6cb) written out at their uses: edpp, grabber, socksys and render functions grew by their written-out macro bodies
+config/oddscan-budget.json magic-bound 1587 quick run: unit macros of legoapi (dc261c514), edlevelall, edpp, rtl, TTNetwork, apiobject (12a0ead14, 691a75f61) and edpart, edgra, apisave (1c1bce6cb) written out at their uses: the bounds of the macro bodies (episodeV, edpart, debris_engine, torpedo) are counted per use
+config/oddscan-budget.json magic-mask 1047 quick run: unit macros of legoapi (dc261c514), edlevelall, edpp, rtl, TTNetwork, apiobject (12a0ead14, 691a75f61) and edpart, edgra, apisave (1c1bce6cb) written out at their uses: the colour and flag masks of the macro bodies (render.c DrawAlphaGrid 40, utilities, cutscenes, gameantinode, socksys) are counted per use
+config/oddscan-budget.json magic-state 4310 quick run: unit macros of legoapi (dc261c514), edlevelall, edpp, rtl, TTNetwork, apiobject (12a0ead14, 691a75f61) and edpart, edgra, apisave (1c1bce6cb) written out at their uses: the state values of the macro bodies (edpp.c 34, hub.cpp 18, debris_generators, grabber, edpart) are counted per use
+config/castscan-budget.json class-hierarchy 43 quick run: unit macros of legoapi (dc261c514), edlevelall, edpp, rtl, TTNetwork, apiobject (12a0ead14, 691a75f61) and edpart, edgra, apisave (1c1bce6cb) written out at their uses: TT_FOR_EACH_CLIENT written out: its two NetListLink -> NetTransportEntry downcasts count in each of the 13 TTNetwork loops
+config/castscan-budget.json embedded-base 918 quick run: unit macros of legoapi (dc261c514), edlevelall, edpp, rtl, TTNetwork, apiobject (12a0ead14, 691a75f61) and edpart, edgra, apisave (1c1bce6cb) written out at their uses: edpartInstanceOrientMenu: the eduiitem_s -> edui_slider_s casts of its menu macro count per item
+config/castscan-budget.json float-int 3118 quick run: unit macros of legoapi (dc261c514), edlevelall, edpp, rtl, TTNetwork, apiobject (12a0ead14, 691a75f61) and edpart, edgra, apisave (1c1bce6cb) written out at their uses: render.c DrawAlphaGrid, streaks.cpp DrawStreaks and RTLHelper::Render conversions count per use
+config/castscan-budget.json float-width 3987 quick run: unit macros of legoapi (dc261c514), edlevelall, edpp, rtl, TTNetwork, apiobject (12a0ead14, 691a75f61) and edpart, edgra, apisave (1c1bce6cb) written out at their uses: socksys.c SockSysCamera and edlevelall EdDrawPolyAxis f32/f64 conversions count per use
+config/castscan-budget.json raw-offset 359 quick run: unit macros of legoapi (dc261c514), edlevelall, edpp, rtl, TTNetwork, apiobject (12a0ead14, 691a75f61) and edpart, edgra, apisave (1c1bce6cb) written out at their uses: utilities.c SPLINE_POINT ((u8 *)pts + index * pt_size) counts at each of its 27 uses
+config/castscan-budget.json size-literal 4 quick run: unit macros of legoapi (dc261c514), edlevelall, edpp, rtl, TTNetwork, apiobject (12a0ead14, 691a75f61) and edpart, edgra, apisave (1c1bce6cb) written out at their uses: gcutscn.c CutScriptNodeAlloc: the node macro's memset size counts per case
+config/castscan-budget.json truncation 2186 quick run: unit macros of legoapi (dc261c514), edlevelall, edpp, rtl, TTNetwork, apiobject (12a0ead14, 691a75f61) and edpart, edgra, apisave (1c1bce6cb) written out at their uses: render.c DrawAlphaGrid colour bytes (22), legoapi_status InitStatusScreen (18) and the levels.cpp LC_BL_max_* limit helpers count per use
+config/castscan-budget.json widening 201 quick run: unit macros of legoapi (dc261c514), edlevelall, edpp, rtl, TTNetwork, apiobject (12a0ead14, 691a75f61) and edpart, edgra, apisave (1c1bce6cb) written out at their uses: render.c DrawAlphaGrid colour words (22) and KaminoC_Update count per use
+config/castscan-budget.json scalar-pun 277 quick run: KaminoC_Update reads its u32 mask pairs through U64_PAIR now that the view is merged into the real record (32635fafa), and GameAntiNodeData_Init's f32 bit views were a written-out macro (dc261c514)
+config/castscan-budget.json other 7 quick run: ClassObjectListEntry is a ClassObject (d0b463f98): the three edlevelall manipulators (move, rotate, scale) cast a list entry to its ClassObject, which castscan counts as other
+config/declscan-budget.json A 24 quick run: removable re-declarations of header functions left in legogame/gameaiscript.c (124, 152, 154), owned by another worker during the refix; the others went with declscan --fix

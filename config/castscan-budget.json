@@ -1,5 +1,5 @@
 {
-  "redundant-identity": 19,
+  "redundant-identity": 5,
   "redundant-implicit": 19,
   "codegen-steering": 52,
   "discard": 32,

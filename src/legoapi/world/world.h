@@ -281,8 +281,8 @@ typedef struct WORLDINFO_s { // size 0x51ac
     i32 gizmo_blowup_count;                             // 0x50c0
     struct GIZMOBLOWUPTYPE *gizmo_blowup_types;         // 0x50c4
     struct GIZMOBLOWUP *gizmo_blowups;                  // 0x50c8
-    i32 blowup_target_candidate_count;                  // 0x50cc
-    struct GIZMOBLOWUP **blowup_target_candidates;      // 0x50d0
+    i32 blowup_target_count;                            // 0x50cc
+    struct GIZMOBLOWUP **blowup_targets;                // 0x50d0
     char pad_12a[20];                                   // 0x50d4
     struct numtx_s *gizmo_blowup_mtx_buffer;            // 0x50e8
     struct minicut_s *minicuts;                         // 0x50ec
