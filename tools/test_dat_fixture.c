@@ -246,7 +246,7 @@ static int exercise_metadata(const char *path, i32 base_offset, i32 buffered, in
     REQUIRE(header->leaf_names == NULL && header->leaf_names_len == 0);
     REQUIRE(header->name == start + sizeof(NUDATHDR));
     REQUIRE(strcmp(header->name, path) == 0);
-    REQUIRE(header->unknown_b0 == 0 && header->start_lsn == 0 && header->mode == 0);
+    REQUIRE(header->owns_allocation == 0 && header->start_lsn == 0 && header->mode == 0);
     file = header->open_files[0].dat_file;
     REQUIRE(file == 1);
     REQUIRE(file_info[0].handle == 0 && file_info[0].use_buf == buffered);
