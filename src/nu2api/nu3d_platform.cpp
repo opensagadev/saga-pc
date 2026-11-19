@@ -1155,17 +1155,17 @@ extern "C" {
         u8 unknown_001c[0x1c];                  // 0x1c
     } DISPLAY_PRIMITIVE_PACKET;
 
-    typedef struct PC_DL_SKIN_PALETTE_READER { // size 0x8
+    typedef struct PC_DL_SKIN_PALETTE_PACKET { // size 0x8
         i32 count;                             // 0x0
         f32 elements[1];                       // 0x4
-    } PC_DL_SKIN_PALETTE_READER;
+    } PC_DL_SKIN_PALETTE_PACKET;
 
-    typedef struct PC_DL_LIGHTS_READER { // size 0xb0
+    typedef struct PC_DL_LIGHTS_PACKET { // size 0xb0
         NUVEC4 ambient;                  // 0x00
         NUVEC4 intensity[3];             // 0x10
         NUVEC4 direction[3];             // 0x40
         NUMTX shine_matrix;              // 0x70
-    } PC_DL_LIGHTS_READER;
+    } PC_DL_LIGHTS_PACKET;
 
     typedef union PC_DL_NORMALIZED_DIRECTION { // size 0x10
         NUVEC4 four;
@@ -1176,42 +1176,42 @@ extern "C" {
         } normalized;
     } PC_DL_NORMALIZED_DIRECTION;
 
-    typedef struct PC_DL_FOG_READER { // size 0x14
+    typedef struct PC_DL_FOG_PACKET { // size 0x14
         i32 enabled;                  // 0x00
         u32 colour;                   // 0x04
         f32 near_distance;            // 0x08
         f32 far_distance;             // 0x0c
         f32 density;                  // 0x10
-    } PC_DL_FOG_READER;
+    } PC_DL_FOG_PACKET;
 
-    typedef struct PC_DL_LEGACY_LIGHTMAP_READER { // size 0x14
+    typedef struct PC_DL_LEGACY_LIGHTMAP_PACKET { // size 0x14
         i32 texture_id[3];                        // 0x00
         f32 x_offset;                             // 0x0c
         f32 y_offset;                             // 0x10
-    } PC_DL_LEGACY_LIGHTMAP_READER;
+    } PC_DL_LEGACY_LIGHTMAP_PACKET;
 
-    typedef struct PC_DL_CAMERA_READER { // size 0x94
+    typedef struct PC_DL_CAMERA_PACKET { // size 0x94
         i32 id;                          // 0x00
         NUMTX view;                      // 0x04
         NUMTX projection;                // 0x44
         f32 viewport[4];                 // 0x84
-    } PC_DL_CAMERA_READER;
+    } PC_DL_CAMERA_PACKET;
 
-    typedef struct PC_DL_CAMERA_PROJECTION_READER { // size 0x50
+    typedef struct PC_DL_CAMERA_PROJECTION_PACKET { // size 0x50
         NUMTX projection;                           // 0x00
         f32 viewport[4];                            // 0x40
-    } PC_DL_CAMERA_PROJECTION_READER;
+    } PC_DL_CAMERA_PROJECTION_PACKET;
 
-    typedef struct PC_DL_VERTEX_GROUPS_READER { // size 0x18
+    typedef struct PC_DL_VERTEX_GROUPS_PACKET { // size 0x18
         i32 count;                              // 0x00
         u32 flags;                              // 0x04
         NUVEC4 values[1];                       // 0x08
-    } PC_DL_VERTEX_GROUPS_READER;
+    } PC_DL_VERTEX_GROUPS_PACKET;
 
-    typedef struct PC_DL_VERTEX_OFFSETS_READER { // size 0x14
+    typedef struct PC_DL_VERTEX_OFFSETS_PACKET { // size 0x14
         i32 count;                               // 0x00
         NUVEC4 values[1];                        // 0x04
-    } PC_DL_VERTEX_OFFSETS_READER;
+    } PC_DL_VERTEX_OFFSETS_PACKET;
 
     /* PC-only table slot 0xad. */
     typedef struct PC_DL_AD_COLOURS { // size 0x3c
@@ -1250,7 +1250,7 @@ extern "C" {
         PC_BUFFER_RESOURCE *index_buffer;    // 0x1c
     } PC_DL_AD_PACKET;
 
-    typedef struct PC_DL_GEOMETRY_READER {  // size 0x38
+    typedef struct PC_DL_GEOMETRY_PACKET {  // size 0x38
         u32 kind;                           // 0x00
         u32 primitive_count;                // 0x04
         u16 vertex_stride;                  // 0x08
@@ -1264,30 +1264,30 @@ extern "C" {
         void *morph_deltas;                 // 0x2c
         PC_BUFFER_RESOURCE *dynamic_buffer; // 0x30
         void *dynamic_vertices;             // 0x34
-    } PC_DL_GEOMETRY_READER;
+    } PC_DL_GEOMETRY_PACKET;
 
-    typedef struct PC_DL_FACEON_DRAW_READER { // size 0x10
+    typedef struct PC_DL_FACEON_DRAW_PACKET { // size 0x10
         u32 unknown_0000;                     // 0x0
         u32 primitive_count;                  // 0x4
         PC_BUFFER_RESOURCE *vertex_buffer;    // 0x8
         u32 first_vertex;                     // 0xc
-    } PC_DL_FACEON_DRAW_READER;
+    } PC_DL_FACEON_DRAW_PACKET;
 
-    typedef struct PC_DL_DEBRIS_DRAW_READER { // size 0x10
+    typedef struct PC_DL_DEBRIS_DRAW_PACKET { // size 0x10
         u8 buffer_index;                      // 0x0
         u8 unknown_0001[3];                   // 0x1
         u32 use_system_buffer;                // 0x4
         u32 first_vertex;                     // 0x8
         u32 vertex_count;                     // 0xc
-    } PC_DL_DEBRIS_DRAW_READER;
+    } PC_DL_DEBRIS_DRAW_PACKET;
 
-    typedef struct PC_DL_LIGHTMAP_UPDATE_READER { // size 0x1c
+    typedef struct PC_DL_LIGHTMAP_UPDATE_PACKET { // size 0x1c
         i32 mode;                                 // 0x00
         i32 texture_id;                           // 0x04
         i32 texture_ids[3];                       // 0x08
         f32 x_offset;                             // 0x14
         f32 y_offset;                             // 0x18
-    } PC_DL_LIGHTMAP_UPDATE_READER;
+    } PC_DL_LIGHTMAP_UPDATE_PACKET;
 
     /* The integer slot holds the 32-bit packet identity. */
     extern i32 PCGraphicsBoundShader;
@@ -3830,7 +3830,7 @@ extern "C" {
     }
 
     void NuDisplayListSkinPalette(void *arg) {
-        PC_DL_SKIN_PALETTE_READER *packet = (PC_DL_SKIN_PALETTE_READER *)arg;
+        PC_DL_SKIN_PALETTE_PACKET *packet = (PC_DL_SKIN_PALETTE_PACKET *)arg;
         i32 count = packet->count;
         void *elements = packet->elements;
         NuShaderObject *shader = PCShaderCurrentObject();
@@ -3844,7 +3844,7 @@ extern "C" {
     }
 
     void NuDisplayListDrawFaceOn(void *arg) {
-        PC_DL_FACEON_DRAW_READER *packet = (PC_DL_FACEON_DRAW_READER *)arg;
+        PC_DL_FACEON_DRAW_PACKET *packet = (PC_DL_FACEON_DRAW_PACKET *)arg;
         if (packet == NULL) {
             return;
         }
@@ -3853,7 +3853,7 @@ extern "C" {
     }
 
     void NuDisplayListLights(void *arg) {
-        PC_DL_LIGHTS_READER *packet = (PC_DL_LIGHTS_READER *)arg;
+        PC_DL_LIGHTS_PACKET *packet = (PC_DL_LIGHTS_PACKET *)arg;
         if (PCDeviceHardwareVertexProcessingPC != PC_SHADER_MODEL_3_0) {
             NuShaderManagerSetfv(SHADER_UNIFORM_SCENE_AMBIENT_COLOR, &packet->ambient.x);
             NuShaderManagerSetfv(SHADER_UNIFORM_LIGHT_POSITION0, &packet->direction[0].x);
@@ -3897,7 +3897,7 @@ extern "C" {
     }
 
     void NuDisplayListFog(void *arg) {
-        PC_DL_FOG_READER *packet = (PC_DL_FOG_READER *)arg;
+        PC_DL_FOG_PACKET *packet = (PC_DL_FOG_PACKET *)arg;
         if (packet->enabled != 0) {
             i32 packed = (i32)packet->colour;
             NUVEC4 colour;
@@ -3923,14 +3923,14 @@ extern "C" {
     }
 
     void NuDisplayListUpdateLightmap(void) {
-        PC_DL_LIGHTMAP_UPDATE_READER *packet;
+        PC_DL_LIGHTMAP_UPDATE_PACKET *packet;
         i32 stage;
         f32 offset[3];
         if (PCGraphicsFrameScratchCount.lightmap_packet == NULL ||
             (u32)PCGraphicsFrameScratchCount.lightmap_packet == (u32)PCGraphicsBoundShader) {
             return;
         }
-        packet = (PC_DL_LIGHTMAP_UPDATE_READER *)PCGraphicsFrameScratchCount.lightmap_packet;
+        packet = (PC_DL_LIGHTMAP_UPDATE_PACKET *)PCGraphicsFrameScratchCount.lightmap_packet;
         PCGraphicsBoundShader = (i32)(u32)PCGraphicsFrameScratchCount.lightmap_packet;
         if (packet->mode == 2 && PcWindowOptions.usehires == 0) {
             packet->mode = 1;
@@ -3997,7 +3997,7 @@ extern "C" {
     }
 
     void NuDisplayListLegacyLightmapOffset(void *arg) {
-        PC_DL_LEGACY_LIGHTMAP_READER *packet = (PC_DL_LEGACY_LIGHTMAP_READER *)arg;
+        PC_DL_LEGACY_LIGHTMAP_PACKET *packet = (PC_DL_LEGACY_LIGHTMAP_PACKET *)arg;
         f32 offset[3];
         i32 i;
         for (i = 0; i < 3; ++i) {
@@ -4360,7 +4360,7 @@ extern "C" {
     }
 
     void NuDisplayListDrawDebris(void *arg) {
-        PC_DL_DEBRIS_DRAW_READER *packet = (PC_DL_DEBRIS_DRAW_READER *)arg;
+        PC_DL_DEBRIS_DRAW_PACKET *packet = (PC_DL_DEBRIS_DRAW_PACKET *)arg;
         if (packet->vertex_count == 0) {
             return;
         }
@@ -5592,7 +5592,7 @@ extern "C" {
     }
 
     void NuDisplayListVertexGroups(void *arg) {
-        PC_DL_VERTEX_GROUPS_READER *packet = (PC_DL_VERTEX_GROUPS_READER *)arg;
+        PC_DL_VERTEX_GROUPS_PACKET *packet = (PC_DL_VERTEX_GROUPS_PACKET *)arg;
         NUVEC4 *values = packet->values;
         i32 groups = (i32)((u32)packet->count + 3u) / 4;
         i32 i;
@@ -5602,7 +5602,7 @@ extern "C" {
     }
 
     void NuDisplayListVertexOffsets(void *arg) {
-        PC_DL_VERTEX_OFFSETS_READER *packet = (PC_DL_VERTEX_OFFSETS_READER *)arg;
+        PC_DL_VERTEX_OFFSETS_PACKET *packet = (PC_DL_VERTEX_OFFSETS_PACKET *)arg;
         i32 count = packet->count;
         i32 i;
         NUVEC4 *values = packet->values;
@@ -5636,14 +5636,14 @@ extern "C" {
     }
 
     void NuDisplayListCamera(void *arg) {
-        PC_DL_CAMERA_READER *packet = (PC_DL_CAMERA_READER *)arg;
+        PC_DL_CAMERA_PACKET *packet = (PC_DL_CAMERA_PACKET *)arg;
         if (packet->id != NuDisplayHandlerCameraId) {
             PC_VIEWPORT viewport;
             NUMTX *view;
-            PC_DL_CAMERA_PROJECTION_READER *projection;
+            PC_DL_CAMERA_PROJECTION_PACKET *projection;
             i32 viewport_x;
             view = &packet->view;
-            projection = (PC_DL_CAMERA_PROJECTION_READER *)(view + 1);
+            projection = (PC_DL_CAMERA_PROJECTION_PACKET *)(view + 1);
             NuDisplayHandlerCameraId = packet->id;
             PcUpdateGeometryCameraOrigin(view, &projection->projection);
             viewport_x = (i32)projection->viewport[0];
@@ -6119,7 +6119,7 @@ extern "C" {
     }
 
     void NuDisplayListDrawGeometry(void *arg) {
-        PC_DL_GEOMETRY_READER *packet = (PC_DL_GEOMETRY_READER *)arg;
+        PC_DL_GEOMETRY_PACKET *packet = (PC_DL_GEOMETRY_PACKET *)arg;
         NUMTL *material = NuDisplayHandlerMaterial;
         u32 primitive_count;
         const void *vertices;
