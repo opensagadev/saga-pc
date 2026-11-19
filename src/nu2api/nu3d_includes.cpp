@@ -9990,20 +9990,6 @@ extern "C" NUDISPLAY_LIST *NuDisplaySceneClone(NUDISPLAY_LIST *source, VARIPTR *
     return scene;
 }
 
-typedef union PC_SPECIAL_RENDER_SPECIAL { // size 0xd0
-    NUDISPLAY_SPECIAL common;
-
-    struct {                                  // size 0xcc
-        u8 unknown_0000[0xb0];                // 0x00
-        PC_DISPLAY_CLIP_OBJECT *clip_objects; // 0xb0
-        u8 unknown_00b4[8];                   // 0xb4
-        f32 *lod_ranges;                      // 0xbc
-        u8 unknown_00c0[8];                   // 0xc0
-        i16 wind_speed;                       // 0xc8
-        i16 wind_scale;                       // 0xca
-    };
-} PC_SPECIAL_RENDER_SPECIAL;
-
 extern "C" {
 
     static void DisplayListProcessGeomPC(NUDISPLAYLIST *list, NUDISPLAYLISTITEM *geometry, NUDISPLAYLISTITEM **output, NUMTX *matrix,
@@ -10154,24 +10140,24 @@ extern "C" {
         if (handle == NULL) {
             return 0;
         }
-        PC_SPECIAL_RENDER_SPECIAL *special = reinterpret_cast<PC_SPECIAL_RENDER_SPECIAL *>(handle->display_special);
+        NUDISPLAY_SPECIAL *special = handle->display_special;
         if (special->wind_scale != 0) {
             WindShear(&wind_matrix, matrix, special->wind_scale, special->wind_speed);
             matrix = &wind_matrix;
         }
         i32 clip;
         if (PCSpecialClipState == -1) {
-            clip = NuCameraClipTestExtents(&special->common.bounds_min.xyz, &special->common.bounds_max.xyz, matrix, 0.0f, 0);
+            clip = NuCameraClipTestExtents(&special->bounds_min.xyz, &special->bounds_max.xyz, matrix, 0.0f, 0);
         } else {
             clip = PCSpecialClipState;
         }
         NUDISPLAY_LIST *scene = handle->scene->display_list;
         i32 previous_shadow;
         i32 shadow_clip;
-        if ((scene->visibility_flags[special->common.instance_ix] & 0x20) != 0 && PCSpecialActiveShadowLights > 0) {
+        if ((scene->visibility_flags[special->instance_ix] & 0x20) != 0 && PCSpecialActiveShadowLights > 0) {
             previous_shadow = PCSpecialShadowClipResultsPresent;
-            NuVecMtxTransform(&minimum, &special->common.bounds_min.xyz, matrix);
-            NuVecMtxTransform(&maximum, &special->common.bounds_max.xyz, matrix);
+            NuVecMtxTransform(&minimum, &special->bounds_min.xyz, matrix);
+            NuVecMtxTransform(&maximum, &special->bounds_max.xyz, matrix);
             shadow_clip = NuSpecialClipTestShadowLights(&minimum, &maximum, 0);
         } else {
             previous_shadow = 0;
@@ -10180,7 +10166,7 @@ extern "C" {
         if (clip == 0 && shadow_clip == 0) {
             return 0;
         }
-        NuVecAdd(&center, &special->common.bounds_min.xyz, &special->common.bounds_max.xyz);
+        NuVecAdd(&center, &special->bounds_min.xyz, &special->bounds_max.xyz);
         NuVecScale(&center, &center, 0.5f);
         NuVecMtxTransform(&center, &center, matrix);
         f32 distance = NuVecDistSqr(&center, &global_camera.mtx.translation, NULL);
@@ -10188,14 +10174,14 @@ extern "C" {
             distance = 0.0f;
         }
         PC_DISPLAY_CLIP_OBJECT *object;
-        if (special->lod_ranges[0] != 0.0f) {
+        if (special->clip_range[0] != 0.0f) {
             i32 lod = 0;
             if (PCSpecialForcedLOD != 0) {
-                while (special->lod_ranges[lod] != 0.0f && lod != PCSpecialForcedLOD) {
+                while (special->clip_range[lod] != 0.0f && lod != PCSpecialForcedLOD) {
                     ++lod;
                 }
             } else {
-                while (distance < special->lod_ranges[lod]) {
+                while (distance < special->clip_range[lod]) {
                     ++lod;
                 }
             }
@@ -10204,9 +10190,9 @@ extern "C" {
             object = special->clip_objects;
         }
         f32 alpha = 1.0f;
-        if (scene->fade_ranges != NULL && (scene->visibility_flags[special->common.instance_ix] & 0x40) != 0) {
-            alpha = DisplaySceneDistanceFadePC(distance, scene->fade_ranges[special->common.instance_ix * 2],
-                                               scene->fade_ranges[special->common.instance_ix * 2 + 1]);
+        if (scene->fade_ranges != NULL && (scene->visibility_flags[special->instance_ix] & 0x40) != 0) {
+            alpha = DisplaySceneDistanceFadePC(distance, scene->fade_ranges[special->instance_ix * 2],
+                                               scene->fade_ranges[special->instance_ix * 2 + 1]);
             if (alpha == 0.0f) {
                 return 0;
             }
@@ -10245,7 +10231,7 @@ extern "C" {
                     RndrStateSetConstAlphaTint(nuspecial_const_alpha_enabled, nuspecial_const_tint_enabled, nuspecial_const_alpha,
                                                &nuspecial_const_tint, material);
                     DisplayListUpdateRenderState(list, &render_state);
-                    i32 shadow_caster = (scene->visibility_flags[special->common.instance_ix] & 0x20) != 0 && PCSpecialReflectionPass == 0;
+                    i32 shadow_caster = (scene->visibility_flags[special->instance_ix] & 0x20) != 0 && PCSpecialReflectionPass == 0;
                     i32 index = object->item_indices[i];
                     NUDISPLAYLISTITEM *geometry = scene->items + index;
                     DisplayListProcessSpecialItemPC(material, list, geometry, index, first_and_last, matrix, &transform_packet,
@@ -10582,17 +10568,6 @@ static void DisplayClipFallbackPC(NUDISPLAY_LIST *scene, NUVISIBILITYRESULT *vis
     }
 }
 
-typedef union visibility_display_special_reader_u { // size 0xd0
-    NUDISPLAY_SPECIAL common;
-
-    struct {                         // size 0xc8
-        u8 unknown_00[0x40];         // 0x00
-        NUMTX draw_matrix;           // 0x40
-        u8 unknown_80[0x44];         // 0x80
-        NUMTX *draw_matrix_override; // 0xc4
-    };
-} VISIBILITY_DISPLAY_SPECIAL_READER;
-
 extern "C" void NuDisplaySceneRndr(NUDISPLAY_LIST *scene) {
     u8 visibility_context[0x2800];
     NUGSCN temporary_scene;
@@ -10635,13 +10610,13 @@ extern "C" void NuDisplaySceneRndr(NUDISPLAY_LIST *scene) {
         return;
     }
     for (i32 i = 0; i < scene->special_count; ++i) {
-        VISIBILITY_DISPLAY_SPECIAL_READER *special = reinterpret_cast<VISIBILITY_DISPLAY_SPECIAL_READER *>(&scene->specials[i]);
-        if ((special->common.flags & 2) == 0) {
+        NUDISPLAY_SPECIAL *special = &scene->specials[i];
+        if ((special->flags & 2) == 0) {
             continue;
         }
         handle.display_special = &scene->specials[i];
-        if (portal_filter != 0 && (scene->visibility_flags[special->common.instance_ix] & 8) == 0 &&
-            ((visibility->portal_bits[(i32)special->common.instance_ix >> 3] >> (special->common.instance_ix & 7)) & 1) == 0) {
+        if (portal_filter != 0 && (scene->visibility_flags[special->instance_ix] & 8) == 0 &&
+            ((visibility->portal_bits[(i32)special->instance_ix >> 3] >> (special->instance_ix & 7)) & 1) == 0) {
             continue;
         }
         if (special->draw_matrix_override != reinterpret_cast<NUMTX *>(-1) && special->draw_matrix_override != NULL) {
@@ -10803,16 +10778,16 @@ extern "C" void DisplaySceneRndrSpecials(NUDISPLAY_LIST *scene, i32 unused0, i32
     nuhspecial_s handle;
     handle.scene = gscene;
     for (i32 i = 0; i < scene->special_count; ++i) {
-        VISIBILITY_DISPLAY_SPECIAL_READER *special = reinterpret_cast<VISIBILITY_DISPLAY_SPECIAL_READER *>(&scene->specials[i]);
-        if ((special->common.flags & 2) == 0) {
+        NUDISPLAY_SPECIAL *special = &scene->specials[i];
+        if ((special->flags & 2) == 0) {
             continue;
         }
         handle.display_special = &scene->specials[i];
-        if (shadow_filter != 0 && (scene->visibility_flags[special->common.instance_ix] & 0x20) == 0) {
+        if (shadow_filter != 0 && (scene->visibility_flags[special->instance_ix] & 0x20) == 0) {
             continue;
         }
-        if (portal_filter != 0 && (scene->visibility_flags[special->common.instance_ix] & 8) == 0 &&
-            ((visibility->portal_bits[(i32)special->common.instance_ix >> 3] >> (special->common.instance_ix & 7)) & 1) == 0) {
+        if (portal_filter != 0 && (scene->visibility_flags[special->instance_ix] & 8) == 0 &&
+            ((visibility->portal_bits[(i32)special->instance_ix >> 3] >> (special->instance_ix & 7)) & 1) == 0) {
             continue;
         }
         if (special->draw_matrix_override != reinterpret_cast<NUMTX *>(-1) && special->draw_matrix_override != NULL) {

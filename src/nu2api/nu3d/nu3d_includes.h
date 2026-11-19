@@ -682,8 +682,15 @@ typedef struct nudisplay_special_s {         // size 0xd0
     u32 flags;                               // 0xb8
     f32 *clip_range;                         // 0xbc
     u32 instance_ix;                         // 0xc0
-    struct nuinstanim_s *instance_animation; // 0xc4
-    u8 unknown_00c8[8];                      // 0xc8
+
+    union { // size 0x4
+        struct nuinstanim_s *instance_animation;
+        NUMTX *draw_matrix_override; /* -1 or NULL: draw with draw_matrix */
+    }; // 0xc4
+
+    i16 wind_speed;      // 0xc8
+    i16 wind_scale;      // 0xca
+    u8 unknown_00cc[4]; // 0xcc
 } NUDISPLAY_SPECIAL;
 
 typedef struct nuinstance_s { // size 0x50
