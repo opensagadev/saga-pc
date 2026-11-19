@@ -53,6 +53,7 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
+#include "gameapi/ai/aisys/gameaiscript.h"
 
 typedef struct PICKUP_RESET_PROGRESS { // size 0x100
     u32 collected[16];                 // 0x00
@@ -62,7 +63,6 @@ typedef struct PICKUP_RESET_PROGRESS { // size 0x100
 } PICKUP_RESET_PROGRESS;
 
 extern const f64 GameObjectNearFloorNoFloorHeight;
-extern i32 turret_gizmotype_id;
 
 static NUMTX *PickupSetRotationX(NUMTX *matrix, i32 angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];

@@ -64,6 +64,8 @@ extern "C" {
     void VaderC_Reset(struct WORLDINFO_s *);
     void VaderC_Update(struct WORLDINFO_s *);
     extern void *CurTerr;
+    i32 Action_BoulderSection(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    void VaderA_GoneThroughDoor(struct WORLDINFO_s *world, struct DOOR_s *door);
 #ifdef __cplusplus
 }
 #endif

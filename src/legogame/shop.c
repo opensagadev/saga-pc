@@ -49,6 +49,7 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 #include <stdio.h>
+#include "legoapi/world/levels.h"
 
 extern shopitem_s *CodeItems;
 extern i32 SHOPEXTRACOUNT;
@@ -205,7 +206,6 @@ extern f32 ShopSlideTimer;
  * Movement mode is 1=left, 2=right. */
 extern i32 ShopMoveItems;
 extern f32 ShopPurchasePulseDuration;
-extern AREA_DATA *ANEWHOPE_ADATA;
 
 /* Same-unit matrix helpers, also kept as standalone copies (source in EAX, destination in ECX). */
 static void ShopMtxCopy(NUMTX *destination, const NUMTX *source) {

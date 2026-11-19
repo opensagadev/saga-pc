@@ -62,7 +62,6 @@
 /* Retail unit 0x40a4b0-0x40e6fa: definitions in retail address order. */
 
 extern NUMTX CutCamMtx;
-extern LEVELDATA *CLOUDCITYTRAPB_LDATA;
 extern struct nuvec_s *shopcamlookat;
 extern struct nuvec_s *shopcampos;
 extern f32 CamStopBlend;

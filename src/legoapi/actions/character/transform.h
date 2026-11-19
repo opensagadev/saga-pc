@@ -11,6 +11,8 @@ extern "C" {
     void QuatInterpolateRotationMatrix(NUMTX *, NUMTX *, NUMTX *, f32);
     GAMEOBJECT *Transform_TargettedByObj(void *);
     void TransformDrawTarget(NUVEC *, f32, f32);
+    void GizmoBlowup_TransformDraw_Game(struct GIZMOBLOWUP *target);
+    void Transform_MoveCode(struct WORLDINFO_s *, struct gameobject_s *);
 #ifdef __cplusplus
 }
 #endif

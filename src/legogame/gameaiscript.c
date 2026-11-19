@@ -107,6 +107,9 @@
 #include <stdio.h>
 #include <string.h>
 #include "legoapi/gizmos/door/gizspinner.h"
+#include "legoapi/actions/character/speederchase.h"
+#include "legoapi/world/levels/episodeIII.h"
+#include "nu2api/nu3d/nurndr.h"
 
 typedef union AI_ACTION_FLAGS_EF4 { // size 0x4
     u32 word;
@@ -123,13 +126,9 @@ typedef union AI_ACTION_FLAGS_EF4 { // size 0x4
 /* AISYS callback family: seven-argument callbacks. */
 extern i32 TagCharacter(GAMEOBJECT *, GAMEOBJECT *, i32);
 
-void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour);
-
 f32 debug_condition = 0;
 NUGSPLINE *script_spline_selected = 0;
 static i32 prev_droid_ix = 0;
-
-void LevelScriptReStoreProgress(WORLDINFO *, LEVEL_SCRIPT_PROCESS *);
 
 i16 id_BATTLEDROIDCOMMANDER = -1;
 i16 id_BATTLEDROIDGEONOSIAN = -1;
@@ -11721,9 +11720,6 @@ i32 Action_CreateCreatures(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
     }
     return 1;
 }
-
-i32 Action_SpeederBeingChased(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
-i32 Action_BoulderSection(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
 
 AIACTIONDEF lego_aiactiondefs[208] = {
     {"Activate", Action_Activate, 1, 0, 0},

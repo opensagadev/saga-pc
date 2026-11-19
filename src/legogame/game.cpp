@@ -146,6 +146,8 @@
 #include "legoapi/items/objects/legoapi_traffic.h"
 #include "legoapi/world/world_shared.h"
 #include "legoapi/items/collect/detonator.h"
+#include "legoapi/actions/character/transform.h"
+#include "nu2api/nu3d/nurndr.h"
 
 static NUVEC BuckSnowmobForward = {0.0f, 0.0f, 1.0f};
 static f32 BuckSnowmobJumpDuration = 1.0f;
@@ -153,9 +155,6 @@ static f32 BuckSnowmobJumpHeight = 1.0f;
 static f32 BuckSnowmobMaxY = 0.1f;
 static f32 BuckSnowmobMinY = -0.01f;
 static f32 BuckSnowmobRadius = 0.2f;
-
-extern "C" void Game_WorldInfo_InitLast(WORLDINFO *world);
-extern "C" void Game_WorldInfo_InitMenu(WORLDINFO *world, i32 *menu_id, i32 *menu_y);
 
 extern "C" NARROWSOCKEXCEPTION NarrowSockExceptionsLsw[4] = {
     {"deathstarbattle_d", -1, 1, 67.5f, 999.0f},
@@ -234,7 +233,6 @@ extern "C" {
     const char *InitAsciiRight = ">";
     const char *InitAsciiBigArrow = "\xC2\xA4";
 }
-extern "C" void VaderA_GoneThroughDoor(WORLDINFO *world, DOOR_s *door);
 
 extern "C" {
     extern u16 PodRaceBDieAngle;
@@ -247,7 +245,6 @@ extern "C" {
 }
 extern "C" TIMER ChallengeTimer;
 extern "C" {
-    extern LEVELDATA *CLOUDCITYTRAPB_LDATA;
     extern void *game_cutscenes_droid_factory_conveyor;
     extern i16 dat_007f1828; /* character id fixed up from "PenguinBomb" */
 }
@@ -261,7 +258,6 @@ struct GIZBUILDIT;
 
 extern "C" i16 dat_00880ff0;
 
-extern "C" void GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP *target);
 static void LEGO_AllGoldBricksFn(void);
 extern "C" {
 
@@ -2910,8 +2906,6 @@ extern "C" {
             obstacle->start_sfx_id = (i16)GetSfxId("SwPPad");
         }
     }
-
-    void NuLightSpeedBlurOldCameraPos(NUMTX *camera);
 
     void SpeedBlur_Update(void) {
         static NUMTX cameraMtxs[2];

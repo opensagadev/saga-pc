@@ -72,7 +72,6 @@ struct GIZBOMBGEN_s *HothBattleC_BombGenerator = 0;
 AILOCATOR *HothEscapeBLocator = NULL;
 GAMEOBJECT *HothEscapeBSnowmob = NULL;
 
-GIZMO *GizmoFindByData(void *, i32, void *);
 struct panel_movement_s;
 struct panel_movement_s *GizPanel_FindByName(WORLDINFO *, char *);
 

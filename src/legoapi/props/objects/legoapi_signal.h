@@ -83,6 +83,8 @@ extern "C" {
     struct SIGNAL_s *Signal_FindNearest(struct WORLDINFO_s *world, struct nuvec_s *position, struct gameobject_s *object, f32 *distance);
     void Signal_MoveCode(struct WORLDINFO_s *, struct gameobject_s *);
     void SuitBlowupCode(struct WORLDINFO_s *, struct gameobject_s *);
+    struct addgizmotype_s *Signals_RegisterGizmo(i32);
+    void Signals_InitTerrain(struct WORLDINFO_s *);
 #ifdef __cplusplus
 }
 #endif

@@ -87,6 +87,7 @@ extern "C" {
     void DrawRopeCurved(NUVEC *start, NUVEC *points, i32 count, i32 unused_flags, NUMTL *unused_material);
     i32 Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position);
     void Grapple_DrawLine(GAMEOBJECT *);
+    struct addgizmotype_s *Grapples_RegisterGizmo(i32);
 #ifdef __cplusplus
 }
 #endif

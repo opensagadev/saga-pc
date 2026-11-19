@@ -15,8 +15,7 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
-
-i32 Draw3DObject(WORLDINFO *, i32, NUVEC *, u16, u16, u16, f32, f32, f32, i32);
+#include "legoapi/misc/utilities.h"
 
 i32 GizTorp_Load(void *world_pointer, void *unused) {
     WORLDINFO *world = world_pointer;

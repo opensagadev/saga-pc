@@ -83,7 +83,6 @@ void *CutScene_FindInst(void *, char *);
 i32 EquivalentObject_Find(WORLDINFO *, nuhspecial_s *);
 
 void __movsd(unsigned long *, unsigned long const *, unsigned int);
-void LevelScriptReStoreProgress(WORLDINFO *, LEVEL_SCRIPT_PROCESS *);
 
 extern char AIGizmoNameBuffer[16];
 

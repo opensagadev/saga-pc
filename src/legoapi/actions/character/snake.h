@@ -36,6 +36,7 @@ extern "C" {
     extern SNAKE_BODY snakebodies[4];
     void DrawSnakeBody(GAMEOBJECT *);
     void UpdateSnakeBody(GAMEOBJECT *object);
+    SNAKE_BODY *CreateSnakeBody(struct gameobject_s *object, i32 segment_count);
 #ifdef __cplusplus
 }
 #endif

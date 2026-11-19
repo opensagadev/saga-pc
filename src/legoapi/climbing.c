@@ -26,9 +26,7 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
-
-extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0;
-extern i32 LEGO_AIPATHCNX_VARIANT_FLAG1;
+#include "legoapi/gizmo/object/gizbuildit.h"
 
 static __inline f32 ClimbingFabs(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;

@@ -81,14 +81,14 @@
 #include "legoapi/gizmos/door/securitydoors.h"
 #include "legoapi/gizmos/transport/teleport.h"
 #include "legoapi/gizmos/traps/gizturret.h"
+#include "legoapi/gizmo/object/gizbuildit.h"
+#include "legoapi/gizmos/fx/guidelines.h"
+#include "legoapi/gizmos/transport/grapples.h"
+#include "legoapi/props/objects/legoapi_signal.h"
 
-ADDGIZMOTYPE *GizBuildIts_RegisterGizmo(i32);
-ADDGIZMOTYPE *Signals_RegisterGizmo(i32);
-ADDGIZMOTYPE *Grapples_RegisterGizmo(i32);
 ADDGIZMOTYPE *TightRopes_RegisterGizmo(i32);
 ADDGIZMOTYPE *Ledges_RegisterGizmo(i32);
 ADDGIZMOTYPE *Spinner_RegisterGizmo(i32);
-ADDGIZMOTYPE *GuideLines_RegisterGizmo(i32);
 ADDGIZMOTYPE *Push_RegisterGizmo(i32);
 
 const f32 PlayerBuildItNegativeLimit = -1000000000.0f;

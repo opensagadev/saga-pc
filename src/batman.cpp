@@ -139,7 +139,6 @@ extern "C" {
     void GameDisplaySettings(LEVEL_DISPLAY *display, i32 *colours);
     void TrafficAnimSys_Update(struct TRAFFICANIMSYS_s *system);
     void TrafficAnimSys_Draw(struct TRAFFICANIMSYS_s *system);
-    void GizmoSysDraw(void *system, void *world, f32 delta_time);
 
     u8 NuAllocDumpOnLevel = 0;
     i32 editor_active = 0;

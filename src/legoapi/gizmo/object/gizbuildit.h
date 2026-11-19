@@ -74,6 +74,9 @@ extern "C" {
     void Indy_GameAISysInit(void);
     extern i32 gizbuildit_gizmotype_id;
     void GizBuildIt_KillParts(GIZBUILDIT *);
+    struct addgizmotype_s *GizBuildIts_RegisterGizmo(i32);
+    extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0;
+    extern i32 LEGO_AIPATHCNX_VARIANT_FLAG1;
 #ifdef __cplusplus
 }
 #endif

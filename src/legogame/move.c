@@ -129,17 +129,14 @@
 #include "legoapi/actions/combat/whip.h"
 #include "legoapi/world/levels/episodeII.h"
 #include "legoapi/items/collect/detonator.h"
+#include "legoapi/actions/character/transform.h"
 
 extern i32 LandspeederExhaustJoints[3];
-
-void Transform_MoveCode(WORLDINFO *, GAMEOBJECT *);
 
 extern f32 DirectionalGrappleSeekScale;
 extern f32 DirectionalZipUpSeekRate;
 
 extern u8 DroidCheat32Enabled;
-
-void *CreateSnakeBody(GAMEOBJECT *object, i32 segment_count);
 
 extern f32 ForceDeflectSpeed;
 extern f32 ForceDeflectSeekRate;

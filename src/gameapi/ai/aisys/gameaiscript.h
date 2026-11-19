@@ -175,6 +175,11 @@ extern "C" {
     extern u32 LEGO_AIPATHCNX_JUMP_NOW;
     extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
     extern u32 LEGO_AIPATHCNX_REQUIRESPERMISSION;
+    extern i32 turret_gizmotype_id;
+    extern u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
+    extern u32 LEGO_AIPATHCNX_JUMP_NOW;
+    extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
+    extern u32 LEGO_AIPATHCNX_REQUIRESPERMISSION;
 #ifdef __cplusplus
 }
 #endif

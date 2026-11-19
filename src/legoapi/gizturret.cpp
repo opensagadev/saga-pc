@@ -43,6 +43,7 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numusic/sfx.h"
+#include "gameapi/ai/aisys/gameaiscript.h"
 
 typedef struct TURRET_ANIM_DATA { // size 0x4
     u8 flags;                     // 0x0
@@ -61,7 +62,6 @@ typedef struct {      // size 0x70
 } TURRET_PROGRESS;
 
 extern "C" {
-    extern i32 turret_gizmotype_id;
     i32 LEGOHINT_SHOOTCAMERAS = -1;
     i32 GizTurretAnimDataVersion = 7;
     i32 gizturret_test_ang = 3640;

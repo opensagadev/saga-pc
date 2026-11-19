@@ -258,9 +258,6 @@ typedef struct CUT_DRAW_LOCATOR_ENTRY { // size 0x14
 } CUT_DRAW_LOCATOR_ENTRY;
 
 struct FADEINFO_s;
-extern "C" {
-    void GizmoSysDraw(void *, WORLDINFO *, f32);
-}
 
 extern "C" {
     static void LocatorFunction_Blaster(INSTNUGCUTSCENE *, CUT_DRAW_LOCATOR_SYS *, CUT_DRAW_LOCATOR_INSTANCE *, CUT_DRAW_LOCATOR *locator,

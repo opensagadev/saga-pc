@@ -203,6 +203,7 @@ extern "C" {
     void BountyHunterPursuitD_Init(WORLDINFO *);
     void BountyHunterPursuitD_Reset(WORLDINFO *);
     void BountyHunterPursuitD_Update(WORLDINFO *);
+    extern u32 LEGO_AIPATHCNX_BIGJUMP;
 #ifdef __cplusplus
 }
 #endif

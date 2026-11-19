@@ -397,6 +397,11 @@ extern "C" {
     extern char AreaFixUpName_Gungan[8];
     void KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
     void ClearUpAreaData(void);
+    extern struct area_data_s *ANEWHOPE_ADATA;
+    extern struct level_data_s *CLOUDCITYTRAPB_LDATA;
+    void Game_WorldInfo_InitLast(struct WORLDINFO_s *world);
+    void Game_WorldInfo_InitMenu(struct WORLDINFO_s *world, i32 *menu_id, i32 *menu_y);
+    void LevelScriptReStoreProgress(struct WORLDINFO_s *, struct level_script_process_s *);
 #ifdef __cplusplus
 }
 #endif

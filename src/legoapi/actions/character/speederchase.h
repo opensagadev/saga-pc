@@ -73,6 +73,7 @@ extern "C" {
     extern f32 SpeederChaseTime0;
     extern f32 SpeederChaseTime1;
     i32 SpeederBlowupHack(GIZMOBLOWUP *, i32);
+    i32 Action_SpeederBeingChased(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
 #ifdef __cplusplus
 }
 #endif

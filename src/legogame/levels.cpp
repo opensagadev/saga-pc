@@ -137,6 +137,7 @@
 #include "legoapi/props/doors/doors.h"
 #include "legoapi/world/levels/episodeIV.h"
 #include "legoapi/gizmos/door/securitydoors.h"
+#include "legoapi/props/objects/legoapi_signal.h"
 
 extern "C" void FmvPlatformUpdate(void);
 
@@ -179,8 +180,6 @@ extern "C" {
     void LoadBridgeFile(WORLDINFO *world);
     void LoadTerrainFile(WORLDINFO *world);
 }
-
-extern "C" void Signals_InitTerrain(WORLDINFO *);
 
 extern "C" {
     f32 WaitingForCharacterTime = 0;

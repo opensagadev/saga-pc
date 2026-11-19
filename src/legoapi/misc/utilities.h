@@ -56,6 +56,7 @@ extern "C" {
     void InitTexAnimScripts(char **table);
     void SaveSceneObjectAnimTFactors(NUGSCN *scene);
     void SetTexAnimSignals(void);
+    i32 Draw3DObject(struct WORLDINFO_s *, i32, struct nuvec_s *, u16, u16, u16, f32, f32, f32, i32);
 #ifdef __cplusplus
 }
 #endif

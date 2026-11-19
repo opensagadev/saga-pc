@@ -48,6 +48,9 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 #include "gameapi/edtools/edui.h"
+#include "gameapi/ai/aisys/gameaiscript.h"
+#include "legoapi/gizmo/object/gizbuildit.h"
+#include "legoapi/world/levels/episodeV.h"
 static i16 id_ROBIN = -1;
 extern "C" {
     const char *TagAsciiDown = "\xC2\xA3";
@@ -68,15 +71,6 @@ typedef struct suit_ai_capabilities_s {
 } SUIT_AI_CAPABILITIES;
 
 typedef PLAYER_BATARANG_SLOT BATARANG_NATIVE;
-extern "C" {
-    extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0;
-    extern i32 LEGO_AIPATHCNX_VARIANT_FLAG1;
-    extern u32 LEGO_AIPATHCNX_BIGJUMP;
-    extern u32 LEGO_AIPATHCNX_REQUIRESPERMISSION;
-    extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
-    extern u32 LEGO_AIPATHCNX_JUMP_NOW;
-    extern u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
-}
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 extern "C" {

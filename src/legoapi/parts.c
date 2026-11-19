@@ -66,6 +66,7 @@
 #include "nu2api/nustencilshadows_PC.h"
 #include <string.h>
 #include <float.h>
+#include "gameapi/edbits.h"
 
 static i32 PartVectorSpreadDegrees = 30;
 i32 edpart_set_part = 5;
@@ -954,10 +955,6 @@ void edpartDebrisSettingsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2
         edpart_debrissettings_menu->y = menu->y + 40;
     }
 }
-
-extern NUMTL *edpart_mtl;
-void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y, i32 rotation_x, i32 outer_z,
-                    i32 outer_y, i32 colour, NUMTL *material);
 
 typedef struct PART_TERRAIN_STATE { // size 0x20c
     u8 unknown_000[0x200];          // 0x000

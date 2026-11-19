@@ -219,6 +219,8 @@ extern "C" {
     void Arcade_ResetPanel(void);
     void Hub_ClearStats(void);
     void Hub_UpdateKit(void);
+    struct gizmo_s *GizmoFindByData(void *, i32, void *);
+    void GizmoSysDraw(void *system, void *world, f32 delta_time);
 #ifdef __cplusplus
 }
 #endif

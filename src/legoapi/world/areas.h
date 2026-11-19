@@ -145,6 +145,8 @@ extern "C" {
     i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER *, struct WORLDINFO_s *);
     void SuperCounter_ActivateGizmoPickup(struct gizmo_s *, struct GIZMOPICKUP *);
     i8 Area_CharIDInCurrentList(i32 character_id);
+    struct area_data_s *Areas_ConfigureList(char *path, union variptr_u *buffer, union variptr_u *buffer_end, i32 max_count,
+                                            i32 *count_out);
 #ifdef __cplusplus
 }
 #endif

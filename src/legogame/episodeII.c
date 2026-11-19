@@ -122,8 +122,6 @@ typedef struct kamino_e_s {
     i16 platform;
 } KAMINO_E;
 
-void *GizmoFindByData(void *gizmo_sys, i32 type_id, void *data);
-
 static i32 PaintMixColour(i32 first, i32 second) {
     if ((first == 0 && second == 1) || (first == 1 && second == 0)) {
         return 3;
