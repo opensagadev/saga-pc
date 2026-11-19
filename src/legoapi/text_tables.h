@@ -214,16 +214,6 @@ typedef struct cut_load_character_animation_s { // size 0x10
     u8 unknown_08[8];                           // 0x8
 } CUT_LOAD_CHARACTER_ANIMATION;
 
-struct cut_load_character_instance_s { // size 0x18
-    void *model;                       // 0x00
-    u8 unknown_04[8];                  // 0x04
-    f32 frame_a;                       // 0x0c
-    u8 unknown_10[5];                  // 0x10
-    u8 animation_a;                    // 0x15
-    u8 animation_b;                    // 0x16
-    u8 unknown_17;                     // 0x17
-};
-
 typedef struct reaction_fields_s { // size 0x77c
     u8 unknown_000[0x750];         // 0x000
     f32 animation_speed;           // 0x750

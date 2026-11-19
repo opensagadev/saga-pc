@@ -187,11 +187,11 @@ typedef struct cut_load_locator_s { // size 0x64
     NUMTX matrix;                   // 0x00
     NUVEC pivot;                    // 0x40
     f32 scale;                      // 0x4c
-    void *animation;                // 0x50
+    struct NUANIMDATA2 *animation;  // 0x50
     u32 unknown_54;                 // 0x54
     u8 flags;                       // 0x58
     u8 type_index;                  // 0x59
-    u8 unknown_5a;                  // 0x5a
+    u8 joint_index;                  // 0x5a
     u8 tracks_self;                 // 0x5b
     u8 unknown_5c[8];               // 0x5c
 } CUT_LOAD_LOCATOR;
@@ -250,21 +250,41 @@ typedef struct cut_load_rigid_system_s {
     u16 unused;
 } CUT_LOAD_RIGID_SYSTEM;
 
-struct cut_load_character_s {  // size 0x64
-    NUMTX matrix;              // 0x00
-    char *name;                // 0x40
-    void *animation;           // 0x44
-    void *face_animation;      // 0x48
-    void *extra_animation;     // 0x4c
-    void *model;               // 0x50
-    CUT_LOAD_LOCATOR *locator; // 0x54
-    u32 unknown_58;            // 0x58
-    u8 flags;                  // 0x5c
-    u8 unknown_5d;             // 0x5d
-    u8 uses_locator;           // 0x5e
-    u8 unknown_5f;             // 0x5f
-    u8 locator_index;          // 0x60
-    u8 unknown_61[3];          // 0x61
+struct cut_load_character_s {           // size 0x64
+    NUMTX matrix;                       // 0x00
+    char *name;                         // 0x40
+    void *animation;                    // 0x44
+    struct ANI3_HEADER *face_animation; // 0x48
+    struct NUANIMDATA2 *extra_animation; // 0x4c
+    void *model;                        // 0x50
+
+    union { // size 0x4
+        i32 index;
+        CUT_LOAD_LOCATOR *pointer;
+    } locator; // 0x54
+
+    f32 animation_rate;  // 0x58
+    u8 flags;            // 0x5c
+    u8 animation_index;  // 0x5d
+    u8 locator_count;    // 0x5e
+    u8 unknown_5f;       // 0x5f
+    u8 locator_index;    // 0x60
+    u8 blend_time;       // 0x61
+    u8 unknown_62;       // 0x62
+    i8 start_frame;      // 0x63
+};
+
+/* A character's per-instance animation state; the draw blends from animation_a to animation_b. */
+struct cut_load_character_instance_s { // size 0x18
+    void *model;                       // 0x00
+    f32 blend_progress;                // 0x04
+    u8 unknown_08[4];                  // 0x08
+    f32 frame_a;                       // 0x0c
+    f32 frame_b;                       // 0x10
+    u8 flags;                          // 0x14
+    u8 current_animation;              // 0x15
+    u8 animation_a;                    // 0x16
+    u8 animation_b;                    // 0x17
 };
 
 typedef struct cut_load_character_system_s {

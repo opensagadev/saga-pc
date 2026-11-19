@@ -303,7 +303,7 @@ static void CutSceneLocatorLookAtUpdate(CUT_LOAD_LOCATOR_INSTANCE *instance, CUT
     f32 blend;
     f32 start;
     i32 layers;
-    i32 magic = ((NUANIMDATA2 *)locator->animation)->header.magic;
+    i32 magic = locator->animation->header.magic;
     if (magic < 0x414e4934 || magic > 0x414e4935) {
         return;
     }

@@ -870,8 +870,8 @@ static CUT_LOAD_CHARACTER_INSTANCE_SYSTEM *CutCharacterInstanceCreate(CUT_SCENE_
         for (i = 0; i < system->count; ++i) {
             CUT_LOAD_CHARACTER *character = &system->characters[i];
             CUT_LOAD_CHARACTER_INSTANCE *target = &instance->characters[i];
-            target->animation_b = 255;
             target->animation_a = 255;
+            target->current_animation = 255;
             if ((character->flags & 2) != 0) {
                 if (NuCutSceneCharacterCreateData != NULL) {
                     NuCutSceneCharacterCreateData(character, target, buffer);
@@ -1843,13 +1843,13 @@ void CutSceneSwapStreamAsset(INSTNUGCUTSCENE *instance) {
             void *animation = characters->characters[i].animation;
             void *face = characters->characters[i].face_animation;
             void *extra = characters->characters[i].extra_animation;
-            CUT_LOAD_LOCATOR *locator = characters->characters[i].locator;
+            CUT_LOAD_LOCATOR *locator = characters->characters[i].locator.pointer;
             characters->characters[i] = saved_characters->characters[i];
             characters->characters[i].animation = animation;
             characters->characters[i].face_animation = face;
             characters->characters[i].extra_animation = extra;
-            if (locator != NULL && characters->characters[i].uses_locator != 0 && characters->characters[i].locator_index != 0xff) {
-                characters->characters[i].locator = &scene->locator_system->locators[characters->characters[i].locator_index];
+            if (locator != NULL && characters->characters[i].locator_count != 0 && characters->characters[i].locator_index != 0xff) {
+                characters->characters[i].locator.pointer = &scene->locator_system->locators[characters->characters[i].locator_index];
             }
         }
     }
