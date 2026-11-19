@@ -1772,7 +1772,14 @@ i32 NetPredictor::AllowPush(const EdClass *object_class, const void *object, Rep
 
 i32 NetPredictor::SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass *object_class, void *object, ReplicatorData &data,
                                   PredictorTime *time, i16 *class_mapping) {
-    u8 member_data[256];
+    /* One member value as GetMemberData writes it, read back by its type. */
+    union {
+        u8 bytes[256];
+        f32 floats[64];
+        i32 int_value;
+        i16 short_value;
+        i8 char_value;
+    } member_data;
     u8 continuity_break = (replication_group >> 3) & 1;
     for (EdRef *member = object_class->members; member != NULL; member = member->next) {
         if (member->attributes & EDREF_ATTR_CLASS) {
@@ -1792,11 +1799,11 @@ i32 NetPredictor::SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass 
             }
             if (object != NULL) {
                 if (stream.mode == 2) {
-                    member->GetMemberData(object, member->type_id, member_data, sizeof(member_data));
+                    member->GetMemberData(object, member->type_id, member_data.bytes, sizeof(member_data.bytes));
                 }
-                type->serialise(stream, member_data, size);
+                type->serialise(stream, member_data.bytes, size);
                 if (stream.mode == 1 && time->sample_count < 3 && continuity_break == 0) {
-                    member->SetMemberData(object, member->type_id, member_data, sizeof(member_data), class_mapping);
+                    member->SetMemberData(object, member->type_id, member_data.bytes, sizeof(member_data.bytes), class_mapping);
                 }
             } else {
                 stream.Eat(size, 1);
@@ -1805,18 +1812,18 @@ i32 NetPredictor::SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass 
             f32 *values;
             i32 count = 1;
             if (member->type_id == EdType_Float) {
-                values = (f32 *)member_data;
+                values = member_data.floats;
             } else if (member->type_id == EdType_VuVec || member->type_id == EdType_NuVec) {
                 count = 3;
-                values = (f32 *)member_data;
+                values = member_data.floats;
             } else if (member->type_id == EdType_Char) {
-                converted[0] = *(i8 *)member_data;
+                converted[0] = member_data.char_value;
                 values = converted;
             } else if (member->type_id == EdType_Short) {
-                converted[0] = *(i16 *)member_data;
+                converted[0] = member_data.short_value;
                 values = converted;
             } else if (member->type_id == EdType_Int) {
-                converted[0] = *(i32 *)member_data;
+                converted[0] = member_data.int_value;
                 values = converted;
             } else {
                 NetTrace();
@@ -1834,30 +1841,37 @@ i32 NetPredictor::SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass 
 
 i32 NetPredictor::DoPrediction(const EdClass *object_class, void *object, ReplicatorData &data, PredictorTime *time, i32 check_only) {
     i32 result = 0;
-    u8 member_data[16];
+    /* One member value as GetMemberData writes it, read back by its type. */
+    union {
+        u8 bytes[16];
+        f32 floats[4];
+        i32 int_value;
+        i16 short_value;
+        i8 char_value;
+    } member_data;
     for (EdRef *member = object_class->members; member != NULL; member = member->next) {
         if (member->attributes & EDREF_ATTR_CLASS) {
             EdClass *member_class = theRegistry.GetClass(member->type_id);
             void *member_object = member->GetMemberObject(object);
             result |= DoPrediction(member_class, member_object, data, time, check_only);
         } else if (member->replication_group == id) {
-            member->GetMemberData(object, member->type_id, member_data, 256);
+            member->GetMemberData(object, member->type_id, member_data.bytes, 256);
             f32 converted[1];
             f32 *values;
             i32 count = 1;
             if (member->type_id == EdType_Float) {
-                values = (f32 *)member_data;
+                values = member_data.floats;
             } else if (member->type_id == EdType_VuVec || member->type_id == EdType_NuVec) {
                 count = 3;
-                values = (f32 *)member_data;
+                values = member_data.floats;
             } else if (member->type_id == EdType_Char) {
-                converted[0] = *(i8 *)member_data;
+                converted[0] = member_data.char_value;
                 values = converted;
             } else if (member->type_id == EdType_Short) {
-                converted[0] = *(i16 *)member_data;
+                converted[0] = member_data.short_value;
                 values = converted;
             } else if (member->type_id == EdType_Int) {
-                converted[0] = *(i32 *)member_data;
+                converted[0] = member_data.int_value;
                 values = converted;
             } else {
                 NetTrace();
@@ -1874,13 +1888,13 @@ i32 NetPredictor::DoPrediction(const EdClass *object_class, void *object, Replic
                 result |= CheckPredictionError(object_class, object, actual, values, count);
             } else {
                 if (member->type_id == EdType_Char) {
-                    *(i8 *)member_data = (i8)converted[0];
+                    member_data.char_value = (i8)converted[0];
                 } else if (member->type_id == EdType_Short) {
-                    *(i16 *)member_data = (i16)converted[0];
+                    member_data.short_value = (i16)converted[0];
                 } else if (member->type_id == EdType_Int) {
-                    *(i32 *)member_data = (i32)converted[0];
+                    member_data.int_value = (i32)converted[0];
                 }
-                member->SetMemberData(object, member->type_id, member_data, 256, NULL);
+                member->SetMemberData(object, member->type_id, member_data.bytes, 256, NULL);
             }
         }
     }

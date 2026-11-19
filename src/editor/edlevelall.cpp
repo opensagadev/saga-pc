@@ -547,7 +547,8 @@ class SpecialObject : public Placeable { // size 0x24
     virtual i32 GetCollision() const;
     virtual void SetCollision(i32 enabled);
 
-    nuhspecial_s special; // 0x18
+    /* The engine's special handle; its accessors take a non-const pointer. */
+    mutable nuhspecial_s special; // 0x18
 };
 
 /* One special of a level scene; editor_owned marks the editor-created
@@ -3921,23 +3922,23 @@ void EditorSettings::AddMenuItems(eduimenu_s *menu) {
 }
 
 i32 SpecialObject::Exists() const {
-    return NuSpecialExistsFn(const_cast<nuhspecial_s *>(&special));
+    return NuSpecialExistsFn(&special);
 }
 
 const char *SpecialObject::GetName() const {
-    return NuSpecialGetName(const_cast<nuhspecial_s *>(&special));
+    return NuSpecialGetName(&special);
 }
 
 i32 SpecialObject::GetNumMtls() const {
-    return NuSpecialNumMtls(const_cast<nuhspecial_s *>(&special));
+    return NuSpecialNumMtls(&special);
 }
 
 NUMTL *SpecialObject::GetMtl(i32 index) const {
-    return NuSpecialGetMtl(const_cast<nuhspecial_s *>(&special), index);
+    return NuSpecialGetMtl(&special, index);
 }
 
 i32 SpecialObject::GetVisibility() const {
-    return NuSpecialGetVisibilityFn(const_cast<nuhspecial_s *>(&special));
+    return NuSpecialGetVisibilityFn(&special);
 }
 
 void SpecialObject::SetVisibility(i32 visible) {
@@ -3945,7 +3946,7 @@ void SpecialObject::SetVisibility(i32 visible) {
 }
 
 i32 SpecialObject::GetCollision() const {
-    return NuSpecialGetCollision(const_cast<nuhspecial_s *>(&special)) != 0;
+    return NuSpecialGetCollision(&special) != 0;
 }
 
 void SpecialObject::SetCollision(i32 enabled) {
@@ -3955,14 +3956,14 @@ void SpecialObject::SetCollision(i32 enabled) {
 f32 SpecialObject::GetRadius() const {
     f32 radius = 1.0f;
     NUVEC centre;
-    if (NuSpecialExistsFn(const_cast<nuhspecial_s *>(&special))) {
-        NuSpecialGetRadius(const_cast<nuhspecial_s *>(&special), &centre, &radius);
+    if (NuSpecialExistsFn(&special)) {
+        NuSpecialGetRadius(&special, &centre, &radius);
     }
     return radius;
 }
 
 const VuMtx *SpecialObject::GetInitialTransform() const {
-    return (const VuMtx *)NuSpecialGetMtx(const_cast<nuhspecial_s *>(&special));
+    return (const VuMtx *)NuSpecialGetMtx(&special);
 }
 
 void SpecialObject::SetInitialTransform(const VuMtx *matrix) {
@@ -3970,7 +3971,7 @@ void SpecialObject::SetInitialTransform(const VuMtx *matrix) {
 }
 
 const VuMtx *SpecialObject::GetCurrentTransform() const {
-    return (const VuMtx *)NuSpecialGetDrawMtx(const_cast<nuhspecial_s *>(&special));
+    return (const VuMtx *)NuSpecialGetDrawMtx(&special);
 }
 
 void SpecialObject::SetCurrentTransform(const VuMtx *matrix) {
@@ -3978,14 +3979,14 @@ void SpecialObject::SetCurrentTransform(const VuMtx *matrix) {
 }
 
 const VuVec *SpecialObject::GetInitialPosition() const {
-    return (const VuVec *)NuSpecialGetPos(const_cast<nuhspecial_s *>(&special));
+    return (const VuVec *)NuSpecialGetPos(&special);
 }
 
 void SpecialObject::SetInitialPosition(const VuVec *) {
 }
 
 const VuVec *SpecialObject::GetCurrentPosition() const {
-    return (const VuVec *)NuSpecialGetDrawPos(const_cast<nuhspecial_s *>(&special));
+    return (const VuVec *)NuSpecialGetDrawPos(&special);
 }
 
 void SpecialObject::SetCurrentPosition(const VuVec *position) {
@@ -3994,9 +3995,9 @@ void SpecialObject::SetCurrentPosition(const VuVec *position) {
 
 void SpecialObject::Render(const VuMtx *matrix) const {
     if (matrix != NULL) {
-        NuSpecialDrawAt(const_cast<nuhspecial_s *>(&special), const_cast<NUMTX *>(&matrix->matrix));
+        NuSpecialDrawAt(&special, const_cast<NUMTX *>(&matrix->matrix));
     } else {
-        NuSpecialDrawAt(const_cast<nuhspecial_s *>(&special), NuSpecialGetDrawMtx(const_cast<nuhspecial_s *>(&special)));
+        NuSpecialDrawAt(&special, NuSpecialGetDrawMtx(&special));
     }
 }
 
@@ -4048,7 +4049,7 @@ void SceneInstance::SetCurrentPosition(const VuVec *position) {
 }
 
 void SceneInstance::Render(const VuMtx *) const {
-    NuSpecialDrawAt(const_cast<nuhspecial_s *>(&special), const_cast<NUMTX *>(&current_transform.matrix));
+    NuSpecialDrawAt(&special, const_cast<NUMTX *>(&current_transform.matrix));
 }
 
 void SceneObjectHelper::ClearLevel(i32 level) {

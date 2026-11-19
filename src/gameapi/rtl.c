@@ -153,7 +153,7 @@ static f32 ApplyAntilights(RTL_LIGHT *light, RTL_DATA *lighting_data, f32 streng
     return strength;
 }
 
-static RTL_LIGHT *GetNextRTL(void *set, RTL_LIGHT *light, char *indices, int *index) {
+static RTL_LIGHT *GetNextRTL(RTL_SET *set, RTL_LIGHT *light, char *indices, int *index) {
     if (set != NULL) {
         if (indices != NULL && index != NULL) {
             if (*index >= *indices) {
@@ -162,7 +162,7 @@ static RTL_LIGHT *GetNextRTL(void *set, RTL_LIGHT *light, char *indices, int *in
                 i32 light_index;
                 ++*index;
                 light_index = indices[*index];
-                light = &((RTL_SET *)set)->lights[light_index];
+                light = &set->lights[light_index];
             }
         } else {
             ++light;
@@ -325,7 +325,7 @@ static void rtlCalcLights(NUVEC *position, NUMTX *rotation, f32 scale, RTL_DATA 
     NuVecNorm(&lighting_data->specular_direction, &lighting_data->specular_direction);
 }
 
-static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *position, i32 identity) {
+static void rtlApplySetScaleLoop(RTL_SET *set, RTL_DATA *lighting_data, NUVEC *position, i32 identity) {
     i32 restricted;
     RTL_LIGHT *light;
     f32 distance_sq;
@@ -870,7 +870,7 @@ void IndexLights(RTL_SET *set, VARIPTR *buffer, i32 buffer_end) {
     RTL_INDEX *grid;
     f32 size_x;
     f32 size_z;
-    char *indices;
+    i8 *indices;
 
     grid = buffer->void_ptr;
     buffer->addr += sizeof(RTL_INDEX);
@@ -918,7 +918,7 @@ void IndexLights(RTL_SET *set, VARIPTR *buffer, i32 buffer_end) {
         for (column = 0; column < grid->width; ++column) {
             grid->cells[row * grid->width + column] = buffer->void_ptr;
             ++buffer->addr;
-            indices = (char *)grid->cells[row * grid->width + column];
+            indices = grid->cells[row * grid->width + column];
             *indices = 0;
             minimum_x = (f32)(column) / grid->scale - grid->offset_x;
             maximum_x = (f32)(column + 1) / grid->scale - grid->offset_x;
@@ -927,7 +927,7 @@ void IndexLights(RTL_SET *set, VARIPTR *buffer, i32 buffer_end) {
                     !(light->position.x + light->outer_radius < minimum_x || light->position.x - light->outer_radius > maximum_x ||
                       light->position.z + light->outer_radius < minimum_z || light->position.z - light->outer_radius > maximum_z)) {
                     ++*indices;
-                    indices[*indices] = (char)index;
+                    indices[*indices] = (i8)index;
                     ++buffer->addr;
                 }
             }
@@ -983,27 +983,29 @@ i32 rtlDynamicSetDirection(i32 id, NUVEC *direction) {
 
 RTL_SET *rtlLoadSet(char *path, VARIPTR *buffer, i32 buffer_end) {
     RTL_SET *set;
+    RTL_FOG_MIGRATION *old_fog;
     i32 i;
     buffer->addr = (buffer->addr + 3) & ~3u;
     set = buffer->void_ptr;
     memset(set, 0, sizeof(*set));
     NuFileLoadBuffer(path, buffer->void_ptr, buffer_end - buffer->addr);
+    /* Version 2/3 sets kept their fog table in the light slots from 64 onwards. */
+    old_fog = (RTL_FOG_MIGRATION *)&set->lights[64];
     switch (set->header) {
         case 1:
             rtlSwapSetEndianess(path);
             break;
         case 2:
-            /* Version 2/3 sets kept their fog table in the light slots from 64 onwards. */
-            ((RTL_FOG_MIGRATION *)&set->lights[64])[0].radius = 10.0f;
-            NuVecClear(&((RTL_FOG_MIGRATION *)&set->lights[64])[0].position);
-            ((RTL_FOG_MIGRATION *)&set->lights[64])[0].type = 1;
+            old_fog[0].radius = 10.0f;
+            NuVecClear(&old_fog[0].position);
+            old_fog[0].type = 1;
             for (i = 1; i < 32; ++i) {
-                ((RTL_FOG_MIGRATION *)&set->lights[64])[i].type = 0;
+                old_fog[i].type = 0;
             }
         case 3:
             i = 32;
             while (i--) {
-                set->fog[i] = ((RTL_FOG_MIGRATION *)&set->lights[64])[i];
+                set->fog[i] = old_fog[i];
             }
             for (i = 64; i < 128; ++i) {
                 set->lights[i].type = 0;

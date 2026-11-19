@@ -189,16 +189,17 @@ i32 EdFileClose(void) {
 }
 
 void EdFileWrite(void *data, i32 len) {
+    const u8 *bytes = data;
     i32 to_write;
 
     while (len > 0) {
         to_write = MIN(len, 0x1000 - edfile_buffer_pointer);
 
-        memcpy(edfile_buffer + edfile_buffer_pointer, data, to_write);
+        memcpy(edfile_buffer + edfile_buffer_pointer, bytes, to_write);
 
         edfile_buffer_pointer += to_write;
         len -= to_write;
-        data = (void *)((size_t)data + to_write);
+        bytes += to_write;
 
         if (edfile_buffer_pointer == 0x1000) {
             EdFileFlushBuffer();
@@ -261,16 +262,17 @@ void EdFileWriteNuVec(NUVEC *value) {
 }
 
 void EdFileRead(void *buffer, i32 length) {
+    u8 *bytes = buffer;
     i32 count;
     while (length > 0) {
         count = sizeof(edfile_buffer) - edfile_buffer_pointer;
         if (length < count) {
             count = length;
         }
-        memcpy(buffer, edfile_buffer + edfile_buffer_pointer, count);
+        memcpy(bytes, edfile_buffer + edfile_buffer_pointer, count);
         edfile_buffer_pointer += count;
         length -= count;
-        buffer = (u8 *)buffer + count;
+        bytes += count;
         if (edfile_buffer_pointer == sizeof(edfile_buffer)) {
             EdFileFillBuffer();
         }
@@ -4125,44 +4127,44 @@ static void eduiFilePickDateKeys(FILE_DIRECTORY_ENTRY *a, FILE_DIRECTORY_ENTRY *
     }
 }
 
-i32 eduiFilePickCompareDate(void *a, void *b) {
+i32 eduiFilePickCompareDate(FILE_DIRECTORY_ENTRY *a, FILE_DIRECTORY_ENTRY *b) {
     i32 key_a;
     i32 key_b;
     eduiFilePickDateKeys(a, b, &key_a, &key_b);
     return key_a - key_b;
 }
 
-i32 eduiFilePickCompareDateReverse(void *a, void *b) {
+i32 eduiFilePickCompareDateReverse(FILE_DIRECTORY_ENTRY *a, FILE_DIRECTORY_ENTRY *b) {
     i32 key_a;
     i32 key_b;
     eduiFilePickDateKeys(a, b, &key_a, &key_b);
     return key_b - key_a;
 }
 
-i32 eduiFilePickCompareSize(void *a, void *b) {
-    i32 size_a = ((FILE_DIRECTORY_ENTRY *)a)->size;
-    i32 size_b = ((FILE_DIRECTORY_ENTRY *)b)->size;
+i32 eduiFilePickCompareSize(FILE_DIRECTORY_ENTRY *a, FILE_DIRECTORY_ENTRY *b) {
+    i32 size_a = a->size;
+    i32 size_b = b->size;
     if (size_a < size_b) {
         return -1;
     }
     return size_a > size_b;
 }
 
-i32 eduiFilePickCompareSizeReverse(void *a, void *b) {
-    i32 size_a = ((FILE_DIRECTORY_ENTRY *)a)->size;
-    i32 size_b = ((FILE_DIRECTORY_ENTRY *)b)->size;
+i32 eduiFilePickCompareSizeReverse(FILE_DIRECTORY_ENTRY *a, FILE_DIRECTORY_ENTRY *b) {
+    i32 size_a = a->size;
+    i32 size_b = b->size;
     if (size_a < size_b) {
         return 1;
     }
     return size_a > size_b ? -1 : 0;
 }
 
-i32 eduiFilePickCompareName(void *a, void *b) {
-    return NuStrCmp(((FILE_DIRECTORY_ENTRY *)a)->name, ((FILE_DIRECTORY_ENTRY *)b)->name);
+i32 eduiFilePickCompareName(FILE_DIRECTORY_ENTRY *a, FILE_DIRECTORY_ENTRY *b) {
+    return NuStrCmp(a->name, b->name);
 }
 
-i32 eduiFilePickCompareNameReverse(void *a, void *b) {
-    return NuStrCmp(((FILE_DIRECTORY_ENTRY *)b)->name, ((FILE_DIRECTORY_ENTRY *)a)->name);
+i32 eduiFilePickCompareNameReverse(FILE_DIRECTORY_ENTRY *a, FILE_DIRECTORY_ENTRY *b) {
+    return NuStrCmp(b->name, a->name);
 }
 
 /* File picker directory menu: the picker and menu it was opened for. */

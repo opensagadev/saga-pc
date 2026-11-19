@@ -1621,8 +1621,9 @@ f32 Condition_NearestPlayerXZRange(AISYS *system, AISCRIPTPROCESS *process, AIPA
 }
 
 f32 Condition_InLevelNode(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (packet != NULL && argument != NULL && system != NULL) {
-        if (packet->inside_path_node == (AIPATHNODE *)argument - system->path_sys->active_path->nodes) {
+    AIPATHNODE *node = argument;
+    if (packet != NULL && node != NULL && system != NULL) {
+        if (packet->inside_path_node == node - system->path_sys->active_path->nodes) {
             return 1.0f;
         }
     }
@@ -1630,8 +1631,9 @@ f32 Condition_InLevelNode(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *pac
 }
 
 f32 Condition_PlayerInLevelNode(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (system != NULL && system->player_1 != NULL && argument != NULL) {
-        if (system->player_1->ai->inside_path_node == (AIPATHNODE *)argument - system->path_sys->active_path->nodes) {
+    AIPATHNODE *node = argument;
+    if (system != NULL && system->player_1 != NULL && node != NULL) {
+        if (system->player_1->ai->inside_path_node == node - system->path_sys->active_path->nodes) {
             return 1.0f;
         }
     }
@@ -1639,13 +1641,14 @@ f32 Condition_PlayerInLevelNode(AISYS *system, AISCRIPTPROCESS *process, AIPACKE
 }
 
 f32 Condition_EitherPlayerInLevelNode(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (system != NULL && argument != NULL) {
+    AIPATHNODE *node = argument;
+    if (system != NULL && node != NULL) {
         if (system->player_1 != NULL &&
-            system->player_1->ai->inside_path_node == (AIPATHNODE *)argument - system->path_sys->active_path->nodes) {
+            system->player_1->ai->inside_path_node == node - system->path_sys->active_path->nodes) {
             return 1.0f;
         }
         if (system->player_2 != NULL &&
-            system->player_2->ai->inside_path_node == (AIPATHNODE *)argument - system->path_sys->active_path->nodes) {
+            system->player_2->ai->inside_path_node == node - system->path_sys->active_path->nodes) {
             return 1.0f;
         }
     }
