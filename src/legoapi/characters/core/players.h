@@ -8,7 +8,7 @@
 #include "legoapi/props/system/socksys.h"
 #include "nu2api/numath/nuvec.h"
 
-struct SUIT_LAYERS;
+struct SUIT_INITIALIZER_RECORD;
 struct WORLDINFO_s;
 struct bolt_s;
 struct nugspline_s;
@@ -54,7 +54,7 @@ extern "C" {
     extern i16 Area_PlayerIDList[9];
     extern APICHARACTERMODELLIST Area_StoryModelList[49];
     extern SOCKPOSITION OldPlrSPos[8];
-    extern struct SUIT_LAYERS *PlayerSuit[8];
+    extern struct SUIT_INITIALIZER_RECORD *PlayerSuit[8];
     extern u8 PlayerTorpedoCount[8];
     extern PLAYER_COIN_PACKET CoinPacket[2];
     extern PLAYER_FORCE_LOS_SLOT GizForceLOSInfo[2];

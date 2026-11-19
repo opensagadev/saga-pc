@@ -335,7 +335,7 @@ extern "C" void Batarang_Release(GAMEOBJECT *object, i32 mode) {
     if (object->player.flags_e24 & APIOBJECT_LOCATORS_VALID) {
         i32 joint = object->character_data->game_character->throw_locator;
         if (joint != -1 && object->character_model->points_of_interest[joint] != NULL) {
-            object->player.batarang->position = *reinterpret_cast<NUVEC *>(&object->player.locator_matrices[joint].m30);
+            object->player.batarang->position = object->player.locator_matrices[joint].translation;
         }
     }
     if (object->player.batarang->active == 0 && mode == 2) {
@@ -364,7 +364,7 @@ extern "C" {
                 GAMEOBJECT *owner = batarang->owner;
                 i32 joint = owner->character_data->game_character->throw_locator;
                 if (joint != -1 && owner->character_model->points_of_interest[joint] != NULL) {
-                    *position = *reinterpret_cast<NUVEC *>(&owner->player.locator_matrices[joint].m30);
+                    *position = owner->player.locator_matrices[joint].translation;
                 }
             }
             return 1;

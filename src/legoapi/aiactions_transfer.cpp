@@ -79,8 +79,8 @@ extern "C" i32 NuSpecialFindMulti(NUGSCN *scene, nuhspecial_s *dest, char *name,
 }
 
 extern "C" {
-    static i32 Ledges_Load(void *world_info, void *) {
-        WORLDINFO *world = static_cast<WORLDINFO *>(world_info);
+    static i32 Ledges_Load(WORLDINFO *world_info, void *) {
+        WORLDINFO *world = world_info;
         if (world->ledge_count != 0) {
             return 0;
         }

@@ -277,8 +277,8 @@ extern "C" {
         rtlSetLights(&lights);
     }
 
-    void LoadLights(void *world_ptr, char *path) {
-        WORLDINFO *world = (WORLDINFO *)world_ptr;
+    void LoadLights(WORLDINFO *world_ptr, char *path) {
+        WORLDINFO *world = world_ptr;
         char filename[256];
         sprintf(filename, "%s.rtl", path);
         world->rtl_set = rtlLoadSet(filename, &world->giz_buffer, world->buffer_end.addr);

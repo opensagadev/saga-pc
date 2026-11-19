@@ -221,7 +221,7 @@ extern "C" void GizBuildIt_SetHeadTarget(GIZBUILDIT *buildit, GAMEOBJECT *player
             index = buildit->anim_object_count - 1;
         }
         GIZBUILDITANIMDATA_s *data = buildit->anim_objects[index]->buildit_data;
-        SetHeadTarget(player, reinterpret_cast<NUVEC *>(&data->start_mtx.m30), 0, 2.0f, 1.0f, 2.0f);
+        SetHeadTarget(player, &data->start_mtx.translation, 0, 2.0f, 1.0f, 2.0f);
     }
 }
 
@@ -564,7 +564,7 @@ extern "C" {
         GameCam_Blend(GameCam, 0.5f, completion_blend, 1);
     }
 
-    void GizBuildIts_PostLoad(void *world, void *pointer) {
+    void GizBuildIts_PostLoad(WORLDINFO *world, void *pointer) {
         GIZBUILDITSYS_s *system = (GIZBUILDITSYS_s *)pointer;
         GIZBUILDIT *buildit;
         i32 i;
@@ -574,15 +574,15 @@ extern "C" {
         buildit = system->buildits;
         for (i = 0; i < system->count; ++i, ++buildit) {
             if (buildit->availability_flags & 0x80) {
-                i32 type_id = GizmoBlowupGetTypeFromNameTableId((WORLDINFO *)world, buildit->blowup_type);
+                i32 type_id = GizmoBlowupGetTypeFromNameTableId(world, buildit->blowup_type);
                 buildit->availability_flags &= ~0x80;
                 buildit->blowup_type = (i16)type_id;
             }
         }
     }
 
-    void *GizBuildIts_ReserveBufferSpace(void *pointer) {
-        WORLDINFO *world = (WORLDINFO *)pointer;
+    void *GizBuildIts_ReserveBufferSpace(WORLDINFO *pointer) {
+        WORLDINFO *world = pointer;
         GIZBUILDITSYS_s *system;
         i32 i;
         system = (GIZBUILDITSYS_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(*system));
@@ -628,7 +628,7 @@ extern "C" {
         return &gizmo->buildit->position;
     }
 
-    void GizBuildit_Reset(GIZBUILDIT *buildit, void *world_ptr) {
+    void GizBuildit_Reset(GIZBUILDIT *buildit, WORLDINFO *world_ptr) {
         buildit->availability_flags = (u16)((buildit->availability_flags & ~0x200u) | 3u);
 
         buildit->start_position = buildit->position = buildit->file_position;
@@ -745,12 +745,12 @@ extern "C" {
         buildit->built_object_count = 0;
 
         if (world_ptr != NULL) {
-            WORLDINFO *world = (WORLDINFO *)(world_ptr);
+            WORLDINFO *world = world_ptr;
             buildit->room_index = world->current_gscn != NULL ? NuPortalWhichRoom(world->current_gscn, &buildit->file_position) : -1;
         }
     }
 
-    void GizBuildIts_Reset(void *world, void *system_pointer, void *progress_pointer) {
+    void GizBuildIts_Reset(WORLDINFO *world, void *system_pointer, void *progress_pointer) {
         GIZBUILDITSYS_s *system = (GIZBUILDITSYS_s *)system_pointer;
         BUILDIT_RESET_PROGRESS *progress = (BUILDIT_RESET_PROGRESS *)progress_pointer;
         GIZBUILDIT *buildit = system->buildits;
@@ -830,8 +830,8 @@ extern "C" {
         }
     }
 
-    void GizBuildIts_Draw(void *world_pointer, void *system_pointer, f32 unused) {
-        WORLDINFO *world = (WORLDINFO *)world_pointer;
+    void GizBuildIts_Draw(WORLDINFO *world_pointer, void *system_pointer, f32 unused) {
+        WORLDINFO *world = world_pointer;
         GIZBUILDITSYS_s *system = (GIZBUILDITSYS_s *)system_pointer;
         GIZBUILDIT *buildit;
         GAMEANIMOBJ *object;
@@ -881,8 +881,8 @@ extern "C" {
         ResetShadowMapRendering();
     }
 
-    i32 GizBuildIts_GetMaxGizmos(void *world_ptr) {
-        WORLDINFO *world = (WORLDINFO *)world_ptr;
+    i32 GizBuildIts_GetMaxGizmos(WORLDINFO *world_ptr) {
+        WORLDINFO *world = world_ptr;
         if (world != NULL) {
             return world->current_level->max_buildits;
         }
@@ -1099,8 +1099,8 @@ extern "C" void GizBuildIt_SetToEnd(GIZBUILDIT *buildit) {
 
 extern "C" {
 
-    i32 GizBuildIts_Load(void *world_pointer, void *system_pointer) {
-        WORLDINFO *world = (WORLDINFO *)world_pointer;
+    i32 GizBuildIts_Load(WORLDINFO *world_pointer, void *system_pointer) {
+        WORLDINFO *world = world_pointer;
         GIZBUILDITSYS_s *system = (GIZBUILDITSYS_s *)system_pointer;
         GIZBUILDIT *buildit;
         GAMEANIMOBJ *object;
@@ -1243,8 +1243,8 @@ extern "C" {
         }
     }
 
-    void GizBuildIts_LateUpdate(void *world_pointer, void *system_pointer, f32 unused) {
-        WORLDINFO *world = (WORLDINFO *)world_pointer;
+    void GizBuildIts_LateUpdate(WORLDINFO *world_pointer, void *system_pointer, f32 unused) {
+        WORLDINFO *world = world_pointer;
         GIZBUILDITSYS_s *system = (GIZBUILDITSYS_s *)system_pointer;
         GIZBUILDIT *buildit;
         NUVEC displacement;

@@ -2097,7 +2097,7 @@ struct pushblock_s { // size 0xd4
 
     union { // size 0x18
 
-        struct {
+        struct {              // size 0x18
             NUVEC bounds_min; // 0xb0
             NUVEC bounds_max; // 0xbc
         };

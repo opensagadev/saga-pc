@@ -1192,7 +1192,7 @@ extern "C" {
         }
         if (object != NULL) {
             object->transform = matrix;
-            object->position = *reinterpret_cast<NUVEC *>(&matrix.m30);
+            object->position = matrix.translation;
         }
     }
 
@@ -1439,7 +1439,7 @@ extern "C" {
         if ((rigid->flags & 0x10) == 0) {
             return;
         }
-        NUVEC *position = reinterpret_cast<NUVEC *>(&matrix->m30);
+        NUVEC *position = &matrix->translation;
         if (!(NuVecDistSqr(position, &GameCam->render_mtx.translation, NULL) < CutReflectRange2)) {
             return;
         }
@@ -1535,7 +1535,7 @@ extern "C" {
         }
         if (scene_object != NULL) {
             scene_object->transform = world_matrix;
-            scene_object->position = *reinterpret_cast<NUVEC *>(&world_matrix.m30);
+            scene_object->position = world_matrix.translation;
         }
         if (visible == 0) {
             return;
@@ -1689,7 +1689,7 @@ extern "C" {
         if (Cheats_CheckFlags(CHEAT_ZERO_LIGHTING) != 0) {
             SetZeroLights();
         } else {
-            FindAndSetLights(reinterpret_cast<NUVEC *>(&world_matrix.m30), 1.0f, world->rtl_set);
+            FindAndSetLights(&world_matrix.translation, 1.0f, world->rtl_set);
         }
 
         if ((character->flags & CUT_CHARACTER_REFLECTION) == 0 && (character_data->model_flags & CHARACTER_MODEL_COMPLEX_SHADOW) != 0 &&
@@ -1735,8 +1735,7 @@ extern "C" {
                     shadow_radius = game_data->shadow_radius < 99.0f ? game_data->shadow_radius
                                                                      : character_data->model_scale * character_data->collision_radius;
                     if (shadow_radius > 0.0f) {
-                        f32 alpha =
-                            BlobShadowFade(reinterpret_cast<NUVEC *>(&world_matrix.m30), CutBlobShadowFadeNear, CutBlobShadowFadeFar, 1.0f);
+                        f32 alpha = BlobShadowFade(&world_matrix.translation, CutBlobShadowFadeNear, CutBlobShadowFadeFar, 1.0f);
                         if (alpha > 0.0f) {
                             alpha *= shadow_alpha;
                             for (i32 i = 0; i < 16; ++i) {
@@ -1762,7 +1761,7 @@ extern "C" {
                                         ? game_data->shadow_radius
                                         : character_data->model_scale * character_data->collision_radius * 2.0f;
                     if (shadow_radius > 0.0f) {
-                        ground_height = GameShadow(NULL, reinterpret_cast<NUVEC *>(&world_matrix.m30), 5.0f, -1);
+                        ground_height = GameShadow(NULL, &world_matrix.translation, 5.0f, -1);
                         shadow_sampled = 1;
                         if (ground_height != 2000000.0f) {
                             platform = NewShadowOnPlatform();
@@ -1788,9 +1787,9 @@ extern "C" {
         }
 
         if ((character->flags & CUT_CHARACTER_REFLECTION) != 0 && (game_data->flags_090 & CHARACTER_RUNTIME_GHOST) == 0 &&
-            NuVecDistSqr(reinterpret_cast<NUVEC *>(&world_matrix.m30), &GameCam->render_mtx.translation, NULL) < CutReflectRange2) {
+            NuVecDistSqr(&world_matrix.translation, &GameCam->render_mtx.translation, NULL) < CutReflectRange2) {
             if (shadow_sampled == 0) {
-                ground_height = GameShadow(NULL, reinterpret_cast<NUVEC *>(&world_matrix.m30), 5.0f, -1);
+                ground_height = GameShadow(NULL, &world_matrix.translation, 5.0f, -1);
                 if (ground_height != 2000000.0f) {
                     platform = NewShadowOnPlatform();
                     surface = ShadowInfo();
@@ -1800,7 +1799,7 @@ extern "C" {
                 ground_height = 2000000.0f;
             }
             if (ground_height == 2000000.0f && platform != -1) {
-                ground_height = FindReflectionNoPlatforms(reinterpret_cast<NUVEC *>(&world_matrix.m30));
+                ground_height = FindReflectionNoPlatforms(&world_matrix.translation);
             }
             if (ground_height != 2000000.0f) {
                 NUMTX reflection_matrix;

@@ -55,8 +55,8 @@ extern "C" {
     static inline f32 GrapplesFabs(f32 value);
 }
 
-extern "C" i32 Grapples_Load(void *world_pointer, void *unused) {
-    WORLDINFO *world = (WORLDINFO *)world_pointer;
+extern "C" i32 Grapples_Load(WORLDINFO *world_pointer, void *unused) {
+    WORLDINFO *world = world_pointer;
     i32 version;
     i32 index;
     i32 length;
@@ -112,8 +112,8 @@ extern "C" i32 Grapples_Load(void *world_pointer, void *unused) {
 
 extern "C" {
 
-    void *Grapples_ReserveBufferSpace(void *pointer) {
-        WORLDINFO *world = (WORLDINFO *)pointer;
+    void *Grapples_ReserveBufferSpace(WORLDINFO *pointer) {
+        WORLDINFO *world = pointer;
         world->grapples = NULL;
         world->grapple_count = 0;
         if (world->current_level->max_grapples > 0) {
@@ -199,8 +199,8 @@ static void Grapple_Reset(GRAPPLE_MOTION *grapple) {
     grapple->has_terrain_platform = 0;
 }
 
-extern "C" void Grapples_Reset(void *world_pointer, void *unused, void *progress_pointer) {
-    WORLDINFO *world = (WORLDINFO *)world_pointer;
+extern "C" void Grapples_Reset(WORLDINFO *world_pointer, void *unused, void *progress_pointer) {
+    WORLDINFO *world = world_pointer;
     GRAPPLE_PROGRESS *progress = (GRAPPLE_PROGRESS *)progress_pointer;
     GRAPPLE_MOTION *grapple;
     i32 index;
@@ -431,8 +431,8 @@ extern "C" {
     }
 }
 
-extern "C" void Grapples_Draw(void *world_pointer, void *unused, f32 unused_delta) {
-    WORLDINFO *world = (WORLDINFO *)world_pointer;
+extern "C" void Grapples_Draw(WORLDINFO *world_pointer, void *unused, f32 unused_delta) {
+    WORLDINFO *world = world_pointer;
     u16 rotation = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 5.0f) / 5.0 * 65536.0);
     f64 pulse = (f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0;
     f32 target_alpha = (f64)NU_SIN_LUT(pulse) * (f64)0.2f + (f64)0.8f;
@@ -461,7 +461,7 @@ static i32 GrappleAttachmentPositions(GAMEOBJECT *object, NUVEC **positions) {
 }
 
 extern "C" void Grapple_DrawLine(GAMEOBJECT *object) {
-    GRAPPLE_MOTION *grapple = (GRAPPLE_MOTION *)object->player.grapple;
+    GRAPPLE_MOTION *grapple = object->player.grapple_motion;
     if (!grapple->disabled && object->character_model->model_data_b[object->player.context_animation] != NULL &&
         AnimPlaying(&object->anim_packet, object->player.context_animation, 0, 0) == NULL) {
         return;
@@ -472,7 +472,7 @@ extern "C" void Grapple_DrawLine(GAMEOBJECT *object) {
 
     NURND_VERTEX3D vertices[2];
     NUVEC *positions[2];
-    grapple = (GRAPPLE_MOTION *)object->player.grapple;
+    grapple = object->player.grapple_motion;
     vertices[1].colour = vertices[0].colour = grapple->reversed ? 0xff003f5fu : GRAPPLE_RGBA;
     i32 count = GrappleAttachmentPositions(object, positions);
     vertices[0].position = object->player.grapple_motion->hook_position;
@@ -483,7 +483,7 @@ extern "C" void Grapple_DrawLine(GAMEOBJECT *object) {
         vertices[1].position = *positions[1];
         NuRndrLine3d(vertices, ZipUpLineMaterial, NULL);
     }
-    grapple = (GRAPPLE_MOTION *)object->player.grapple;
+    grapple = object->player.grapple_motion;
     if (grapple->disabled && !grapple->reversed) {
         if (GrappleCurvedRopeEnabled != 0) {
             vertices[0].position = vertices[1].position;
@@ -520,16 +520,16 @@ extern "C" void Grapple_SetVisibility(GIZMO *gizmo, i32 visible) {
 
 extern "C" {
 
-    i32 Grapples_GetMaxGizmos(void *world_ptr) {
-        WORLDINFO *world = (WORLDINFO *)world_ptr;
+    i32 Grapples_GetMaxGizmos(WORLDINFO *world_ptr) {
+        WORLDINFO *world = world_ptr;
         if (world != NULL) {
             return world->current_level->max_grapples;
         }
         return 0;
     }
 
-    void Grapples_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
-        WORLDINFO *w = (WORLDINFO *)world_ptr;
+    void Grapples_AddGizmos(GIZMOSYS *giz, i32 type, WORLDINFO *world_ptr, void *data) {
+        WORLDINFO *w = world_ptr;
         i32 i;
         for (i = 0; i < w->grapple_count; ++i) {
             if (NuStrLen(w->grapples[i].name) != 0) {
@@ -600,9 +600,9 @@ extern "C" {
         progress->visible[0] = 0xffffffffu;
     }
 
-    void Grapples_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
+    void Grapples_StoreProgress(WORLDINFO *world_ptr, void *data, void *progress_ptr) {
         GRAPPLE_PROGRESS *progress = (GRAPPLE_PROGRESS *)progress_ptr;
-        WORLDINFO *world = (WORLDINFO *)world_ptr;
+        WORLDINFO *world = world_ptr;
         GRAPPLE_MOTION *record;
         i32 index;
         i32 word;
@@ -635,8 +635,8 @@ extern "C" {
     f32 GrappleRopeSeekRates[6] = {24.0f, 12.0f, 8.0f, 6.0f, 4.5f, 3.0f};
 }
 
-extern "C" void Grapples_Update(void *world_pointer, void *unused_system, f32 unused_time) {
-    WORLDINFO *world = (WORLDINFO *)world_pointer;
+extern "C" void Grapples_Update(WORLDINFO *world_pointer, void *unused_system, f32 unused_time) {
+    WORLDINFO *world = world_pointer;
     GRAPPLE_MOTION *grapple = world->grapples;
     GAMEOBJECT *occupant;
     GAMEOBJECT *attached;
@@ -832,7 +832,7 @@ GRAPPLE_MOTION *Grapple_RemoveDynamic(void *attached_object) {
 }
 
 static f32 Grapple_MaximumLength(GAMEOBJECT *object) {
-    GRAPPLE_MOTION *grapple = (GRAPPLE_MOTION *)object->player.grapple;
+    GRAPPLE_MOTION *grapple = object->player.grapple_motion;
     f32 ground =
         grapple->shadow_probe_position.y - (grapple->ground_position.y + (object->upper_position.y - object->lower_position.y) + (f64)0.1f);
     if (grapple->disabled) {
@@ -859,8 +859,7 @@ static void Grapple_InitializeSwingAngle(GAMEOBJECT *object) {
         object->player.takeover_start_angle = object->movement_facing_angle;
     }
     if (PlayerGrappleSwingMode == 1) {
-        object->player.takeover_start_angle =
-            Grapple_QuantizeAngle((GRAPPLE_MOTION *)object->player.grapple, object->player.takeover_start_angle);
+        object->player.takeover_start_angle = Grapple_QuantizeAngle(object->player.grapple_motion, object->player.takeover_start_angle);
     }
 }
 
@@ -871,7 +870,7 @@ static void Grapple_Jump(GAMEOBJECT *object) {
     if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         Hint_SetComplete(LEGOHINT_GRAPPLE);
     }
-    GRAPPLE_MOTION *grapple = (GRAPPLE_MOTION *)object->player.grapple;
+    GRAPPLE_MOTION *grapple = object->player.grapple_motion;
     if (grapple->has_terrain_platform == 0 && object->player.context_phase == 1) {
         f32 height = ((f64)0.1f + grapple->position.y) - object->lower_position.y;
         if (height > 0.0f) {

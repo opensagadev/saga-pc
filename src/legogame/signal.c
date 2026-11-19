@@ -465,13 +465,13 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             /* Context 0x4c uses the attachment union and the full 24-byte suit record. */
             object->player.signal->flags |= SIGNAL_IN_USE;
             object->player.context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
-            old_suit = (SUIT_INITIALIZER_RECORD *)object->player.suit;
+            old_suit = object->player.suit;
             object->ai_packet.capabilities &= ~old_suit->character_flags;
             signal = object->player.grapple;
             new_suit = signal->suit;
-            object->player.suit = (SUIT_LAYERS *)new_suit;
+            object->player.suit = new_suit;
             signal->suit = old_suit;
-            new_suit = (SUIT_INITIALIZER_RECORD *)object->player.suit;
+            new_suit = object->player.suit;
             object->ai_packet.capabilities |= new_suit->character_flags;
             for (index = 0; index < 10; ++index) {
                 if (new_suit == &SuitRecordInit[index]) {

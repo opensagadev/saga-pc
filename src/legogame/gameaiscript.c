@@ -149,7 +149,7 @@ f32 guided_start_time = 0.5f;
 i32 guided_rotate_speed = 240000;
 f32 test_missile_scale = 8.0f;
 
-struct GIZSPINNER_s *GizSpinner_FindBySpecialName(void *world_ptr, char *name);
+struct GIZSPINNER_s *GizSpinner_FindBySpecialName(WORLDINFO *world_ptr, char *name);
 
 f32 GizSpinner_GetNearestTargetPoint(GIZSPINNER_s *, NUVEC *, NUVEC *, NUVEC *, i32);
 

@@ -18,11 +18,11 @@ SUIT_INITIALIZER_RECORD SuitRecordInit[10] = {{"batman", "batman", &tBATMANSUIT,
                                               {"robin", "robin_magnet", &tMAGNETSUIT, 64, 114, 'm', 0x200000, 0, 0, 0},
                                               {"robin", "robin_attract", &tATTRACTSUIT, 384, 114, 'd', 0x0, 0, 0, 0}};
 
-SUIT_LAYERS *Suit_GetDefault(i32 character_id) {
+SUIT_INITIALIZER_RECORD *Suit_GetDefault(i32 character_id) {
     i32 index;
     for (index = 0; index < 10; ++index) {
         if (SuitRecordInit[index].character_id == character_id) {
-            return (SUIT_LAYERS *)&SuitRecordInit[index];
+            return &SuitRecordInit[index];
         }
     }
     return NULL;
@@ -36,10 +36,10 @@ void fun_004cca40(void) {
 void fun_004cca50(void) {
 }
 
-i32 Suit_GetIndex(SUIT_LAYERS *suit) {
+i32 Suit_GetIndex(SUIT_INITIALIZER_RECORD *suit) {
     i32 index;
     for (index = 0; index < 10; ++index) {
-        if ((SUIT_LAYERS *)&SuitRecordInit[index] == suit) {
+        if (&SuitRecordInit[index] == suit) {
             return index;
         }
     }
@@ -68,7 +68,7 @@ void Suits_Init(void) {
     }
 }
 
-SUIT_LAYERS *Suit_GetLast(i32 character_id, i32 require_owned) {
+SUIT_INITIALIZER_RECORD *Suit_GetLast(i32 character_id, i32 require_owned) {
     i32 index;
     u32 owned = areaSuitBits;
     for (index = 9; index >= 0; --index) {
@@ -76,7 +76,7 @@ SUIT_LAYERS *Suit_GetLast(i32 character_id, i32 require_owned) {
             continue;
         }
         if (SuitRecordInit[index].character_id == character_id) {
-            return (SUIT_LAYERS *)&SuitRecordInit[index];
+            return &SuitRecordInit[index];
         }
     }
     return NULL;

@@ -20,7 +20,7 @@ struct AITRIGGERSET_s;
 struct GAMEDEBRISENTRY;
 struct GAMEPAD;
 struct PLAYERCHARACTERCONFIG;
-struct SUIT_LAYERS;
+struct SUIT_INITIALIZER_RECORD;
 struct TUBE;
 struct ai_helper_slot_s;
 struct apicharactermodellist_s;
@@ -1095,7 +1095,7 @@ typedef struct PLAYERPACKET {        // size 0x788
     struct PART *incoming_part;           // 0x5ec
     struct PART *blocked_part;            // 0x5f0
     struct PART *force_part;              // 0x5f4
-    struct SUIT_LAYERS *suit;             // 0x5f8
+    struct SUIT_INITIALIZER_RECORD *suit; // 0x5f8
 
     union { // size 0x4
         struct gameobject_s *unknown_cc0;

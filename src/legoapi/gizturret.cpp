@@ -207,7 +207,7 @@ extern "C" {
         return 1;
     }
 
-    void GizTurrets_PostLoad(void *world, void *pointer) {
+    void GizTurrets_PostLoad(WORLDINFO *world, void *pointer) {
         GIZTURRETSYS_s *system = (GIZTURRETSYS_s *)pointer;
         GIZTURRET_s *turret;
         i32 i;
@@ -217,7 +217,7 @@ extern "C" {
         turret = system->turrets;
         for (i = 0; i < system->count; ++i, ++turret) {
             if (turret->flags & TURRET_FLAG_BLOWUP_PENDING) {
-                i32 type_id = GizmoBlowupGetTypeFromNameTableId((WORLDINFO *)world, turret->blowup_type);
+                i32 type_id = GizmoBlowupGetTypeFromNameTableId(world, turret->blowup_type);
                 turret->flags &= ~TURRET_FLAG_BLOWUP_PENDING;
                 turret->blowup_type = (i16)type_id;
             }
@@ -245,8 +245,8 @@ extern "C" {
         }
     }
 
-    void *GizTurrets_ReserveBufferSpace(void *pointer) {
-        WORLDINFO *world = (WORLDINFO *)pointer;
+    void *GizTurrets_ReserveBufferSpace(WORLDINFO *pointer) {
+        WORLDINFO *world = pointer;
         GIZTURRETSYS_s *system;
         i32 i;
         system = (GIZTURRETSYS_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(*system));
@@ -398,7 +398,7 @@ extern "C" {
             if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) &&
                 object->dead == 0 && (object->flags_1f8 & APIOBJECT_SIDE_BADDIE) && object->model_draw_result != 0) {
                 NUVEC direction;
-                f32 distance = NuVecDistSqr(&object->collision_position, reinterpret_cast<NUVEC *>(&matrix->m30), &direction);
+                f32 distance = NuVecDistSqr(&object->collision_position, &matrix->translation, &direction);
                 if (distance < best_distance) {
                     f32 length = NuFsqrt(distance);
                     f32 scale;
@@ -461,7 +461,7 @@ extern "C" {
         }
     }
 
-    extern "C" void GizTurrets_Update(void *context, void *system_ptr, float frame_time) {
+    extern "C" void GizTurrets_Update(WORLDINFO *context, void *system_ptr, float frame_time) {
         NUVEC direction;
         i32 should_fire;
         GIZTURRETSYS_s *system = static_cast<GIZTURRETSYS_s *>(system_ptr);
@@ -475,7 +475,7 @@ extern "C" {
                     if (turret->visible) {
                         if (turret->active) {
                             if (!turret->update_disabled) {
-                                BOLTTYPE *bolt_type = BoltType_FindByID(turret->bolt_type_id, static_cast<WORLDINFO *>(context));
+                                BOLTTYPE *bolt_type = BoltType_FindByID(turret->bolt_type_id, context);
                                 GAMEOBJECT *autoaim_target = NULL;
                                 should_fire = 0;
                                 NUMTX fallback_draw;
@@ -616,11 +616,11 @@ extern "C" {
                                             goto autonomous_apply;
                                         }
                                         if ((turret->behavior_flags & TURRET_LEAD_TARGET) && target_velocity != NULL && bolt_type != NULL) {
-                                            GizTurret_CalculateInterceptVector(reinterpret_cast<NUVEC *>(&reference->m30), primary_draw,
-                                                                               target_position, target_velocity, bolt_type->speed,
-                                                                               &direction, NULL, turret->controller != NULL);
+                                            GizTurret_CalculateInterceptVector(&reference->translation, primary_draw, target_position,
+                                                                               target_velocity, bolt_type->speed, &direction, NULL,
+                                                                               turret->controller != NULL);
                                         } else {
-                                            NuVecSub(&direction, target_position, reinterpret_cast<NUVEC *>(&reference->m30));
+                                            NuVecSub(&direction, target_position, &reference->translation);
                                         }
                                         if ((turret->behavior_flags & (TURRET_NO_PITCH | TURRET_NO_YAW)) !=
                                             (TURRET_NO_PITCH | TURRET_NO_YAW)) {
@@ -727,14 +727,14 @@ extern "C" {
                                     if (nearby && (abs((static_cast<u16>(desired_pitch)) - (static_cast<u16>(turret->pitch))) > 0x400 ||
                                                    abs((static_cast<u16>(desired_yaw)) - (static_cast<u16>(turret->yaw))) > 0x400)) {
                                         if (!rotation_sound_playing || IsSfxLooping(turret->rotate_sfx)) {
-                                            GameAudio_PlaySfxById(turret->rotate_sfx, reinterpret_cast<NUVEC *>(&reference->m30), 0, 0);
+                                            GameAudio_PlaySfxById(turret->rotate_sfx, &reference->translation, 0, 0);
                                         }
                                         turret->rotation_sound_playing = 1;
                                     }
                                 }
                                 if (should_fire && bolt_type != NULL && MiniCutCam == 0 && (turret->behavior_flags & TURRET_CAMERA) == 0) {
                                     if (turret->fire_sfx != -1) {
-                                        GameAudio_PlaySfxById(turret->fire_sfx, reinterpret_cast<NUVEC *>(&reference->m30), 0, 0);
+                                        GameAudio_PlaySfxById(turret->fire_sfx, &reference->translation, 0, 0);
                                         BoltNoSfx = 1;
                                     }
                                     i32 scatter_pitch = 0;
@@ -769,10 +769,9 @@ extern "C" {
                                             NuMtxPreRotateY(&direction_matrix, scatter_yaw);
                                         }
                                         if (autoaim_target != NULL) {
-                                            GizTurret_CalculateInterceptVector(reinterpret_cast<NUVEC *>(&muzzle_matrix.m30), primary_draw,
-                                                                               &autoaim_target->collision_position,
-                                                                               &autoaim_target->velocity, bolt_type->speed, &direction,
-                                                                               NULL, turret->controller != NULL);
+                                            GizTurret_CalculateInterceptVector(
+                                                &muzzle_matrix.translation, primary_draw, &autoaim_target->collision_position,
+                                                &autoaim_target->velocity, bolt_type->speed, &direction, NULL, turret->controller != NULL);
                                             FindAnglesXY(&direction, NULL, NULL);
                                             NUANGVEC angles;
                                             angles.x = temp_zrot;
@@ -783,8 +782,8 @@ extern "C" {
                                         if (muzzle != sound_muzzle) {
                                             BoltNoSfx = 1;
                                         }
-                                        BOLT *bolt = Bolt_Add(NULL, reinterpret_cast<NUVEC *>(&muzzle_matrix.m30), &direction_matrix,
-                                                              turret->bolt_type_id, flags);
+                                        BOLT *bolt =
+                                            Bolt_Add(NULL, &muzzle_matrix.translation, &direction_matrix, turret->bolt_type_id, flags);
                                         if (bolt != NULL && (turret->behavior_flags & TURRET_SHOOTS_OBSTRUCTIONS)) {
                                             bolt->flags |= BOLT_SHOOTS_OBSTRUCTIONS;
                                         }
@@ -967,8 +966,8 @@ extern "C" {
         return NULL;
     }
 
-    void GizTurrets_Draw(void *world_pointer, void *system_pointer, f32 unused) {
-        WORLDINFO *world = (WORLDINFO *)world_pointer;
+    void GizTurrets_Draw(WORLDINFO *world_pointer, void *system_pointer, f32 unused) {
+        WORLDINFO *world = world_pointer;
         GIZTURRETSYS_s *system = (GIZTURRETSYS_s *)system_pointer;
         GIZTURRET_s *turret;
         i32 index;
@@ -986,8 +985,8 @@ extern "C" {
         }
     }
 
-    i32 GizTurrets_GetMaxGizmos(void *world_ptr) {
-        WORLDINFO *world = (WORLDINFO *)world_ptr;
+    i32 GizTurrets_GetMaxGizmos(WORLDINFO *world_ptr) {
+        WORLDINFO *world = world_ptr;
         if (world != NULL) {
             return world->current_level->max_turrets;
         }

@@ -78,7 +78,7 @@ void Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
     TUBE *tube;
     i32 index;
     if (LEGOCONTEXT_GLIDE != -1 && object->player.character_context == LEGOCONTEXT_GLIDE && object->player.techno != NULL) {
-        if (Tube_InCylinder(object, (TUBE *)object->player.techno, NULL, 0) == 0) {
+        if (Tube_InCylinder(object, object->player.attached_tube, NULL, 0) == 0) {
             object->player.techno = NULL;
         }
         return;
@@ -87,7 +87,7 @@ void Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
         return;
     }
     if (object->player.character_context == LEGOCONTEXT_TUBE) {
-        if (Tube_InCylinder(object, (TUBE *)object->player.techno, NULL, 0) == 0) {
+        if (Tube_InCylinder(object, object->player.attached_tube, NULL, 0) == 0) {
             object->player.character_context = CHARACTER_CONTEXT_NONE;
         }
         return;
@@ -105,10 +105,10 @@ void Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
             continue;
         }
         if (LEGOCONTEXT_GLIDE != -1 && object->player.character_context == LEGOCONTEXT_GLIDE) {
-            object->player.techno = (TECHNO *)tube;
+            object->player.attached_tube = tube;
             return;
         }
-        object->player.techno = (TECHNO *)tube;
+        object->player.attached_tube = tube;
         object->player.character_context = (i8)LEGOCONTEXT_TUBE;
         object->player.jump_variant_state = 0;
         if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && tube->audio_cooldown == 0.0f) {

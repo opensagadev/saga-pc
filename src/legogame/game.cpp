@@ -907,7 +907,7 @@ static i32 Player_ToggleSubCharacter_Game(GAMEOBJECT *object, i32 left, i32 soun
                     GameAudio_PlaySfx(0x24, &object->collision_position, 0, 0);
                 }
             }
-            object->player.suit = (SUIT_LAYERS *)&SuitRecordInit[selected];
+            object->player.suit = &SuitRecordInit[selected];
             InitPlayerAI(object);
             return 1;
         }
@@ -916,7 +916,7 @@ static i32 Player_ToggleSubCharacter_Game(GAMEOBJECT *object, i32 left, i32 soun
 }
 
 static void Player_ToggledCharacter_Game(GAMEOBJECT *object, i32 owned) {
-    SUIT_LAYERS *previous = object->player.suit;
+    SUIT_INITIALIZER_RECORD *previous = object->player.suit;
     if ((i16)object->id != ID_DEFAULTCHARACTER_A && (i16)object->id != ID_DEFAULTCHARACTER_B) {
         object->player.suit = NULL;
     } else if (owned != 0) {

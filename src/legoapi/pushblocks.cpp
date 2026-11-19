@@ -88,7 +88,7 @@ extern "C" void ResetSinglePushBlock(WORLDINFO *, struct pushblock_s *opaque, i3
     block->completed_snap_positions = 0;
     if (NuSpecialExistsFn(&block->special) != 0) {
         NuSpecialGetBounds(&block->special, &block->bounds_min, &block->bounds_max);
-        block->position = reinterpret_cast<NUVEC *>(&NuSpecialGetInstanceMtx(&block->special)->m30);
+        block->position = &NuSpecialGetInstanceMtx(&block->special)->translation;
         if (block->animation_positions > 0 && RunOutOfPosTabSpace == 0) {
             *block->position = block->snap_positions[0];
         }
@@ -128,26 +128,26 @@ extern "C" void ResetPushProgress(WORLDINFO *opaque, void *progress_data) {
                 NUMTX evaluated;
                 NUMTX *matrix = NuSpecialGetInstanceMtx(&block->special);
                 EvalAnim(&block->special, 1.0f, &evaluated, 0);
-                *reinterpret_cast<NUVEC *>(&matrix->m30) = *reinterpret_cast<NUVEC *>(&evaluated.m30);
+                matrix->translation = evaluated.translation;
                 NuSpecialUpdate(&block->special);
                 for (i32 output = 0; output < block->end_position_count; ++output) {
                     nuhspecial_s *special = &block->end_position_specials[output];
                     if (special != NULL) {
                         matrix = NuSpecialGetInstanceMtx(special);
                         EvalAnim(special, 1.0f, &evaluated, 0);
-                        *reinterpret_cast<NUVEC *>(&matrix->m30) = *reinterpret_cast<NUVEC *>(&evaluated.m30);
+                        matrix->translation = evaluated.translation;
                         NuSpecialUpdate(special);
                     }
                 }
             } else {
                 NUMTX *matrix = NuSpecialGetInstanceMtx(&block->special);
-                *reinterpret_cast<NUVEC *>(&matrix->m30) = progress->positions[index];
+                matrix->translation = progress->positions[index];
                 NuSpecialUpdate(&block->special);
                 for (i32 output = 0; output < block->end_position_count; ++output) {
                     nuhspecial_s *special = &block->end_position_specials[output];
                     if (special != NULL) {
                         matrix = NuSpecialGetInstanceMtx(special);
-                        *reinterpret_cast<NUVEC *>(&matrix->m30) = progress->end_positions[output][index];
+                        matrix->translation = progress->end_positions[output][index];
                         NuSpecialUpdate(special);
                     }
                 }
@@ -1428,7 +1428,7 @@ extern "C" void GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *progress) {
                 f32 frame = 1.0f;
                 for (i32 position = 0; position < static_cast<i32>(block->animation_positions); ++position, frame += 1.0) {
                     EvalAnim(&block->special, frame, &evaluated, 0);
-                    block->snap_positions[position] = *reinterpret_cast<NUVEC *>(&evaluated.m30);
+                    block->snap_positions[position] = evaluated.translation;
                     evaluated = *NuSpecialGetMtx(&block->special);
                     block->snap_positions[position].x += evaluated.m30;
                     block->snap_positions[position].y += evaluated.m31;

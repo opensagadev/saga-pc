@@ -617,7 +617,7 @@ void PlayerSetCurrentHp(GAMEOBJECT *object, i8 hitpoints) {
 }
 
 i32 KEEPONSCREEN_SIDESONLY = 0;
-SUIT_LAYERS *PlayerSuit[8] = {0};
+SUIT_INITIALIZER_RECORD *PlayerSuit[8] = {0};
 i32 makeplayerlist_freeplay = 0;
 u8 PlayerTorpedoCount[8] = {0};
 NUVEC GunshipANorm = {0};
@@ -2940,7 +2940,7 @@ u32 AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
     u32 cape = cape_layer != -1 ? 1u << cape_layer : 0;
     i32 hair_layer = data->hair_layer;
     u32 hair = hair_layer != -1 ? 1u << hair_layer : 0;
-    SUIT_LAYERS *suit;
+    SUIT_INITIALIZER_RECORD *suit;
     if (object->helmet != HELMET_NONE) {
         mask &= ~hair;
     }
@@ -3204,8 +3204,7 @@ void InitPlayerAI(GAMEOBJECT *object) {
         route_mask_word = (u32)(CharacterMaskAll >> 32);
         object->ai_packet.route_mask_high = route_mask_word;
     } else if (SpecialRouteCharacterTypeIDFn != NULL) {
-        name = object->player.suit != NULL ? ((SUIT_INITIALIZER_RECORD *)object->player.suit)->suit_character_name
-                                           : object->character_data->name;
+        name = object->player.suit != NULL ? object->player.suit->suit_character_name : object->character_data->name;
         type = SpecialRouteCharacterTypeIDFn(name);
         if (type != 0xff) {
             if (type < 64) {

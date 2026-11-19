@@ -63,7 +63,7 @@ extern "C" {
     void Particles_Load(WORLDINFO *, char **, i32, i32);
     void *LoadGizFlow(void *, void *, char *, VARIPTR *, VARIPTR *);
     void GizmoSysAddGizmos(void *, GIZFLOW *, void *);
-    void LoadLights(void *, char *);
+    void LoadLights(struct WORLDINFO_s *, char *);
 
     i32 InitSpecialSfx(void *);
     void LoadSpecialSfxFile(void *);

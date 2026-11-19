@@ -38,8 +38,8 @@ typedef struct TELEPORT_KEYWORDS { // size 0x64
 } TELEPORT_KEYWORDS;
 
 extern "C" {
-    i32 Teleport_GetMaxGizmos(void *);
-    void Teleport_AddGizmos(GIZMOSYS *, i32, void *, void *);
+    i32 Teleport_GetMaxGizmos(WORLDINFO *);
+    void Teleport_AddGizmos(GIZMOSYS *, i32, WORLDINFO *, void *);
     char *Teleport_GetGizmoName(GIZMO *);
     i32 Teleport_GetOutput(GIZMO *, i32, i32);
     char *Teleport_GetOutputName(GIZMO *, i32);
@@ -624,16 +624,16 @@ extern "C" {
         }
     }
 
-    i32 Teleport_GetMaxGizmos(void *world_ptr) {
-        WORLDINFO *world = (WORLDINFO *)world_ptr;
+    i32 Teleport_GetMaxGizmos(WORLDINFO *world_ptr) {
+        WORLDINFO *world = world_ptr;
         if (world != NULL) {
             return world->current_level->max_teleports;
         }
         return 0;
     }
 
-    void Teleport_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
-        WORLDINFO *world = static_cast<WORLDINFO *>(world_ptr);
+    void Teleport_AddGizmos(GIZMOSYS *giz, i32 type, WORLDINFO *world_ptr, void *data) {
+        WORLDINFO *world = world_ptr;
         i32 i;
         if (world == NULL || world->teleports == NULL) {
             return;
