@@ -312,3 +312,5 @@ config/castscan-budget.json raw-offset 350 quick run, settled in the refix
 config/oddscan-budget.json magic-flag 2483 quick run, settled in the refix
 config/oddscan-budget.json hex-name 123 quick run, settled in the refix
 config/oddscan-budget.json placeholder-field 1228 quick run, settled in the refix
+config/oddscan-budget.json magic-flag 2491 quick run, settled in the refix
+config/oddscan-budget.json magic-state 4314 quick run, settled in the refix

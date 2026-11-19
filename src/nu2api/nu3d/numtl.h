@@ -2,6 +2,8 @@
 
 #include "nu2api/nucore/common.h"
 
+#include "nu2api/numath/nuvec.h"
+
 struct nudisplaylist_s;
 struct PC_TEXTURE_RESOURCE;
 
@@ -110,6 +112,12 @@ typedef union numtlattrib_u { // size 0x4
         u32 unknown_20_31 : 12;   // 0x0:20
     };
 
+    struct {                // size 0x4
+        u32 : 20;           // 0x0:0
+        u32 alpha_test : 3; // 0x0:20
+        u32 : 9;            // 0x0:23
+    };
+
     u32 word;
 } NUMTLATTRIB;
 
@@ -160,20 +168,31 @@ typedef struct numtl_s { // size 0x2c4
 
     union { // size 0x4
 
-        struct {                        // size 0x4
-            u32 unknown_0044_0_4 : 5;   // 0x044:0
-            u32 object_flag_a : 1;      // 0x044:5
-            u32 object_flag_b : 1;      // 0x044:6
-            u32 unknown_0044_7_31 : 25; // 0x044:7
+        struct {                         // size 0x4
+            u32 alpha_fail : 2;          // 0x044:0
+            u32 disable_depth_write : 1; // 0x044:2
+            u32 unknown_0044_3_4 : 2;    // 0x044:3
+            u32 object_flag_a : 1;       // 0x044:5
+            u32 object_flag_b : 1;       // 0x044:6
+            u32 unknown_0044_7_31 : 25;  // 0x044:7
         };
 
         u32 attribs2;
     }; // 0x044
 
-    u8 unknown_048[0xc];                            // 0x048
-    f32 diffuse_r;                                  // 0x054
-    f32 diffuse_g;                                  // 0x058
-    f32 diffuse_b;                                  // 0x05c
+    u8 unknown_048[0xc]; // 0x048
+
+    union { // size 0xc
+
+        struct {           // size 0xc
+            f32 diffuse_r; // 0x054
+            f32 diffuse_g; // 0x058
+            f32 diffuse_b; // 0x05c
+        };
+
+        NUVEC diffuse;
+    }; // 0x054
+
     f32 transform_scale;                            // 0x060
     f32 effect_scale;                               // 0x064
     f32 effect_factor;                              // 0x068

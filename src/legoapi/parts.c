@@ -2586,12 +2586,12 @@ i32 AddScaledVariableShotDebrisEffect5(i32 effect, NUVEC *position, NUVEC *momen
 }
 
 NUMTL *CreateCopyMat(NUMTL *source, i32 enable_uv_mode, i32 alpha_mode, i32 depth_mode, i32 filter_mode) {
-    DEBRIS_MATERIAL *material;
-    DEBRIS_MATERIAL *original = (DEBRIS_MATERIAL *)source;
+    NUMTL *material;
+    NUMTL *original = source;
     if (source == NULL) {
         return NULL;
     }
-    material = (DEBRIS_MATERIAL *)NuMtlCreate3D(1);
+    material = NuMtlCreate3D(1);
     material->diffuse.x = 1.0f;
     material->diffuse.y = 1.0f;
     material->diffuse.z = 1.0f;
@@ -2601,15 +2601,15 @@ NUMTL *CreateCopyMat(NUMTL *source, i32 enable_uv_mode, i32 alpha_mode, i32 dept
     material->attribs.filter_mode = (u32)filter_mode & 3;
     material->attribs.alpha_mode = (u32)alpha_mode & 15;
     if (enable_uv_mode != 0) {
-        material->secondary.disable_depth_write = 1;
+        material->disable_depth_write = 1;
     }
     material->attribs.u_address = NUMTL_ADDRESS_CLAMP;
     material->attribs.v_address = NUMTL_ADDRESS_CLAMP;
     material->texture_id = original->texture_id;
     material->sort_priority = original->sort_priority;
-    material->secondary.alpha_fail = 1;
-    NuMtlUpdate((NUMTL *)material);
-    return (NUMTL *)material;
+    material->alpha_fail = 1;
+    NuMtlUpdate(material);
+    return material;
 }
 
 i32 DebrisArenaInitialized = 0;
@@ -2674,9 +2674,9 @@ void DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VA
     numspherecolldata = maxdebkeys;
     numtoruscolldata = maxdebkeys;
     DebMat[0] = CreateAlphaBlendTexture(buffer, buffer_end, texture_name, 1, 2, 256, 0);
-    texture_id = ((DEBRIS_MATERIAL *)DebMat[0])->texture_id;
-    ((DEBRIS_MATERIAL *)DebMat[0])->attribs.z_mode = NUMTL_ZMODE_READ_ONLY;
-    ((DEBRIS_MATERIAL *)DebMat[0])->attribs.alpha_test = 1;
+    texture_id = DebMat[0]->texture_id;
+    DebMat[0]->attribs.z_mode = NUMTL_ZMODE_READ_ONLY;
+    DebMat[0]->attribs.alpha_test = 1;
     NuMtlUpdate(DebMat[0]);
     DebMat[1] = CreateCopyMat(DebMat[0], 0, 0, 3, 0);
     DebMat[2] = CreateCopyMat(DebMat[0], 1, 1, 1, 1);
@@ -2684,13 +2684,13 @@ void DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VA
     DebMat[4] = CreateCopyMat(DebMat[0], 0, 1, 1, 1);
     DebMat[5] = CreateCopyMat(DebMat[0], 0, 2, 1, 1);
     DebMat[6] = CreateCopyMat(DebMat[0], 0, 0, 0, 1);
-    ((DEBRIS_MATERIAL *)DebMat[0])->vertex_flags |= 0x100000;
-    ((DEBRIS_MATERIAL *)DebMat[1])->vertex_flags |= 0x100000;
-    ((DEBRIS_MATERIAL *)DebMat[2])->vertex_flags |= 0x100000;
-    ((DEBRIS_MATERIAL *)DebMat[3])->vertex_flags |= 0x100000;
-    ((DEBRIS_MATERIAL *)DebMat[4])->vertex_flags |= 0x100000;
-    ((DEBRIS_MATERIAL *)DebMat[5])->vertex_flags |= 0x100000;
-    ((DEBRIS_MATERIAL *)DebMat[6])->vertex_flags |= 0x100000;
+    DebMat[0]->shader.vertex_format |= 0x100000;
+    DebMat[1]->shader.vertex_format |= 0x100000;
+    DebMat[2]->shader.vertex_format |= 0x100000;
+    DebMat[3]->shader.vertex_format |= 0x100000;
+    DebMat[4]->shader.vertex_format |= 0x100000;
+    DebMat[5]->shader.vertex_format |= 0x100000;
+    DebMat[6]->shader.vertex_format |= 0x100000;
     DebMat[6]->texture_id = texture_id;
     DebMat[5]->texture_id = texture_id;
     DebMat[4]->texture_id = texture_id;
@@ -2699,24 +2699,24 @@ void DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VA
     DebMat[1]->texture_id = texture_id;
     DebMat[0]->texture_id = texture_id;
     DebMat[7] = NuMtlCreateEx3D(1, 2);
-    ((DEBRIS_MATERIAL *)DebMat[7])->diffuse.x = 1.0f;
-    ((DEBRIS_MATERIAL *)DebMat[7])->diffuse.y = 1.0f;
-    ((DEBRIS_MATERIAL *)DebMat[7])->diffuse.z = 1.0f;
-    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.cull_mode = NUMTL_CULL_NONE;
-    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.z_mode = NUMTL_ZMODE_READ_ONLY;
-    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.filter_mode = 0;
-    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.lighting = NUMTL_LIGHTING_NONE;
-    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.vertex_colour = 1;
-    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.u_address = NUMTL_ADDRESS_CLAMP;
-    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.v_address = NUMTL_ADDRESS_CLAMP;
-    ((DEBRIS_MATERIAL *)DebMat[7])->opacity = 0.999f;
-    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
-    ((DEBRIS_MATERIAL *)DebMat[7])->secondary.alpha_fail = 1;
-    ((DEBRIS_MATERIAL *)DebMat[7])->texture_id = 1;
-    ((DEBRIS_MATERIAL *)DebMat[7])->sort_priority = 128;
-    ((DEBRIS_MATERIAL *)DebMat[7])->vertex_flags |= 0x100000;
-    ((DEBRIS_MATERIAL *)DebMat[7])->glass_parameter = 0.25f;
-    ((DEBRIS_MATERIAL *)DebMat[7])->particle_type_tag = -105;
+    DebMat[7]->diffuse.x = 1.0f;
+    DebMat[7]->diffuse.y = 1.0f;
+    DebMat[7]->diffuse.z = 1.0f;
+    DebMat[7]->attribs.cull_mode = NUMTL_CULL_NONE;
+    DebMat[7]->attribs.z_mode = NUMTL_ZMODE_READ_ONLY;
+    DebMat[7]->attribs.filter_mode = 0;
+    DebMat[7]->attribs.lighting = NUMTL_LIGHTING_NONE;
+    DebMat[7]->attribs.vertex_colour = 1;
+    DebMat[7]->attribs.u_address = NUMTL_ADDRESS_CLAMP;
+    DebMat[7]->attribs.v_address = NUMTL_ADDRESS_CLAMP;
+    DebMat[7]->opacity = 0.999f;
+    DebMat[7]->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
+    DebMat[7]->alpha_fail = 1;
+    DebMat[7]->texture_id = 1;
+    DebMat[7]->sort_priority = 128;
+    DebMat[7]->shader.vertex_format |= 0x100000;
+    DebMat[7]->transform_scale = 0.25f;
+    DebMat[7]->material_kind = 0x97;
     NuMtlUpdate(DebMat[7]);
     DebMat[8] = CreateCopyMat(DebMat[0], 0, 6, 0, 1);
     for (i = 0; debtab[i] != NULL; ++i) {
