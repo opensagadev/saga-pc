@@ -5345,7 +5345,7 @@ extern "C" {
         }
         NuMtlUpdate(duplicate->material);
         NuMtlSetCurrentRenderPlane(previous_plane);
-        return (VUFNT *)duplicate;
+        return duplicate;
     }
 
     VUFNT *NuQFntLoadPtr(char *path, char *texture_path, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR *end) {
@@ -5496,7 +5496,7 @@ extern "C" {
         result->material->sort_priority = (i16)sort_priority;
         NuMtlUpdate(result->material);
         result->platform_data->x = result->platform_data->y = result->platform_data->z = 0.0f;
-        return (VUFNT *)result;
+        return result;
     }
 
     void NuQFntWrite(char *path, VUFNT *font) {
@@ -9623,8 +9623,8 @@ extern "C" {
             PCDisplayMaterialReferenceCounts[insert] = 1;
             material->display_list = scene->material_lists[insert];
             cursor.addr = PCDisplayMaterialStreamStart.addr + (stream_index << 7);
-            items = NuDisplayListCreateMtlDlist(material->display_list->mtl_item, (NUMTL *)material, &cursor, PCDisplayMaterialStreamEnd);
-            scene->display_materials[insert] = (NUMTL *)material;
+            items = NuDisplayListCreateMtlDlist(material->display_list->mtl_item, material, &cursor, PCDisplayMaterialStreamEnd);
+            scene->display_materials[insert] = material;
             material->display_list->mtl_item = items;
             material->display_list->dynamic_geometry = items + PCMaterialGeometryItemIndex;
             material->display_list->scene = scene;
@@ -9739,7 +9739,7 @@ extern "C" {
                     } else {
                         list->dynamic_geometry->next = list->dynamic_geometry + 1;
                     }
-                    RndrStateUpdate(&state, (NUMTL *)material, list->mtl_item);
+                    RndrStateUpdate(&state, material, list->mtl_item);
                     if ((u8)(scene->render_flags >> 5) != 0 && ((u8)(scene->render_flags >> 5) & (u8)(material->attribs2 >> 14)) != 0) {
                         list->mtl_item->id = NUDLISTITEM_JUMP;
                         scene->material_used[(scene->render_flags >> 15) & 1][list->material_id / 8] &=

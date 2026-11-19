@@ -213,7 +213,7 @@ extern "C" i32 PcInput_GetCtrlInputString(i32 device, i32 button, char *destinat
 extern "C" {
     void TextInputSetKeyboardOverride(i32 mode) {
         PC_INPUT_RUNTIME *manager = nu_input_state;
-        i32 previous = (i8)manager->keyboard_ui_override;
+        i32 previous = manager->keyboard_ui_override;
         manager->keyboard_ui_override = (u8)mode;
         if (mode != previous) {
             nu_keyboard_repeat_countdown = 6;
@@ -240,7 +240,7 @@ extern "C" {
 }
 
 extern "C" i32 AreaGetKeyboardOverride(void) {
-    return (i8)nu_input_state->keyboard_ui_override;
+    return nu_input_state->keyboard_ui_override;
 }
 
 extern "C" f32 fun_006d6360(f32 period, f32 time) {
