@@ -189,17 +189,16 @@ i32 EdFileClose(void) {
 }
 
 void EdFileWrite(void *data, i32 len) {
-    const u8 *bytes = data;
     i32 to_write;
 
     while (len > 0) {
         to_write = MIN(len, 0x1000 - edfile_buffer_pointer);
 
-        memcpy(edfile_buffer + edfile_buffer_pointer, bytes, to_write);
+        memcpy(edfile_buffer + edfile_buffer_pointer, data, to_write);
 
         edfile_buffer_pointer += to_write;
         len -= to_write;
-        bytes += to_write;
+        data = (u8 *)data + to_write;
 
         if (edfile_buffer_pointer == 0x1000) {
             EdFileFlushBuffer();
@@ -262,17 +261,16 @@ void EdFileWriteNuVec(NUVEC *value) {
 }
 
 void EdFileRead(void *buffer, i32 length) {
-    u8 *bytes = buffer;
     i32 count;
     while (length > 0) {
         count = sizeof(edfile_buffer) - edfile_buffer_pointer;
         if (length < count) {
             count = length;
         }
-        memcpy(bytes, edfile_buffer + edfile_buffer_pointer, count);
+        memcpy(buffer, edfile_buffer + edfile_buffer_pointer, count);
         edfile_buffer_pointer += count;
         length -= count;
-        bytes += count;
+        buffer = (u8 *)buffer + count;
         if (edfile_buffer_pointer == sizeof(edfile_buffer)) {
             EdFileFillBuffer();
         }

@@ -119,9 +119,19 @@ extern "C" {
         u8 reserved_40[0xc];                                                     // 0x40
     } RTL_FOG_MIGRATION;
 
-    typedef struct RTL_SET {       // size 0x4f84
-        u32 header;                // 0x0000
-        RTL_LIGHT lights[128];     // 0x0004
+    typedef struct RTL_SET { // size 0x4f84
+        u32 header;          // 0x0000
+
+        union { // size 0x4600
+            RTL_LIGHT lights[128];
+
+            /* Version 2 and 3 files kept their fog table in the light slots from 64 onwards. */
+            struct {                              // size 0x2c80
+                RTL_LIGHT low_lights[64];         // 0x0004
+                RTL_FOG_MIGRATION legacy_fog[32]; // 0x2304
+            };
+        }; // 0x0004
+
         RTL_FOG_MIGRATION fog[32]; // 0x4604
     } RTL_SET;
 
