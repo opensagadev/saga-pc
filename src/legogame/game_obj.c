@@ -3119,8 +3119,7 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
             params.end_radius = 0.2f;
             params.gravity = -10.0f;
             params.special = &pieces->pieces[i].special;
-            params.lighting_data = Cheats_CheckFlags(CHEAT_ZERO_LIGHTING) ? ((PART_LIGHTING_DATA *)(&KillPartsZeroLighting))
-                                                                          : ((PART_LIGHTING_DATA *)&object->lighting_packet);
+            params.lighting_data = Cheats_CheckFlags(CHEAT_ZERO_LIGHTING) ? &KillPartsZeroLighting : &object->lighting_packet;
             params.time_step = FRAMETIME;
             params.flags = mode == 0 ? 0x480 : 0x90;
             params.flicker_flags = 1;
@@ -3213,8 +3212,7 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
             params.matrix = &matrix;
             params.velocity = &momentum;
             params.special = render->rigid[joint];
-            params.lighting_data = Cheats_CheckFlags(CHEAT_ZERO_LIGHTING) ? ((PART_LIGHTING_DATA *)(&KillPartsZeroLighting))
-                                                                          : ((PART_LIGHTING_DATA *)&object->lighting_packet);
+            params.lighting_data = Cheats_CheckFlags(CHEAT_ZERO_LIGHTING) ? &KillPartsZeroLighting : &object->lighting_packet;
             if (((i16)object->id) == id_TIEFIGHTER) {
                 KillParts_TIEFIGHTER(&params, part_index, mode, object, random_variant, random_rotation_a, random_rotation_b, &momentum);
             } else if (((i16)object->id) == id_ATAT) {
@@ -3259,8 +3257,7 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
             params.end_radius = 0.4f;
             params.gravity = -10.0f;
             params.special = special;
-            params.lighting_data = Cheats_CheckFlags(CHEAT_ZERO_LIGHTING) ? ((PART_LIGHTING_DATA *)(&KillPartsZeroLighting))
-                                                                          : ((PART_LIGHTING_DATA *)&object->lighting_packet);
+            params.lighting_data = Cheats_CheckFlags(CHEAT_ZERO_LIGHTING) ? &KillPartsZeroLighting : &object->lighting_packet;
             params.time_step = FRAMETIME;
             params.flags = mode == 0 ? 0x480 : 0x90;
             params.flicker_flags = 1;

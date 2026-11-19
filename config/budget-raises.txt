@@ -300,3 +300,6 @@ config/castscan-budget.json widening 201 quick run: unit macros of legoapi (dc26
 config/castscan-budget.json scalar-pun 277 quick run: KaminoC_Update reads its u32 mask pairs through U64_PAIR now that the view is merged into the real record (32635fafa), and GameAntiNodeData_Init's f32 bit views were a written-out macro (dc261c514)
 config/castscan-budget.json other 7 quick run: ClassObjectListEntry is a ClassObject (d0b463f98): the three edlevelall manipulators (move, rotate, scale) cast a list entry to its ClassObject, which castscan counts as other
 config/declscan-budget.json A 24 quick run: removable re-declarations of header functions left in legogame/gameaiscript.c (124, 152, 154), owned by another worker during the refix; the others went with declscan --fix
+config/oddscan-budget.json magic-flag 2477 quick run, settled in the refix
+config/oddscan-budget.json magic-state 4314 quick run, settled in the refix
+config/castscan-budget.json redundant-identity 11 quick run, settled in the refix

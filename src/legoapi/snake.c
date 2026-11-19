@@ -20,7 +20,7 @@
 #include <string.h>
 
 static nuhspecial_s snake_hspecials[3] = {0};
-u8 snakebodies[0x440] = {0};
+SNAKE_BODY snakebodies[4] = {0};
 
 void InitSnakes(WORLDINFO *world) {
     memset(snakebodies, 0, sizeof(snakebodies));
@@ -28,27 +28,6 @@ void InitSnakes(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &snake_hspecials[1], "Snake_bit_2", 1);
     NuSpecialFind(world->current_gscn, &snake_hspecials[2], "Snake_bit_3", 1);
 }
-
-typedef struct snake_segment_s { // size 0x18
-    NUVEC position;              // 0x00
-    f32 ground_height;           // 0x0c
-    NUANG yaw;                   // 0x10
-    NUANG pitch;                 // 0x14
-} SNAKE_SEGMENT;
-
-typedef struct snake_body_s {   // size 0x110
-    SNAKE_SEGMENT segments[11]; // 0x000
-    f32 scale;                  // 0x108
-    u16 segment_count;          // 0x10c
-    u16 flags;                  // 0x10e
-} SNAKE_BODY;
-
-typedef struct snake_object_reader_s { // size 0x10b0
-    u8 unknown_000[0x4d8];             // 0x0000
-    PART_LIGHTING_DATA lighting;       // 0x04d8
-    u8 unknown_5a4[0x10ac - 0x5a4];    // 0x05a4
-    SNAKE_BODY *snake_body;            // 0x10ac
-} SNAKE_OBJECT_READER;
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 SnakeFabs(f32 f) {
@@ -100,9 +79,9 @@ SNAKE_BODY *CreateSnakeBody(GAMEOBJECT *object, i32 segment_count) {
     i32 index;
 
     for (slot = 0; slot < 4; slot++) {
-        body = &((SNAKE_BODY *)snakebodies)[slot];
+        body = &snakebodies[slot];
         if ((body->flags & 1) == 0) {
-            ((SNAKE_OBJECT_READER *)object)->snake_body = body;
+            object->snake_body = body;
             body->scale = SnakeBodyDefaultScale;
             body->flags |= 1;
             body->segment_count = (u16)segment_count;
@@ -118,50 +97,48 @@ SNAKE_BODY *CreateSnakeBody(GAMEOBJECT *object, i32 segment_count) {
 }
 
 void UpdateSnakeBody(GAMEOBJECT *object) {
-    SNAKE_OBJECT_READER *reader = (SNAKE_OBJECT_READER *)object;
     NUVEC position;
     NUVEC offset;
     i32 index;
     f32 ground;
     f32 length;
-    if (object == NULL || reader->snake_body == NULL) {
+    if (object == NULL || object->snake_body == NULL) {
         return;
     }
-    object->collision_scale = reader->snake_body->scale;
+    object->collision_scale = object->snake_body->scale;
     position = object->lower_position;
-    position.y += reader->snake_body->scale * SnakeHeadHeight;
-    for (index = 0; index < reader->snake_body->segment_count; ++index) {
-        reader->snake_body->segments[index].position = position;
-        reader->snake_body->segments[index].yaw =
-            SeekRot((u16)reader->snake_body->segments[index].yaw,
-                    index != 0 ? reader->snake_body->segments[index - 1].yaw : object->movement_angle, SnakeYawSeekRate);
-        reader->snake_body->segments[index].pitch = 0;
+    position.y += object->snake_body->scale * SnakeHeadHeight;
+    for (index = 0; index < object->snake_body->segment_count; ++index) {
+        object->snake_body->segments[index].position = position;
+        object->snake_body->segments[index].yaw =
+            SeekRot((u16)object->snake_body->segments[index].yaw,
+                    index != 0 ? object->snake_body->segments[index - 1].yaw : object->movement_angle, SnakeYawSeekRate);
+        object->snake_body->segments[index].pitch = 0;
         offset.x = 0.0f;
         offset.y = 0.0f;
-        offset.z = -(reader->snake_body->scale * SnakeSegmentSpacing);
-        NuVecRotateY(&offset, &offset, reader->snake_body->segments[index].yaw);
-        NuVecAdd(&position, &reader->snake_body->segments[index].position, &offset);
+        offset.z = -(object->snake_body->scale * SnakeSegmentSpacing);
+        NuVecRotateY(&offset, &offset, object->snake_body->segments[index].yaw);
+        NuVecAdd(&position, &object->snake_body->segments[index].position, &offset);
         ground = GameShadow(NULL, &position, 5.0f, 0x1f);
         if (ground == 2000000.0f) {
-            ground = reader->snake_body->segments[index].position.y;
+            ground = object->snake_body->segments[index].position.y;
         }
-        if (reader->snake_body->segments[index].ground_height == 1000000000.0f) {
-            reader->snake_body->segments[index].ground_height = ground;
+        if (object->snake_body->segments[index].ground_height == 1000000000.0f) {
+            object->snake_body->segments[index].ground_height = ground;
         } else {
-            reader->snake_body->segments[index].ground_height = SeekValF(reader->snake_body->segments[index].ground_height, ground, 10.0f);
+            object->snake_body->segments[index].ground_height = SeekValF(object->snake_body->segments[index].ground_height, ground, 10.0f);
         }
-        if (reader->snake_body->segments[index].ground_height != 2000000.0f) {
-            position.y = reader->snake_body->segments[index].ground_height;
-            length = NuVecDist(&position, &reader->snake_body->segments[index].position, &offset);
-            NuVecScale(&offset, &offset, reader->snake_body->scale * SnakeSegmentSpacing / length);
-            NuVecAdd(&position, &reader->snake_body->segments[index].position, &offset);
-            reader->snake_body->segments[index].pitch = (i16)SnakeASin(-offset.y / (reader->snake_body->scale * SnakeSegmentSpacing));
+        if (object->snake_body->segments[index].ground_height != 2000000.0f) {
+            position.y = object->snake_body->segments[index].ground_height;
+            length = NuVecDist(&position, &object->snake_body->segments[index].position, &offset);
+            NuVecScale(&offset, &offset, object->snake_body->scale * SnakeSegmentSpacing / length);
+            NuVecAdd(&position, &object->snake_body->segments[index].position, &offset);
+            object->snake_body->segments[index].pitch = (i16)SnakeASin(-offset.y / (object->snake_body->scale * SnakeSegmentSpacing));
         }
     }
 }
 
 void SnakeBeenHit(GAMEOBJECT *object) {
-    SNAKE_OBJECT_READER *reader = (SNAKE_OBJECT_READER *)object;
     i32 i;
     i32 index;
     i32 special_index;
@@ -171,22 +148,22 @@ void SnakeBeenHit(GAMEOBJECT *object) {
     NUVEC momentum;
     ADDPART params;
     nuhspecial_s *special;
-    if (object == NULL || reader->snake_body == NULL || reader->snake_body->segment_count <= 2) {
+    if (object == NULL || object->snake_body == NULL || object->snake_body->segment_count <= 2) {
         return;
     }
     for (i = 0; i < 2; ++i) {
-        index = reader->snake_body->segment_count - i - 1;
-        angles.y = NuAngAdd(reader->snake_body->segments[index].yaw, 0x8000);
-        angles.x = reader->snake_body->segments[index].pitch;
+        index = object->snake_body->segment_count - i - 1;
+        angles.y = NuAngAdd(object->snake_body->segments[index].yaw, 0x8000);
+        angles.x = object->snake_body->segments[index].pitch;
         NuMtxSetRotationXYVU0(&matrix, &angles);
-        if (reader->snake_body->scale != 1.0f) {
-            scale.x = scale.y = scale.z = reader->snake_body->scale;
+        if (object->snake_body->scale != 1.0f) {
+            scale.x = scale.y = scale.z = object->snake_body->scale;
             NuMtxPreScale(&matrix, &scale);
         }
-        matrix.m30 += reader->snake_body->segments[index].position.x;
-        matrix.m31 += reader->snake_body->segments[index].position.y + reader->snake_body->scale * SnakeSegmentHeight;
-        matrix.m32 += reader->snake_body->segments[index].position.z;
-        special_index = index == reader->snake_body->segment_count - 1 ? 2 : index % 2;
+        matrix.m30 += object->snake_body->segments[index].position.x;
+        matrix.m31 += object->snake_body->segments[index].position.y + object->snake_body->scale * SnakeSegmentHeight;
+        matrix.m32 += object->snake_body->segments[index].position.z;
+        special_index = index == object->snake_body->segment_count - 1 ? 2 : index % 2;
         special = &snake_hspecials[special_index];
         if (NuSpecialExistsFn(special)) {
             SetKillPartMom(&momentum);
@@ -199,7 +176,7 @@ void SnakeBeenHit(GAMEOBJECT *object) {
             params.gravity = -5.0f;
             params.special = special;
             params.time_step = FRAMETIME;
-            params.lighting_data = &reader->lighting;
+            params.lighting_data = &object->lighting_packet;
             params.flags = PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_ROTATE_RANDOMLY;
             params.stop_fn = PartStop_Flickerer;
             params.draw_fn = PartDraw_Flickerer;
@@ -207,19 +184,17 @@ void SnakeBeenHit(GAMEOBJECT *object) {
             AddPart(&params);
         }
     }
-    reader->snake_body->segment_count -= 2;
+    object->snake_body->segment_count -= 2;
 }
 
 void DestroySnakeBody(GAMEOBJECT *object) {
-    SNAKE_OBJECT_READER *reader = (SNAKE_OBJECT_READER *)object;
-    if (object != NULL && reader->snake_body != NULL) {
-        memset(reader->snake_body, 0, sizeof(*reader->snake_body));
-        reader->snake_body = NULL;
+    if (object != NULL && object->snake_body != NULL) {
+        memset(object->snake_body, 0, sizeof(*object->snake_body));
+        object->snake_body = NULL;
     }
 }
 
 void BlowUpSnakeBody(GAMEOBJECT *object) {
-    SNAKE_OBJECT_READER *reader = (SNAKE_OBJECT_READER *)object;
     i32 index;
     i32 special_index;
     NUMTX matrix;
@@ -228,21 +203,21 @@ void BlowUpSnakeBody(GAMEOBJECT *object) {
     NUVEC momentum;
     ADDPART params;
     nuhspecial_s *special;
-    if (object == NULL || reader->snake_body == NULL) {
+    if (object == NULL || object->snake_body == NULL) {
         return;
     }
-    for (index = 0; index < reader->snake_body->segment_count; ++index) {
-        angles.y = NuAngAdd(reader->snake_body->segments[index].yaw, 0x8000);
-        angles.x = reader->snake_body->segments[index].pitch;
+    for (index = 0; index < object->snake_body->segment_count; ++index) {
+        angles.y = NuAngAdd(object->snake_body->segments[index].yaw, 0x8000);
+        angles.x = object->snake_body->segments[index].pitch;
         NuMtxSetRotationXYVU0(&matrix, &angles);
-        if (reader->snake_body->scale != 1.0f) {
-            scale.x = scale.y = scale.z = reader->snake_body->scale;
+        if (object->snake_body->scale != 1.0f) {
+            scale.x = scale.y = scale.z = object->snake_body->scale;
             NuMtxPreScale(&matrix, &scale);
         }
-        matrix.m30 = matrix.m30 + reader->snake_body->segments[index].position.x;
-        matrix.m31 = reader->snake_body->scale * SnakeSegmentHeight + reader->snake_body->segments[index].position.y + matrix.m31;
-        matrix.m32 = reader->snake_body->segments[index].position.z + matrix.m32;
-        special_index = index == reader->snake_body->segment_count - 1 ? 2 : index % 2;
+        matrix.m30 = matrix.m30 + object->snake_body->segments[index].position.x;
+        matrix.m31 = object->snake_body->scale * SnakeSegmentHeight + object->snake_body->segments[index].position.y + matrix.m31;
+        matrix.m32 = object->snake_body->segments[index].position.z + matrix.m32;
+        special_index = index == object->snake_body->segment_count - 1 ? 2 : index % 2;
         special = &snake_hspecials[special_index];
         if (NuSpecialExistsFn(special)) {
             SetKillPartMom(&momentum);
@@ -255,7 +230,7 @@ void BlowUpSnakeBody(GAMEOBJECT *object) {
             params.gravity = -5.0f;
             params.special = special;
             params.time_step = FRAMETIME;
-            params.lighting_data = &reader->lighting;
+            params.lighting_data = &object->lighting_packet;
             params.flags = PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_ROTATE_RANDOMLY;
             params.stop_fn = PartStop_Flickerer;
             params.draw_fn = PartDraw_Flickerer;
@@ -263,37 +238,36 @@ void BlowUpSnakeBody(GAMEOBJECT *object) {
             AddPart(&params);
         }
     }
-    if (reader->snake_body != NULL) {
-        memset(reader->snake_body, 0, sizeof(*reader->snake_body));
-        reader->snake_body = NULL;
+    if (object->snake_body != NULL) {
+        memset(object->snake_body, 0, sizeof(*object->snake_body));
+        object->snake_body = NULL;
     }
 }
 
 void DrawSnakeBody(GAMEOBJECT *object) {
-    SNAKE_OBJECT_READER *reader = (SNAKE_OBJECT_READER *)object;
     i32 segment_index;
     i32 special_index;
     NUVEC scale;
     NUMTX matrix;
     NUANGVEC angles;
-    if (object == NULL || reader->snake_body == NULL) {
+    if (object == NULL || object->snake_body == NULL) {
         return;
     }
-    for (segment_index = 0; segment_index < reader->snake_body->segment_count; ++segment_index) {
-        object->collision_scale = reader->snake_body->scale;
-        angles.y = NuAngAdd(reader->snake_body->segments[segment_index].yaw, 0x8000);
-        angles.x = reader->snake_body->segments[segment_index].pitch;
+    for (segment_index = 0; segment_index < object->snake_body->segment_count; ++segment_index) {
+        object->collision_scale = object->snake_body->scale;
+        angles.y = NuAngAdd(object->snake_body->segments[segment_index].yaw, 0x8000);
+        angles.x = object->snake_body->segments[segment_index].pitch;
         NuMtxSetRotationXYVU0(&matrix, &angles);
-        if (reader->snake_body->scale != 1.0f) {
-            scale.z = reader->snake_body->scale;
+        if (object->snake_body->scale != 1.0f) {
+            scale.z = object->snake_body->scale;
             scale.y = scale.z;
             scale.x = scale.y;
             NuMtxPreScale(&matrix, &scale);
         }
-        matrix.m30 = reader->snake_body->segments[segment_index].position.x + matrix.m30;
-        matrix.m31 = reader->snake_body->scale * SnakeSegmentHeight + reader->snake_body->segments[segment_index].position.y + matrix.m31;
-        matrix.m32 = reader->snake_body->segments[segment_index].position.z + matrix.m32;
-        special_index = segment_index == reader->snake_body->segment_count - 1 ? 2 : segment_index % 2;
+        matrix.m30 = object->snake_body->segments[segment_index].position.x + matrix.m30;
+        matrix.m31 = object->snake_body->scale * SnakeSegmentHeight + object->snake_body->segments[segment_index].position.y + matrix.m31;
+        matrix.m32 = object->snake_body->segments[segment_index].position.z + matrix.m32;
+        special_index = segment_index == object->snake_body->segment_count - 1 ? 2 : segment_index % 2;
         if (NuSpecialExistsFn(&snake_hspecials[special_index])) {
             NuSpecialDrawAt(&snake_hspecials[special_index], &matrix);
         }

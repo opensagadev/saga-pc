@@ -1071,8 +1071,7 @@ void Prompt_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapse
                                  Game.area_save[packet->next_area].complete != 0)) ||
                                (packet->flags_word & STATUSPACKET_BONUS_MODE) != 0 || packet->challenge_state != CHALLENGE_OFF ||
                                packet->mission_state != MISSION_STATE_NONE) {
-                        if (status_prompt > 0 &&
-                            ((pad->left_pressed & GAMEPAD_DUP) != 0 || (pad->buttons_pressed & GAMEPAD_DUP) != 0)) {
+                        if (status_prompt > 0 && ((pad->left_pressed & GAMEPAD_DUP) != 0 || (pad->buttons_pressed & GAMEPAD_DUP) != 0)) {
                             GameAudio_PlaySfx(0x2f, NULL, 0, 0);
                             status_prompt--;
                             moved_up = 1;

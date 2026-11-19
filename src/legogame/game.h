@@ -389,11 +389,6 @@ typedef struct FINAL_ASTEROID {
     i16 rotation_z;
 } FINAL_ASTEROID;
 
-typedef struct KILLPARTS_OBJECT_LIGHT {
-    u8 unknown_0[0x4d8];
-    PART_LIGHTING_DATA lighting;
-} KILLPARTS_OBJECT_LIGHT;
-
 typedef struct custom_category_config_s {
     char *name;
     u8 uses_special;

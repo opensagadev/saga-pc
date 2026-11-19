@@ -41,11 +41,11 @@ typedef struct GAMEPAD {           // size 0x60
     union { // size 0x2
         u16 runtime_flags;
 
-        struct {            // size 0x2
+        struct {               // size 0x2
             u16 allocated : 1; // 0x5a:0 (GamePad_Allocate)
             u16 : 2;           // 0x5a:1
             u16 waggle : 1;    // 0x5a:3 (GAMEPAD_WAGGLE)
-            u16 : 12;       // 0x5a:4
+            u16 : 12;          // 0x5a:4
         };
     }; // 0x5a
 

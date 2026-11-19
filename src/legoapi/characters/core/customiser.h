@@ -77,19 +77,10 @@ extern "C" {
 }
 #endif
 
-typedef struct KILLPARTS_ACCESSORY { // size 0x20
-    void *scene;                     // 0x00
-    nuhspecial_s special;            // 0x04
-    u8 unknown_10[0x4];              // 0x10
-    /* the piece texture the customiser puts on the model's tagged material */
-    u32 texture_id;     // 0x14
-    u8 unknown_18[0x8]; // 0x18
-} KILLPARTS_ACCESSORY;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern KILLPARTS_ACCESSORY KillPartsAccessories[2][9];
+    extern CUSTOM_ACCESSORY_RESOURCE KillPartsAccessories[2][9];
     void Customiser_DumpAll(void *, struct WORLDINFO_s *);
     void Customiser_SaveModelTextureIDs(void *customiser, struct CHARACTER_MODEL_LAYERS *model);
 #ifdef __cplusplus

@@ -36,19 +36,6 @@
 #include <string.h>
 #include <stdio.h>
 
-typedef struct custom_accessory_hierarchy_s {
-    u8 unknown_00[0xc];
-    NUMTL **materials;
-    i32 material_count;
-} CUSTOM_ACCESSORY_HIERARCHY;
-
-typedef struct custom_accessory_material_s {
-    u8 unknown_00[0x74];
-    i16 texture_id;
-    u8 unknown_76[0x24];
-    u8 material_tag;
-} CUSTOM_ACCESSORY_MATERIAL;
-
 static i32 CustomiserPieceAvailableDefaultPrivate(CUSTOM_PIECE_CONFIG *piece) {
     if ((piece->availability_flags & (CUSTOM_PIECE_100_PERCENT_SIDE_1 | CUSTOM_PIECE_100_PERCENT_SIDE_2)) != 0 &&
         Game_100PercentComplete() == 0) {
@@ -131,7 +118,7 @@ i32 Customiser_NextPieceLeft(CUSTOMISER_CONFIG *customiser, i32 index, i32 count
             if (category != 2) {
                 WORLDINFO *world = WorldInfo_CurrentlyActive();
                 if (world != NULL && HUB_ADATA != NULL && world->area == HUB_ADATA) {
-                    CUSTOM_ACCESSORY_RESOURCE *resources = (CUSTOM_ACCESSORY_RESOURCE *)world->customiser_resources[category];
+                    CUSTOM_ACCESSORY_RESOURCE *resources = world->customiser_resources[category];
                     if (resources == NULL) {
                         continue;
                     }
@@ -168,7 +155,7 @@ i32 Customiser_NextPieceRight(CUSTOMISER_CONFIG *customiser, i32 index, i32 coun
         if (category != 2) {
             WORLDINFO *world = WorldInfo_CurrentlyActive();
             if (world != NULL && HUB_ADATA != NULL && world->area == HUB_ADATA) {
-                CUSTOM_ACCESSORY_RESOURCE *resources = (CUSTOM_ACCESSORY_RESOURCE *)world->customiser_resources[category];
+                CUSTOM_ACCESSORY_RESOURCE *resources = world->customiser_resources[category];
                 if (resources == NULL) {
                     continue;
                 }
@@ -191,7 +178,7 @@ i32 Customiser_NextPieceRight(CUSTOMISER_CONFIG *customiser, i32 index, i32 coun
     return index;
 }
 
-KILLPARTS_ACCESSORY KillPartsAccessories[2][9] = {0};
+CUSTOM_ACCESSORY_RESOURCE KillPartsAccessories[2][9] = {0};
 i32 Customiser_AccessoriesLoaded = 0;
 RTL_DATA KillPartsZeroLighting = {0};
 
@@ -217,7 +204,7 @@ void Customiser_LoadAccessories(CUSTOMISER_CONFIG *customiser, APICHARACTERMODEL
             continue;
         }
         model = &apicharsys->models[apicharsys->playermodelids[id]];
-        resource = (CUSTOM_ACCESSORY_RESOURCE *)KillPartsAccessories[side];
+        resource = KillPartsAccessories[side];
         for (category = 0; category < 9; ++category, ++resource) {
             u16 piece_index;
             memset(resource, 0, sizeof(*resource));
@@ -246,19 +233,15 @@ void Customiser_LoadAccessories(CUSTOMISER_CONFIG *customiser, APICHARACTERMODEL
                 if (resource->texture_id == 0) {
                     continue;
                 }
-                for (material_index = 0; material_index < ((CUSTOM_ACCESSORY_HIERARCHY *)model->hierarchy)->material_count;
-                     ++material_index) {
-                    NUMTL *material = ((CUSTOM_ACCESSORY_HIERARCHY *)model->hierarchy)->materials[material_index];
-                    if (((CUSTOM_ACCESSORY_MATERIAL *)material)->material_tag != customiser->categories[category]->material_tag) {
+                for (material_index = 0; material_index < model->hierarchy->material_count; ++material_index) {
+                    NUMTL *material = model->hierarchy->materials[material_index];
+                    if (material->override_slot != customiser->categories[category]->material_tag) {
                         continue;
                     }
                     resource->material_index = material_index;
-                    resource->original_texture_id =
-                        ((CUSTOM_ACCESSORY_MATERIAL *)((CUSTOM_ACCESSORY_HIERARCHY *)model->hierarchy)->materials[material_index])
-                            ->texture_id;
-                    ((CUSTOM_ACCESSORY_MATERIAL *)((CUSTOM_ACCESSORY_HIERARCHY *)model->hierarchy)->materials[material_index])->texture_id =
-                        (i16)resource->texture_id;
-                    NuMtlUpdate(((CUSTOM_ACCESSORY_HIERARCHY *)model->hierarchy)->materials[material_index]);
+                    resource->original_texture_id = model->hierarchy->materials[material_index]->texture_id;
+                    model->hierarchy->materials[material_index]->texture_id = (i16)resource->texture_id;
+                    NuMtlUpdate(model->hierarchy->materials[material_index]);
                 }
             }
         }
@@ -270,7 +253,7 @@ void CustomiserDrawAccessories(CUSTOMISER_CONFIG *customiser, GAMEOBJECT *object
     i32 side;
     i32 category;
     const u16 *pieces;
-    KILLPARTS_ACCESSORY *resource;
+    CUSTOM_ACCESSORY_RESOURCE *resource;
     NUMTX matrix;
     NUMTX reflection;
     if (customiser == NULL || joint == -1 || object->character_model->points_of_interest[joint] == NULL) {
@@ -309,7 +292,7 @@ void CustomiserDrawAccessories(CUSTOMISER_CONFIG *customiser, GAMEOBJECT *object
 
 void Customiser_AddPartAccessories(CUSTOMISER_CONFIG *customiser, GAMEOBJECT *object, i32 animation, i32 mode, f32 scale) {
     i32 side;
-    KILLPARTS_ACCESSORY *resource;
+    CUSTOM_ACCESSORY_RESOURCE *resource;
     i32 category;
     i32 joint;
     joint = object->character_data->game_character->helmet_locator;
@@ -346,8 +329,7 @@ void Customiser_AddPartAccessories(CUSTOMISER_CONFIG *customiser, GAMEOBJECT *ob
         params.matrix = &object->player.locator_matrices[joint];
         params.velocity = &momentum;
         params.special = special;
-        params.lighting_data = Cheats_CheckFlags(CHEAT_ZERO_LIGHTING) ? ((PART_LIGHTING_DATA *)(&KillPartsZeroLighting))
-                                                                      : &((KILLPARTS_OBJECT_LIGHT *)object)->lighting;
+        params.lighting_data = Cheats_CheckFlags(CHEAT_ZERO_LIGHTING) ? &KillPartsZeroLighting : &object->lighting_packet;
         params.time_step = FRAMETIME;
         params.flags = mode == 0 ? 0x480 : 0x90;
         params.stop_fn = PartStop_Flickerer;
@@ -369,7 +351,7 @@ void Customiser_DumpAccessories(void *input) {
         if (apicharsys->playermodelids[customiser->character_ids[side]] == -1) {
             continue;
         }
-        resource = (CUSTOM_ACCESSORY_RESOURCE *)KillPartsAccessories[side];
+        resource = KillPartsAccessories[side];
         for (category = 0; category < 9; ++category, ++resource) {
             if (customiser->categories[category]->name == NULL) {
                 continue;
@@ -379,10 +361,8 @@ void Customiser_DumpAccessories(void *input) {
                 resource->scene = NULL;
             } else if (resource->texture_id != 0) {
                 i32 material_index = resource->material_index;
-                ((CUSTOM_ACCESSORY_MATERIAL *)((CUSTOM_ACCESSORY_HIERARCHY *)resource->character_model->hierarchy)
-                     ->materials[material_index])
-                    ->texture_id = (i16)resource->original_texture_id;
-                NuMtlUpdate(((CUSTOM_ACCESSORY_HIERARCHY *)resource->character_model->hierarchy)->materials[material_index]);
+                resource->character_model->hierarchy->materials[material_index]->texture_id = (i16)resource->original_texture_id;
+                NuMtlUpdate(resource->character_model->hierarchy->materials[material_index]);
 
                 NuTexDestroy(resource->texture_id);
             }
@@ -416,7 +396,7 @@ void Customiser_LoadAll(CUSTOMISER_CONFIG *customiser, WORLDINFO *world) {
     }
     texture_pack = CHARPAK != 0 ? NuFilePakLoad("chars\\weirdo\\all_textures.fpk", &world->giz_buffer, world->buffer_end, 0x20) : NULL;
     for (category = 0; category < 9; ++category) {
-        CUSTOM_ACCESSORY_RESOURCE *resources = (CUSTOM_ACCESSORY_RESOURCE *)world->customiser_resources[category];
+        CUSTOM_ACCESSORY_RESOURCE *resources = world->customiser_resources[category];
         world->customiser_shared_scenes[category] = NULL;
         if (resources == NULL) {
             continue;
@@ -477,7 +457,7 @@ void Customiser_DumpAll(void *input, WORLDINFO *world) {
         return;
     }
     for (category = 0; category < 9; ++category) {
-        CUSTOM_ACCESSORY_RESOURCE *resources = (CUSTOM_ACCESSORY_RESOURCE *)world->customiser_resources[category];
+        CUSTOM_ACCESSORY_RESOURCE *resources = world->customiser_resources[category];
         if (resources == NULL) {
             continue;
         }
@@ -525,9 +505,9 @@ void Customiser_SaveModelTextureIDs(void *input, CHARACTER_MODEL_LAYERS *model) 
             continue;
         }
         for (category = 0; category < 9; ++category) {
-            for (material = 0; material < ((CUSTOM_ACCESSORY_HIERARCHY *)model->hierarchy)->material_count; ++material) {
-                NUMTL *entry = ((CUSTOM_ACCESSORY_HIERARCHY *)model->hierarchy)->materials[material];
-                if (((CUSTOM_ACCESSORY_MATERIAL *)entry)->material_tag == customiser->categories[category]->material_tag) {
+            for (material = 0; material < model->hierarchy->material_count; ++material) {
+                NUMTL *entry = model->hierarchy->materials[material];
+                if (entry->override_slot == customiser->categories[category]->material_tag) {
                     customiser->model_texture_ids[side * 9 + category] = entry->texture_id;
                 }
             }
@@ -552,12 +532,11 @@ void Customiser_RestoreModelTextureIDs(void *input) {
             if (customiser->model_texture_ids[side * 9 + category] == 0) {
                 continue;
             }
-            for (material = 0; material < ((CUSTOM_ACCESSORY_HIERARCHY *)model->hierarchy)->material_count; ++material) {
-                NUMTL *entry = ((CUSTOM_ACCESSORY_HIERARCHY *)model->hierarchy)->materials[material];
-                if (((CUSTOM_ACCESSORY_MATERIAL *)entry)->material_tag == customiser->categories[category]->material_tag) {
-                    ((CUSTOM_ACCESSORY_MATERIAL *)((CUSTOM_ACCESSORY_HIERARCHY *)model->hierarchy)->materials[material])->texture_id =
-                        (i16)customiser->model_texture_ids[side * 9 + category];
-                    NuMtlUpdate(((CUSTOM_ACCESSORY_HIERARCHY *)model->hierarchy)->materials[material]);
+            for (material = 0; material < model->hierarchy->material_count; ++material) {
+                NUMTL *entry = model->hierarchy->materials[material];
+                if (entry->override_slot == customiser->categories[category]->material_tag) {
+                    model->hierarchy->materials[material]->texture_id = (i16)customiser->model_texture_ids[side * 9 + category];
+                    NuMtlUpdate(model->hierarchy->materials[material]);
                 }
             }
         }

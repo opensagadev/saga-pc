@@ -406,13 +406,13 @@ PART *AddPart(ADDPART *parameters) {
     part->flicker_flags = parameters->flicker_flags;
     part->active &= ~PART_STATE_BEEPED;
     if (parameters->lighting_data != NULL) {
-        part->lighting[0] = parameters->lighting_data->values[0];
-        part->lighting[3] = parameters->lighting_data->values[3];
-        part->lighting[1] = parameters->lighting_data->values[1];
-        part->lighting[4] = parameters->lighting_data->values[4];
-        part->lighting[2] = parameters->lighting_data->values[2];
-        part->lighting[5] = parameters->lighting_data->values[5];
-        part->lighting[6] = parameters->lighting_data->values[6];
+        part->lighting[0] = parameters->lighting_data->intensity_vectors[0];
+        part->lighting[3] = parameters->lighting_data->direction[0];
+        part->lighting[1] = parameters->lighting_data->intensity_vectors[1];
+        part->lighting[4] = parameters->lighting_data->direction[1];
+        part->lighting[2] = parameters->lighting_data->intensity_vectors[2];
+        part->lighting[5] = parameters->lighting_data->direction[2];
+        part->lighting[6] = parameters->lighting_data->ambient;
         part->active |= PART_STATE_LIT;
     } else {
         part->active &= ~PART_STATE_LIT;

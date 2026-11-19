@@ -605,8 +605,7 @@ i32 CustomiserMenu_Update(void) {
                 continue;
             }
             held = GamePadStorage[player].left_held | GamePadStorage[player].buttons_held;
-            pressed = GamePadStorage[player].buttons_pressed |
-                      GamePadStorage[player].left_pressed;
+            pressed = GamePadStorage[player].buttons_pressed | GamePadStorage[player].left_pressed;
 
             if (active_count == 1 && MissionMenuPacket.customise_other_player[player] != 0) {
                 side = player == 0;
@@ -1040,7 +1039,7 @@ void Customiser_Update(CUSTOMISER_CONFIG *customiser, WORLDINFO *world) {
         angle = CustomiseYRot[side] + 0xc000;
         for (category = 0; category < 9; ++category) {
             i32 locator;
-            KILLPARTS_ACCESSORY *resources;
+            CUSTOM_ACCESSORY_RESOURCE *resources;
             i32 material;
             if (category == CustomiseMenuY[side] && GetMenuID() == MENU_CUSTOMISER && customiser_quit == 0 &&
                 (active_count == 2 || side == preview_side) && control_side != -1 &&
@@ -1136,7 +1135,7 @@ void Customiser_Draw3D(CUSTOMISER_CONFIG *input) {
         }
         if (helmet != -1) {
             for (category = 0; category < 9; ++category) {
-                CUSTOM_ACCESSORY_RESOURCE *resources = (CUSTOM_ACCESSORY_RESOURCE *)world->customiser_resources[category];
+                CUSTOM_ACCESSORY_RESOURCE *resources = world->customiser_resources[category];
                 CUSTOM_ACCESSORY_RESOURCE *resource;
                 CUSTOM_PIECE_CONFIG *piece;
                 if (resources == NULL || customiser->piece_counts[category] <= 0 || customiser->categories[category]->uses_special == 0) {

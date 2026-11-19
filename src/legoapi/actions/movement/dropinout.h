@@ -2,7 +2,6 @@
 
 #include "nu2api/nucore/common.h"
 
-
 struct gameobject_s;
 
 #ifdef __cplusplus

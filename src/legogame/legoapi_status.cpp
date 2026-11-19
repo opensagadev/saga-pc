@@ -1068,13 +1068,13 @@ extern "C" {
 void AddStatusMiniKitParts(void) {
     f32 delay = 0.0f;
     NUVEC target_position = {0.0f, STATSPOSY, 1.0f};
-    StatusMiniKitPartLighting.values[0] = PanelLightingColours[0];
-    StatusMiniKitPartLighting.values[3] = PanelLightingDirections[0];
-    StatusMiniKitPartLighting.values[1] = PanelLightingColours[1];
-    StatusMiniKitPartLighting.values[4] = PanelLightingDirections[1];
-    StatusMiniKitPartLighting.values[2] = PanelLightingColours[2];
-    StatusMiniKitPartLighting.values[5] = PanelLightingDirections[2];
-    StatusMiniKitPartLighting.values[6] = PanelLightingAmbient;
+    StatusMiniKitPartLighting.intensity_vectors[0] = PanelLightingColours[0];
+    StatusMiniKitPartLighting.direction[0] = PanelLightingDirections[0];
+    StatusMiniKitPartLighting.intensity_vectors[1] = PanelLightingColours[1];
+    StatusMiniKitPartLighting.direction[1] = PanelLightingDirections[1];
+    StatusMiniKitPartLighting.intensity_vectors[2] = PanelLightingColours[2];
+    StatusMiniKitPartLighting.direction[2] = PanelLightingDirections[2];
+    StatusMiniKitPartLighting.ambient = PanelLightingAmbient;
     for (i32 i = 0; i < 10; ++i) {
         if (StatusMiniKitDrawCache[i].active == 0) {
             continue;
@@ -1086,7 +1086,7 @@ void AddStatusMiniKitParts(void) {
         ADDPART part = Default_ADDPART;
         part.matrix = &StatusMiniKitDrawCache[i].matrix;
         part.velocity = &velocity;
-        part.lighting_data = &StatusMiniKitPartLighting;
+        part.lighting_data = (RTL_DATA *)&StatusMiniKitPartLighting;
         part.special = &StatusMiniKitDrawCache[i].piece->special;
         part.flags = PART_FLAG_ROTATE_RANDOMLY | PART_FLAG_IGNORE_TERRAIN;
         part.gravity = 0.0f;

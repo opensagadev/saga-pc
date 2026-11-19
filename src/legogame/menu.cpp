@@ -516,14 +516,12 @@ extern "C" void MenuUpdateNewGame(MENU *menu) {
         if ((GamePadStorage[player].buttons_held & GAMEPAD_START) != 0) {
             NuPadSetStatus(GamePadStorage[player].bound_pad->device, 1);
         }
-        if (GamePadStorage[player].input_ready == 0 ||
-            GamePadStorage[player].bound_pad->is_valid == 0) {
+        if (GamePadStorage[player].input_ready == 0 || GamePadStorage[player].bound_pad->is_valid == 0) {
             PlayerProgress[player].active = 0;
         } else if ((GamePadStorage[player].buttons_held &
                     (GAMEPAD_DUP | GAMEPAD_DDOWN | GAMEPAD_DLEFT | GAMEPAD_DRIGHT | GAMEPAD_START | GAMEPAD_JUMP | GAMEPAD_ACTION |
                      GAMEPAD_SPECIAL | GAMEPAD_TAG | GAMEPAD_TOGGLELEFT | GAMEPAD_TOGGLERIGHT)) != 0 ||
-                   (GamePadStorage[player].left_held &
-                    (GAMEPAD_DUP | GAMEPAD_DDOWN | GAMEPAD_DLEFT | GAMEPAD_DRIGHT)) != 0) {
+                   (GamePadStorage[player].left_held & (GAMEPAD_DUP | GAMEPAD_DDOWN | GAMEPAD_DLEFT | GAMEPAD_DRIGHT)) != 0) {
             if (g_nupadMapping[player].is_active != 0) {
                 PlayerProgress[player].active = 1;
             }

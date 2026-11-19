@@ -302,9 +302,8 @@ i32 LEGOMENU_CREDITS = -1;
 
 i32 fun_0054ace0(i32 index, i32 require_ready) {
     i32 menu = GetMenuID();
-    if ((require_ready && !GamePadStorage[index].input_ready) ||
-        (GamePadStorage[index].bound_pad->flags & 4) || (LEGOMENU_NEWGAME != -1 && menu == LEGOMENU_NEWGAME) ||
-        (LEGOMENU_CREDITS != -1 && menu == LEGOMENU_CREDITS)) {
+    if ((require_ready && !GamePadStorage[index].input_ready) || (GamePadStorage[index].bound_pad->flags & 4) ||
+        (LEGOMENU_NEWGAME != -1 && menu == LEGOMENU_NEWGAME) || (LEGOMENU_CREDITS != -1 && menu == LEGOMENU_CREDITS)) {
         return 0;
     }
     return 1;
@@ -320,8 +319,7 @@ void PadOutPause(i32 index, WORLDINFO *world) {
         return;
     }
     menu = GetMenuID();
-    if (!GamePadStorage[index].input_ready ||
-        (GamePadStorage[index].bound_pad->flags & 4)) {
+    if (!GamePadStorage[index].input_ready || (GamePadStorage[index].bound_pad->flags & 4)) {
         return;
     }
     if ((LEGOMENU_NEWGAME != -1 && menu == LEGOMENU_NEWGAME) || (LEGOMENU_CREDITS != -1 && menu == LEGOMENU_CREDITS)) {

@@ -304,12 +304,12 @@ typedef struct WORLDINFO_s { // size 0x51ac
         struct podrace_resource_s *podrace;    /* the pod race (episodeI.c) */
     }; // 0x511c
 
-    struct KILLPARTS_ACCESSORY *customiser_resources[9]; // 0x5120
-    struct NUGSCN_s *customiser_shared_scenes[9];        // 0x5144
-    struct TRAFFICANIMSYS_s *trafficanim_sys;            // 0x5168
-    struct carry_plug_sys_s *plug_sys;                   // 0x516c
-    u32 belt_active;                                     // 0x5170
-    char pad_15[56];                                     // 0x5174
+    struct custom_accessory_resource_s *customiser_resources[9]; // 0x5120
+    struct NUGSCN_s *customiser_shared_scenes[9];                // 0x5144
+    struct TRAFFICANIMSYS_s *trafficanim_sys;                    // 0x5168
+    struct carry_plug_sys_s *plug_sys;                           // 0x516c
+    u32 belt_active;                                             // 0x5170
+    char pad_15[56];                                             // 0x5174
 } WORLDINFO;
 
 typedef struct TORPEDO_MACHINE { // size 0x2c

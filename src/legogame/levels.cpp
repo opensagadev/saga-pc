@@ -1329,8 +1329,7 @@ void LoadAreaCharacters(void) {
         } else if (AreaDataLoaded != 0 && LoadWait == LOADWAITTIME && LoadTime < AreaCrawlMaximumTime && skip_text_scroll == 0 &&
                    (NuSound3LoadingSfx() == 0 || !(LoadTime < AreaCrawlSoundWaitTime))) {
             GAMEPAD *pads = GamePadStorage;
-            if ((pads[0].buttons_pressed & GAMEPAD_START) != 0 || (pads[1].buttons_pressed & GAMEPAD_START) != 0 ||
-                NuKeyboard_db(1) != 0) {
+            if ((pads[0].buttons_pressed & GAMEPAD_START) != 0 || (pads[1].buttons_pressed & GAMEPAD_START) != 0 || NuKeyboard_db(1) != 0) {
                 skip_text_scroll = 1;
             } else {
                 draw_touch_prompt = 1;
@@ -1871,8 +1870,7 @@ void WorldInfo_Load(WORLDINFO *world) {
     char title_light_path[] = "levels\\titles\\titles";
     NUGSCN *cutscene_scene;
     i32 index;
-    LOG_INFO("World load begin: world=%p area=%d level=%d config=%s", world, world->area_index, world->level_idx,
-             world->config_file);
+    LOG_INFO("World load begin: world=%p area=%d level=%d config=%s", world, world->area_index, world->level_idx, world->config_file);
     Level_LoadConfigFile(world);
     if (abort_load != 0) {
         goto abort;
@@ -2099,8 +2097,7 @@ void WorldInfo_Load(WORLDINFO *world) {
     }
     SetAreaPickupGravity(world->area_index, world->level_idx);
     world->loaded = 1;
-    LOG_INFO("World load complete: world=%p area=%d level=%d scene=%p", world, world->area_index, world->level_idx,
-             world->current_gscn);
+    LOG_INFO("World load complete: world=%p area=%d level=%d scene=%p", world, world->area_index, world->level_idx, world->current_gscn);
     return;
 abort:
     LOG_WARN("World load aborted: world=%p area=%d level=%d abort_load=%d", world, world->area_index, world->level_idx, abort_load);

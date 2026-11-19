@@ -19,9 +19,12 @@ typedef struct PART_LIGHTING_DATA PART_LIGHTING_DATA;
 typedef void (*PART_MOVE)(struct PART *, f32);
 typedef i32 (*PART_DRAW)(struct PART *);
 
-struct PART_LIGHTING_DATA { // size 0xcc
-    u8 unknown_0[0x78];     // 0x00
-    NUVEC values[7];        // 0x78
+/* The first 0xcc bytes of an RTL_DATA: what a part copies from its lighting_data. */
+struct PART_LIGHTING_DATA {     // size 0xcc
+    u8 reserved_00[0x78];       // 0x00
+    NUVEC intensity_vectors[3]; // 0x78
+    NUVEC direction[3];         // 0x9c
+    NUVEC ambient;              // 0xc0
 };
 
 #ifdef __cplusplus
@@ -213,7 +216,11 @@ struct PART { // size 0x220
     }; // 0x210
 
     f32 particle_scale; // 0x214
-    u32 force_flags;    // 0x218
+
+    union { // size 0x4
+        u32 force_flags;
+        struct GIZMOBLOWUP *supercarry_blowup; /* the carried blowup a thrown part stands for (SuperCarry_Throw) */
+    }; // 0x218
 
     union { // size 0x4
         u32 trail_state;
@@ -221,52 +228,52 @@ struct PART { // size 0x220
     }; // 0x21c
 };
 
-typedef struct ADDPART {               // size 0xc8
-    struct numtx_s *matrix;            // 0x00
-    NUVEC *position;                   // 0x04
-    NUVEC *velocity;                   // 0x08
-    struct gameobject_s *owner;        // 0x0c
-    struct gameobject_s *recipient;    // 0x10
-    f32 start_radius;                  // 0x14
-    f32 end_radius;                    // 0x18
-    f32 gravity;                       // 0x1c
-    f32 bounce;                        // 0x20
-    struct nuhspecial_s *special;      // 0x24
-    i32 part_id;                       // 0x28
-    u32 flags;                         // 0x2c
-    PART_ACTION callback_30;           // 0x30
-    PART_MOVE move_fn;                 // 0x34
-    PART_ACTION deflect_fn;            // 0x38
-    PART_ACTION impact_fn;             // 0x3c
-    PART_ACTION collision_fn;          // 0x40
-    PART_KILL kill_fn;                 // 0x44
-    PART_ACTION update_fn;             // 0x48
-    PART_ACTION stop_fn;               // 0x4c
-    PART_ACTION destroy_fn;            // 0x50
-    PART_DRAW draw_fn;                 // 0x54
-    i32 effect_id_58;                  // 0x58
-    i32 *debris_handle;                // 0x5c
-    i32 effect_id_60;                  // 0x60
-    i32 effect_id_64;                  // 0x64
-    f32 trail_rate_a;                  // 0x68
-    f32 trail_rate_b;                  // 0x6c
-    i32 effect_id_70;                  // 0x70
-    i32 effect_id_74;                  // 0x74
-    i32 effect_id_78;                  // 0x78
-    f32 effect_scale;                  // 0x7c
-    i32 *lighting_handle;              // 0x80
-    i32 lighting_id;                   // 0x84
-    f32 lifetime;                      // 0x88
-    f32 time_step;                     // 0x8c
-    u32 hostility_group;               // 0x90
-    PART_LIGHTING_DATA *lighting_data; // 0x94
-    f32 lighting_scale_x;              // 0x98
-    f32 lighting_scale_y;              // 0x9c
-    f32 lighting_scale_z;              // 0xa0
-    f32 fade_time;                     // 0xa4
-    u32 rotation_parameters[6];        // 0xa8
-    f32 model_scale;                   // 0xc0
-    u8 flicker_flags;                  // 0xc4
+typedef struct ADDPART {            // size 0xc8
+    struct numtx_s *matrix;         // 0x00
+    NUVEC *position;                // 0x04
+    NUVEC *velocity;                // 0x08
+    struct gameobject_s *owner;     // 0x0c
+    struct gameobject_s *recipient; // 0x10
+    f32 start_radius;               // 0x14
+    f32 end_radius;                 // 0x18
+    f32 gravity;                    // 0x1c
+    f32 bounce;                     // 0x20
+    struct nuhspecial_s *special;   // 0x24
+    i32 part_id;                    // 0x28
+    u32 flags;                      // 0x2c
+    PART_ACTION callback_30;        // 0x30
+    PART_MOVE move_fn;              // 0x34
+    PART_ACTION deflect_fn;         // 0x38
+    PART_ACTION impact_fn;          // 0x3c
+    PART_ACTION collision_fn;       // 0x40
+    PART_KILL kill_fn;              // 0x44
+    PART_ACTION update_fn;          // 0x48
+    PART_ACTION stop_fn;            // 0x4c
+    PART_ACTION destroy_fn;         // 0x50
+    PART_DRAW draw_fn;              // 0x54
+    i32 effect_id_58;               // 0x58
+    i32 *debris_handle;             // 0x5c
+    i32 effect_id_60;               // 0x60
+    i32 effect_id_64;               // 0x64
+    f32 trail_rate_a;               // 0x68
+    f32 trail_rate_b;               // 0x6c
+    i32 effect_id_70;               // 0x70
+    i32 effect_id_74;               // 0x74
+    i32 effect_id_78;               // 0x78
+    f32 effect_scale;               // 0x7c
+    i32 *lighting_handle;           // 0x80
+    i32 lighting_id;                // 0x84
+    f32 lifetime;                   // 0x88
+    f32 time_step;                  // 0x8c
+    u32 hostility_group;            // 0x90
+    RTL_DATA *lighting_data;        // 0x94
+    f32 lighting_scale_x;           // 0x98
+    f32 lighting_scale_y;           // 0x9c
+    f32 lighting_scale_z;           // 0xa0
+    f32 fade_time;                  // 0xa4
+    u32 rotation_parameters[6];     // 0xa8
+    f32 model_scale;                // 0xc0
+    u8 flicker_flags;               // 0xc4
 } ADDPART;
 
 typedef struct KILLPARTS_BIKE { // size 0x34

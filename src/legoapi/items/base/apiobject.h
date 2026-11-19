@@ -931,6 +931,16 @@ typedef struct PLAYERPACKET {        // size 0x788
             NUVEC swing;   // 0x09c
             NUVEC landing; // 0x0a8
         } zipup;           /* the zip-up context: the path from where the player grabbed on to the landing */
+
+        struct {                 // size 0x30
+            NUVEC basis[3];      // 0x084
+            NUVEC drop_position; // 0x0a8
+        } supercarry;            /* the super carry context: the carried blowup's offset basis and where it is put down */
+
+        struct {                  // size 0x24
+            u8 reserved_84[0x20]; // 0x084
+            f32 obstacle_timer;   // 0x0a4
+        } push;                   /* the push context: the time left before the push may restart */
     }; // 0x084
 
     f32 context_hover_target_y;        // 0x0b4
@@ -946,6 +956,8 @@ typedef struct PLAYERPACKET {        // size 0x788
         void *grapple;
         struct GRAPPLE_MOTION *grapple_motion;
         struct GIZBUILDIT *buildit;
+        struct GIZMOBLOWUP *carried_blowup;
+        struct GIZSPINNER_s *pushed_spinner;
         struct PART *force_throw_part;
         struct techno_s *techno;
         struct gizobstacle_s *push_obstacle;
@@ -1777,7 +1789,7 @@ typedef struct gameobject_s { // size 0x10d8
     }; // 0x1098
     struct gameobject_s *opponent;                // 0x10a4
     struct gameobject_s *last_attacker;           // 0x10a8
-    void *snake_body;                             // 0x10ac
+    struct snake_body_s *snake_body;              // 0x10ac
     void (*move_override)(struct gameobject_s *); // 0x10b0
 
     union { // size 0x4
