@@ -4,10 +4,12 @@
 
 #include "legoapi/world/level.h"
 
+struct FRAME_PAD;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern void *Game_NuPad_Store[2];
+    extern struct FRAME_PAD *Game_NuPad_Store[2];
     i32 StartupParseArgument(i32 count, char **arguments);
     extern const char *StartupDatNames[7];
     extern i32 SUPERBUFFERSIZE;

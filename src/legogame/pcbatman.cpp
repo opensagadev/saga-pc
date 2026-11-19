@@ -64,8 +64,8 @@ i32 app_tbaiset = 0;
 i32 app_tbdrawset = 0;
 i32 app_tbgameset = 0;
 extern "C" {
-    void **Game_NuPad = 0;
-    void *Game_NuPad_Store[2] = {0};
+    FRAME_PAD **Game_NuPad = 0;
+    FRAME_PAD *Game_NuPad_Store[2] = {0};
 }
 
 extern "C" void InitOnce(i32 argc, char **argv) {

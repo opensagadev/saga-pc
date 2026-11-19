@@ -4,10 +4,12 @@
 
 #include "legoapi/core/input/timer.h"
 
+struct FRAME_PAD;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern void **Game_NuPad;
+    extern struct FRAME_PAD **Game_NuPad;
     void InitOnce(i32 argc, char **argv);
     extern f32 DEFAULTFRAMETIME;
     extern f32 FRAMETIME;

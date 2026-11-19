@@ -602,7 +602,7 @@ extern "C" {
         if (gizmo->object == NULL) {
             return 0;
         }
-        teleport = static_cast<TELEPORT_CONFIG *>(gizmo->object);
+        teleport = gizmo->teleport;
         if ((mode & 1) != 0 && teleport->enabled != reverse) {
             return 0;
         }
@@ -615,7 +615,7 @@ extern "C" {
     }
 
     void Teleport_Activate(GIZMO *gizmo, i32 active) {
-        TELEPORT_CONFIG *teleport = static_cast<TELEPORT_CONFIG *>(gizmo->object);
+        TELEPORT_CONFIG *teleport = gizmo->teleport;
         if (active != 0) {
             teleport->enabled = 1;
             teleport->active = 0;
@@ -652,7 +652,7 @@ extern "C" {
 
     i32 Teleport_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
         if (gizmo != NULL && gizmo->object != NULL) {
-            return static_cast<TELEPORT_CONFIG *>(gizmo->object)->active;
+            return gizmo->teleport->active;
         }
         return 0;
     }

@@ -92,7 +92,7 @@ extern "C" {
     }
 
     void MenuUpdateControlSetup(MENU *) {
-        i32 result = PcControlUpdate((FRAME_PAD *)Game_NuPad[0], (FRAME_PAD *)Game_NuPad[1], FRAMETIME);
+        i32 result = PcControlUpdate(Game_NuPad[0], Game_NuPad[1], FRAMETIME);
         if (DropInConfigurationPlayer >= 0) {
             if (result == 3) {
                 DropInPendingPlayer = DropInConfigurationPlayer;
@@ -117,7 +117,7 @@ extern "C" {
     }
 
     void MenuUpdateSelectControls(MENU *) {
-        i32 result = PcControlUpdate((FRAME_PAD *)Game_NuPad[0], (FRAME_PAD *)Game_NuPad[1], FRAMETIME);
+        i32 result = PcControlUpdate(Game_NuPad[0], Game_NuPad[1], FRAMETIME);
         if (result == 2) {
             BackupMenu();
         } else if (result == 3) {
