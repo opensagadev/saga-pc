@@ -351,7 +351,7 @@ void GameObjectOrigin(GAMEOBJECT *object) {
                object->character_model->points_of_interest[object->character_data->game_character->collision_origin_joint] != NULL &&
                object->origin_joint_ready != 0) {
         object->collision_position =
-            *(NUVEC *)&object->player.locator_matrices[object->character_data->game_character->collision_origin_joint].m30;
+            object->player.locator_matrices[object->character_data->game_character->collision_origin_joint].translation;
     } else {
         object->flags_1f8 ^= 0x100;
         object->collision_position.x = object->position.x + object->previous_velocity.x * FRAMETIME;

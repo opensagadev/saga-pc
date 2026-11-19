@@ -156,7 +156,7 @@ void SetObjAsHeadTarget(GAMEOBJECT *object, GAMEOBJECT *target, i8 unused_priori
     if (object != NULL && target != NULL && target->character_data != NULL) {
         joint = target->character_data->game_character->head_locator;
         if (joint != -1) {
-            SetHeadTarget(object, (NUVEC *)&target->player.locator_matrices[joint].m30, 2, 1.0f, 0.0f, 0.0f);
+            SetHeadTarget(object, &target->player.locator_matrices[joint].translation, 2, 1.0f, 0.0f, 0.0f);
         } else {
             SetHeadTarget(object, &target->collision_position, 2, 1.0f, 0.0f, 0.0f);
         }

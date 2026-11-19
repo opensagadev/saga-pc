@@ -79,7 +79,7 @@ void Faders_Draw(WORLDINFO *world) {
         if (NuSpecialExistsFn(&fader->while_animating) != 0) {
             alpha = 1.0f - NuSpecialGetAnimPos(&fader->while_animating);
         } else {
-            f32 distance = NuVecDist((NUVEC *)&matrix.m30, (NUVEC *)&pNuCam->mtx.m30, NULL);
+            f32 distance = NuVecDist(&matrix.translation, &pNuCam->mtx.translation, NULL);
             if (distance < 0.5f) {
                 continue;
             }

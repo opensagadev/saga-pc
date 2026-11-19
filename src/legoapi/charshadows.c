@@ -62,7 +62,7 @@ void CharShadows_Update(void) {
                 continue;
             }
             slot = &packet->shadows[count];
-            locator_position = (NUVEC *)&object->player.locator_matrices[locator].m30;
+            locator_position = &object->player.locator_matrices[locator].translation;
             slot->position.x = locator_position->x;
             slot->position.z = locator_position->z;
             if ((object->flags_1fc_word & 0x10) != 0) {

@@ -600,7 +600,7 @@ void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP *blowup, i32 offset, i3
             }
             for (j = 0; j < type->fragment_count; ++j) {
                 NuMtxSetIdentity(&matrix);
-                *(NUVEC *)&matrix.m30 = *position;
+                matrix.translation = *position;
                 velocity = v010;
                 random =
                     (i16)(qrand() * PlayerRandomScale * ((MAXBLOWUPRANDSPANG << 16) / 360) - ((i16)(MAXBLOWUPRANDSPANG * 0.5) << 16) / 360);
@@ -832,7 +832,7 @@ void UpdateMidPos(GIZMOBLOWUP *blowup) {
     NUVEC delta;
     i32 i;
     if (blowup->draw_flags & BLOWUP_OPTION_MID_AT_ORIGIN) {
-        blowup->mid_position = *(NUVEC *)&blowup->transform.m30;
+        blowup->mid_position = blowup->transform.translation;
     }
     if (blowup->anti_node == NULL || (blowup->draw_flags & BLOWUP_OPTION_MID_AT_ORIGIN) == 0) {
         NuSpecialGetBounds(&blowup->type->animated_special, &minimum, &maximum);

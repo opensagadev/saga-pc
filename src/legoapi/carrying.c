@@ -163,7 +163,7 @@ void SuperCarry_GetObjectPos(GAMEOBJECT *object, NUVEC *position, NUVEC *seconda
     if (first != -1 && object->character_model->points_of_interest[first] != NULL) {
         second = object->character_data->game_character->hand_locators[1];
         if (second != -1 && object->character_model->points_of_interest[second] != NULL) {
-            *position = *(NUVEC *)&object->player.locator_matrices[first].m30;
+            *position = object->player.locator_matrices[first].translation;
             position->x += (object->player.locator_matrices[second].m30 - position->x) * 0.5f;
             position->y += (object->player.locator_matrices[second].m31 - position->y) * 0.5f;
             position->z += (object->player.locator_matrices[second].m32 - position->z) * 0.5f;
@@ -205,13 +205,13 @@ void SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
             *(NUVEC *)&matrix.m20 = basis->basis[2];
         }
         NuMtxRotateY(&matrix, object->movement_angle);
-        NuMtxTranslate(&matrix, (NUVEC *)&object->player.locator_matrices[first].m30);
+        NuMtxTranslate(&matrix, &object->player.locator_matrices[first].translation);
     } else {
         matrix = object->player.locator_matrices[first];
     }
     second = object->character_data->game_character->hand_locators[1];
     if (second != -1 && object->character_model->points_of_interest[second] != NULL) {
-        position = *(NUVEC *)&matrix.m30;
+        position = matrix.translation;
         if (!SuperCarry_KeepObjectLevel) {
             NUMTX left;
             NUMTX right;
@@ -232,12 +232,12 @@ void SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
         }
     } else {
         NUMTX basis_matrix;
-        position = *(NUVEC *)&matrix.m30;
+        position = matrix.translation;
         *(NUVEC *)&basis_matrix.m00 = basis->basis[0];
         *(NUVEC *)&basis_matrix.m10 = basis->basis[1];
         *(NUVEC *)&basis_matrix.m20 = basis->basis[2];
         NuMtxMulR(&matrix, &basis_matrix, &matrix);
-        *(NUVEC *)&matrix.m30 = position;
+        matrix.translation = position;
     }
     params = Default_ADDPART;
     params.matrix = &matrix;

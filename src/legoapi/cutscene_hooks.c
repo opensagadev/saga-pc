@@ -48,7 +48,7 @@ f32 *PCCutLocatorAni3(CUT_LOCATOR_ANIMATION *locator, NUMTX *matrix, f32 frame) 
     matrix->m21 = -matrix->m21;
     matrix->m23 = -matrix->m23;
     matrix->m32 = -matrix->m32;
-    NuMtxTranslate(matrix, (NUVEC *)&locator->base_matrix.m30);
+    NuMtxTranslate(matrix, &locator->base_matrix.translation);
     return values;
 }
 
@@ -86,7 +86,7 @@ void PCCutRigidAni3(CUT_RIGID_ANIMATION *rigid, f32 frame, NUMTX *matrix) {
     matrix->m21 = -matrix->m21;
     matrix->m23 = -matrix->m23;
     matrix->m32 = -matrix->m32;
-    NuMtxTranslate(matrix, (NUVEC *)&rigid->base_matrix.m30);
+    NuMtxTranslate(matrix, &rigid->base_matrix.translation);
 }
 
 void PCCutCharacterAni3(CUT_CHARACTER_ANIMATION *character, f32 frame, NUMTX *matrix, i32 *visible, u32 *animation_index,
@@ -197,7 +197,7 @@ f32 *NuGCutLocatorCalcMtx(CUT_LOCATOR_GENERIC *locator, f32 frame, NUMTX *matrix
         matrix->m21 = -matrix->m21;
         matrix->m23 = -matrix->m23;
         matrix->m32 = -matrix->m32;
-        NuMtxTranslate(matrix, (NUVEC *)&locator->base_matrix.m30);
+        NuMtxTranslate(matrix, &locator->base_matrix.translation);
     } else {
         *matrix = locator->base_matrix;
     }
@@ -248,7 +248,7 @@ void NuGCutRigidCalcMtx(CUT_RIGID_GENERIC *rigid, f32 frame, NUMTX *matrix) {
         matrix->m21 = -matrix->m21;
         matrix->m23 = -matrix->m23;
         matrix->m32 = -matrix->m32;
-        NuMtxTranslate(matrix, (NUVEC *)&rigid->base_matrix.m30);
+        NuMtxTranslate(matrix, &rigid->base_matrix.translation);
     } else {
         *matrix = rigid->base_matrix;
     }

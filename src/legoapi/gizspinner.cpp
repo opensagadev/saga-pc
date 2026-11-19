@@ -862,7 +862,7 @@ static void SpinnerResetEntry(GIZSPINNER_s *spinner, SpinnerProgressEntry *progr
     NuMtxTranslate(&spinner->matrix, &spinner->position);
     NewTerrPlatformsOff();
     if (NuSpecialGetMtx(&spinner->special) != NULL) {
-        spinner->ground_height = GameShadow(NULL, (NUVEC *)&NuSpecialGetMtx(&spinner->special)->m30, 5.0f, -1);
+        spinner->ground_height = GameShadow(NULL, &NuSpecialGetMtx(&spinner->special)->translation, 5.0f, -1);
     } else {
         spinner->ground_height = LevelConfigFarDistance;
     }

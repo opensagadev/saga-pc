@@ -1463,7 +1463,7 @@ static void CutSceneCameraSysUpdate(INSTNUGCUTSCENE *instance, f32 frame) {
         camera_state->flags &= ~2;
         return;
     }
-    translation = *(NUVEC *)&CutSceneCameraMatrix.m30;
+    translation = CutSceneCameraMatrix.translation;
     look_at = CutSceneCameraMatrix;
     NuMtxLookAtZ(&look_at, target->target);
     blend = 1.0f;
@@ -1477,7 +1477,7 @@ static void CutSceneCameraSysUpdate(INSTNUGCUTSCENE *instance, f32 frame) {
     NuMtxToQuat(&CutSceneCameraMatrix, &camera_rotation);
     NuQuatSlerp(&blended_rotation, &camera_rotation, &target_rotation, blend);
     NuQuatToMtx(&blended_rotation, &CutSceneCameraMatrix);
-    *(NUVEC *)&CutSceneCameraMatrix.m30 = translation;
+    CutSceneCameraMatrix.translation = translation;
 }
 
 static void CutSceneRigidSysUpdate(INSTNUGCUTSCENE *instance, f32 frame, i32 paused) {

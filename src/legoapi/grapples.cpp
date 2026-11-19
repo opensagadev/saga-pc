@@ -446,10 +446,10 @@ static i32 GrappleAttachmentPositions(GAMEOBJECT *object, NUVEC **positions) {
     i32 count = 1;
     i32 joint = object->character_data->game_character->grapple_locators[0];
     if (joint != -1 && object->character_model->points_of_interest[joint] != NULL) {
-        positions[0] = (NUVEC *)&object->player.locator_matrices[joint].m30;
+        positions[0] = &object->player.locator_matrices[joint].translation;
         joint = object->character_data->game_character->grapple_locators[1];
         if (joint != -1 && object->character_model->points_of_interest[joint] != NULL) {
-            positions[1] = (NUVEC *)&object->player.locator_matrices[joint].m30;
+            positions[1] = &object->player.locator_matrices[joint].translation;
             count = 2;
         }
     } else if (object->player.grapple_motion->disabled) {

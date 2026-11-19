@@ -481,7 +481,7 @@ void Minicam_Update(void) {
             MiniCam.delta_time += FRAMETIME;
         } else {
             NUVEC delta;
-            MiniCam.distance = NuVecDist((NUVEC *)&GameCam->render_mtx.m30, MiniCam.focus, &delta);
+            MiniCam.distance = NuVecDist(&GameCam->render_mtx.translation, MiniCam.focus, &delta);
             MiniCam.start_distance = MiniCam.distance;
             MiniCam.pitch = (u16)GameCam->pitch + 0x8000;
             MiniCam.start_pitch = MiniCam.pitch;

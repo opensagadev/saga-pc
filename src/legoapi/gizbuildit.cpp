@@ -246,8 +246,8 @@ extern "C" void GizMoveAttractoBuildItPiece(GIZBUILDIT *buildit, GAMEANIMOBJ *pi
         NuMtxToQuat(&to, &to_rotation);
         NuQuatSlerp(&rotation, &from_rotation, &to_rotation, progress);
         NuQuatToMtx(&rotation, &result);
-        from_position = *(NUVEC *)&draw->m30;
-        to_position = *(NUVEC *)&data->end_mtx.m30;
+        from_position = draw->translation;
+        to_position = data->end_mtx.translation;
         result.m30 = (to_position.x - from_position.x) * progress + from_position.x;
         result.m31 = (to_position.y - from_position.y) * progress + from_position.y + NU_SIN_LUT(progress * 32768.0) * 0.1f;
         result.m32 = (to_position.z - from_position.z) * progress + from_position.z;
@@ -290,7 +290,7 @@ extern "C" void GizDrawBuildItPiece(GAMEOBJECT *object, i32 draw_reflection) {
         NuMtxToQuat(&to, &to_rotation);
         NuQuatSlerp(&rotation, &from_rotation, &to_rotation, progress);
         NuQuatToMtx(&rotation, &result);
-        to_position = *(NUVEC *)&data->end_mtx.m30;
+        to_position = data->end_mtx.translation;
         result.m30 = (to_position.x - matrix.m30) * progress + matrix.m30;
         result.m31 = (to_position.y - matrix.m31) * progress + matrix.m31 + NU_SIN_LUT(progress * 32768.0) * 0.1f;
         result.m32 = (to_position.z - matrix.m32) * progress + matrix.m32;
@@ -343,7 +343,7 @@ extern "C" {
             total = v000;
             for (; index < end; ++index) {
                 data = player->player.buildit->anim_objects[index]->buildit_data;
-                NuVecAdd(&total, &total, (NUVEC *)&data->start_mtx.m30);
+                NuVecAdd(&total, &total, &data->start_mtx.translation);
             }
             if (batch_count > 1) {
                 NuVecScale(position, &total, 1.0f / batch_count);
@@ -353,7 +353,7 @@ extern "C" {
             position->x = (player->player.buildit->start_position.x + position->x) * 0.5;
             position->z = (player->player.buildit->start_position.z + position->z) * 0.5;
             data = player->player.buildit->anim_objects[player->player.buildit->built_object_count]->buildit_data;
-            end_position = (NUVEC *)&data->end_mtx.m30;
+            end_position = &data->end_mtx.translation;
             dx = position->x - end_position->x;
             dz = position->z - end_position->z;
             inverse_distance = 1.0f / NuFsqrt(dx * dx + dz * dz);
@@ -362,7 +362,7 @@ extern "C" {
         }
         if (target != NULL) {
             data = player->player.buildit->anim_objects[index]->buildit_data;
-            *target = *(NUVEC *)&data->end_mtx.m30;
+            *target = data->end_mtx.translation;
         }
     }
 
@@ -397,7 +397,7 @@ extern "C" {
             nearest_distance = 1.0e9f;
             for (i = 0; i < buildit->anim_object_count; ++i) {
                 data = buildit->anim_objects[i]->buildit_data;
-                position = *(NUVEC *)&data->start_mtx.m30;
+                position = data->start_mtx.translation;
                 dx = position.x - player_position.x;
                 dz = position.z - player_position.z;
                 distance = dz * dz + dx * dx;
@@ -414,7 +414,7 @@ extern "C" {
             centre = start_position;
             for (i = 0; i < buildit->anim_object_count; ++i) {
                 data = buildit->anim_objects[i]->buildit_data;
-                position = *(NUVEC *)&data->start_mtx.m30;
+                position = data->start_mtx.translation;
                 dx = position.x - start_position.x;
                 dz = position.z - start_position.z;
                 if (!(maximum.x > dx)) {
@@ -478,7 +478,7 @@ extern "C" {
                 nearest_distance = 1.0e9f;
                 for (j = 0; j < buildit->built_object_count; ++j) {
                     data = buildit->anim_objects[j]->buildit_data;
-                    position = *(NUVEC *)&data->end_mtx.m30;
+                    position = data->end_mtx.translation;
                     dx = position.x - player_position.x;
                     dz = position.z - player_position.z;
                     distance = dz * dz + dx * dx;
@@ -495,7 +495,7 @@ extern "C" {
                 centre.y = end_position.y;
                 for (j = 0; j < buildit->built_object_count; ++j) {
                     data = buildit->anim_objects[j]->buildit_data;
-                    position = *(NUVEC *)&data->end_mtx.m30;
+                    position = data->end_mtx.translation;
                     centre.x += position.x;
                     centre.z += position.z;
                     dx = position.x - end_position.x;
@@ -1040,7 +1040,7 @@ extern "C" {
         for (i = 0; i < buildit->anim_object_count; ++i) {
             GIZBUILDITANIMDATA_s *data = buildit->anim_objects[i]->buildit_data;
             if (emit_debris && i < buildit->built_object_count) {
-                AddGameDebris(WORLD->game_debris_sys, GizBuilditGDeb[qrand() / 0x2aab], (NUVEC *)&data->end_mtx.m30);
+                AddGameDebris(WORLD->game_debris_sys, GizBuilditGDeb[qrand() / 0x2aab], &data->end_mtx.translation);
             }
         }
         if (buildit->linked_buildit != NULL) {
@@ -1234,7 +1234,7 @@ extern "C" {
             if (buildit->linked_buildit != NULL) {
                 object = buildit->anim_objects[index];
                 object_data = object->buildit_data;
-                *(NUVEC *)&object_data->draw_mtx.m30 = scatter_position;
+                object_data->draw_mtx.translation = scatter_position;
             } else {
                 object = buildit->anim_objects[index];
                 NuSpecialSetDrawPos(&object->special, &scatter_position);
@@ -1303,7 +1303,7 @@ extern "C" {
                     GAMEANIMOBJ *piece = buildit->anim_objects[piece_index];
                     GIZBUILDITANIMDATA_s *data = piece->buildit_data;
                     if (buildit->linked_buildit != NULL) {
-                        finish_position = *(NUVEC *)&data->end_mtx.m30;
+                        finish_position = data->end_mtx.translation;
                     } else {
                         finish_position = *NuSpecialGetPos(&piece->special);
                     }
@@ -1319,7 +1319,7 @@ extern "C" {
                     }
                     NuVecAdd(&finish_position, &finish_position, &displacement);
                     if (buildit->linked_buildit != NULL) {
-                        *(NUVEC *)&data->draw_mtx.m30 = finish_position;
+                        data->draw_mtx.translation = finish_position;
                     } else {
                         NuSpecialSetDrawPos(&piece->special, &finish_position);
                     }
@@ -1362,7 +1362,7 @@ extern "C" {
                                 target.z = SeekValF(position->z, target.z, 6.0f);
                                 if (buildit->linked_buildit != NULL) {
                                     GIZBUILDITANIMDATA_s *data = buildit->anim_objects[piece_index]->buildit_data;
-                                    *(NUVEC *)&data->draw_mtx.m30 = target;
+                                    data->draw_mtx.translation = target;
                                 } else {
                                     NuSpecialSetDrawPos(&buildit->anim_objects[piece_index]->special, &target);
                                     NuSpecialUpdate(&buildit->anim_objects[piece_index]->special);
@@ -1378,7 +1378,7 @@ extern "C" {
                         if (buildit->linked_buildit != NULL) {
                             GIZBUILDITANIMDATA_s *data = piece->buildit_data;
                             data->draw_mtx = data->end_mtx;
-                            GameAudio_PlaySfx(0x3b, (NUVEC *)&data->draw_mtx.m30, 0, 0);
+                            GameAudio_PlaySfx(0x3b, &data->draw_mtx.translation, 0, 0);
                         } else {
                             NuSpecialSetVisibility(&piece->special, 1);
                             if (piece->instance_animation != NULL) {
@@ -1396,7 +1396,7 @@ extern "C" {
                             buildit->build_state = 1;
                             for (piece_index = 0; piece_index < buildit->anim_object_count; ++piece_index) {
                                 GIZBUILDITANIMDATA_s *data = buildit->anim_objects[piece_index]->buildit_data;
-                                AddGameDebris(world->game_debris_sys, GizBuilditGDeb[qrand() / 0x2aab], (NUVEC *)&data->end_mtx.m30);
+                                AddGameDebris(world->game_debris_sys, GizBuilditGDeb[qrand() / 0x2aab], &data->end_mtx.translation);
                             }
                         } else {
                             buildit->step_duration = 0.3f;
@@ -1419,7 +1419,7 @@ extern "C" {
                         if (buildit->linked_buildit != NULL) {
                             GIZBUILDITANIMDATA_s *data = piece->buildit_data;
                             data->draw_mtx = data->end_mtx;
-                            GameAudio_PlaySfx(0x3b, (NUVEC *)&data->draw_mtx.m30, 0, 0);
+                            GameAudio_PlaySfx(0x3b, &data->draw_mtx.translation, 0, 0);
                         } else {
                             NuSpecialSetVisibility(&piece->special, 1);
                             piece->instance_animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
@@ -1434,7 +1434,7 @@ extern "C" {
                             buildit->build_state = 1;
                             for (piece_index = 0; piece_index < buildit->anim_object_count; ++piece_index) {
                                 GIZBUILDITANIMDATA_s *data = buildit->anim_objects[piece_index]->buildit_data;
-                                AddGameDebris(world->game_debris_sys, GizBuilditGDeb[qrand() / 0x2aab], (NUVEC *)&data->end_mtx.m30);
+                                AddGameDebris(world->game_debris_sys, GizBuilditGDeb[qrand() / 0x2aab], &data->end_mtx.translation);
                             }
                             buzz_time = 0.1f;
                         } else if (buildit->built_object_count <= buildit->anim_object_count) {

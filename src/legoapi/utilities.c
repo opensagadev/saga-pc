@@ -505,7 +505,7 @@ f32 BlobShadowFade(NUVEC *position, f32 fade_start, f32 fade_end, f32 alpha) {
     if (alpha <= 0.0f) {
         return 0.0f;
     }
-    NuVecSub(&delta, position, (NUVEC *)&pNuCam->mtx.m30);
+    NuVecSub(&delta, position, &pNuCam->mtx.translation);
     distance_squared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
     if (distance_squared < fade_end * fade_end) {
         if (distance_squared > fade_start * fade_start) {
@@ -1559,7 +1559,7 @@ void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, 
         return;
     }
     if (position_only) {
-        NuMtxSetTranslation(&matrix, (NUVEC *)&joints[locator].m30);
+        NuMtxSetTranslation(&matrix, &joints[locator].translation);
     } else {
         matrix = joints[locator];
     }

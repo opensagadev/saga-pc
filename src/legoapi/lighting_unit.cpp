@@ -195,7 +195,7 @@ extern "C" {
         f32 old_specular = rtlSpecularValue(&LevelLightingData);
         NUVEC4 ambient;
         rtlResetEx(&LevelLightingData, 1);
-        rtlApplySetScale(set, &LevelLightingData, (NUVEC *)&global_camera.mtx.m30, NULL, 0x10, 1.0f);
+        rtlApplySetScale(set, &LevelLightingData, &global_camera.mtx.translation, NULL, 0x10, 1.0f);
         if (rtlSpecularValue(&LevelLightingData) == 0.0f) {
             rtlSetSpecularValue(&LevelLightingData, old_specular);
         }
@@ -697,7 +697,7 @@ extern "C" void SetShadowLight(void) {
         view_direction.y = forward_y;
         view_direction.z = forward_z;
         view_direction.w = 1.0f;
-        camera_position = *(NUVEC *)&GameCam->render_mtx.m30;
+        camera_position = GameCam->render_mtx.translation;
         camera = pNuCam;
     } else if (editor_active != 0) {
         NUVEC *forward = (NUVEC *)&NuCameraGetCam()->mtx.m20;
@@ -707,7 +707,7 @@ extern "C" void SetShadowLight(void) {
         view_direction.y = forward_y;
         view_direction.z = forward_z;
         view_direction.w = 1.0f;
-        camera_position = *(NUVEC *)&NuCameraGetCam()->mtx.m30;
+        camera_position = NuCameraGetCam()->mtx.translation;
         camera = edmainGetCamera();
     } else {
         NuVecSub(&view_direction.xyz, &GameCam->target, &GameCam->position);

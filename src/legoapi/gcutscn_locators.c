@@ -204,7 +204,7 @@ static void CutSceneLocatorDebrisUpdate(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LOCA
             if (parent != NULL) {
                 NuMtxMul(&matrix, &matrix, parent);
             }
-            position = (NUVEC *)&matrix.m30;
+            position = &matrix.translation;
             if ((locator->flags & CUTLOC_FINITE_SHOT) != 0) {
                 finite = -1;
                 AddScaledFiniteShotDebrisEffect(&finite, effect, position, 0, 0, 1, rate);
