@@ -1,5 +1,6 @@
 #include "globals.h"
 #include "legoapi/cutscenes/gcutscn.h"
+#include "legoapi/legoapi_types.h"
 #include "nu2api/cutscene_include.h"
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nu3d/nugscn.h"
@@ -629,14 +630,6 @@ typedef struct cut_trigger_state_s { // size 0x4
     u8 pulled;                       // 0x3
 } CUT_TRIGGER_STATE;
 
-typedef struct cut_trigger_scene_instance_s { // size 0x50
-    NUMTX matrix;                             // 0x00
-    i32 unknown_40;                           // 0x40
-    u32 flags;                                // 0x44
-    NUMTX *animated_matrix;                   // 0x48
-    u32 unknown_4c;                           // 0x4c
-} CUT_TRIGGER_SCENE_INSTANCE;
-
 typedef struct cut_trigger_set_s CUT_TRIGGER_SET;
 
 struct cut_trigger_set_s {     // size 0x3c
@@ -1008,7 +1001,7 @@ i32 CutTriggerSetTest(CUT_TRIGGER_SET *set, char *name, NUVEC *pos, f32 radius, 
     CUT_TRIGGER_FILE *file = set->file;
     NUGSCN *gscene;
     CUT_TRIGGER_ENTRY *entry;
-    CUT_TRIGGER_SCENE_INSTANCE *instance;
+    NUINSTANCE *instance;
     i32 hit;
     i32 i;
     for (i = 0; i < file->count; ++i) {
@@ -1021,12 +1014,12 @@ i32 CutTriggerSetTest(CUT_TRIGGER_SET *set, char *name, NUVEC *pos, f32 radius, 
                         break;
                     }
                     if (entry->scene_instance >= 0) {
-                        instance = &((CUT_TRIGGER_SCENE_INSTANCE *)gscene->instances)[entry->scene_instance];
+                        instance = &gscene->instances[entry->scene_instance];
                         if ((instance->flags & 1) == 0) {
                             break;
                         }
-                        if (instance->animated_matrix != NULL) {
-                            hit = CutTriggerEntryTestMtx(entry, instance->animated_matrix, pos, radius);
+                        if (instance->animation != NULL) {
+                            hit = CutTriggerEntryTestMtx(entry, &instance->animation->matrix, pos, radius);
                         } else {
                             hit = CutTriggerEntryTestMtx(entry, &instance->matrix, pos, radius);
                         }
@@ -1259,7 +1252,7 @@ void CutTriggerUpdate(NUVEC *pos, f32 radius, i32 include_hidden) {
     NUGSCN *gscene;
     CUT_TRIGGER_ENTRY *entry;
     CUT_TRIGGER_STATE *state;
-    CUT_TRIGGER_SCENE_INSTANCE *instance;
+    NUINSTANCE *instance;
     i32 inside;
     i32 i;
     for (set = CutTriggerSetList; set != NULL; set = set->next) {
@@ -1282,12 +1275,12 @@ void CutTriggerUpdate(NUVEC *pos, f32 radius, i32 include_hidden) {
                             break;
                         }
                         if (entry->scene_instance >= 0) {
-                            instance = &((CUT_TRIGGER_SCENE_INSTANCE *)gscene->instances)[entry->scene_instance];
+                            instance = &gscene->instances[entry->scene_instance];
                             if ((instance->flags & 1) == 0) {
                                 break;
                             }
-                            if (instance->animated_matrix != NULL) {
-                                inside = CutTriggerEntryTestMtx(entry, instance->animated_matrix, pos, radius);
+                            if (instance->animation != NULL) {
+                                inside = CutTriggerEntryTestMtx(entry, &instance->animation->matrix, pos, radius);
                             } else {
                                 inside = CutTriggerEntryTestMtx(entry, &instance->matrix, pos, radius);
                             }
@@ -1314,7 +1307,7 @@ i32 CutTriggerHit(NUVEC *pos, f32 radius, i16 amount) {
     NUGSCN *gscene;
     CUT_TRIGGER_ENTRY *entry;
     CUT_TRIGGER_STATE *state;
-    CUT_TRIGGER_SCENE_INSTANCE *instance;
+    NUINSTANCE *instance;
     i32 i;
     for (set = CutTriggerSetList; set != NULL; set = set->next) {
         file = set->file;
@@ -1331,12 +1324,12 @@ i32 CutTriggerHit(NUVEC *pos, f32 radius, i16 amount) {
             switch (entry->kind) {
                 case 2:
                     if (entry->scene_instance >= 0) {
-                        instance = &((CUT_TRIGGER_SCENE_INSTANCE *)gscene->instances)[entry->scene_instance];
+                        instance = &gscene->instances[entry->scene_instance];
                         if ((instance->flags & 1) == 0) {
                             break;
                         }
-                        if (instance->animated_matrix != NULL) {
-                            if (CutTriggerEntryTestMtx(entry, instance->animated_matrix, pos, radius) != 0) {
+                        if (instance->animation != NULL) {
+                            if (CutTriggerEntryTestMtx(entry, &instance->animation->matrix, pos, radius) != 0) {
                                 state->count += amount;
                                 if (state->count >= entry->threshold) {
                                     CutTriggerFire(set, entry, state, 1);

@@ -358,13 +358,6 @@ i32 ProcessActionFlowBox(GIZFLOW *system, FLOWBOX *box, u8 frame) {
     return 1;
 }
 
-typedef struct GIZFLOW_BOX_LOADER_PREFIX { // size 0xc
-    u8 unknown_000[4];                     // 0x0
-    u8 assist_id;                          // 0x4
-    u8 unknown_005[5];                     // 0x5
-    u16 state_flags;                       // 0xa
-} GIZFLOW_BOX_LOADER_PREFIX;
-
 static void FlowBoxActivationFeedback(GIZFLOW *system, FLOWBOX *box) {
     FLOWBOXGIZMODATA *data;
     i32 i;
@@ -1143,7 +1136,7 @@ static void GizFlowConfigNumGizmos(NUFPAR *parser) {
 static void GizFlowConfigAIAssistID(NUFPAR *parser) {
     i32 value;
     value = NuFParGetInt(parser);
-    ((GIZFLOW_BOX_LOADER_PREFIX *)load_flowbox)->assist_id = (u8)value;
+    load_flowbox->ai_trigger_group = (u8)value;
 }
 
 static void GizFlowConfigFlowBoxCount(NUFPAR *parser) {

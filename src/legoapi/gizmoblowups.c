@@ -94,11 +94,6 @@ typedef struct {              // size 0x100
     u32 secondary_output[16]; // 0xc0
 } BLOWUP_RESET_PROGRESS;
 
-typedef struct {         // size 0x48
-    u8 unknown_00[0x44]; // 0x00
-    f32 first_frame;     // 0x44
-} BLOWUP_ANIM_FIRST_DRAW;
-
 char SpinnerOutputBuffer[14] = "100% Complete";
 i32 blowup_gizmotype_id = -1;
 i32 MAXBLOWUPRANDSPANG = 60;
@@ -2221,7 +2216,7 @@ void GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_time) {
                     frame = blowup->type->animation_base_frame;
                     if (blowup->animation_offset + frame > end_frame) {
                         end_frame = blowup->animation_offset + frame - end_frame;
-                        frame = end_frame + ((BLOWUP_ANIM_FIRST_DRAW *)animation)->first_frame;
+                        frame = end_frame + animation->first_frame;
                     } else {
                         frame = blowup->animation_offset + frame;
                     }

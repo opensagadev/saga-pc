@@ -426,8 +426,3 @@ struct PORTALDOOR_s {            // size 0x10
     u8 pad_0f;                   // 0xf
 };
 
-typedef struct level_sfx_gizmotype_s {
-    u8 unknown_00[0x94];
-    void (*add_level_sfx)(WORLDINFO *, void *, i32 *, i32 *, i32);
-    u8 unknown_98[4];
-} LEVEL_SFX_GIZMOTYPE;

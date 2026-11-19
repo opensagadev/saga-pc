@@ -1607,7 +1607,7 @@ void HothBattleE_UpdateWave(void) {
     i32 index;
     char state[16];
     GAMEOBJECT *object;
-    HOTH_ANTINODE *node;
+    AIANTINODE *node;
     f32 radius;
     i32 count;
     if (melee.current_wave != melee.next_wave) {
@@ -1666,11 +1666,11 @@ void HothBattleE_UpdateWave(void) {
     HothBattle_ManageBackgroundCreatures();
     if (melee.current_wave == 3 && melee.waves[0].creatures[0] != NULL && melee.waves[0].creatures[1] != NULL) {
         radius = (f32)((f64)melee.waves[0].creatures[type]->bounds_radius * 3.0);
-        node = (HOTH_ANTINODE *)AIAntinodeCreateSingleFrame(&melee.waves[0].creatures[0]->position, radius);
-        node->excluded_character_types = (i32) ~(1u << melee.waves[0].creatures[1]->object_id);
+        node = AIAntinodeCreateSingleFrame(&melee.waves[0].creatures[0]->position, radius);
+        node->object_mask = (i32) ~(1u << melee.waves[0].creatures[1]->object_id);
         radius = (f32)((f64)melee.waves[0].creatures[type]->bounds_radius * 3.0);
-        node = (HOTH_ANTINODE *)AIAntinodeCreateSingleFrame(&melee.waves[0].creatures[1]->position, radius);
-        node->excluded_character_types = (i32) ~(1u << melee.waves[0].creatures[0]->object_id);
+        node = AIAntinodeCreateSingleFrame(&melee.waves[0].creatures[1]->position, radius);
+        node->object_mask = (i32) ~(1u << melee.waves[0].creatures[0]->object_id);
     }
     for (wave_index = 0; wave_index < 4; ++wave_index) {
         count = 0;

@@ -173,11 +173,6 @@ typedef struct {
     u8 object_count[64];
 } BUILD_PROGRESS;
 
-typedef struct HOTH_ANTINODE {
-    u8 reserved[0x50];
-    i64 excluded_character_types;
-} HOTH_ANTINODE;
-
 struct MUSIC_PAIR_ARENA {
     i32 prefix_word;
     u8 unknown_004[0x18];

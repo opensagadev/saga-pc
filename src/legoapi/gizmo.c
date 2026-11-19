@@ -219,17 +219,17 @@ static void GizmoSysPostLoad(GIZMOSYS *system, void *world) {
 }
 
 void AddLevelSfxGizmoSys(GIZMOSYS *system, WORLDINFO *world, i32 *ids, i32 *count, i32 capacity) {
-    LEVEL_SFX_GIZMOTYPE *type;
+    GIZMOTYPE *type;
     GIZMOSET *set;
     i32 i;
     if (gizmotypes == NULL || system == NULL) {
         return;
     }
-    type = (LEVEL_SFX_GIZMOTYPE *)gizmotypes->types;
+    type = gizmotypes->types;
     set = system->sets;
     for (i = 0; i < gizmotypes->count; ++i, ++set, ++type) {
-        if (type->add_level_sfx != NULL) {
-            type->add_level_sfx(world, set->data, ids, count, capacity);
+        if (type->fns.add_level_sfx_fn != NULL) {
+            type->fns.add_level_sfx_fn(world, set->data, ids, count, capacity);
         }
     }
 }

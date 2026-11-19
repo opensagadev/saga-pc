@@ -56,22 +56,6 @@ typedef struct antinode_data_s { // size 0x24
     u8 mode;                     // 0x23
 } ANTINODE_DATA;
 
-typedef struct ANTINODE_AI_OUTPUT { // size 0x58
-    u8 unknown_00[0x10];            // 0x00
-    f32 min_y;                      // 0x10
-    u8 unknown_14[4];               // 0x14
-    f32 max_y;                      // 0x18
-    u8 unknown_1c[0x1c];            // 0x1c
-    i32 rotation;                   // 0x38
-    u8 unknown_3c[4];               // 0x3c
-    f32 extent_x;                   // 0x40
-    f32 extent_z;                   // 0x44
-    u8 unknown_48[2];               // 0x48
-    u8 shape;                       // 0x4a
-    u8 unknown_4b[5];               // 0x4b
-    u32 user_data[2];               // 0x50
-} ANTINODE_AI_OUTPUT;
-
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 GameantinodeFabs(f32 f) {
     f32 rv;
@@ -207,7 +191,7 @@ void GameAntinode_Update(void *opaque_system) {
     i32 found;
     i32 object_count;
     GAMEOBJECT *object;
-    ANTINODE_AI_OUTPUT *active;
+    AIANTINODE *active;
     f32 remaining;
     if (!system) {
         return;
@@ -255,16 +239,16 @@ void GameAntinode_Update(void *opaque_system) {
             }
         }
         if (found) {
-            active = (ANTINODE_AI_OUTPUT *)AIAntinodeCreateSingleFrame(&node->position, node->radius);
+            active = AIAntinodeCreateSingleFrame(&node->position, node->radius);
             if (active) {
-                active->extent_x = node->extent_x;
-                active->extent_z = node->extent_z;
-                active->shape = node->shape;
+                active->base_radius = node->extent_x;
+                active->base_height = node->extent_z;
+                active->type = node->shape;
                 active->min_y = node->min_y;
                 active->max_y = node->max_y;
                 active->rotation = node->angle;
-                active->user_data[0] = node->user_data[1];
-                active->user_data[1] = node->user_data[2];
+                active->excluded_character_types[0] = node->user_data[1];
+                active->excluded_character_types[1] = node->user_data[2];
             }
         }
     }

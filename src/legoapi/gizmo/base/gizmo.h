@@ -90,7 +90,7 @@ typedef struct gizmofns_s {                                                     
     void *(*reserve_buffer_space_fn)(void *world);                                     // 0x60
     i32 (*load_fn)(void *world, void *data);                                           // 0x64
     void (*post_load_fn)(void *world, void *data);                                     // 0x68
-    void *add_level_sfx_fn;                                                            // 0x6c
+    void (*add_level_sfx_fn)(struct WORLDINFO_s *world, void *data, i32 *ids, i32 *count, i32 capacity); // 0x6c
 } GIZMOFNS;
 
 typedef struct gizmotype_s { // size 0x9c
