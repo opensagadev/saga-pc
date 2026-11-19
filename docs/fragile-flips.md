@@ -102,3 +102,4 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | nu2api cleanup batch (unit macros as functions, views merged, accessors named) | BoulderSpawn | legogame/episodeIII.c | exact | 83.28 % |
 | nu2api cleanup batch (unit macros as functions, views merged, accessors named) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | 90.96 % |
 | legogame cross-unit declarations from the owners' headers, legoapi headers standalone | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | 90.96 % | exact |
+| legogame views (customise.c records, hub.cpp pad readers, PODRACE_RESOURCE countdown) | BoulderSpawn | legogame/episodeIII.c | 83.28 % | exact |
