@@ -48,7 +48,6 @@ struct mission_data_s;
 struct numtl_s;
 
 typedef struct TERRAIN_WALL_POINT TERRAIN_WALL_POINT;
-typedef struct TERRAIN_SHAPE_BATCH TERRAIN_SHAPE_BATCH;
 
 typedef struct TERRAIN_GROUP {        // size 0x38
     NUVEC origin;                     // 0x00
@@ -70,15 +69,6 @@ typedef struct TERRAIN_CELL { // size 0x14
     f32 max_x;                // 0x0c
     f32 max_z;                // 0x10
 } TERRAIN_CELL;
-
-struct TERRAIN_SHAPE_BATCH { // size 0x14
-    i16 marker;              // 0x00
-    i16 shape_count;         // 0x02
-    f32 min_x;               // 0x04
-    f32 max_x;               // 0x08
-    f32 min_z;               // 0x0c
-    f32 max_z;               // 0x10
-};
 
 struct TERRAIN_WALL_POINT { // size 0x10
     NUVEC position;         // 0x0

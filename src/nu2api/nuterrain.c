@@ -397,22 +397,6 @@ typedef struct TERRAIN_SKIN_USE_RECORD { // size 0x8
     u8 unknown_06[2];                    // 0x6
 } TERRAIN_SKIN_USE_RECORD;
 
-typedef struct TERRAIN_SKIN_BATCH { // size 0x14
-    i16 kind;                       // 0x00
-    i16 count;                      // 0x02
-    f32 min_x;                      // 0x04
-    f32 max_x;                      // 0x08
-    f32 min_z;                      // 0x0c
-    f32 max_z;                      // 0x10
-} TERRAIN_SKIN_BATCH;
-
-/* Raw records are variable-length: a stream is a 20-byte header followed
- * by count 100-byte polygons. */
-struct TERRAIN_SKIN_STREAM {          // size 0x78
-    TERRAIN_SKIN_BATCH header;        // 0x00
-    TERRAIN_POLYGON_INFO polygons[1]; // 0x14
-};
-
 NUVEC *TerrainSkin(NUVEC *result, const TERRAIN_SKIN_INFO *info, const NUVEC *position, f32 weight, i32 mode) {
     NUVEC4 point;
     NUMTX matrix;
@@ -1698,7 +1682,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
     f32 max_y;
     f32 max_z;
     f32 radius_squared;
-    TERRAIN_SHAPE_BATCH *batch;
+    TERRAIN_SKIN_STREAM *batch;
     TERRAIN_POLYGON_INFO *shape;
     u8 legacy_material;
     f32 length_squared;
@@ -1834,10 +1818,10 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
         max_z = kBoundsMinimum;
         radius_squared = 0.0f;
 
-        batch = ((TERRAIN_SHAPE_BATCH *)(group->data));
-        while (batch->marker >= 0) {
-            shape = ((TERRAIN_POLYGON_INFO *)(batch + 1));
-            for (shape_index = 0; shape_index < batch->shape_count; ++shape_index, ++shape) {
+        batch = group->data;
+        while (batch->header.kind >= 0) {
+            shape = batch->polygons;
+            for (shape_index = 0; shape_index < batch->header.count; ++shape_index, ++shape) {
                 if (*(u32 *)&shape->normals[0].x == NU_FLOAT_NAN_BITS || *(u32 *)&shape->normals[0].y == NU_FLOAT_NAN_BITS ||
                     *(u32 *)&shape->normals[0].z == NU_FLOAT_NAN_BITS) {
                     shape->normals[0].x = 0;
@@ -1929,7 +1913,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
                 }
             }
 
-            batch = ((TERRAIN_SHAPE_BATCH *)(((TERRAIN_POLYGON_INFO *)(batch + 1)) + batch->shape_count));
+            batch = ((TERRAIN_SKIN_STREAM *)(batch->polygons + batch->header.count));
         }
 
         group->radius = NuFsqrt(radius_squared);
@@ -1962,22 +1946,22 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
             continue;
         }
 
-        batch = ((TERRAIN_SHAPE_BATCH *)(group->data));
-        while (0 <= batch->marker) {
-            if (batch->min_x + group->origin.x < terrain_min_x) {
-                terrain_min_x = batch->min_x + group->origin.x;
+        batch = group->data;
+        while (0 <= batch->header.kind) {
+            if (batch->header.min_x + group->origin.x < terrain_min_x) {
+                terrain_min_x = batch->header.min_x + group->origin.x;
             }
-            if (batch->max_x + group->origin.x > terrain_max_x) {
-                terrain_max_x = batch->max_x + group->origin.x;
+            if (batch->header.max_x + group->origin.x > terrain_max_x) {
+                terrain_max_x = batch->header.max_x + group->origin.x;
             }
-            if (batch->min_z + group->origin.z < terrain_min_z) {
-                terrain_min_z = batch->min_z + group->origin.z;
+            if (batch->header.min_z + group->origin.z < terrain_min_z) {
+                terrain_min_z = batch->header.min_z + group->origin.z;
             }
-            if (batch->max_z + group->origin.z > terrain_max_z) {
-                terrain_max_z = batch->max_z + group->origin.z;
+            if (batch->header.max_z + group->origin.z > terrain_max_z) {
+                terrain_max_z = batch->header.max_z + group->origin.z;
             }
 
-            batch = ((TERRAIN_SHAPE_BATCH *)(((TERRAIN_POLYGON_INFO *)(batch + 1)) + batch->shape_count));
+            batch = ((TERRAIN_SKIN_STREAM *)(batch->polygons + batch->header.count));
         }
     }
 
@@ -1992,22 +1976,22 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
         group_min_z[group_index] = kBoundsMaximum;
         group_max_x[group_index] = kBoundsMinimum;
         group_max_z[group_index] = kBoundsMinimum;
-        batch = ((TERRAIN_SHAPE_BATCH *)(group->data));
-        while (batch->marker >= 0) {
-            if (batch->min_x + group->origin.x < group_min_x[group_index]) {
-                group_min_x[group_index] = batch->min_x + group->origin.x;
+        batch = group->data;
+        while (batch->header.kind >= 0) {
+            if (batch->header.min_x + group->origin.x < group_min_x[group_index]) {
+                group_min_x[group_index] = batch->header.min_x + group->origin.x;
             }
-            if (batch->max_x + group->origin.x > group_max_x[group_index]) {
-                group_max_x[group_index] = batch->max_x + group->origin.x;
+            if (batch->header.max_x + group->origin.x > group_max_x[group_index]) {
+                group_max_x[group_index] = batch->header.max_x + group->origin.x;
             }
-            if (batch->min_z + group->origin.z < group_min_z[group_index]) {
-                group_min_z[group_index] = batch->min_z + group->origin.z;
+            if (batch->header.min_z + group->origin.z < group_min_z[group_index]) {
+                group_min_z[group_index] = batch->header.min_z + group->origin.z;
             }
-            if (batch->max_z + group->origin.z > group_max_z[group_index]) {
-                group_max_z[group_index] = batch->max_z + group->origin.z;
+            if (batch->header.max_z + group->origin.z > group_max_z[group_index]) {
+                group_max_z[group_index] = batch->header.max_z + group->origin.z;
             }
 
-            batch = ((TERRAIN_SHAPE_BATCH *)(((TERRAIN_POLYGON_INFO *)(batch + 1)) + batch->shape_count));
+            batch = ((TERRAIN_SKIN_STREAM *)(batch->polygons + batch->header.count));
         }
 
         x_distance = (i32)((group_max_x[group_index] + group_min_x[group_index]) * 0.5f - terrain_min_x);
@@ -2542,7 +2526,7 @@ void terrainpickupinit(char *path, void **buffer) {
     terrain->group_count = ReadTerrainPickup((unsigned char *)path, (i16 **)buffer, terrain);
     group = terrain->groups;
     for (i = 0; i < 32; ++i, ++group) {
-        TERRAIN_SHAPE_BATCH *batch;
+        TERRAIN_SKIN_STREAM *batch;
         f32 min_x;
         f32 min_y;
         f32 min_z;
@@ -2560,11 +2544,11 @@ void terrainpickupinit(char *path, void **buffer) {
         max_x = -200000000.0f;
         max_y = -200000000.0f;
         max_z = -200000000.0f;
-        batch = (TERRAIN_SHAPE_BATCH *)group->data;
-        while (batch->marker >= 0) {
-            TERRAIN_POLYGON_INFO *shape = (TERRAIN_POLYGON_INFO *)(batch + 1);
+        batch = group->data;
+        while (batch->header.kind >= 0) {
+            TERRAIN_POLYGON_INFO *shape = batch->polygons;
             i32 j;
-            for (j = batch->shape_count; j > 0; --j, ++shape) {
+            for (j = batch->header.count; j > 0; --j, ++shape) {
                 i32 k;
                 if (shape->material[0] == 0xff) {
                     shape->material[0] = shape->material[1];
@@ -2597,7 +2581,7 @@ void terrainpickupinit(char *path, void **buffer) {
                     }
                 }
             }
-            batch = (TERRAIN_SHAPE_BATCH *)shape;
+            batch = (TERRAIN_SKIN_STREAM *)shape;
         }
         group->radius = NuFsqrt(radius_squared);
         ++terraincnt;
@@ -3047,7 +3031,7 @@ void TerrDrawImpactPol(void) {
 
 void DrawMPlat(i32 index) {
     TERRAIN_GROUP *group;
-    TERRAIN_SHAPE_BATCH *batch;
+    TERRAIN_SKIN_STREAM *batch;
     TERRAIN_POLYGON_INFO *shape;
     i32 remaining;
     if (CurrentTerrain == NULL || index < 0) {
@@ -3057,31 +3041,31 @@ void DrawMPlat(i32 index) {
     if (group->chunk_type != 0 && group->chunk_type != 1) {
         return;
     }
-    batch = (TERRAIN_SHAPE_BATCH *)group->data;
-    while (batch->marker >= 0) {
-        shape = (TERRAIN_POLYGON_INFO *)(batch + 1);
-        for (remaining = batch->shape_count; remaining > 0; --remaining, ++shape) {
+    batch = group->data;
+    while (batch->header.kind >= 0) {
+        shape = batch->polygons;
+        for (remaining = batch->header.count; remaining > 0; --remaining, ++shape) {
             TerrDrawPlat(shape, CurrentTerrain->platforms[index].terrain_group_index);
         }
-        batch = (TERRAIN_SHAPE_BATCH *)shape;
+        batch = (TERRAIN_SKIN_STREAM *)shape;
     }
 }
 
 void DrawMSitu(i32 index) {
     TERRAIN_GROUP *group = &CurrentTerrain->groups[index];
-    TERRAIN_SHAPE_BATCH *batch;
+    TERRAIN_SKIN_STREAM *batch;
     TERRAIN_POLYGON_INFO *shape;
     i32 remaining;
     if ((group->chunk_type != 0 && group->chunk_type != 1) || group->data == NULL) {
         return;
     }
-    batch = (TERRAIN_SHAPE_BATCH *)group->data;
-    while (batch->marker >= 0) {
-        shape = (TERRAIN_POLYGON_INFO *)(batch + 1);
-        for (remaining = batch->shape_count; remaining > 0; --remaining, ++shape) {
+    batch = group->data;
+    while (batch->header.kind >= 0) {
+        shape = batch->polygons;
+        for (remaining = batch->header.count; remaining > 0; --remaining, ++shape) {
             TerrDraw(shape, (i16)index);
         }
-        batch = (TERRAIN_SHAPE_BATCH *)shape;
+        batch = (TERRAIN_SKIN_STREAM *)shape;
     }
 }
 

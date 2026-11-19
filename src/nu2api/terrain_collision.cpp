@@ -1552,12 +1552,12 @@ extern "C" {
 
         i32 count = 0;
         TERRAIN_GROUP *group = &CurrentTerrain->groups[old_query->terrain_group_index];
-        TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group->data);
+        TERRAIN_SKIN_STREAM *batch = group->data;
         if (1.0f == query->object_scale) {
             if (CurrentTerrain->platforms[platform_index].flags & TERRAIN_PLATFORM_FLAG_ROTATING) {
-                while (batch->marker >= 0) {
-                    TERRAIN_POLYGON_INFO *source = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
-                    for (i32 remaining = batch->shape_count; remaining > 0; --remaining, ++source) {
+                while (batch->header.kind >= 0) {
+                    TERRAIN_POLYGON_INFO *source = batch->polygons;
+                    for (i32 remaining = batch->header.count; remaining > 0; --remaining, ++source) {
                         if (source->material[1] != 0) {
                             continue;
                         }
@@ -1630,25 +1630,25 @@ extern "C" {
                         ++count;
                         ++transformed_count;
                     }
-                    batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(source);
+                    batch = reinterpret_cast<TERRAIN_SKIN_STREAM *>(source);
                 }
             } else {
-                while (batch->marker >= 0) {
-                    TERRAIN_POLYGON_INFO *source = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
-                    for (i32 remaining = batch->shape_count; remaining > 0; --remaining, ++source) {
+                while (batch->header.kind >= 0) {
+                    TERRAIN_POLYGON_INFO *source = batch->polygons;
+                    for (i32 remaining = batch->header.count; remaining > 0; --remaining, ++source) {
                         if (source->material[1] != 0) {
                             continue;
                         }
                         *cursor++ = source;
                         ++count;
                     }
-                    batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(source);
+                    batch = reinterpret_cast<TERRAIN_SKIN_STREAM *>(source);
                 }
             }
         } else if (CurrentTerrain->platforms[platform_index].flags & TERRAIN_PLATFORM_FLAG_ROTATING) {
-            while (batch->marker >= 0) {
-                TERRAIN_POLYGON_INFO *source = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
-                for (i32 remaining = batch->shape_count; remaining > 0; --remaining, ++source) {
+            while (batch->header.kind >= 0) {
+                TERRAIN_POLYGON_INFO *source = batch->polygons;
+                for (i32 remaining = batch->header.count; remaining > 0; --remaining, ++source) {
                     if (source->material[1] != 0) {
                         continue;
                     }
@@ -1729,12 +1729,12 @@ extern "C" {
                     ++count;
                     ++transformed_count;
                 }
-                batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(source);
+                batch = reinterpret_cast<TERRAIN_SKIN_STREAM *>(source);
             }
         } else {
-            while (batch->marker >= 0) {
-                TERRAIN_POLYGON_INFO *source = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
-                for (i32 remaining = batch->shape_count; remaining > 0; --remaining, ++source) {
+            while (batch->header.kind >= 0) {
+                TERRAIN_POLYGON_INFO *source = batch->polygons;
+                for (i32 remaining = batch->header.count; remaining > 0; --remaining, ++source) {
                     if (source->material[1] != 0) {
                         continue;
                     }
@@ -1774,7 +1774,7 @@ extern "C" {
                     ++count;
                     ++transformed_count;
                 }
-                batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(source);
+                batch = reinterpret_cast<TERRAIN_SKIN_STREAM *>(source);
             }
         }
         if (count != 0) {

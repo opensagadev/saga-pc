@@ -174,12 +174,12 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                 query = TerI;
             }
 
-            TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group.data);
-            while (batch->marker >= 0) {
-                TERRAIN_POLYGON_INFO *shapes = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
-                const i32 shape_count = batch->shape_count;
-                if (group_max_x >= batch->min_x && group_min_x < batch->max_x && group_max_z >= batch->min_z &&
-                    group_min_z < batch->max_z) {
+            TERRAIN_SKIN_STREAM *batch = group.data;
+            while (batch->header.kind >= 0) {
+                TERRAIN_POLYGON_INFO *shapes = batch->polygons;
+                const i32 shape_count = batch->header.count;
+                if (group_max_x >= batch->header.min_x && group_min_x < batch->header.max_x && group_max_z >= batch->header.min_z &&
+                    group_min_z < batch->header.max_z) {
                     TERRAIN_POLYGON_INFO *candidate = shapes;
                     for (i32 remaining = shape_count; remaining > 0; --remaining, ++candidate) {
                         if (!(group_max_x >= candidate->min_x && group_min_x < candidate->max_x && group_max_z >= candidate->min_z &&
@@ -198,7 +198,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                         TerrainStoreScanShape(cursor, group_shape_count, scaled_shape_count, shape, group);
                     }
                 }
-                batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(shapes + shape_count);
+                batch = reinterpret_cast<TERRAIN_SKIN_STREAM *>(shapes + shape_count);
             }
             TerrainFinishScanGroup(group_header, cursor, group_shape_count, group_index);
         }
@@ -220,12 +220,12 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                 continue;
             }
 
-            TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group.data);
-            while (batch->marker >= 0) {
-                TERRAIN_POLYGON_INFO *shapes = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
-                const i32 shape_count = batch->shape_count;
-                if (local_max_x >= batch->min_x && local_min_x < batch->max_x && local_max_z >= batch->min_z &&
-                    local_min_z < batch->max_z) {
+            TERRAIN_SKIN_STREAM *batch = group.data;
+            while (batch->header.kind >= 0) {
+                TERRAIN_POLYGON_INFO *shapes = batch->polygons;
+                const i32 shape_count = batch->header.count;
+                if (local_max_x >= batch->header.min_x && local_min_x < batch->header.max_x && local_max_z >= batch->header.min_z &&
+                    local_min_z < batch->header.max_z) {
                     TERRAIN_POLYGON_INFO *candidate = shapes;
                     for (i32 remaining = shape_count; remaining > 0; --remaining, ++candidate) {
                         if (!(local_max_x >= candidate->min_x && local_min_x < candidate->max_x && local_max_z >= candidate->min_z &&
@@ -244,7 +244,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                         TerrainStoreScanShape(cursor, group_shape_count, scaled_shape_count, shape, group);
                     }
                 }
-                batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(shapes + shape_count);
+                batch = reinterpret_cast<TERRAIN_SKIN_STREAM *>(shapes + shape_count);
             }
             TerrainFinishScanGroup(group_header, cursor, group_shape_count, CurrentTerrain->max_groups + pick_index);
         }
@@ -345,10 +345,10 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                 if (!(reach * reach > distance_sq)) {
                     continue;
                 }
-                TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group.data);
-                while (batch->marker >= 0) {
-                    TERRAIN_POLYGON_INFO *shapes = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
-                    const i32 shape_count = batch->shape_count;
+                TERRAIN_SKIN_STREAM *batch = group.data;
+                while (batch->header.kind >= 0) {
+                    TERRAIN_POLYGON_INFO *shapes = batch->polygons;
+                    const i32 shape_count = batch->header.count;
                     TERRAIN_POLYGON_INFO *shape = shapes;
                     for (i32 remaining = shape_count; remaining > 0; --remaining, ++shape) {
                         if (reinterpret_cast<u8 *>(cursor) >= limit) {
@@ -476,7 +476,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                         ++scaled_shape_count;
                         query = TerI;
                     }
-                    batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(shapes + shape_count);
+                    batch = reinterpret_cast<TERRAIN_SKIN_STREAM *>(shapes + shape_count);
                 }
             } else {
                 if (!(local_max_x >= group.bounds_min.x && local_max_y >= group.bounds_min.y && local_max_z >= group.bounds_min.z &&
@@ -484,12 +484,12 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                     group.chunk_type == -1) {
                     continue;
                 }
-                TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group.data);
-                while (batch->marker >= 0) {
-                    TERRAIN_POLYGON_INFO *shapes = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
-                    const i32 shape_count = batch->shape_count;
-                    if (local_max_x >= batch->min_x && local_min_x < batch->max_x && local_max_z >= batch->min_z &&
-                        local_min_z < batch->max_z) {
+                TERRAIN_SKIN_STREAM *batch = group.data;
+                while (batch->header.kind >= 0) {
+                    TERRAIN_POLYGON_INFO *shapes = batch->polygons;
+                    const i32 shape_count = batch->header.count;
+                    if (local_max_x >= batch->header.min_x && local_min_x < batch->header.max_x && local_max_z >= batch->header.min_z &&
+                        local_min_z < batch->header.max_z) {
                         TERRAIN_POLYGON_INFO *candidate = shapes;
                         for (i32 remaining = shape_count; remaining > 0; --remaining, ++candidate) {
                             if (!(local_max_x >= candidate->min_x && local_min_x < candidate->max_x && local_max_z >= candidate->min_z &&
@@ -509,7 +509,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                             TerrainStoreScanShape(cursor, group_shape_count, scaled_shape_count, shape, group);
                         }
                     }
-                    batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(shapes + shape_count);
+                    batch = reinterpret_cast<TERRAIN_SKIN_STREAM *>(shapes + shape_count);
                 }
             }
             TerrainFinishScanGroup(group_header, cursor, group_shape_count, platform_group_index);
