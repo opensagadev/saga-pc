@@ -407,14 +407,8 @@ struct PC_INPUT_DEVICE {      // size 0x17c
     i32 left_trigger;         // 0x020
     i32 right_trigger;        // 0x024
 
-    union { // size 0x2
-        u8 unknown_28[2];
-
-        struct {                   // size 0x2
-            u8 action_keys_active; // 0x028
-            u8 back_pressed;         // 0x029
-        };
-    }; // 0x028
+    u8 action_keys_active; // 0x028
+    u8 back_pressed;       // 0x029
 
     u8 config_dirty;               // 0x02a
     u8 config_installed;           // 0x02b
@@ -460,71 +454,42 @@ struct PC_INPUT_RUNTIME {          // size 0x68b4
     PC_INPUT_CONFIG primary[64];   // 0x0000
     PC_INPUT_CONFIG secondary[64]; // 0x2700
 
-    union { // size 0x34
-        u8 unknown_4e00[0x34];
+    i32 pending_binding;     // 0x4e00
+    u32 read_mask;      // 0x4e04
+    u32 action_mask;    // 0x4e08
+    u32 completed_mask; // 0x4e0c
+    u8 keyboard_polled; // 0x4e10
+    u8 mouse_polled;    // 0x4e11
+    u8 suppress_key_1;  // 0x4e12
 
-        struct {                // size 0x34
-            i32 pending_binding;     // 0x4e00
-            u32 read_mask;      // 0x4e04
-            u32 action_mask;    // 0x4e08
-            u32 completed_mask; // 0x4e0c
-            u8 keyboard_polled; // 0x4e10
-            u8 mouse_polled;    // 0x4e11
-            u8 suppress_key_1;  // 0x4e12
-
-            union { // size 0x21
-
-                struct {                   // size 0x21
-                    u8 unknown_4e13;       // 0x4e13
-                    u8 unknown_4e14[0x20]; // 0x4e14
-                };
-
-                char blocked_keys[33];
-            }; // 0x4e13
-        };
-    }; // 0x4e00
+    char blocked_keys[33]; // 0x4e13
 
     PC_INPUT_DEVICE devices[14]; // 0x4e34
 
-    union { // size 0x5c
-        u8 unknown_62fc[0x5c];
-        PC_INPUT_MOUSE_RUNTIME mouse;
-    }; // 0x62fc
+    PC_INPUT_MOUSE_RUNTIME mouse; // 0x62fc
 
     PC_INPUT_BINDING auxiliary_bindings[4][32]; // 0x6358
     i32 auxiliary_ports[4];                     // 0x6558
 
-    union { // size 0x9c
-        u8 unknown_6568[0x9c];
-
-        struct {                                 // size 0x9c
-            i32 axis_threshold;                  // 0x6568
-            i32 motion_threshold;                // 0x656c
-            f32 ramp_seconds;                    // 0x6570
-            u8 capture_available;                // 0x6574
-            u8 unknown_6575;                     // 0x6575
-            PC_INPUT_CAPTURE staged_capture[14]; // 0x6576
-            u8 unknown_6602[2];                  // 0x6602
-        };
-    }; // 0x6568
+    i32 axis_threshold;                  // 0x6568
+    i32 motion_threshold;                // 0x656c
+    f32 ramp_seconds;                    // 0x6570
+    u8 capture_available;                // 0x6574
+    u8 unknown_6575;                     // 0x6575
+    PC_INPUT_CAPTURE staged_capture[14]; // 0x6576
+    u8 unknown_6602[2];                  // 0x6602
 
     i32 preferred_key; // 0x6604
 
-    union { // size 0x1dc
-        u8 unknown_6608[0x1dc];
-
-        struct {                            // size 0x1dc
-            i32 captured_port;              // 0x6608
-            PC_INPUT_CAPTURE captures[14];  // 0x660c
-            u8 unknown_6698[0x82];          // 0x6698
-            u8 first_mouse;                 // 0x671a
-            u8 unknown_671b;                // 0x671b
-            PC_INPUT_RAW_SAMPLE raw_sample; // 0x671c
-            i8 keyboard_ui_override;        // 0x67e0
-            u8 mouse_ui_override;                // 0x67e1
-            u8 unknown_67e2[2];             // 0x67e2
-        };
-    }; // 0x6608
+    i32 captured_port;              // 0x6608
+    PC_INPUT_CAPTURE captures[14];  // 0x660c
+    u8 unknown_6698[0x82];          // 0x6698
+    u8 first_mouse;                 // 0x671a
+    u8 unknown_671b;                // 0x671b
+    PC_INPUT_RAW_SAMPLE raw_sample; // 0x671c
+    i8 keyboard_ui_override;        // 0x67e0
+    u8 mouse_ui_override;                // 0x67e1
+    u8 unknown_67e2[2];             // 0x67e2
 
     i32 shutdown_state;            // 0x67e4
     i32 replay_frame;              // 0x67e8
