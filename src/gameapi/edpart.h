@@ -120,6 +120,15 @@ extern "C" {
     void edpartInstanceOrientMenu(struct eduimenu_s *menu, struct eduiitem_s *unused1, u32 unused2);
     extern const char dat_0076b274[4];
     extern struct numtl_s *edpart_mtl;
+    extern i8 edpart_effect_list;
+    extern i32 edpart_refrotz;
+    extern i32 edpart_refroty;
+    extern i32 edpart_nearest_duplicates;
+    extern i32 edpart_dpad_mode;
+    extern i32 edpart_copy_enclosed;
+    extern struct numtl_s *edpart_boxmtl;
+    extern i32 edpart_readout;
+    extern i32 edpart_num_orphans;
 #ifdef __cplusplus
 }
 #endif

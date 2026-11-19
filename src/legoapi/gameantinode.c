@@ -56,12 +56,6 @@ typedef struct antinode_data_s { // size 0x24
     u8 mode;                     // 0x23
 } ANTINODE_DATA;
 
-typedef struct antinode_world_s { // size 0x15c
-    u8 unknown_0000[0x144];       // 0x000
-    NUVEC level_min;              // 0x144
-    NUVEC level_max;              // 0x150
-} ANTINODE_WORLD;
-
 typedef struct ANTINODE_AI_OUTPUT { // size 0x58
     u8 unknown_00[0x10];            // 0x00
     f32 min_y;                      // 0x10
@@ -148,12 +142,11 @@ void GameAntinode_UnregisterAntiNode(void *opaque_system, void *opaque_node) {
 
 void GameAntinode_FindGridPosition(WORLDINFO *world, NUVEC *position, f32 radius_x, f32 radius_z, u8 *min_x, u8 *min_z, u8 *max_x,
                                    u8 *max_z) {
-    ANTINODE_WORLD *view = (ANTINODE_WORLD *)world;
-    f32 cell_x = (view->level_max.x - view->level_min.x) * (1.0 / 64.0);
-    f32 cell_z = (view->level_max.z - view->level_min.z) * (1.0 / 64.0);
+    f32 cell_x = (world->level_max.x - world->level_min.x) * (1.0 / 64.0);
+    f32 cell_z = (world->level_max.z - world->level_min.z) * (1.0 / 64.0);
     f32 offset;
     if (min_x != NULL) {
-        offset = position->x - radius_x - view->level_min.x;
+        offset = position->x - radius_x - world->level_min.x;
         offset = GameantinodeFdiv(offset, cell_x);
         *min_x = (u8)offset;
         if (*min_x > 63) {
@@ -161,7 +154,7 @@ void GameAntinode_FindGridPosition(WORLDINFO *world, NUVEC *position, f32 radius
         }
     }
     if (max_x != NULL) {
-        offset = position->x + radius_x - view->level_min.x;
+        offset = position->x + radius_x - world->level_min.x;
         if (offset == 0.0f || cell_x == 0.0f) {
             offset = 0.0f;
         } else {
@@ -173,7 +166,7 @@ void GameAntinode_FindGridPosition(WORLDINFO *world, NUVEC *position, f32 radius
         }
     }
     if (min_z != NULL) {
-        offset = position->z - radius_z - view->level_min.z;
+        offset = position->z - radius_z - world->level_min.z;
         if (offset == 0.0f || cell_z == 0.0f) {
             offset = 0.0f;
         } else {
@@ -185,7 +178,7 @@ void GameAntinode_FindGridPosition(WORLDINFO *world, NUVEC *position, f32 radius
         }
     }
     if (max_z != NULL) {
-        offset = position->z + radius_z - view->level_min.z;
+        offset = position->z + radius_z - world->level_min.z;
         if (offset == 0.0f || cell_z == 0.0f) {
             offset = 0.0f;
         } else {

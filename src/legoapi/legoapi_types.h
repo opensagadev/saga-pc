@@ -2048,7 +2048,7 @@ struct CHARPLATFORM_s {          // size 0x14
 };
 
 struct CHARPLATFORMSYS_s {              // size 0x1c
-    i32 unknown_00;                     // 0x00
+    struct NUGSCN_s *scene;             // 0x00
     i32 platform_count;                 // 0x04
     struct CHARPLATFORM_s platforms[1]; // 0x08
 };

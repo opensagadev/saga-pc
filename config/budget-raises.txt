@@ -317,3 +317,4 @@ config/oddscan-budget.json magic-state 4314 quick run, settled in the refix
 config/declscan-budget.json A 29 quick run, settled in the refix
 config/declscan-budget.json A 36 quick run, settled in the refix
 config/oddscan-budget.json other-platform 4 quick run, settled in the refix
+config/declscan-budget.json A 39 quick run, settled in the refix

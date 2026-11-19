@@ -1300,12 +1300,6 @@ void MenuSmartTextEx(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u3
     SmartTextEx(text, x, y, z, sx, sy, sz, alignment, red, green, blue, max_width, max_lines, box, suppress, alpha);
 }
 
-typedef struct text_crawl_mission_view_s { // size 0x8
-    u8 unknown_00[4];                      // 0x0
-    i16 name_id;                           // 0x4
-    i16 text_id;                           // 0x6
-} TEXT_CRAWL_MISSION_VIEW;
-
 static TEXTCRAWL *TextCrawlCurrent = 0;
 u16 TextCrawlRotateY = 0;
 u16 TextCrawlRotateZ = 0;
@@ -1337,7 +1331,7 @@ void TextCrawl_Init(TEXTCRAWL *crawl, i32 id, i32 reset) {
 
 void TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
     AREA_DATA *area;
-    TEXT_CRAWL_MISSION_VIEW *mission;
+    MISSIONDATA *mission;
     i32 body_text_id;
     i32 episode_index;
     i32 area_index;
@@ -1387,7 +1381,7 @@ void TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
         episode_name = text;
         body_text_id = -1;
     } else {
-        mission = (TEXT_CRAWL_MISSION_VIEW *)Mission_Active(NULL);
+        mission = Mission_Active(NULL);
         if (mission != NULL) {
             i32 name_id = mission->name_id;
             if (name_id != -1 && TTab[name_id] != NULL) {

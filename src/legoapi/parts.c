@@ -3352,8 +3352,6 @@ void edpartInstanceSettingsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unuse
 }
 
 void edpartMultipleCopyCopy(void) {
-    extern i32 edpart_copyroty;
-    extern f32 edpart_copy_size;
     i32 index;
     NUVEC delta;
 
@@ -3398,10 +3396,6 @@ void edpartMultipleCopyCopy(void) {
 }
 
 void edpartHighlightNearest(void) {
-    extern i32 edpart_copy_mode;
-    extern i32 edpart_copyroty;
-    extern i32 edpart_copy_enclosed;
-    extern f32 edpart_copy_size;
     i32 index;
     NUVEC delta;
     NUVEC offset;
@@ -4004,25 +3998,6 @@ void edpartDestroyAllEffects(void) {
 }
 
 void edpartDoInput(FRAME_PAD *pad) {
-    extern i32 edpart_copy_mode;
-    extern i32 edpart_copyroty;
-    extern i32 edpart_rotz;
-    extern i32 edpart_roty;
-    extern i32 edpart_emitrotz;
-    extern i32 edpart_emitroty;
-    extern i32 edpart_emitrotx;
-    extern i32 edpart_refrotz;
-    extern i32 edpart_refroty;
-    extern i32 edpart_dpad_mode;
-    extern i32 edpart_create_type;
-    extern i32 edpart_nearest_orphans;
-    extern i32 edpart_nearest_duplicates;
-    extern i32 edpart_snap_enabled;
-    extern i32 edpart_cam_ax;
-    extern i32 edpart_cam_ay;
-    extern i8 edpart_effect_list;
-    extern f32 edpart_copy_size;
-    extern f32 edpart_offset;
     i32 nearest;
     i32 variant;
     i32 previous;
@@ -4223,29 +4198,6 @@ i32 edpartPlace(i32 index, NUVEC *position) {
 }
 
 void edpartDrawCursor(void) {
-    extern i32 edpart_copy_mode;
-    extern i32 edpart_copyrotz;
-    extern i32 edpart_copyroty;
-    extern i32 edpart_rotz;
-    extern i32 edpart_roty;
-    extern i32 edpart_emitrotz;
-    extern i32 edpart_emitroty;
-    extern i32 edpart_emitrotx;
-    extern i32 edpart_refrotz;
-    extern i32 edpart_refroty;
-    extern i32 edpart_dpad_mode;
-    extern i32 edpart_readout;
-    extern i32 edpart_num_orphans;
-    extern i32 edpart_create_type;
-    extern i32 edpart_nearest_orphans;
-    extern i32 edpart_nearest_duplicates;
-    extern i32 edpart_copy_enclosed;
-    extern i32 part_types_used;
-    extern i32 part_emits_used;
-    extern i8 edpart_effect_list;
-    extern f32 edpart_copy_size;
-    extern NUMTL *edpart_mtl;
-    extern NUMTL *edpart_boxmtl;
     i32 rotation_z;
     i32 rotation_y;
     NUVEC vector;

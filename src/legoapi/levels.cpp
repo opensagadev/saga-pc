@@ -50,16 +50,6 @@ extern "C" {
     void LevelObjectsArenaDiagnostic(i32 size);
 }
 
-typedef struct WORLD_OBJECT_SETUP_READER { // size 0x2968
-    u8 unknown_0000[0x2964];               // 0x0000
-    NUGSCN *icons_gscn;                    // 0x2964
-} WORLD_OBJECT_SETUP_READER;
-
-typedef struct menu_mission_reader_s { // size 0x13
-    u8 unknown_00[0x12];               // 0x00
-    i8 active_count;                   // 0x12
-} MENU_MISSION_READER;
-
 extern "C" {
 
     void fun_005788a0(void) {
@@ -903,7 +893,7 @@ extern "C" {
                     if (found) {
                         goto resolved;
                     }
-                    scene = big_icon_scene != NULL ? big_icon_scene : ((WORLD_OBJECT_SETUP_READER *)world)->icons_gscn;
+                    scene = big_icon_scene != NULL ? big_icon_scene : world->icons_scene;
                     break;
                 }
                 case 4:
@@ -1109,7 +1099,7 @@ extern "C" {
         }
         mission = Mission_Active(NULL);
         if (mission != NULL && NewLData != NULL && NewLData == HUB_LDATA) {
-            hub_from_mission = ((MENU_MISSION_READER *)mission)->active_count;
+            hub_from_mission = mission->index;
         }
     }
 

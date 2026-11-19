@@ -432,10 +432,6 @@ extern "C" i8 Area_CharIDInCurrentList(i32 character_id) {
     return -1;
 }
 
-typedef struct AREA_MISSION_DATA_READER { // size 0x2
-    i16 find_char;                        // 0x0
-} AREA_MISSION_DATA_READER;
-
 extern "C" {
     APICHARACTERMODELLIST Area_PlayerModelList[9] = {0};
     i32 LevelLoadCount = 0;
@@ -539,7 +535,7 @@ extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL *models, i1
             }
         }
         if (Area_MissionModelCount < 0x30) {
-            Area_MissionModelList[Area_MissionModelCount].model_id = ((AREA_MISSION_DATA_READER *)MissionSys->active_mission)->find_char;
+            Area_MissionModelList[Area_MissionModelCount].model_id = MissionSys->active_mission->find_character;
             Area_MissionModelList[Area_MissionModelCount].count = (i16)(1);
             ++Area_MissionModelCount;
         }
