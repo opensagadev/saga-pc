@@ -670,26 +670,26 @@ typedef struct nuspecial_legacy_s { // size 0x4c
 /* The legacy record behind a special handle. */
 #define NUSPECIAL_LEGACY_OF(handle) ((NUSPECIAL_LEGACY *)(handle)->special)
 
-typedef struct nudisplay_special_s {         // size 0xd0
-    NUMTX instance_matrix;                   // 0x00
-    NUMTX draw_matrix;                       // 0x40
-    NUVEC4 bounds_min;                       // 0x80
-    NUVEC4 bounds_max;                       // 0x90
-    NUVEC center;                            // 0xa0
-    f32 radius;                              // 0xac
-    PC_DISPLAY_CLIP_OBJECT *clip_objects;    // 0xb0
-    char *name;                              // 0xb4
-    u32 flags;                               // 0xb8
-    f32 *clip_range;                         // 0xbc
-    u32 instance_ix;                         // 0xc0
+typedef struct nudisplay_special_s {      // size 0xd0
+    NUMTX instance_matrix;                // 0x00
+    NUMTX draw_matrix;                    // 0x40
+    NUVEC4 bounds_min;                    // 0x80
+    NUVEC4 bounds_max;                    // 0x90
+    NUVEC center;                         // 0xa0
+    f32 radius;                           // 0xac
+    PC_DISPLAY_CLIP_OBJECT *clip_objects; // 0xb0
+    char *name;                           // 0xb4
+    u32 flags;                            // 0xb8
+    f32 *clip_range;                      // 0xbc
+    u32 instance_ix;                      // 0xc0
 
     union { // size 0x4
         struct nuinstanim_s *instance_animation;
         NUMTX *draw_matrix_override; /* -1 or NULL: draw with draw_matrix */
     }; // 0xc4
 
-    i16 wind_speed;      // 0xc8
-    i16 wind_scale;      // 0xca
+    i16 wind_speed;     // 0xc8
+    i16 wind_scale;     // 0xca
     u8 unknown_00cc[4]; // 0xcc
 } NUDISPLAY_SPECIAL;
 
@@ -1211,7 +1211,7 @@ extern "C" {
         NUGSCN *source_scene;                               // 0x08
         struct visibility_occlusion_grid_s *occlusion_data; // 0x0c
         u8 unknown_10[4];                                   // 0x10
-        struct visibility_tree_reader_s *instance_tree;     // 0x14
+        struct visibility_instance_tree_s *instance_tree;   // 0x14
         void *portal_marker;                                // 0x18
         u8 *portal_bits;                                    // 0x1c
         u8 *clip_results;                                   // 0x20

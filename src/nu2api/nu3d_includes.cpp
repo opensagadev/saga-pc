@@ -14799,7 +14799,7 @@ extern "C" {
         u8 unknown_1c[4];                     // 0x1c
     } VISIBILITY_TREE_BOUNDS;
 
-    typedef struct visibility_tree_reader_s {    // size 0x28
+    typedef struct visibility_instance_tree_s {  // size 0x28
         u8 unknown_00[8];                        // 0x00
         u16 *instance_ids;                       // 0x08
         VISIBILITY_TREE_BOUNDS *instance_bounds; // 0x0c
@@ -14810,7 +14810,7 @@ extern "C" {
         u8 unknown_1e[2];                        // 0x1e
         u16 *root_indices;                       // 0x20
         f32 *root_far_distance;                  // 0x24
-    } VISIBILITY_TREE_READER;
+    } VISIBILITY_INSTANCE_TREE;
 
     typedef struct visibility_extent_scratch_s { // size 0x10
         NUVEC xyz;                               // 0x0
@@ -15105,7 +15105,7 @@ extern "C" {
         return 1;
     }
 
-    static void VisibilityTreeWalk(i32 root_index, VISIBILITY_TREE_READER *tree) {
+    static void VisibilityTreeWalk(i32 root_index, VISIBILITY_INSTANCE_TREE *tree) {
         VISIBILITY_TREE_NODE *work[100];
         VISIBILITY_TREE_NODE **cursor = work + 1;
         f32 far_distance;
@@ -15159,7 +15159,7 @@ extern "C" {
     void NuVisiInstTree(NUVISIBILITYRESULT *result, NUGSCN *scene) {
         i32 enabled = result->instance_tree != NULL && do_InstTree != 0;
         i32 root;
-        VISIBILITY_TREE_READER *tree;
+        VISIBILITY_INSTANCE_TREE *tree;
         ((VISIBILITY_TREE_FLAG_WORD *)&result->flags)->bits.instance_tree = enabled;
         if ((result->flags & 0x10u) == 0) {
             return;
