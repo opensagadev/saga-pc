@@ -71,7 +71,7 @@ extern "C" {
 static VARIPTR *CS_buffptr = 0;
 static CUTINFO *CS_CutInfo = 0;
 static WORLDINFO *CS_worldinfo = 0;
-static CUT_LOAD_SYS *CS_cutsys = 0;
+static CUTSYS *CS_cutsys = 0;
 extern "C" {
     i32 CUTDRAWWORLD = 0;
 }
@@ -763,7 +763,7 @@ extern "C" {
         return NULL;
     }
 
-    static void CutSceneFindCharacterPrivate(CUT_SCENE_LOAD *scene, CUT_LOAD_CHARACTER *character, CUT_LOAD_SYS *system) {
+    static void CutSceneFindCharacterPrivate(CUT_SCENE_LOAD *scene, CUT_LOAD_CHARACTER *character, CUTSYS *system) {
         i32 id;
         CUT_LOAD_LOCATOR_SYSTEM *locators = scene->locator_system;
         character->flags |= CUT_CHARACTER_MODEL_ONLY;
@@ -790,9 +790,9 @@ extern "C" {
 
     f32 DEFAULTFRAMETIME = 0;
 
-    static CUT_LOAD_SYS *CutScenesLoadListed(NUGSCN *gscn1, NUGSCN *gscn2, i32 fixup_mode, VARIPTR *buf, VARIPTR *buf_end, i32 area,
+    static CUTSYS *CutScenesLoadListed(NUGSCN *gscn1, NUGSCN *gscn2, i32 fixup_mode, VARIPTR *buf, VARIPTR *buf_end, i32 area,
                                              i32 level, WORLDINFO *world) {
-        CUT_LOAD_SYS *sys;
+        CUTSYS *sys;
         void *initial;
         CUTINFO *cut;
         CUTINFO *entries[32];
@@ -800,7 +800,7 @@ extern "C" {
         char config_path[128];
         initial = buf->void_ptr;
         CS_area = area;
-        sys = reinterpret_cast<CUT_LOAD_SYS *>((reinterpret_cast<u32>(initial) + 3) & ~3U);
+        sys = reinterpret_cast<CUTSYS *>((reinterpret_cast<u32>(initial) + 3) & ~3U);
         buf->addr = (reinterpret_cast<u32>(sys) + 15) & ~3U;
         sys->character_bits = buf->u32_ptr;
         CS_cutsys = sys;
@@ -852,10 +852,10 @@ extern "C" {
     }
 }
 
-extern "C" CUT_LOAD_SYS *CutScenes_Load(char *config, NUGSCN *gscn1, NUGSCN *gscn2, i32 param1, VARIPTR *buf, VARIPTR *buf_end, i32 param2,
+extern "C" CUTSYS *CutScenes_Load(char *config, NUGSCN *gscn1, NUGSCN *gscn2, i32 param1, VARIPTR *buf, VARIPTR *buf_end, i32 param2,
                                         i32 param3, WORLDINFO *world) {
     NUFPAR *fp;
-    CUT_LOAD_SYS *sys;
+    CUTSYS *sys;
     void *initial;
     CUTINFO *cut;
     char name[128];
@@ -876,7 +876,7 @@ extern "C" CUT_LOAD_SYS *CutScenes_Load(char *config, NUGSCN *gscn1, NUGSCN *gsc
     }
 
     initial = buf->void_ptr;
-    sys = (CUT_LOAD_SYS *)((reinterpret_cast<u32>(initial) + 3) & ~3U);
+    sys = (CUTSYS *)((reinterpret_cast<u32>(initial) + 3) & ~3U);
     buf->addr = (reinterpret_cast<u32>(sys) + 15) & ~3U;
     sys->character_bits = buf->u32_ptr;
     CS_worldinfo = world;

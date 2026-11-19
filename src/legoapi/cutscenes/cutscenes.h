@@ -11,12 +11,6 @@ struct cutsys_s;
 
 typedef NUANIMDATA2_SKELETAL CUT_ANIMATION;
 
-typedef struct CUT_LOAD_SYS {   // size 0xc
-    struct cutinfo_s **records; // 0x0
-    i32 count;                  // 0x4
-    u32 *character_bits;        // 0x8
-} CUT_LOAD_SYS;
-
 typedef struct CUT_LOAD_LIST_ENTRY { // size 0xc
     char *directory;                 // 0x0
     char *name;                      // 0x4

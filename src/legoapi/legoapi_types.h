@@ -1125,10 +1125,10 @@ extern "C" {
 }
 #endif
 
-// Access prefixes only: the trailing name and complete original sizes are unknown.
-struct cutsys_s {      // size 0x8
-    CUTINFO **records; // 0x0
-    i32 count;         // 0x4
+struct cutsys_s {        // size 0xc
+    CUTINFO **records;   // 0x0
+    i32 count;           // 0x4
+    u32 *character_bits; // 0x8
 };
 
 typedef struct gameanimobjpool_s GAMEANIMOBJPOOL;

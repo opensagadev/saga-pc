@@ -23,7 +23,7 @@ extern "C" {
     void EquivalentObjects_Configure(WORLDINFO *, char *);
     void CharPlatforms_Configure(WORLDINFO *, char *);
     void SetLevelSfxBits(WORLDINFO *);
-    CUT_LOAD_SYS *CutScenes_Load(char *, NUGSCN *, NUGSCN *, i32, VARIPTR *, VARIPTR *, i32, i32, WORLDINFO *);
+    CUTSYS *CutScenes_Load(char *, NUGSCN *, NUGSCN *, i32, VARIPTR *, VARIPTR *, i32, i32, WORLDINFO *);
 
     void LevelSplines_InitForLevel(WORLDINFO *);
     void NuGScnUpdate(NUGSCN *scene, f32 delta);

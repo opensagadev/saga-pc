@@ -1452,35 +1452,17 @@ void DebrisPopulateInstance(i32 handle, f32 duration) {
     }
 }
 
-typedef struct debris_collision_effect_s { // size 0x428
-    u8 unknown_000[0x2b0];                 // 0x000
-    DEBRIS_FLOAT_KEY collision_keys[8];    // 0x2b0
-    i8 process_spheres;                    // 0x2f0
-    i8 time_group;                         // 0x2f1
-    u8 collision_flags;                    // 0x2f2
-    u8 use_explicit_clip_box;              // 0x2f3
-    f32 thinning;                          // 0x2f4
-    NUVEC particle_box;                    // 0x2f8
-    f32 torus_radius1;                     // 0x304
-    f32 torus_radius2;                     // 0x308
-    f32 torus_lifetime;                    // 0x30c
-    DEBRIS_FLOAT_KEY torus_keys1[8];       // 0x310
-    DEBRIS_FLOAT_KEY torus_keys2[8];       // 0x350
-    DEBRIS_FLOAT_KEY torus_keys3[8];       // 0x390
-    u8 unknown_3d0[0x58];                  // 0x3d0
-} DEBRIS_COLLISION_EFFECT;
-
 NUVEC debris_collide_pt = {0};
 i32 freechunkcontrolsptr = 0;
 
 i32 DebrisSingleCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
     DEBRIS_INFO *effect;
-    DEBRIS_COLLISION_EFFECT *collision;
+    DEBRIS_INFO *collision;
     i32 i;
     if (debkeydata[key_index].effect_index != 0 && debkeydata[key_index].effect_index != -1) {
         effect = debtab[debkeydata[key_index].effect_index];
         if (effect != NULL && (effect->collision_flags & flags) != 0 && effect->process_spheres != 0) {
-            collision = (DEBRIS_COLLISION_EFFECT *)effect;
+            collision = effect;
             for (i = 0; i < effect->process_spheres; ++i) {
                 DEBRIS_PROCESS_SPHERE *sphere = &debkeydata[key_index].process_spheres[i];
                 f32 age = globaltime - sphere->time;
@@ -1536,7 +1518,7 @@ i32 DebrisSingleCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f32 rad
 
 i32 DebrisSingleTorusCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
     DEBRIS_INFO *effect;
-    DEBRIS_COLLISION_EFFECT *collision;
+    DEBRIS_INFO *collision;
     f32 age;
     f32 time;
     f32 ring_radius;
@@ -1552,7 +1534,7 @@ i32 DebrisSingleTorusCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f3
     if (effect == NULL || (effect->collision_flags & flags) == 0) {
         return 0;
     }
-    collision = (DEBRIS_COLLISION_EFFECT *)effect;
+    collision = effect;
     if (collision->torus_lifetime == 0.0f) {
         return 0;
     }

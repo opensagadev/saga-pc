@@ -149,6 +149,7 @@ extern "C" {
 
 /* cut_load_locator_s.flags */
 #define CUTLOC_PIVOT 0x4        /* the matrix is moved by the locator's pivot */
+#define CUTLOC_VISIBLE 0x8      /* shown when its animation has no visibility curve */
 #define CUTLOC_FINITE_SHOT 0x10 /* its debris effect fires once (AddScaledFiniteShotDebrisEffect) */
 #define CUTLOC_PERSISTENT 0x20  /* its debris effect is one instance that follows the locator (AddDebrisEffect) */
 

@@ -3507,9 +3507,9 @@ address,symbol,size,ctype
 0x500c50,_CutCameraSysStart,43,"void (CUT_LOAD_CAMERA_INSTANCE *, CUT_LOAD_CAMERA_SYSTEM *) [private EDX/ESI]"
 0x500c80,_CutLocatorFixPtrs,207,
 0x00500d50,_PCCutLocatorAni3,253,"f32 *__cdecl (CUT_LOCATOR_ANIMATION *, NUMTX *, f32)"
-0x00500e50,_NuGCutLocatorCalcMtx,474,"f32 *__cdecl (CUT_LOCATOR_GENERIC *, f32, NUMTX *, NUANIM_TIME2 *)"
-0x501030,_NuGCutLocatorIsVisble_3,192,"i32 __cdecl(CUT_LOCATOR_GENERIC *,f32,f32 *,f32 *)"
-0x5010f0,_NuGCutLocatorIsVisble,327,"i32 __cdecl(CUT_LOCATOR_GENERIC *,f32,NUANIM_TIME2 *,f32 *,f32 *)"
+0x00500e50,_NuGCutLocatorCalcMtx,474,"f32 *__cdecl (CUT_LOAD_LOCATOR *, f32, NUMTX *, NUANIM_TIME2 *)"
+0x501030,_NuGCutLocatorIsVisble_3,192,"i32 __cdecl(CUT_LOAD_LOCATOR *,f32,f32 *,f32 *)"
+0x5010f0,_NuGCutLocatorIsVisble,327,"i32 __cdecl(CUT_LOAD_LOCATOR *,f32,NUANIM_TIME2 *,f32 *,f32 *)"
 0x501240,_CutFindLocatorFunction,67,
 0x501290,_FindMtlInHGObj,60,"i32 __cdecl(NUHGOBJ_EVAL *,i32)"
 0x5012d0,_FindTexAnimFromMtl,42,"i32 __cdecl(NUHGOBJ_EVAL *,NUMTL *)"
@@ -3529,7 +3529,7 @@ address,symbol,size,ctype
 0x5020b0,_NuGCutRigidForceInstanced,43,void __cdecl (void *)
 0x5020e0,_CutRigidInstanceCreate,380,
 0x00502260,_PCCutRigidAni3,296,"void __cdecl (CUT_RIGID_ANIMATION *, f32, NUMTX *)"
-0x00502390,_NuGCutRigidCalcMtx,644,"void __cdecl (CUT_RIGID_GENERIC *, f32, NUMTX *)"
+0x00502390,_NuGCutRigidCalcMtx,644,"void __cdecl (CUT_LOAD_RIGID *, f32, NUMTX *)"
 0x502620,_instNuGCutSceneHasInstancedRigids,65,
 0x502670,_CutSceneRigidSysReset,121,
 0x5026f0,_CutSceneRigidSysStart,71,
@@ -3546,7 +3546,7 @@ address,symbol,size,ctype
 0x502d60,_CutSceneReleaseInstanceCharacters,96,
 0x00502dc0,_PCCutAni3CurveInteger,67,"i32 __cdecl (ANI3_HEADER *, f32 *, i32)"
 0x00502e10,_PCCutCharacterAni3,564,"void __cdecl (CUT_CHARACTER_ANIMATION *, f32, NUMTX *, i32 *, u32 *, f32 *, f32 *, f32 *, i32 *)"
-0x00503050,_NuGCutCharAnimProcess,1263,"void __cdecl (CUT_CHARACTER_GENERIC *, f32, NUMTX *, i32 *, u32 *, f32 *, f32 *, f32 *, i32 *)"
+0x00503050,_NuGCutCharAnimProcess,1263,"void __cdecl (CUT_LOAD_CHARACTER *, f32, NUMTX *, i32 *, u32 *, f32 *, f32 *, f32 *, i32 *)"
 0x503540,_NuSetCutSceneGetHGObjFn,10,void __cdecl (void *)
 0x503550,_NuSetCutSceneCharacterProcessFn,10,void __cdecl (void *)
 0x503560,_NuSetCutSceneCharacterRenderFn,10,void __cdecl(CUT_DRAW_RENDER_CALLBACK)
@@ -5742,7 +5742,7 @@ address,symbol,size,ctype
 0x57c030,_CutSceneFindCharacterPrivate,136,
 0x57c0c0,_CutScene_FindCharacters,74,
 0x57c110,_CutScenesLoadListed,720,
-0x57c3e0,_CutScenes_Load,1333,"CUT_LOAD_SYS *__cdecl(char *, NUGSCN *, NUGSCN *, i32, VARIPTR *, VARIPTR *, i32, i32, WORLDINFO *)"
+0x57c3e0,_CutScenes_Load,1333,"CUTSYS *__cdecl(char *, NUGSCN *, NUGSCN *, i32, VARIPTR *, VARIPTR *, i32, i32, WORLDINFO *)"
 0x57c920,_CutScene_FindInst,80,
 0x0057c970,_CutScene_Find,77,
 0x57c9c0,_CutSceneRebindPlayerCharactersPrivate,216,
@@ -41870,7 +41870,7 @@ address,symbol,size,ctype
 0x951c78,_CutSceneWaiting,4,i32
 0x00951c7c,_CUTSKIPLOCK,4,i32
 0x951c80,_CS_worldinfo,4,WORLDINFO *
-0x951c84,_CS_cutsys,4,CUT_LOAD_SYS *
+0x951c84,_CS_cutsys,4,CUTSYS *
 0x951c88,_CUTDRAWWORLD,4,i32
 0x951c8c,_CutBlobShadowFadeFar,4,f32
 0x951c90,_cut_waiting_for_new_level,4,i32

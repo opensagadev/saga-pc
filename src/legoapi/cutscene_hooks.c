@@ -369,15 +369,6 @@ void NuGCutCharAnimProcess(CUT_LOAD_CHARACTER *character, f32 frame, NUMTX *matr
     }
 }
 
-typedef struct CUT_VISIBLE_LOCATOR { // size 0x5c
-    NUMTX matrix;                    // 0x00
-    NUVEC pivot;                     // 0x40
-    f32 scale;                       // 0x4c
-    NUANIMDATA2 *animation;          // 0x50
-    u32 unknown_54;                  // 0x54
-    u8 flags;                        // 0x58
-} CUT_VISIBLE_LOCATOR;
-
 static char CutLocatorSfxFilter[] = {3, -1};
 static char CutLocatorFilter[] = {6, 7, -1};
 static char CutLocatorScaleFilter[] = {6, 7, 8, -1};
@@ -450,9 +441,9 @@ i32 NuGCutLocatorIsVisble(CUT_LOAD_LOCATOR *locator, f32 frame, NUANIM_TIME2 *ti
             }
         }
     } else {
-        visible = ((CUT_VISIBLE_LOCATOR *)locator)->flags & 8;
+        visible = locator->flags & CUTLOC_VISIBLE;
         if (visible != 0 && scale != NULL) {
-            *scale = ((CUT_VISIBLE_LOCATOR *)locator)->scale;
+            *scale = locator->scale;
         }
     }
     return visible;

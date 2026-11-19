@@ -1233,11 +1233,6 @@ static i32 Bolt_HitPlatPrivate(BOLT *, u8 *);
 
 extern "C" i32 i_temp_xrot;
 
-typedef struct BOLT_UPDATE_TYPE_s { // size 0xa4
-    u8 unknown_000[0x98];           // 0x00
-    nuhspecial_s shadow_special;    // 0x98
-} BOLT_UPDATE_TYPE;
-
 extern "C" {
     static void NuMtxSetRotationYInline(NUMTX *matrix, NUANG angle) {
         f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
@@ -2592,7 +2587,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                 bolt->reflection_height = 2000000.0f;
                 f32 height = GameShadow(NULL, &bolt->position, 5.0f, -1);
                 if (height != 2000000.0f) {
-                    if (NuSpecialExistsFn(&reinterpret_cast<BOLT_UPDATE_TYPE *>(type)->shadow_special)) {
+                    if (NuSpecialExistsFn(&type->specials[4])) {
                         bolt->floor_height = height;
                         FindAnglesZX(&ShadNorm, &bolt->surface_x_rotation, &bolt->surface_z_rotation);
                     }

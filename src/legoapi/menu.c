@@ -253,31 +253,12 @@ void DrawMenuButtonPrompts(i32 confirm, i32 cancel, i32 enabled, u32 red, u32 gr
     DrawMenuButtonPromptsEx(confirm, cancel, 0, enabled, red, green, blue, alpha);
 }
 
-typedef struct menu_draw_state_s { // size 0xb0
-    u8 unknown_00[0x0e];           // 0x00
-    i16 first_row;                 // 0x0e
-    u8 unknown_10[2];              // 0x10
-    i16 last_row;                  // 0x12
-    i16 menu;                      // 0x14
-    u8 unknown_16[0x76];           // 0x16
-    i32 draw_item;                 // 0x8c
-    f32 item_scale;                // 0x90
-    f32 draw_x;                    // 0x94
-    f32 draw_y;                    // 0x98
-    f32 draw_z;                    // 0x9c
-    f32 draw_offset;               // 0xa0
-    f32 centre_offset;             // 0xa4
-    u8 unknown_a8[4];              // 0xa8
-    i32 paused;                    // 0xac
-} MENU_DRAW_STATE;
-
 void (*headerdrawfn)(void) = DrawMenuHeader;
 void (*predrawfn)(MENU *) = 0;
 i32 MenuDrawDropShadows = 0;
 
 void DrawMenu(i32 paused) {
     MENU *menu;
-    MENU_DRAW_STATE *view;
     f32 saved_baseline = 0.0f;
     f32 saved_button_baseline = 0.0f;
     f32 centre;
@@ -288,8 +269,7 @@ void DrawMenu(i32 paused) {
         return;
     }
     menu = &GameMenu[GameMenuLevel];
-    view = (MENU_DRAW_STATE *)menu;
-    if (view->menu == -1) {
+    if (menu->menu == -1) {
         return;
     }
     MenuValidated = 1;
@@ -302,27 +282,27 @@ void DrawMenu(i32 paused) {
         QFont2DButtons->baseline = 0.0f;
     }
     MenuHeader[0] = 0;
-    view->draw_item = view->first_row;
-    view->item_scale = 1.0f;
-    view->draw_offset = 0.0f;
-    centre = (f32)((f64)(view->last_row - view->first_row) * (f64)MENUDY * 0.5);
-    view->centre_offset = centre;
-    view->draw_x = 0.0f;
-    view->draw_y = -centre;
-    view->draw_z = 1.0f;
+    menu->draw_item = menu->first_row;
+    menu->item_scale = 1.0f;
+    menu->draw_offset = 0.0f;
+    centre = (f32)((f64)(menu->last_row - menu->first_row) * (f64)MENUDY * 0.5);
+    menu->centre_offset = centre;
+    menu->draw_x = 0.0f;
+    menu->draw_y = -centre;
+    menu->draw_z = 1.0f;
 
-    view->paused = paused;
+    menu->paused = paused;
     if (predrawfn != NULL) {
         predrawfn(menu);
     }
-    if (MenuInfo[view->menu].draw_fn != NULL) {
-        MenuInfo[view->menu].draw_fn(menu);
+    if (MenuInfo[menu->menu].draw_fn != NULL) {
+        MenuInfo[menu->menu].draw_fn(menu);
     }
     if (headerdrawfn != NULL) {
         headerdrawfn();
     }
     if (MenuAlpha >= 0.5f && g_enableButtonPrompts != 0) {
-        DrawMenuButtonPrompts(MenuInfo[view->menu].confirm_prompt, MenuInfo[view->menu].cancel_prompt, 1, MENUNORMALR, MENUNORMALG,
+        DrawMenuButtonPrompts(MenuInfo[menu->menu].confirm_prompt, MenuInfo[menu->menu].cancel_prompt, 1, MENUNORMALR, MENUNORMALG,
                               MENUNORMALB, (u8)MenuA);
     }
     if ((SmartTextFont != NULL ? SmartTextFont : QFont2D) != NULL) {

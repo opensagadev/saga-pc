@@ -196,7 +196,7 @@ typedef struct PART { // size 0x220
     i32 effect_id_1f4;            // 0x1f4
     i32 effect_id_1f8;            // 0x1f8
     f32 effect_scale;             // 0x1fc
-    u32 unknown_200;              // 0x200
+    u32 platform_id;              // 0x200
     u16 damage;                   // 0x204
     i8 player_mask;               // 0x206
     u8 hostility_group;           // 0x207

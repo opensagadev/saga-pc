@@ -953,13 +953,6 @@ void edpartDebrisSettingsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2
     }
 }
 
-typedef struct PART_TERRAIN_STATE { // size 0x20c
-    u8 unknown_000[0x200];          // 0x000
-    u32 platform_id;                // 0x200
-    u8 unknown_204[5];              // 0x204
-    i8 impact_material;             // 0x209
-} PART_TERRAIN_STATE;
-
 static i32 PartCleanupCursorPrivate = 0;
 static i32 PartCleanupFramesPrivate = 0;
 i32 part_page_on[8] = {0};
@@ -3875,7 +3868,6 @@ i32 PartPlatId(void) {
 }
 
 void CastPart(PART *part, f32 time) {
-    PART_TERRAIN_STATE *state = (PART_TERRAIN_STATE *)part;
     i32 hit;
     f32 distance;
     f32 radius;
@@ -3895,7 +3887,7 @@ void CastPart(PART *part, f32 time) {
     }
     distance = NuVecMagSqr(&movement);
     if (distance < 0.001f || distance > 10000.0f || !_finite(distance) || _isnan(distance)) {
-        state->impact_material = -1;
+        part->surface_type = -1;
         return;
     }
     if ((part->active & (PART_STATE_SCALING_UP | PART_STATE_SCALING_DOWN)) == PART_STATE_SCALING_UP) {
@@ -3906,10 +3898,10 @@ void CastPart(PART *part, f32 time) {
         cast_movement = movement;
         hit = PartRayCast(&part->position, &cast_movement, radius, 0);
         if (hit == 0) {
-            state->impact_material = -1;
+            part->surface_type = -1;
             return;
         }
-        state->impact_material = NewRayCastGetImpactTerrainType();
+        part->surface_type = NewRayCastGetImpactTerrainType();
         if ((NewRayCastGetTOFI() > 0.0f || PartImpactNormalPrivate.y > 0.5f) &&
             ((part->flags & 0x10000000) == 0 || NewRayCastHitWallSpline() != 4)) {
             goto impact;
@@ -3924,10 +3916,10 @@ void CastPart(PART *part, f32 time) {
     cast_movement = movement;
     hit = PartRayCast(&part->position, &cast_movement, part->glow_radius, 0);
     if (hit == 0) {
-        state->impact_material = -1;
+        part->surface_type = -1;
         return;
     }
-    state->impact_material = NewRayCastGetImpactTerrainType();
+    part->surface_type = NewRayCastGetImpactTerrainType();
     if ((NewRayCastGetTOFI() > 0.0f || PartImpactNormalPrivate.y > 0.5f) &&
         ((part->flags & 0x10000000) == 0 || NewRayCastHitWallSpline() != 4)) {
         goto impact;
@@ -3944,17 +3936,17 @@ void CastPart(PART *part, f32 time) {
     part->active = (part->active & ~(PART_STATE_SCALING_UP | PART_STATE_SCALING_DOWN)) | PART_STATE_SCALING_DOWN;
     cast_movement = movement;
     if (PartRayCast(&part->position, &cast_movement, radius, 0) == 0) {
-        state->impact_material = -1;
+        part->surface_type = -1;
         return;
     }
-    state->impact_material = NewRayCastGetImpactTerrainType();
+    part->surface_type = NewRayCastGetImpactTerrainType();
     if ((part->flags & 0x10000000) != 0 && NewRayCastHitWallSpline() == 4) {
         return;
     }
 impact:
     part->active |= PART_STATE_IMPACT_PENDING;
-    state->platform_id = PartPlatId();
-    part->active ^= (((u32)(state->platform_id != (u32)-1) << 4) ^ part->active) & 0x10;
+    part->platform_id = PartPlatId();
+    part->active ^= (((u32)(part->platform_id != (u32)-1) << 4) ^ part->active) & 0x10;
     part->time_of_impact *= NewRayCastGetTOFI();
     part->impact_position.x = part->position.x + cast_movement.x;
     part->impact_position.y = part->position.y + cast_movement.y;
@@ -4687,7 +4679,6 @@ void UpdateParts(f32 time) {
     i32 axis;
     i32 angle;
     PART *part;
-    PART_TERRAIN_STATE *state;
     NUVEC velocity;
     NUVEC direction;
     NUMTX mtx;
@@ -4700,7 +4691,6 @@ void UpdateParts(f32 time) {
     UpdatePartEmits(time);
     part = Part;
     for (i = 0; i < MAXPARTS; ++i, ++part) {
-        state = (PART_TERRAIN_STATE *)part;
         if ((part->active & PART_IN_USE) == 0) {
             continue;
         }
@@ -4717,7 +4707,7 @@ void UpdateParts(f32 time) {
                     }
                     if ((part->active & PART_STATE_IMPACT_PENDING) != 0) {
                         if ((part->flags & 0x80000) != 0 && (part->active & 0x10) != 0 && part_platimpactcnt < 4) {
-                            PartPlatformImpactList[part_platimpactcnt++] = state->platform_id;
+                            PartPlatformImpactList[part_platimpactcnt++] = part->platform_id;
                         }
                         if ((part->flags & PART_FLAG_NO_BOUNCE) != 0) {
                             part->active |= PART_STATE_STOPPED;

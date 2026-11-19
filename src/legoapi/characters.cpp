@@ -28,22 +28,7 @@
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/numtx.h"
 
-typedef struct CHARACTER_SCENE_CUTSYS { // size 0xc
-    CUTINFO **records;                  // 0x0
-    i32 count;                          // 0x4
-    u32 *character_flags;               // 0x8
-} CHARACTER_SCENE_CUTSYS;
-
 typedef void (*CHARACTER_UPDATE_CALLBACK)(GAMEOBJECT *);
-
-typedef struct character_callback_writer_s {
-    i32 name_id;
-    u32 model_flags;
-    u8 unknown_08[0x10];
-    CHARACTER_UPDATE_CALLBACK move;
-    CHARACTER_UPDATE_CALLBACK animate;
-    CHARACTER_UPDATE_CALLBACK post_animate;
-} CHARACTER_CALLBACK_WRITER;
 
 extern "C" {
     CHAR_CATEGORY_RECORD StartupCharCategoriesDefault[6] = {
@@ -140,7 +125,7 @@ extern "C" {
             world->character_scenes[i].scene = NULL;
             if ((KillPartsCharSceneArea == NULL || KillPartsCharSceneArea[i].scene == NULL) && (CDataList[i].flags & 1) != 0 &&
                 world->cutscene_sys != NULL &&
-                ((((CHARACTER_SCENE_CUTSYS *)world->cutscene_sys)->character_flags[i / 32] & (1 << (i & 31))) != 0)) {
+                ((world->cutscene_sys->character_bits[i / 32] & (1 << (i & 31))) != 0)) {
                 CharScene_Load(&world->character_scenes[i], i, &world->giz_buffer, world->buffer_end);
             }
         }
@@ -457,13 +442,13 @@ extern "C" {
                 continue;
             }
             if (move != NULL) {
-                ((CHARACTER_CALLBACK_WRITER *)&CDataList[index])->move = move;
+                CDataList[index].move_fn = move;
             }
             if (animate != NULL) {
-                ((CHARACTER_CALLBACK_WRITER *)&CDataList[index])->animate = animate;
+                CDataList[index].animate_fn = animate;
             }
             if (post_animate != NULL) {
-                ((CHARACTER_CALLBACK_WRITER *)&CDataList[index])->post_animate = post_animate;
+                CDataList[index].post_animate_fn = post_animate;
             }
         }
     }
