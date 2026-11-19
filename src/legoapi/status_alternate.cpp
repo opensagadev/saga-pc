@@ -54,79 +54,79 @@ extern "C" {
     i16 id_SLAVE1 = -1;
     /* Install in extern C data section. */
     CHEAT ExtrasCheats[46] = {
-        {"extratoggle", &dat_00880990, 0, {0, 0}, -1, -1, "MZY419", 25000, "shop_tool1", 0x100},
-        {"poo", &dat_0088104c, 0, {0, 0}, -1, -1, "6HUJ56", 8000, "shop_tool2", 0x0},
-        {"disguises", &dat_00880994, 0, {0, 0}, -1, -1, "BRJ437", 10000, "shop_tool3", 0x0},
-        {"daisychains", &dat_00881058, 0, {0, 0}, -1, -1, "KAU532", 5000, "shop_tool4", 0x0},
-        {"c3pobits", &dat_00881048, 0, {0, 0}, -1, -1, "5HD9TY", 10000, "shop_tool5", 0x0},
-        {"towdeathstar", &dat_0088105c, 0, {0, 0}, -1, -1, "JNK8J4", 5000, "shop_tool6", 0x0},
-        {"silhouettes", &dat_008809d0, 0, {0, 0}, -1, -1, "5HD86H", 10000, "shop_silhouette", 0x1},
-        {"beepbeep", &dat_00881074, 0, {0, 0}, -1, -1, "VXZ3K2", 7500, "shop_beepbeep", 0x0},
-        {"supergonk", &dat_00881070, 0, {0, 0}, -1, -1, "SPRGNK", 100000, "shop_supergonk", 0x0},
-        {"poomoney", &dat_0088107c, 0, {0, 0}, -1, -1, "PMN904", 100000, "shop_poomoney", 0x200000},
-        {"walkietalkiedisable", &dat_008810a0, 0, {0, 0}, -1, -1, "JKJ589", 5000, "shop_walkietalkie", 0x0},
-        {"powerbrickdetector", &dat_00881080, 0, {0, 0}, -1, -1, "FBM834", 125000, "shop_powerbrick", 0x40000},
-        {"superslap", &dat_00881084, 0, {0, 0}, -1, -1, "294NMB", 5000, "shop_superslap", 0x0},
-        {"forcezipup", &dat_0088108c, 0, {0, 0}, -1, -1, "CLZ738", 15000, "shop_forcegrapple", 0x0},
-        {"coinmagnet", &dat_00881078, 0, {0, 0}, -1, -1, "VXZ193", 100000, "shop_coinmagnet", 0x238000},
-        {"disarmtroopers", &dat_00881094, 0, {0, 0}, -1, -1, "HJU848", 100000, "shop_disarmtroopers", 0x0},
-        {"characterstuds", &dat_008810b8, 0, {0, 0}, -1, -1, "DHY782", 100000, "shop_characterstuds", 0x200000},
-        {"perfectdeflect", &dat_008810a4, 0, {0, 0}, -1, -1, "PER894", 20000, "shop_perfectdeflect", 0x100000},
-        {"explodingblasterbolts", &dat_00881098, 0, {0, 0}, -1, -1, "EXP912", 20000, "shop_explodingbolts", 0x0},
-        {"forcepull", &dat_008810a8, 0, {0, 0}, -1, -1, "PUL966", 12000, "shop_forcepull", 0x0},
-        {"vehiclesmartbomb", &dat_0088109c, 0, {0, 0}, -1, -1, "SMA293", 15000, "shop_vehiclesmart", 0x0},
-        {"superastromech", &dat_008810ac, 0, {0, 0}, -1, -1, "R2D222", 10000, "shop_superastromech", 0x0},
-        {"superjedislam", &dat_008810b4, 0, {0, 0}, -1, -1, "SLM768", 11000, "shop_superjedislam", 0x0},
-        {"superthermaldetonator", &dat_00881090, 0, {0, 0}, -1, -1, "THE931", 25000, "shop_superthermal", 0x0},
-        {"deflectbolts", &dat_00881088, 0, {0, 0}, -1, -1, "BNL435", 150000, "shop_deflectbolts", 0xb0000},
-        {"darkside", &dat_008810b0, 0, {0, 0}, -1, -1, "DRK328", 25000, "shop_darkside", 0x0},
-        {"superblasters", &dat_00880998, 0, {0, 0}, -1, -1, "HHD647", 15000, "shop_tool7", 0x32002},
-        {"fastforce", &dat_0088099c, 0, {0, 0}, -1, -1, "BYY492", 40000, "shop_tool8", 0x412000},
-        {"supersabres", &dat_00881044, 0, {0, 0}, -1, -1, "GHL978", 40000, "shop_tool9", 0x12400},
-        {"tractorbeam", &dat_00881068, 0, {0, 0}, -1, -1, "53NKH3", 15000, "shop_tool10", 0x20000},
-        {"invincibility", &dat_008809a0, 0, {0, 0}, -1, -1, "HS9K44", 1000000, "shop_tool11", 0x32080},
-        {"scorex2", &dat_008809a4, 0, {0, 0}, -1, -1, "HBF899", 1250000, "shop_tool13", 0x230004},
-        {"selfdestruct", &dat_00881060, 0, {0, 0}, -1, -1, "DRX444", 25000, "shop_tool12", 0x0},
-        {"fastbuild", &dat_008809a8, 0, {0, 0}, -1, -1, "KJU233", 30000, "shop_tool14", 0x16000},
-        {"scorex4", &dat_008809ac, 0, {0, 0}, -1, -1, "DQY857", 2500000, "shop_tool15", 0x200008},
-        {"regenerate", &dat_008809b0, 0, {0, 0}, -1, -1, "528HBB", 150000, "shop_tool16", 0x33000},
-        {"minikitdetector", &dat_008809b4, 0, {0, 0}, -1, -1, "FBM152", 250000, "shop_tool17", 0x200},
-        {"scorex6", &dat_008809b8, 0, {0, 0}, -1, -1, "NMP499", 5000000, "shop_tool18", 0x200010},
-        {"superzapper", &dat_008809bc, 0, {0, 0}, -1, -1, "DFY111", 14000, "shop_tool19", 0x2000},
-        {"rockets", &dat_008809c0, 0, {0, 0}, -1, -1, "BKJ462", 20000, "shop_tool20", 0x2000},
-        {"scorex8", &dat_008809c4, 0, {0, 0}, -1, -1, "XXY99G", 10000000, "shop_tool21", 0x200020},
-        {"superewokcatapult", &dat_0088106c, 0, {0, 0}, -1, -1, "ERF893", 25000, "shop_tool22", 0x0},
-        {"infinitetorpedos", &dat_00881064, 0, {0, 0}, -1, -1, "NUJ866", 25000, "shop_tool23", 0x0},
-        {"scorex10", &dat_008809c8, 0, {0, 0}, -1, -1, "VXZ123", 20000000, "shop_tool24", 0x200040},
-        {"adaptivedifficulty", &dat_008809cc, 0, {0, 0}, -1, 0, "------", 0, "shop_tool1", 0x0},
+        {"extratoggle", &tEXTRATOGGLE, 0, {0, 0}, -1, -1, "MZY419", 25000, "shop_tool1", 0x100},
+        {"poo", &tPOO, 0, {0, 0}, -1, -1, "6HUJ56", 8000, "shop_tool2", 0x0},
+        {"disguises", &tDISGUISES, 0, {0, 0}, -1, -1, "BRJ437", 10000, "shop_tool3", 0x0},
+        {"daisychains", &tDAISYCHAINS, 0, {0, 0}, -1, -1, "KAU532", 5000, "shop_tool4", 0x0},
+        {"c3pobits", &tC3POBITS, 0, {0, 0}, -1, -1, "5HD9TY", 10000, "shop_tool5", 0x0},
+        {"towdeathstar", &tTOWDEATHSTAR, 0, {0, 0}, -1, -1, "JNK8J4", 5000, "shop_tool6", 0x0},
+        {"silhouettes", &tSILHOUETTES, 0, {0, 0}, -1, -1, "5HD86H", 10000, "shop_silhouette", 0x1},
+        {"beepbeep", &tBEEPBEEP, 0, {0, 0}, -1, -1, "VXZ3K2", 7500, "shop_beepbeep", 0x0},
+        {"supergonk", &tSUPERGONK, 0, {0, 0}, -1, -1, "SPRGNK", 100000, "shop_supergonk", 0x0},
+        {"poomoney", &tPOOMONEY, 0, {0, 0}, -1, -1, "PMN904", 100000, "shop_poomoney", 0x200000},
+        {"walkietalkiedisable", &tWALKIETALKIEDISABLE, 0, {0, 0}, -1, -1, "JKJ589", 5000, "shop_walkietalkie", 0x0},
+        {"powerbrickdetector", &tPOWERBRICKDETECTOR, 0, {0, 0}, -1, -1, "FBM834", 125000, "shop_powerbrick", 0x40000},
+        {"superslap", &tSUPERSLAP, 0, {0, 0}, -1, -1, "294NMB", 5000, "shop_superslap", 0x0},
+        {"forcezipup", &tFORCEZIPUP, 0, {0, 0}, -1, -1, "CLZ738", 15000, "shop_forcegrapple", 0x0},
+        {"coinmagnet", &tCOINMAGNET, 0, {0, 0}, -1, -1, "VXZ193", 100000, "shop_coinmagnet", 0x238000},
+        {"disarmtroopers", &tDISARMTROOPERS, 0, {0, 0}, -1, -1, "HJU848", 100000, "shop_disarmtroopers", 0x0},
+        {"characterstuds", &tCHARACTERSTUDS, 0, {0, 0}, -1, -1, "DHY782", 100000, "shop_characterstuds", 0x200000},
+        {"perfectdeflect", &tPERFECTDEFLECT, 0, {0, 0}, -1, -1, "PER894", 20000, "shop_perfectdeflect", 0x100000},
+        {"explodingblasterbolts", &tEXPLODINGBLASTERBOLTS, 0, {0, 0}, -1, -1, "EXP912", 20000, "shop_explodingbolts", 0x0},
+        {"forcepull", &tFORCEPULL, 0, {0, 0}, -1, -1, "PUL966", 12000, "shop_forcepull", 0x0},
+        {"vehiclesmartbomb", &tVEHICLESMARTBOMB, 0, {0, 0}, -1, -1, "SMA293", 15000, "shop_vehiclesmart", 0x0},
+        {"superastromech", &tSUPERASTROMECH, 0, {0, 0}, -1, -1, "R2D222", 10000, "shop_superastromech", 0x0},
+        {"superjedislam", &tSUPERJEDISLAM, 0, {0, 0}, -1, -1, "SLM768", 11000, "shop_superjedislam", 0x0},
+        {"superthermaldetonator", &tSUPERTHERMALDETONATOR, 0, {0, 0}, -1, -1, "THE931", 25000, "shop_superthermal", 0x0},
+        {"deflectbolts", &tDEFLECTBOLTS, 0, {0, 0}, -1, -1, "BNL435", 150000, "shop_deflectbolts", 0xb0000},
+        {"darkside", &tDARKSIDE, 0, {0, 0}, -1, -1, "DRK328", 25000, "shop_darkside", 0x0},
+        {"superblasters", &tSUPERBLASTERS, 0, {0, 0}, -1, -1, "HHD647", 15000, "shop_tool7", 0x32002},
+        {"fastforce", &tFASTFORCE, 0, {0, 0}, -1, -1, "BYY492", 40000, "shop_tool8", 0x412000},
+        {"supersabres", &tSUPERSABRES, 0, {0, 0}, -1, -1, "GHL978", 40000, "shop_tool9", 0x12400},
+        {"tractorbeam", &tTRACTORBEAM, 0, {0, 0}, -1, -1, "53NKH3", 15000, "shop_tool10", 0x20000},
+        {"invincibility", &tINVINCIBILITY, 0, {0, 0}, -1, -1, "HS9K44", 1000000, "shop_tool11", 0x32080},
+        {"scorex2", &tSCOREX2, 0, {0, 0}, -1, -1, "HBF899", 1250000, "shop_tool13", 0x230004},
+        {"selfdestruct", &tSELFDESTRUCT, 0, {0, 0}, -1, -1, "DRX444", 25000, "shop_tool12", 0x0},
+        {"fastbuild", &tFASTBUILD, 0, {0, 0}, -1, -1, "KJU233", 30000, "shop_tool14", 0x16000},
+        {"scorex4", &tSCOREX4, 0, {0, 0}, -1, -1, "DQY857", 2500000, "shop_tool15", 0x200008},
+        {"regenerate", &tREGENERATE, 0, {0, 0}, -1, -1, "528HBB", 150000, "shop_tool16", 0x33000},
+        {"minikitdetector", &tMINIKITDETECTOR, 0, {0, 0}, -1, -1, "FBM152", 250000, "shop_tool17", 0x200},
+        {"scorex6", &tSCOREX6, 0, {0, 0}, -1, -1, "NMP499", 5000000, "shop_tool18", 0x200010},
+        {"superzapper", &tSUPERZAPPER, 0, {0, 0}, -1, -1, "DFY111", 14000, "shop_tool19", 0x2000},
+        {"rockets", &tROCKETS, 0, {0, 0}, -1, -1, "BKJ462", 20000, "shop_tool20", 0x2000},
+        {"scorex8", &tSCOREX8, 0, {0, 0}, -1, -1, "XXY99G", 10000000, "shop_tool21", 0x200020},
+        {"superewokcatapult", &tSUPEREWOKCATAPULT, 0, {0, 0}, -1, -1, "ERF893", 25000, "shop_tool22", 0x0},
+        {"infinitetorpedos", &tINFINITETORPEDOS, 0, {0, 0}, -1, -1, "NUJ866", 25000, "shop_tool23", 0x0},
+        {"scorex10", &tSCOREX10, 0, {0, 0}, -1, -1, "VXZ123", 20000000, "shop_tool24", 0x200040},
+        {"adaptivedifficulty", &tADAPTIVEDIFFICULTY, 0, {0, 0}, -1, 0, "------", 0, "shop_tool1", 0x0},
         {0},
     };
-    f32 dat_007f8214 = 1.2f;
+    f32 StatusAltCountTextScale = 1.2f;
     f32 StatusAltScale = 1.0f;
     f32 StatusAltTitleY = 0.5f;
-    f32 dat_007f8220 = 0.5f;
-    f32 dat_007f8224 = 0.5f;
+    f32 StatusAltStepDuration = 0.5f;
+    f32 StatusAltBrickPulseTime = 0.5f;
     f32 dat_007f8228 = 0.333f;
     f32 dat_007f822c = -0.5f;
     f32 dat_007f8230 = -0.6f;
     f32 dat_007f8234 = 1.1f;
-    f32 dat_007f8238 = -0.25f;
-    f32 dat_007f823c = 0.5f;
+    f32 StatusAltSuitTextY = -0.25f;
+    f32 StatusAltSuitTextScale = 0.5f;
     f32 dat_007f8240 = 0.3f;
     f32 dat_007f8244 = 1.1f;
-    f32 dat_007f8248 = 0.4f;
+    f32 StatusAltMiniKitStepDuration = 0.4f;
     f32 StatusAltGridStepX = 2.3f;
     f32 StatusAltGridStepY = 2.3f;
-    f32 dat_007f8254 = -0.2f;
+    f32 StatusAltIconY = -0.2f;
     f32 StatusAltZoom = 1.5f;
     i32 StatusAltColumns = 3;
     f32 dat_007f8260 = 0.333f;
     f32 dat_007f8264 = 0.7f;
-    f32 dat_007f8268 = 5.0f;
+    f32 StatusAltTrueHeroThreshold = 5.0f;
     f32 dat_007f826c = 10.0f;
     f32 dat_007f8270 = 0.7f;
     f32 dat_007f8274 = 1.0f;
-    f32 dat_007f8278 = 0.7f;
+    f32 StatusAltLabelScale = 0.7f;
     f32 StatusAltSuitRadius = 0.75f;
 
     void TrueHero_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
@@ -609,32 +609,32 @@ extern "C" {
             stage = packet->stage;
             previous_x = x - StatusAltGridStepX;
             previous_2_x = previous_x - StatusAltGridStepX;
-            DrawPanel3DObjectNoAlpha(x, dat_007f8254, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
+            DrawPanel3DObjectNoAlpha(x, StatusAltIconY, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
                                      &WORLD->level_objects[stage->panel_object].special, 0);
             if (packet->previous_stage_2 != NULL) {
-                DrawPanel3DObjectNoAlpha(previous_2_x, dat_007f8254, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
+                DrawPanel3DObjectNoAlpha(previous_2_x, StatusAltIconY, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
                                          &WORLD->level_objects[packet->previous_stage_2->panel_object].special, 0);
             }
             if (packet->previous_stage != NULL) {
-                DrawPanel3DObjectNoAlpha(previous_x, dat_007f8254, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
+                DrawPanel3DObjectNoAlpha(previous_x, StatusAltIconY, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
                                          &WORLD->level_objects[packet->previous_stage->panel_object].special, 0);
             }
             if (packet->next_stage != NULL) {
                 x = StatusAltGridStepX + x;
-                DrawPanel3DObjectNoAlpha(x, dat_007f8254, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
+                DrawPanel3DObjectNoAlpha(x, StatusAltIconY, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
                                          &WORLD->level_objects[packet->next_stage->panel_object].special, 0);
             }
         } else {
             if (packet->previous_stage != NULL) {
-                DrawPanel3DObjectNoAlpha(-StatusAltGridStepX, dat_007f8254, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
+                DrawPanel3DObjectNoAlpha(-StatusAltGridStepX, StatusAltIconY, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
                                          &WORLD->level_objects[packet->previous_stage->panel_object].special, 0);
             }
             if (packet->stage != NULL) {
-                DrawPanel3DObjectNoAlpha(0.0f, dat_007f8254, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
+                DrawPanel3DObjectNoAlpha(0.0f, StatusAltIconY, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
                                          &WORLD->level_objects[packet->stage->panel_object].special, 0);
             }
             if (packet->next_stage != NULL) {
-                DrawPanel3DObjectNoAlpha(StatusAltGridStepX, dat_007f8254, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
+                DrawPanel3DObjectNoAlpha(StatusAltGridStepX, StatusAltIconY, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
                                          &WORLD->level_objects[packet->next_stage->panel_object].special, 0);
             }
         }
@@ -787,8 +787,9 @@ extern "C" {
                 title_angle = 0;
                 count_alpha = 1.0f;
                 count_scale = 1.0f;
-                if (stage->step_time < dat_007f8224) {
-                    brick_scale = NuTrigTable[((i32)((f64)(stage->step_time / dat_007f8224) * 32768.0) >> 1) & 0x7fff] * 0.25 + 1.0;
+                if (stage->step_time < StatusAltBrickPulseTime) {
+                    brick_scale =
+                        NuTrigTable[((i32)((f64)(stage->step_time / StatusAltBrickPulseTime) * 32768.0) >> 1) & 0x7fff] * 0.25 + 1.0;
                 } else {
                     brick_scale = 1.0f;
                 }
@@ -842,14 +843,14 @@ extern "C" {
                 StatusAltSpin = 0;
                 stage->step_time = pop_timer = 0.0f;
                 stage->step = GOLDBRICK_ALT_STEP_DELAY;
-                stage->step_duration = dat_007f8220;
+                stage->step_duration = StatusAltStepDuration;
                 break;
             case GOLDBRICK_ALT_STEP_DELAY:
                 StatusAltSpin = 0;
                 if (stage->step_duration <= accumulated) {
                     stage->step_time = 0.0f;
                     stage->step = GOLDBRICK_ALT_STEP_TITLE_IN;
-                    stage->step_duration = dat_007f8220;
+                    stage->step_duration = StatusAltStepDuration;
                 }
                 break;
             case GOLDBRICK_ALT_STEP_TITLE_IN:
@@ -858,7 +859,7 @@ extern "C" {
                     PlaySfx("TrueJedi_100pc", NULL);
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
                     stage->step_time = 0.0f;
-                    stage->step_duration = dat_007f8224;
+                    stage->step_duration = StatusAltBrickPulseTime;
                     stage->step = GOLDBRICK_ALT_STEP_TITLE;
                 }
                 break;
@@ -867,7 +868,7 @@ extern "C" {
                 if (stage->step_duration <= accumulated) {
                     stage->step_time = 0.0f;
                     stage->step = GOLDBRICK_ALT_STEP_COUNT_IN;
-                    stage->step_duration = dat_007f8220;
+                    stage->step_duration = StatusAltStepDuration;
                 }
                 break;
             case GOLDBRICK_ALT_STEP_COUNT_IN:
@@ -875,7 +876,7 @@ extern "C" {
                 if (stage->step_duration <= accumulated) {
                     stage->step_time = 0.0f;
                     stage->step = GOLDBRICK_ALT_STEP_COUNT;
-                    stage->step_duration = dat_007f8224;
+                    stage->step_duration = StatusAltBrickPulseTime;
                 }
                 break;
             case GOLDBRICK_ALT_STEP_COUNT:
@@ -894,7 +895,7 @@ extern "C" {
                         stage->step_duration = 2.5f;
                         stage->step = GOLDBRICK_ALT_STEP_AWARD;
                     } else {
-                        stage->step_duration = dat_007f8224;
+                        stage->step_duration = StatusAltBrickPulseTime;
                         stage->step = GOLDBRICK_ALT_STEP_HOLD;
                     }
                 } else if (previous == 0.0f) {
@@ -930,7 +931,7 @@ extern "C" {
                 if (stage->step_duration <= accumulated) {
                     stage->step = GOLDBRICK_ALT_STEP_OUT;
                     stage->step_time = 0.0f;
-                    stage->step_duration = dat_007f8220;
+                    stage->step_duration = StatusAltStepDuration;
                 }
             case GOLDBRICK_ALT_STEP_OUT:
                 StatusAltSpin += (i16)((f64)elapsed * 65536.0 * 4.0);
@@ -948,7 +949,7 @@ extern "C" {
                 stage->step_time = 0.0f;
                 stage->step = COINS_ALT_STEP_IN;
                 StatusAltSpin = 0;
-                stage->step_duration = dat_007f8220 + dat_007f8220 + dat_007f8224;
+                stage->step_duration = StatusAltStepDuration + StatusAltStepDuration + StatusAltBrickPulseTime;
                 StatusDrawPlayerIcons = 1;
                 break;
             case COINS_ALT_STEP_IN: {
@@ -1009,7 +1010,7 @@ extern "C" {
                 if (stage->step_duration <= accumulated) {
                     stage->step = COINS_ALT_STEP_OUT;
                     stage->step_time = 0.0f;
-                    stage->step_duration = dat_007f8220;
+                    stage->step_duration = StatusAltStepDuration;
                 }
                 break;
             }
@@ -1035,14 +1036,14 @@ extern "C" {
                 StatusAltSpin = 0;
                 stage->step_time = 0.0f;
                 stage->step = REDBRICK_ALT_STEP_BRICK_IN;
-                stage->step_duration = dat_007f8220;
+                stage->step_duration = StatusAltStepDuration;
                 break;
             case REDBRICK_ALT_STEP_BRICK_IN:
                 StatusAltSpin = 0;
                 if (stage->step_time >= stage->step_duration) {
                     stage->step_time = 0.0f;
                     stage->step = REDBRICK_ALT_STEP_CHEAT_IN;
-                    stage->step_duration = dat_007f8220;
+                    stage->step_duration = StatusAltStepDuration;
                 }
                 break;
             case REDBRICK_ALT_STEP_CHEAT_IN:
@@ -1051,7 +1052,7 @@ extern "C" {
                     PlaySfx("TrueJedi_100pc", NULL);
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
                     stage->step_time = 0.0f;
-                    stage->step_duration = dat_007f8224;
+                    stage->step_duration = StatusAltBrickPulseTime;
                     stage->step = REDBRICK_ALT_STEP_CHEAT;
                 }
                 break;
@@ -1060,7 +1061,7 @@ extern "C" {
                 if (stage->step_time >= stage->step_duration) {
                     stage->step_time = 0.0f;
                     stage->step = REDBRICK_ALT_STEP_TITLE_IN;
-                    stage->step_duration = dat_007f8220;
+                    stage->step_duration = StatusAltStepDuration;
                 }
                 break;
             case REDBRICK_ALT_STEP_TITLE_IN:
@@ -1069,7 +1070,7 @@ extern "C" {
                     PlaySfx("TrueJedi_100pc", NULL);
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
                     stage->step_time = 0.0f;
-                    stage->step_duration = dat_007f8224;
+                    stage->step_duration = StatusAltBrickPulseTime;
                     stage->step = REDBRICK_ALT_STEP_TITLE;
                 }
                 break;
@@ -1078,7 +1079,7 @@ extern "C" {
                 if (stage->step_time >= stage->step_duration) {
                     stage->step_time = 0.0f;
                     stage->step = REDBRICK_ALT_STEP_PULSE;
-                    stage->step_duration = dat_007f8224;
+                    stage->step_duration = StatusAltBrickPulseTime;
                 }
                 break;
             case REDBRICK_ALT_STEP_PULSE:
@@ -1086,7 +1087,7 @@ extern "C" {
                 if (stage->step_time >= stage->step_duration) {
                     stage->step_time = 0.0f;
                     stage->step = REDBRICK_ALT_STEP_OUT;
-                    stage->step_duration = dat_007f8220;
+                    stage->step_duration = StatusAltStepDuration;
                 }
                 break;
             case REDBRICK_ALT_STEP_OUT:
@@ -1106,7 +1107,7 @@ extern "C" {
             case STATUS_STEP_START:
                 stage->step_time = 0.0f;
                 stage->step = TRUEHERO_ALT_STEP_BAR_IN;
-                stage->step_duration = dat_007f8220;
+                stage->step_duration = StatusAltStepDuration;
                 StatusAltSpin = 0;
                 packet->true_hero_percent = 0.0f;
                 return;
@@ -1117,7 +1118,7 @@ extern "C" {
                 if (stage->step_duration <= accumulated) {
                     stage->step = TRUEHERO_ALT_STEP_TITLE_IN;
                     stage->step_time = 0.0f;
-                    stage->step_duration = dat_007f8220;
+                    stage->step_duration = StatusAltStepDuration;
                 }
                 return;
             }
@@ -1128,10 +1129,10 @@ extern "C" {
                 if (stage->step_duration <= accumulated) {
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
                     stage->step_time = 0.0f;
-                    stage->step_duration = dat_007f8224;
+                    stage->step_duration = StatusAltBrickPulseTime;
                     stage->step = TRUEHERO_ALT_STEP_TITLE;
                     packet->true_hero_percent = 0.0f;
-                    dat_007f8268 = 5.0f;
+                    StatusAltTrueHeroThreshold = 5.0f;
                 }
                 return;
             }
@@ -1142,7 +1143,7 @@ extern "C" {
                 if (stage->step_duration <= accumulated) {
                     stage->step = TRUEHERO_ALT_STEP_MODE_IN;
                     stage->step_time = 0.0f;
-                    stage->step_duration = dat_007f8220;
+                    stage->step_duration = StatusAltStepDuration;
                 }
                 return;
             }
@@ -1173,9 +1174,9 @@ extern "C" {
                 packet->true_hero_percent = (f64)elapsed * (100.0 / (f64)stage->step_duration) + (f64)packet->true_hero_percent;
                 if (packet->true_hero_percent > target) {
                     packet->true_hero_percent = target;
-                } else if (packet->true_hero_percent >= dat_007f8268) {
+                } else if (packet->true_hero_percent >= StatusAltTrueHeroThreshold) {
                     PlaySfx("Status_GoldBarDec", NULL);
-                    dat_007f8268 = (f64)dat_007f8268 + 10.0;
+                    StatusAltTrueHeroThreshold = (f64)StatusAltTrueHeroThreshold + 10.0;
                 }
                 if (stage->step_time > stage->step_duration) {
                     stage->step_time = 0.0f;
@@ -1272,7 +1273,7 @@ extern "C" {
                 stage->step_time = accumulated;
                 if (stage->step_duration <= accumulated) {
                     stage->step_time = 0.0f;
-                    stage->step_duration = dat_007f8248;
+                    stage->step_duration = StatusAltMiniKitStepDuration;
                     stage->step = MINIKIT_ALT_STEP_KIT_IN;
                     PlaySfx("Jump", NULL);
                 }
@@ -1555,20 +1556,24 @@ extern "C" {
                 title_alpha = 0.0f;
                 break;
             case COINS_ALT_STEP_IN:
-                if (stage->step_time < dat_007f8220) {
+                if (stage->step_time < StatusAltStepDuration) {
                     total_scale =
-                        1.0 - (NuTrigTable[((i32)((f64)(stage->step_time / dat_007f8220) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
+                        1.0 -
+                        (NuTrigTable[((i32)((f64)(stage->step_time / StatusAltStepDuration) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) *
+                            0.5;
                     title_angle = StatusAltSpin;
                     angle1 = 0;
                     angle0 = 0;
                     title_alpha = total_scale;
                     players_scale = 0.0f;
                 } else {
-                    if (stage->step_time < dat_007f8220 * 2.0f) {
+                    if (stage->step_time < StatusAltStepDuration * 2.0f) {
                         total_scale = 1.0f;
                         title_alpha = 1.0f;
                         players_scale =
-                            1.0 - (NuTrigTable[((i32)((f64)((stage->step_time - dat_007f8220) / dat_007f8220) * 32768.0 + 16384.0) >> 1) &
+                            1.0 - (NuTrigTable[((i32)((f64)((stage->step_time - StatusAltStepDuration) / StatusAltStepDuration) * 32768.0 +
+                                                      16384.0) >>
+                                                1) &
                                                0x7fff] +
                                    1.0f) *
                                       0.5;
@@ -1775,7 +1780,7 @@ extern "C" {
         colour = ((u8)(title_alpha * 255.0) << 24) | 0xffffff;
         DrawStatusText(TTab[dat_008808d0], StatusAltSpin, 0.0f, size * StatusCoinsTitleY, StatusAltScale * size, colour, 0);
         if (currentminikit == 0) {
-            DrawStatusText("?", 0, 0.0f, 0.0f, dat_007f8214 * size, ((u8)(count_alpha * 255.0) << 24) | 0xffffff, 0);
+            DrawStatusText("?", 0, 0.0f, 0.0f, StatusAltCountTextScale * size, ((u8)(count_alpha * 255.0) << 24) | 0xffffff, 0);
         } else {
             DrawStatusMiniKit(0.0f, 0.0f, 1.0f, dat_007f8228 * dat_007f8274, 0.0f, currentminikit, packet, 0.0f);
         }
@@ -1844,9 +1849,9 @@ extern "C" {
                     if (title_alpha < 0.0f) {
                         title_alpha = 0.0f;
                     }
-                    SmartTextEx(TTab[*SuitRecordInit[StatusAltSuitIndex].text_id], 0.0f, dat_007f8238, 1.0f, dat_007f823c, dat_007f823c,
-                                dat_007f823c, 0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0,
-                                (u16)(title_alpha * 128.0));
+                    SmartTextEx(TTab[*SuitRecordInit[StatusAltSuitIndex].text_id], 0.0f, StatusAltSuitTextY, 1.0f, StatusAltSuitTextScale,
+                                StatusAltSuitTextScale, StatusAltSuitTextScale, 0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1,
+                                NULL, 0, (u16)(title_alpha * 128.0));
                 } else if (stage->step_time < 1.0f) {
                     y = stage->step_time - 0.5;
                     y = y + y;
@@ -1859,9 +1864,9 @@ extern "C" {
                     if (title_alpha < 0.0f) {
                         title_alpha = 0.0f;
                     }
-                    SmartTextEx(TTab[*SuitRecordInit[StatusAltSuitIndex].text_id], 0.0f, dat_007f8238, 1.0f, dat_007f823c, dat_007f823c,
-                                dat_007f823c, 0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0,
-                                (u16)(title_alpha * 128.0));
+                    SmartTextEx(TTab[*SuitRecordInit[StatusAltSuitIndex].text_id], 0.0f, StatusAltSuitTextY, 1.0f, StatusAltSuitTextScale,
+                                StatusAltSuitTextScale, StatusAltSuitTextScale, 0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1,
+                                NULL, 0, (u16)(title_alpha * 128.0));
                     if (dat_00876de8 == 0) {
                         PlaySfx("Char_Icon_Slide", NULL);
                         dat_00876de8 = 1;
@@ -1967,30 +1972,30 @@ extern "C" {
             f32 scale2;
             u16 angle1;
             u16 angle2;
-            if (stage->step_time < dat_007f8220) {
-                scale1 = alpha1 = stage->step_time / dat_007f8220;
+            if (stage->step_time < StatusAltStepDuration) {
+                scale1 = alpha1 = stage->step_time / StatusAltStepDuration;
                 angle1 = StatusAltSpin;
                 angle2 = 0;
                 alpha2 = 0.0f;
                 scale2 = 0.0f;
-            } else if (stage->step_time < dat_007f8220 + dat_007f8224) {
+            } else if (stage->step_time < StatusAltStepDuration + StatusAltBrickPulseTime) {
                 angle1 = 0;
                 angle2 = 0;
                 alpha1 = 1.0f;
                 scale1 = 1.0f;
                 alpha2 = 0.0f;
                 scale2 = 0.0f;
-            } else if (stage->step_time < dat_007f8220 * 2.0f + dat_007f8224) {
+            } else if (stage->step_time < StatusAltStepDuration * 2.0f + StatusAltBrickPulseTime) {
                 alpha1 = 1.0f;
                 angle1 = 0;
                 scale1 = 1.0f;
                 angle2 = (u16)-StatusAltSpin;
-                scale2 = alpha2 = (stage->step_time - (dat_007f8220 + dat_007f8224)) / dat_007f8220;
-            } else if (stage->step_time > stage->step_duration - dat_007f8220) {
+                scale2 = alpha2 = (stage->step_time - (StatusAltStepDuration + StatusAltBrickPulseTime)) / StatusAltStepDuration;
+            } else if (stage->step_time > stage->step_duration - StatusAltStepDuration) {
                 alpha2 = stage->step_duration - stage->step_time;
                 angle1 = StatusAltSpin;
                 angle2 = (u16)-StatusAltSpin;
-                alpha2 = alpha2 / dat_007f8220;
+                alpha2 = alpha2 / StatusAltStepDuration;
                 scale2 = alpha2;
                 alpha1 = alpha2;
                 scale1 = alpha2;
@@ -2109,7 +2114,7 @@ extern "C" {
                 stage->step = STATUS_STEP_RUNNING;
                 stage->step_time = 0.0f;
                 StatusAltSpin = 0;
-                stage->step_duration = (f64)dat_007f8220 * 3.0 + 3.0;
+                stage->step_duration = (f64)StatusAltStepDuration * 3.0 + 3.0;
                 break;
             case STATUS_STEP_RUNNING: {
                 f32 previous;
@@ -2118,12 +2123,12 @@ extern "C" {
                 previous = stage->step_time;
                 accumulated = stage->step_time + elapsed;
                 stage->step_time = accumulated;
-                if (accumulated < dat_007f8220) {
+                if (accumulated < StatusAltStepDuration) {
                     StatusAltSpin += (i16)((f64)elapsed * 65536.0 * 4.0);
-                } else if (accumulated >= dat_007f8220 + dat_007f8224) {
-                    if (stage->step_time < (f64)dat_007f8220 * 2.0 + dat_007f8224) {
+                } else if (accumulated >= StatusAltStepDuration + StatusAltBrickPulseTime) {
+                    if (stage->step_time < (f64)StatusAltStepDuration * 2.0 + StatusAltBrickPulseTime) {
                         StatusAltSpin += (i16)((f64)elapsed * 65536.0 * 4.0);
-                    } else if (stage->step_time > stage->step_duration - dat_007f8224) {
+                    } else if (stage->step_time > stage->step_duration - StatusAltBrickPulseTime) {
                         StatusAltSpin += (i16)((f64)elapsed * 65536.0 * 4.0);
                     } else {
                         StatusAltSpin = 0;
@@ -2141,8 +2146,9 @@ extern "C" {
                     NextStatusStage(packet);
                     return;
                 }
-                if ((previous < dat_007f8220 && stage->step_time >= dat_007f8220) ||
-                    (previous < (f64)dat_007f8220 * 2.0 + dat_007f8224 && stage->step_time >= (f64)dat_007f8220 * 2.0 + dat_007f8224)) {
+                if ((previous < StatusAltStepDuration && stage->step_time >= StatusAltStepDuration) ||
+                    (previous < (f64)StatusAltStepDuration * 2.0 + StatusAltBrickPulseTime &&
+                     stage->step_time >= (f64)StatusAltStepDuration * 2.0 + StatusAltBrickPulseTime)) {
                     if ((packet->stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == CHALLENGE_TIME_UP) ||
                         (packet->stage->type == STATUS_STAGE_MISSION && packet->mission_state == MISSION_STATE_TIME_UP)) {
                         GameAudio_PlaySfx(0x32, NULL, 0, 0);
@@ -2199,11 +2205,12 @@ extern "C" {
             DrawCharIcon(id_SLAVE1, 0.0f,
                          (sliding ? (1.0f - NuTrigTable[((i32)(icon_alpha * 16384.0f) >> 1) & 0x7fff]) * -0.5f : 0.0f) + 0.225f, 0.0f, 0.4f,
                          0xa7, icon_alpha, icon_alpha, 1, NULL);
-            SmartTextEx(TTab[CDataList[id_SLAVE1].name_id], 0.0f, -0.1f, 1.0f, dat_007f823c, dat_007f823c, dat_007f823c, 0, (u8)StatusRed,
-                        (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, (i32)(icon_alpha * 128.0f));
+            SmartTextEx(TTab[CDataList[id_SLAVE1].name_id], 0.0f, -0.1f, 1.0f, StatusAltSuitTextScale, StatusAltSuitTextScale,
+                        StatusAltSuitTextScale, 0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0,
+                        (i32)(icon_alpha * 128.0f));
         }
         if (title_alpha > 0.0f) {
-            DrawStatusText(TTab[dat_00880740], StatusAltSpin, 0.0f, 0.225f, dat_007f8278,
+            DrawStatusText(TTab[dat_00880740], StatusAltSpin, 0.0f, 0.225f, StatusAltLabelScale,
                            ((u32)(title_alpha * 255.0) << 24) | ((u8)StatusBlue << 16) | ((u8)StatusGreen << 8) | (u8)StatusRed, 0);
         }
     }

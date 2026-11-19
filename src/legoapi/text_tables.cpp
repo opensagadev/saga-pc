@@ -185,23 +185,23 @@ extern "C" {
     i16 tMAGNETSUIT = 0;
     i16 tATTRACTSUIT = 0;
     i16 dat_0088098c = 0;
-    i16 dat_00880990 = 0;
-    i16 dat_00880994 = 0;
-    i16 dat_00880998 = 0;
-    i16 dat_0088099c = 0;
-    i16 dat_008809a0 = 0;
-    i16 dat_008809a4 = 0;
-    i16 dat_008809a8 = 0;
-    i16 dat_008809ac = 0;
-    i16 dat_008809b0 = 0;
-    i16 dat_008809b4 = 0;
-    i16 dat_008809b8 = 0;
-    i16 dat_008809bc = 0;
-    i16 dat_008809c0 = 0;
-    i16 dat_008809c4 = 0;
-    i16 dat_008809c8 = 0;
-    i16 dat_008809cc = 0;
-    i16 dat_008809d0 = 0;
+    i16 tEXTRATOGGLE = 0;
+    i16 tDISGUISES = 0;
+    i16 tSUPERBLASTERS = 0;
+    i16 tFASTFORCE = 0;
+    i16 tINVINCIBILITY = 0;
+    i16 tSCOREX2 = 0;
+    i16 tFASTBUILD = 0;
+    i16 tSCOREX4 = 0;
+    i16 tREGENERATE = 0;
+    i16 tMINIKITDETECTOR = 0;
+    i16 tSCOREX6 = 0;
+    i16 tSUPERZAPPER = 0;
+    i16 tROCKETS = 0;
+    i16 tSCOREX8 = 0;
+    i16 tSCOREX10 = 0;
+    i16 tADAPTIVEDIFFICULTY = 0;
+    i16 tSILHOUETTES = 0;
     i16 dat_008809d4 = 0;
     i16 dat_008809d8 = 0;
     i16 dat_008809dc = 0;
@@ -607,36 +607,36 @@ extern "C" {
     i16 dat_00881038 = 0;
     i16 dat_0088103c = 0;
     i16 dat_00881040 = 0;
-    i16 dat_00881044 = 0;
-    i16 dat_00881048 = 0;
-    i16 dat_0088104c = 0;
+    i16 tSUPERSABRES = 0;
+    i16 tC3POBITS = 0;
+    i16 tPOO = 0;
     i16 dat_00881050 = 0;
     i16 dat_00881054 = 0;
-    i16 dat_00881058 = 0;
-    i16 dat_0088105c = 0;
-    i16 dat_00881060 = 0;
-    i16 dat_00881064 = 0;
-    i16 dat_00881068 = 0;
-    i16 dat_0088106c = 0;
-    i16 dat_00881070 = 0;
-    i16 dat_00881074 = 0;
-    i16 dat_00881078 = 0;
-    i16 dat_0088107c = 0;
-    i16 dat_00881080 = 0;
-    i16 dat_00881084 = 0;
-    i16 dat_00881088 = 0;
-    i16 dat_0088108c = 0;
-    i16 dat_00881090 = 0;
-    i16 dat_00881094 = 0;
-    i16 dat_00881098 = 0;
-    i16 dat_0088109c = 0;
-    i16 dat_008810a0 = 0;
-    i16 dat_008810a4 = 0;
-    i16 dat_008810a8 = 0;
-    i16 dat_008810ac = 0;
-    i16 dat_008810b0 = 0;
-    i16 dat_008810b4 = 0;
-    i16 dat_008810b8 = 0;
+    i16 tDAISYCHAINS = 0;
+    i16 tTOWDEATHSTAR = 0;
+    i16 tSELFDESTRUCT = 0;
+    i16 tINFINITETORPEDOS = 0;
+    i16 tTRACTORBEAM = 0;
+    i16 tSUPEREWOKCATAPULT = 0;
+    i16 tSUPERGONK = 0;
+    i16 tBEEPBEEP = 0;
+    i16 tCOINMAGNET = 0;
+    i16 tPOOMONEY = 0;
+    i16 tPOWERBRICKDETECTOR = 0;
+    i16 tSUPERSLAP = 0;
+    i16 tDEFLECTBOLTS = 0;
+    i16 tFORCEZIPUP = 0;
+    i16 tSUPERTHERMALDETONATOR = 0;
+    i16 tDISARMTROOPERS = 0;
+    i16 tEXPLODINGBLASTERBOLTS = 0;
+    i16 tVEHICLESMARTBOMB = 0;
+    i16 tWALKIETALKIEDISABLE = 0;
+    i16 tPERFECTDEFLECT = 0;
+    i16 tFORCEPULL = 0;
+    i16 tSUPERASTROMECH = 0;
+    i16 tDARKSIDE = 0;
+    i16 tSUPERJEDISLAM = 0;
+    i16 tCHARACTERSTUDS = 0;
     i16 tPOWERUP = 0;
     i16 dat_008810c0 = 0;
     i16 dat_008810c4 = 0;
@@ -868,22 +868,22 @@ extern "C" {
         {&tMAGNETSUIT, -1, 0},
         {&tATTRACTSUIT, -1, 0},
         {&dat_0088098c, -1, 0},
-        {&dat_00880990, 600, 0},
-        {&dat_00880994, -1, 0},
-        {&dat_00880998, -1, 0},
-        {&dat_0088099c, -1, 0},
-        {&dat_008809a0, -1, 0},
-        {&dat_008809a4, -1, 0},
-        {&dat_008809a8, -1, 0},
-        {&dat_008809ac, -1, 0},
-        {&dat_008809b0, -1, 0},
-        {&dat_008809b4, -1, 0},
-        {&dat_008809b8, -1, 0},
-        {&dat_008809bc, -1, 0},
-        {&dat_008809c0, -1, 0},
-        {&dat_008809c4, -1, 0},
-        {&dat_008809c8, -1, 0},
-        {&dat_008809cc, -1, 0},
+        {&tEXTRATOGGLE, 600, 0},
+        {&tDISGUISES, -1, 0},
+        {&tSUPERBLASTERS, -1, 0},
+        {&tFASTFORCE, -1, 0},
+        {&tINVINCIBILITY, -1, 0},
+        {&tSCOREX2, -1, 0},
+        {&tFASTBUILD, -1, 0},
+        {&tSCOREX4, -1, 0},
+        {&tREGENERATE, -1, 0},
+        {&tMINIKITDETECTOR, -1, 0},
+        {&tSCOREX6, -1, 0},
+        {&tSUPERZAPPER, -1, 0},
+        {&tROCKETS, -1, 0},
+        {&tSCOREX8, -1, 0},
+        {&tSCOREX10, -1, 0},
+        {&tADAPTIVEDIFFICULTY, -1, 0},
         {NULL, -1, 0},
     };
     TEXTENTRY Text_TableGame[347] = {
@@ -1312,25 +1312,25 @@ extern "C" {
         {&dat_00880770, 1656, 0},
         {&dat_008810c0, 245, 0},
         {&tPOWERUP, 295, 0},
-        {&dat_0088107c, -1, 0},
-        {&dat_00881078, -1, 0},
-        {&dat_00881074, -1, 0},
+        {&tPOOMONEY, -1, 0},
+        {&tCOINMAGNET, -1, 0},
+        {&tBEEPBEEP, -1, 0},
         {&dat_00880700, -1, 0},
-        {&dat_00881080, 1657, 0},
-        {&dat_00881084, -1, 0},
-        {&dat_00881088, -1, 0},
-        {&dat_0088108c, -1, 0},
-        {&dat_00881090, -1, 0},
-        {&dat_00881094, -1, 0},
-        {&dat_00881098, -1, 0},
-        {&dat_0088109c, -1, 0},
-        {&dat_008810a0, -1, 0},
-        {&dat_008810a4, -1, 0},
-        {&dat_008810a8, -1, 0},
-        {&dat_008810ac, -1, 0},
-        {&dat_008810b0, -1, 0},
-        {&dat_008810b4, -1, 0},
-        {&dat_008810b8, -1, 0},
+        {&tPOWERBRICKDETECTOR, 1657, 0},
+        {&tSUPERSLAP, -1, 0},
+        {&tDEFLECTBOLTS, -1, 0},
+        {&tFORCEZIPUP, -1, 0},
+        {&tSUPERTHERMALDETONATOR, -1, 0},
+        {&tDISARMTROOPERS, -1, 0},
+        {&tEXPLODINGBLASTERBOLTS, -1, 0},
+        {&tVEHICLESMARTBOMB, -1, 0},
+        {&tWALKIETALKIEDISABLE, -1, 0},
+        {&tPERFECTDEFLECT, -1, 0},
+        {&tFORCEPULL, -1, 0},
+        {&tSUPERASTROMECH, -1, 0},
+        {&tDARKSIDE, -1, 0},
+        {&tSUPERJEDISLAM, -1, 0},
+        {&tCHARACTERSTUDS, -1, 0},
         {&dat_00880ff4, 1673, 0},
         {&dat_00880ff0, 1674, 0},
         {&dat_008807bc, 1775, 0},
@@ -1407,35 +1407,35 @@ extern "C" {
         {&dat_00880908, -1, 0},
         {&dat_0088090c, -1, 0},
         {&dat_008809d4, -1, 0},
-        {&dat_008809a0, -1, 0},
-        {&dat_008809b4, -1, 0},
-        {&dat_008809a4, -1, 0},
-        {&dat_00881044, -1, 0},
-        {&dat_00880994, -1, 0},
-        {&dat_00881048, -1, 0},
-        {&dat_008809ac, -1, 0},
-        {&dat_0088104c, -1, 0},
-        {&dat_00880990, -1, 0},
-        {&dat_008809c0, -1, 0},
+        {&tINVINCIBILITY, -1, 0},
+        {&tMINIKITDETECTOR, -1, 0},
+        {&tSCOREX2, -1, 0},
+        {&tSUPERSABRES, -1, 0},
+        {&tDISGUISES, -1, 0},
+        {&tC3POBITS, -1, 0},
+        {&tSCOREX4, -1, 0},
+        {&tPOO, -1, 0},
+        {&tEXTRATOGGLE, -1, 0},
+        {&tROCKETS, -1, 0},
         {&dat_00881050, -1, 0},
         {&dat_00881054, -1, 0},
-        {&dat_008809b8, -1, 0},
-        {&dat_00881058, -1, 0},
-        {&dat_0088105c, -1, 0},
-        {&dat_008809c4, -1, 0},
-        {&dat_008809c8, -1, 0},
-        {&dat_00881060, -1, 0},
-        {&dat_00880998, -1, 0},
-        {&dat_008809b0, -1, 0},
-        {&dat_008809a8, -1, 0},
-        {&dat_0088099c, -1, 0},
-        {&dat_00881064, -1, 0},
-        {&dat_00881068, -1, 0},
-        {&dat_008809bc, -1, 0},
-        {&dat_0088106c, -1, 0},
-        {&dat_008809cc, -1, 0},
-        {&dat_008809d0, 698, 0},
-        {&dat_00881070, 699, 0},
+        {&tSCOREX6, -1, 0},
+        {&tDAISYCHAINS, -1, 0},
+        {&tTOWDEATHSTAR, -1, 0},
+        {&tSCOREX8, -1, 0},
+        {&tSCOREX10, -1, 0},
+        {&tSELFDESTRUCT, -1, 0},
+        {&tSUPERBLASTERS, -1, 0},
+        {&tREGENERATE, -1, 0},
+        {&tFASTBUILD, -1, 0},
+        {&tFASTFORCE, -1, 0},
+        {&tINFINITETORPEDOS, -1, 0},
+        {&tTRACTORBEAM, -1, 0},
+        {&tSUPERZAPPER, -1, 0},
+        {&tSUPEREWOKCATAPULT, -1, 0},
+        {&tADAPTIVEDIFFICULTY, -1, 0},
+        {&tSILHOUETTES, 698, 0},
+        {&tSUPERGONK, 699, 0},
         {&dat_00880820, 700, 0},
         {&dat_00880824, -1, 0},
         {&dat_00880828, -1, 0},

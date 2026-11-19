@@ -6922,7 +6922,7 @@ static void SelfDestructCode(GAMEOBJECT *object, i32 pressed) {
     }
     KillPlayer(object, KILL_REASON_KILLED, 1, NULL);
     if (object->player.camera_screen_position.z > 0.0f) {
-        AddFancyMessage(TTab[dat_00881060], object->player.camera_screen_position.x, object->player.camera_screen_position.y, 0.25f, 1.0f,
+        AddFancyMessage(TTab[tSELFDESTRUCT], object->player.camera_screen_position.x, object->player.camera_screen_position.y, 0.25f, 1.0f,
                         1, 0);
     }
 }
