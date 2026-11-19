@@ -1,3 +1,4 @@
+#include "legoapi/props/objects/legoapi_signal.h"
 #include "gameapi/ai/aisys/aipath.h"
 #include "gameapi/ai/aisys/aisys.h"
 #include "globals.h"
@@ -64,11 +65,6 @@ typedef struct batman_prepare_s {      // size 0x8
 extern "C" {
     extern BATMAN_PREPARE batman_prepareforspecialmove[11];
 }
-
-typedef struct suit_ai_capabilities_s {
-    u8 unknown_00[0x10];
-    u32 path_capabilities;
-} SUIT_AI_CAPABILITIES;
 
 typedef PLAYER_BATARANG_SLOT BATARANG_NATIVE;
 
@@ -1754,7 +1750,7 @@ extern "C" {
             object->ai_packet.capabilities |= 2;
         }
         if (object->player.suit != NULL) {
-            object->ai_packet.capabilities |= ((SUIT_AI_CAPABILITIES *)object->player.suit)->path_capabilities;
+            object->ai_packet.capabilities |= object->player.suit->character_flags;
         }
         if ((object->flags_1f8 & APIOBJECT_SIDE_BADDIE) != 0) {
             object->ai_packet.capabilities |= BATMAN_AIPATHCNX_FORBADDIES;

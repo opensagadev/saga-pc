@@ -320,3 +320,4 @@ config/oddscan-budget.json other-platform 4 quick run, settled in the refix
 config/declscan-budget.json A 39 quick run, settled in the refix
 config/oddscan-budget.json magic-flag 2489 quick run, settled in the refix
 config/castscan-budget.json void-pointer-cpp 561 quick run, settled in the refix
+config/castscan-budget.json redundant-identity 13 quick run, settled in the refix

@@ -234,7 +234,7 @@ typedef struct GIZMOBLOWUP { // size 0x114
     u8 file_flags;         // 0x10c
     u8 score_multiplier;   // 0x10d
     u8 damage;             // 0x10e
-    u8 initial_state;      // 0x10f
+    u8 initial_damage;     // 0x10f
     u8 remaining_health;   // 0x110
     u8 initial_health;     // 0x111
     u8 unknown_112[2];     // 0x112
