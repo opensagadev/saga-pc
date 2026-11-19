@@ -3286,7 +3286,7 @@ extern "C" {
                 } else if (base != NULL) {
                     NuVecMtxTransform(&matrix->translation, &joint->translation.xyz, base);
                 } else {
-                    *&matrix->translation = joint->translation.xyz;
+                    matrix->translation = joint->translation.xyz;
                 }
             } else if (parent != 255) {
                 matrix->m30 = matrices[parent].m30;
@@ -17705,8 +17705,8 @@ void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrix(NURNDRLIGHTRECORD *set) {
     NuMtxInvH(&combined_inverse, &combined);
     NuMtxInv(&original_inverse, &original);
     NuMtxInv(&captured_inverse, &captured);
-    light_direction = *&original_inverse.rows[2].xyz;
-    camera_direction = *&captured_inverse.rows[2].xyz;
+    light_direction = original_inverse.rows[2].xyz;
+    camera_direction = captured_inverse.rows[2].xyz;
     PostShadowBuildBasis(&light_direction, &camera_direction, &basis, &basis_inverse);
     PostShadowCopyVectors(corners, set->corners, 8);
     {

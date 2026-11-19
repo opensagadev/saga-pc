@@ -303,7 +303,7 @@ void NuVecNeg(NUVEC *out, NUVEC *vector) {
     out->z = -vector->z;
 }
 
-void NuVecAdd(NUVEC *out, NUVEC *left, NUVEC *right) {
+void NuVecAdd(NUVEC *out, const NUVEC *left, const NUVEC *right) {
     out->x = left->x + right->x;
     out->y = left->y + right->y;
     out->z = left->z + right->z;

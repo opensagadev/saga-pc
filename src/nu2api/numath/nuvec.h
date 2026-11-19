@@ -30,7 +30,7 @@ extern "C" {
     void NuVecRotateY(NUVEC *out, NUVEC *input, NUANG angle);
     void NuVecRotateZ(NUVEC *out, NUVEC *input, NUANG angle);
     void NuVecRotateYValZ(NUVEC *out, f32 magnitude, NUANG angle);
-    void NuVecAdd(NUVEC *dst, NUVEC *a, NUVEC *b);
+    void NuVecAdd(NUVEC *dst, const NUVEC *a, const NUVEC *b);
     void NuVecSub(NUVEC *dst, NUVEC *a, NUVEC *b);
     void NuVecScale(NUVEC *dst, NUVEC *src, f32 scale);
     void NuVecAddScale(NUVEC *dst, NUVEC *a, NUVEC *b, f32 scale);

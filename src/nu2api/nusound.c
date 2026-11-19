@@ -341,7 +341,7 @@ void PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
             volume_right = pan > 0.0f ? voice_volume : (i32)((1.0f + pan) * voice_volume);
             if (loop != 0) {
                 listener = NuSound3GetListener();
-                PCSoundListenerLoopPosition = *&listener->translation;
+                PCSoundListenerLoopPosition = listener->translation;
                 NuVecAdd(&PCSoundListenerLoopPosition, &PCSoundListenerLoopPosition, &listener->rows[2].xyz);
                 PCSoundPlayPositionedLoop(&PCSoundListenerLoopPosition, sample_id, volume_left, volume_right, pitch_parameter, buzz_timer,
                                           rumble_strength, rumble_sustain, rumble_release);

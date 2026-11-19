@@ -841,11 +841,11 @@ f32 NuCameraDist(NUVEC *point) {
 }
 
 void NuCameraGetTrans(NUVEC *trans) {
-    *trans = *&global_camera.mtx.translation;
+    *trans = global_camera.mtx.translation;
 }
 
 void NuCameraGetPosition(NUVEC *position) {
-    *position = *&global_camera.mtx.translation;
+    *position = global_camera.mtx.translation;
 }
 
 void NuCameraGetClippingRatios(f32 *horizontal, f32 *vertical) {
