@@ -2,6 +2,7 @@
 
 #include "nu2api/nucore/common.h"
 
+#include "legoapi/gizmo/base/gizmo.h"
 #include "nu2api/numath/nuvec.h"
 
 typedef struct GIZBOMBGENSYS_s GIZBOMBGENSYS_s;

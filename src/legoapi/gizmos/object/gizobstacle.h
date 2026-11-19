@@ -40,7 +40,7 @@ extern "C" {
     GIZMO *GizObstacles_GetBestBoltTarget(GIZMOSET *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
     void GizObstacles_Draw(void *, void *, f32);
     extern const char *GizObstacleRegistrationNamePtr;
-    u32 GizObstacles_TotalScore(WORLDINFO *world);
+    u32 GizObstacles_TotalScore(struct WORLDINFO_s *world);
 #ifdef __cplusplus
 }
 #endif

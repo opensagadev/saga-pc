@@ -49,7 +49,7 @@ extern "C" {
 extern "C" {
 #endif
     i32 GizSpinner_GetTargetPoints(struct GIZSPINNER_s *spinner, struct nuvec_s *positions, struct nuvec_s *directions);
-    f32 GizSpinner_GetNearestTargetPoint(GIZSPINNER_s *, NUVEC *, NUVEC *, NUVEC *, i32);
+    f32 GizSpinner_GetNearestTargetPoint(struct GIZSPINNER_s *, NUVEC *, NUVEC *, NUVEC *, i32);
     void GizSpinners_InitTerrain(WORLDINFO *world);
 #ifdef __cplusplus
 }
