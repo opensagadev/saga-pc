@@ -261,7 +261,8 @@ extern "C" void PcInputSeekFloat(f32 *value, f32 target, f32 rate) {
     *value += target;
 }
 
-extern "C" i32 NuPadButtonName(i32 player, i32 button, char *destination, i32, i32, i32 use_callback, i32 alternate_labels, char *delimiters) {
+extern "C" i32 NuPadButtonName(i32 player, i32 button, char *destination, i32, i32, i32 use_callback, i32 alternate_labels,
+                               char *delimiters) {
     PC_INPUT_RUNTIME *manager = nu_input_state;
     i32 port = NuPadGetPort(player);
     return manager->ButtonName(port, button, destination, 0, 0, use_callback, alternate_labels, delimiters);

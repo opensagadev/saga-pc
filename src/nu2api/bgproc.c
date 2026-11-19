@@ -15,11 +15,11 @@ typedef struct BGPROC_HANDLER {
     void (*handler)(void);
 } BGPROC_HANDLER;
 
-i32 dat_0297ad4c = 0;
-BGPROC_HANDLER *dat_0297ad58 = 0;
-i32 dat_0297ad5c = 0;
-i32 dat_0297ad60 = 0;
-BGPROC_HANDLER *dat_0297ad68 = 0;
+i32 PcHandlersRunning = 0;
+BGPROC_HANDLER *PcFrameHandlers = 0;
+i32 PcFrameHandlersEnabled = 0;
+i32 PcVBlankHandlersEnabled = 0;
+BGPROC_HANDLER *PcVBlankHandlers = 0;
 volatile u32 nu_current_thread_id = 0;
 volatile i32 nuvideo_global_vbcnt = 0;
 
@@ -42,11 +42,11 @@ void fun_006de770(void) {
 i32 BgProcRunHandlers(void) {
     BGPROC_HANDLER *handler;
 
-    dat_0297ad4c = 1;
-    for (handler = dat_0297ad58; handler != NULL; handler = handler->next) {
+    PcHandlersRunning = 1;
+    for (handler = PcFrameHandlers; handler != NULL; handler = handler->next) {
         handler->handler();
     }
-    dat_0297ad4c = 0;
+    PcHandlersRunning = 0;
     return 1;
 }
 
@@ -62,17 +62,17 @@ void fun_006de7e0(void) {
 void fun_006de7f0(void) {
 }
 
-i32 fun_006de800(void) {
+i32 PcRunVBlankHandlers(void) {
     BGPROC_HANDLER *handler;
 
-    dat_0297ad4c = 1;
+    PcHandlersRunning = 1;
     ++nuvideo_global_vbcnt;
-    if (dat_0297ad60) {
-        for (handler = dat_0297ad68; handler != NULL; handler = handler->next) {
+    if (PcVBlankHandlersEnabled) {
+        for (handler = PcVBlankHandlers; handler != NULL; handler = handler->next) {
             handler->handler();
         }
     }
-    dat_0297ad4c = 0;
+    PcHandlersRunning = 0;
     return 1;
 }
 
@@ -82,14 +82,14 @@ void fun_006de860(void) {
 void fun_006de870(void) {
 }
 
-void fun_006de880(void) {
-    if (dat_0297ad60) {
-        fun_006de800();
+void PcVBlankTick(void) {
+    if (PcVBlankHandlersEnabled) {
+        PcRunVBlankHandlers();
     }
 }
 
-void fun_006de890(void) {
-    if (dat_0297ad5c) {
+void PcFrameTick(void) {
+    if (PcFrameHandlersEnabled) {
         BgProcRunHandlers();
     }
 }

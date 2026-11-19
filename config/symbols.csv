@@ -13643,11 +13643,11 @@ address,symbol,size,ctype
 0x6de7d0,_fun_006de7d0,1,
 0x6de7e0,_fun_006de7e0,1,
 0x6de7f0,_fun_006de7f0,1,
-0x6de800,_fun_006de800,81,
+0x6de800,_PcRunVBlankHandlers,81,
 0x6de860,_fun_006de860,1,
 0x6de870,_fun_006de870,1,
-0x6de880,_fun_006de880,15,
-0x6de890,_fun_006de890,15,
+0x6de880,_PcVBlankTick,15,
+0x6de890,_PcFrameTick,15,
 0x6de8a0,_fun_006de8a0,1,
 0x6de8b0,_fun_006de8b0,1,
 0x006de8c0,_NuScratchReset,11,void __cdecl(void)
@@ -43514,11 +43514,11 @@ address,symbol,size,ctype
 0x29765e8,_PCDeviceBackend,1792,PC_DEVICE_BACKEND
 0x2976ce8,_dat_02976ce8,4,i32
 0x02976d00,_NuScratchBackingAccess,16384,u8[0x4000]
-0x297ad4c,_dat_0297ad4c,4,i32
-0x297ad58,_dat_0297ad58,4,BGPROC_HANDLER *
-0x297ad5c,_dat_0297ad5c,4,i32
-0x297ad60,_dat_0297ad60,4,i32
-0x297ad68,_dat_0297ad68,4,BGPROC_HANDLER *
+0x297ad4c,_PcHandlersRunning,4,i32
+0x297ad58,_PcFrameHandlers,4,BGPROC_HANDLER *
+0x297ad5c,_PcFrameHandlersEnabled,4,i32
+0x297ad60,_PcVBlankHandlersEnabled,4,i32
+0x297ad68,_PcVBlankHandlers,4,BGPROC_HANDLER *
 0x00297ad74,_nu_current_thread_id,4,volatile u32
 0x297ad84,_dat_0297ad84,4,i32
 0x0297ad94,_nuvideo_global_vbcnt,4,volatile i32
