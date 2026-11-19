@@ -20,7 +20,7 @@ extern "C" {
     NU_FMV_TEXTURE NuFmvTexture = {0}; // 0x029a99e0
 }
 
-extern "C" void fun_0074ead0(NU_FMV_TEXTURE *texture) {
+extern "C" void NuFmvTextureClose(NU_FMV_TEXTURE *texture) {
     FmvClose(&texture->movie);
     if (texture->material != NULL) {
         NuMtlDestroy(texture->material);
@@ -36,7 +36,7 @@ extern "C" void NuFmvTextureRestart(NU_FMV_TEXTURE *texture) {
     texture->movie.playing = 1;
 }
 
-extern "C" i32 fun_0074eb30(NU_FMV_TEXTURE *texture) {
+extern "C" i32 NuFmvTextureUpdate(NU_FMV_TEXTURE *texture) {
     Sleep(1);
     FmvFrame(&texture->movie);
     return texture->movie.playing == 0;

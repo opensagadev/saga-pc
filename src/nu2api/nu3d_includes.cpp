@@ -6186,7 +6186,7 @@ void OccluderSet::RenderOccluders(bool depth_only) const {
 
 /* Debug triangle outlines, written here to share the vertex macro. */
 extern "C" {
-    void fun_005db360(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour) {
+    void OccluderDrawTriangle(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour) {
         NuPrim3DBegin(12, 5, NULL, NULL);
         NuRndrPrimSetColourPrivate(colour);
         OCCLUDER_PRIM_POSITION(*a);
@@ -7910,7 +7910,7 @@ extern "C" {
         mtl->attribs2 |= 0x10;
         mtl->flag_04 = 0;
         if (is_3d != 0) {
-            fun_005de1c0(mtl);
+            NuDisplayQueueMaterialAdd(mtl);
         } else {
             mtl->attribs2 |= 0x800000;
         }
@@ -8027,7 +8027,7 @@ extern "C" {
         return NuMtlLookupVariantPC(original, source->shader.vertex_format);
     }
 
-    NUMTL *fun_005e5090(NUMTL *original, u32 descriptor) {
+    NUMTL *NuMtlFindVariant(NUMTL *original, u32 descriptor) {
         NULNKHDR *node;
         for (node = NuLstGetNext(g_overrideList, NULL); node != NULL; node = NuLstGetNext(g_overrideList, node)) {
             PC_MATERIAL_VARIANT_RECORD *entry = (PC_MATERIAL_VARIANT_RECORD *)node;
@@ -9745,7 +9745,7 @@ extern "C" {
         }
     }
 
-    void fun_005e0f50(NUDISPLAY_LIST *scene) {
+    void NuDisplaySceneResetClipRanges(NUDISPLAY_LIST *scene) {
         i32 i;
         for (i = 0; i < scene->clip_count; ++i) {
             if (scene->fade_levels[i] != 0.0f) {
@@ -10724,7 +10724,7 @@ void NuDisplayListAnimateMtls(f32 frame_time) {
     NuThreadCriticalSectionEnd(nudlist_field_fc4);
 }
 
-extern "C" void fun_005dfe40(NUDISPLAYLIST *list, void *next, NUDISPLAYLISTITEM *item) {
+extern "C" void NuDisplayListAppendJump(NUDISPLAYLIST *list, void *next, NUDISPLAYLISTITEM *item) {
     list->mtl_last->next = next;
     NUDISPLAYLISTITEM *target = &list->dynamic_geometry[1];
     item->type = NUDLIST_NEXT;
@@ -11178,7 +11178,7 @@ GRAPHICS_RENDER_TEXTURE *PC_DEVICE_BACKEND::GetTargetTexture(u16 index) {
     return textures[index];
 }
 
-void PC_POST_BUFFER_PROXY::fun_005c21c0(GRAPHICS_RENDER_TEXTURE *texture, i32 kind, u8 enabled, u8 resolved) {
+void PC_POST_BUFFER_PROXY::SetProxy(GRAPHICS_RENDER_TEXTURE *texture, i32 kind, u8 enabled, u8 resolved) {
     this->texture = texture;
     this->kind = kind;
     this->enabled = enabled;
@@ -11550,7 +11550,7 @@ bool NuMainFilterGen::isFilterEnabled(i32 filter) {
     return flags[filter];
 }
 
-void NuMainFilterGen::fun_005c2370(const NU_POST_DOF_PARAMETERS *parameters) {
+void NuMainFilterGen::SetDofParameters(const NU_POST_DOF_PARAMETERS *parameters) {
     dof_strength = parameters->strength;
     dof_near = parameters->near_distance;
     dof_far = parameters->far_distance;
@@ -11562,7 +11562,7 @@ void NuMainFilterGen::setBloomParameters(const NU_POST_BLOOM_PARAMETERS *paramet
     bloom = parameters;
 }
 
-void NuMainFilterGen::fun_005c23b0(const NUMTX *previous, const NUMTX *current, f32 scale, f32 maximum, f32 falloff) {
+void NuMainFilterGen::SetMotionBlur(const NUMTX *previous, const NUMTX *current, f32 scale, f32 maximum, f32 falloff) {
     motion_previous = *previous;
     motion_current = *current;
     motion_scale = scale;
@@ -11741,7 +11741,7 @@ void NuMotionFilterGen::render() {
     PostPortColorBuffer.manager->entries[PostPortColorBuffer.index].data = color;
 }
 
-i32 PCFrustumClipSet::fun_005e66b0(nuhspecial_s *special, NUMTX *matrix) {
+i32 PCFrustumClipSet::TestSpecial(nuhspecial_s *special, NUMTX *matrix) {
     __declspec(align(16)) NUVEC minimum;
     __declspec(align(16)) NUVEC maximum;
     NuSpecialGetBounds(special, &minimum, &maximum);
@@ -11804,7 +11804,7 @@ extern "C" void PostFilterBlitTexture(GRAPHICS_RENDER_TEXTURE *destination, i32 
 
 extern "C" POST_SHADER_PROGRAM *dat_0097382c;
 
-extern "C" void fun_005c3cf0(GRAPHICS_RENDER_TEXTURE *first, GRAPHICS_RENDER_TEXTURE *second, PC_FRAMEBUFFER *framebuffer) {
+extern "C" void PostFilterCombineTextures(GRAPHICS_RENDER_TEXTURE *first, GRAPHICS_RENDER_TEXTURE *second, PC_FRAMEBUFFER *framebuffer) {
     PCGraphicsBindFramebuffer(framebuffer);
     NuShaderProgramMakeCurrent(dat_0097382c);
     POST_FILTER_BIND_TEXTURE(0, first);
@@ -12065,7 +12065,7 @@ void NuMotionFilterGen::setEnabled(bool enable) {
     enabled = enable;
 }
 
-void NuMotionFilterGen::fun_005c2df0(const NUMTX *previous, const NUMTX *current, f32 scale, f32 maximum, f32 falloff) {
+void NuMotionFilterGen::SetMotion(const NUMTX *previous, const NUMTX *current, f32 scale, f32 maximum, f32 falloff) {
     this->previous = *previous;
     this->current = *current;
     this->scale = scale;
@@ -12155,7 +12155,7 @@ i32 PC_SPECIAL_SHADOW_LIGHT::GetParameteri(i32 parameter) {
     return 0;
 }
 
-void PC_SPECIAL_SHADOW_LIGHT::fun_005c3070(i32 set, i32 scene) {
+void PC_SPECIAL_SHADOW_LIGHT::QueueScene(i32 set, i32 scene) {
     NURNDRLIGHTRECORD *record = &render_sets[set];
     record->pending[record->count] = scene;
     ++record->count;
@@ -12181,7 +12181,7 @@ void NuMotionAccumFilterGen::setEnabled(bool enable) {
     enabled = enable;
 }
 
-void NuMotionAccumFilterGen::fun_005c3110(i32 frames, f32 blend, f32 mode) {
+void NuMotionAccumFilterGen::SetAccumulation(i32 frames, f32 blend, f32 mode) {
     weight_exponent = mode;
     this->frames = frames;
     this->blend = blend;
@@ -12452,7 +12452,7 @@ extern "C" {
         return NuRndrBeginScene(flags);
     }
 
-    void fun_005d4310(NUVEC *base, NUVEC *range) {
+    void NuRndrSetDebrisRange(NUVEC *base, NUVEC *range) {
         NuRndrDebBase = *base;
         NuRndrDebRange = *range;
         NuRndrDebRangeInv.x = 1.0f / NuRndrDebRange.x;
@@ -12476,7 +12476,7 @@ extern "C" void PCGraphicsCreatePostEffectWorkTexture(i32 width, i32 height) {
 extern "C" void fun_005c39c0(void) {
 }
 
-extern "C" void fun_005c39d0(GRAPHICS_RENDER_TEXTURE *texture, PC_FRAMEBUFFER *framebuffer) {
+extern "C" void PostFilterCopyTexturePass(GRAPHICS_RENDER_TEXTURE *texture, PC_FRAMEBUFFER *framebuffer) {
     PCGraphicsBindFramebuffer(framebuffer);
     NuShaderProgramMakeCurrent(PostCopyTexProgram);
     PCGraphicsEffectTextureSetFilterFields(texture, 2, 2, 0);
@@ -12639,7 +12639,7 @@ extern "C" {
         NuVpSetPosition2(new_x, new_y);
     }
 
-    void fun_005efb60(i32 *texture_ids, i32 index) {
+    void NuTexDestroySlot(i32 *texture_ids, i32 index) {
         if (texture_ids != NULL && texture_ids[index] >= 0) {
             NuTexDestroy(texture_ids[index]);
             texture_ids[index] = -1;
@@ -13067,7 +13067,7 @@ bool PC_POST_DATA_PORT_ENTRY::NameEquals(const char *other) {
     return NuStrCmp(name, other) == 0;
 }
 
-void PC_POST_DATA_PORT_ENTRY::fun_005c20b0(const char *other, void *value) {
+void PC_POST_DATA_PORT_ENTRY::AssignPort(const char *other, void *value) {
     PCByteCopy(name, other, NuStrLen(other) + 1);
     ++references;
     data = value;
@@ -13089,7 +13089,7 @@ void *PC_POST_DATA_PORT_ENTRY::GetData() {
     return data;
 }
 
-PC_POST_DATA_PORT_ENTRY *PC_POST_DATA_PORT_MANAGER::fun_005c2120(i32 index) {
+PC_POST_DATA_PORT_ENTRY *PC_POST_DATA_PORT_MANAGER::ReleaseEntry(i32 index) {
     PC_POST_DATA_PORT_ENTRY *entry = &entries[index];
     --entry->references;
     return entry;
@@ -13455,7 +13455,7 @@ static i32 ShadowSegmentClip(const NUVEC *point, const NUVEC *end, const NUVEC *
     return difference_squared > distance ? 1 : 2;
 }
 
-NUDISPLAYLIST *PC_SPECIAL_SHADOW_LIGHT::fun_005c2ee0(i32 set, NUMTL *material) {
+NUDISPLAYLIST *PC_SPECIAL_SHADOW_LIGHT::GetShadowList(i32 set, NUMTL *material) {
     if (material->shader.shadow_set > 0) {
         return &render_sets[set].shadow_lists[1];
     }
@@ -13836,7 +13836,7 @@ extern "C" {
         return 0;
     }
 
-    i32 fun_005e55d0(i32 texture_id) {
+    i32 NuTexLoadHires(i32 texture_id) {
         char filename[2048];
         NuTexHiresFilename(texture_id, filename);
         NuTexRead(filename, NULL, VARIPTR());
@@ -15210,7 +15210,7 @@ extern "C" {
         }
     }
 
-    i32 fun_005d9020(i32 enabled) {
+    i32 PCPortalsSetEnabled(i32 enabled) {
         i32 previous = PCPortalsEnabled;
         PCPortalsEnabled = enabled;
         return previous;
@@ -15519,7 +15519,7 @@ extern "C" {
         }
     }
 
-    void fun_005cff80(nuhspecial_s *special, i32 first, i32 second) {
+    void NuSpecialSetMaterialObjectFlags(nuhspecial_s *special, i32 first, i32 second) {
         if (special->special != NULL) {
             NuGobjSetMaterialObjectFlags((special->scene->objects[NUSPECIAL_LEGACY_OF(special)->instance->object_index]), first, second);
         }
@@ -16530,13 +16530,13 @@ PC_SPECIAL_SHADOW_LIGHT::PC_SPECIAL_SHADOW_LIGHT() {
     parameter_20 = 110.0f;
 }
 
-extern "C" void fun_005f2890(PC_SPECIAL_SHADOW_LIGHT *light) {
+extern "C" void PCSpecialShadowLightFree(PC_SPECIAL_SHADOW_LIGHT *light) {
     i32 index = (LightObjectPool<PC_SPECIAL_SHADOW_LIGHT>::Slot *)light - dynamicLightPool.slots;
     dynamicLightPool.occupied[index >> 3] &= ~(1 << (index & 7));
     dynamicLightPool.next = index;
 }
 
-extern "C" void fun_005f5c80(PC_SPECIAL_SHADOW_LIGHT *light) {
+extern "C" void PCSpecialShadowLightFree2(PC_SPECIAL_SHADOW_LIGHT *light) {
     i32 index = (LightObjectPool<PC_SPECIAL_SHADOW_LIGHT>::Slot *)light - dynamicLightPool.slots;
     dynamicLightPool.occupied[index >> 3] &= ~(1 << (index & 7));
     dynamicLightPool.next = index;
@@ -17540,7 +17540,7 @@ extern "C" i32 NuDynamicLightTestShadowExtrusions(PCFrustumClipSet *light, const
 }
 
 extern "C" void NuDynamicLightTestShadowExtrusionsSpecial(PCFrustumClipSet *light, nuhspecial_s *special, NUMTX *matrix) {
-    light->fun_005e66b0(special, matrix);
+    light->TestSpecial(special, matrix);
 }
 
 extern "C" i32 fun_005e8870(PCFrustumClipSet *light, const NUVEC *center, const NUVEC *extent, i32 group_index) {

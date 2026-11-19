@@ -248,20 +248,20 @@ extern "C" f32 PcInputRampCurve(f32 period, f32 time) {
     return 1.0f - 1.0f / NuPow(2.0f, time);
 }
 
-extern "C" void fun_006d63a0(i32 *value, i32 target, f32 rate) {
+extern "C" void PcInputSeekInt(i32 *value, i32 target, f32 rate) {
     i32 current = *value;
     f32 step = (target - current) * rate;
     step += current;
     *value = step;
 }
 
-extern "C" void fun_006d63e0(f32 *value, f32 target, f32 rate) {
+extern "C" void PcInputSeekFloat(f32 *value, f32 target, f32 rate) {
     target -= *value;
     target *= rate;
     *value += target;
 }
 
-extern "C" i32 fun_006d94b0(i32 player, i32 button, char *destination, i32, i32, i32 use_callback, i32 alternate_labels, char *delimiters) {
+extern "C" i32 NuPadButtonName(i32 player, i32 button, char *destination, i32, i32, i32 use_callback, i32 alternate_labels, char *delimiters) {
     PC_INPUT_RUNTIME *manager = nu_input_state;
     i32 port = NuPadGetPort(player);
     return manager->ButtonName(port, button, destination, 0, 0, use_callback, alternate_labels, delimiters);

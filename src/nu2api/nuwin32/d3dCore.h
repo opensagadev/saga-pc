@@ -374,11 +374,11 @@ typedef struct PC_DEVICE_BACKEND {          // size 0x700
     u8 HasRequestedModeChanged();
     void RestoreSavedMode();
 
-    u8 fun_005090e0();
+    u8 SupportsAnyMultisample();
     u32 GetRequestedMode();
     i32 GetRequestedMultisample();
     void SetRequestedMultisample(i32 multisample);
-    void fun_00509140(i32 mode);
+    void ApplyAspectMode(i32 mode);
     GRAPHICS_RENDER_TEXTURE *GetTargetTexture(u16 index);
     i32 GetMultisampleQuality();
     GRAPHICS_CAPS *GetCaps();
@@ -386,12 +386,12 @@ typedef struct PC_DEVICE_BACKEND {          // size 0x700
     u16 GetTargetCount();
     i32 RequiresPow2Textures();
     void SetScreenColourUvDeclaration();
-    u16 fun_006e2140();
+    u16 GetSimultaneousRenderTargets();
     void RestoreDepthStencil();
-    HRESULT fun_006e22e0(PC_EFFECT_SURFACE *target, i32 filter);
-    void fun_006e2350();
-    void fun_006e2af0();
-    void fun_006e2ce0(u32 width, u32 height, u32 refresh);
+    HRESULT CopyBackBufferTo(PC_EFFECT_SURFACE *target, i32 filter);
+    void SwapTargets();
+    void SaveSettings();
+    void RequestDisplayMode(u32 width, u32 height, u32 refresh);
     i32 IsMultisampled();
     u32 GetEnabledOption0();
     u32 GetEnabledOption1();

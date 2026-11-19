@@ -473,7 +473,7 @@ void NuBackbufferCopy(i32 texture_id) {
     currentScene.backbuffer_copy_texture = texture_id;
 }
 
-f32 fun_005d5270(f32 value) {
+f32 NuCeilf(f32 value) {
     f32 result = (i32)value;
     if (result < value) {
         result += 1.0f;

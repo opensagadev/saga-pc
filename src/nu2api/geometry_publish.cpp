@@ -176,7 +176,7 @@ extern "C" i32 PcUnregisterDynamicGeometry(PC_GEOMETRY_PUBLISH_FORMAT *format) {
     return 0;
 }
 
-extern "C" PC_GEOMETRY_PUBLISH_RECORD *fun_005c6470(PC_GEOMETRY_PUBLISH_FORMAT *format) {
+extern "C" PC_GEOMETRY_PUBLISH_RECORD *PcGeometryRegistryFind(PC_GEOMETRY_PUBLISH_FORMAT *format) {
     for (i32 i = 0; i < PcGeometryRegistryCount; ++i) {
         if (format == PcGeometryRegistry[i].format) {
             return &PcGeometryRegistry[i];
@@ -235,7 +235,7 @@ NuVec NuVec::operator-() const {
     return NuVec(-x, -y, -z);
 }
 
-extern "C" NUVEC *fun_005c6950(NUVEC *out, const NUVEC *a, const NUVEC *b) {
+extern "C" NUVEC *NuGeometryVecCross(NUVEC *out, const NUVEC *a, const NUVEC *b) {
     out->x = a->y * b->z - a->z * b->y;
     out->y = a->z * b->x - a->x * b->z;
     out->z = b->y * a->x - b->x * a->y;

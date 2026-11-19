@@ -8,7 +8,7 @@
 extern "C" void FmvOptionError(i32, const char *, i32) {
 }
 
-extern "C" void fun_00630d70(void) {
+extern "C" void FmvDrawOverlay(void) {
     if (FmvDrawCallback != NULL && NuRndrBeginScene(1)) {
         NuFntSet(0);
         FmvDrawCallback();

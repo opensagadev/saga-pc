@@ -1419,7 +1419,7 @@ u8 PC_DEVICE_BACKEND::SupportsMultisample(i32 index) {
     return multisample_tested != 0 && quality[index] != -1;
 }
 
-u8 PC_DEVICE_BACKEND::fun_005090e0() {
+u8 PC_DEVICE_BACKEND::SupportsAnyMultisample() {
     for (i32 index = 0; index != 5; index++) {
         if (index != 0 && SupportsMultisample(index)) {
             return 1;
@@ -1440,7 +1440,7 @@ void PC_DEVICE_BACKEND::SetRequestedMultisample(i32 multisample) {
     requested_multisample = multisample;
 }
 
-void PC_DEVICE_BACKEND::fun_00509140(i32 mode) {
+void PC_DEVICE_BACKEND::ApplyAspectMode(i32 mode) {
     PcWindowOptions.SetAspectMode(mode);
     PcWindowOptions.Save();
     if (PcWindowOptions.aspect_mode == PC_ASPECT_AUTO) {
@@ -1932,7 +1932,7 @@ extern "C" i32 PCGraphicsPrepareVendor() {
     return 0;
 }
 
-extern "C" PC_GRAPHICS_GPU_RECORD *fun_006e6720(void) {
+extern "C" PC_GRAPHICS_GPU_RECORD *PCGraphicsGetSelectedGpu(void) {
     if (PCGraphicsGpuSelectionEnabled == 0) {
         PCGraphicsPrepareVendor();
     }
@@ -2607,7 +2607,7 @@ __declspec(noinline) void PC_DEVICE_BACKEND::DrawPostEffectIndexed() {
 void PC_DEVICE_BACKEND::PostEffectBarrier() {
 }
 
-u16 PC_DEVICE_BACKEND::fun_006e2140() {
+u16 PC_DEVICE_BACKEND::GetSimultaneousRenderTargets() {
     if (multisample_index == 0 && PCDeviceHardwareVertexProcessingPC >= 2) {
         return caps.simultaneous_render_targets;
     }
@@ -2618,7 +2618,7 @@ void PC_DEVICE_BACKEND::RestoreDepthStencil() {
     device->methods->set_depth_stencil_surface(device, depth_surface);
 }
 
-HRESULT PC_DEVICE_BACKEND::fun_006e22e0(PC_EFFECT_SURFACE *target, i32 filter) {
+HRESULT PC_DEVICE_BACKEND::CopyBackBufferTo(PC_EFFECT_SURFACE *target, i32 filter) {
     PC_TEXTURE_RESOURCE *source = target_surfaces[0];
     if (multisample_index != 0 || source == NULL) {
         source = back_buffer;
@@ -2626,7 +2626,7 @@ HRESULT PC_DEVICE_BACKEND::fun_006e22e0(PC_EFFECT_SURFACE *target, i32 filter) {
     return device->methods->stretch_rect(device, source, NULL, target->surface, NULL, filter);
 }
 
-void PC_DEVICE_BACKEND::fun_006e2350() {
+void PC_DEVICE_BACKEND::SwapTargets() {
     GRAPHICS_RENDER_TEXTURE *texture = textures[0];
     textures[0] = textures[2];
     textures[2] = texture;
@@ -2635,7 +2635,7 @@ void PC_DEVICE_BACKEND::fun_006e2350() {
     target_surfaces[2] = surface;
 }
 
-void PC_DEVICE_BACKEND::fun_006e2af0() {
+void PC_DEVICE_BACKEND::SaveSettings() {
     saved_windowed = parameters.windowed == 1;
     saved_mode = active_mode;
     saved_feature = active_feature;
@@ -2644,7 +2644,7 @@ void PC_DEVICE_BACKEND::fun_006e2af0() {
     saved_aspect = PcWindowOptions.aspect_mode;
 }
 
-void PC_DEVICE_BACKEND::fun_006e2ce0(u32 width, u32 height, u32 refresh) {
+void PC_DEVICE_BACKEND::RequestDisplayMode(u32 width, u32 height, u32 refresh) {
     u32 mode = FindMode(width, height, refresh);
     if (mode >= mode_count) {
         mode = active_mode;

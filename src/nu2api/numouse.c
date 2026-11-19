@@ -9,7 +9,7 @@ u32 NuMouseReadButtons(void) {
     return mbuttons;
 }
 
-u32 fun_006d58d0(i32 button) {
+u32 NuMouseButtonDown(i32 button) {
     if (button >= 0 && button < 4u) {
         return (1 << button) & mbuttons;
     }

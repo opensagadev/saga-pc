@@ -34,7 +34,7 @@ extern "C" void RegisterWindowCallback(PC_WINDOW_CALLBACK callback) {
     PcWindowCallbacks[PcWindowCallbackCount++] = callback;
 }
 
-extern "C" void fun_006dc780(u32 mask) {
+extern "C" void PCUnmaskFloatExceptions(u32 mask) {
     u32 control = _controlfp(0, 0);
     control &= ~mask;
     _controlfp(control, _MCW_EM);

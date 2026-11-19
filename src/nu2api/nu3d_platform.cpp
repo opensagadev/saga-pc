@@ -1462,7 +1462,7 @@ extern "C" {
         NuPrimStreamBufferPointer->vertex_ptr->colour = converted;
     }
 
-    void fun_005f7840(f32 u, f32 v) {
+    void NuPrimSetVertexUV(f32 u, f32 v) {
         NULGTVERTEX *vertex = NuPrimStreamBufferPointer->vertex_ptr;
         vertex->u = u;
         vertex->v = v;
@@ -1669,13 +1669,13 @@ extern "C" {
         texture->address_v = fun_005f7940(second);
     }
 
-    void fun_005f7fb0(GRAPHICS_RENDER_TEXTURE *texture, i32 u, i32 v, i32 w) {
+    void PCGraphicsTextureSetAddressModes(GRAPHICS_RENDER_TEXTURE *texture, i32 u, i32 v, i32 w) {
         texture->address_u = fun_005f7940(u);
         texture->address_v = fun_005f7940(v);
         texture->address_w = fun_005f7940(w);
     }
 
-    GRAPHICS_RENDER_TEXTURE *fun_005f80e0(void) {
+    GRAPHICS_RENDER_TEXTURE *PCGraphicsAllocRenderTextureSlot(void) {
         i32 i;
         for (i = 0; i != 32; ++i) {
             if (!PCGraphicsRenderTextureActive[i]) {
@@ -3389,7 +3389,7 @@ extern "C" {
         return NuDisplayListStreamCursor;
     }
 
-    void fun_005fc910(void) {
+    void NuDisplayListCheckStreamOverflow(void) {
         if (NuDisplayListStreamCursor->addr > nudlist_field_1598) {
             NuPtlDmaSlotsExhausted();
         }
@@ -3422,7 +3422,7 @@ extern "C" {
         return 1;
     }
 
-    i32 fun_005fcbc0(const NUMTX *matrix, const NUVEC *colour) {
+    i32 NuRndrStateSetSpecularLight(const NUMTX *matrix, const NUVEC *colour) {
         render_state.specular_mtx = *matrix;
         render_state.specular_colour = *colour;
         ++render_state.global_id;
@@ -3821,7 +3821,7 @@ extern "C" {
         }
     }
 
-    void fun_005fd670(f32 shadow) {
+    void NuDisplayHandlerSetShadow(f32 shadow) {
         if (shadow != PCGraphicsFrameState) {
             NuDisplayHandlerShadow = shadow;
             NuShaderManagerSetfv(SHADER_UNIFORM_SHADOW_CASTING_OBJECT, &NuDisplayHandlerShadow);
@@ -4245,7 +4245,7 @@ extern "C" {
     void fun_005ff750(void) {
     }
 
-    i32 fun_005ff760(void) {
+    i32 PCTimerMilliseconds(void) {
         LARGE_INTEGER frequency;
         LARGE_INTEGER counter;
         QueryPerformanceFrequency(&frequency);
@@ -5666,7 +5666,7 @@ extern "C" {
         }
     }
 
-    void fun_006056b0(void) {
+    void PCGraphicsDestroyAllRenderTextures(void) {
         i32 i;
         for (i = 0; i != 32; ++i) {
             PCGraphicsRenderTextureActive[i] = 0;
@@ -5702,7 +5702,7 @@ extern "C" {
         return texture;
     }
 
-    GRAPHICS_RENDER_TEXTURE *fun_00605760(i32 texture_id) {
+    GRAPHICS_RENDER_TEXTURE *PCGraphicsRenderTextureFromId(i32 texture_id) {
         GRAPHICS_RENDER_TEXTURE *texture = PCGraphicsAllocRenderTexture();
         fun_005f83a0(texture, texture_id);
         return texture;
@@ -6918,7 +6918,7 @@ extern "C" {
         }
     }
 
-    void fun_0060a4f0(void *, i32 texture_id) {
+    void FrameNativeTextureRelease(void *, i32 texture_id) {
         FRAME_NATIVE_TEXTURE *texture = (FRAME_NATIVE_TEXTURE *)NuTextureGetDimensions(texture_id);
         if (texture != NULL) {
             i32 index;
@@ -7529,7 +7529,7 @@ extern "C" {
         return dat_0097391c;
     }
 
-    void fun_005fe470(u32 colour) {
+    void PCFogSetColour(u32 colour) {
         PCFogColour = colour & 0xffffff;
         PCDeviceSetRenderState(D3DRS_FOGCOLOR, colour);
         PCFogColourSuppressed = 0;
@@ -7618,13 +7618,13 @@ extern "C" {
         dat_02854f54 = value;
     }
 
-    void *fun_006029e0(void) {
+    void *NuGobjAllocBlock(void) {
         void *block = NuAlloc(0x98, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nugobj.c", 172);
         memset(block, 0, 0x98);
         return block;
     }
 
-    void *fun_00602d60(void) {
+    void *NuGobjAllocBlock2(void) {
         void *block = NuAlloc(0x98, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nugobj.c", 368);
         memset(block, 0, 0x98);
         return block;
@@ -7633,7 +7633,7 @@ extern "C" {
     void fun_00602de0(void) {
     }
 
-    void fun_00602df0(PC_GOBJ_REGISTRY_CHILD *child) {
+    void NuGobjFreeChildBuffer(PC_GOBJ_REGISTRY_CHILD *child) {
         if (child->owned_buffer != NULL) {
             NuFree(child->owned_buffer, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nugobj.c", 605);
             child->owned_buffer = NULL;
@@ -7728,7 +7728,7 @@ extern "C" {
         colour[2] = b;
     }
 
-    void fun_00603290(f32 exponent, f32 scale, u8 *table) {
+    void PCBuildGammaTable(f32 exponent, f32 scale, u8 *table) {
         f32 factor = scale * 255.0f / NuPowFast(255.0f, exponent);
         for (i32 i = 0; i < 256; i++) {
             f32 value = NuPowFast(i, exponent) * factor;
@@ -8462,7 +8462,7 @@ extern "C" {
         PCDeviceSetTransform(D3DTS_PROJECTION, &pmtx);
     }
 
-    void fun_00603dd0(NUMTX *mtx, f32 *fov, f32 *aspect, f32 *near_clip, f32 *far_clip, f32 *portal_nearclip) {
+    void NuCameraGetGlobalParameters(NUMTX *mtx, f32 *fov, f32 *aspect, f32 *near_clip, f32 *far_clip, f32 *portal_nearclip) {
         *mtx = global_camera.mtx;
         *fov = global_camera.fov;
         *aspect = global_camera.aspect;
@@ -8475,7 +8475,7 @@ extern "C" {
         NuCameraStackTop = NuCameraStack;
     }
 
-    void fun_00603e40(void) {
+    void NuCameraPush(void) {
         if (NuCameraStackTop != NuCameraStack + 64) {
             NuCameraStackTop->camera = global_camera;
             NuCameraStackTop->camera_id = (i16)render_state.camera_id;

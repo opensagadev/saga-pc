@@ -510,7 +510,7 @@ struct PC_POST_DATA_PORT_ENTRY { // size 0x28
     i32 references;              // 0x24
 
     bool NameEquals(const char *other);
-    void fun_005c20b0(const char *other, void *value);
+    void AssignPort(const char *other, void *value);
     void PortReleaseReference();
     i32 PortReferenceCount();
     void SetData(void *value);
@@ -520,7 +520,7 @@ struct PC_POST_DATA_PORT_ENTRY { // size 0x28
 struct PC_POST_DATA_PORT_MANAGER {        // size 0x2800
     PC_POST_DATA_PORT_ENTRY entries[256]; // 0x0000
     PC_POST_DATA_PORT_MANAGER();
-    PC_POST_DATA_PORT_ENTRY *fun_005c2120(i32 index);
+    PC_POST_DATA_PORT_ENTRY *ReleaseEntry(i32 index);
     void *GetEntryData(i32 index);
     ~PC_POST_DATA_PORT_MANAGER();
     i32 Register(const char *name, void *data);
@@ -770,7 +770,7 @@ class PCFrustumClipSet { // size 0x714
     i32 active_render_set_count;  // 0x710
     i32 TestBoxes(const NUVEC *, const NUVEC *);
     bool TestBox(const NUVEC *minimum, const NUVEC *maximum, i32 group_index);
-    i32 fun_005e66b0(nuhspecial_s *special, NUMTX *matrix);
+    i32 TestSpecial(nuhspecial_s *special, NUMTX *matrix);
     bool fun_005e6710(const NUVEC *center, const NUVEC *extent, i32 group_index);
     i32 fun_005e6770(const NUVEC *center, const NUVEC *extent);
 };
@@ -1287,7 +1287,7 @@ typedef struct PC_POST_BUFFER_PROXY { // size 0xc
     u8 resolved;                      // 0x9
     u8 unknown_0a[2];                 // 0xa
 #ifdef __cplusplus
-    void fun_005c21c0(GRAPHICS_RENDER_TEXTURE *texture, i32 kind, u8 enabled, u8 resolved);
+    void SetProxy(GRAPHICS_RENDER_TEXTURE *texture, i32 kind, u8 enabled, u8 resolved);
     u8 IsResolved();
     void Resolve();
     GRAPHICS_RENDER_TEXTURE *GetBufferTexture();
@@ -1358,7 +1358,7 @@ struct PC_SPECIAL_SHADOW_LIGHT {      // size 0x828
     void SetParameterf(i32 parameter, f32 value);
     i32 GetUsedOnSpecials();
     void SetUsedOnSpecials(i32 used);
-    NUDISPLAYLIST *fun_005c2ee0(i32 set, NUMTL *material);
+    NUDISPLAYLIST *GetShadowList(i32 set, NUMTL *material);
     void fun_005c6d90(NUMTX *view, NUMTX *projection);
     i32 GetActiveRenderSetCount();
     NUMTX *GetView();
@@ -1366,7 +1366,7 @@ struct PC_SPECIAL_SHADOW_LIGHT {      // size 0x828
     f32 GetParameterf(i32 parameter);
     void SetParameteri(i32 parameter, i32 value);
     i32 GetParameteri(i32 parameter);
-    void fun_005c3070(i32 set, i32 scene);
+    void QueueScene(i32 set, i32 scene);
     PC_SPECIAL_SHADOW_LIGHT *Clone(VARIPTR *arena, VARIPTR end);
     PC_SPECIAL_SHADOW_LIGHT &operator=(const PC_SPECIAL_SHADOW_LIGHT &other);
     void fun_00595360(f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane);

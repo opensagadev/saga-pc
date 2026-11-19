@@ -1241,7 +1241,7 @@ void PC_INPUT_RUNTIME::NormalizeAxisPair(i16 *x, i16 *y) {
     *y = (i16)(i32)vy;
 }
 
-i32 PC_INPUT_RUNTIME::fun_006d49f0(i32 button) {
+i32 PC_INPUT_RUNTIME::FindButtonCommand(i32 button) {
     for (i32 index = 0; index < shutdown_state; ++index) {
         if (commands[index].active == 3 && commands[index].button == button) {
             return index;
@@ -1250,7 +1250,7 @@ i32 PC_INPUT_RUNTIME::fun_006d49f0(i32 button) {
     return -1;
 }
 
-i32 PC_INPUT_RUNTIME::fun_006d4a30(i32 axis, i32 active) {
+i32 PC_INPUT_RUNTIME::FindAxisCommand(i32 axis, i32 active) {
     for (i32 index = 0; index < shutdown_state; ++index) {
         if (commands[index].active == active && commands[index].axis == axis) {
             return index;
@@ -1320,7 +1320,7 @@ void PC_INPUT_RUNTIME::fun_006d4c90(u32 layout_id) {
     }
 }
 
-void PC_INPUT_RUNTIME::fun_006d4d20(i32 value) {
+void PC_INPUT_RUNTIME::SetKeyboardUiOverride(i32 value) {
     i32 previous = keyboard_ui_override;
     keyboard_ui_override = value;
     if (previous != value) {
@@ -1430,7 +1430,7 @@ void PC_INPUT_RUNTIME::SetBlockedKeys(const char *keys) {
     }
 }
 
-i32 PC_INPUT_RUNTIME::fun_006d4fe0(i32 port, i32 kind, i32 value) {
+i32 PC_INPUT_RUNTIME::HasBinding(i32 port, i32 kind, i32 value) {
     for (i32 action = 0; action < 32; ++action) {
         if (devices[port].bindings[action].kind == kind && devices[port].bindings[action].value == value) {
             return 1;
@@ -1461,7 +1461,7 @@ extern "C" void PcInput_SetStringUCGfxRemapFn(void (*callback)(i32, char *)) {
     TextInputNameCallback = callback;
 }
 
-i32 PC_INPUT_RUNTIME::fun_006d4de0(i32 port, i32 action, i32 auxiliary, i32 bank) {
+i32 PC_INPUT_RUNTIME::IsActionBound(i32 port, i32 action, i32 auxiliary, i32 bank) {
     if (auxiliary) {
         return auxiliary_bindings[bank][action].kind != PC_BINDING_NONE;
     }
@@ -1469,7 +1469,7 @@ i32 PC_INPUT_RUNTIME::fun_006d4de0(i32 port, i32 action, i32 auxiliary, i32 bank
 }
 
 extern "C" i32 fun_006d5d40(i32 port, i32 kind, i32 value) {
-    return nu_input_state->fun_006d4fe0(port, kind, value);
+    return nu_input_state->HasBinding(port, kind, value);
 }
 
 extern "C" void PcInputEndFrame(void) {
@@ -1516,7 +1516,7 @@ extern "C" void PcInputResetMouseMotion() {
     runtime->mouse.accumulated[0] = 0.0f;
 }
 
-extern "C" i32 fun_006d5dd0(i32 player) {
+extern "C" i32 PcInputPlayerOnKeyboardMouse(i32 player) {
     i32 port = NuPadGetPort(player);
     if (port == 10 || port == 12) {
         return 1;
@@ -1524,7 +1524,7 @@ extern "C" i32 fun_006d5dd0(i32 player) {
     return 0;
 }
 
-extern "C" i32 fun_006d5df0(i32 player) {
+extern "C" i32 PcInputPlayerOnKeyboardMouse2(i32 player) {
     i32 port = NuPadGetPort(player);
     if (port == 10 || port == 12) {
         return 1;
@@ -1675,7 +1675,7 @@ i32 PC_INPUT_RUNTIME::HashAuxiliaryBindings() {
     return hash;
 }
 
-i32 PC_INPUT_RUNTIME::fun_006d38b0(PC_INPUT_CONFIG *config) {
+i32 PC_INPUT_RUNTIME::FindPrimaryConfig(PC_INPUT_CONFIG *config) {
     for (i32 index = 0; index < 64; ++index) {
         if (config->product_id == primary[index].product_id && config->key == primary[index].key) {
             return index;

@@ -47,7 +47,7 @@ void PCDisplayListCriticalSectionLeave(void) {
     NuThreadCriticalSectionEnd(nudlist_field_fc4);
 }
 
-void fun_005de1c0(NUMTL *material) {
+void NuDisplayQueueMaterialAdd(NUMTL *material) {
     NuThreadCriticalSectionBegin(nudlist_field_fc4);
     if (PCDisplayMaterialAddCount == 600) {
         NuThreadCriticalSectionEnd(nudlist_field_fc4);

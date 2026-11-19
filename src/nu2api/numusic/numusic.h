@@ -198,7 +198,7 @@ class NuMusic { // size 0x1e4
     void Process(f32 delta);
     NuMusic();
     ~NuMusic();
-    f32 fun_00693ba0();
+    f32 GetDuck();
     static NuMusic *GetPlayer();
     void NoMusic(i32 no_music);
 };

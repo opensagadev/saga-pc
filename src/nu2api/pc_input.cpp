@@ -937,7 +937,7 @@ extern "C" i32 PcInputKeyboardDeadzone(void) {
     return nu_input_state->devices[10].alternate_deadzone;
 }
 
-extern "C" void fun_006d6100(i32 value) {
+extern "C" void PcInputSetKeyboardDeadzone(i32 value) {
     if (value < 1) {
         value = 1;
     } else if (value > 10) {
@@ -1710,7 +1710,7 @@ void NuKeyboardOwner::RescanDevices() {
     factory->methods->enum_devices(factory, 4, InputEnumDevices, NULL, 1);
 }
 
-extern "C" void fun_006da360(i32 player) {
+extern "C" void PcInputSavePlayerConfig(i32 player) {
     PC_INPUT_RUNTIME *state = nu_input_state;
     PC_INPUT_CONFIG config;
     i32 port = NuPadGetPort(player);
@@ -1816,7 +1816,7 @@ NuKeyboardOwner::~NuKeyboardOwner() {
     device_count = 0;
 }
 
-i32 NuKeyboardOwner::fun_006d5720(i32 *axes, i32 *buttons) {
+i32 NuKeyboardOwner::GetMouseCaps(i32 *axes, i32 *buttons) {
     if (mouse_axes != 0 && mouse_buttons != 0) {
         *axes = mouse_axes;
         *buttons = mouse_buttons;
@@ -1887,7 +1887,7 @@ extern "C" void PcInputSetThresholds(f32 threshold, i32 motion, f32 ramp) {
     nu_input_state->SetThresholds(threshold, motion, ramp);
 }
 
-extern "C" i32 fun_006d5ca0(i32 device, i32 binding, i32 auxiliary, i32 auxiliary_port) {
+extern "C" i32 PcInputBindingKind(i32 device, i32 binding, i32 auxiliary, i32 auxiliary_port) {
     if (auxiliary != 0) {
         return nu_input_state->auxiliary_bindings[auxiliary_port][binding].kind;
     }
@@ -1911,7 +1911,7 @@ extern "C" void fun_006d5ce0(i32 device, i32 auxiliary, i32 auxiliary_port) {
     }
 }
 
-extern "C" i32 fun_006d5d60(i32 device) {
+extern "C" i32 PcInputDevicePresent(i32 device) {
     if (device >= 0) {
         return nu_input_state->devices[device].kind != PC_INPUT_DEVICE_NONE;
     }

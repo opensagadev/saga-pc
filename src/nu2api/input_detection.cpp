@@ -42,7 +42,7 @@ extern "C" PC_INPUT_RUNTIME *PcInputGetRuntime(void) {
     return nu_input_state;
 }
 
-void PC_INPUT_RUNTIME::fun_006d36d0() {
+void PC_INPUT_RUNTIME::ClearResetPairs() {
     for (i32 port = 0; port < 14; ++port) {
         for (i32 action = 0; action < 32; ++action) {
             devices[port].reset_pairs[action].first = 0;
@@ -57,7 +57,7 @@ void PC_INPUT_RUNTIME::GetDeviceCounts(i32 port, i32 *buttons, i32 *axes, i32 *p
     *povs = devices[port].pov_count;
 }
 
-i32 PC_INPUT_RUNTIME::fun_006d3750(PC_INPUT_CONFIG *records, i32 count, PC_INPUT_CONFIG *config) {
+i32 PC_INPUT_RUNTIME::FindConfigRecord(PC_INPUT_CONFIG *records, i32 count, PC_INPUT_CONFIG *config) {
     for (i32 index = 0; index < count; ++index) {
         if (config->product_id == records[index].product_id && config->key == records[index].key) {
             return index;
@@ -66,7 +66,7 @@ i32 PC_INPUT_RUNTIME::fun_006d3750(PC_INPUT_CONFIG *records, i32 count, PC_INPUT
     return -1;
 }
 
-i32 PC_INPUT_RUNTIME::fun_006d37a0(i32 previous, i32 value) {
+i32 PC_INPUT_RUNTIME::ConfigChecksumStep(i32 previous, i32 value) {
     if (previous & 0x80000000) {
         return (previous * 2 + 1) ^ value ^ 0x12345678;
     }

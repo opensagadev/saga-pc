@@ -851,14 +851,14 @@ i32 SoundVoiceManagerPC::LoadWavSample(const char *name, i32 index) {
     return 0;
 }
 
-u8 SoundVoiceManagerPC::fun_00697360(i32 sample_index) {
+u8 SoundVoiceManagerPC::IsSampleValid(i32 sample_index) {
     if (samples != NULL) {
         return samples[sample_index].valid_byte;
     }
     return 0;
 }
 
-u8 SoundVoiceManagerPC::fun_00697390(i32 sample_index) {
+u8 SoundVoiceManagerPC::IsSampleFailed(i32 sample_index) {
     if (samples != NULL) {
         return samples[sample_index].failed_byte;
     }

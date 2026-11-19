@@ -374,7 +374,7 @@ i32 NuMusic::SelectTrackByHandle(u32 class_mask, i32 handle) {
 extern "C" void PCMusicTrackNotFound(...) {
 }
 
-f32 NuMusic::fun_00693ba0() {
+f32 NuMusic::GetDuck() {
     if (this != NULL) {
         return duck_current;
     }

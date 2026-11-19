@@ -530,9 +530,9 @@ extern "C" {
         i32 cursor;                            // 0x304
 #ifdef __cplusplus
         FRAME_NATIVE_TEXTURE *Allocate();
-        FRAME_NATIVE_TEXTURE_POOL *fun_00605150();
+        FRAME_NATIVE_TEXTURE_POOL *ResetTextures();
         i32 fun_00605170(FRAME_NATIVE_TEXTURE *record);
-        void fun_00605300(i32 index, bool set);
+        void SetTextureOccupied(i32 index, bool set);
         i32 IsTextureOccupied(i32 index);
         void fun_0060a010(FRAME_NATIVE_TEXTURE *record);
 #endif

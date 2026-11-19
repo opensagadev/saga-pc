@@ -130,14 +130,14 @@ extern "C" void PcRendererShutdown(i32 unused) {
     NuFmvTextureRelease();
 }
 
-extern "C" void fun_006df1a0(u32 width, u32 height, u32 refresh, i32 windowed, i32 reposition_window) {
-    PCDeviceBackend.fun_006e2ce0(width, height, refresh);
+extern "C" void PCDeviceSetMode(u32 width, u32 height, u32 refresh, i32 windowed, i32 reposition_window) {
+    PCDeviceBackend.RequestDisplayMode(width, height, refresh);
     PCDeviceBackend.requested_windowed = windowed == 1;
     PCDeviceBackend.CreateOrResetDevice(reposition_window);
 }
 
 extern "C" void fun_006df1e0(u32 width, u32 height, u32 refresh) {
-    PCDeviceBackend.fun_006e2ce0(width, height, refresh);
+    PCDeviceBackend.RequestDisplayMode(width, height, refresh);
 }
 
 extern "C" void PCDeviceRequestWindowed(i32 windowed) {
@@ -172,7 +172,7 @@ extern "C" u32 PcGetRefreshRate(void) {
     return PCDeviceBackend.parameters.refresh_rate;
 }
 
-extern "C" u32 fun_006df280(void) {
+extern "C" u32 PCDeviceGetAspectMode(void) {
     u32 mode = PcWindowOptions.aspect_mode;
     if (mode == PC_ASPECT_AUTO) {
         mode = PCDeviceBackend.active_aspect_mode;
@@ -402,19 +402,19 @@ extern "C" void fun_006dfb30(f32 gamma) {
     PCDeviceSetGammaRamp(ramp);
 }
 
-extern "C" void fun_006dfbf0(PC_TEXTURE_RESOURCE *texture, u32 level, const void *rect, u32 flags, PC_LOCKED_RECT *locked) {
+extern "C" void PCTextureLock(PC_TEXTURE_RESOURCE *texture, u32 level, const void *rect, u32 flags, PC_LOCKED_RECT *locked) {
     if (texture != NULL) {
         texture->methods->lock_rect(texture, level, locked, rect, flags);
     }
 }
 
-extern "C" void fun_006dfc20(PC_TEXTURE_RESOURCE *texture, u32 level) {
+extern "C" void PCTextureUnlock(PC_TEXTURE_RESOURCE *texture, u32 level) {
     if (texture != NULL) {
         texture->methods->unlock_rect(texture, level);
     }
 }
 
-extern "C" void fun_006dfc40(PC_TEXTURE_RESOURCE *texture, u32 level, PC_TEXTURE_RESOURCE **surface) {
+extern "C" void PCTextureGetSurface(PC_TEXTURE_RESOURCE *texture, u32 level, PC_TEXTURE_RESOURCE **surface) {
     if (texture != NULL) {
         texture->methods->get_surface_level(texture, level, surface);
     }
@@ -424,7 +424,7 @@ extern "C" u32 PCTextureGetLevelCount(PC_TEXTURE_RESOURCE *texture) {
     return texture->methods->get_level_count(texture);
 }
 
-extern "C" void fun_006dfc70(i32 format, u32 width, u32 height, u32 levels, i32 render_target, PC_TEXTURE_RESOURCE **texture) {
+extern "C" void PCTextureCreate(i32 format, u32 width, u32 height, u32 levels, i32 render_target, PC_TEXTURE_RESOURCE **texture) {
     if (render_target == 0) {
         PCDeviceCreateTexture(width, height, levels, 0, format, 1, texture);
     } else {
@@ -432,7 +432,7 @@ extern "C" void fun_006dfc70(i32 format, u32 width, u32 height, u32 levels, i32 
     }
 }
 
-extern "C" PC_TEXTURE_LEVEL_DESC *fun_006dfcc0(PC_TEXTURE_RESOURCE *texture, u32 level) {
+extern "C" PC_TEXTURE_LEVEL_DESC *PCTextureGetLevelDesc(PC_TEXTURE_RESOURCE *texture, u32 level) {
     static PC_TEXTURE_LEVEL_DESC description;
     if (texture != NULL) {
         return FAILED(texture->methods->get_level_desc(texture, level, &description)) ? NULL : &description;

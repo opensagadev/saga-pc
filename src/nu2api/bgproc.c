@@ -39,7 +39,7 @@ void PcDisableThreadSwap(void) {
 void fun_006de770(void) {
 }
 
-i32 fun_006de780(void) {
+i32 BgProcRunHandlers(void) {
     BGPROC_HANDLER *handler;
 
     dat_0297ad4c = 1;
@@ -90,7 +90,7 @@ void fun_006de880(void) {
 
 void fun_006de890(void) {
     if (dat_0297ad5c) {
-        fun_006de780();
+        BgProcRunHandlers();
     }
 }
 

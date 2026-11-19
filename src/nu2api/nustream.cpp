@@ -874,7 +874,7 @@ extern "C" void fun_00698fe0(void) {
 extern "C" void fun_00698ff0(void) {
 }
 
-i32 SoundQueue::fun_00699040(const WAVEFORMATEX *format) {
+i32 SoundQueue::FormatDiffers(const WAVEFORMATEX *format) {
     if (wave_format.nSamplesPerSec != format->nSamplesPerSec) {
         return 1;
     }

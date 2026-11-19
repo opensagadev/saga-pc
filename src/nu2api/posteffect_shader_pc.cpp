@@ -21,9 +21,9 @@ struct POST_SHADER_PROGRAM_POOL {     // size 0x40c
     u8 occupied[8];                   // 0x400
     i32 cursor;                       // 0x408
     POST_SHADER_PROGRAM *Allocate(void);
-    POST_SHADER_PROGRAM_POOL *fun_006051a0();
+    POST_SHADER_PROGRAM_POOL *ResetPrograms();
     i32 IsProgramOccupied(i32 index);
-    void fun_006054a0(i32 index, bool set);
+    void SetProgramOccupied(i32 index, bool set);
 };
 
 extern "C" {
@@ -51,7 +51,7 @@ found:
     return &programs[index];
 }
 
-FRAME_NATIVE_TEXTURE_POOL *FRAME_NATIVE_TEXTURE_POOL::fun_00605150() {
+FRAME_NATIVE_TEXTURE_POOL *FRAME_NATIVE_TEXTURE_POOL::ResetTextures() {
     memset(occupied, 0, sizeof(occupied));
     cursor = 0;
     return this;
@@ -62,13 +62,13 @@ i32 FRAME_NATIVE_TEXTURE_POOL::fun_00605170(FRAME_NATIVE_TEXTURE *record) {
     return index <= 15;
 }
 
-POST_SHADER_PROGRAM_POOL *POST_SHADER_PROGRAM_POOL::fun_006051a0() {
+POST_SHADER_PROGRAM_POOL *POST_SHADER_PROGRAM_POOL::ResetPrograms() {
     memset(occupied, 0, sizeof(occupied));
     cursor = 0;
     return this;
 }
 
-void FRAME_NATIVE_TEXTURE_POOL::fun_00605300(i32 index, bool set) {
+void FRAME_NATIVE_TEXTURE_POOL::SetTextureOccupied(i32 index, bool set) {
     if (set) {
         occupied[index >> 3] |= 1 << (index & 7);
     } else {
@@ -84,7 +84,7 @@ i32 POST_SHADER_PROGRAM_POOL::IsProgramOccupied(i32 index) {
     return (i8)occupied[index >> 3] >> (index & 7) & 1;
 }
 
-void POST_SHADER_PROGRAM_POOL::fun_006054a0(i32 index, bool set) {
+void POST_SHADER_PROGRAM_POOL::SetProgramOccupied(i32 index, bool set) {
     if (set) {
         occupied[index >> 3] |= 1 << (index & 7);
     } else {

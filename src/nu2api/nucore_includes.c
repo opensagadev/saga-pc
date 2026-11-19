@@ -1342,7 +1342,7 @@ i32 NuFileRead(NUFILE file, void *destination, i32 size) {
     return NuPSFileRead(file, destination, size);
 }
 
-i32 fun_004fb6d0(NUFILE file, void *buffer, i32 size, i32 offset) {
+i32 NuFileReadAt(NUFILE file, void *buffer, i32 size, i32 offset) {
     if (nufile_lsn_allowed != 0 && file_info[file - 1].unused != 0 && (size & 0x7ff) == 0 && (offset & 0x7ff) == 0) {
         return 0;
     }
@@ -5050,7 +5050,7 @@ void *NuAllocManagerDefrag(NUALLOC_MANAGER_PREFIX *manager, void *payload) {
     return new_payload;
 }
 
-void fun_004efd30(void) {
+void NuFileUnpackReset(void) {
     unpack_file_info = NULL;
     unpack_file_odi = NULL;
     unpack_file_pos = -1;
@@ -7618,7 +7618,7 @@ void PrintStartupString(u32 colour, const char *format, ...) {
     NuApiTextLine += 20;
 }
 
-void fun_004f4020(void) {
+void PrintPCStartupMessage(void) {
     if (GetPCStartupMessage() != NULL) {
         PrintStartupString(-1, GetPCStartupMessage());
     }
@@ -8168,7 +8168,7 @@ void NuPadSetMaxGamePads(i32 count) {
 NUPADMAPPING g_nupadMapping[3] = {0};
 i32 numdevices = 0;
 
-void fun_004f47a0(i32 pad, i32 port) {
+void NuPadMapPort(i32 pad, i32 port) {
     if (g_nupadMapping[pad].port >= 0) {
         g_nupadScannedPads[g_nupadMapping[pad].port].mapped_to_pad = -1;
     }
