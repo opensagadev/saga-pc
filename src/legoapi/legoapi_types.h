@@ -859,8 +859,8 @@ struct OcclusionManager { // size 0x170
     void AddOccluder(const NUVEC *, const NUVEC *, const NUMTX *);
     bool IsInitialized();
     bool IsActive();
-    void fun_005c52b0(f32 threshold);
-    void fun_005c52c0(f32 threshold);
+    void SetOccluderDotThreshold(f32 threshold);
+    void SetOccluderScreenThreshold(f32 threshold);
     OccluderSet *GetCurrentSet();
     void SetEnabled(bool value);
 };

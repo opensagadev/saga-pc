@@ -4774,7 +4774,7 @@ extern "C" {
         font->platform_data->z = z;
     }
 
-    void fun_005d1140(i32 a, i32 b, i32 *total) {
+    void NuAccumulateDifference(i32 a, i32 b, i32 *total) {
         *total += a - b;
     }
 
@@ -10326,7 +10326,7 @@ extern "C" {
         return NuRndrGobj(special->scene->objects[NUSPECIAL_LEGACY_OF(special)->instance->object_index], &combined);
     }
 
-    void fun_005f34c0(void *, VUFNT *font, u16 *text, u32 flags) {
+    void NuQFntPrintCharWHook(void *, VUFNT *font, u16 *text, u32 flags) {
         NuQFntPrintCharW(font, text, flags);
     }
 }
@@ -12972,7 +12972,7 @@ extern "C" {
         }
     }
 
-    void fun_005e0aa0(NUDISPLAYLISTITEM *items, i32 file_handle) {
+    void NuDisplayListHtmlItems(NUDISPLAYLISTITEM *items, i32 file_handle) {
         NuHtmlWrite("<font face=courier new>\n");
         DisplayListPrintItems(items, 3, 0, NULL, file_handle);
     }
@@ -12989,7 +12989,7 @@ extern "C" {
         }
     }
 
-    void fun_005e0b40(NUDISPLAYLIST *list) {
+    void NuDisplayListResetMaterialCursor(NUDISPLAYLIST *list) {
         NuDisplayListResetStateCache(list->state);
         list->mtl_last = list->first;
     }
@@ -13138,11 +13138,11 @@ bool OcclusionManager::IsActive() {
     return initialized && enabled;
 }
 
-void OcclusionManager::fun_005c52b0(f32 threshold) {
+void OcclusionManager::SetOccluderDotThreshold(f32 threshold) {
     occluder_dot_threshold = threshold;
 }
 
-void OcclusionManager::fun_005c52c0(f32 threshold) {
+void OcclusionManager::SetOccluderScreenThreshold(f32 threshold) {
     occluder_screen_threshold = threshold;
 }
 
@@ -15537,7 +15537,7 @@ extern "C" {
         }
     }
 
-    void fun_005cfbe0(i32 reflection) {
+    void PCSetReflectionPass(i32 reflection) {
         PCSpecialReflectionPass = reflection;
         RndrStateSetReflection(reflection);
     }
@@ -17419,7 +17419,7 @@ extern "C" {
 
 /* nupostdeferred */
 
-void PC_SPECIAL_SHADOW_LIGHT::fun_005c6d90(NUMTX *view, NUMTX *projection) {
+void PC_SPECIAL_SHADOW_LIGHT::SetPostShadowMatrices(NUMTX *view, NUMTX *projection) {
     PostShadowView = *view;
     PostShadowProjection = *projection;
 }
@@ -17497,11 +17497,11 @@ extern "C" void PostShadowCopyVectors(NUVEC4 *out, const NUVEC4 *in, i32 count) 
 
 /* ECX=input, stack=output; EAX returns output. */
 struct PC_POST_SHADOW_VECTOR : NUVEC {
-    f32 fun_005e8760() const;
+    f32 VectorLength() const;
     NUVEC *Normalize(NUVEC *out) const;
 };
 
-f32 PC_POST_SHADOW_VECTOR::fun_005e8760() const {
+f32 PC_POST_SHADOW_VECTOR::VectorLength() const {
     f32 squared = y * y + x * x + z * z;
     return NuFsqrt(squared);
 }

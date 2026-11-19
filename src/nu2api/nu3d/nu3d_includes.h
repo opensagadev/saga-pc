@@ -1359,7 +1359,7 @@ struct PC_SPECIAL_SHADOW_LIGHT {      // size 0x828
     i32 GetUsedOnSpecials();
     void SetUsedOnSpecials(i32 used);
     NUDISPLAYLIST *GetShadowList(i32 set, NUMTL *material);
-    void fun_005c6d90(NUMTX *view, NUMTX *projection);
+    void SetPostShadowMatrices(NUMTX *view, NUMTX *projection);
     i32 GetActiveRenderSetCount();
     NUMTX *GetView();
     NUMTX *GetProjection();

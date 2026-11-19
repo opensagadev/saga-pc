@@ -2914,7 +2914,7 @@ address,symbol,size,ctype
 0x4ef700,_NuMemCopy128,16,
 0x4ef710,_fun_004ef710,1,
 0x4ef720,_NuMemBufAlloc,65,
-0x4ef770,_fun_004ef770,24,
+0x4ef770,_NuMemFreeBuffer,24,
 0x004ef790,_NuFileError,1,void __cdecl (void)
 0x004ef790,_NuRDPFNumberError,1,void __cdecl (void)
 0x004ef790,_NuRDPFVariableError,1,void __cdecl (char *)
@@ -2968,7 +2968,7 @@ address,symbol,size,ctype
 0x4f0150,_NuFileGetCurrentSysPath,33,"i32 __cdecl (char *)"
 0x004f0180,_FileDeviceFormatDefaultName,33,"i32 __cdecl (char *, char *, i32)"
 0x4f01b0,_NuMemFileOpenSize,31,
-0x4f01d0,_fun_004f01d0,18,
+0x4f01d0,_NuMcFileSize,18,
 0x004f01f0,_NuFileStatus,62,i32 __cdecl (NUFILE)
 0x004f0230,_AquireFileBuffer,156,
 0x004f02d0,_NuMemFileOpen,113,"NUFILE __cdecl (void *, i32, i32)"
@@ -3142,7 +3142,7 @@ address,symbol,size,ctype
 0x4f4040,_NuRegisterEndFrameCallBackFn,10,void __cdecl(void (__cdecl *)(void))
 0x4f4050,_fun_004f4050,1,
 0x004f4060,_NuCommandLine,24,"void __cdecl (i32 *, char ***)"
-0x4f4080,_fun_004f4080,11,
+0x4f4080,_NuFrameEndRequest,11,
 0x4f4090,_NuPadSetCorrectDeadZoning,10,
 0x4f40a0,_DeadZoneValueXYProper,112,
 0x4f4110,_DeadZoneValueXY,221,
@@ -3282,7 +3282,7 @@ address,symbol,size,ctype
 0x004f8910,_NuRDPF,42,f32 __cdecl (char *)
 0x004f8940,_NuStrICmpWC,292,"i32 __cdecl (char *, char *, char *)"
 0x004f8a70,_NuStrIStr,120,"char *__cdecl (char *, char *)"
-0x4f8af0,_fun_004f8af0,30,
+0x4f8af0,_NuStrCountMatch,30,
 0x004f8b10,_NuStrICmp,100,"i32 __cdecl (const char *, const char *)"
 0x004f8b80,_NuStrNICmp,150,"i32 __cdecl (const char *, const char *, i32)"
 0x004f8c20,_NuStrUpr,59,"void __cdecl (char *, const char *)"
@@ -3299,7 +3299,7 @@ address,symbol,size,ctype
 0x4f91f0,_NuErrorSleep,621,void __cdecl(void)
 0x4f9460,_ParseCommandLine,154,
 0x4f9500,_NuMemFileRelocate,62,
-0x4f9540,_fun_004f9540,45,
+0x4f9540,_ImplodeReset,45,
 0x4f9570,_ImplodeReadOffsetLengthsPrivate,319,
 0x4f96b0,_ImplodeReadLiteralLengthsPrivate,358,
 0x4f9820,_ImplodeDecodeC,151,u32 __cdecl(void)
@@ -7418,8 +7418,8 @@ address,symbol,size,ctype
 0x5c5270,?QueriesPrepared@OccluderSet@@QAE_NXZ,4,
 0x5c5280,?IsInitialized@OcclusionManager@@QAE_NXZ,3,
 0x5c5290,?IsActive@OcclusionManager@@QAE_NXZ,20,
-0x5c52b0,?fun_005c52b0@OcclusionManager@@QAEXM@Z,13,
-0x5c52c0,?fun_005c52c0@OcclusionManager@@QAEXM@Z,13,
+0x5c52b0,?SetOccluderDotThreshold@OcclusionManager@@QAEXM@Z,13,
+0x5c52c0,?SetOccluderScreenThreshold@OcclusionManager@@QAEXM@Z,13,
 0x5c52d0,?GetCurrentSet@OcclusionManager@@QAEPAUOccluderSet@@XZ,7,
 0x5c52e0,?SetEnabled@OcclusionManager@@QAEX_N@Z,10,
 0x5c52f0,??1OcclusionManager@@QAE@XZ,1,
@@ -7498,7 +7498,7 @@ address,symbol,size,ctype
 0x5c6d50,_NuDynamicLightIsUsedOnSpecials,11,
 0x5c6d60,_NuDynamicLightSetUsedOnSpecials,15,
 0x5c6d70,_fun_005c6d70,25,
-0x5c6d90,?fun_005c6d90@PC_SPECIAL_SHADOW_LIGHT@@QAEXPAUnumtx_s@@0@Z,39,
+0x5c6d90,?SetPostShadowMatrices@PC_SPECIAL_SHADOW_LIGHT@@QAEXPAUnumtx_s@@0@Z,39,
 0x5c6dc0,?TestBox@PCFrustumClipSet@@QAE_NPBUnuvec_s@@0H@Z,642,"bool __thiscall PCFrustumClipSet::TestBox(const NUVEC *,const NUVEC *,i32)"
 0x005c7050,?TestBoxes@PCFrustumClipSet@@QAEHPBUnuvec_s@@0@Z,69,"i32 __thiscall PCFrustumClipSet::TestBoxes(const NUVEC *,const NUVEC *)"
 0x5c70a0,?RenderConstants@PC_SPECIAL_SHADOW_LIGHT@@QAEXPAX@Z,816,thiscall native light program argument unused
@@ -7595,7 +7595,7 @@ address,symbol,size,ctype
 0x5cfb40,_NuSpecialMtl,10,void __cdecl(NUMTL *)
 0x005cfb50,_NuSpecialConstAlpha,49,"void __cdecl (i32, f32)"
 0x005cfb90,_NuSpecialConstTint,68,"void __cdecl (i32, const NUVEC *)"
-0x5cfbe0,_fun_005cfbe0,18,
+0x5cfbe0,_PCSetReflectionPass,18,
 0x005cfc00,_NuSpecialSetVisibility,185,"void __cdecl (nuhspecial_s *, i32)"
 0x005cfcc0,_NuSpecialSetCollision,83,"void __cdecl (nuhspecial_s *, i32)"
 0x005cfd20,_NuSpecialGetCollision,51,i32 __cdecl (nuhspecial_s *)
@@ -7671,7 +7671,7 @@ address,symbol,size,ctype
 0x5d1060,_NuQFntSetColour,27,"void __cdecl(VUFNT *, u32)"
 0x5d1080,_NuQFntPrintLenV,90,
 0x005d10e0,_NuQFntMoveRS,94,"void __cdecl (void *, VUFNT *, f32, f32, f32)"
-0x5d1140,_fun_005d1140,15,
+0x5d1140,_NuAccumulateDifference,15,
 0x5d1150,_NuQFntWrite,637,"void __cdecl(char *,VUFNT *)"
 0x5d13d0,_NuQFntWriteUniversalFont,228,"void __cdecl(char *,VUFNT *,char *)"
 0x5d14c0,_NuQFntSet2d,108,void __cdecl(VUFNT *)
@@ -8057,9 +8057,9 @@ address,symbol,size,ctype
 0x5e05e0,_DisplayListPrintItem,957,
 0x5e09a0,_DisplayListPrintItems,129,"void __cdecl(NUDISPLAYLISTITEM *,u32,i32,i32 *,i32)"
 0x5e0a30,_NuDisplaySceneHtmlDump,104,
-0x5e0aa0,_fun_005e0aa0,34,
+0x5e0aa0,_NuDisplayListHtmlItems,34,
 0x5e0ad0,_NuDisplaySortHtmlHeading,99,
-0x5e0b40,_fun_005e0b40,25,
+0x5e0b40,_NuDisplayListResetMaterialCursor,25,
 0x5e0b60,_fun_005e0b60,103,
 0x5e0bd0,_UpdateMaterialClipBitsPC,299,void __cdecl(NUDISPLAY_LIST *)
 0x5e0d00,_DisplayProcessMaterialRenderStatesPC,586,void __cdecl(void)
@@ -8205,7 +8205,7 @@ address,symbol,size,ctype
 0x5e84d0,_NuOcclusionManagerAddOccluderOBB,26,"void __cdecl (const NUVEC *, const NUVEC *, const NUMTX *)"
 0x5e84f0,_NuOcclusionManagerRenderZPass,32,void __cdecl (void)
 0x5e8510,_fun_005e8510,577,
-0x5e8760,?fun_005e8760@PC_POST_SHADOW_VECTOR@@QBEMXZ,46,
+0x5e8760,?VectorLength@PC_POST_SHADOW_VECTOR@@QBEMXZ,46,
 0x5e8790,?Normalize@PC_POST_SHADOW_VECTOR@@QBEPAUnuvec_s@@PAU2@@Z,89,"NUVEC *__thiscall(NUVEC *)"
 0x5e87f0,_NuDynamicLightTestShadowExtrusions,89,
 0x5e8850,_NuDynamicLightTestShadowExtrusionsSpecial,20,
@@ -8340,7 +8340,7 @@ address,symbol,size,ctype
 0x5f33e0,_NuSpecialDrawSmoothSkin,42,
 0x5f3410,_NuSpecialDrawSmoothSkinDwa,45,
 0x5f3440,_NuSpecialDrawWith,119,
-0x5f34c0,_fun_005f34c0,24,
+0x5f34c0,_NuQFntPrintCharWHook,24,
 0x5f34e0,_NuQFntPrintW,39,"void __cdecl(VUFNT*,u16*)"
 0x005f3510,_NuQFntPrintU,108,"void __cdecl (VUFNT *, char *)"
 0x5f3580,_NuQFntPrintV,90,"void __cdecl(VUFNT*,const char*,va_list)"
@@ -8445,7 +8445,7 @@ address,symbol,size,ctype
 0x5f7cc0,_PCGraphicsEffectTextureSetLowNibbles,38,"void __cdecl(GRAPHICS_RENDER_TEXTURE *,i32,i32)"
 0x5f7cf0,_PCGraphicsEffectTextureSetSamplerExtra,12,"void __cdecl(GRAPHICS_RENDER_TEXTURE *,i32)"
 0x5f7d00,_PCGraphicsEffectTextureSetFilterFields,296,"void __cdecl(GRAPHICS_RENDER_TEXTURE *,i32,i32,i32)"
-0x5f7e30,_fun_005f7e30,152,
+0x5f7e30,_PCGraphicsTextureSetAddressU,152,
 0x5f7ed0,_PCGraphicsEffectTextureSetWrapFields,220,"void __cdecl(GRAPHICS_RENDER_TEXTURE *,i32,i32)"
 0x5f7fb0,_PCGraphicsTextureSetAddressModes,304,
 0x5f80e0,_PCGraphicsAllocRenderTextureSlot,41,
@@ -8618,8 +8618,8 @@ address,symbol,size,ctype
 0x5fc690,_PCGeometrySortItems,454,
 0x5fc860,_PCDynamicGeometryCopyOutput,82,
 0x5fc8c0,_NuDisplayList2dGetPlatform,6,
-0x5fc8d0,_fun_005fc8d0,21,
-0x5fc8f0,_fun_005fc8f0,21,
+0x5fc8d0,_NuDisplayListStreamReset,21,
+0x5fc8f0,_NuDisplayListStreamAlign,21,
 0x5fc910,_NuDisplayListCheckStreamOverflow,21,
 0x5fc930,_fun_005fc930,4,
 0x5fc940,_fun_005fc940,5,
@@ -8737,8 +8737,8 @@ address,symbol,size,ctype
 0x5fef80,_fun_005fef80,1,
 0x5fef90,_fun_005fef90,1,
 0x5fefa0,_fun_005fefa0,6,
-0x5fefb0,_fun_005fefb0,80,
-0x5ff000,_fun_005ff000,12,
+0x5fefb0,_NuRndrRectHook,80,
+0x5ff000,_NuRndrRectSetMaterial,12,
 0x5ff010,_fun_005ff010,1,
 0x5ff020,_fun_005ff020,1,
 0x5ff030,_fun_005ff030,6,
@@ -8896,7 +8896,7 @@ address,symbol,size,ctype
 0x00603cc0,_NuCameraSet,91,void (NUCAMERA *)
 0x603d20,_NuCameraSetGlobalParameters,170,
 0x603dd0,_NuCameraGetGlobalParameters,81,
-0x603e30,_fun_00603e30,11,
+0x603e30,_NuCameraStackReset,11,
 0x603e40,_NuCameraPush,60,
 0x603e80,_NuCameraPop,65,
 0x603ed0,_NuCameraCopyViewMatrix,23,
@@ -8989,7 +8989,7 @@ address,symbol,size,ctype
 0x605610,_fun_00605610,10,
 0x605620,_fun_00605620,10,
 0x605630,_fun_00605630,15,
-0x605640,_fun_00605640,28,
+0x605640,_NuPrimPopCoordinateSystem2,28,
 0x605660,_PCGraphicsInitRenderTexturePool,65,"void __cdecl(VARIPTR*,VARIPTR)"
 0x6056b0,_PCGraphicsDestroyAllRenderTextures,49,
 0x6056f0,_PCGraphicsCreateEffectTexture,112,
@@ -8998,8 +8998,8 @@ address,symbol,size,ctype
 0x605800,_PCGraphicsCreateColourTarget,138,"GRAPHICS_RENDER_TEXTURE* __cdecl(i32,i32)"
 0x605890,_PCGraphicsCreateColourTargetFormat,123,"GRAPHICS_RENDER_TEXTURE* __cdecl(i32,i32,i32)"
 0x605910,_fun_00605910,110,
-0x605980,_fun_00605980,43,
-0x6059b0,_fun_006059b0,5,
+0x605980,_PCGraphicsResizeEffectTextureToScreen,43,
+0x6059b0,_PCGraphicsResizeEffectTextureTo,5,
 0x6059c0,_PCGraphicsBindStageTexture,66,normalized source ABI; native private ESI stage/EDI texture
 0x605a10,_PCGraphicsCreateFramebuffer,190,
 0x605ad0,_PCGraphicsDestroyFramebuffer,141,

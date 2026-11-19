@@ -1,0 +1,24 @@
+old,new,evidence
+fun_005e0aa0,NuDisplayListHtmlItems,writes the display list items as HTML
+fun_005e0b40,NuDisplayListResetMaterialCursor,resets the state cache and rewinds mtl_last
+fun_005c52b0,SetOccluderDotThreshold,occluder_dot_threshold = threshold
+fun_005c52c0,SetOccluderScreenThreshold,occluder_screen_threshold = threshold
+fun_005cfbe0,PCSetReflectionPass,sets PCSpecialReflectionPass and the render state reflection
+fun_005c6d90,SetPostShadowMatrices,copies the post shadow view and projection
+fun_005e8760,VectorLength,length of the vector
+fun_005f7e30,PCGraphicsTextureSetAddressU,sets address_u from a mode
+fun_00605980,PCGraphicsResizeEffectTextureToScreen,resizes to the back buffer divided by divisor
+fun_006059b0,PCGraphicsResizeEffectTextureTo,forwards to PCGraphicsResizeEffectTexture
+fun_00605640,NuPrimPopCoordinateSystem2,pops the prim coordinate system (platform copy)
+fun_005fc8d0,NuDisplayListStreamReset,points the stream cursor at its storage and sets the limit
+fun_005fc8f0,NuDisplayListStreamAlign,aligns the stream cursor to 16
+fun_005fefb0,NuRndrRectHook,draws a UV rect with NuRndrRectMaterial
+fun_005ff000,NuRndrRectSetMaterial,sets NuRndrRectMaterial
+fun_00603e30,NuCameraStackReset,rewinds the camera stack
+fun_004ef770,NuMemFreeBuffer,NuFree of a numem buffer
+fun_004f01d0,NuMcFileSize,memory-card file size
+fun_004f8af0,NuStrCountMatch,counts equal strings
+fun_004f4080,NuFrameEndRequest,nuapi.frame_end_state = 1
+fun_004f9540,ImplodeReset,restarts the implode bit reader
+fun_005d1140,NuAccumulateDifference,adds a - b to total
+fun_005f34c0,NuQFntPrintCharWHook,forwards to NuQFntPrintCharW

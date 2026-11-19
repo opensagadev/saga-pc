@@ -241,7 +241,7 @@ NUMEMBUF *NuMemBufAlloc(u32 size) {
     return buffer;
 }
 
-void fun_004ef770(void *data) {
+void NuMemFreeBuffer(void *data) {
     NuFree(data, ".\\numem.c", 0x82);
 }
 
@@ -422,7 +422,7 @@ i32 NuMemFileOpenSize(NUFILE file) {
     return pc_memfiles[file].end - pc_memfiles[file].buffer;
 }
 
-i32 fun_004f01d0(NUFILE file) {
+i32 NuMcFileSize(NUFILE file) {
     file -= 0x1000;
     return NuMcFileOpenSize(file);
 }
@@ -5353,7 +5353,7 @@ char *NuStrIStr(char *text, char *substring) {
     return NULL;
 }
 
-void fun_004f8af0(const char *a, const char *b) {
+void NuStrCountMatch(const char *a, const char *b) {
     if (NuStrCmp(a, b) == 0) {
         ++dat_0091eeec;
     }
@@ -7543,7 +7543,7 @@ void NuCommandLine(i32 *__restrict count, char ***__restrict arguments) {
     argv = *arguments;
 }
 
-void fun_004f4080(void) {
+void NuFrameEndRequest(void) {
     nuapi.frame_end_state = 1;
 }
 
@@ -7935,7 +7935,7 @@ void *NuMemFileRelocate(NUFILE file) {
     return start.void_ptr;
 }
 
-void fun_004f9540(void) {
+void ImplodeReset(void) {
     ImplodeInitGetBits();
     blocksize = 0;
     ImplodePendingCopy = 0;

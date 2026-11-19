@@ -1660,7 +1660,7 @@ extern "C" {
         texture->mip_filter = PCGraphicsFilterMode(third);
     }
 
-    void fun_005f7e30(GRAPHICS_RENDER_TEXTURE *texture, i32 mode) {
+    void PCGraphicsTextureSetAddressU(GRAPHICS_RENDER_TEXTURE *texture, i32 mode) {
         texture->address_u = PCGraphicsAddressMode(mode);
     }
 
@@ -3379,12 +3379,12 @@ extern "C" {
         return &PCDisplayList2d;
     }
 
-    void fun_005fc8d0(void) {
+    void NuDisplayListStreamReset(void) {
         NuDisplayListStreamCursor = &nudlist_stream_cursor;
         nudlist_field_1598 = nuprim_field_ba8;
     }
 
-    VARIPTR *fun_005fc8f0(void) {
+    VARIPTR *NuDisplayListStreamAlign(void) {
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15;
         return NuDisplayListStreamCursor;
     }
@@ -5737,12 +5737,12 @@ extern "C" {
         return texture;
     }
 
-    void fun_00605980(GRAPHICS_RENDER_TEXTURE *texture, u32 divisor, i32 format) {
+    void PCGraphicsResizeEffectTextureToScreen(GRAPHICS_RENDER_TEXTURE *texture, u32 divisor, i32 format) {
         PCGraphicsResizeEffectTexture(texture, PCDeviceBackend.parameters.width / divisor, PCDeviceBackend.parameters.height / divisor,
                                       format);
     }
 
-    void fun_006059b0(GRAPHICS_RENDER_TEXTURE *texture, i32 width, i32 height, i32 format) {
+    void PCGraphicsResizeEffectTextureTo(GRAPHICS_RENDER_TEXTURE *texture, i32 width, i32 height, i32 format) {
         PCGraphicsResizeEffectTexture(texture, width, height, format);
     }
 
@@ -7327,7 +7327,7 @@ extern "C" {
         return 16;
     }
 
-    void fun_00605640(void) {
+    void NuPrimPopCoordinateSystem2(void) {
         NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
     }
 
@@ -7786,11 +7786,11 @@ extern "C" {
         return 1;
     }
 
-    void fun_005fefb0(i32, i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, i32 z) {
+    void NuRndrRectHook(i32, i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, i32 z) {
         NuRndrRectUV2diZ(x, y, width, height, u0, v0, u1, v1, colour, NuRndrRectMaterial, z);
     }
 
-    i32 fun_005ff000(i32, NUMTL *material) {
+    i32 NuRndrRectSetMaterial(i32, NUMTL *material) {
         NuRndrRectMaterial = material;
         return 0;
     }
@@ -8471,7 +8471,7 @@ extern "C" {
         *portal_nearclip = global_camera.portal_nearclip;
     }
 
-    void fun_00603e30(void) {
+    void NuCameraStackReset(void) {
         NuCameraStackTop = NuCameraStack;
     }
 
