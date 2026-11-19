@@ -21,7 +21,7 @@ class ShaderBuilderGen { // size 0xbd0
   public:
     char save_directory[0x100];                  // 0x004
     char include_directories[0x100];             // 0x104
-    u32 unknown_204;                             // 0x204
+    u32 build_flags;                             // 0x204
     void *parsed_source;                         // 0x208
     ShaderCompilerDictionary dictionary;         // 0x20c
     ShaderCompilerBufferAllocator source_buffer; // 0xbb0

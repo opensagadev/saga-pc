@@ -886,7 +886,7 @@ i32 NuMusic::FindOrCreateSoundFile(nusound_filename_info_s *files, i32 *count, c
     files[index].pitch = pitch_;
     files[index].static_sample = streaming == 0;
     files[index].index = index;
-    files[index].unknown_10 = 0;
+    files[index].stream_handle = 0;
     ++*count;
     return index;
 }

@@ -607,8 +607,8 @@ extern "C" {
             if (anim->node_flags != NULL) {
                 anim->node_flags = (u8 *)((u32)anim->node_flags + delta);
             }
-            if (anim->unknown_38 != NULL) {
-                anim->unknown_38 = (void *)((u32)anim->unknown_38 + delta);
+            if (anim->extra_data != NULL) {
+                anim->extra_data = (void *)((u32)anim->extra_data + delta);
             }
             if (anim->next_block == 0) {
                 break;
@@ -864,8 +864,8 @@ extern "C" {
             if (anim->node_flags != NULL) {
                 anim->node_flags = (u8 *)NUANIM_REBASE_POINTER(anim->node_flags, delta);
             }
-            if (anim->unknown_38 != NULL) {
-                anim->unknown_38 = NUANIM_REBASE_POINTER(anim->unknown_38, delta);
+            if (anim->extra_data != NULL) {
+                anim->extra_data = NUANIM_REBASE_POINTER(anim->extra_data, delta);
             }
             if (anim->next_block == 0) {
                 break;
@@ -14122,7 +14122,7 @@ extern "C" {
             material->shader.normal_map_tid = NuGScnFixupTID(scene, material->shader.normal_map_tid);
             material->shader.lightmap_tids[1] = NuGScnFixupTID(scene, material->shader.lightmap_tids[1]);
             material->shader.envmap_cubic_tid = NuGScnFixupTID(scene, material->shader.envmap_cubic_tid);
-            material->shader.unknown_tid_198 = NuGScnFixupTID(scene, material->shader.unknown_tid_198);
+            material->shader.detail_map_tid = NuGScnFixupTID(scene, material->shader.detail_map_tid);
             material->shader.shine_map_tid = NuGScnFixupTID(scene, material->shader.shine_map_tid);
             material->shader.diffuse_map_ids[0] = NuGScnFixupTID(scene, material->shader.diffuse_map_ids[0]);
             material->shader.diffuse_map_ids[1] = NuGScnFixupTID(scene, material->shader.diffuse_map_ids[1]);
@@ -14203,7 +14203,7 @@ extern "C" {
             material->shader.normal_map_tid = NuGScnRestoreTID(scene, material->shader.normal_map_tid);
             material->shader.lightmap_tids[1] = NuGScnRestoreTID(scene, material->shader.lightmap_tids[1]);
             material->shader.envmap_cubic_tid = NuGScnRestoreTID(scene, material->shader.envmap_cubic_tid);
-            material->shader.unknown_tid_198 = NuGScnRestoreTID(scene, material->shader.unknown_tid_198);
+            material->shader.detail_map_tid = NuGScnRestoreTID(scene, material->shader.detail_map_tid);
             material->shader.shine_map_tid = NuGScnRestoreTID(scene, material->shader.shine_map_tid);
             material->shader.diffuse_map_ids[0] = NuGScnRestoreTID(scene, material->shader.diffuse_map_ids[0]);
             material->shader.diffuse_map_ids[1] = NuGScnRestoreTID(scene, material->shader.diffuse_map_ids[1]);

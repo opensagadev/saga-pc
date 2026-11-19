@@ -33,9 +33,9 @@ struct PC_GEOMETRY_PUBLISH_FORMAT {             // size 0x14
 struct PC_GEOMETRY_PUBLISH_RECORD {          // size 0x28
     PC_GEOMETRY_PUBLISH_FORMAT *format;      // 0x00
     i32 element_count;                       // 0x04
-    u32 unknown_08;                          // 0x08
+    u32 sort_item_count;                          // 0x08
     PC_GEOMETRY_SORT_ITEM *sort_items;       // 0x0c
-    u32 unknown_10;                          // 0x10
+    u32 strip_count;                          // 0x10
     PC_BUFFER_RESOURCE *vertex_buffer;       // 0x14
     PC_BUFFER_RESOURCE *strip_vertex_buffer; // 0x18
     PC_BUFFER_RESOURCE *strip_index_buffer;  // 0x1c
@@ -105,8 +105,8 @@ extern "C" i32 PcRegisterDynamicGeometry(PC_GEOMETRY_PUBLISH_FORMAT *format) {
     record->format = format;
     record->element_count = count;
     record->frame_stamp = 0;
-    record->unknown_08 = 0;
-    record->unknown_10 = 0;
+    record->sort_item_count = 0;
+    record->strip_count = 0;
     if (!PcInitializeDynamicGeometryBuffers((PC_DYNAMIC_GEOMETRY *)record, count)) {
         return 0;
     }

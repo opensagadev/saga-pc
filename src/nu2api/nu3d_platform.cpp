@@ -1633,7 +1633,7 @@ extern "C" {
     }
 
     u32 fun_005f7ca0(GRAPHICS_RENDER_TEXTURE *texture) {
-        return texture->unknown_10;
+        return texture->texture_type;
     }
 
     i32 PCGraphicsTextureGetFormat(GRAPHICS_RENDER_TEXTURE *texture) {
@@ -1708,10 +1708,10 @@ extern "C" {
         }
         texture->width = 0;
         texture->height = 0;
-        texture->unknown_08 = 0;
+        texture->depth = 0;
         texture->mip_count = 0;
         texture->original_mip_count = 0;
-        texture->unknown_10 = 1;
+        texture->texture_type = 1;
         texture->format = 0;
         texture->usage = 0;
         texture->pool = 0;
@@ -1744,9 +1744,9 @@ extern "C" {
         texture->resource->methods->get_level_desc(texture->resource, 0, &description);
         texture->width = description.width;
         texture->height = description.height;
-        texture->unknown_08 = 0;
+        texture->depth = 0;
         texture->original_mip_count = texture->mip_count = texture->resource->methods->get_level_count(texture->resource);
-        texture->unknown_10 = 1;
+        texture->texture_type = 1;
         texture->format = PCGraphicsFormatFromD3d(description.format);
         texture->usage = description.usage & 1;
         texture->pool = description.pool;
@@ -1770,8 +1770,8 @@ extern "C" {
         texture->height = (u16)height;
         texture->mip_count = (u16)levels;
         texture->original_mip_count = (u16)levels;
-        texture->unknown_08 = 0;
-        texture->unknown_10 = 1;
+        texture->depth = 0;
+        texture->texture_type = 1;
         texture->format = format;
         texture->usage = usage;
         texture->pool = pool;
@@ -1881,7 +1881,7 @@ extern "C" {
         for (i32 index = 0; index != 32; ++index) {
             GRAPHICS_RENDER_TEXTURE *texture = &PCGraphicsRenderTextures[index];
             if (PCGraphicsRenderTextureActive[index]) {
-                switch (texture->unknown_10) {
+                switch (texture->texture_type) {
                     case 1:
                         if (texture->external_id == -1 && texture->resource == NULL && texture->surface == NULL) {
                             PCGraphicsInitRenderTexture(texture, texture->width, texture->height, texture->mip_count, texture->usage,
@@ -1950,7 +1950,7 @@ extern "C" {
         }
         /* Tests field but writes through level, including when level is null. */
         if (field != NULL) {
-            *level = target->unknown_10;
+            *level = target->face;
         }
         return texture;
     }
@@ -3006,7 +3006,7 @@ extern "C" {
         texture = NULL;
         owns_texture = 0;
         level = 0;
-        unknown_10 = 0;
+        face = 0;
         height = width = 0;
     }
 
@@ -3019,7 +3019,7 @@ extern "C" {
         owns_texture = own;
         surface = NULL;
         level = (u16)new_level;
-        unknown_10 = 0;
+        face = 0;
         height = width = 0;
         if (new_texture == NULL) {
             return;
@@ -5818,7 +5818,7 @@ extern "C" {
         owns_texture = 0;
         surface = NULL;
         level = 0;
-        unknown_10 = 0;
+        face = 0;
         height = width = 0;
         registry_index = -1;
         Reset();
@@ -7401,7 +7401,7 @@ u16 PC_EFFECT_SURFACE::GetLevel() {
 }
 
 u32 PC_EFFECT_SURFACE::fun_005f7b10() {
-    return unknown_10;
+    return face;
 }
 
 u16 PC_EFFECT_SURFACE::GetWidth() {
@@ -7677,8 +7677,8 @@ extern "C" {
     void fun_006030f0(NUGOBJ *gobj, i32 first, i32 second) {
         for (NUGEOM *geom = gobj->geom; geom != NULL; geom = geom->next) {
             NUMTL *mtl = geom->mtl;
-            mtl->unknown_0044_5 = first;
-            mtl->unknown_0044_6 = second;
+            mtl->object_flag_a = first;
+            mtl->object_flag_b = second;
             NuMtlUpdate(mtl);
         }
     }
@@ -7940,7 +7940,7 @@ extern "C" {
         u32 current_colour;                // 0x1c
         i16 active;                        // 0x20
         i16 duration;                      // 0x22
-        u16 unknown_24;                    // 0x24
+        u16 extra_bytes;                    // 0x24
         u8 unknown_26[2];                  // 0x26
     } RENDERER_CLEAR_RECORD;
 
@@ -7960,7 +7960,7 @@ extern "C" {
                 RendererClearRecords[i].duration = duration;
                 RendererClearRecords[i].colour = colour;
                 RendererClearRecords[i].current_colour = 0;
-                RendererClearRecords[i].unknown_24 = extra * 4;
+                RendererClearRecords[i].extra_bytes = extra * 4;
                 return;
             }
         }

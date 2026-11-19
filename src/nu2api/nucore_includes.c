@@ -2203,7 +2203,7 @@ void NuDatClose(NUDATHDR *header) {
             pc_dat_file_infos[header->open_files[index].info_idx].is_used = 0;
         }
     }
-    if (header->unknown_b0 != 0) {
+    if (header->owns_allocation != 0) {
         NuFree(header, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nufile.c", 0xd22);
     }
 }
@@ -2285,7 +2285,7 @@ NUDATHDR *NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_out, i16 m
             if (size_out != NULL) {
                 *size_out = allocation_size;
             }
-            header->unknown_b0 = 0;
+            header->owns_allocation = 0;
             header->name = (char *)(header + 1);
             metadata = (u8 *)(header + 1) + name_storage;
             NuStrCpy(header->name, formatted_name);

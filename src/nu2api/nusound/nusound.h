@@ -269,7 +269,7 @@ struct nusound_filename_info_s { // size 0x1c
     i32 pitch;                   // 0x04
     i32 static_sample;           // 0x08
     i32 index;                   // 0x0c
-    i32 unknown_10;              // 0x10
+    i32 stream_handle;              // 0x10
     i32 unknown_14;              // 0x14
     i32 unknown_18;              // 0x18
 };

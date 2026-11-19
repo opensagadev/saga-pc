@@ -20,7 +20,7 @@ extern "C" {
     void NuShaderObjectBaseCreate(NuShaderObject *shader) {
         shader->marker = -1;
         shader->ref_count = 0;
-        shader->unknown_c = 0;
+        shader->base_state = 0;
         shader->key = 0;
     }
 

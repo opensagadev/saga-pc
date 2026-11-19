@@ -448,7 +448,7 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
 }
 
 extern "C" i32 fun_006dc6b0(i32 index) {
-    return nu_keyboard_owner.unknown_0010_to_0020[index];
+    return nu_keyboard_owner.device_present[index];
 }
 
 extern "C" void fun_006dc6f0(void) {

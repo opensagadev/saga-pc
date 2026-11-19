@@ -364,7 +364,7 @@ void ShaderCompilerHLSLPc::Configure(PC_SHADER_MATERIAL_FILTER *filter, ShaderCo
 }
 
 ShaderBuilderGen::ShaderBuilderGen(VirtualStackAllocator &parent, i32 mode)
-    : unknown_204(0), parsed_source(NULL), dictionary(parent, mode), source_buffer(parent, 0x2d000), parser_memory(parent, 0x32000) {
+    : build_flags(0), parsed_source(NULL), dictionary(parent, mode), source_buffer(parent, 0x2d000), parser_memory(parent, 0x32000) {
     save_directory[0] = 0;
 }
 

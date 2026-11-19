@@ -23,7 +23,7 @@ struct bgprocinfo_s {       // size 0x118
     bgprocdofn *do_fn;      // 0x000
     bgprocdofn *ack_fn;     // 0x004
     i32 work_started : 1;   // 0x008:0
-    i32 unknown_flag_2 : 1; // 0x008:1
+    i32 work_finished : 1; // 0x008:1
     i32 padding;            // 0x00c
     u8 data[0x100];         // 0x010
     BGVAR *vars;            // 0x110

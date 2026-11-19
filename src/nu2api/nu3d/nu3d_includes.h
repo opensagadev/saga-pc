@@ -147,7 +147,7 @@ typedef struct ANI3_HEADER {  // size 0x3c
     u16 *curve_types;         // 0x2c
     u8 *keys;                 // 0x30
     u8 *node_flags;           // 0x34
-    void *unknown_38;         // 0x38
+    void *extra_data;         // 0x38
 } ANI3_HEADER;
 
 typedef union DWA_CURVE_CELL { // size 0x4
@@ -1228,7 +1228,7 @@ struct GRAPHICS_RENDER_TEXTURE {   // size 0x30
     PC_TEXTURE_RESOURCE *resource; // 0x00
     u16 width;                     // 0x04
     u16 height;                    // 0x06
-    u16 unknown_08;                // 0x08
+    u16 depth;                // 0x08
     u16 mip_count;                 // 0x0a
 
     union { // size 0x1c
@@ -1237,7 +1237,7 @@ struct GRAPHICS_RENDER_TEXTURE {   // size 0x30
         struct {                    // size 0x1c
             u16 original_mip_count; // 0x0c
             u16 reserved_0e;        // 0x0e
-            u32 unknown_10;         // 0x10
+            u32 texture_type;         // 0x10
             i32 format;             // 0x14
             i32 usage;              // 0x18
             i32 pool;               // 0x1c

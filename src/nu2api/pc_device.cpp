@@ -410,7 +410,7 @@ PC_DEVICE_BACKEND::PC_DEVICE_BACKEND() {
     device_type = 1;
     creation_flags = 0;
     force_software = 0;
-    unknown_5f9 = 0;
+    force_reference = 0;
     multithreaded = 1;
     present_result = 0;
     enabled_option_0 = 1;

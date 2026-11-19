@@ -15,7 +15,7 @@ typedef struct NuKeyboardOwner {   // size 0x44
     i32 rescan_count;              // 0x04
     f32 rescan_timer;              // 0x08
     i32 device_count;              // 0x0c
-    u8 unknown_0010_to_0020[0x10]; // 0x10
+    u8 device_present[0x10]; // 0x10
     NuKeyboardDevice *mouse;       // 0x20
     NuKeyboardDevice *device;      // 0x24
     i32 poll_status;               // 0x28
@@ -312,7 +312,7 @@ struct PC_INPUT_MOUSE_RUNTIME { // size 0x5c
     f32 smoothed[3];            // 0x24
     f32 position[2];            // 0x30
     u8 buttons[16];             // 0x38
-    u8 unknown_48;              // 0x48
+    u8 clear_end;              // 0x48
     u8 port_activity[14];       // 0x49
     u8 unknown_57;              // 0x57
     i32 custom_bindings_active; // 0x58
@@ -412,7 +412,7 @@ struct PC_INPUT_DEVICE {      // size 0x17c
 
         struct {                   // size 0x2
             u8 action_keys_active; // 0x028
-            u8 unknown_29;         // 0x029
+            u8 back_pressed;         // 0x029
         };
     }; // 0x028
 
@@ -464,7 +464,7 @@ struct PC_INPUT_RUNTIME {          // size 0x68b4
         u8 unknown_4e00[0x34];
 
         struct {                // size 0x34
-            i32 field_4e00;     // 0x4e00
+            i32 pending_binding;     // 0x4e00
             u32 read_mask;      // 0x4e04
             u32 action_mask;    // 0x4e08
             u32 completed_mask; // 0x4e0c
@@ -521,14 +521,14 @@ struct PC_INPUT_RUNTIME {          // size 0x68b4
             u8 unknown_671b;                // 0x671b
             PC_INPUT_RAW_SAMPLE raw_sample; // 0x671c
             i8 keyboard_ui_override;        // 0x67e0
-            u8 unknown_67e1;                // 0x67e1
+            u8 mouse_ui_override;                // 0x67e1
             u8 unknown_67e2[2];             // 0x67e2
         };
     }; // 0x6608
 
     i32 shutdown_state;            // 0x67e4
-    i32 unknown_67e8;              // 0x67e8
-    i32 unknown_67ec;              // 0x67ec
+    i32 replay_frame;              // 0x67e8
+    i32 replay_length;              // 0x67ec
     PC_INPUT_COMMAND commands[32]; // 0x67f0
     u8 *keyboard_state;            // 0x68b0
     PC_INPUT_RUNTIME();

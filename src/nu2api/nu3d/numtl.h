@@ -46,7 +46,7 @@ typedef struct nushadermtldesc_s { // size 0x208
     i16 shader_handles[2];         // 0x140 base shader, shadow/variant shader
     NUMTLUVANIM uv_animations[4];  // 0x144
     u8 unknown_194[4];             // 0x194
-    i32 unknown_tid_198;           // 0x198
+    i32 detail_map_tid;           // 0x198
     u8 unknown_19c[0x18];          // 0x19c
     u8 shadow_set;                 // 0x1b4
     u8 unknown_1b5[3];             // 0x1b5
@@ -125,8 +125,8 @@ typedef struct numtl_s { // size 0x2c4
 
         struct {                        // size 0x4
             u32 unknown_0044_0_4 : 5;   // 0x044:0
-            u32 unknown_0044_5 : 1;     // 0x044:5
-            u32 unknown_0044_6 : 1;     // 0x044:6
+            u32 object_flag_a : 1;     // 0x044:5
+            u32 object_flag_b : 1;     // 0x044:6
             u32 unknown_0044_7_31 : 25; // 0x044:7
         };
 

@@ -13,7 +13,7 @@ void NuShaderObjectUnInit(NuShaderObject *shader) {
 void NuShaderObjectCreate(NuShaderObject *shader) {
     NuShaderObjectBaseCreate(shader);
     shader->active_parameters = 0;
-    shader->unknown_18 = 0;
+    shader->compiled_state = 0;
 }
 
 void NuShaderObjectDestroy(NuShaderObject *shader) {

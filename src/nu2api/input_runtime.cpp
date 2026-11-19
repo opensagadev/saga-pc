@@ -293,7 +293,7 @@ PC_INPUT_RUNTIME::PC_INPUT_RUNTIME() {
     memset(devices, 0, sizeof(devices));
     memset(primary, 0, sizeof(primary));
     memset(secondary, 0, sizeof(secondary));
-    memset(&mouse, 0, offsetof(PC_INPUT_MOUSE_RUNTIME, unknown_48));
+    memset(&mouse, 0, offsetof(PC_INPUT_MOUSE_RUNTIME, clear_end));
     keyboard_state = NULL;
     memset(&raw_sample, 0, sizeof(raw_sample));
     memset(auxiliary_bindings, 0, sizeof(auxiliary_bindings));
@@ -305,7 +305,7 @@ PC_INPUT_RUNTIME::PC_INPUT_RUNTIME() {
     }
     shutdown_state = 0;
     InitConfiguration();
-    field_4e00 = -1;
+    pending_binding = -1;
     first_mouse = 1;
     action_mask = 0;
     completed_mask = 0;
@@ -336,7 +336,7 @@ PC_INPUT_RUNTIME::PC_INPUT_RUNTIME() {
     read_mask = 0;
     keyboard_polled = 0;
     mouse_polled = 0;
-    unknown_67e1 = 0;
+    mouse_ui_override = 0;
     InitializeDefaultRecords();
     if (PcInputStateInitializedCallback) {
         PcInputStateInitializedCallback(this);
@@ -709,7 +709,7 @@ i32 PC_INPUT_RUNTIME::SampleDevice(i32 port, PC_INPUT_RAW_SAMPLE *sample) {
     }
     if (port < 4) {
         PC_INPUT_DEVICE *record = &devices[port];
-        record->unknown_29 = 0;
+        record->back_pressed = 0;
         if (record->kind != PC_INPUT_DEVICE_XINPUT) {
             return 0;
         }
@@ -727,7 +727,7 @@ i32 PC_INPUT_RUNTIME::SampleDevice(i32 port, PC_INPUT_RAW_SAMPLE *sample) {
         u32 bits = state.gamepad.buttons;
         sample->buttons[7] = (u8)((bits >> 4) & 1);
         sample->buttons[6] = (u8)((bits >> 5) & 1);
-        record->unknown_29 = sample->buttons[6];
+        record->back_pressed = sample->buttons[6];
         sample->buttons[128] = (u8)(bits & 1);
         sample->buttons[130] = (u8)((bits >> 1) & 1);
         sample->buttons[131] = (u8)((bits >> 2) & 1);
@@ -1358,11 +1358,11 @@ i32 PC_INPUT_RUNTIME::GetInputRecordCount() {
 }
 
 i32 PC_INPUT_RUNTIME::fun_006d4e40() {
-    return unknown_67e8;
+    return replay_frame;
 }
 
 i32 PC_INPUT_RUNTIME::fun_006d4e50() {
-    return unknown_67ec;
+    return replay_length;
 }
 
 void PC_INPUT_RUNTIME::InsertInputRecord(i32 index, i32 unknown_00, i32 field_01, i32 unknown_02, u16 unknown_04) {
@@ -1642,7 +1642,7 @@ extern "C" i32 fun_006d6760(void) {
     PC_INPUT_RUNTIME *state = nu_input_state;
     i32 i;
     for (i = 0; i <= 3; ++i) {
-        if (state->devices[i].kind == PC_INPUT_DEVICE_XINPUT && state->devices[i].unknown_29 != 0) {
+        if (state->devices[i].kind == PC_INPUT_DEVICE_XINPUT && state->devices[i].back_pressed != 0) {
             return 1;
         }
     }

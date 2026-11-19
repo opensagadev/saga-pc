@@ -117,7 +117,7 @@ BGPROCINFO *bgPostRequestV(bgprocdofn *do_fn, bgprocdofn *ack_fn, i32 first_type
         string_end = (u8 *)&info->vars;
         info->vars = var;
         info->work_started = 0;
-        info->unknown_flag_2 = 0;
+        info->work_finished = 0;
         type = first_type;
         va_start(args, first_type);
         info->do_fn = do_fn;
@@ -175,7 +175,7 @@ BGPROCINFO *bgPostRequest(bgprocdofn *do_fn, bgprocdofn *ack_fn, void *data, i32
         info->do_fn = do_fn;
         info->ack_fn = ack_fn;
         info->work_started = 0;
-        info->unknown_flag_2 = 0;
+        info->work_finished = 0;
         info->vars = NULL;
         info->var_count = 0;
         if (data != NULL && data_size != 0) {

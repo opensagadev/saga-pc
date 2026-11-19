@@ -142,7 +142,7 @@ void PC_NATIVE_DEBUG_STATE::InitializeHeader() {
     header.third = header.first = header.second = -1;
     header.font_size = 12;
     strcat(header.label, "Arial");
-    header.unknown_colour = 0xff;
+    header.shadow_colour = 0xff;
     header.face_colour = 0xff4c5844;
     header.high_colour = 0xff889180;
     header.low_colour = 0xff2d3128;
@@ -218,9 +218,9 @@ void PC_NATIVE_DEBUG_STATE::UpdateGeometry() {
 PC_NATIVE_DEBUG_STATE::PC_NATIVE_DEBUG_STATE() {
     enabled = 1;
     write_log = 0;
-    unknown_004 = 0;
-    unknown_008 = 0;
-    unknown_00c = 0;
+    cursor_x = 0;
+    cursor_y = 0;
+    line_count = 0;
     log_file = 0;
 }
 
