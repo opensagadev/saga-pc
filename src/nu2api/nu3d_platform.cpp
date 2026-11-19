@@ -8216,16 +8216,15 @@ extern "C" {
     } RENDERER_SCREEN_VERTEX;
 
     void NuRndrQuadBufferInit(void) {
-        void *data;
+        RENDERER_SCREEN_VERTEX *quad;
         if (RendererQuadVertexBuffer != NULL) {
             RendererQuadVertexBuffer->methods->release(RendererQuadVertexBuffer);
             RendererQuadVertexBuffer = NULL;
         }
         PCDeviceCreateVertexBuffer(0x70, 0, 0, 1, &RendererQuadVertexBuffer);
-        if (RendererQuadVertexBuffer->methods->lock(RendererQuadVertexBuffer, 0, 0, &data, 0) < 0) {
+        if (RendererQuadVertexBuffer->methods->lock(RendererQuadVertexBuffer, 0, 0, (void **)&quad, 0) < 0) {
             return;
         }
-        RENDERER_SCREEN_VERTEX *quad = static_cast<RENDERER_SCREEN_VERTEX *>(data);
         quad[0].x = 0.0f;
         quad[0].y = 0.0f;
         quad[0].z = 0.5f;

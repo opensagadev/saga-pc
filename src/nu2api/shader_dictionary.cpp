@@ -120,29 +120,28 @@ ShaderMacroDefinition *ShaderCompilerDictionary::FindDefinition(const char *name
 
 char *ShaderCloneArenaString(const char *source, VirtualStackAllocator *arena);
 
-// noinline: the original calls AddDefinition out of line from ShaderCompilerDictionary::EmitVertexInput; VC8 would
-// inline it there.
-__declspec(noinline) void ShaderCompilerDictionary::AddDefinition(const char *name, const char *value, i32 emit) {
-    ShaderMacroDefinition *definition = FindDefinition(name);
+// AddDefinition's body: EmitProgram inlines it, ShaderCompilerDictionary::EmitVertexInput calls AddDefinition.
+static __forceinline void ShaderAddDefinition(ShaderCompilerDictionary *dictionary, const char *name, const char *value, i32 emit) {
+    ShaderMacroDefinition *definition = dictionary->FindDefinition(name);
     if (definition != NULL) {
         const char *stored_value;
         if (value != NULL) {
-            stored_value = ShaderCloneArenaString(value, &scratch);
+            stored_value = ShaderCloneArenaString(value, &dictionary->scratch);
         } else {
             stored_value = NULL;
         }
         definition->value = stored_value;
         definition->emit = (u8)emit;
     } else {
-        char *stored_name = ShaderCloneArenaString(name, &scratch);
+        char *stored_name = ShaderCloneArenaString(name, &dictionary->scratch);
         const char *stored_value;
         if (value != NULL) {
-            stored_value = ShaderCloneArenaString(value, &scratch);
+            stored_value = ShaderCloneArenaString(value, &dictionary->scratch);
         } else {
             stored_value = NULL;
         }
-        ShaderMacroDefinition *storage = reinterpret_cast<ShaderMacroDefinition *>(scratch.cursor);
-        scratch.cursor += sizeof(ShaderMacroDefinition);
+        ShaderMacroDefinition *storage = reinterpret_cast<ShaderMacroDefinition *>(dictionary->scratch.cursor);
+        dictionary->scratch.cursor += sizeof(ShaderMacroDefinition);
         if (storage != NULL) {
             storage->name = stored_name;
             storage->value = stored_value;
@@ -151,8 +150,14 @@ __declspec(noinline) void ShaderCompilerDictionary::AddDefinition(const char *na
         } else {
             definition = NULL;
         }
-        programs[program_count++] = definition;
+        dictionary->programs[dictionary->program_count++] = definition;
     }
+}
+
+// noinline: the original calls AddDefinition out of line from ShaderCompilerDictionary::EmitVertexInput; VC8 would
+// inline it there.
+__declspec(noinline) void ShaderCompilerDictionary::AddDefinition(const char *name, const char *value, i32 emit) {
+    ShaderAddDefinition(this, name, value, emit);
 }
 
 void ShaderCompilerDictionary::BindOutputBuffer(ShaderCompilerBufferAllocator *buffer) {
@@ -764,7 +769,7 @@ void ShaderCompilerDictionary::EmitProgram(ShaderCompilerBufferAllocator *output
         output->AppendText("#define ");
         output->AppendText(alias);
         output->AppendText("\r\n");
-        AddDefinition(alias, NULL, 0);
+        ShaderAddDefinition(this, alias, NULL, 0);
         if (node->type == 21) {
             continue;
         }
