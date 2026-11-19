@@ -160,6 +160,21 @@ extern "C" {
         struct DOGFIGHT_SPACE *owner;      // 0x2c
     } DOGFIGHT_ACTION_STATE;
 
+    typedef struct DOGFIGHT_QUICK_BOLT { // size 0x60
+        NUMTX matrix;                    // 0x00
+        NUVEC4 velocity;                 // 0x40
+        f32 duration;                    // 0x50
+        u32 unknown_54;                  // 0x54
+        i32 type;                        // 0x58
+        u32 unknown_5c;                  // 0x5c
+    } DOGFIGHT_QUICK_BOLT;
+
+    typedef struct DOGFIGHT_QUICK_BUFFER { // size 0xc
+        DOGFIGHT_QUICK_BOLT *records;      // 0x0
+        u32 capacity;                      // 0x4
+        u32 used;                          // 0x8
+    } DOGFIGHT_QUICK_BUFFER;
+
     typedef struct DOGFIGHT_SPACE {               // size 0x64740
         DOGFIGHT_CROSS crosses[2];                // 0x00000
         DOGFIGHT_GROUP groups[8];                 // 0x000a0
@@ -167,23 +182,28 @@ extern "C" {
         FLIGHT_SPLINE_RESOURCE splines[256];      // 0x034d0
         DOGFIGHT_FIGHTER queued_fighters[96];     // 0x564d0
         DOGFIGHT_RESET_RECORD reset_records[256]; // 0x5d6d0
-        DOGFIGHT_RESET_BUFFER reset_buffer;       // 0x636d0
-        u8 unknown_636dc[4];                      // 0x636dc
-        NUVEC4 origin_start;                      // 0x636e0
-        NUVEC4 origin_end;                        // 0x636f0
-        NUVEC4 direction;                         // 0x63700
-        f32 direction_length;                     // 0x63710
-        f32 inverse_direction_length;             // 0x63714
-        u8 unknown_63718[4];                      // 0x63718
-        f32 door_time;                            // 0x6371c
-        f32 door_countdown;                       // 0x63720
-        f32 door_elapsed;                         // 0x63724
-        f32 normalized_speed;                     // 0x63728
-        f32 value_one_a;                          // 0x6372c
-        f32 value_one_b;                          // 0x63730
-        i32 coin_history_count;                   // 0x63734
-        DOGFIGHT_COIN_RECORD coin_history[256];   // 0x63738
-        u8 unknown_64738[8];                      // 0x64738
+
+        union { // size 0xc
+            DOGFIGHT_RESET_BUFFER reset_buffer;
+            DOGFIGHT_QUICK_BUFFER quick_buffer; /* the same buffer holding the quick bolts (DrawQuickBolts) */
+        }; // 0x636d0
+
+        u8 unknown_636dc[4];                    // 0x636dc
+        NUVEC4 origin_start;                    // 0x636e0
+        NUVEC4 origin_end;                      // 0x636f0
+        NUVEC4 direction;                       // 0x63700
+        f32 direction_length;                   // 0x63710
+        f32 inverse_direction_length;           // 0x63714
+        u8 unknown_63718[4];                    // 0x63718
+        f32 door_time;                          // 0x6371c
+        f32 door_countdown;                     // 0x63720
+        f32 door_elapsed;                       // 0x63724
+        f32 normalized_speed;                   // 0x63728
+        f32 value_one_a;                        // 0x6372c
+        f32 value_one_b;                        // 0x63730
+        i32 coin_history_count;                 // 0x63734
+        DOGFIGHT_COIN_RECORD coin_history[256]; // 0x63738
+        u8 unknown_64738[8];                    // 0x64738
     } DOGFIGHT_SPACE;
 
     NUVEC4 DogfightDrawScale = {0.0f, 0.0f, 0.0f, 0.0f};
@@ -219,21 +239,6 @@ extern "C" {
     extern f32 FlightSplineDefaultIncrement;
 
     /* These records retain the PC-only 0x130 fighter and 0x60 quick-bolt strides. */
-    typedef struct DOGFIGHT_QUICK_BOLT { // size 0x60
-        NUMTX matrix;                    // 0x00
-        NUVEC4 velocity;                 // 0x40
-        f32 duration;                    // 0x50
-        u32 unknown_54;                  // 0x54
-        i32 type;                        // 0x58
-        u32 unknown_5c;                  // 0x5c
-    } DOGFIGHT_QUICK_BOLT;
-
-    typedef struct DOGFIGHT_QUICK_BUFFER { // size 0xc
-        DOGFIGHT_QUICK_BOLT *records;      // 0x0
-        u32 capacity;                      // 0x4
-        u32 used;                          // 0x8
-    } DOGFIGHT_QUICK_BUFFER;
-
     f32 DogfightDeathImpulseScale = 10.0f;
     f32 DogfightAimReset = 2.0f;
     f32 DogfightAimDecay = 2.0f;
@@ -1836,7 +1841,7 @@ extern "C" {
                     DrawStarFighter(&space->queued_fighters[i]);
                 }
             }
-            DrawQuickBolts((DOGFIGHT_QUICK_BUFFER *)&space->reset_buffer);
+            DrawQuickBolts(&space->quick_buffer);
         }
         for (i = 0; i < 4; ++i) {
             player = Player[i >> 1];
@@ -2495,7 +2500,7 @@ extern "C" {
         space->door_time += FRAMETIME;
         space->door_countdown += (f64)space->normalized_speed * FRAMETIME;
         ProcessFormationActions(&space->formation);
-        buffer = (DOGFIGHT_QUICK_BUFFER *)&space->reset_buffer;
+        buffer = &space->quick_buffer;
         for (i = 0; i < 8; ++i) {
             ProcessFlightGroup(&space->groups[i], buffer);
         }

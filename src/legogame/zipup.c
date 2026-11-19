@@ -63,14 +63,6 @@ typedef struct zipup_progress_s { // size 0x8
     u32 visible_mask[1];          // 0x4
 } ZIPUP_PROGRESS;
 
-typedef struct zipup_rope_vertex_s { // size 0x24
-    NUVEC position;                  // 0x00
-    NUVEC normal;                    // 0x0c
-    u32 colour;                      // 0x18
-    f32 u;                           // 0x1c
-    f32 v;                           // 0x20
-} ZIPUP_ROPE_VERTEX;
-
 static f32 ZipUpFabs(f32 value);
 
 static i32 ZipUpArcSine(f32 sin) {
@@ -1043,7 +1035,7 @@ void DrawRopeSingle(NUVEC *start, NUVEC *end, float amount, NUMTL *material, flo
     NUVEC direction;
     f32 length;
     f32 repeats;
-    ZIPUP_ROPE_VERTEX vertices[10];
+    NURND_VERTEX3D vertices[10];
     u16 x_rotation;
     u16 z_rotation;
     NUMTX matrix;
@@ -1167,7 +1159,7 @@ void DrawRopeSingle(NUVEC *start, NUVEC *end, float amount, NUMTL *material, flo
     RopeMtxSetRotationZ(&matrix, z_rotation);
     RopeMtxRotateX(&matrix, x_rotation);
     NuMtxTranslate(&matrix, start);
-    NuRndrTriStrip3dClip((NURND_VERTEX3D *)vertices, 10, &matrix, material);
+    NuRndrTriStrip3dClip(vertices, 10, &matrix, material);
     if (Cheat_IsOn(3) == 0 || VehicleArea != 0) {
         return;
     }
@@ -1219,9 +1211,9 @@ void ZipUps_DrawLines() {
     GAMEOBJECT *object = Obj;
 
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
-        ZIPUP_ROPE_VERTEX vertices[3];
-        ZIPUP_ROPE_VERTEX *start;
-        ZIPUP_ROPE_VERTEX *end;
+        NURND_VERTEX3D vertices[3];
+        NURND_VERTEX3D *start;
+        NURND_VERTEX3D *end;
 
         start = &vertices[0];
         end = &vertices[1];
@@ -1247,7 +1239,7 @@ void ZipUps_DrawLines() {
             end->position = object->player.zipup.entry;
             if (object->id == (u16)ZipUpLineCharacterId) {
                 start->position = object->position;
-                NuRndrLine3d((NURND_VERTEX3D *)start, ZipUpLineMaterial, NULL);
+                NuRndrLine3d(start, ZipUpLineMaterial, NULL);
                 continue;
             }
             ZipUp_GetStartPoint(object, &start->position);
