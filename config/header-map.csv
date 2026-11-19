@@ -3667,7 +3667,7 @@ variable:PCFogEnabled,variable,PCFogEnabled,11333,11333,1,nu2api/nustencilshadow
 variable:dat_0080e21c,variable,dat_0080e21c,11334,11334,1,nu2api/nustencilshadows_PC.h,users,dat_0080e21c: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 variable:dat_02854c90,variable,dat_02854c90,11335,11335,1,nu2api/nustencilshadows_PC.h,users,dat_02854c90: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 variable:dat_02854c94,variable,dat_02854c94,11336,11336,1,nu2api/nustencilshadows_PC.h,users,dat_02854c94: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
-variable:dat_02854d00,variable,dat_02854d00,11337,11337,1,nu2api/nustencilshadows_PC.h,users,dat_02854d00: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
+variable:NuRndrRectMaterial,variable,NuRndrRectMaterial,11337,11337,1,nu2api/nustencilshadows_PC.h,users,NuRndrRectMaterial: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 function:fun_006df670,function,fun_006df670,11338,11338,1,nu2api/nuwin32/d3dApiCalls.h,symbol,nu2api/nuwin32/d3dApiCalls.cpp pc-path
 function:PCDeviceSetGammaRamp,function,PCDeviceSetGammaRamp,11339,11339,1,nu2api/nuwin32/d3dCalls.h,symbol,nu2api/nuwin32/d3dCalls.cpp pc-path
 function:NuRndrRectUV2diZ,function,NuRndrRectUV2diZ,11340,11341,2,nu2api/nu3d/nu3d_includes.h,symbol,nu2api/nu3d_includes.cpp android-path

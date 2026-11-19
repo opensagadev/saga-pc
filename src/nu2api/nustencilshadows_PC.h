@@ -461,7 +461,7 @@ struct PC_HG_SHADOW_STATE { // size 0x10
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern struct numtl_s *dat_02854d00;
+    extern struct numtl_s *NuRndrRectMaterial;
     extern struct PC_HG_SHADOW_STATE PCShadowState;
     void NuHGobjSubmitShadowGroups(struct NUHGOBJ_EVAL *, NUMTX *, NUMTX *);
 

@@ -11,15 +11,15 @@ struct PC_TEXTURE_RESOURCE;
 extern "C" {
 #endif
     /* Compiled Direct3D 9 shader token streams of the post-effect and display-handler programs. */
-    extern const DWORD dat_007656f0[42];
-    extern const DWORD dat_00765798[43];
-    extern const DWORD dat_00765848[151];
-    extern const DWORD dat_00765aa8[126];
-    extern const DWORD dat_00765ca0[60];
-    extern const DWORD dat_00765d90[43];
-    extern const DWORD dat_00765e40[60];
-    extern const DWORD dat_00765f30[104];
-    extern const DWORD dat_007660d0[130];
+    extern const DWORD PostCopyTexVertexShader[42];
+    extern const DWORD PostCopyTexPixelShader[43];
+    extern const DWORD PostBlur5x5VertexShader[151];
+    extern const DWORD PostBlur5x5PixelShader[126];
+    extern const DWORD PostBlur7x7VertexShader[60];
+    extern const DWORD PostBlurPixelShader[43];
+    extern const DWORD PostBlurAuxVertexShader[60];
+    extern const DWORD PostCopyAuxVertexShader[104];
+    extern const DWORD PostCopyAuxPixelShader[130];
     extern const DWORD dat_007662d8[168];
     extern const DWORD dat_00766578[94];
     extern const DWORD dat_007666f0[75];

@@ -19,7 +19,7 @@
 
 extern "C" {
     u8 PcCapsConfigured = 0;
-    const char *dat_02974d58[256] = {0};
+    const char *PcKeyboardLayoutNames[256] = {0};
     TEXT_INPUT_LABELS *TextInputAlternateLabels = 0;
     u8 PcMouseAxisModes[3] = {0};
     PC_INPUT_RUNTIME *nu_input_state = 0;
@@ -30,7 +30,7 @@ extern "C" {
 static u32 PcMousePressedMask = 0;
 extern "C" {
     u8 nu_keyboard_pages[0x200] = {0};
-    char dat_029753c0[512] = {0};
+    char PcKeyboardLayoutText[512] = {0};
     i8 nu_keyboard_page_index = 0;
 }
 void (*PcInputStateInitializedCallback)(PC_INPUT_RUNTIME *) = NULL;
@@ -1300,19 +1300,19 @@ void PC_INPUT_RUNTIME::AdvanceCaptureRecords() {
     completed_mask = 0;
 }
 
-extern "C" const char *dat_02974d58[256];
-extern "C" char dat_029753c0[512];
+extern "C" const char *PcKeyboardLayoutNames[256];
+extern "C" char PcKeyboardLayoutText[512];
 
 void PC_INPUT_RUNTIME::BuildKeyboardLayoutNames(u32 layout_id) {
-    char *text = dat_029753c0;
+    char *text = PcKeyboardLayoutText;
     char name[16];
     sprintf(name, "%08.8i32x", layout_id);
     HKL layout = LoadKeyboardLayoutA(name, 1);
     for (i32 key = 0; key < 255; ++key) {
-        dat_02974d58[key] = "?";
+        PcKeyboardLayoutNames[key] = "?";
         u32 character = MapVirtualKeyExA(key, 3, layout);
         if (character >= 0x20 && character <= 0x5a) {
-            dat_02974d58[key] = text;
+            PcKeyboardLayoutNames[key] = text;
             text[0] = character;
             text[1] = 0;
             text += 2;

@@ -825,7 +825,7 @@ extern "C" {
     extern "C" PC_GEOMETRY_OUTPUT *PcGeometryOutput;
 
     extern "C" {
-        extern const DWORD dat_00769710[76] = {
+        extern const DWORD NuDisplayDebrisVertexShader[76] = {
             0xfffe0101u, 0x0022fffeu, 0x42415443u, 0x0000001cu, 0x00000053u, 0xfffe0101u, 0x00000001u, 0x0000001cu, 0x20000120u,
             0x0000004cu, 0x00000030u, 0x00000002u, 0x00020004u, 0x0000003cu, 0x00000000u, 0x77656976u, 0x6a6f7250u, 0xababab00u,
             0x00030003u, 0x00040004u, 0x00000001u, 0x00000000u, 0x315f7376u, 0x4d00315fu, 0x6f726369u, 0x74666f73u, 0x29522820u,
@@ -837,7 +837,7 @@ extern "C" {
             0x90040002u, 0xa0500004u, 0xa0050004u, 0x0000ffffu,
         };
 
-        extern const DWORD dat_00769840[44] = {
+        extern const DWORD NuDisplayDebrisPixelShader[44] = {
             0xffff0101u, 0x0023fffeu, 0x42415443u, 0x0000001cu, 0x00000053u, 0xffff0101u, 0x00000001u, 0x0000001cu, 0x00000120u,
             0x0000004cu, 0x00000030u, 0x00000003u, 0x00000001u, 0x0000003cu, 0x00000000u, 0x66666964u, 0x5f657375u, 0x00786574u,
             0x000c0004u, 0x00010001u, 0x00000001u, 0x00000000u, 0x315f7370u, 0x4d00315fu, 0x6f726369u, 0x74666f73u, 0x29522820u,
@@ -845,7 +845,7 @@ extern "C" {
             0xababab00u, 0x00000042u, 0xb00f0000u, 0x00000005u, 0x810f0000u, 0xb0e40000u, 0x90e40000u, 0x0000ffffu,
         };
 
-        extern const DWORD dat_007698f0[89] = {
+        extern const DWORD NuDisplayGlassVertexShader[89] = {
             0xfffe0200u, 0x0022fffeu, 0x42415443u, 0x0000001cu, 0x00000053u, 0xfffe0200u, 0x00000001u, 0x0000001cu, 0x20000120u,
             0x0000004cu, 0x00000030u, 0x00000002u, 0x00020004u, 0x0000003cu, 0x00000000u, 0x77656976u, 0x6a6f7250u, 0xababab00u,
             0x00030003u, 0x00040004u, 0x00000001u, 0x00000000u, 0x325f7376u, 0x4d00305fu, 0x6f726369u, 0x74666f73u, 0x29522820u,
@@ -858,7 +858,7 @@ extern "C" {
             0xa0000004u, 0x02000001u, 0xd00f0000u, 0x90e40001u, 0x02000001u, 0xe00c0000u, 0x90440002u, 0x0000ffffu,
         };
 
-        extern const DWORD dat_00769a58[124] = {
+        extern const DWORD NuDisplayGlassPixelShader[124] = {
             0xffff0200u, 0x002bfffeu, 0x42415443u, 0x0000001cu, 0x00000077u, 0xffff0200u, 0x00000002u, 0x0000001cu, 0x20000120u,
             0x00000070u, 0x00000044u, 0x00000003u, 0x00020001u, 0x00000054u, 0x00000000u, 0x00000064u, 0x00010003u, 0x00060001u,
             0x00000054u, 0x00000000u, 0x6b636162u, 0x66667542u, 0x745f7265u, 0xab007865u, 0x000c0004u, 0x00010001u, 0x00000001u,
@@ -875,7 +875,7 @@ extern "C" {
             0x802f0000u, 0x80e40000u, 0xa0e40002u, 0x02000001u, 0x802f0800u, 0x80e40000u, 0x0000ffffu,
         };
 
-        extern const DWORD dat_00769c48[87] = {
+        extern const DWORD NuDisplayGlassVertexShaderSw[87] = {
             0xfffe0101u, 0x0022fffeu, 0x42415443u, 0x0000001cu, 0x00000053u, 0xfffe0101u, 0x00000001u, 0x0000001cu, 0x20000120u,
             0x0000004cu, 0x00000030u, 0x00000002u, 0x00020004u, 0x0000003cu, 0x00000000u, 0x77656976u, 0x6a6f7250u, 0xababab00u,
             0x00030003u, 0x00040004u, 0x00000001u, 0x00000000u, 0x315f7376u, 0x4d00315fu, 0x6f726369u, 0x74666f73u, 0x29522820u,
@@ -888,7 +888,7 @@ extern "C" {
             0xd00f0000u, 0x90e40001u, 0x00000001u, 0xe00c0000u, 0xa0ff0004u, 0x0000ffffu,
         };
 
-        extern const DWORD dat_00769da8[54] = {
+        extern const DWORD NuDisplayGlassPixelShaderSw[54] = {
             0xffff0101u, 0x0024fffeu, 0x42415443u, 0x0000001cu, 0x00000057u, 0xffff0101u, 0x00000001u, 0x0000001cu, 0x00000120u,
             0x00000050u, 0x00000030u, 0x00000003u, 0x00000001u, 0x00000040u, 0x00000000u, 0x6b636162u, 0x66667542u, 0x745f7265u,
             0xab007865u, 0x000c0004u, 0x00010001u, 0x00000001u, 0x00000000u, 0x315f7370u, 0x4d00315fu, 0x6f726369u, 0x74666f73u,
@@ -897,7 +897,7 @@ extern "C" {
             0xb00f0000u, 0x00000005u, 0x81070000u, 0xb0e40000u, 0x90e40000u, 0x40000001u, 0x80080000u, 0xa0ff0000u, 0x0000ffffu,
         };
 
-        extern const DWORD dat_00769e80[262] = {
+        extern const DWORD NuDisplayFaceOnVertexShader[262] = {
             0xfffe0101u, 0x005bfffeu, 0x42415443u, 0x0000001cu, 0x00000134u, 0xfffe0101u, 0x00000008u, 0x0000001cu, 0x20000120u,
             0x0000012du, 0x000000bcu, 0x00540002u, 0x01520001u, 0x000000c8u, 0x00000000u, 0x000000d8u, 0x00500002u, 0x01420003u,
             0x000000e4u, 0x00000000u, 0x000000f4u, 0x00590002u, 0x01660001u, 0x000000c8u, 0x00000000u, 0x00000106u, 0x00300002u,
@@ -930,7 +930,7 @@ extern "C" {
             0x0000ffffu,
         };
 
-        extern const DWORD dat_0076a3c8[91] = {
+        extern const DWORD NuDisplayFaceOnDecalPixelShader[91] = {
             0xffff0200u, 0x002efffeu, 0x42415443u, 0x0000001cu, 0x00000083u, 0xffff0200u, 0x00000002u, 0x0000001cu, 0x20000120u,
             0x0000007cu, 0x00000044u, 0x00000003u, 0x00020001u, 0x00000050u, 0x00000000u, 0x00000060u, 0x00000002u, 0x00020001u,
             0x0000006cu, 0x00000000u, 0x66666964u, 0x5f657375u, 0x00786574u, 0x000c0004u, 0x00010001u, 0x00000001u, 0x00000000u,
@@ -944,7 +944,7 @@ extern "C" {
             0x0000ffffu,
         };
 
-        extern const DWORD dat_0076a298[76] = {
+        extern const DWORD NuDisplayFaceOnPixelShader[76] = {
             0xffff0101u, 0x002ffffeu, 0x42415443u, 0x0000001cu, 0x00000083u, 0xffff0101u, 0x00000002u, 0x0000001cu, 0x00000120u,
             0x0000007cu, 0x00000044u, 0x00000003u, 0x00000001u, 0x00000050u, 0x00000000u, 0x00000060u, 0x00000002u, 0x00020001u,
             0x0000006cu, 0x00000000u, 0x66666964u, 0x5f657375u, 0x00786574u, 0x000c0004u, 0x00010001u, 0x00000001u, 0x00000000u,
@@ -956,7 +956,7 @@ extern "C" {
             0xb0e40000u, 0x80e40000u, 0xa0e40000u, 0x0000ffffu,
         };
 
-        extern const DWORD dat_0076a538[43] = {
+        extern const DWORD NuDisplayDefaultVertexShader[43] = {
             0xfffe0101u, 0x0016fffeu, 0x42415443u, 0x0000001cu, 0x00000023u, 0xfffe0101u, 0x00000000u, 0x00000000u, 0x20000120u,
             0x0000001cu, 0x315f7376u, 0x4d00315fu, 0x6f726369u, 0x74666f73u, 0x29522820u, 0x534c4820u, 0x6853204cu, 0x72656461u,
             0x6d6f4320u, 0x656c6970u, 0x2e392072u, 0x392e3931u, 0x312e3934u, 0x00343031u, 0x0000001fu, 0x80000000u, 0x900f0000u,
@@ -964,7 +964,7 @@ extern "C" {
             0x00000001u, 0xd00f0000u, 0x90e40001u, 0x00000001u, 0xe0030000u, 0x90e40002u, 0x0000ffffu,
         };
 
-        extern const DWORD dat_0076a5e8[44] = {
+        extern const DWORD NuDisplayDefaultPixelShader[44] = {
             0xffff0101u, 0x0023fffeu, 0x42415443u, 0x0000001cu, 0x00000053u, 0xffff0101u, 0x00000001u, 0x0000001cu, 0x00000120u,
             0x0000004cu, 0x00000030u, 0x00000003u, 0x00000001u, 0x0000003cu, 0x00000000u, 0x66666964u, 0x5f657375u, 0x00786574u,
             0x000c0004u, 0x00010001u, 0x00000001u, 0x00000000u, 0x315f7370u, 0x4d00315fu, 0x6f726369u, 0x74666f73u, 0x29522820u,
@@ -1099,17 +1099,17 @@ extern "C" {
     }
 
     extern "C" void Nu360MtlInit(void) {
-        NuDisplayMaterialDebrisPrograms = PostShaderProgramCreate(2, dat_00769710, dat_00769840);
+        NuDisplayMaterialDebrisPrograms = PostShaderProgramCreate(2, NuDisplayDebrisVertexShader, NuDisplayDebrisPixelShader);
         if (PCDeviceHardwareVertexProcessingPC > 1) {
-            NuDisplayMaterialGlassPrograms = PostShaderProgramCreate(2, dat_007698f0, dat_00769a58);
+            NuDisplayMaterialGlassPrograms = PostShaderProgramCreate(2, NuDisplayGlassVertexShader, NuDisplayGlassPixelShader);
         } else {
-            NuDisplayMaterialGlassPrograms = PostShaderProgramCreate(2, dat_00769c48, dat_00769da8);
+            NuDisplayMaterialGlassPrograms = PostShaderProgramCreate(2, NuDisplayGlassVertexShaderSw, NuDisplayGlassPixelShaderSw);
         }
         if (PCDeviceHardwareVertexProcessingPC > 1) {
-            NuDisplayMaterialFaceOnDecalPrograms = PostShaderProgramCreate(2, dat_00769e80, dat_0076a3c8);
+            NuDisplayMaterialFaceOnDecalPrograms = PostShaderProgramCreate(2, NuDisplayFaceOnVertexShader, NuDisplayFaceOnDecalPixelShader);
         }
-        NuDisplayMaterialFaceOnPrograms = PostShaderProgramCreate(2, dat_00769e80, dat_0076a298);
-        NuDisplayMaterialDefaultPrograms = PostShaderProgramCreate(2, dat_0076a538, dat_0076a5e8);
+        NuDisplayMaterialFaceOnPrograms = PostShaderProgramCreate(2, NuDisplayFaceOnVertexShader, NuDisplayFaceOnPixelShader);
+        NuDisplayMaterialDefaultPrograms = PostShaderProgramCreate(2, NuDisplayDefaultVertexShader, NuDisplayDefaultPixelShader);
         PCDeviceCreateVertexDeclaration(NuMaterialFaceOnElements, &NuDisplayMaterialFaceOnDeclaration);
         PCDeviceCreateVertexDeclaration(NuMaterialDebrisElements, &NuDisplayMaterialDebrisDeclaration);
         PCDeviceCreateVertexDeclaration(NuMaterialDefaultElements, &NuDisplayMaterialDefaultDeclaration);
@@ -7787,11 +7787,11 @@ extern "C" {
     }
 
     void fun_005fefb0(i32, i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, i32 z) {
-        NuRndrRectUV2diZ(x, y, width, height, u0, v0, u1, v1, colour, dat_02854d00, z);
+        NuRndrRectUV2diZ(x, y, width, height, u0, v0, u1, v1, colour, NuRndrRectMaterial, z);
     }
 
     i32 fun_005ff000(i32, NUMTL *material) {
-        dat_02854d00 = material;
+        NuRndrRectMaterial = material;
         return 0;
     }
 
@@ -8169,7 +8169,7 @@ extern "C" {
     i32 PCFogColourSuppressed = 0;
     i32 PCFramePresentationState = 0;
     f32 NuRndrFxHeightOverride = 0;
-    NUMTL *dat_02854d00 = NULL;
+    NUMTL *NuRndrRectMaterial = NULL;
     void (*RenderFrameCallback)(void) = NULL;
     NUMTX *NuRndr_DebrisRotMtxPtr = 0;
     i32 NuDebrisUseSystemMemory = 0;

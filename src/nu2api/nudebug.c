@@ -37,11 +37,11 @@ void NuFrameEndLeaf(void) {
 
 void NuDebugToggle(void) {
     i32 enabled;
-    if (dat_00973868 != 0) {
-        dat_00973868 = 0;
+    if (NuDebugDisabled != 0) {
+        NuDebugDisabled = 0;
         enabled = 1;
     } else {
-        dat_00973868 = 1;
+        NuDebugDisabled = 1;
         enabled = 0;
     }
     dat_00806b94 = enabled;

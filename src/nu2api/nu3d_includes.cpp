@@ -10946,12 +10946,12 @@ GRAPHICS_RENDER_TEXTURE *NuPostEffectGetBackBuffer(i32 frame) {
     return NuPostEffectBackBufferCopy;
 }
 
-extern "C" i32 dat_0080bf24;
-extern "C" GRAPHICS_RENDER_TEXTURE *dat_0097ace4;
+extern "C" i32 NuPostDepthBufferFrame;
+extern "C" GRAPHICS_RENDER_TEXTURE *NuPostDepthBuffer;
 
 extern "C" GRAPHICS_RENDER_TEXTURE *NuPostEffectGetDepthBuffer(i32 frame) {
-    if (dat_0080bf24 != frame) {
-        dat_0080bf24 = frame;
+    if (NuPostDepthBufferFrame != frame) {
+        NuPostDepthBufferFrame = frame;
         PC_POST_BUFFER_PROXY *depth = &PostProxyBuffers[4];
         GRAPHICS_RENDER_TEXTURE *texture;
         if (depth->texture != NULL) {
@@ -10965,9 +10965,9 @@ extern "C" GRAPHICS_RENDER_TEXTURE *NuPostEffectGetDepthBuffer(i32 frame) {
             PC_FRAMEBUFFER *bound = PCGraphicsGetBoundFramebuffer();
             texture = NuFramebufferGetAttachedTex(bound, 4, NULL, NULL);
         }
-        dat_0097ace4 = texture;
+        NuPostDepthBuffer = texture;
     }
-    return dat_0097ace4;
+    return NuPostDepthBuffer;
 }
 
 /* Re-creates the size-dependent filter textures after a device reset. */
@@ -11802,11 +11802,11 @@ extern "C" void PostFilterBlitTexture(GRAPHICS_RENDER_TEXTURE *destination, i32 
     PCGraphicsFramebufferBarrier(0, 1);
 }
 
-extern "C" POST_SHADER_PROGRAM *dat_0097382c;
+extern "C" POST_SHADER_PROGRAM *PostCombineProgram;
 
 extern "C" void PostFilterCombineTextures(GRAPHICS_RENDER_TEXTURE *first, GRAPHICS_RENDER_TEXTURE *second, PC_FRAMEBUFFER *framebuffer) {
     PCGraphicsBindFramebuffer(framebuffer);
-    NuShaderProgramMakeCurrent(dat_0097382c);
+    NuShaderProgramMakeCurrent(PostCombineProgram);
     POST_FILTER_BIND_TEXTURE(0, first);
     POST_FILTER_BIND_TEXTURE(1, second);
     PCGraphicsDrawPostEffectQuad();
@@ -11957,7 +11957,7 @@ void NuSpeedBlurFilterGen::render() {
 extern "C" {
     f32 NuMainFilterDofBlurScale = 1.5f;
     i32 NuPostEffectBackBufferFrame = -1;
-    i32 dat_0080bf24 = -1;
+    i32 NuPostDepthBufferFrame = -1;
     f32 PostBlurHighOutputBias = 1.0f;
     /* Mutable half-texel terms read by PostBlur7x7High (input -0.5, output +1.0). */
     f32 PostBlurHighInputBias = -0.5f;
@@ -12487,11 +12487,11 @@ extern "C" void PostFilterCopyTexturePass(GRAPHICS_RENDER_TEXTURE *texture, PC_F
 extern "C" void fun_005c3a40(void) {
 }
 
-extern "C" POST_SHADER_PROGRAM *dat_00973820;
+extern "C" POST_SHADER_PROGRAM *PostDepthResolveProgram;
 
 extern "C" void PostFilterDepthResolve(GRAPHICS_RENDER_TEXTURE *color, GRAPHICS_RENDER_TEXTURE *depth, PC_FRAMEBUFFER *framebuffer) {
     PCGraphicsBindFramebuffer(framebuffer);
-    NuShaderProgramMakeCurrent(dat_00973820);
+    NuShaderProgramMakeCurrent(PostDepthResolveProgram);
     i32 width = PCGraphicsEffectTextureWidth(color);
     i32 height = PCGraphicsEffectTextureHeight(color);
     i32 filter = NuFramebufferGetWidth(framebuffer) == width && NuFramebufferGetHeight(framebuffer) == height ? 1 : 2;
@@ -13219,7 +13219,7 @@ extern "C" {
     PC_POST_DATA_PORT_MANAGER PostResourceManager;
     PC_FRAMEBUFFER *PostBlurFramebuffer = 0;
     PC_FRAMEBUFFER *PostCopyFramebuffer = 0;
-    i32 dat_00973868 = 0;
+    i32 NuDebugDisabled = 0;
     i32 PcGeometryRegistryCount = 0;
     struct PC_GEOMETRY_PUBLISH_RECORD *PcGeometryRegistry = NULL;
     i32 PcGeometryMatrixCapacity = 0;
@@ -18223,7 +18223,7 @@ void NuDeferredFilterGen::render() {
 extern "C" __declspec(align(16)) NUMTX PostShadowView = {0};
 extern "C" {
     GRAPHICS_RENDER_TEXTURE *NuPostEffectBackBufferCopy = NULL;
-    GRAPHICS_RENDER_TEXTURE *dat_0097ace4 = NULL;
+    GRAPHICS_RENDER_TEXTURE *NuPostDepthBuffer = NULL;
     NUMTX NuPortalProjectionInverse = {0};
     NUMTX NuPortalProjectionScratch = {0};
 }

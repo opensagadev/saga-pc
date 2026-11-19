@@ -134,9 +134,9 @@ extern "C" POST_SHADER_PROGRAM *PostShaderProgramCreate(i32 mode, const DWORD *v
 
 extern "C" {
     POST_SHADER_PROGRAM *PostCopyTexProgram = 0;
-    POST_SHADER_PROGRAM *dat_00973820 = 0;
+    POST_SHADER_PROGRAM *PostDepthResolveProgram = 0;
     POST_SHADER_PROGRAM *PostCopyTexLodProgram = 0;
-    POST_SHADER_PROGRAM *dat_0097382c = 0;
+    POST_SHADER_PROGRAM *PostCombineProgram = 0;
     POST_SHADER_PROGRAM *PostBlendTexProgram = 0;
     POST_SHADER_PROGRAM *PostBlur5x5Program = 0;
     POST_SHADER_PROGRAM *PostBlur7x7Program = 0;
@@ -148,15 +148,15 @@ extern "C" {
 
 extern "C" void PostFilterInitPrograms(i32 width, i32 height) {
     PostFilterInitSharedResources();
-    PostCopyTexProgram = PostShaderProgramCreate(2, dat_007656f0, dat_00765798);
+    PostCopyTexProgram = PostShaderProgramCreate(2, PostCopyTexVertexShader, PostCopyTexPixelShader);
     PostCopyTexLodProgram = NULL;
     PostBlendTexProgram = NULL;
     if (PCDeviceHardwareVertexProcessingPC > 1) {
-        PostBlur5x5Program = PostShaderProgramCreate(2, dat_00765848, dat_00765aa8);
-        PostBlur7x7Program = PostShaderProgramCreate(2, dat_00765ca0, dat_00765d90);
+        PostBlur5x5Program = PostShaderProgramCreate(2, PostBlur5x5VertexShader, PostBlur5x5PixelShader);
+        PostBlur7x7Program = PostShaderProgramCreate(2, PostBlur7x7VertexShader, PostBlurPixelShader);
     }
-    PostCopyAuxProgram = PostShaderProgramCreate(2, dat_00765f30, dat_007660d0);
-    PostBlurAuxProgram = PostShaderProgramCreate(2, dat_00765e40, dat_00765d90);
+    PostCopyAuxProgram = PostShaderProgramCreate(2, PostCopyAuxVertexShader, PostCopyAuxPixelShader);
+    PostBlurAuxProgram = PostShaderProgramCreate(2, PostBlurAuxVertexShader, PostBlurPixelShader);
 }
 
 extern "C" void NuShaderProgramMakeCurrent(POST_SHADER_PROGRAM *program) {

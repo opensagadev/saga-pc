@@ -22602,15 +22602,15 @@ address,symbol,size,ctype
 0x765690,__real@405c000000000000,8,const f64
 0x765698,??_C@_0DO@EEMKPPGP@Occluders?5?3?5?$CF2d?0?5Queries?5?3?5?$CF2d?0?5@,62,const char[]
 0x7656d8,__real@42dc0000,4,const f32
-0x7656f0,_dat_007656f0,168,const DWORD[42]
-0x765798,_dat_00765798,172,const DWORD[43]
-0x765848,_dat_00765848,604,const DWORD[151]
-0x765aa8,_dat_00765aa8,504,const DWORD[126]
-0x765ca0,_dat_00765ca0,240,const DWORD[60]
-0x765d90,_dat_00765d90,172,const DWORD[43]
-0x765e40,_dat_00765e40,240,const DWORD[60]
-0x765f30,_dat_00765f30,416,const DWORD[104]
-0x7660d0,_dat_007660d0,520,const DWORD[130]
+0x7656f0,_PostCopyTexVertexShader,168,const DWORD[42]
+0x765798,_PostCopyTexPixelShader,172,const DWORD[43]
+0x765848,_PostBlur5x5VertexShader,604,const DWORD[151]
+0x765aa8,_PostBlur5x5PixelShader,504,const DWORD[126]
+0x765ca0,_PostBlur7x7VertexShader,240,const DWORD[60]
+0x765d90,_PostBlurPixelShader,172,const DWORD[43]
+0x765e40,_PostBlurAuxVertexShader,240,const DWORD[60]
+0x765f30,_PostCopyAuxVertexShader,416,const DWORD[104]
+0x7660d0,_PostCopyAuxPixelShader,520,const DWORD[130]
 0x7662d8,_dat_007662d8,672,const DWORD[168]
 0x766578,_dat_00766578,376,const DWORD[94]
 0x7666f0,_dat_007666f0,300,const DWORD[75]
@@ -22629,17 +22629,17 @@ address,symbol,size,ctype
 0x7690b0,_dat_007690b0,524,const DWORD[131]
 0x7692c0,_dat_007692c0,700,const DWORD[175]
 0x769580,_dat_00769580,400,const DWORD[100]
-0x769710,_dat_00769710,304,const DWORD[76]
-0x769840,_dat_00769840,176,const DWORD[44]
-0x7698f0,_dat_007698f0,356,const DWORD[89]
-0x769a58,_dat_00769a58,496,const DWORD[124]
-0x769c48,_dat_00769c48,348,const DWORD[87]
-0x769da8,_dat_00769da8,216,const DWORD[54]
-0x769e80,_dat_00769e80,1048,const DWORD[262]
-0x76a298,_dat_0076a298,304,const DWORD[76]
-0x76a3c8,_dat_0076a3c8,364,const DWORD[91]
-0x76a538,_dat_0076a538,172,const DWORD[43]
-0x76a5e8,_dat_0076a5e8,176,const DWORD[44]
+0x769710,_NuDisplayDebrisVertexShader,304,const DWORD[76]
+0x769840,_NuDisplayDebrisPixelShader,176,const DWORD[44]
+0x7698f0,_NuDisplayGlassVertexShader,356,const DWORD[89]
+0x769a58,_NuDisplayGlassPixelShader,496,const DWORD[124]
+0x769c48,_NuDisplayGlassVertexShaderSw,348,const DWORD[87]
+0x769da8,_NuDisplayGlassPixelShaderSw,216,const DWORD[54]
+0x769e80,_NuDisplayFaceOnVertexShader,1048,const DWORD[262]
+0x76a298,_NuDisplayFaceOnPixelShader,304,const DWORD[76]
+0x76a3c8,_NuDisplayFaceOnDecalPixelShader,364,const DWORD[91]
+0x76a538,_NuDisplayDefaultVertexShader,172,const DWORD[43]
+0x76a5e8,_NuDisplayDefaultPixelShader,176,const DWORD[44]
 0x76a698,??_C@_0DH@ICLEEBBP@d?3?2projects?2game_saga?2nu2api?4sag@,55,char[55]
 0x76a6d0,??_C@_03CBDDAJHO@dds?$AA@,4,char[4]
 0x76a6d4,??_C@_0BJ@EOODBIEJ@pc?2stuff?2PhongMap_PC?4dds?$AA@,25,char[25]
@@ -38621,7 +38621,7 @@ address,symbol,size,ctype
 0x80bee4,??_R0?AVNuMotionFilter@@@8,29,native exactVT binding; unimplemented extent unclaimed
 0x80bf04,??_R0?AVNuCopyFilter@@@8,27,native exactVT binding; unimplemented extent unclaimed
 0x80bf20,_NuPostEffectBackBufferFrame,4,i32
-0x80bf24,_dat_0080bf24,4,i32
+0x80bf24,_NuPostDepthBufferFrame,4,i32
 0x80bf28,_PostBlurHighOutputBias,4,f32
 0x80bf2c,_PostBlurHighInputBias,4,f32
 0x80bf30,??_R0?AVNuMotionAccumFilterGen@@@8,37,native exactVT binding; unimplemented extent unclaimed
@@ -42207,9 +42207,9 @@ address,symbol,size,ctype
 0x973814,_NuPostCopyFilter,4,native BSS
 0x973818,_NuPostShaderEngineFlags,4,native BSS
 0x97381c,_PostCopyTexProgram,4,POST_SHADER_PROGRAM*
-0x973820,_dat_00973820,4,POST_SHADER_PROGRAM*
+0x973820,_PostDepthResolveProgram,4,POST_SHADER_PROGRAM*
 0x973828,_PostCopyTexLodProgram,4,POST_SHADER_PROGRAM*
-0x97382c,_dat_0097382c,4,POST_SHADER_PROGRAM*
+0x97382c,_PostCombineProgram,4,POST_SHADER_PROGRAM*
 0x973830,_PostBlendTexProgram,4,POST_SHADER_PROGRAM*
 0x973834,_PostBlur5x5Program,4,POST_SHADER_PROGRAM*
 0x973838,_PostBlur7x7Program,4,POST_SHADER_PROGRAM*
@@ -42221,7 +42221,7 @@ address,symbol,size,ctype
 0x0097385c,?ms_pZOnlyMtl3D@OccluderSet@@2PAUnumtl_s@@A,4,NUMTL*; working scalar view; original owning extent unknown
 0x00973860,?ms_pZOnlyMtl2D@OccluderSet@@2PAUnumtl_s@@A,4,NUMTL*; working scalar view; original owning extent unknown
 0x00973864,?ms_pAlphaMtl2D@OccluderSet@@2PAUnumtl_s@@A,4,NUMTL*; working scalar view; original owning extent unknown
-0x973868,_dat_00973868,4,i32
+0x973868,_NuDebugDisabled,4,i32
 0x97386c,_PcGeometryRegistryCount,4,i32
 0x973870,_PcGeometryRegistry,4,PC_GEOMETRY_PUBLISH_RECORD *
 0x973874,_PcGeometryMatrixCapacity,4,i32
@@ -42351,7 +42351,7 @@ address,symbol,size,ctype
 0x9784a0,_PostResourceManager,10240,PC_POST_DATA_PORT_MANAGER
 0x97aca0,_PostShadowView,64,NUMTX standalone BSS; native outputs5e8950 and copysetter5c6d90
 0x97ace0,_NuPostEffectBackBufferCopy,4,GRAPHICS_RENDER_TEXTURE *
-0x97ace4,_dat_0097ace4,4,GRAPHICS_RENDER_TEXTURE *
+0x97ace4,_NuPostDepthBuffer,4,GRAPHICS_RENDER_TEXTURE *
 0x97ace8,_PostBlurDirectOutputBias,4,f32 BSS; only read by PostBlur7x7Direct
 0x97acec,_PostBlurDirectInputBias,4,f32 BSS; only read by PostBlur7x7Direct
 0x97acf0,_debris_box_camera_cache,64,NUMTX
@@ -42483,7 +42483,7 @@ address,symbol,size,ctype
 0x2854cb0,_PCFogColourSuppressed,4,i32
 0x02854cdc,_PCFramePresentationState,4,i32
 0x02854cec,_NuRndrFxHeightOverride,4,f32
-0x2854d00,_dat_02854d00,4,NUMTL *
+0x2854d00,_NuRndrRectMaterial,4,NUMTL *
 0x2854d04,_RenderFrameCallback,4,void (__cdecl*)(void)
 0x2854d08,_NuRndr_DebrisRotMtxPtr,4,NUMTX *
 0x2854d0c,_NuDebrisUseSystemMemory,4,i32
@@ -43447,7 +43447,7 @@ address,symbol,size,ctype
 0x2974d40,_PcIntelShaderFallback,4,i32
 0x02974d4c,_StartupDatCount,4,i32
 0x2974d50,_PcCapsConfigured,1,u8
-0x2974d58,_dat_02974d58,1024,const char *[256]
+0x2974d58,_PcKeyboardLayoutNames,1024,const char *[256]
 0x2975158,_TextInputAlternateLabels,4,TEXT_INPUT_LABELS*
 0x297515c,_PcMouseAxisModes,3,u8[3]
 0x02975164,_nu_input_state,4,NuKeyboardState *
@@ -43457,7 +43457,7 @@ address,symbol,size,ctype
 0x2975194,_PcMouseSamples,40,PC_DI_MOUSE_STATE[2]
 0x29751bc,_PcMousePressedMask,4,u32
 0x029751c0,_nu_keyboard_pages,512,u8[512]
-0x29753c0,_dat_029753c0,512,char[512]
+0x29753c0,_PcKeyboardLayoutText,512,char[512]
 0x29755c0,?PcInputWriteTextProfiles@@3EA,1,
 0x029755c1,_nu_keyboard_page_index,1,u8
 0x29755c2,_PcKeyQueueHead,1,u8
@@ -43472,7 +43472,7 @@ address,symbol,size,ctype
 0x29755fc,_PcXInputDeviceCount,4,i32
 0x02975600,_nu_keyboard_previous_key_index,4,i32
 0x02975604,_nu_keyboard_no_key_state,4,i32
-0x2975608,_dat_02975608,4,f32
+0x2975608,_FmvOverlayTimer,4,f32
 0x297560c,_PcMouseCurrentAngle,4,i32
 0x2975610,_PcMouseTargetAngle,4,i32
 0x2975614,_PcMouseRadius,4,f32
@@ -43675,7 +43675,7 @@ address,symbol,size,ctype
 0x297d4a0,_PCShaderWaterTable,512,NUVEC4[32]
 0x297d6a0,_PCShaderWaterPreviousMaterial,4,struct numtl_s *
 0x297d6a4,_PCShaderWaterInitializationBits,4,u32
-0x297d6a8,_dat_0297d6a8,16,u8[16]
+0x297d6a8,_NuShaderKeyHash,16,u8[16]
 0x297d6b8,_CRC16TablePC,1024,u32[256]
 0x297dab8,?CRC16InstancePC@@3VCRC16@@A,1,CRC16
 0x297dac0,_ShaderLexicalClasses,256,

@@ -45,10 +45,10 @@ extern "C" void FmvPlatformFinish(void) {
 extern "C" void fun_006d6b60(void) {
 }
 
-extern "C" f32 dat_02975608;
+extern "C" f32 FmvOverlayTimer;
 
 extern "C" {
-    f32 dat_02975608 = 0.0f;
+    f32 FmvOverlayTimer = 0.0f;
 }
 
 extern "C" i32 fun_006d6b70(i32 key) {
@@ -56,15 +56,15 @@ extern "C" i32 fun_006d6b70(i32 key) {
         return 0;
     }
     if (nu_keyboard_no_key_state == 0) {
-        dat_02975608 = 0.5f;
+        FmvOverlayTimer = 0.5f;
         nu_keyboard_no_key_state = 1;
         return 1;
     }
-    dat_02975608 = dat_02975608 - NuTimeGetFrameTime();
-    if (dat_02975608 <= 0.0f) {
-        dat_02975608 += 0.125;
-        if (dat_02975608 <= 0.0f) {
-            dat_02975608 = 0.0f;
+    FmvOverlayTimer = FmvOverlayTimer - NuTimeGetFrameTime();
+    if (FmvOverlayTimer <= 0.0f) {
+        FmvOverlayTimer += 0.125;
+        if (FmvOverlayTimer <= 0.0f) {
+            FmvOverlayTimer = 0.0f;
         }
         return 1;
     }

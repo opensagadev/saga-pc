@@ -1454,7 +1454,7 @@ extern "C" {
     extern i32 dat_00806b90;
     extern i32 dat_00806b94;
     extern i32 dat_0080b6e4;
-    extern i32 dat_00973868;
+    extern i32 NuDebugDisabled;
     extern i32 motionBlurAccumActiveThisFrame;
     extern i32 mtl_animation_mask;
     extern i32 nuqfnt_initialised;
