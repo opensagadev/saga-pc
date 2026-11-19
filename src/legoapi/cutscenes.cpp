@@ -1054,7 +1054,7 @@ extern "C" {
         if ((character->flags & CUT_CHARACTER_MODEL_ONLY) == 0) {
             object = static_cast<GAMEOBJECT *>(instance->model);
         }
-        NuGCutCharAnimProcess(reinterpret_cast<CUT_CHARACTER_GENERIC *>(character), frame, &matrix, &visible, NULL, NULL, NULL, NULL, NULL);
+        NuGCutCharAnimProcess(character, frame, &matrix, &visible, NULL, NULL, NULL, NULL, NULL);
         INSTNUGCUTSCENE *state = owner;
         if ((state->flags_88 & 0x80) != 0) {
             NuMtxMul(&matrix, &matrix, &state->matrix);
@@ -1214,12 +1214,12 @@ extern "C" {
     static void LocatorFunction_Blaster(INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *,
                                         CUT_LOAD_LOCATOR *locator, f32 frame, NUMTX *parent, i32) {
         NUANIM_TIME2 time;
-        NuAnimData2CalcTime(locator->animation, frame, &time);
-        if (NuGCutLocatorIsVisble(reinterpret_cast<CUT_LOCATOR_GENERIC *>(locator), frame, &time, NULL, NULL) == 0) {
+        NuAnimData2CalcTime(&locator->animation->prefix, frame, &time);
+        if (NuGCutLocatorIsVisble(locator, frame, &time, NULL, NULL) == 0) {
             return;
         }
         NUMTX matrix;
-        NuGCutLocatorCalcMtx(reinterpret_cast<CUT_LOCATOR_GENERIC *>(locator), frame, &matrix, &time);
+        NuGCutLocatorCalcMtx(locator, frame, &matrix, &time);
         if ((locator->flags & 4) != 0) {
             NuMtxPreTranslate(&matrix, &locator->pivot);
         }
@@ -1387,7 +1387,7 @@ extern "C" {
         f32 animation_rate;
         f32 blend_time;
         f32 animation_start_frame;
-        NuGCutCharAnimProcess(reinterpret_cast<CUT_CHARACTER_GENERIC *>(character), frame, &world_matrix, &visible, &animation_index,
+        NuGCutCharAnimProcess(character, frame, &world_matrix, &visible, &animation_index,
                               &animation_rate, &blend_time, &animation_start_frame, &layer_mask);
         if (paused != 0) {
             animation_rate = 0.0f;

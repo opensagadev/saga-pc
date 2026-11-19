@@ -113,7 +113,7 @@ static void CutSceneEndRigidsPC(INSTNUGCUTSCENE *owner, f32 frame) {
             if (NuSpecialGetVisibilityFn(&object->special) == 0) {
                 continue;
             }
-            NuGCutRigidCalcMtx((CUT_RIGID_GENERIC *)source, frame, &matrix);
+            NuGCutRigidCalcMtx(source, frame, &matrix);
             if ((instance->flags_88 & NUGCUTSCENE_INST_OWN_MATRIX) != 0) {
                 NuMtxMul(&matrix, &matrix, &instance->matrix);
             }
@@ -136,7 +136,7 @@ i32 instNuGCutGetNextRigidInfo(INSTNUGCUTSCENE *owner, f32 frame, i32 index, NUM
     rigid = &system->rigids[index];
     object = &instance->rigid_instance->rigids[index];
     if ((rigid->flags & (CUTRIGID_INSTANCED | CUTRIGID_FOUND)) != 0) {
-        NuGCutRigidCalcMtx((CUT_RIGID_GENERIC *)rigid, frame, matrix);
+        NuGCutRigidCalcMtx(rigid, frame, matrix);
         if ((instance->flags_88 & NUGCUTSCENE_INST_OWN_MATRIX) != 0) {
             NuMtxMul(matrix, matrix, &instance->matrix);
         }
@@ -1225,7 +1225,7 @@ static void CutSceneRigidSysRender(INSTNUGCUTSCENE *instance, f32 frame, i32 pau
         if (object->visible == 0) {
             continue;
         }
-        NuGCutRigidCalcMtx((CUT_RIGID_GENERIC *)rigid, frame, &matrix);
+        NuGCutRigidCalcMtx(rigid, frame, &matrix);
         if ((instance->flags_88 & NUGCUTSCENE_INST_OWN_MATRIX) != 0) {
             NuMtxMul(&matrix, &matrix, &instance->matrix);
         }
@@ -1427,7 +1427,7 @@ static void CutSceneCameraSysUpdate(INSTNUGCUTSCENE *instance, f32 frame) {
                 CUT_LOAD_LOCATOR *locator = &instance->scene->locator_system->locators[state->focus_index];
                 if (locator->animation != NULL) {
                     NUMTX focus_matrix;
-                    NuGCutLocatorCalcMtx((CUT_LOCATOR_GENERIC *)locator, frame, &focus_matrix, NULL);
+                    NuGCutLocatorCalcMtx(locator, frame, &focus_matrix, NULL);
                     if ((locator->flags & CUTLOC_PIVOT) != 0) {
                         NuMtxPreTranslate(&focus_matrix, &locator->pivot);
                     }
@@ -1502,7 +1502,7 @@ static void CutSceneRigidSysUpdate(INSTNUGCUTSCENE *instance, f32 frame, i32 pau
         if (NuSpecialGetVisibilityFn(&object->special) == 0) {
             continue;
         }
-        NuGCutRigidCalcMtx((CUT_RIGID_GENERIC *)rigid, frame, &matrix);
+        NuGCutRigidCalcMtx(rigid, frame, &matrix);
         if ((instance->flags_88 & NUGCUTSCENE_INST_OWN_MATRIX) != 0) {
             NuMtxMul(&matrix, &matrix, &instance->matrix);
         }

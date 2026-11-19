@@ -168,10 +168,10 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 NuGCutLocatorIsVisble_3(CUT_LOCATOR_GENERIC *, f32, f32 *, f32 *);
-    i32 NuGCutLocatorIsVisble(CUT_LOCATOR_GENERIC *, f32, struct NUANIM_TIME2 *, f32 *, f32 *);
-    f32 *NuGCutLocatorCalcMtx(CUT_LOCATOR_GENERIC *, f32, NUMTX *, struct NUANIM_TIME2 *);
-    void NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC *, f32, NUMTX *, i32 *, u32 *, f32 *, f32 *, f32 *, i32 *);
+    i32 NuGCutLocatorIsVisble_3(struct cut_load_locator_s *, f32, f32 *, f32 *);
+    i32 NuGCutLocatorIsVisble(struct cut_load_locator_s *, f32, struct NUANIM_TIME2 *, f32 *, f32 *);
+    f32 *NuGCutLocatorCalcMtx(struct cut_load_locator_s *, f32, NUMTX *, struct NUANIM_TIME2 *);
+    void NuGCutCharAnimProcess(struct cut_load_character_s *, f32, NUMTX *, i32 *, u32 *, f32 *, f32 *, f32 *, i32 *);
 #ifdef __cplusplus
 }
 #endif

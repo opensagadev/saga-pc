@@ -158,9 +158,9 @@ static void CutSceneLocatorDebrisUpdate(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LOCA
         return;
     }
     if (locator->animation != NULL) {
-        NuAnimData2CalcTime(locator->animation, frame, &time);
+        NuAnimData2CalcTime(&locator->animation->prefix, frame, &time);
     }
-    if (NuGCutLocatorIsVisble((CUT_LOCATOR_GENERIC *)locator, frame, &time, &scale, &rate) != 0) {
+    if (NuGCutLocatorIsVisble(locator, frame, &time, &scale, &rate) != 0) {
         if (scale < 0.0f && (locator->flags & CUTLOC_FINITE_SHOT) == 0) {
             // MATCH-EXCEPTION: the original negates with fldz/fsubrp (0 - scale), unary minus gives fchs.
             scale = (f32)debtab[effect]->frequency * (0.0f - scale);
@@ -169,7 +169,7 @@ static void CutSceneLocatorDebrisUpdate(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LOCA
             if ((locator->flags & CUTLOC_FINITE_SHOT) != 0 && instance->effect.index != 0) {
                 return;
             }
-            NuGCutLocatorCalcMtx((CUT_LOCATOR_GENERIC *)locator, frame, &matrix, &time);
+            NuGCutLocatorCalcMtx(locator, frame, &matrix, &time);
             if ((locator->flags & CUTLOC_PIVOT) != 0) {
                 NuMtxPreTranslate(&matrix, &locator->pivot);
             }
@@ -245,10 +245,10 @@ static void CutSceneLocatorVfxUpdate(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LOCATOR
         return;
     }
     if (locator->animation != NULL) {
-        NuAnimData2CalcTime(locator->animation, frame, &time);
+        NuAnimData2CalcTime(&locator->animation->prefix, frame, &time);
     }
-    if (NuGCutLocatorIsVisble((CUT_LOCATOR_GENERIC *)locator, frame, &time, &scale, NULL) != 0 && (f64)scale > 0.10000000149011612) {
-        NuGCutLocatorCalcMtx((CUT_LOCATOR_GENERIC *)locator, frame, &matrix, &time);
+    if (NuGCutLocatorIsVisble(locator, frame, &time, &scale, NULL) != 0 && (f64)scale > 0.10000000149011612) {
+        NuGCutLocatorCalcMtx(locator, frame, &matrix, &time);
         if ((locator->flags & CUTLOC_PIVOT) != 0) {
             NuMtxPreTranslate(&matrix, &locator->pivot);
         }
@@ -303,7 +303,7 @@ static void CutSceneLocatorLookAtUpdate(CUT_LOAD_LOCATOR_INSTANCE *instance, CUT
     f32 blend;
     f32 start;
     i32 layers;
-    i32 magic = locator->animation->header.magic;
+    i32 magic = locator->animation->prefix.header.magic;
     if (magic < 0x414e4934 || magic > 0x414e4935) {
         return;
     }
@@ -313,7 +313,7 @@ static void CutSceneLocatorLookAtUpdate(CUT_LOAD_LOCATOR_INSTANCE *instance, CUT
         return;
     }
     hierarchy = state->hierarchy;
-    values = NuGCutLocatorCalcMtx((CUT_LOCATOR_GENERIC *)locator, frame, &locator_matrix, NULL);
+    values = NuGCutLocatorCalcMtx(locator, frame, &locator_matrix, NULL);
     if ((locator->flags & CUTLOC_PIVOT) != 0) {
         NuMtxPreTranslate(&locator_matrix, &locator->pivot);
     }
@@ -326,7 +326,7 @@ static void CutSceneLocatorLookAtUpdate(CUT_LOAD_LOCATOR_INSTANCE *instance, CUT
         if (first != 0) {
             character = &owner->scene->character_system->characters[state->character - 1];
             character_instance = &owner->character_instance->characters[state->character - 1];
-            NuGCutCharAnimProcess((CUT_CHARACTER_GENERIC *)character, character_instance->frame_a, &character_matrix, &visible,
+            NuGCutCharAnimProcess(character, character_instance->frame_a, &character_matrix, &visible,
                                   &animation_index, &animation_rate, &blend, &start, &layers);
             if (visible == 0) {
                 return;

@@ -130,46 +130,15 @@ extern "C" {
 }
 #endif
 
-typedef struct CUT_LOCATOR_GENERIC {        // size 0x54
-    NUMTX base_matrix;                      // 0x00
-    u8 unknown_40_4f[16];                   // 0x40
-    struct NUANIMDATA2_SKELETAL *animation; // 0x50
-} CUT_LOCATOR_GENERIC;
-
-typedef struct CUT_RIGID_GENERIC {          // size 0x50
-    NUMTX base_matrix;                      // 0x00
-    u8 unknown_40_4b[12];                   // 0x40
-    struct NUANIMDATA2_SKELETAL *animation; // 0x4c
-} CUT_RIGID_GENERIC;
-
-/* CUT_CHARACTER_GENERIC.flags (CUT_DRAW_CHARACTER.flags in cutscenes.cpp) */
+/* cut_load_character_s.flags */
 #define CUT_CHARACTER_MODEL_ONLY 0x2  /* drawn from a loaded character model (CutSceneFindModel's model_only), not a player */
 #define CUT_CHARACTER_SHADOW 0x10     /* casts the blob shadow */
 #define CUT_CHARACTER_REFLECTION 0x20 /* drawn reflected within CutReflectRange */
 
-typedef struct CUT_CHARACTER_GENERIC {      // size 0x64
-    NUMTX base_matrix;                      // 0x00
-    char *name;                             // 0x40
-    struct NUANIMDATA2_SKELETAL *animation; // 0x44
-    struct NUANIMDATA2 *face_animation;     // 0x48
-    struct NUANIMDATA2 *extra_animation;    // 0x4c
-    u8 unknown_50[0x4];                     // 0x50
-    void *locator;                          // 0x54
-    f32 animation_rate;                     // 0x58
-    u8 flags;                               // 0x5c
-    u8 animation_index;                     // 0x5d
-    u8 has_locator;                         // 0x5e
-    u8 unknown_5f;                          // 0x5f
-    u8 locator_index;                       // 0x60
-    u8 blend_time;                          // 0x61
-    u8 unknown_62;                          // 0x62
-    i8 start_frame;                         // 0x63
-} CUT_CHARACTER_GENERIC;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuGCutRigidCalcMtx(CUT_RIGID_GENERIC *, f32, NUMTX *);
+    void NuGCutRigidCalcMtx(struct cut_load_rigid_s *, f32, NUMTX *);
     extern i32 DefragCutSceneListSize;
     extern void (*DefragInstDestroyedFn)(void *);
     extern void *DefragCutSceneBaseMem;
@@ -187,7 +156,7 @@ typedef struct cut_load_locator_s { // size 0x64
     NUMTX matrix;                   // 0x00
     NUVEC pivot;                    // 0x40
     f32 scale;                      // 0x4c
-    struct NUANIMDATA2 *animation;  // 0x50
+    struct NUANIMDATA2_SKELETAL *animation; // 0x50
     u32 unknown_54;                 // 0x54
     u8 flags;                       // 0x58
     u8 type_index;                  // 0x59
@@ -225,7 +194,7 @@ typedef struct cut_load_rigid_s { // size 0x5c
     char *name;                   // 0x40
     struct NUGSCN_s *scene;       // 0x44
     void *special;                // 0x48
-    void *animation;              // 0x4c
+    struct NUANIMDATA2_SKELETAL *animation; // 0x4c
     STATE_ANIM *state_animation;  // 0x50
 
     union { // size 0x4
@@ -250,11 +219,11 @@ typedef struct cut_load_rigid_system_s {
     u16 unused;
 } CUT_LOAD_RIGID_SYSTEM;
 
-struct cut_load_character_s {            // size 0x64
-    NUMTX matrix;                        // 0x00
-    char *name;                          // 0x40
-    void *animation;                     // 0x44
-    struct ANI3_HEADER *face_animation;  // 0x48
+struct cut_load_character_s {           // size 0x64
+    NUMTX matrix;                       // 0x00
+    char *name;                         // 0x40
+    struct NUANIMDATA2_SKELETAL *animation; // 0x44
+    struct ANI3_HEADER *face_animation; // 0x48
     struct NUANIMDATA2 *extra_animation; // 0x4c
     void *model;                         // 0x50
 
