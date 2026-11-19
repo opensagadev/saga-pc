@@ -10207,11 +10207,11 @@ extern "C" {
                 replacement = PCSpecialForcedMaterial;
             }
             if (replacement != NULL) {
-                NUMTL *replacement_view = replacement;
-                if (material->shader.vertex_format != replacement_view->shader.vertex_format) {
+                NUMTL *replacement_material = replacement;
+                if (material->shader.vertex_format != replacement_material->shader.vertex_format) {
                     material = NuMtlFindVariantMtl(material, replacement);
                 } else {
-                    material = replacement_view;
+                    material = replacement_material;
                 }
             }
             for (; material != NULL; material = material->next) {
@@ -10828,8 +10828,8 @@ extern "C" void NuDisplayListBurstRndrSpecial(nuhspecial_s *handle, u32 count, N
     NUDISPLAY_LIST *scene = handle->scene->display_list;
     scene->render_flags |= 2;
     for (u32 material = 0; material < static_cast<u32>(object->material_count); ++material) {
-        NUMTL *material_view = scene->display_materials[object->material_ids[material]];
-        NUDISPLAYLIST *list = material_view->display_list;
+        NUMTL *display_material = scene->display_materials[object->material_ids[material]];
+        NUDISPLAYLIST *list = display_material->display_list;
         scene->material_used[(scene->render_flags >> 15) & 1][list->material_id / 8] |= 1 << (list->material_id % 8);
         DisplayListUpdateRenderState(list, &render_state);
         VARIPTR *buffer = NuDisplayListLinkItems(list, visible_count * 2);
@@ -15342,14 +15342,14 @@ extern "C" {
 
     NUMTX *NuSpecialGetDrawMtx(nuhspecial_s *special) {
         NUSPECIAL_LEGACY *legacy = (NUSPECIAL_LEGACY *)special->special;
-        NUINSTANCE *instance_view;
+        NUINSTANCE *record;
         NUDISPLAY_SPECIAL *display;
         NUMTX *instance;
         NUMTX *draw_matrix;
         if (legacy != NULL) {
-            instance = (NUMTX *)legacy->instance;
-            instance_view = (NUINSTANCE *)legacy->instance;
-            draw_matrix = &instance_view->animation->matrix;
+            instance = &legacy->instance->matrix;
+            record = legacy->instance;
+            draw_matrix = &record->animation->matrix;
             return draw_matrix != NULL ? draw_matrix : instance;
         }
         display = special->display_special;
@@ -17997,7 +17997,7 @@ void NuDeferredFilterGen::render() {
         if (light->enabled == 0) {
             continue;
         }
-        NUMTX saved_view = PcGeometryViewMatrix;
+        NUMTX saved_view_matrix = PcGeometryViewMatrix;
         NUMTX saved_projection = PcGeometryProjectionMatrix;
         PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
         PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 1);
@@ -18018,7 +18018,7 @@ void NuDeferredFilterGen::render() {
             PCGraphicsResolveFramebuffer(1);
         }
         D3DPERF_EndEvent();
-        PcUpdateGeometryCameraOrigin(&saved_view, &saved_projection);
+        PcUpdateGeometryCameraOrigin(&saved_view_matrix, &saved_projection);
         if (NuFramebufferGetAttachedTex(light_fbo, 0, NULL, NULL) == NULL) {
             PCGraphicsAttachFramebuffer(light_fbo, 0, textures[0], 0);
         }

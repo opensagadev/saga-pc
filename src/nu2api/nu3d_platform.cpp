@@ -2462,11 +2462,11 @@ extern "C" {
         NuMtxMulH(&PcGeometryAdjustedProjectionMatrix, &PcGeometryAdjustedProjectionMatrix, &PcGeometryTranslationMatrix);
         PcGeometryViewMatrix = *view;
         PcGeometryProjectionMatrix = PcGeometryAdjustedProjectionMatrix;
-        NUMTX inverse_view;
-        NuMtxInvH(&inverse_view, &PcGeometryViewMatrix);
-        PcGeometryDistanceOrigin.x = inverse_view.m30 / inverse_view.m33;
-        PcGeometryDistanceOrigin.y = inverse_view.m31 / inverse_view.m33;
-        PcGeometryDistanceOrigin.z = inverse_view.m32 / inverse_view.m33;
+        NUMTX view_inverse;
+        NuMtxInvH(&view_inverse, &PcGeometryViewMatrix);
+        PcGeometryDistanceOrigin.x = view_inverse.m30 / view_inverse.m33;
+        PcGeometryDistanceOrigin.y = view_inverse.m31 / view_inverse.m33;
+        PcGeometryDistanceOrigin.z = view_inverse.m32 / view_inverse.m33;
         PcGeometryDistanceOrigin.w = 1.0f;
         NuMtxMulH(&PcGeometryViewProjectionMatrix, &PcGeometryViewMatrix, &PcGeometryProjectionMatrix);
         NuMtxInvH(&PcGeometryInverseViewProjectionMatrix, &PcGeometryViewProjectionMatrix);

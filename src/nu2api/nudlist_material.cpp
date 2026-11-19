@@ -765,9 +765,9 @@ void NuMainFilter::RenderBloom() {
     }
     PCDisplayHandlerBindPrograms(program);
     if (PCDeviceHardwareVertexProcessingPC < 4) {
-        NUMTX inverse_view;
-        NuMtxInvH(&inverse_view, &PcGeometryViewMatrix);
-        PCDeviceSetVertexShaderConstantsF(12, &inverse_view.m00, 4);
+        NUMTX view_inverse;
+        NuMtxInvH(&view_inverse, &PcGeometryViewMatrix);
+        PCDeviceSetVertexShaderConstantsF(12, &view_inverse.m00, 4);
         f32 fovy;
         f32 aspect;
         f32 z_near;

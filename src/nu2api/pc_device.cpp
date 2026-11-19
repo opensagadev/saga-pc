@@ -549,8 +549,7 @@ void PC_DEVICE_BACKEND::Shutdown() {
         screen_colour_uv_declaration = NULL;
     }
     if (device != NULL) {
-        PC_TEXTURE_RESOURCE *release_view = reinterpret_cast<PC_TEXTURE_RESOURCE *>(device);
-        release_view->methods->release(release_view);
+        device->methods->release(device);
         device = NULL;
     }
     if (factory != NULL) {
