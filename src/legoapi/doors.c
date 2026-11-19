@@ -271,7 +271,7 @@ static DOOR_s *D_door = 0;
 f32 Door_CutCamWait = 0;
 NUVEC DoorCutCameraPosition1 = {0};
 f32 Door_CutCamBlendTime = 0;
-void *Door_Last = 0;
+struct DOOR_s *Door_Last = 0;
 
 static void D_spline(NUFPAR *parser) {
     i32 i;

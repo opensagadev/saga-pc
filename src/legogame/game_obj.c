@@ -1069,8 +1069,8 @@ i32 DeactivatePlayer(GAMEOBJECT *object, f32 duration, GAMEOBJECT *source) {
             Player_ResetContexts(&object->player);
             object->player.character_context = CHARACTER_CONTEXT_DEACTIVATED;
             object->player.shield_scale = model_state;
-            if (AIScriptSetBaseScriptStateByName((AISCRIPTPROCESS *)&object->ai_packet, "BeenDeactivated")) {
-                AIScriptProcess(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, (AISCRIPTPROCESS *)&object->ai_packet, FRAMETIME);
+            if (AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, "BeenDeactivated")) {
+                AIScriptProcess(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, &object->ai_packet.script_processor, FRAMETIME);
             }
             if (source != NULL && (source->character_data->model_flags & CHARACTER_MODEL_ASTROMECH) &&
                 object->character_data->game_character->variant == CHARVARIANT_STORMTROOPER &&
@@ -3491,12 +3491,12 @@ attributed_hit:
         target->last_attacker = attacker;
     }
     if (WORLD->current_level == HUB_LDATA && attacker && (attacker->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) &&
-        AIScriptSetBaseScriptStateByName(&*(AISCRIPTPROCESS *)&target->ai_packet, "TakenHitFromPlayer")) {
-        AIScriptProcess(WORLD->ai_sys, (APIOBJECT *)target, &target->ai_packet, &*(AISCRIPTPROCESS *)&target->ai_packet, FRAMETIME);
+        AIScriptSetBaseScriptStateByName(&*&target->ai_packet.script_processor, "TakenHitFromPlayer")) {
+        AIScriptProcess(WORLD->ai_sys, (APIOBJECT *)target, &target->ai_packet, &*&target->ai_packet.script_processor, FRAMETIME);
         goto impact;
     }
-    if (AIScriptSetBaseScriptStateByName(&*(AISCRIPTPROCESS *)&target->ai_packet, "TakenHit")) {
-        AIScriptProcess(WORLD->ai_sys, (APIOBJECT *)target, &target->ai_packet, &*(AISCRIPTPROCESS *)&target->ai_packet, FRAMETIME);
+    if (AIScriptSetBaseScriptStateByName(&*&target->ai_packet.script_processor, "TakenHit")) {
+        AIScriptProcess(WORLD->ai_sys, (APIOBJECT *)target, &target->ai_packet, &*&target->ai_packet.script_processor, FRAMETIME);
     }
 impact:
     if (!no_impact) {
@@ -3736,8 +3736,8 @@ impact:
     }
     target->current_hp = health;
     if (damage != 0) {
-        if (AIScriptSetBaseScriptStateByName(&*(AISCRIPTPROCESS *)&target->ai_packet, "LostHitPoints")) {
-            AIScriptProcess(WORLD->ai_sys, (APIOBJECT *)target, &target->ai_packet, &*(AISCRIPTPROCESS *)&target->ai_packet, FRAMETIME);
+        if (AIScriptSetBaseScriptStateByName(&*&target->ai_packet.script_processor, "LostHitPoints")) {
+            AIScriptProcess(WORLD->ai_sys, (APIOBJECT *)target, &target->ai_packet, &*&target->ai_packet.script_processor, FRAMETIME);
         }
         SetFlicker(target, 0.4f);
         if (target->id == (u16)id_SNAKE) {

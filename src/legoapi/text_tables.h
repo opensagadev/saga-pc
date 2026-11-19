@@ -194,27 +194,6 @@ typedef struct {       // size 0x100
     u32 reserved[16];  // 0xc0
 } PICKUP_PROGRESS;
 
-typedef struct area_gizmo_s { // size 0x8
-    void *object;             // 0x0
-    i16 reserved_04;          // 0x4
-    u8 type_id;               // 0x6
-    u8 reserved_07;           // 0x7
-} AREA_GIZMO;
-
-typedef struct area_gizmoset_s { // size 0x14
-    void *type;                  // 0x00
-    i32 count;                   // 0x04
-    i32 max_count;               // 0x08
-    void *gizmos;                // 0x0c
-    void *reserved_10;           // 0x10
-} AREA_GIZMOSET;
-
-typedef struct area_gizmotype_s {         // size 0x9c
-    u8 reserved_00[0x44];                 // 0x00
-    char *(*get_gizmo_name)(void *gizmo); // 0x44
-    u8 reserved_48[0x54];                 // 0x48
-} AREA_GIZMOTYPE;
-
 typedef struct character_ai_capabilities_s {
     u8 reserved_00[0x44];
     u32 path_capabilities;

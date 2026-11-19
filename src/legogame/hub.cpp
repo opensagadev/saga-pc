@@ -310,9 +310,9 @@ static void MiniKitRotateZ(NUMTX *m, NUANG a) {
 
 static void HubResolveAreaInfo(HUB_AREA_INFO *info, WORLDINFO *world) {
     for (; info->area_name != NULL; ++info) {
-        info->door = static_cast<GIZMO *>(GizmoFindByName(world->gizmo_sys, -1, (char *)info->door_name));
-        info->bonus_gizmo = static_cast<GIZMO *>(GizmoFindByName(world->gizmo_sys, -1, (char *)info->bonus_name));
-        info->second_bonus_gizmo = static_cast<GIZMO *>(GizmoFindByName(world->gizmo_sys, -1, (char *)info->second_bonus_name));
+        info->door = GizmoFindByName(world->gizmo_sys, -1, (char *)info->door_name);
+        info->bonus_gizmo = GizmoFindByName(world->gizmo_sys, -1, (char *)info->bonus_name);
+        info->second_bonus_gizmo = GizmoFindByName(world->gizmo_sys, -1, (char *)info->second_bonus_name);
         info->area = Area_FindByName((char *)info->area_name, NULL);
         NuSpecialFind(world->current_gscn, &info->lock, (char *)info->lock_name, 1);
     }
@@ -454,7 +454,7 @@ static void HubResolveEpisodeInfo(HUB_EPISODE_INFO *info, WORLDINFO *world) {
         } else {
             info->data = NULL;
         }
-        info->door = static_cast<GIZMO *>(GizmoFindByName(world->gizmo_sys, -1, (char *)info->door_name));
+        info->door = GizmoFindByName(world->gizmo_sys, -1, (char *)info->door_name);
         NuSpecialFind(world->current_gscn, &info->lock_on, (char *)info->lock_on_name, 1);
     }
 }
@@ -462,7 +462,7 @@ static void HubResolveEpisodeInfo(HUB_EPISODE_INFO *info, WORLDINFO *world) {
 extern "C" void WipeBackToHub(void) {
     NewMenu(-1, -1, -1);
     ResetTimer(&JoinInTimer, 0);
-    NuStrCpy(DoorExitName, ((DOOR_s *)Door_Last)->name);
+    NuStrCpy(DoorExitName, Door_Last->name);
     StartDoorPositions();
     NewGameMode();
     bonusmodearcade = 0;
@@ -3069,7 +3069,7 @@ extern "C" void Hub_Init(WORLDINFO *world) {
     hub_startoutsidebonusdoor_area = -1;
     CutScenePlayer_Reset();
     HubBuildIt = GizBuildIt_Find(world, "fountain");
-    LevGizmo[0] = (GIZMO *)GizmoFindByName(world->gizmo_sys, -1, "fountain");
+    LevGizmo[0] = GizmoFindByName(world->gizmo_sys, -1, "fountain");
     if (HubBuildIt == NULL || LevGizmo[0] == NULL) {
         HubBuildIt = NULL;
         LevGizmo[0] = NULL;

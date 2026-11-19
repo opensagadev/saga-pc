@@ -595,10 +595,10 @@ extern "C" {
 extern "C" void GizSpinner_PushFail(GAMEOBJECT *object, GIZSPINNER_s *) {
     NewBuzzFrames(object->player.pad->bound_pad, 1, 0);
     NUVEC position;
-    position.x = ((GIZSPINNER_s *)object->player.grapple)->position.x;
+    position.x = object->player.pushed_spinner->position.x;
     i32 random = qrand();
-    position.y = random * (f64)(1.0f / 65535.0f) * (f64)0.25f + (f64)0.15f + ((GIZSPINNER_s *)object->player.grapple)->position.y;
-    position.z = ((GIZSPINNER_s *)object->player.grapple)->position.z;
+    position.y = random * (f64)(1.0f / 65535.0f) * (f64)0.25f + (f64)0.15f + object->player.pushed_spinner->position.y;
+    position.z = object->player.pushed_spinner->position.z;
     AddGameDebris(WORLD->game_debris_sys, GizSpinnerGDeb_Fail[1], &position);
     AddGameDebris(WORLD->game_debris_sys, GizSpinnerGDeb_Fail[2], &position);
     GameAudio_PlaySfx(0x39, &position, 0, 0);
@@ -981,7 +981,7 @@ extern "C" i32 GizSpinner_UsingSpecial(void *results_ptr, void *world_ptr, i32 c
         searching = 1;
         for (; object != NULL && searching != 0; object = object->next) {
             if (NuSpecialCompare(&special, &object->special) != 0) {
-                GIZMO *gizmo = (GIZMO *)GizmoFindByName(world->gizmo_sys, type_id, name);
+                GIZMO *gizmo = GizmoFindByName(world->gizmo_sys, type_id, name);
                 if (gizmo != NULL) {
                     type_id = gizmo->type_id;
                     results[count++] = gizmo;

@@ -1130,17 +1130,17 @@ i32 Action_MushroomCollapse(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET 
         for (index = 0; index < count; ++index) {
             value = NuStrIStr(params[index], "trigger_crash=");
             if (value != NULL) {
-                mushroom0_along = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 14);
+                mushroom0_along = AIParamToFloat(&packet->script_processor, value + 14);
             } else if ((value = NuStrIStr(params[index], "trigger_collapse=")) != NULL) {
-                mushroom2_along = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 17);
+                mushroom2_along = AIParamToFloat(&packet->script_processor, value + 17);
             } else if ((value = NuStrIStr(params[index], "max_time_available=")) != NULL) {
-                mushroom_max_time_available = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 19);
+                mushroom_max_time_available = AIParamToFloat(&packet->script_processor, value + 19);
             } else if ((value = NuStrIStr(params[index], "time_available=")) != NULL) {
-                mushroom_time_available = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 15);
+                mushroom_time_available = AIParamToFloat(&packet->script_processor, value + 15);
             } else if ((value = NuStrIStr(params[index], "time_increment=")) != NULL) {
-                mushroom_time_increment = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 15);
+                mushroom_time_increment = AIParamToFloat(&packet->script_processor, value + 15);
             } else if ((value = NuStrIStr(params[index], "nattempts_per_increment=")) != NULL) {
-                mushroom_nattempts_per_increment = (i32)AIParamToFloat((AISCRIPTPROCESS *)packet, value + 24);
+                mushroom_nattempts_per_increment = (i32)AIParamToFloat(&packet->script_processor, value + 24);
             }
             if (mushroom_max_time_available < mushroom_time_available) {
                 mushroom_max_time_available = mushroom_time_available;
@@ -1275,13 +1275,13 @@ i32 Action_SetLapTime(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet,
         for (i = 0; i < param_count; ++i) {
             char *value = NuStrIStr(params[i], "maxlaptime=");
             if (value != NULL) {
-                ActivePodRace->max_lap_time = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 11);
+                ActivePodRace->max_lap_time = AIParamToFloat(&packet->script_processor, value + 11);
             } else if ((value = NuStrIStr(params[i], "laptime=")) != NULL) {
-                ActivePodRace->previous_lap_display = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 8);
+                ActivePodRace->previous_lap_display = AIParamToFloat(&packet->script_processor, value + 8);
             } else if ((value = NuStrIStr(params[i], "nattempts_per_increment=")) != NULL) {
-                ActivePodRace->attempts_per_increment = (i32)AIParamToFloat((AISCRIPTPROCESS *)packet, value + 24);
+                ActivePodRace->attempts_per_increment = (i32)AIParamToFloat(&packet->script_processor, value + 24);
             } else if ((value = NuStrIStr(params[i], "increment=")) != NULL) {
-                ActivePodRace->lap_time_increment = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 10);
+                ActivePodRace->lap_time_increment = AIParamToFloat(&packet->script_processor, value + 10);
             }
         }
         if (ActivePodRace->max_lap_time == 0.0f) {
@@ -2283,7 +2283,7 @@ i32 Action_CreatePod(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, 
     for (i = 0; i < param_count; ++i) {
         char *value = NuStrIStr(params[i], "spline_id=");
         if (value != NULL) {
-            spline_id = (i32)AIParamToFloat((AISCRIPTPROCESS *)packet, value + 10);
+            spline_id = (i32)AIParamToFloat(&packet->script_processor, value + 10);
         } else if ((value = NuStrIStr(params[i], "type=")) != NULL) {
             if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
                 model_id = LevelCharacterTypeIDFn(value + 5);
@@ -2292,11 +2292,11 @@ i32 Action_CreatePod(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, 
                 }
             }
         } else if ((value = NuStrIStr(params[i], "spline_start=")) != NULL) {
-            start = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 13);
+            start = AIParamToFloat(&packet->script_processor, value + 13);
         } else if ((value = NuStrIStr(params[i], "spline_end=")) != NULL) {
-            end = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 11);
+            end = AIParamToFloat(&packet->script_processor, value + 11);
         } else if ((value = NuStrIStr(params[i], "time_factor=")) != NULL) {
-            time_factor = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 12);
+            time_factor = AIParamToFloat(&packet->script_processor, value + 12);
         } else if (NuStrICmp(params[i], "pacemaker") == 0) {
             pacemaker = 1;
         } else if (NuStrICmp(params[i], "damaged") == 0) {

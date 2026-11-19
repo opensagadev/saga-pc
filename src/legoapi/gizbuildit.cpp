@@ -261,7 +261,7 @@ extern "C" void GizMoveAttractoBuildItPiece(GIZBUILDIT *buildit, GAMEANIMOBJ *pi
 }
 
 extern "C" void GizDrawBuildItPiece(GAMEOBJECT *object, i32 draw_reflection) {
-    GIZBUILDIT *buildit = static_cast<GIZBUILDIT *>(object->player.grapple);
+    GIZBUILDIT *buildit = object->player.buildit;
     GAMEANIMOBJ *piece;
     GIZBUILDITANIMDATA_s *data;
     f32 progress;

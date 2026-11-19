@@ -457,7 +457,7 @@ static void Grabber_SetVictimPos(GRABBER *grabber) {
 
 void Grabber_Reset(WORLDINFO *world) {
     GRABBER *grabber;
-    GIZOBSTACLE **gizmo;
+    GIZMO *gizmo;
 
     grabber = world->grabber;
     if (grabber == NULL) {
@@ -465,7 +465,7 @@ void Grabber_Reset(WORLDINFO *world) {
     }
     gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "pad_drop");
     if (gizmo != NULL) {
-        Grab_grabber->action_switch = *gizmo;
+        Grab_grabber->action_switch = gizmo->obstacle;
         if (Grab_grabber->action_switch != NULL && Grab_grabber->action_switch->anim_set == NULL) {
             Grab_grabber->action_switch = NULL;
         }
@@ -474,7 +474,7 @@ void Grabber_Reset(WORLDINFO *world) {
     }
     gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "pad_n");
     if (gizmo != NULL) {
-        Grab_grabber->direction_switches[0] = *gizmo;
+        Grab_grabber->direction_switches[0] = gizmo->obstacle;
         if (Grab_grabber->direction_switches[0] != NULL && Grab_grabber->direction_switches[0]->anim_set == NULL) {
             Grab_grabber->direction_switches[0] = NULL;
         }
@@ -483,7 +483,7 @@ void Grabber_Reset(WORLDINFO *world) {
     }
     gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "pad_s");
     if (gizmo != NULL) {
-        Grab_grabber->direction_switches[1] = *gizmo;
+        Grab_grabber->direction_switches[1] = gizmo->obstacle;
         if (Grab_grabber->direction_switches[1] != NULL && Grab_grabber->direction_switches[1]->anim_set == NULL) {
             Grab_grabber->direction_switches[1] = NULL;
         }
@@ -492,7 +492,7 @@ void Grabber_Reset(WORLDINFO *world) {
     }
     gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "pad_e");
     if (gizmo != NULL) {
-        Grab_grabber->direction_switches[2] = *gizmo;
+        Grab_grabber->direction_switches[2] = gizmo->obstacle;
         if (Grab_grabber->direction_switches[2] != NULL && Grab_grabber->direction_switches[2]->anim_set == NULL) {
             Grab_grabber->direction_switches[2] = NULL;
         }
@@ -501,7 +501,7 @@ void Grabber_Reset(WORLDINFO *world) {
     }
     gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "pad_w");
     if (gizmo != NULL) {
-        Grab_grabber->direction_switches[3] = *gizmo;
+        Grab_grabber->direction_switches[3] = gizmo->obstacle;
         if (Grab_grabber->direction_switches[3] != NULL && Grab_grabber->direction_switches[3]->anim_set == NULL) {
             Grab_grabber->direction_switches[3] = NULL;
         }

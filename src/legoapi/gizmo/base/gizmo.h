@@ -136,7 +136,7 @@ extern ADDGIZMOTYPE Default_ADDGIZMOTYPE;
 extern "C" {
 #endif
     i32 GizmoGetVisibility(void *, void *);
-    void *GizmoFindByName(void *gizmo_sys, i32 type_id, char *name);
+    GIZMO *GizmoFindByName(GIZMOSYS *gizmo_sys, i32 type_id, char *name);
     GIZMOSYS *CreateGizmoSys(void *world, VARIPTR *buffer, VARIPTR *end);
     extern GIZMOTYPES *gizmotypes;
     void GizmoSysClearLevelProgress(void *owner, i32 index);

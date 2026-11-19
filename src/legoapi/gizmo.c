@@ -463,24 +463,24 @@ GIZMO *GizmoFindByData(void *system_ptr, i32 type_id, void *data) {
     return NULL;
 }
 
-void *GizmoFindByName(void *gizmo_sys, i32 type_id, char *name) {
-    AREA_GIZMOTYPES *types = (AREA_GIZMOTYPES *)gizmotypes;
+GIZMO *GizmoFindByName(GIZMOSYS *gizmo_sys, i32 type_id, char *name) {
+    GIZMOTYPES *types = gizmotypes;
 
     if (types != NULL && gizmo_sys != NULL && name != NULL) {
         if (type_id >= 0 && type_id <= types->count) {
-            AREA_GIZMOTYPE *type;
-            AREA_GIZMOSET *set;
-            AREA_GIZMO *gizmo;
+            GIZMOTYPE *type;
+            GIZMOSET *set;
+            GIZMO *gizmo;
             i32 index;
 
             type = &types->types[type_id];
-            set = &((AREA_GIZMOSYS_PREFIX *)gizmo_sys)->sets[type_id];
-            if (type->get_gizmo_name == NULL) {
+            set = &gizmo_sys->sets[type_id];
+            if (type->fns.get_gizmo_name_fn == NULL) {
                 return NULL;
             }
             gizmo = set->gizmos;
             for (index = 0; index < set->count; ++index, ++gizmo) {
-                char *gizmo_name = type->get_gizmo_name(gizmo);
+                char *gizmo_name = type->fns.get_gizmo_name_fn(gizmo);
                 if (NuStrICmp(gizmo_name, name) == 0) {
                     return gizmo;
                 }
@@ -489,22 +489,22 @@ void *GizmoFindByName(void *gizmo_sys, i32 type_id, char *name) {
         }
 
         {
-            AREA_GIZMOTYPE *type;
-            AREA_GIZMOSET *set;
+            GIZMOTYPE *type;
+            GIZMOSET *set;
             i32 type_index;
 
             type = types->types;
-            set = ((AREA_GIZMOSYS_PREFIX *)gizmo_sys)->sets;
-            for (type_index = 0; type_index < ((AREA_GIZMOTYPES *)gizmotypes)->count; ++type_index, ++type, ++set) {
-                AREA_GIZMO *gizmo;
+            set = gizmo_sys->sets;
+            for (type_index = 0; type_index < gizmotypes->count; ++type_index, ++type, ++set) {
+                GIZMO *gizmo;
                 i32 gizmo_index;
 
-                if (type->get_gizmo_name == NULL) {
+                if (type->fns.get_gizmo_name_fn == NULL) {
                     continue;
                 }
                 gizmo = set->gizmos;
                 for (gizmo_index = 0; gizmo_index < set->count; ++gizmo_index, ++gizmo) {
-                    char *gizmo_name = type->get_gizmo_name(gizmo);
+                    char *gizmo_name = type->fns.get_gizmo_name_fn(gizmo);
                     if (NuStrICmp(gizmo_name, name) == 0) {
                         return gizmo;
                     }

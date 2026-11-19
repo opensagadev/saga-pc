@@ -84,7 +84,7 @@ void Whip_MoveCode(GAMEOBJECT *object) {
         if (object->player.context_variant_flags & 0x100) {
             NUVEC *target_position = NULL;
             if (object->player.grapple != NULL) {
-                target_position = &((GIZMOBLOWUP *)object->player.grapple)->position;
+                target_position = &object->player.carried_blowup->position;
             } else if (object->player.force_target != NULL) {
                 target_position = &object->player.force_target->collision_position;
             }

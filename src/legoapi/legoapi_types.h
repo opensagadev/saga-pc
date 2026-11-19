@@ -1304,6 +1304,7 @@ struct gameanimobj_s {              // size 0x28
         void *object_data;
         struct GIZFORCEANIMDATA_s *force_data;
         struct GIZBUILDITANIMDATA_s *buildit_data;
+        struct TURRET_ANIM_DATA *turret_data;
     }; // 0x24
 };
 

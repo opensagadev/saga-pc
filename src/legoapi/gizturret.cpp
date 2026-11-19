@@ -102,7 +102,7 @@ extern "C" {
         if (object == NULL || version <= 2) {
             return;
         }
-        data = (TURRET_ANIM_DATA *)object->object_data;
+        data = object->turret_data;
         if (data == NULL) {
             data = &scratch;
         }
@@ -193,7 +193,7 @@ extern "C" {
             if (version <= 4) {
                 object_index = 0;
                 for (object = turret->anim_set->objects; object != NULL; object = object->next, ++object_index) {
-                    data = (TURRET_ANIM_DATA *)object->object_data;
+                    data = object->turret_data;
                     if (object_index == 0) {
                         data->role = 1;
                     } else if (object_index == 1) {
@@ -321,7 +321,7 @@ extern "C" {
             return;
         }
         for (object = turret->anim_set->objects; object != NULL; object = object->next) {
-            data = (TURRET_ANIM_DATA *)object->object_data;
+            data = object->turret_data;
             if (data->role == 1) {
                 turret->primary_anim_obj = object;
             } else if (data->role == 2) {
@@ -378,7 +378,7 @@ extern "C" {
             }
             if (turret->anim_set != NULL) {
                 for (object = turret->anim_set->objects; object != NULL; object = object->next) {
-                    data = (TURRET_ANIM_DATA *)object->object_data;
+                    data = object->turret_data;
                     if (data->role == 3) {
                         NuSpecialSetVisibility(&object->special, turret->update_disabled);
                     }
@@ -1160,7 +1160,7 @@ extern "C" {
                     GameAnimSet_SetVisibility(turret->anim_set, 0);
                     if (turret->anim_set != NULL) {
                         for (object = turret->anim_set->objects; object != NULL; object = object->next) {
-                            data = (TURRET_ANIM_DATA *)object->object_data;
+                            data = object->turret_data;
                             if (data->role == 3) {
                                 NuSpecialSetVisibility(&object->special, 1);
                             }
@@ -1217,7 +1217,7 @@ extern "C" {
                 }
                 animation = turret->anim_set->objects;
                 while (animation != NULL) {
-                    if (((TURRET_ANIM_DATA *)animation->object_data)->platform_id == bolt->hit_platform) {
+                    if (animation->turret_data->platform_id == bolt->hit_platform) {
                         type = BoltType_FindByID(bolt->type_id, world);
                         owner = bolt->owner;
                         if (owner != NULL && (turret->behavior_flags & TURRET_RIDER_BOLTS_ONLY) != 0 && owner->player.rider == NULL) {

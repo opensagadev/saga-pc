@@ -94,7 +94,7 @@ void PlayRadio(char *special_name, char *blowup_name, i32 play) {
             for (i = 0, radio = pool; i < 8; ++i, ++radio) {
                 if (radio->time <= 0.0f) {
                     if (blowup_name != NULL) {
-                        GIZMO *gizmo = (GIZMO *)GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, blowup_name);
+                        GIZMO *gizmo = GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, blowup_name);
                         if (gizmo == NULL) {
                             return;
                         }

@@ -86,10 +86,10 @@ void StoreStatusTakeOverObjectSys(void) {
         takeoverobjects[index].heading = object->movement_angle;
         if (object->player.rider != NULL && LEGOCONTEXT_BEENTAKENOVER != -1 &&
             object->player.rider->player.character_context == LEGOCONTEXT_BEENTAKENOVER && object->player_index != -1 &&
-            Door_Last != NULL && ((struct DOOR_s *)Door_Last)->takeover_character_mask != 0 &&
-            (((struct DOOR_s *)Door_Last)->takeover_character_mask == CharacterMaskAll ||
+            Door_Last != NULL && Door_Last->takeover_character_mask != 0 &&
+            (Door_Last->takeover_character_mask == CharacterMaskAll ||
              ((character_index = (u8)Area_CharIDInCurrentList((i16)object->id)) < 63 &&
-              (((struct DOOR_s *)Door_Last)->takeover_character_mask & ((u64)1 << character_index)) != 0))) {
+              (Door_Last->takeover_character_mask & ((u64)1 << character_index)) != 0))) {
             takeoverobjects[index].contact_index = takeoverobjects[index].object->player_slot;
         } else {
             takeoverobjects[index].contact_index = 0xff;

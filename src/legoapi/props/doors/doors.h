@@ -17,7 +17,7 @@ extern "C" {
     extern char door_gizmotype_id;
     extern i32 door_cutscenesnap;
     ADDGIZMOTYPE *Door_RegisterGizmo(i32);
-    extern void *Door_Last;
+    extern struct DOOR_s *Door_Last;
 #ifdef __cplusplus
 }
 #endif

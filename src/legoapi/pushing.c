@@ -296,7 +296,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
             } else if (forward == 0) {
                 goto push_obstacle;
             }
-            if (((GIZOBSTACLE *)object->player.grapple)->anim_set->state == GAMEANIMSET_STATE_AT_START) {
+            if (object->player.push_obstacle->anim_set->state == GAMEANIMSET_STATE_AT_START) {
                 stopped = 1;
             } else {
                 moving = 1;
@@ -304,7 +304,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
             GizObstacle_SetPushControlled(object->player.grapple, object, -1.0f);
             goto drive_done;
         push_obstacle:
-            if (((GIZOBSTACLE *)object->player.grapple)->anim_set->state == GAMEANIMSET_STATE_AT_END) {
+            if (object->player.push_obstacle->anim_set->state == GAMEANIMSET_STATE_AT_END) {
                 stopped = 1;
             } else {
                 moving = 1;
@@ -342,7 +342,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
         } else if (qrand() < 0x800) {
             GizSpinner_PushFail(object, object->player.grapple);
         } else {
-            ((GIZSPINNER_s *)object->player.grapple)->state_flags &= ~(SPINNER_STATE_NUDGE_POSITIVE | SPINNER_STATE_NUDGE_NEGATIVE);
+            object->player.pushed_spinner->state_flags &= ~(SPINNER_STATE_NUDGE_POSITIVE | SPINNER_STATE_NUDGE_NEGATIVE);
         }
     } else if (LEGOCONTEXT_PUSH != -1 && object->player.character_context == LEGOCONTEXT_PUSH) {
         if (PushBlock(object) == 0) {

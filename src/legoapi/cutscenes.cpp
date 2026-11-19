@@ -219,21 +219,6 @@ typedef struct CUT_DRAW_INSTANCE {                   // size 0xac
     CUT_DRAW_LOCATOR_INSTANCE_SYS *locator_instance; // 0xa8
 } CUT_DRAW_INSTANCE;
 
-typedef struct CUT_DRAW_OBJECT { // size 0xf8
-    u8 reserved_00[0xb8];        // 0x00
-    NUMTX matrix;                // 0xb8
-} CUT_DRAW_OBJECT;
-
-typedef struct CUT_DRAW_HIERARCHY {    // size 0x1a1
-    u8 reserved_00[0x1a0];             // 0x000
-    u8 suppress_shadow_surface_points; // 0x1a0
-} CUT_DRAW_HIERARCHY;
-
-typedef struct CUT_DRAW_CAMERA { // size 0xf8
-    u8 reserved_00[0xb8];        // 0x00
-    NUMTX render_matrix;         // 0xb8
-} CUT_DRAW_CAMERA;
-
 typedef struct CUT_DRAW_CHARACTER_SYSTEM { // size 0x8
     CUT_DRAW_CHARACTER *characters;        // 0x0
     u16 count;                             // 0x4
@@ -271,11 +256,6 @@ typedef struct CUT_DRAW_LOCATOR_ENTRY { // size 0x14
     u32 reserved_0c;                    // 0x0c
     void (*update)(INSTNUGCUTSCENE *, CUT_DRAW_LOCATOR_SYS *, CUT_DRAW_LOCATOR_INSTANCE *, CUT_DRAW_LOCATOR *, f32, NUMTX *, i32); // 0x10
 } CUT_DRAW_LOCATOR_ENTRY;
-
-typedef struct CUT_CONTROLLER_PROGRESS { // size 0x2801
-    u8 reserved_00[0x2800];              // 0x0000
-    u8 scene_flags;                      // 0x2800
-} CUT_CONTROLLER_PROGRESS;
 
 struct FADEINFO_s;
 extern "C" {
@@ -1211,7 +1191,7 @@ extern "C" {
             NuMtxMul(&matrix, &matrix, &state->matrix);
         }
         if (object != NULL) {
-            reinterpret_cast<CUT_DRAW_OBJECT *>(object)->matrix = matrix;
+            object->transform = matrix;
             object->position = *reinterpret_cast<NUVEC *>(&matrix.m30);
         }
     }
@@ -1460,8 +1440,7 @@ extern "C" {
             return;
         }
         NUVEC *position = reinterpret_cast<NUVEC *>(&matrix->m30);
-        if (!(NuVecDistSqr(position, reinterpret_cast<NUVEC *>(&reinterpret_cast<CUT_DRAW_CAMERA *>(GameCam)->render_matrix.m30), NULL) <
-              CutReflectRange2)) {
+        if (!(NuVecDistSqr(position, &GameCam->render_mtx.translation, NULL) < CutReflectRange2)) {
             return;
         }
         f32 ground = GameShadow(NULL, position, 5.0f, -1);
@@ -1551,11 +1530,11 @@ extern "C" {
                 layer_mask = static_cast<i32>(game_data->layer_mask_special);
             }
         }
-        if ((reinterpret_cast<CUT_DRAW_INSTANCE *>(cutscene_instance)->flags & 0x80) != 0) {
-            NuMtxMul(&world_matrix, &world_matrix, &reinterpret_cast<CUT_DRAW_INSTANCE *>(cutscene_instance)->matrix);
+        if ((cutscene_instance->flags_88 & 0x80) != 0) {
+            NuMtxMul(&world_matrix, &world_matrix, &cutscene_instance->matrix);
         }
         if (scene_object != NULL) {
-            reinterpret_cast<CUT_DRAW_OBJECT *>(scene_object)->matrix = world_matrix;
+            scene_object->transform = world_matrix;
             scene_object->position = *reinterpret_cast<NUVEC *>(&world_matrix.m30);
         }
         if (visible == 0) {
@@ -1715,9 +1694,9 @@ extern "C" {
 
         if ((character->flags & CUT_CHARACTER_REFLECTION) == 0 && (character_data->model_flags & CHARACTER_MODEL_COMPLEX_SHADOW) != 0 &&
             (character->flags & CUT_CHARACTER_SHADOW) != 0) {
-            reinterpret_cast<CUT_DRAW_HIERARCHY *>(hierarchy)->suppress_shadow_surface_points = 0;
+            hierarchy->suppress_shadow_points = 0;
         } else {
-            reinterpret_cast<CUT_DRAW_HIERARCHY *>(hierarchy)->suppress_shadow_surface_points = 1;
+            hierarchy->suppress_shadow_points = 1;
         }
 
         if ((game_data->flags_090 & CHARACTER_RUNTIME_GHOST) != 0) {
@@ -1809,9 +1788,7 @@ extern "C" {
         }
 
         if ((character->flags & CUT_CHARACTER_REFLECTION) != 0 && (game_data->flags_090 & CHARACTER_RUNTIME_GHOST) == 0 &&
-            NuVecDistSqr(reinterpret_cast<NUVEC *>(&world_matrix.m30),
-                         reinterpret_cast<NUVEC *>(&reinterpret_cast<CUT_DRAW_CAMERA *>(GameCam)->render_matrix.m30),
-                         NULL) < CutReflectRange2) {
+            NuVecDistSqr(reinterpret_cast<NUVEC *>(&world_matrix.m30), &GameCam->render_mtx.translation, NULL) < CutReflectRange2) {
             if (shadow_sampled == 0) {
                 ground_height = GameShadow(NULL, reinterpret_cast<NUVEC *>(&world_matrix.m30), 5.0f, -1);
                 if (ground_height != 2000000.0f) {
@@ -2237,7 +2214,7 @@ extern "C" {
         cutaudiopaused = 0;
         if (world->cutscene_sys != NULL && reset_restart != 0 &&
             ((world->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) != 0 || world->level_progress == NULL ||
-             (reinterpret_cast<CUT_CONTROLLER_PROGRESS *>(world->level_progress)->scene_flags & 2) == 0)) {
+             (world->level_progress->flags & 2) == 0)) {
             CUTINFO *cut = NULL;
             CUTSYS *system = world->cutscene_sys;
             if (CutScenePlayer != NULL) {
