@@ -5464,8 +5464,8 @@ extern "C" {
         buffer->addr = (buffer->addr + 3) & ~3u;
         result = buffer->mtx_ptr;
         *result = *matrix;
-        magnitude = NuFsqrt((f32)(((f64)NuVecMagSqr((NUVEC *)&buffer->mtx_ptr->m10) + NuVecMagSqr((NUVEC *)&buffer->mtx_ptr->m00) +
-                                   NuVecMagSqr((NUVEC *)&buffer->mtx_ptr->m20)) *
+        magnitude = NuFsqrt((f32)(((f64)NuVecMagSqr(&buffer->mtx_ptr->rows[1].xyz) + NuVecMagSqr(&buffer->mtx_ptr->rows[0].xyz) +
+                                   NuVecMagSqr(&buffer->mtx_ptr->rows[2].xyz)) *
                                   (f64)0.33333334f));
         buffer->addr += sizeof(NUMTX);
         *buffer->f32_ptr = magnitude;
@@ -7018,7 +7018,7 @@ extern "C" {
                 NuRndr_DebrisMtx.m31 = rotated.y + matrix->m31;
                 NuRndr_DebrisMtx.m32 = rotated.z + matrix->m32;
                 if (particle_type == 6 || particle_type == 7) {
-                    NuRndrParticleSetRepeat((NUVEC *)&NuRndr_DebrisMtx.m30);
+                    NuRndrParticleSetRepeat(&NuRndr_DebrisMtx.translation);
                 }
                 distance = NuRndr_DebrisPlane.y * NuRndr_DebrisMtx.m31 + NuRndr_DebrisPlane.x * NuRndr_DebrisMtx.m30 +
                            NuRndr_DebrisPlane.z * NuRndr_DebrisMtx.m32 + NuRndr_DebrisPlane.w;

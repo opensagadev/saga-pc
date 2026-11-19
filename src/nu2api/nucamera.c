@@ -468,10 +468,10 @@ i32 NuCameraClipTestExtentsAxisAligned(NUVEC *center, NUVEC *extent, f32 far_cli
 }
 
 void NuMtxCalcCheapFaceY_v2(NUMTX *matrix, NUVEC *direction) {
-    NUVEC *first = (NUVEC *)&matrix->m00;
-    NUVEC *second = (NUVEC *)&matrix->m10;
-    NUVEC *third = (NUVEC *)&matrix->m20;
-    NuVecCross(first, (NUVEC *)&global_camera.mtx.m20, direction);
+    NUVEC *first = &matrix->rows[0].xyz;
+    NUVEC *second = &matrix->rows[1].xyz;
+    NUVEC *third = &matrix->rows[2].xyz;
+    NuVecCross(first, &global_camera.mtx.rows[2].xyz, direction);
     NuVecNorm(first, first);
     *second = *direction;
     NuVecCross(third, first, second);
@@ -833,19 +833,19 @@ i32 NuCameraClipTestPointScissor(NUVEC *point) {
 }
 
 f32 NuCameraDistSqr(NUVEC *point) {
-    return NuVecDistSqr(point, (NUVEC *)&global_camera.mtx.m30, NULL);
+    return NuVecDistSqr(point, &global_camera.mtx.translation, NULL);
 }
 
 f32 NuCameraDist(NUVEC *point) {
-    return NuVecDist(point, (NUVEC *)&global_camera.mtx.m30, NULL);
+    return NuVecDist(point, &global_camera.mtx.translation, NULL);
 }
 
 void NuCameraGetTrans(NUVEC *trans) {
-    *trans = *(NUVEC *)&global_camera.mtx.m30;
+    *trans = *&global_camera.mtx.translation;
 }
 
 void NuCameraGetPosition(NUVEC *position) {
-    *position = *(NUVEC *)&global_camera.mtx.m30;
+    *position = *&global_camera.mtx.translation;
 }
 
 void NuCameraGetClippingRatios(f32 *horizontal, f32 *vertical) {

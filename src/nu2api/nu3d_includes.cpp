@@ -3285,11 +3285,11 @@ extern "C" {
                 root_values.y = joint->translation.y;
                 root_values.z = -joint->translation.z;
                 if (parent != 255) {
-                    NuVecMtxTransform((NUVEC *)&matrix->m30, &joint->translation.xyz, &matrices[parent]);
+                    NuVecMtxTransform(&matrix->translation, &joint->translation.xyz, &matrices[parent]);
                 } else if (base != NULL) {
-                    NuVecMtxTransform((NUVEC *)&matrix->m30, &joint->translation.xyz, base);
+                    NuVecMtxTransform(&matrix->translation, &joint->translation.xyz, base);
                 } else {
-                    *(NUVEC *)&matrix->m30 = joint->translation.xyz;
+                    *&matrix->translation = joint->translation.xyz;
                 }
             } else if (parent != 255) {
                 matrix->m30 = matrices[parent].m30;
@@ -10199,7 +10199,7 @@ extern "C" {
         NuVecAdd(&center, &special->common.bounds_min.xyz, &special->common.bounds_max.xyz);
         NuVecScale(&center, &center, 0.5f);
         NuVecMtxTransform(&center, &center, matrix);
-        f32 distance = NuVecDistSqr(&center, reinterpret_cast<NUVEC *>(&global_camera.mtx.m30), NULL);
+        f32 distance = NuVecDistSqr(&center, &global_camera.mtx.translation, NULL);
         if (distance < 0.0f) {
             distance = 0.0f;
         }
@@ -14949,7 +14949,7 @@ extern "C" {
         NUVEC delta;
         f32 distance;
         if (distances[*index] != 0.0f) {
-            NuVecSub(&delta, position, (NUVEC *)&global_camera.mtx.m30);
+            NuVecSub(&delta, position, &global_camera.mtx.translation);
             distance = NuVecMagSqr(&delta);
             while (distances[*index] > distance) {
                 ++*index;
@@ -14973,8 +14973,8 @@ extern "C" {
         NU_FABS_STORE(VisibilityPrimaryAbsoluteMatrix.m01, VisibilityPrimaryWorldMatrix.m01);
         NU_FABS_STORE(VisibilityPrimaryAbsoluteMatrix.m02, VisibilityPrimaryWorldMatrix.m02);
         NU_FABS_STORE(VisibilityPrimaryAbsoluteMatrix.m03, VisibilityPrimaryWorldMatrix.m03);
-        VisibilityAbsoluteFour((NUVEC4 *)&VisibilityPrimaryAbsoluteMatrix.m10, (NUVEC4 *)&VisibilityPrimaryWorldMatrix.m10);
-        VisibilityAbsoluteFour((NUVEC4 *)&VisibilityPrimaryAbsoluteMatrix.m20, (NUVEC4 *)&VisibilityPrimaryWorldMatrix.m20);
+        VisibilityAbsoluteFour(&VisibilityPrimaryAbsoluteMatrix.rows[1], &VisibilityPrimaryWorldMatrix.rows[1]);
+        VisibilityAbsoluteFour(&VisibilityPrimaryAbsoluteMatrix.rows[2], &VisibilityPrimaryWorldMatrix.rows[2]);
         VisibilityPrimaryAbsoluteMatrix.m30 = 0.0f;
         VisibilityPrimaryAbsoluteMatrix.m31 = 0.0f;
         VisibilityPrimaryAbsoluteMatrix.m32 = 0.0f;
@@ -14983,8 +14983,8 @@ extern "C" {
         NU_FABS_STORE(VisibilityAlternateAbsoluteMatrix.m01, VisibilityAlternateWorldMatrix.m01);
         NU_FABS_STORE(VisibilityAlternateAbsoluteMatrix.m02, VisibilityAlternateWorldMatrix.m02);
         NU_FABS_STORE(VisibilityAlternateAbsoluteMatrix.m03, VisibilityAlternateWorldMatrix.m03);
-        VisibilityAbsoluteFour((NUVEC4 *)&VisibilityAlternateAbsoluteMatrix.m10, (NUVEC4 *)&VisibilityAlternateWorldMatrix.m10);
-        VisibilityAbsoluteFour((NUVEC4 *)&VisibilityAlternateAbsoluteMatrix.m20, (NUVEC4 *)&VisibilityAlternateWorldMatrix.m20);
+        VisibilityAbsoluteFour(&VisibilityAlternateAbsoluteMatrix.rows[1], &VisibilityAlternateWorldMatrix.rows[1]);
+        VisibilityAbsoluteFour(&VisibilityAlternateAbsoluteMatrix.rows[2], &VisibilityAlternateWorldMatrix.rows[2]);
         VisibilityAlternateAbsoluteMatrix.m30 = 0.0f;
         VisibilityAlternateAbsoluteMatrix.m31 = 0.0f;
         VisibilityAlternateAbsoluteMatrix.m32 = 0.0f;
@@ -15086,9 +15086,9 @@ extern "C" {
         NU_FABS_STORE(AxisClipAbsFrustumPlanes.m02, AxisClipFrustumPlanes.m02);
         NU_FABS_STORE(AxisClipAbsFrustumPlanes.m03, AxisClipFrustumPlanes.m03);
 
-        VisibilityAbsoluteFour((NUVEC4 *)&AxisClipAbsFrustumPlanes.m10, (NUVEC4 *)&AxisClipFrustumPlanes.m10);
+        VisibilityAbsoluteFour(&AxisClipAbsFrustumPlanes.rows[1], &AxisClipFrustumPlanes.rows[1]);
 
-        VisibilityAbsoluteFour((NUVEC4 *)&AxisClipAbsFrustumPlanes.m20, (NUVEC4 *)&AxisClipFrustumPlanes.m20);
+        VisibilityAbsoluteFour(&AxisClipAbsFrustumPlanes.rows[2], &AxisClipFrustumPlanes.rows[2]);
 
         AxisClipAbsFrustumPlanes.m30 = 0.0f;
         AxisClipAbsFrustumPlanes.m31 = 0.0f;
@@ -15100,9 +15100,9 @@ extern "C" {
         NU_FABS_STORE(AxisClipAbsScissorPlanes.m02, AxisClipScissorPlanes.m02);
         NU_FABS_STORE(AxisClipAbsScissorPlanes.m03, AxisClipScissorPlanes.m03);
 
-        VisibilityAbsoluteFour((NUVEC4 *)&AxisClipAbsScissorPlanes.m10, (NUVEC4 *)&AxisClipScissorPlanes.m10);
+        VisibilityAbsoluteFour(&AxisClipAbsScissorPlanes.rows[1], &AxisClipScissorPlanes.rows[1]);
 
-        VisibilityAbsoluteFour((NUVEC4 *)&AxisClipAbsScissorPlanes.m20, (NUVEC4 *)&AxisClipScissorPlanes.m20);
+        VisibilityAbsoluteFour(&AxisClipAbsScissorPlanes.rows[2], &AxisClipScissorPlanes.rows[2]);
 
         AxisClipAbsScissorPlanes.m30 = 0.0f;
         AxisClipAbsScissorPlanes.m31 = 0.0f;
@@ -15374,10 +15374,10 @@ extern "C" {
 
     NUVEC *NuSpecialGetPos(nuhspecial_s *special) {
         if (special->display_special != NULL) {
-            return (NUVEC *)&special->display_special->instance_matrix.m30;
+            return &special->display_special->instance_matrix.translation;
         }
         if (special->special != NULL) {
-            return (NUVEC *)&special->special->m30;
+            return &special->special->translation;
         }
         return NULL;
     }
@@ -15385,15 +15385,15 @@ extern "C" {
     NUVEC *NuSpecialGetDrawPos(nuhspecial_s *special) {
         if (special->display_special != NULL) {
             if (special->display_special->instance_animation != (NUINSTANIM *)-1 && special->display_special->instance_animation != NULL) {
-                return (NUVEC *)&special->display_special->instance_animation->matrix.m30;
+                return &special->display_special->instance_animation->matrix.translation;
             }
-            return (NUVEC *)&special->display_special->draw_matrix.m30;
+            return &special->display_special->draw_matrix.translation;
         }
         if (special->special != NULL) {
             if (NUSPECIAL_LEGACY_OF(special)->instance->animation != NULL) {
-                return (NUVEC *)&NUSPECIAL_LEGACY_OF(special)->instance->animation->matrix.m30;
+                return &NUSPECIAL_LEGACY_OF(special)->instance->animation->matrix.translation;
             }
-            return (NUVEC *)&NUSPECIAL_LEGACY_OF(special)->instance->matrix.m30;
+            return &NUSPECIAL_LEGACY_OF(special)->instance->matrix.translation;
         }
         return NULL;
     }
@@ -15850,8 +15850,8 @@ extern "C" {
             bits = *(u32 *)&value & 0x7fffffff;
             abs_row[0].z = *(f32 *)&bits;
         }
-        NuVec4AbsPrivate(&abs_row[1], (NUVEC4 *)&draw_matrix.m10);
-        NuVec4AbsPrivate(&abs_row[2], (NUVEC4 *)&draw_matrix.m20);
+        NuVec4AbsPrivate(&abs_row[1], &draw_matrix.rows[1]);
+        NuVec4AbsPrivate(&abs_row[2], &draw_matrix.rows[2]);
         f32 extent_x = abs_row[0].x * extent.x + abs_row[1].x * extent.y + abs_row[2].x * extent.z;
         f32 extent_y = abs_row[0].y * extent.x + abs_row[1].y * extent.y + abs_row[2].y * extent.z;
         extent.z = abs_row[0].z * extent.x + abs_row[1].z * extent.y + abs_row[2].z * extent.z;
@@ -17601,9 +17601,9 @@ extern "C" void PostShadowBuildBasis(NUVEC *direction, NUVEC *up, NUMTX *basis, 
     NUVEC *forward;
     NUVEC *upward;
     NuMtxSetIdentity(inverse);
-    side = reinterpret_cast<NUVEC *>(&inverse->m00);
-    forward = reinterpret_cast<NUVEC *>(&inverse->m10);
-    upward = reinterpret_cast<NUVEC *>(&inverse->m20);
+    side = &inverse->rows[0].xyz;
+    forward = &inverse->rows[1].xyz;
+    upward = &inverse->rows[2].xyz;
     a.x = -direction->x;
     a.y = -direction->y;
     a.z = -direction->z;
@@ -17727,8 +17727,8 @@ void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrix(NURNDRLIGHTRECORD *set) {
     NuMtxInvH(&combined_inverse, &combined);
     NuMtxInv(&original_inverse, &original);
     NuMtxInv(&captured_inverse, &captured);
-    light_direction = *(NUVEC *)&original_inverse.m20;
-    camera_direction = *(NUVEC *)&captured_inverse.m20;
+    light_direction = *&original_inverse.rows[2].xyz;
+    camera_direction = *&captured_inverse.rows[2].xyz;
     PostShadowBuildBasis(&light_direction, &camera_direction, &basis, &basis_inverse);
     PostShadowCopyVectors(corners, set->corners, 8);
     {

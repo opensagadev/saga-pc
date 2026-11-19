@@ -4,36 +4,45 @@
 
 #include "nu2api/numath/nuang.h"
 #include "nu2api/numath/nuvec.h"
+#include "nu2api/numath/nuvec4.h"
 
 struct NUANGVEC;
 struct nuquat_s;
 
 typedef struct numtx_s { // size 0x40
-    f32 m00;             // 0x00
-    f32 m01;             // 0x04
-    f32 m02;             // 0x08
-    f32 m03;             // 0x0c
-    f32 m10;             // 0x10
-    f32 m11;             // 0x14
-    f32 m12;             // 0x18
-    f32 m13;             // 0x1c
-    f32 m20;             // 0x20
-    f32 m21;             // 0x24
-    f32 m22;             // 0x28
-    f32 m23;             // 0x2c
 
-    union { // size 0xc
+    union { // size 0x40
 
-        struct {     // size 0xc
-            f32 m30; // 0x30
-            f32 m31; // 0x34
-            f32 m32; // 0x38
+        struct { // size 0x40
+            f32 m00;             // 0x00
+            f32 m01;             // 0x04
+            f32 m02;             // 0x08
+            f32 m03;             // 0x0c
+            f32 m10;             // 0x10
+            f32 m11;             // 0x14
+            f32 m12;             // 0x18
+            f32 m13;             // 0x1c
+            f32 m20;             // 0x20
+            f32 m21;             // 0x24
+            f32 m22;             // 0x28
+            f32 m23;             // 0x2c
+
+            union { // size 0xc
+
+                struct {     // size 0xc
+                    f32 m30; // 0x30
+                    f32 m31; // 0x34
+                    f32 m32; // 0x38
+                };
+
+                NUVEC translation;
+            }; // 0x30
+
+            f32 m33; // 0x3c
         };
 
-        NUVEC translation;
-    }; // 0x30
-
-    f32 m33; // 0x3c
+        NUVEC4 rows[4];
+    }; // 0x00
 } NUMTX;
 
 #ifdef __cplusplus
