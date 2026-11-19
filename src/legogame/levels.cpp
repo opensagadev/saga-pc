@@ -1871,7 +1871,7 @@ void WorldInfo_Load(WORLDINFO *world) {
     char title_light_path[] = "levels\\titles\\titles";
     NUGSCN *cutscene_scene;
     i32 index;
-    LOG_INFO("World load begin: world=%p area=%d level=%d config=%s", (void *)world, world->area_index, world->level_idx,
+    LOG_INFO("World load begin: world=%p area=%d level=%d config=%s", world, world->area_index, world->level_idx,
              world->config_file);
     Level_LoadConfigFile(world);
     if (abort_load != 0) {
@@ -1914,7 +1914,7 @@ void WorldInfo_Load(WORLDINFO *world) {
         } else {
             world->current_gscn = NuGScnRead(&world->giz_buffer, world->buffer_end, path);
         }
-        LOG_INFO("Scene load returned: path=%s scene=%p", path, (void *)world->current_gscn);
+        LOG_INFO("Scene load returned: path=%s scene=%p", path, world->current_gscn);
         NuWin32SetDFS(0);
         numtl_force_mipmode = 0;
         StoreSceneProgress(world->current_gscn, &world->scene_progress, 1);
@@ -1989,7 +1989,7 @@ void WorldInfo_Load(WORLDINFO *world) {
         (world->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) == 0) {
         world->sock_sys = SockSysInit(&world->giz_buffer, world->buffer_end, world->current_gscn);
     }
-    LOG_INFO("WorldInfo_Load after SockSysInit: world=%p", (void *)world);
+    LOG_INFO("WorldInfo_Load after SockSysInit: world=%p", world);
     LevelSplines_InitForLevel(world);
     LevelObjects_InitForLevel(world);
     BoltTypes_Init(world);
@@ -2099,11 +2099,11 @@ void WorldInfo_Load(WORLDINFO *world) {
     }
     SetAreaPickupGravity(world->area_index, world->level_idx);
     world->loaded = 1;
-    LOG_INFO("World load complete: world=%p area=%d level=%d scene=%p", (void *)world, world->area_index, world->level_idx,
-             (void *)world->current_gscn);
+    LOG_INFO("World load complete: world=%p area=%d level=%d scene=%p", world, world->area_index, world->level_idx,
+             world->current_gscn);
     return;
 abort:
-    LOG_WARN("World load aborted: world=%p area=%d level=%d abort_load=%d", (void *)world, world->area_index, world->level_idx, abort_load);
+    LOG_WARN("World load aborted: world=%p area=%d level=%d abort_load=%d", world, world->area_index, world->level_idx, abort_load);
     WorldInfo_Dump(world);
     WorldInfo_Reset(world, -1);
 }

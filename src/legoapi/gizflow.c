@@ -303,10 +303,10 @@ void PerformActionFlowBox(GIZFLOW *system, FLOWBOX *box) {
     }
     for (action = box->data; action != NULL; action = action->next) {
         if (action->definition != NULL && action->definition->action_fn != NULL) {
-            LOG_INFO_IF(GameTimer.update_count < 2, "Giz action before: definition=%p function=%p", (void *)action->definition,
+            LOG_INFO_IF(GameTimer.update_count < 2, "Giz action before: definition=%p function=%p", action->definition,
                         (void *)action->definition->action_fn);
             action->definition->action_fn(system, box, action->parameters, action->parameter_count);
-            LOG_INFO_IF(GameTimer.update_count < 2, "Giz action after: system=%p box=%p", (void *)system, (void *)box);
+            LOG_INFO_IF(GameTimer.update_count < 2, "Giz action after: system=%p box=%p", system, box);
         }
     }
 }

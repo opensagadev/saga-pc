@@ -727,7 +727,7 @@ extern "C" {
         if (LWORLD->loaded != 0) {
             level_already_loaded = next_level;
         }
-        LOG_INFO("Stream level complete: next_level=%d world=%p loaded=%d", next_level, (void *)LWORLD, LWORLD->loaded);
+        LOG_INFO("Stream level complete: next_level=%d world=%p loaded=%d", next_level, LWORLD, LWORLD->loaded);
     }
 
     volatile i32 abort_load = 0;
@@ -820,9 +820,9 @@ extern "C" {
     }
 
     void WorldInfo_Activate(void) {
-        LOG_INFO("World activate begin: previous=%p next=%p", (void *)WORLD, (void *)LWORLD);
+        LOG_INFO("World activate begin: previous=%p next=%p", WORLD, LWORLD);
         WORLD = LWORLD;
         WorldInfo_Init(LWORLD);
-        LOG_INFO("WorldInfo_Activate complete: world=%p", (void *)WORLD);
+        LOG_INFO("WorldInfo_Activate complete: world=%p", WORLD);
     }
 }

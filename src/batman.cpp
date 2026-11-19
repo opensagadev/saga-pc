@@ -250,9 +250,9 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     other_level_override = -1;
     Shadow_SetMode();
     GizmoPickups_SetOnOff();
-    LOG_INFO_IF(GameTimer.update_count < 2, "NuMainUpdateFrame before DoInput: world=%p", (void *)WORLD);
+    LOG_INFO_IF(GameTimer.update_count < 2, "NuMainUpdateFrame before DoInput: world=%p", WORLD);
     DoInput(WORLD);
-    LOG_INFO_IF(GameTimer.update_count < 2, "NuMainUpdateFrame after DoInput: world=%p", (void *)WORLD);
+    LOG_INFO_IF(GameTimer.update_count < 2, "NuMainUpdateFrame after DoInput: world=%p", WORLD);
     if (memcard_autosaveenabled != 0 && memcard_autosavedisabled != 0 &&
         (world == NULL || world->area == NULL || (world->area->flags & AREAFLAG_ENDING_AREA) == 0) && NewMode == 0 && NewLData == NULL &&
         FadeSys.fade == 0.0f && editor_active == 0 && (GamePads_IgnoreInputFn == NULL || GamePads_IgnoreInputFn() == 0)) {
@@ -284,7 +284,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     packet.controller_count = 2;
     theGameThings->ProcessThings(&packet);
     SAGA_SOUND_CHECK("before sound");
-    LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: before sound world=%p", (void *)WORLD);
+    LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: before sound world=%p", WORLD);
     if (NOSOUND == 0) {
         if (Paused != 0 && GameMenu[GameMenuLevel].menu == 4) {
             NuSound3SetDPL(TempOptions.dolby_surround, 0);
@@ -305,7 +305,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         ProcessMusicChanges(world->current_level, &Game.options_save);
     }
     SAGA_SOUND_CHECK("after sound");
-    LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after sound world=%p", (void *)WORLD);
+    LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after sound world=%p", WORLD);
     for (i = 0; i < 8; ++i) {
         if (Player[i] != NULL) {
             wind_objects[i] = &Player[i]->lower_position;
@@ -336,16 +336,16 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         CutScenes_Start(world);
         CutScenes_Update(world, Paused != 0 && !IsGrabbingScreen());
         SAGA_SOUND_CHECK("after CutScenes_Update");
-        LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after CutScenes_Update world=%p", (void *)WORLD);
+        LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after CutScenes_Update world=%p", WORLD);
         AdaptiveDifficultyUpdate(&adaptivedifficulty);
         if ((world->current_level->flags & LEVEL_TERRAIN) != 0) {
             TerrainPlatformOldUpdate();
         }
-        LOG_INFO_IF(GameTimer.update_count < 2, "ProcessGizFlow before: world=%p", (void *)WORLD);
+        LOG_INFO_IF(GameTimer.update_count < 2, "ProcessGizFlow before: world=%p", WORLD);
         SAGA_SOUND_CHECK("before ProcessGizFlow");
         ProcessGizFlow(world->giz_flow, FRAMETIME);
         SAGA_SOUND_CHECK("after ProcessGizFlow");
-        LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after ProcessGizFlow world=%p", (void *)WORLD);
+        LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after ProcessGizFlow world=%p", WORLD);
         if (world->ai_path_cnx_control_sys != NULL) {
             AIPathCnxControlSysUpdate(world->ai_path_cnx_control_sys);
         }
@@ -354,7 +354,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         }
         GameAnimSys_Update(world->game_anim_sys);
         SAGA_SOUND_CHECK("after GameAnimSys_Update");
-        LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after GameAnimSys_Update world=%p", (void *)WORLD);
+        LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after GameAnimSys_Update world=%p", WORLD);
         edanimUpdateObjects(1.0f);
         NuBridgeUpdate(&plr_lastpos);
         if (Grass_Available != 0) {
@@ -366,10 +366,10 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         Grabber_Update(world);
         TrafficAnimSys_Update(world->trafficanim_sys);
         SAGA_SOUND_CHECK("after TrafficAnimSys_Update");
-        LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after TrafficAnimSys_Update world=%p", (void *)WORLD);
+        LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after TrafficAnimSys_Update world=%p", WORLD);
         GizmoSysEarlyUpdate(world->gizmo_sys, world, FRAMETIME);
         SAGA_SOUND_CHECK("after GizmoSysEarlyUpdate");
-        LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after GizmoSysEarlyUpdate world=%p", (void *)WORLD);
+        LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after GizmoSysEarlyUpdate world=%p", WORLD);
         if ((world->current_level->flags & LEVEL_TERRAIN) != 0) {
             TerrainPlatformNewUpdate();
         }
@@ -377,13 +377,13 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         Teleports_UpdateBeforeGameObjects(world);
         if (CUTSTOPGAME == 0) {
             SAGA_SOUND_CHECK("before ManageGameObjects");
-            LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: before ManageGameObjects world=%p", (void *)WORLD);
+            LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: before ManageGameObjects world=%p", WORLD);
             ManageGameObjects();
             SAGA_SOUND_CHECK("after ManageGameObjects");
-            LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after ManageGameObjects world=%p", (void *)WORLD);
+            LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after ManageGameObjects world=%p", WORLD);
             UpdateGameObjects(world);
             SAGA_SOUND_CHECK("after UpdateGameObjects");
-            LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after UpdateGameObjects world=%p", (void *)WORLD);
+            LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after UpdateGameObjects world=%p", WORLD);
         } else {
             for (i = 0; i < 8; ++i) {
                 object = Player[i];
@@ -403,14 +403,14 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             Batarangs_Update();
             UpdateCables();
             SAGA_SOUND_CHECK("before Level_Update");
-            LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: before Level_Update world=%p", (void *)WORLD);
+            LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: before Level_Update world=%p", WORLD);
             Level_Update(world);
             SAGA_SOUND_CHECK("after Level_Update");
-            LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after Level_Update world=%p", (void *)WORLD);
+            LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after Level_Update world=%p", WORLD);
             Bolts_Update(world);
             UpdateParts(FRAMETIME);
             SAGA_SOUND_CHECK("after UpdateParts");
-            LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after UpdateParts world=%p", (void *)WORLD);
+            LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after UpdateParts world=%p", WORLD);
             if (brickimpactwait > 0.0f) {
                 brickimpactwait -= FRAMETIME;
             }
@@ -448,10 +448,10 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         NuMtlAnimateSetSpeedScale(1.0f);
         NuMtlAnimateSetMask(0xffff);
         SAGA_SOUND_CHECK("before MoveGameCamera");
-        LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: before MoveGameCamera world=%p", (void *)WORLD);
+        LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: before MoveGameCamera world=%p", WORLD);
         MoveGameCamera(GameCam);
         SAGA_SOUND_CHECK("after MoveGameCamera");
-        LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after MoveGameCamera world=%p", (void *)WORLD);
+        LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after MoveGameCamera world=%p", WORLD);
         GameObjectToCameraDistances();
         SetCameraMatrices();
         if (CUTSTOPGAME == 0) {
@@ -853,9 +853,9 @@ extern "C" int NuMain(int argc, char **argv) {
             FadeSys.SetStage(1);
             MainRenderTargetTime = 1.0f;
             MainRenderTime = 1.0f;
-            LOG_INFO("NuMain before CheckResetBits: world=%p", (void *)WORLD);
+            LOG_INFO("NuMain before CheckResetBits: world=%p", WORLD);
             CheckResetBits();
-            LOG_INFO("NuMain after CheckResetBits: world=%p", (void *)WORLD);
+            LOG_INFO("NuMain after CheckResetBits: world=%p", WORLD);
             music_man.SetFader(1.0f, 0.0f);
             GamePlayMusic(WORLD->current_level, 1, &Game.options_save);
             if (WORLD->current_level == TITLES_LDATA && Game.options_save.music_enabled == 0) {
@@ -900,11 +900,11 @@ extern "C" int NuMain(int argc, char **argv) {
                         FadeSys.fade == 0.0f) {
                         EndChallenge(CHALLENGE_WON, 1);
                     }
-                    LOG_INFO_IF(GameTimer.update_count < 2, "NuMain before update: world=%p", (void *)WORLD);
+                    LOG_INFO_IF(GameTimer.update_count < 2, "NuMain before update: world=%p", WORLD);
                     SAGA_SOUND_CHECK("before frame update");
                     NuMainUpdateFrame(WORLD, &frame_flag);
                     SAGA_SOUND_CHECK("after frame update");
-                    LOG_INFO_IF(GameTimer.update_count < 2, "NuMain after update: world=%p", (void *)WORLD);
+                    LOG_INFO_IF(GameTimer.update_count < 2, "NuMain after update: world=%p", WORLD);
                 }
                 if (waiting_for_level != -1 && screendump == 0) {
                     WaitingForLevelTime += FRAMETIME;
@@ -919,11 +919,11 @@ extern "C" int NuMain(int argc, char **argv) {
                 if (SoundVoiceEnabledGate != 0) {
                     if (pause_rndr_on == 0 || FadeSys.pending_type == FADE_TYPE_WIPE) {
                         if (0.0f < MainRenderTime) {
-                            LOG_INFO_IF(GameTimer.update_count < 2, "NuMain before render: world=%p", (void *)WORLD);
+                            LOG_INFO_IF(GameTimer.update_count < 2, "NuMain before render: world=%p", WORLD);
                             SAGA_SOUND_CHECK("before world render");
                             NuMainRenderWorld(WORLD);
                             SAGA_SOUND_CHECK("after world render");
-                            LOG_INFO_IF(GameTimer.update_count < 2, "NuMain after render: world=%p", (void *)WORLD);
+                            LOG_INFO_IF(GameTimer.update_count < 2, "NuMain after render: world=%p", WORLD);
                         } else {
                             NoRender();
                         }
