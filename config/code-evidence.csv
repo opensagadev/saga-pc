@@ -1913,7 +1913,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x00698fe0,1,_fun_00698fe0,extent,,,unreferenced,
 0x00698ff0,1,_fun_00698ff0,copy,NuError,,"empty static directly before the VuVecMake copy at 0x699000; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x00699000,28,_fun_00699000,copy,VuVecMake,,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
-0x00699020,32,_fun_00699020,copy,OvHeaderFseekWrap,,bytes equal __ov_header_fseek_wrap,
+0x00699020,32,_NustreamOvHeaderFseekWrap,copy,OvHeaderFseekWrap,,bytes equal __ov_header_fseek_wrap,
 0x00699040,38,?FormatDiffers@SoundQueue@@QAEHPBUtWAVEFORMATEX@@@Z,extent,,,unreferenced,
 0x00699200,95,?PopCommand@SoundQueue@@QAEHPAH@Z,extent,,,unreferenced,
 0x0069a190,28,?WavreaderVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,nu2api/wavreader.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,

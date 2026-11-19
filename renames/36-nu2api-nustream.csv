@@ -1,0 +1,2 @@
+old,new,evidence
+fun_00699020,NustreamOvHeaderFseekWrap,nustream copy of the vorbisfile static seek callback

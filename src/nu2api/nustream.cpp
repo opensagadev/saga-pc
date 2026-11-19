@@ -6,7 +6,7 @@
 /* vorbisfile.h's static seek callback (the OV_CALLBACKS tables use it): each unit including the header carries
  * its own copy; this one is named apart from the other units' copies. */
 // NOLINTNEXTLINE(readability-identifier-naming): vorbisfile.h names the static
-#define _ov_header_fseek_wrap fun_00699020
+#define _ov_header_fseek_wrap NustreamOvHeaderFseekWrap
 #include "vorbis/vorbisfile.h"
 #undef _ov_header_fseek_wrap
 #include "nu2api/oggreader.h"

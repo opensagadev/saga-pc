@@ -11911,7 +11911,7 @@ address,symbol,size,ctype
 0x698fe0,_fun_00698fe0,1,
 0x698ff0,_fun_00698ff0,1,
 0x699000,_fun_00699000,28,
-0x699020,_fun_00699020,32,
+0x699020,_NustreamOvHeaderFseekWrap,32,
 0x699040,?FormatDiffers@SoundQueue@@QAEHPBUtWAVEFORMATEX@@@Z,38,
 0x699070,?SetFormat@SoundQueue@@QAEHPBUtWAVEFORMATEX@@@Z,266,"i32 __thiscall(SoundQueue *,const WAVEFORMATEX *)"
 0x00699180,?SendCommand@SoundQueue@@QAEHHH@Z,117,"i32 __thiscall (SoundQueue *, i32, i32)"
