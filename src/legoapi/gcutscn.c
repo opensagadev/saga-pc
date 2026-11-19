@@ -34,7 +34,7 @@ void instNuGCutSceneSuspend(INSTNUGCUTSCENE *instance) {
     instance->flags_88 |= NUGCUTSCENE_INST_SUSPENDED;
 }
 
-void fun_00500420(INSTNUGCUTSCENE *instance, i32 value) {
+void instNuGCutSceneSetRepeatCount(INSTNUGCUTSCENE *instance, i32 value) {
     if (value > 31) {
         value = 31;
     }

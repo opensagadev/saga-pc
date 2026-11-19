@@ -3484,7 +3484,7 @@ address,symbol,size,ctype
 0x5003b0,_instNuGCutSceneEndButNotSystems,77,void __cdecl(INSTNUGCUTSCENE *)
 0x500400,_instNuGCutSceneResume,15,
 0x500410,_instNuGCutSceneSuspend,15,
-0x500420,_fun_00500420,39,
+0x500420,_instNuGCutSceneSetRepeatCount,39,
 0x500450,_instNuGCutSceneSetHoldLastFrame,27,
 0x500470,_instNuGCutSceneSetChained,15,
 0x500480,_instNuGCutSceneSetEndCallback,15,
@@ -5100,7 +5100,7 @@ address,symbol,size,ctype
 0x55c820,_AddToCompletionPoints,87,
 0x55c880,_Game_100PercentComplete,24,i32 __cdecl(void)
 0x55c8a0,_AddToGoldBricks,70,
-0x55c8f0,_fun_0055c8f0,24,
+0x55c8f0,_Game_AllGoldBricksComplete,24,
 0x55c910,_Memcard_AutosaveBusy,27,
 0x55c930,_GameobjectsVuVecMake,28,
 0x0055c950,_ClearGameObjects,42,void __cdecl(APIOBJECTSYS *)

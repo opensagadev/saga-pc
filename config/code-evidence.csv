@@ -388,7 +388,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x00500200,11,_CutSceneClearActiveInstances,extent,,nu2api/cutscene_include.cpp,unreferenced,
 0x00500400,15,_instNuGCutSceneResume,extent,,nu2api/cutscene_include.cpp,unreferenced,
 0x00500410,15,_instNuGCutSceneSuspend,extent,,nu2api/cutscene_include.cpp,unreferenced,
-0x00500420,39,_fun_00500420,extent,,nu2api/cutscene_include.cpp,unreferenced,
+0x00500420,39,_instNuGCutSceneSetRepeatCount,extent,,nu2api/cutscene_include.cpp,unreferenced,
 0x00500450,27,_instNuGCutSceneSetHoldLastFrame,extent,,nu2api/cutscene_include.cpp,unreferenced,
 0x00500470,15,_instNuGCutSceneSetChained,extent,,nu2api/cutscene_include.cpp,unreferenced,
 0x00500480,15,_instNuGCutSceneSetEndCallback,extent,,nu2api/cutscene_include.cpp,unreferenced,
@@ -556,7 +556,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x0055b210,77,_CDataFromName,sibling,,legoapi/characters.c,position between CharIDFromName and RedirectAnim in liblegoapi.a(characters.o); calls NuStrICmp,android:src/legoapi/characters/core/characters.cpp
 0x0055c0f0,1,_GamestructureNuError,copy,,legoapi/gamestructure.cpp,"empty static directly before the VuVecMake copy at 0x55c100; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x0055c100,28,?GamestructureVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,legoapi/gamestructure.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
-0x0055c8f0,24,_fun_0055c8f0,extent,,legoapi/gamestructure.cpp,unreferenced,
+0x0055c8f0,24,_Game_AllGoldBricksComplete,extent,,legoapi/gamestructure.cpp,unreferenced,
 0x0055c910,27,_Memcard_AutosaveBusy,extent,,legoapi/gamestructure.cpp,unreferenced,
 0x0055c930,28,_GameobjectsVuVecMake,copy,,legoapi/gameobjects.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x0055dda0,28,_PlayersVuVecMake,copy,,legoapi/gameobjects.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,

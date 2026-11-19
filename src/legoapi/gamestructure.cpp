@@ -244,7 +244,7 @@ extern "C" void AddToCompletionPoints(u32 points) {
 extern "C" {
 
     i32 Game_100PercentComplete(void) {
-        if (CustomiserCompletionSave != NULL && (CustomiserCompletionSave->flags & 1) != 0) {
+        if (CustomiserCompletionSave != NULL && (CustomiserCompletionSave->flags & SAVE_REWARD_100_PERCENT) != 0) {
             return 1;
         }
         return 0;
@@ -275,8 +275,8 @@ extern "C" void AddToGoldBricks() {
     }
 }
 
-extern "C" i32 fun_0055c8f0() {
-    if (CustomiserCompletionSave != NULL && (CustomiserCompletionSave->flags & 2) != 0) {
+extern "C" i32 Game_AllGoldBricksComplete() {
+    if (CustomiserCompletionSave != NULL && (CustomiserCompletionSave->flags & SAVE_REWARD_ALL_GOLD_BRICKS) != 0) {
         return 1;
     }
     return 0;
