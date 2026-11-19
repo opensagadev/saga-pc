@@ -3,6 +3,7 @@
 #include "nu2api/nucore/common.h"
 
 #include "legoapi/items/base/apiobject.h"
+#include "legoapi/legoapi_types.h"
 #include "legoapi/world/world.h"
 #include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/numath/nuvec.h"

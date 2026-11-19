@@ -5,6 +5,7 @@
 #include "legoapi/gizmo/base/gizmo.h"
 #include "legoapi/items/base/apiobject.h"
 #include "legoapi/legoapi_types.h"
+#include "legoapi/world/world.h"
 #include "nu2api/numath/nuvec.h"
 
 #ifdef __cplusplus

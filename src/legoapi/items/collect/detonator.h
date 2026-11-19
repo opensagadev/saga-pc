@@ -2,6 +2,8 @@
 
 #include "nu2api/nucore/common.h"
 
+#include "legoapi/items/base/apiobject.h"
+
 struct DETONATOR_s;
 
 #ifdef __cplusplus

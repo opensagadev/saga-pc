@@ -3,6 +3,7 @@
 #include "nu2api/nucore/common.h"
 
 #include "legoapi/items/base/apiobject.h"
+#include "legoapi/legoapi_types.h"
 
 struct CHARPLATFORMSYS_s;
 
