@@ -4,6 +4,7 @@
 
 #include "gamelib/util/CRC16.h"
 #include "gamelib/util/gamelib_util_types.h"
+#include "nu2api/nu3d/numtl.h"
 
 struct PC_SHADER_MATERIAL_FILTER_VIEW;
 

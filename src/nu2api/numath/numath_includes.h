@@ -2,6 +2,7 @@
 
 #include "nu2api/nucore/common.h"
 
+#include "nu2api/numath/nuplane.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuplane.h"
 
