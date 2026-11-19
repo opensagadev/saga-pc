@@ -81,8 +81,8 @@ extern "C" {
     extern SPLINEPOS fireSplinePos;
     extern f32 runningTotalPos;
     extern i32 fire_clip_dist;
-    extern i16 dat_007f1a7c;
-    extern i16 dat_007f1a88;
+    extern i16 id_TOWNCAR;
+    extern i16 id_LIFEBOAT;
     void DeathStar2BattleA_AlwaysUpdate(WORLDINFO *);
     void DeathStar2BattleD_Init(WORLDINFO *);
     void DeathStar2BattleD_Update(WORLDINFO *);

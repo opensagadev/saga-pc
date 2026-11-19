@@ -319,10 +319,10 @@ static void JediBResetRecord(JEDIB_CREATURE *record) {
     }
     if (record->flags & 2) {
         if (FreePlay == 0 && (jedi_b.unique_spawned & 1) == 0) {
-            record->id = dat_007f19d8;
+            record->id = id_LUMINARA;
             jedi_b.unique_spawned |= 1;
         } else if (FreePlay == 0 && (jedi_b.unique_spawned & 2) == 0) {
-            record->id = dat_007f19d4;
+            record->id = id_SHAAKTI;
             jedi_b.unique_spawned |= 2;
         } else if (NuRandFloat() < 0.5f) {
             record->id = id_BATTLEDROIDGEONOSIAN;
@@ -339,7 +339,7 @@ static void JediBResetRecord(JEDIB_CREATURE *record) {
 static f32 jedib_create_step_Normal = 2.0f;
 NUVEC jedib_offsets[3] = {{0.1f, -0.1f, -0.1f}, {-0.1f, -0.1f, -0.1f}, {-0.1f, -0.1f, 0.1f}};
 i32 jedib_yrot[3] = {0x6000, 0xa000, 0xe000};
-i16 *JediB_playerids[3] = {&dat_007f19c8, &id_ANAKINPADAWAN, &dat_007f19d0};
+i16 *JediB_playerids[3] = {&id_PADMECLAWED, &id_ANAKINPADAWAN, &id_OBIWANKENOBIJEDIMASTER};
 static f32 jedib_inner = 3.0f;
 static i32 jedib_max_baddies_per_goody = 3;
 static i32 jedib_min_baddies_per_goody = 1;
@@ -798,7 +798,7 @@ void JediB_Update(WORLDINFO *world) {
                 baddie->object->ai_packet.locator = NULL;
                 target = NULL;
                 if ((player->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE) == 0 &&
-                    ((i16)player->objptr->id != dat_007f19c4 || (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) &&
+                    ((i16)player->objptr->id != id_JARJARBINKS || (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) &&
                     (player->character_data->game_character->variant != CHARVARIANT_BATTLEDROID ||
                      baddie->object->character_data->game_character->variant != CHARVARIANT_BATTLEDROID)) {
                     target = player;
@@ -808,7 +808,7 @@ void JediB_Update(WORLDINFO *world) {
                     }
                     if (player2 != NULL) {
                         if ((player2->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE) == 0 &&
-                            ((i16)player->objptr->id != dat_007f19c4 || (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) &&
+                            ((i16)player->objptr->id != id_JARJARBINKS || (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) &&
                             (player->character_data->game_character->variant != CHARVARIANT_BATTLEDROID ||
                              baddie->object->character_data->game_character->variant != CHARVARIANT_BATTLEDROID)) {
                             target = player2;
@@ -925,11 +925,11 @@ void JediB_DrawPanel(WORLDINFO *world) {
                     } else {
                         count = 1;
                         if (jedi_b.phase == 1) {
-                            ids[0] = dat_007f19c8;
+                            ids[0] = id_PADMECLAWED;
                         } else if (jedi_b.phase == 2) {
                             ids[0] = id_ANAKINPADAWAN;
                         } else if (jedi_b.phase == 3) {
-                            ids[0] = dat_007f19d0;
+                            ids[0] = id_OBIWANKENOBIJEDIMASTER;
                         }
                     }
                     DrawMeleeTargetsAlpha(ids, spawned, NULL, count);
@@ -1105,7 +1105,7 @@ void FactoryG_Update(WORLDINFO *world) {
         return;
     }
     if (ObiWan == NULL) {
-        ObiWan = FindGameObject(dat_007f19d0, APIOBJECT_CREATURE, 0, 1, 0);
+        ObiWan = FindGameObject(id_OBIWANKENOBIJEDIMASTER, APIOBJECT_CREATURE, 0, 1, 0);
         return;
     }
     if (FreePlay != 0) {
@@ -2120,12 +2120,12 @@ void BonusGunshipB_Panel(WORLDINFO *world) {
     }
 }
 
-i16 dat_007f19c4 = -1;
-i16 dat_007f19c8 = -1;
+i16 id_JARJARBINKS = -1;
+i16 id_PADMECLAWED = -1;
 i16 id_ANAKINPADAWAN = -1;
-i16 dat_007f19d0 = -1;
-i16 dat_007f19d4 = -1;
-i16 dat_007f19d8 = -1;
+i16 id_OBIWANKENOBIJEDIMASTER = -1;
+i16 id_SHAAKTI = -1;
+i16 id_LUMINARA = -1;
 i16 id_BOB = -1;
 i16 id_JANGOFETT = -1;
 char *paint_name[6] = {"red_juice", "yellow_juice", "blue_juice", "orange_juice", "green_juice", "purple_juice"};

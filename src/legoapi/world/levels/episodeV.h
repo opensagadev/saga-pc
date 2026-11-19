@@ -16,7 +16,7 @@ struct level_data_s;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i16 dat_007f18b4;
+    extern i16 id_PROBEDROID;
     i32 TakeOverYodaSeekDistanceHack(struct gameobject_s *, struct gameobject_s *, NUVEC *);
     extern i32 dagobah_training;
     extern u8 minikitCounter_C;

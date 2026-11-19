@@ -21,7 +21,7 @@ typedef struct PAD_INPUT {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i16 dat_007f17d0;
+    extern i16 id_INDIANAJONES;
 /* Windows SDK commctrl.h aliases DrawStatusText to DrawStatusTextA. */
 #ifdef DrawStatusText
 #undef DrawStatusText

@@ -52,9 +52,9 @@ extern "C" {
     void KeepOnScreen(GAMEOBJECT *);
 
     extern KEEP_SCREEN_PLANE PlayPlane[6];
-    extern i16 dat_007f17bc;
-    extern i16 dat_007f17c8;
-    extern i16 dat_007f17cc;
+    extern i16 id_GLIDEPACK;
+    extern i16 id_PENGUIN;
+    extern i16 id_UMBRELLA;
     extern i16 PermanentWeirdo1Id;
     extern i16 PermanentWeirdo2Id;
     extern i16 DefaultAnimationJabbaId;
@@ -71,8 +71,8 @@ extern "C" {
     struct AILOCATOR *getSpawnLocator(f32 clip_radius, char *name);
     extern i32 CharacterLoadAreaModels;
     void InitAICreatures(AISYS *);
-    extern i16 dat_007f1810;
-    extern i16 dat_007f1820;
+    extern i16 id_HENCHMAN;
+    extern i16 id_TWOFACE;
     i32 fun_0041aec0(GAMEOBJECT *object);
     void ClearAICreatures(void);
     void PlayerSetCurrentHp(GAMEOBJECT *object, i8 hitpoints);

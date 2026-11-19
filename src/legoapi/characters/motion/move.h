@@ -559,7 +559,7 @@ extern "C" {
     extern AREA_DATA *ANAKINSFLIGHT_ADATA;
     extern AREA_DATA *DEATHSTARBATTLE_ADATA;
     extern AREA_DATA *EMPERORFIGHT_ADATA;
-    extern i16 dat_007f1a78;
+    extern i16 id_PITDROID;
     extern i16 id_WATTO;
     f32 getPodRoll(i32 arg0);
     i32 MovePlayer_CIRCLE(struct gameobject_s *object);

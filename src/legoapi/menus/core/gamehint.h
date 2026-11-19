@@ -10,7 +10,7 @@ struct WORLDINFO_s;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i16 dat_007f195c;
+    extern i16 id_SLAVE1;
     extern HINT Hints_LSW[65];
     void DrawHint_LSW(HINT *, i32);
     void initGameHintSys_LSW(void);

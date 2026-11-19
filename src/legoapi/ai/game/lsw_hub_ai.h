@@ -31,7 +31,7 @@ typedef struct HUB_AI_STATE {                        // size 0x150
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i16 dat_007f1910;
+    extern i16 id_TRAININGREMOTE;
     extern HUB_AI_STATE HubAiMusicState;
     i32 Hub_Outside(void);
     i32 Hub_GetRandomCharType(void);
@@ -40,7 +40,7 @@ extern "C" {
     void LSW_Hub_UpdateAI(WORLDINFO *);
     void *Condition_InHubAreaInit(AISYS *, char *, AISCRIPT *);
     f32 Condition_InHubArea(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *);
-    extern i16 dat_007f18c4;
+    extern i16 id_WOMPRAT;
     extern const char *HubAreaNames[10];
 #ifdef __cplusplus
 }

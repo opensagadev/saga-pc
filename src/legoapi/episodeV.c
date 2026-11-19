@@ -462,19 +462,19 @@ void Asteroids_Update(void) {
 /* Falcon spotlight phases. */
 f32 spotLightA_yrot[2] = {0};
 f32 spotLightA_zrot[2] = {0};
-i16 dat_007f18b4 = -1;
+i16 id_PROBEDROID = -1;
 i16 id_ATST_LOWRES = -1;
 i16 id_BOBAFETT = -1;
 i16 id_ATAT = -1;
-i16 dat_007f19a4 = -1;
-i16 dat_007f19a8 = -1;
+i16 id_MILLENNIUMFALCON = -1;
+i16 id_SPEEDERBIKESNOW = -1;
 f32 spotLightB_yrot[2] = {0.5f, 0.5f};
 f32 spotLightB_zrot[2] = {0.5f, 0.5f};
 i8 melee_wavePhase = -1;
 
 void DrawFalconSpotLights(GAMEOBJECT *object) {
     NUMTX matrix;
-    if ((object->player_slot != 0 && object->player_slot != 1) || (i16)object->id != dat_007f19a4 ||
+    if ((object->player_slot != 0 && object->player_slot != 1) || (i16)object->id != id_MILLENNIUMFALCON ||
         WORLD->level_objects[0x127].active == 0) {
         return;
     }
@@ -566,7 +566,7 @@ void AsteroidChaseB_Update(WORLDINFO *world) {
         }
     }
     for (i = 0; i < 2; i++) {
-        if (Player[i] != NULL && (i16)Player[i]->id == dat_007f19a4 && LevArea[0] != NULL &&
+        if (Player[i] != NULL && (i16)Player[i]->id == id_MILLENNIUMFALCON && LevArea[0] != NULL &&
             (*(u64 *)Player[i]->ai_area_mask & (u64)(i64)(1 << (LevArea[0] - world->ai_sys->areas))) != 0) {
             if (LevTime[i] >= 2.0f) {
                 LevTime[i] = 2.0f;
@@ -576,7 +576,7 @@ void AsteroidChaseB_Update(WORLDINFO *world) {
             } else {
                 LevTime[i] = FRAMETIME + LevTime[i];
             }
-        } else if (Player[i] != NULL && (i16)Player[i]->id == dat_007f19a4) {
+        } else if (Player[i] != NULL && (i16)Player[i]->id == id_MILLENNIUMFALCON) {
             if (LevTime[i] > 0.0f) {
                 LevTime[i] -= FRAMETIME;
             } else {
@@ -812,7 +812,7 @@ void CloudCityTrapA_Update(WORLDINFO *world) {
         UpdateTrooperCannons(world);
     }
     if (LevGameObject[0] == NULL) {
-        LevGameObject[0] = FindGameObject(dat_007f199c, APIOBJECT_SIDE_BADDIE, 1, 1, 0);
+        LevGameObject[0] = FindGameObject(id_DARTHVADER, APIOBJECT_SIDE_BADDIE, 1, 1, 0);
     }
     if (netclient == 0) {
         if (LevAIMessage[0] != NULL && LevAIMessage[0]->value == 1.0f) {
@@ -830,13 +830,13 @@ void CloudCityTrapA_Update(WORLDINFO *world) {
 void CloudCityTrapB_Init(WORLDINFO *world) {
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "ShowHearts", NULL);
     LevAIMessage[1] = CheckGizAIMessage(gizaimessagesys, "TrapBEndFight", NULL);
-    LevGameObject[0] = FindGameObject(dat_007f199c, APIOBJECT_SIDE_BADDIE, 1, 1, 0);
+    LevGameObject[0] = FindGameObject(id_DARTHVADER, APIOBJECT_SIDE_BADDIE, 1, 1, 0);
 }
 
 void CloudCityTrapB_Update(WORLDINFO *unused0) {
     struct gameobject_s *vader;
     if (LevGameObject[0] == NULL) {
-        LevGameObject[0] = FindGameObject(dat_007f199c, APIOBJECT_SIDE_BADDIE, 1, 1, 0);
+        LevGameObject[0] = FindGameObject(id_DARTHVADER, APIOBJECT_SIDE_BADDIE, 1, 1, 0);
     }
     if (netclient != 0) {
         return;
@@ -861,7 +861,7 @@ void CloudCityTrapB_Update(WORLDINFO *unused0) {
 
 void CloudCityTrapC_Reset(WORLDINFO *world) {
     struct gizmo_s *gizmo;
-    LevGameObject[0] = FindGameObject(dat_007f199c, APIOBJECT_SIDE_BADDIE, 1, 0, 0);
+    LevGameObject[0] = FindGameObject(id_DARTHVADER, APIOBJECT_SIDE_BADDIE, 1, 0, 0);
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "ShowHearts", NULL);
     LevPathCnx[0] = AIPAthFindPathCnx(world->ai_sys, world->ai_sys->path_sys->active_path, "gap1_a", "gap1_b", &LevPathCnxDir);
     gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "obstacle3");
@@ -1055,7 +1055,7 @@ void DagobahE_Init(WORLDINFO *world) {
 }
 
 void DagobahC_Init(WORLDINFO *world) {
-    Vader_obj = FindGameObject(dat_007f199c, APIOBJECT_SIDE_BADDIE, 1, 0, 0);
+    Vader_obj = FindGameObject(id_DARTHVADER, APIOBJECT_SIDE_BADDIE, 1, 0, 0);
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force20");
 }
 
@@ -1365,9 +1365,9 @@ void HothBattle_ManageBackgroundCreatures(void) {
     }
     for (type = 0; type < melee.creature_count; ++type) {
         i16 id = melee.waves[type].character_id;
-        if (id == dat_007f18b4) {
+        if (id == id_PROBEDROID) {
             wave_types |= 1;
-        } else if (id == dat_007f19a8) {
+        } else if (id == id_SPEEDERBIKESNOW) {
             wave_types |= 2;
         } else if (id == id_ATST_LOWRES) {
             wave_types |= 4;
@@ -1375,13 +1375,14 @@ void HothBattle_ManageBackgroundCreatures(void) {
             wave_types |= 8;
         }
     }
-    radius = apicharsys->char_data[dat_007f18b4].collision_radius;
+    radius = apicharsys->char_data[id_PROBEDROID].collision_radius;
     while (aicreature_sets_alive[0] < 5 && (wave_types & 1) == 0) {
         spawn = getSpawnLocator(radius, "spawn");
         if (spawn == NULL) {
             return;
         }
-        object = AddDynamicCreature(dat_007f18b4, &spawn->position, spawn->rotation, "Probe", &spawn->path_info, NULL, 1, NULL, NULL, 0, 1);
+        object =
+            AddDynamicCreature(id_PROBEDROID, &spawn->position, spawn->rotation, "Probe", &spawn->path_info, NULL, 1, NULL, NULL, 0, 1);
         if (object == NULL) {
             break;
         }
@@ -1555,7 +1556,7 @@ i32 HothBattle_StartNewWave() {
     if (melee.restart != 0) {
         switch (melee.phase) {
             case 1:
-                melee.waves[0].character_id = dat_007f18b4;
+                melee.waves[0].character_id = id_PROBEDROID;
                 melee.waves[0].creature_type_a = 11;
                 melee.waves[0].creature_type_b = 11;
                 NuStrCpy(melee.waves[0].name, "Probe");
@@ -1576,7 +1577,7 @@ i32 HothBattle_StartNewWave() {
                 melee.creature_count = 1;
                 break;
             case 4:
-                melee.waves[0].character_id = dat_007f18b4;
+                melee.waves[0].character_id = id_PROBEDROID;
                 melee.waves[0].creature_type_a = 4;
                 melee.waves[0].creature_type_b = 4;
                 NuStrCpy(melee.waves[0].name, "Probe");

@@ -136,18 +136,18 @@ f32 DrawGameObjectsVehicleFarClip = 50.0f;
 f32 TerrainPlayerOtherMovementScale = 2.5f;
 f32 TerrainPlayerBikeMovementScale = 15.0f;
 i16 ID_DEFAULTCHARACTER_A = -1;
-i16 dat_007f17bc = -1;
+i16 id_GLIDEPACK = -1;
 i16 PunchRangeUnitId = -1;
 i16 PunchRangeCompanionId = -1;
-i16 dat_007f17c8 = -1;
-i16 dat_007f17cc = -1;
-i16 dat_007f17d4 = -1;
-i16 dat_007f1810 = -1;
-i16 dat_007f1820 = -1;
+i16 id_PENGUIN = -1;
+i16 id_UMBRELLA = -1;
+i16 id_HANSOLOINDY = -1;
+i16 id_HENCHMAN = -1;
+i16 id_TWOFACE = -1;
 i16 id_MOUSEDROID = -1;
 i32 waiting_for_character = -1;
 i32 hub_character_ready = -1;
-i16 dat_007f18c4;
+i16 id_WOMPRAT;
 i16 id_YODA = -1;
 i16 id_YODAGHOST = -1;
 i16 id_MOSEISLEYCITIZEN = -1;
@@ -456,8 +456,8 @@ void ExtraCharacterFixUpAfterConfig(void) {
         CDataList[id_SPEEDERBIKE].move_fn = Move_SPEEDERBIKE;
         CDataList[id_SPEEDERBIKE].animate_fn = Animate_SPEEDERBIKE;
     }
-    if (dat_007f18b4 != -1) {
-        CDataList[dat_007f18b4].animate_fn = Animate_DEFAULT;
+    if (id_PROBEDROID != -1) {
+        CDataList[id_PROBEDROID].animate_fn = Animate_DEFAULT;
     }
     if (id_BODYGUARD != -1) {
         CDataList[id_BODYGUARD].move_fn = Move_JEDI;
@@ -2767,7 +2767,7 @@ void UpdateCharacterLoad(void) {
         return;
     }
     count = 0;
-    if (dat_007f17d4 != -1 && APICharacterLoaded(dat_007f17d4) != NULL && PunchRangeCompanionId != -1 &&
+    if (id_HANSOLOINDY != -1 && APICharacterLoaded(id_HANSOLOINDY) != NULL && PunchRangeCompanionId != -1 &&
         APICharacterLoaded(PunchRangeCompanionId) == NULL) {
         candidates[count++] = PunchRangeCompanionId;
     } else if (id_BARMAN != -1 && APICharacterLoaded(id_BARMAN) == NULL) {
@@ -2784,8 +2784,8 @@ void UpdateCharacterLoad(void) {
         candidates[count++] = id_MOSEISLEYCITIZEN;
     } else if (id_CANTINAALIEN != -1 && APICharacterLoaded(id_CANTINAALIEN) == NULL) {
         candidates[count++] = id_CANTINAALIEN;
-    } else if (dat_007f18c4 != -1 && APICharacterLoaded(dat_007f18c4) == NULL) {
-        candidates[count++] = dat_007f18c4;
+    } else if (id_WOMPRAT != -1 && APICharacterLoaded(id_WOMPRAT) == NULL) {
+        candidates[count++] = id_WOMPRAT;
     } else {
         for (id = 0; id < CHARCOUNT; ++id) {
             if (id == id_DROIDEKA || (CDataList[id].model_flags & (CHARACTER_MODEL_VEHICLE | CHARACTER_MODEL_MINIKIT)) != 0 ||
@@ -4064,7 +4064,7 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
                         sabre = 1;
                     }
                 }
-            } else if (object->id == (u16)dat_007f1810 || (object->character_data->model_flags & CHARACTER_MODEL_BLASTER) != 0) {
+            } else if (object->id == (u16)id_HENCHMAN || (object->character_data->model_flags & CHARACTER_MODEL_BLASTER) != 0) {
                 models[0] = 0xc;
             }
             count = 0;
@@ -4182,7 +4182,7 @@ void DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices) {
         if (object->id != (u16)ID_DEFAULTCHARACTER_A) {
             return;
         }
-        character_id = dat_007f17bc;
+        character_id = id_GLIDEPACK;
         AnimPacketMiniToFull(&object->player.mini_anim_packet, &animation.packet);
     } else if (object->id == (u16)PunchRangeUnitId && (AnimPlaying(&object->anim_packet, ACTION_PUNCH, 1, 1) != NULL ||
                                                        AnimPlaying(&object->anim_packet, ACTION_PUNCH2, 1, 1) != NULL ||
@@ -4195,10 +4195,10 @@ void DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices) {
             animation.packet.blend_target_animation != ACTION_PUNCH_BEHIND) {
             return;
         }
-    } else if (object->id == (u16)dat_007f17c8) {
-        character_id = dat_007f17cc;
+    } else if (object->id == (u16)id_PENGUIN) {
+        character_id = id_UMBRELLA;
         AnimPacketMiniToFull(&object->player.mini_anim_packet, &animation.packet);
-    } else if (object->id == (u16)dat_007f17d0 || object->id == (u16)dat_007f17d4) {
+    } else if (object->id == (u16)id_INDIANAJONES || object->id == (u16)id_HANSOLOINDY) {
         if (AnimPacketModelsCompatible(&object->anim_packet, (i16)object->id, PunchRangeCompanionId) == 0) {
             return;
         }
@@ -4473,7 +4473,7 @@ void DrawParaphernalia(GAMEOBJECT *object) {
                 NuSpecialDrawAt(&WORLD->level_objects[10].special, special_matrix);
             }
         }
-    } else if (((i16)(object->id)) == dat_007f1820 && (time = AnimPlaying(&object->anim_packet, ACTION_IDLE, 0, 0)) != NULL) {
+    } else if (((i16)(object->id)) == id_TWOFACE && (time = AnimPlaying(&object->anim_packet, ACTION_IDLE, 0, 0)) != NULL) {
         start = AnimListFrame(object->character_model, ACTION_IDLE, 0);
         if (start >= 1.0f) {
             finish = AnimListFrame(object->character_model, ACTION_IDLE, 1);

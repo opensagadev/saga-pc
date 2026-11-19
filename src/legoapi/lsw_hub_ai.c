@@ -63,14 +63,14 @@ static void Hub_MakeListCharactersAvailable(i16 *characters) {
     if (id_BARMAN != -1) {
         characters[id_BARMAN] = -1;
     }
-    if (dat_007f1910 != -1) {
-        characters[dat_007f1910] = -1;
+    if (id_TRAININGREMOTE != -1) {
+        characters[id_TRAININGREMOTE] = -1;
     }
     if (DefaultAnimationJabbaId != -1) {
         characters[DefaultAnimationJabbaId] = -1;
     }
-    if (dat_007f18c4 != -1) {
-        characters[dat_007f18c4] = -1;
+    if (id_WOMPRAT != -1) {
+        characters[id_WOMPRAT] = -1;
     }
     if (PermanentWeirdo1Id != -1) {
         characters[PermanentWeirdo1Id] = -1;
@@ -94,7 +94,7 @@ static void Hub_MakeListCharactersAvailable(i16 *characters) {
 
 /* HubAI producer family. */
 
-i16 dat_007f18c4 = -1;
+i16 id_WOMPRAT = -1;
 i16 PermanentWeirdo1Id = -1;
 i16 PermanentWeirdo2Id = -1;
 i16 id_BARMAN = -1;

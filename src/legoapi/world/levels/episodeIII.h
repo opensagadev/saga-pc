@@ -36,7 +36,7 @@ extern "C" {
     void Boulder_Move(PART *, f32);
     void Boulder_Kill(PART *, i32);
     extern VADERA vader_a;
-    extern i16 dat_007f1a0c;
+    extern i16 id_PALPATINE;
     void CruiserAInit(struct WORLDINFO_s *);
     void CruiserAUpdate(struct WORLDINFO_s *);
     void CruiserCPanel(struct WORLDINFO_s *);

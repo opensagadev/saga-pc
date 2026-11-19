@@ -96,7 +96,7 @@ void SpeederChaseA_Update(WORLDINFO *world) {
     void *animation_data;
     f64 animation_time;
     i32 i;
-    ResetTrooperCannons(world, dat_007f1a3c);
+    ResetTrooperCannons(world, id_STORMTROOPER);
     UpdateTrooperCannons(world);
     if (netclient == 0) {
         if (LevAIMessage[4] != NULL) {

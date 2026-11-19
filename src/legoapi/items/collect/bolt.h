@@ -32,18 +32,18 @@ typedef struct weapon_ammo_s { // size 0x8
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i16 dat_007f190c;
-    extern i16 dat_007f1a38;
-    extern i16 dat_007f1a9c;
-    extern i16 dat_007f1aa0;
-    extern i16 dat_007f1aac;
-    extern i16 dat_007f1ad8;
-    extern i16 dat_007f1aec;
-    extern i16 dat_007f1af0;
-    extern i16 dat_007f1b00;
-    extern i16 dat_007f1b04;
-    extern i16 dat_007f1b08;
-    extern i16 dat_007f1b0c;
+    extern i16 id_FOURLOM;
+    extern i16 id_KAMINOANDROID;
+    extern i16 id_NABOOSTARFIGHTER;
+    extern i16 id_NABOOSTARFIGHTERLIME;
+    extern i16 id_SATIPO;
+    extern i16 id_MINITIEINTERCEPTOR;
+    extern i16 id_MINIIMPERIALSHUTTLE;
+    extern i16 id_MINIMILLENNIUMFALCON;
+    extern i16 id_MINITIEFIGHTER;
+    extern i16 id_MINITIEADVANCED;
+    extern i16 id_MINISITHINFILTRATOR;
+    extern i16 id_MINISOLARSAILOR;
 #ifdef __cplusplus
 }
 #endif

@@ -1851,7 +1851,7 @@ extern "C" {
             if (player == NULL) {
                 continue;
             }
-            if (player->id != (u16)id_JEDISTARFIGHTERYELLOWEP3 && player->id != (u16)dat_007f19e8) {
+            if (player->id != (u16)id_JEDISTARFIGHTERYELLOWEP3 && player->id != (u16)id_JEDISTARFIGHTERREDEP3) {
                 if (DogfightDebrisKeys[i] != -1) {
                     DebFreeInstantly(&DogfightDebrisKeys[i]);
                 }

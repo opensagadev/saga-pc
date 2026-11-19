@@ -166,8 +166,8 @@ u16 GameObjectRotationAtstId = 0xffff;
 i16 id_SUPERBATTLEDROID = -1;
 u16 id_DRAGBOMB = 0xffff;
 i16 id_CLONEWALKER = -1;
-i16 dat_007f1924 = -1;
-i16 dat_007f1928 = -1;
+i16 id_EWOK = -1;
+i16 id_WICKET = -1;
 i16 id_CATAPULT = -1;
 i16 id_BASKETCANNON = -1;
 i16 id_GRIEVOUS = -1;
@@ -183,13 +183,13 @@ i16 id_UGNAUGHT = -1;
 u16 id_GONKDROID = 0xffff;
 i16 id_C3PO = -1;
 i16 id_TC14 = -1;
-i16 dat_007f1a78 = -1;
+i16 id_PITDROID = -1;
 i16 DefaultAnimationLamaSuId = -1;
 i16 DefaultAnimationTaunWeId = -1;
 i16 id_BUZZDROID = -1;
-i16 dat_007f1a98 = -1;
-i16 dat_007f1a9c = -1;
-i16 dat_007f1aa0 = -1;
+i16 id_CLONEARC = -1;
+i16 id_NABOOSTARFIGHTER = -1;
+i16 id_NABOOSTARFIGHTERLIME = -1;
 i16 id_FLASHSPEEDER = -1;
 i16 DefaultMotionSkeletonId = -1;
 i16 ZipUpLineCharacterId = -1;
@@ -3137,7 +3137,7 @@ i32 Dodge_UpdateHint(HINT *hint) {
 
 static void PunchRanges(GAMEOBJECT *object, f32 *gap, f32 *charge_gap) {
     CHARACTER_MODEL_LAYERS *model;
-    if (object->id == (u16)dat_007f17d4) {
+    if (object->id == (u16)id_HANSOLOINDY) {
         model = APICharacterLoaded(PunchRangeCompanionId);
         if (model != NULL && model->model_data_b[0x2e] != NULL) {
             *charge_gap = *gap = 0.6f;
@@ -3422,7 +3422,7 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
 start_attack:
     object->player.context_variant_flags &= ~APIOBJECT_PUNCH_COMBO;
     if (StartupGameFlag1 == 0 || StartupGameFlag0 != 0 ||
-        (object->id == (u16)dat_007f17d4 && APICharacterLoaded(PunchRangeCompanionId) != NULL)) {
+        (object->id == (u16)id_HANSOLOINDY && APICharacterLoaded(PunchRangeCompanionId) != NULL)) {
         if (object->player.context_animation == ACTION_PUNCH && object->player.combo_stage == 0) {
             CHARACTER_MODEL_LAYERS *model = object->character_model;
             i32 has_first = model->model_data_b[0x2e] != NULL;
@@ -4866,7 +4866,7 @@ static void ForcePushCode(GAMEOBJECT *object, i32 held) {
             if ((f64)object->player.context_timer >= (f64)0.4f && target != NULL && (target->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
                 target->dead == 0 &&
                 (target->character_data->game_character->variant == CHARVARIANT_BATTLEDROID || target->id == (u16)id_BATTLEDROIDSECURITY ||
-                 target->id == id_GONKDROID || target->id == (u16)id_PKDROID || target->id == (u16)dat_007f1a78)) {
+                 target->id == id_GONKDROID || target->id == (u16)id_PKDROID || target->id == (u16)id_PITDROID)) {
                 DeactivatePlayer(target, (f32)((f64)DEACTIVATEDTIME * 0.5), NULL);
                 NewRumble(object->player.pad->bound_pad, 0.5f, 0);
             }
@@ -7158,8 +7158,8 @@ void Animate_CHARACTER(GAMEOBJECT *object) {
     } else {
         object->player.fall_animation_timer = 0.0f;
     }
-    if (object->id == (u16)dat_007f17c8) {
-        model_id = apicharsys->playermodelids[dat_007f17cc];
+    if (object->id == (u16)id_PENGUIN) {
+        model_id = apicharsys->playermodelids[id_UMBRELLA];
         if (model_id == -1) {
             return;
         }
@@ -7171,7 +7171,7 @@ void Animate_CHARACTER(GAMEOBJECT *object) {
         UpdateMiniAnimPacket(&apicharsys->models[model_id], &object->player.mini_anim_packet, (f32)((f64)FRAMETIME * 30.0), 0.0f,
                              FRAMETIME);
     } else if (object->player.suit != NULL && (object->player.suit->flags & SUIT_GLIDE) != 0) {
-        model_id = apicharsys->playermodelids[dat_007f17bc];
+        model_id = apicharsys->playermodelids[id_GLIDEPACK];
         if (model_id == -1) {
             return;
         }
@@ -11204,7 +11204,7 @@ void GameObjectStuffAfterAnimation(void) {
         }
         if (VehicleArea != 0 && object->player_slot <= 1) {
             i32 *handle = &FalconDebKey[object->player_slot];
-            if (object->id == (u16)dat_007f19a4 && (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
+            if (object->id == (u16)id_MILLENNIUMFALCON && (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
                 (object->player.flags_e24 & APIOBJECT_LOCATORS_VALID) != 0 && object->character_model->points_of_interest[2] != NULL &&
                 object->origin_scale == 1.0f) {
                 if (*handle == -1) {
@@ -12046,7 +12046,7 @@ void Move_CHARACTER(GAMEOBJECT *object) {
     u32 special_pressed = object->player.pad->buttons_pressed & GAMEPAD_SPECIAL;
     u32 tag_pressed = object->player.pad->buttons_pressed & GAMEPAD_TAG;
     PLAYERCHARACTERCONFIG *runtime;
-    if (object->id == (u16)id_GAMORREANGUARD || object->id == (u16)dat_007f1924 || object->id == (u16)dat_007f1928 ||
+    if (object->id == (u16)id_GAMORREANGUARD || object->id == (u16)id_EWOK || object->id == (u16)id_WICKET ||
         object->id == (u16)id_CAPTAINTARPALS) {
         KeepWeaponOut(object);
     }
@@ -12171,7 +12171,7 @@ after_gravity:
     HoldCode(object);
     BlockCode(object, action_pressed, action_held, 0, (object->character_data->model_flags & CHARACTER_MODEL_BLASTER) == 0);
     PunchCode(object, action_pressed, action_held, object->character_data->model_flags & CHARACTER_MODEL_BLASTER, 0, 0.0f);
-    if ((object->character_data->game_character->flags_094 & CHARACTER_OPTION_HAS_WHIP) != 0 && object->id == (u16)dat_007f17d0 &&
+    if ((object->character_data->game_character->flags_094 & CHARACTER_OPTION_HAS_WHIP) != 0 && object->id == (u16)id_INDIANAJONES &&
         StartupGameFlag0 != 0) {
         Whip_MoveCode(object);
     }
@@ -12506,7 +12506,7 @@ void Move_DROIDGENERIC(GAMEOBJECT *object) {
             zap_pressed = object->player.pad->buttons_pressed & GAMEPAD_ACTION;
         }
         KeepWeaponIn(object);
-    } else if (object->character_data->game_character->variant == CHARVARIANT_BATTLEDROID || object->id == (u16)dat_007f18b4) {
+    } else if (object->character_data->game_character->variant == CHARVARIANT_BATTLEDROID || object->id == (u16)id_PROBEDROID) {
         KeepWeaponOut(object);
     }
     DropInOutCode(object);
@@ -12564,7 +12564,7 @@ zap:
                     object->player.pad->input_magnitude > 0.0f) {
                     PlaySfx(object->id == (u16)id_MOUSEDROID ? "drd_mousebot_lp" : "R2Move", &object->collision_position);
                 }
-            } else if (object->id == (u16)dat_007f18b4) {
+            } else if (object->id == (u16)id_PROBEDROID) {
                 PlaySfx("Probot_EngLp", &object->collision_position);
                 FireCode(object, object->player.pad->buttons_pressed & GAMEPAD_ACTION, object->player.pad->buttons_pressed & GAMEPAD_ACTION,
                          0.5f, 1);

@@ -523,7 +523,7 @@ void SetLevelSfxBits(WORLDINFO *world) {
             AddLevelSfxFromName("veh_tie_by", sfx_ids, &sfx_count, 0x400);
             AddLevelSfxFromName("Tie_Spins", sfx_ids, &sfx_count, 0x400);
         }
-        if (character_id == dat_007f1924 || character_id == dat_007f1928) {
+        if (character_id == id_EWOK || character_id == id_WICKET) {
             AddLevelSfxFromName("wpn_bomb_drop", sfx_ids, &sfx_count, 0x400);
             AddLevelSfxFromName("exp_bomb", sfx_ids, &sfx_count, 0x400);
         }

@@ -32,29 +32,29 @@
 #include "nu2api/numath/nuvec.h"
 #include <math.h>
 
-i16 dat_007f190c = -1;
-i16 dat_007f1910 = -1;
+i16 id_FOURLOM = -1;
+i16 id_TRAININGREMOTE = -1;
 i16 id_TIEBOMBER = -1;
-i16 dat_007f196c = -1;
+i16 id_TIEFIGHTERDARTH = -1;
 i16 id_XWING = -1;
-i16 dat_007f1a24 = -1;
-i16 dat_007f1a28 = -1;
-i16 dat_007f1a2c = -1;
+i16 id_SNOWSPEEDER = -1;
+i16 id_TIEINTERCEPTOR = -1;
+i16 id_IMPERIALSHUTTLE = -1;
 i16 id_SENTRYDROID = -1;
-i16 dat_007f1a38 = -1;
+i16 id_KAMINOANDROID = -1;
 i16 id_MINIDROIDEKA = -1;
-i16 dat_007f1ad8 = -1;
+i16 id_MINITIEINTERCEPTOR = -1;
 i16 id_MINITIEBOMBER = -1;
 i16 id_MINISTARDESTROYER = -1;
 i16 id_MINIATAT = -1;
-i16 dat_007f1aec = -1;
-i16 dat_007f1af0 = -1;
-i16 dat_007f1b00 = -1;
-i16 dat_007f1b04 = -1;
-i16 dat_007f1b08 = -1;
-i16 dat_007f1b0c = -1;
-i16 dat_007f1b34 = -1;
-i16 dat_007f1b38 = -1;
+i16 id_MINIIMPERIALSHUTTLE = -1;
+i16 id_MINIMILLENNIUMFALCON = -1;
+i16 id_MINITIEFIGHTER = -1;
+i16 id_MINITIEADVANCED = -1;
+i16 id_MINISITHINFILTRATOR = -1;
+i16 id_MINISOLARSAILOR = -1;
+i16 id_ANAKINSSPEEDER = -1;
+i16 id_ANAKINSSPEEDERGREEN = -1;
 
 i32 BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
@@ -70,32 +70,32 @@ i32 BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
     if (id == VehicleSpecialShooterId) {
         return 43;
     }
-    if (id == dat_007f19a4) {
+    if (id == id_MILLENNIUMFALCON) {
         result = 7 + 2 * (object->player.bolt_fire_phase != 0);
         if (result == 7 && world->current_level == ASTEROIDCHASED_LDATA) {
             return 8;
         }
         return result;
     }
-    if (id == dat_007f1a9c || id == dat_007f1aa0) {
+    if (id == id_NABOOSTARFIGHTER || id == id_NABOOSTARFIGHTERLIME) {
         return 34;
     }
-    if (id == dat_007f1b34 || id == dat_007f1b38 || id == id_ZAMSSPEEDER) {
+    if (id == id_ANAKINSSPEEDER || id == id_ANAKINSSPEEDERGREEN || id == id_ZAMSSPEEDER) {
         return 11;
     }
     if (id == id_FLASHSPEEDER) {
         return 20;
     }
-    if (id == id_XWING || id == dat_007f195c) {
+    if (id == id_XWING || id == id_SLAVE1) {
         return 6;
     }
-    if (id == id_SPEEDERBIKE || id == dat_007f19a8) {
+    if (id == id_SPEEDERBIKE || id == id_SPEEDERBIKESNOW) {
         return 10;
     }
-    if (id == dat_007f18b4 || id == dat_007f1a24) {
+    if (id == id_PROBEDROID || id == id_SNOWSPEEDER) {
         return 11;
     }
-    if (id == id_TIEFIGHTER || id == dat_007f1a28 || id == dat_007f196c || id == id_TIEBOMBER || id == dat_007f1a2c) {
+    if (id == id_TIEFIGHTER || id == id_TIEINTERCEPTOR || id == id_TIEFIGHTERDARTH || id == id_TIEBOMBER || id == id_IMPERIALSHUTTLE) {
         if (world != NULL) {
             if (world->current_level == DEATHSTARBATTLED_LDATA) {
                 return 13;
@@ -106,20 +106,21 @@ i32 BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
         }
         return 12;
     }
-    if (id == dat_007f1b00 || id == dat_007f1ad8 || id == dat_007f1b04 || id == id_MINITIEBOMBER || id == dat_007f1aec ||
-        id == dat_007f1b08 || id == dat_007f1b0c || id == id_MINIATAT || id == id_MINISTARDESTROYER) {
+    if (id == id_MINITIEFIGHTER || id == id_MINITIEINTERCEPTOR || id == id_MINITIEADVANCED || id == id_MINITIEBOMBER ||
+        id == id_MINIIMPERIALSHUTTLE || id == id_MINISITHINFILTRATOR || id == id_MINISOLARSAILOR || id == id_MINIATAT ||
+        id == id_MINISTARDESTROYER) {
         return 23;
     }
-    if (id == dat_007f1af0) {
+    if (id == id_MINIMILLENNIUMFALCON) {
         return 21 + (object->player.bolt_fire_phase != 0);
     }
-    if (id == id_JEDISTARFIGHTERYELLOWEP3 || id == dat_007f19e8) {
+    if (id == id_JEDISTARFIGHTERYELLOWEP3 || id == id_JEDISTARFIGHTERREDEP3) {
         if (WORLD->area != NULL && WORLD->area == BATTLEOVERCORUSCANT_ADATA && WORLD->level_objects[0x12d].active != 0) {
             return 32;
         }
         return 33;
     }
-    if (id == dat_007f17d0 || id == dat_007f17d4 || id == dat_007f1aac) {
+    if (id == id_INDIANAJONES || id == id_HANSOLOINDY || id == id_SATIPO) {
         result = 42;
         if (WORLD->level_objects[GlobalBoltType[42].object_ids[0]].active == 0) {
             result = 0;
@@ -141,10 +142,10 @@ i32 BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
     if (id == id_BIGGUN) {
         return 20;
     }
-    if (id == id_BOBAFETT || id == dat_007f190c) {
+    if (id == id_BOBAFETT || id == id_FOURLOM) {
         return 26;
     }
-    if (id == dat_007f1910) {
+    if (id == id_TRAININGREMOTE) {
         return 3;
     }
     if (id == id_ATAT) {
@@ -162,10 +163,10 @@ i32 BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
     if (id == id_STAP || id == id_STAP2) {
         return 0;
     }
-    if (id == dat_007f1924) {
+    if (id == id_EWOK) {
         return 27 + (Cheat_IsOn(0x29) != 0 ? 3 : 0);
     }
-    if (id == dat_007f1928) {
+    if (id == id_WICKET) {
         return 28 + (Cheat_IsOn(0x29) != 0 ? 3 : 0);
     }
     if (id == id_REPUBLICGUNSHIP || id == id_REPUBLICGUNSHIP_GREEN) {
@@ -189,7 +190,7 @@ i32 BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
     if (id == id_SENTRYDROID) {
         return 0;
     }
-    if (id == dat_007f1a38) {
+    if (id == id_KAMINOANDROID) {
         return 0;
     }
     return fallback;
@@ -265,19 +266,19 @@ i16 id_MINIROYALSTARSHIP = -1;
 
 i32 Bolt_AlternateFire_LSW(GAMEOBJECT *object, i32 index) {
     i16 id = object->id;
-    if (id == id_XWING || id == id_MINIXWING || id == dat_007f1ad8 || id == id_MINIATAT || id == id_MINIROYALSTARSHIP ||
-        id == dat_007f1aec) {
+    if (id == id_XWING || id == id_MINIXWING || id == id_MINITIEINTERCEPTOR || id == id_MINIATAT || id == id_MINIROYALSTARSHIP ||
+        id == id_MINIIMPERIALSHUTTLE) {
         if (object->player.bolt_fire_phase == 0 && (index == 0 || index == 2)) {
             return 0;
         }
         if (object->player.bolt_fire_phase == 1 && (index == 1 || index == 3)) {
             return 0;
         }
-    } else if (id == dat_007f19a4 || id == dat_007f1af0) {
+    } else if (id == id_MILLENNIUMFALCON || id == id_MINIMILLENNIUMFALCON) {
         if (index != object->player.bolt_fire_phase) {
             return 0;
         }
-    } else if (id == (i16)GameObjectRotationAtstId || id == dat_007f19e8 || id == id_JEDISTARFIGHTERYELLOWEP3) {
+    } else if (id == (i16)GameObjectRotationAtstId || id == id_JEDISTARFIGHTERREDEP3 || id == id_JEDISTARFIGHTERYELLOWEP3) {
         if (index != object->player.bolt_fire_phase) {
             return 0;
         }

@@ -177,12 +177,12 @@ extern "C" {
     extern i32 loadareadata_loadlevel;
     extern i16 tTOUCHTOSTART;
     extern i32 netnewgame;
-    extern i16 dat_007f1a4c;
-    extern i16 dat_007f1a48;
-    extern i16 dat_007f1a44;
-    extern i16 dat_007f1ab0;
-    extern i16 dat_007f1ab4;
-    extern i16 dat_007f1abc;
+    extern i16 id_GRANDMOFFTARKIN;
+    extern i16 id_IMPERIALOFFICER;
+    extern i16 id_IMPERIALSHUTTLEPILOT;
+    extern i16 id_CHUCK;
+    extern i16 id_BELLOQ;
+    extern i16 id_BARRANCA;
     extern i32 FreePlayBonusCount;
     extern i16 PermanentAllTitleId;
     extern i16 PermanentJediTitleId;

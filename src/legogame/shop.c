@@ -283,7 +283,7 @@ static void NuMtxRotateZInline(NUMTX *m, i32 a) {
 
 /* Same-unit helper taking EAX; includes the vehicle exception. */
 static i32 Shop_CharacterUnlocked(i32 character_id) {
-    if (character_id == dat_007f17d4) {
+    if (character_id == id_HANSOLOINDY) {
         return Game.bolt_unlocked != 0;
     }
     return CollectIDUnlocked(character_id) != 0;
@@ -1526,10 +1526,10 @@ static void Shop_DrawCharacter(shopitem_s *item, NUVEC *position, f32 scale_valu
 
         character_id = item->item_id;
         unavailable = 1;
-        if ((character_id == dat_007f17d4 ? Game.bolt_unlocked != 0 : CollectIDUnlocked(character_id) != NULL) && item->unlocked == 1) {
+        if ((character_id == id_HANSOLOINDY ? Game.bolt_unlocked != 0 : CollectIDUnlocked(character_id) != NULL) && item->unlocked == 1) {
             unavailable = 0;
         }
-        alpha = (character_id == dat_007f17d4 ? Game.bolt_unlocked != 0 : CollectIDUnlocked(character_id) != NULL) ? 1.0f : 0.5f;
+        alpha = (character_id == id_HANSOLOINDY ? Game.bolt_unlocked != 0 : CollectIDUnlocked(character_id) != NULL) ? 1.0f : 0.5f;
 
         scale.x = scale.y = scale.z = scale_value;
         NuMtxSetScale(&matrix, &scale);
@@ -1953,7 +1953,7 @@ void DrawSubItemMenu2D(void) {
         if (items[ids[3]].unlocked == 1) {
             show_name = 1;
             buyable = 0;
-        } else if (items[ids[3]].item_id == dat_007f17d4 ? Game.bolt_unlocked != 0 : CollectIDUnlocked(items[ids[3]].item_id) != 0) {
+        } else if (items[ids[3]].item_id == id_HANSOLOINDY ? Game.bolt_unlocked != 0 : CollectIDUnlocked(items[ids[3]].item_id) != 0) {
             buyable = show_name = 1;
         } else {
             scale = (f32)((f64)ShopLockedScale * (f64)0.7f);

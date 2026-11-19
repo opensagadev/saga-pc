@@ -87,9 +87,9 @@ extern "C" {
     extern f32 sockstep;
     extern f32 test_factor;
     extern f32 test_seek_rate;
-    extern i16 dat_007f19ac;
+    extern i16 id_KAADU;
     extern i16 dat_007f19b0;
-    extern i16 dat_007f19b4;
+    extern i16 id_FALUMPASET;
     f32 PodSprint_RollMul(GAMEOBJECT *);
     i32 Action_MushroomCollapse(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
     i32 Action_NewSebulba(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);

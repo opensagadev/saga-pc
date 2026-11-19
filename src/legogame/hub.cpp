@@ -5044,7 +5044,7 @@ extern "C" {
         if ((object->character_data->model_flags & CHARACTER_MODEL_ZIPUP) != 0) {
             object->ai_packet.capabilities |= 8;
         }
-        if (object->id == (u16)dat_007f17d0) {
+        if (object->id == (u16)id_INDIANAJONES) {
             object->ai_packet.capabilities |= 0x400;
         }
         if (object->character_model->action_animations[0xcd] != NULL) {

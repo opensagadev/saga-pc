@@ -260,9 +260,9 @@ extern "C" {
     extern i32 EpisodeGoldBrickForSuperStory;
     extern i32 EpisodeGoldBrickForSuperBonus;
     extern i32 EpisodeGoldBrickForChallenge;
-    extern i16 dat_007f1b44;
-    extern i16 dat_007f1b40;
-    extern i16 dat_007f1a98;
+    extern i16 id_DROIDTRIFIGHTER;
+    extern i16 id_VULTUREDROID;
+    extern i16 id_CLONEARC;
     extern i32 DefaultMotionLedgeTerrainEnabled;
     extern i32 Grapple_RopeSwingsAvailable;
     extern struct level_data_s *dat_0087b1a8;
@@ -350,7 +350,7 @@ extern "C" {
     extern struct area_data_s *MOSEISLEY_ADATA;
     extern struct area_data_s *ROOFTOPS_ADATA;
     extern struct area_data_s *TATOOINE_ADATA;
-    extern i16 dat_007f1828;
+    extern i16 id_PENGUINBOMB;
     void MenuDrawEndChallenge(struct menu_s *);
     void MenuUpdateEndChallenge(struct menu_s *);
     extern TIMER OverallGamePlayTimer;

@@ -165,7 +165,7 @@ extern "C" NARROWSOCKEXCEPTION NarrowSockExceptionsLsw[4] = {
 };
 extern "C" {
     i32 PlayerHitPointsTwoHearts = 1;
-    i16 dat_007f1828 = -1;
+    i16 id_PENGUINBOMB = -1;
 }
 extern "C" {
     i16 id_SERVICECAR = -1;
@@ -173,7 +173,7 @@ extern "C" {
     i16 id_SNOWMOB = -1;
     i16 id_SNOWTROOPER = -1;
     i16 id_DEATHSTARTROOPER = -1;
-    i16 dat_007f199c = -1;
+    i16 id_DARTHVADER = -1;
     i16 id_THEEMPEROR = -1;
     i16 id_NEW_REPUBLIC_GUNSHIP = -1;
     i16 id_NEW_REPUBLIC_GUNSHIP_GREEN = -1;
@@ -246,7 +246,7 @@ extern "C" {
 extern "C" TIMER ChallengeTimer;
 extern "C" {
     extern void *game_cutscenes_droid_factory_conveyor;
-    extern i16 dat_007f1828; /* character id fixed up from "PenguinBomb" */
+    extern i16 id_PENGUINBOMB; /* character id fixed up from "PenguinBomb" */
 }
 
 extern "C" {
@@ -1152,34 +1152,34 @@ static void DisguiseAdjust_LSW(i32 character_id, i32 hat, NUVEC *scale, NUVEC *o
         scale->x = 2.3f;
     } else if (character_id == id_ATAT) {
         scale->x = 7.0f;
-    } else if (character_id == dat_007f18b4) {
+    } else if (character_id == id_PROBEDROID) {
         scale->x = 3.0f;
     } else if (character_id == id_XWING) {
         scale->x = 10.0f;
     } else if (character_id == id_YWING) {
         scale->x = 6.5f;
-    } else if (character_id == dat_007f1a24) {
+    } else if (character_id == id_SNOWSPEEDER) {
         scale->x = 4.0f;
-    } else if (character_id == dat_007f19a4) {
+    } else if (character_id == id_MILLENNIUMFALCON) {
         scale->x = 10.0f;
-    } else if (character_id == id_TIEFIGHTER || character_id == dat_007f1a28 || character_id == dat_007f196c ||
+    } else if (character_id == id_TIEFIGHTER || character_id == id_TIEINTERCEPTOR || character_id == id_TIEFIGHTERDARTH ||
                character_id == id_TIEBOMBER) {
         scale->x = 6.0f;
-    } else if (character_id == dat_007f1a2c) {
+    } else if (character_id == id_IMPERIALSHUTTLE) {
         scale->x = 8.0f;
-    } else if (character_id == dat_007f195c) {
+    } else if (character_id == id_SLAVE1) {
         scale->x = 8.0f;
     } else if (character_id == id_WOOKIEFLYER) {
         scale->x = 6.0f;
-    } else if (character_id == dat_007f1a98) {
+    } else if (character_id == id_CLONEARC) {
         scale->x = 5.0f;
-    } else if (character_id == dat_007f1b40 || character_id == dat_007f1b44 || character_id == id_ANAKINSNEWPOD ||
+    } else if (character_id == id_VULTUREDROID || character_id == id_DROIDTRIFIGHTER || character_id == id_ANAKINSNEWPOD ||
                character_id == id_ANAKINSNEWPODGREEN || character_id == id_NEW_REPUBLIC_GUNSHIP ||
                character_id == id_NEW_REPUBLIC_GUNSHIP_GREEN) {
         scale->x = 6.0f;
-    } else if (character_id == dat_007f1a9c || character_id == dat_007f1aa0) {
+    } else if (character_id == id_NABOOSTARFIGHTER || character_id == id_NABOOSTARFIGHTERLIME) {
         scale->x = 7.0f;
-    } else if (character_id == dat_007f1b34 || character_id == dat_007f1b38) {
+    } else if (character_id == id_ANAKINSSPEEDER || character_id == id_ANAKINSSPEEDERGREEN) {
         scale->x = 5.0f;
     } else if (character_id == id_SEBULBASPOD) {
         scale->x = 8.0f;
@@ -1193,7 +1193,7 @@ static void DisguiseAdjust_LSW(i32 character_id, i32 hat, NUVEC *scale, NUVEC *o
         offset->z = -0.03f;
     } else if (character_id == (i16)id_GONKDROID) {
         offset->z = -0.0075f;
-    } else if (character_id == id_IMPERIALSPY || character_id == dat_007f199c || character_id == id_GREEDO || character_id == id_BOSSK ||
+    } else if (character_id == id_IMPERIALSPY || character_id == id_DARTHVADER || character_id == id_GREEDO || character_id == id_BOSSK ||
                character_id == id_CANTINABAND) {
         offset->z = -0.03f;
     } else if (character_id == id_IMPERIALGUARD) {
@@ -1734,7 +1734,7 @@ extern "C" {
         save->gold_bricks = 0;
         memset(CompletionPointInfoRecalculate, 0, sizeof(CompletionPointInfoRecalculate));
         if (AllMiniKitsDone((AREASAVE_s *)save->area_save) != 0) {
-            AddToCollection(dat_007f195c);
+            AddToCollection(id_SLAVE1);
         }
         for (i = 0; i < MasterCollection.count; ++i) {
             COLLECTID *entry = &MasterCollection.list[i];
@@ -2582,7 +2582,7 @@ extern "C" {
         i32 count;
         if (WORLD->area == ROOFTOPS_ADATA) {
             NuStrCpy(script, "PenguinBox");
-            model = dat_007f1828;
+            model = id_PENGUINBOMB;
         }
         choice = qrand() * (1.0f / 65535.0f) * 100.0f;
         if (choice < 50.0f) {
@@ -2898,7 +2898,7 @@ extern "C" {
         } else {
             return;
         }
-        AddDynamicCreature(dat_007f18c4, &blowup->position, 0, "spawned_womprat", NULL, NULL, 1, NULL, NULL, 0, 16);
+        AddDynamicCreature(id_WOMPRAT, &blowup->position, 0, "spawned_womprat", NULL, NULL, 1, NULL, NULL, 0, 16);
     }
 
     void GizObstacle_SetDefaultSFXFn_LSW(void *world, GIZOBSTACLE *obstacle) {
@@ -3104,7 +3104,7 @@ void InitGameAfterConfig(void) {
     Level_RegisterGameConfigKeywords(LevelConfigKeywords_BeforeLoad, WorldLoadAfterKeywords);
     Suits_Init();
     Collection_Configure("chars\\collection.txt", &permbuffer_ptr, &permbuffer_end);
-    if ((u16)dat_007f17d4 != 0xffff && InCollectList_Index(dat_007f17d4, NULL, 0) != -1 && TempCollectID != NULL) {
+    if ((u16)id_HANSOLOINDY != 0xffff && InCollectList_Index(id_HANSOLOINDY, NULL, 0) != -1 && TempCollectID != NULL) {
         TempCollectID->type = 0;
         TempCollectID->can_buy = 1;
         TempCollectID->price = 50000;

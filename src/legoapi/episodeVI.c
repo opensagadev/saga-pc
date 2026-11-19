@@ -94,10 +94,10 @@ GIZMO *SarlaccObstMirrorBall = NULL;
 u64 routemask_efloor_on = 0;
 GIZMO *SarlaccForceMirrorBall = NULL;
 
-i16 dat_007f1a7c = -1;
+i16 id_TOWNCAR = -1;
 i16 id_TRACTOR = -1;
 i16 id_FIRETRUCK = -1;
-i16 dat_007f1a88 = -1;
+i16 id_LIFEBOAT = -1;
 f32 DeathStarZapSizeWidth = 1.0f;
 f32 DeathStarZapSizeLength = 1.0f;
 f32 DeathStarZapWidthBias = 0.01f;
@@ -1531,7 +1531,7 @@ void LegoCity_Update(WORLDINFO *world) {
         } else if (object->id == (u16)id_MOONCAR) {
             changedMoonCar = ~prevOnMoonCar;
             onMoonCar = 0xff;
-        } else if (object->id == (u16)dat_007f1a7c) {
+        } else if (object->id == (u16)id_TOWNCAR) {
             changedTownCar = ~prevOnTownCar;
             onTownCar = 0xff;
         }
@@ -1649,7 +1649,7 @@ void NewTown_Update(WORLDINFO *world) {
         } else if (object->id == (u16)id_FIRETRUCK) {
             changedFireTruck = ~prevOnFireTruck;
             onFireTruck = 0xff;
-        } else if (object->id == (u16)dat_007f1a88) {
+        } else if (object->id == (u16)id_LIFEBOAT) {
             changedLifeBoat = ~prevOnLifeBoat;
             onLifeBoat = 0xff;
         }

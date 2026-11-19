@@ -593,7 +593,7 @@ void MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current
 }
 
 void AllMiniKits_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-    AddToCollection(dat_007f195c);
+    AddToCollection(id_SLAVE1);
     NextStatusStage(packet);
 }
 
@@ -664,10 +664,10 @@ void AllMiniKits_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 cur
             }
         }
         if (icon_alpha > 0.0f) {
-            DrawCharIcon(dat_007f195c, 0.0f,
+            DrawCharIcon(id_SLAVE1, 0.0f,
                          (sliding ? (1.0f - NuTrigTable[((i32)(icon_alpha * 16384.0f) >> 1) & 0x7fff]) * -0.5f : 0.0f) + 0.225f, 0.0f, 0.4f,
                          0xa7, icon_alpha, icon_alpha, 1, NULL);
-            SmartTextEx(TTab[CDataList[dat_007f195c].name_id], 0.0f, -0.1f, 1.0f, StatusAllMiniKitsCharacterTextScale,
+            SmartTextEx(TTab[CDataList[id_SLAVE1].name_id], 0.0f, -0.1f, 1.0f, StatusAllMiniKitsCharacterTextScale,
                         StatusAllMiniKitsCharacterTextScale, StatusAllMiniKitsCharacterTextScale, 0, (u8)StatusRed, (u8)StatusGreen,
                         (u8)StatusBlue, 1.7f, 1, NULL, 0, (i32)(icon_alpha * 128.0f));
         }

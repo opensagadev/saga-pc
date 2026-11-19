@@ -3612,38 +3612,38 @@ function:ShootCode,function,ShootCode,11277,11277,1,legoapi/characters/motion/mo
 function:StartQuickShoot,function,StartQuickShoot,11278,11278,1,legoapi/characters/motion/move.h,android,StartQuickShoot
 function:Move_CANNON,function,Move_CANNON,11279,11279,1,legoapi/characters/motion.h,android,Move_CANNON
 function:ZapTarget,function,ZapTarget,11280,11280,1,legoapi/characters/motion/move.h,android,ZapTarget
-variable:dat_007f17d0,variable,dat_007f17d0,11281,11281,1,legoapi/misc/legoapi_status.h,rule,used most in legogame/legoapi_status.cpp (2) android-path
-variable:dat_007f17d4,variable,dat_007f17d4,11282,11282,1,legoapi/menus/screens/shop.h,rule,used most in legogame/shop.c (4) android-path
-variable:dat_007f18b4,variable,dat_007f18b4,11283,11283,1,legoapi/world/levels/episodeV.h,rule,used most in legogame/episodeV.c (5) android-path
-variable:dat_007f190c,variable,dat_007f190c,11284,11284,1,legoapi/items/collect/bolt.h,users,dat_007f190c: only legogame/bolt.c android-path
-variable:dat_007f1910,variable,dat_007f1910,11285,11285,1,legoapi/ai/game/lsw_hub_ai.h,rule,used most in legogame/lsw_hub_ai.c (2) android-path
-variable:dat_007f1924,variable,dat_007f1924,11286,11286,1,legoapi/characters/core/character.h,data-order,retail 0x7f1924 between 0x7f1920 and 0x7f192c
-variable:dat_007f1928,variable,dat_007f1928,11287,11287,1,legoapi/characters/core/character.h,data-order,retail 0x7f1928 between 0x7f1920 and 0x7f192c
-variable:dat_007f195c,variable,dat_007f195c,11288,11288,1,legoapi/menus/core/gamehint.h,rule,used most in legogame/gamehint.c (3) android-path
-variable:dat_007f196c,variable,dat_007f196c,11289,11289,1,legoapi/characters/core/character.h,data-order,retail 0x7f196c between 0x7f1968 and 0x7f1970
+variable:id_INDIANAJONES,variable,id_INDIANAJONES,11281,11281,1,legoapi/misc/legoapi_status.h,rule,used most in legogame/legoapi_status.cpp (2) android-path
+variable:id_HANSOLOINDY,variable,id_HANSOLOINDY,11282,11282,1,legoapi/menus/screens/shop.h,rule,used most in legogame/shop.c (4) android-path
+variable:id_PROBEDROID,variable,id_PROBEDROID,11283,11283,1,legoapi/world/levels/episodeV.h,rule,used most in legogame/episodeV.c (5) android-path
+variable:id_FOURLOM,variable,id_FOURLOM,11284,11284,1,legoapi/items/collect/bolt.h,users,id_FOURLOM: only legogame/bolt.c android-path
+variable:id_TRAININGREMOTE,variable,id_TRAININGREMOTE,11285,11285,1,legoapi/ai/game/lsw_hub_ai.h,rule,used most in legogame/lsw_hub_ai.c (2) android-path
+variable:id_EWOK,variable,id_EWOK,11286,11286,1,legoapi/characters/core/character.h,data-order,retail 0x7f1924 between 0x7f1920 and 0x7f192c
+variable:id_WICKET,variable,id_WICKET,11287,11287,1,legoapi/characters/core/character.h,data-order,retail 0x7f1928 between 0x7f1920 and 0x7f192c
+variable:id_SLAVE1,variable,id_SLAVE1,11288,11288,1,legoapi/menus/core/gamehint.h,rule,used most in legogame/gamehint.c (3) android-path
+variable:id_TIEFIGHTERDARTH,variable,id_TIEFIGHTERDARTH,11289,11289,1,legoapi/characters/core/character.h,data-order,retail 0x7f196c between 0x7f1968 and 0x7f1970
 variable:id_JAWA,variable,id_JAWA,11290,11290,1,legoapi/characters/core/character.h,android,id_JAWA
-variable:dat_007f19a4,variable,dat_007f19a4,11291,11291,1,legoapi/characters/core/character.h,data-order,retail 0x7f19a4 between 0x7f19a0 and 0x7f19b8
-variable:dat_007f19a8,variable,dat_007f19a8,11292,11292,1,legoapi/characters/core/character.h,data-order,retail 0x7f19a8 between 0x7f19a0 and 0x7f19b8
-variable:dat_007f19e8,variable,dat_007f19e8,11293,11293,1,legoapi/characters/core/character.h,data-order,retail 0x7f19e8 between 0x7f19e4 and 0x7f19ec
+variable:id_MILLENNIUMFALCON,variable,id_MILLENNIUMFALCON,11291,11291,1,legoapi/characters/core/character.h,data-order,retail 0x7f19a4 between 0x7f19a0 and 0x7f19b8
+variable:id_SPEEDERBIKESNOW,variable,id_SPEEDERBIKESNOW,11292,11292,1,legoapi/characters/core/character.h,data-order,retail 0x7f19a8 between 0x7f19a0 and 0x7f19b8
+variable:id_JEDISTARFIGHTERREDEP3,variable,id_JEDISTARFIGHTERREDEP3,11293,11293,1,legoapi/characters/core/character.h,data-order,retail 0x7f19e8 between 0x7f19e4 and 0x7f19ec
 variable:id_REPUBLICGUNSHIP,variable,id_REPUBLICGUNSHIP,11294,11294,1,legoapi/characters/core/character.h,android,id_REPUBLICGUNSHIP
-variable:dat_007f1a24,variable,dat_007f1a24,11295,11295,1,legoapi/characters/core/character.h,data-order,retail 0x7f1a24 between 0x7f1a20 and 0x7f1a30
-variable:dat_007f1a28,variable,dat_007f1a28,11296,11296,1,legoapi/characters/core/character.h,data-order,retail 0x7f1a28 between 0x7f1a20 and 0x7f1a30
-variable:dat_007f1a2c,variable,dat_007f1a2c,11297,11297,1,legoapi/characters/core/character.h,data-order,retail 0x7f1a2c between 0x7f1a20 and 0x7f1a30
+variable:id_SNOWSPEEDER,variable,id_SNOWSPEEDER,11295,11295,1,legoapi/characters/core/character.h,data-order,retail 0x7f1a24 between 0x7f1a20 and 0x7f1a30
+variable:id_TIEINTERCEPTOR,variable,id_TIEINTERCEPTOR,11296,11296,1,legoapi/characters/core/character.h,data-order,retail 0x7f1a28 between 0x7f1a20 and 0x7f1a30
+variable:id_IMPERIALSHUTTLE,variable,id_IMPERIALSHUTTLE,11297,11297,1,legoapi/characters/core/character.h,data-order,retail 0x7f1a2c between 0x7f1a20 and 0x7f1a30
 variable:id_SENTRYDROID,variable,id_SENTRYDROID,11298,11298,1,legoapi/characters/core/character.h,android,id_SENTRYDROID
-variable:dat_007f1a38,variable,dat_007f1a38,11299,11299,1,legoapi/items/collect/bolt.h,users,dat_007f1a38: only legogame/bolt.c android-path
-variable:dat_007f1a9c,variable,dat_007f1a9c,11300,11300,1,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.c (1) android-path
-variable:dat_007f1aa0,variable,dat_007f1aa0,11301,11301,1,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.c (1) android-path
-variable:dat_007f1aac,variable,dat_007f1aac,11302,11302,1,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.c (1) android-path
+variable:id_KAMINOANDROID,variable,id_KAMINOANDROID,11299,11299,1,legoapi/items/collect/bolt.h,users,id_KAMINOANDROID: only legogame/bolt.c android-path
+variable:id_NABOOSTARFIGHTER,variable,id_NABOOSTARFIGHTER,11300,11300,1,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.c (1) android-path
+variable:id_NABOOSTARFIGHTERLIME,variable,id_NABOOSTARFIGHTERLIME,11301,11301,1,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.c (1) android-path
+variable:id_SATIPO,variable,id_SATIPO,11302,11302,1,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.c (1) android-path
 variable:VehicleSpecialShooterId,variable,VehicleSpecialShooterId,11303,11303,1,legoapi/world/levels.h,data-order,retail 0x7f1ab8 between 0x7f1ab4 and 0x7f1abc
-variable:dat_007f1ad8,variable,dat_007f1ad8,11304,11304,1,legoapi/items/collect/bolt.h,users,dat_007f1ad8: only legogame/bolt.c android-path
-variable:dat_007f1aec,variable,dat_007f1aec,11305,11305,1,legoapi/items/collect/bolt.h,users,dat_007f1aec: only legogame/bolt.c android-path
-variable:dat_007f1af0,variable,dat_007f1af0,11306,11306,1,legoapi/items/collect/bolt.h,users,dat_007f1af0: only legogame/bolt.c android-path
-variable:dat_007f1b00,variable,dat_007f1b00,11307,11307,1,legoapi/items/collect/bolt.h,users,dat_007f1b00: only legogame/bolt.c android-path
-variable:dat_007f1b04,variable,dat_007f1b04,11308,11308,1,legoapi/items/collect/bolt.h,users,dat_007f1b04: only legogame/bolt.c android-path
-variable:dat_007f1b08,variable,dat_007f1b08,11309,11309,1,legoapi/items/collect/bolt.h,users,dat_007f1b08: only legogame/bolt.c android-path
-variable:dat_007f1b0c,variable,dat_007f1b0c,11310,11310,1,legoapi/items/collect/bolt.h,users,dat_007f1b0c: only legogame/bolt.c android-path
-variable:dat_007f1b34,variable,dat_007f1b34,11311,11311,1,legoapi/characters/core/character.h,data-order,retail 0x7f1b34 between 0x7f1b30 and 0x7f1b3c
-variable:dat_007f1b38,variable,dat_007f1b38,11312,11312,1,legoapi/characters/core/character.h,data-order,retail 0x7f1b38 between 0x7f1b30 and 0x7f1b3c
+variable:id_MINITIEINTERCEPTOR,variable,id_MINITIEINTERCEPTOR,11304,11304,1,legoapi/items/collect/bolt.h,users,id_MINITIEINTERCEPTOR: only legogame/bolt.c android-path
+variable:id_MINIIMPERIALSHUTTLE,variable,id_MINIIMPERIALSHUTTLE,11305,11305,1,legoapi/items/collect/bolt.h,users,id_MINIIMPERIALSHUTTLE: only legogame/bolt.c android-path
+variable:id_MINIMILLENNIUMFALCON,variable,id_MINIMILLENNIUMFALCON,11306,11306,1,legoapi/items/collect/bolt.h,users,id_MINIMILLENNIUMFALCON: only legogame/bolt.c android-path
+variable:id_MINITIEFIGHTER,variable,id_MINITIEFIGHTER,11307,11307,1,legoapi/items/collect/bolt.h,users,id_MINITIEFIGHTER: only legogame/bolt.c android-path
+variable:id_MINITIEADVANCED,variable,id_MINITIEADVANCED,11308,11308,1,legoapi/items/collect/bolt.h,users,id_MINITIEADVANCED: only legogame/bolt.c android-path
+variable:id_MINISITHINFILTRATOR,variable,id_MINISITHINFILTRATOR,11309,11309,1,legoapi/items/collect/bolt.h,users,id_MINISITHINFILTRATOR: only legogame/bolt.c android-path
+variable:id_MINISOLARSAILOR,variable,id_MINISOLARSAILOR,11310,11310,1,legoapi/items/collect/bolt.h,users,id_MINISOLARSAILOR: only legogame/bolt.c android-path
+variable:id_ANAKINSSPEEDER,variable,id_ANAKINSSPEEDER,11311,11311,1,legoapi/characters/core/character.h,data-order,retail 0x7f1b34 between 0x7f1b30 and 0x7f1b3c
+variable:id_ANAKINSSPEEDERGREEN,variable,id_ANAKINSSPEEDERGREEN,11312,11312,1,legoapi/characters/core/character.h,data-order,retail 0x7f1b38 between 0x7f1b30 and 0x7f1b3c
 variable:id_ZAMSSPEEDER,variable,id_ZAMSSPEEDER,11313,11313,1,legoapi/characters/core/character.h,android,id_ZAMSSPEEDER
 variable:VehicleGunshipAngleADefault,variable,VehicleGunshipAngleADefault,11314,11314,1,legoapi/characters/motion/move.h,users,VehicleGunshipAngleADefault: only legogame/move.c android-path
 variable:VehicleGunshipAngleAPlayer1,variable,VehicleGunshipAngleAPlayer1,11315,11315,1,legoapi/characters/motion/move.h,users,VehicleGunshipAngleAPlayer1: only legogame/move.c android-path
@@ -11504,24 +11504,24 @@ variable:Area_MissionModelList,variable,Area_MissionModelList,22925,22925,1,lego
 variable:CurrentCList,variable,CurrentCList,22926,22926,1,globals.h,android-weak,catch-all (needs a module owner); CurrentCList
 variable:CurrentStoryCList,variable,CurrentStoryCList,22927,22927,1,globals.h,android-weak,catch-all (needs a module owner); CurrentStoryCList
 variable:netnewgame,variable,netnewgame,22928,22928,1,legoapi/world/levels.h,users,netnewgame: only legogame/levels.cpp android-path
-variable:dat_007f17bc,variable,dat_007f17bc,22929,22929,1,legoapi/ai/game/creature.h,rule,used most in legogame/creature.c (1) android-path
-variable:dat_007f17c8,variable,dat_007f17c8,22930,22930,1,legoapi/ai/game/creature.h,rule,used most in legogame/creature.c (1) android-path
-variable:dat_007f17cc,variable,dat_007f17cc,22931,22931,1,legoapi/ai/game/creature.h,rule,used most in legogame/creature.c (1) android-path
+variable:id_GLIDEPACK,variable,id_GLIDEPACK,22929,22929,1,legoapi/ai/game/creature.h,rule,used most in legogame/creature.c (1) android-path
+variable:id_PENGUIN,variable,id_PENGUIN,22930,22930,1,legoapi/ai/game/creature.h,rule,used most in legogame/creature.c (1) android-path
+variable:id_UMBRELLA,variable,id_UMBRELLA,22931,22931,1,legoapi/ai/game/creature.h,rule,used most in legogame/creature.c (1) android-path
 function:MakeFreePlayModelList,function,MakeFreePlayModelList,22939,22939,1,legoapi/world/levels/levels.h,android,MakeFreePlayModelList
 function:InModelListDataFlags,function,InModelListDataFlags,22940,22940,1,legoapi/characters/core/charconfig.h,android,InModelListDataFlags
 function:RandomIDFromFlags,function,RandomIDFromFlags,22941,22941,1,legoapi/characters/core/charconfig.h,android,RandomIDFromFlags
 function:CanWearHatsInFreePlay,function,CanWearHatsInFreePlay,22942,22942,1,legoapi/characters/core/players.h,android,CanWearHatsInFreePlay
 function:Collection_GetIDList,function,Collection_GetIDList,22943,22943,1,legoapi/items/base/collection.h,android,Collection_GetIDList
-variable:dat_007f199c,variable,dat_007f199c,22944,22944,1,legoapi/characters/core/character.h,data-order,retail 0x7f199c between 0x7f1998 and 0x7f19a0
-variable:dat_007f1a4c,variable,dat_007f1a4c,22945,22945,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (2) android-path
-variable:dat_007f1a48,variable,dat_007f1a48,22946,22946,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (2) android-path
-variable:dat_007f1a44,variable,dat_007f1a44,22947,22947,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (2) android-path
-variable:dat_007f1ab0,variable,dat_007f1ab0,22948,22948,1,legoapi/world/levels.h,users,dat_007f1ab0: only legogame/levels.cpp android-path
-variable:dat_007f1ab4,variable,dat_007f1ab4,22949,22949,1,legoapi/world/levels.h,users,dat_007f1ab4: only legogame/levels.cpp android-path
-variable:dat_007f1abc,variable,dat_007f1abc,22950,22950,1,legoapi/world/levels.h,users,dat_007f1abc: only legogame/levels.cpp android-path
-variable:dat_007f1b44,variable,dat_007f1b44,22951,22951,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
-variable:dat_007f1b40,variable,dat_007f1b40,22952,22952,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
-variable:dat_007f1a98,variable,dat_007f1a98,22953,22953,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
+variable:id_DARTHVADER,variable,id_DARTHVADER,22944,22944,1,legoapi/characters/core/character.h,data-order,retail 0x7f199c between 0x7f1998 and 0x7f19a0
+variable:id_GRANDMOFFTARKIN,variable,id_GRANDMOFFTARKIN,22945,22945,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (2) android-path
+variable:id_IMPERIALOFFICER,variable,id_IMPERIALOFFICER,22946,22946,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (2) android-path
+variable:id_IMPERIALSHUTTLEPILOT,variable,id_IMPERIALSHUTTLEPILOT,22947,22947,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (2) android-path
+variable:id_CHUCK,variable,id_CHUCK,22948,22948,1,legoapi/world/levels.h,users,id_CHUCK: only legogame/levels.cpp android-path
+variable:id_BELLOQ,variable,id_BELLOQ,22949,22949,1,legoapi/world/levels.h,users,id_BELLOQ: only legogame/levels.cpp android-path
+variable:id_BARRANCA,variable,id_BARRANCA,22950,22950,1,legoapi/world/levels.h,users,id_BARRANCA: only legogame/levels.cpp android-path
+variable:id_DROIDTRIFIGHTER,variable,id_DROIDTRIFIGHTER,22951,22951,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
+variable:id_VULTUREDROID,variable,id_VULTUREDROID,22952,22952,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
+variable:id_CLONEARC,variable,id_CLONEARC,22953,22953,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
 variable:FreePlayModelCount,variable,FreePlayModelCount,22954,22954,1,globals.h,android-weak,catch-all (needs a module owner); FreePlayModelCount
 variable:FreePlayResidentCount,variable,FreePlayResidentCount,22955,22955,1,globals.h,android-weak,catch-all (needs a module owner); FreePlayResidentCount
 variable:FreePlayBonusCount,variable,FreePlayBonusCount,22956,22956,1,legoapi/world/levels.h,data-order,retail 0x87a974 between 0x87a958 and 0x87aa50
@@ -15849,11 +15849,11 @@ assert:-#5146,assert,,32023,32023,1,legoapi/world/levels/episodeII.h,follow-type
 assert:-#5147,assert,,32024,32024,1,legoapi/world/levels/episodeII.h,follow-type,JEDIB_NETPACKET
 variable:jedi_b,variable,jedi_b,32028,32028,1,legoapi/world/levels/episodeII.h,users,jedi_b: only legogame/episodeII.c android-path
 variable:JediBActiveCount,variable,JediBActiveCount,32029,32029,1,legoapi/world/levels/episodeII.h,users,JediBActiveCount: only legogame/episodeII.c android-path
-variable:dat_007f19c8,variable,dat_007f19c8,32030,32030,1,legoapi/world/levels/episodeII.h,users,dat_007f19c8: only legogame/episodeII.c android-path
-variable:dat_007f19c4,variable,dat_007f19c4,32031,32031,1,legoapi/world/levels/episodeII.h,users,dat_007f19c4: only legogame/episodeII.c android-path
-variable:dat_007f19d0,variable,dat_007f19d0,32032,32032,1,legoapi/world/levels/episodeII.h,users,dat_007f19d0: only legogame/episodeII.c android-path
-variable:dat_007f19d4,variable,dat_007f19d4,32033,32033,1,legoapi/world/levels/episodeII.h,users,dat_007f19d4: only legogame/episodeII.c android-path
-variable:dat_007f19d8,variable,dat_007f19d8,32034,32034,1,legoapi/world/levels/episodeII.h,users,dat_007f19d8: only legogame/episodeII.c android-path
+variable:id_PADMECLAWED,variable,id_PADMECLAWED,32030,32030,1,legoapi/world/levels/episodeII.h,users,id_PADMECLAWED: only legogame/episodeII.c android-path
+variable:id_JARJARBINKS,variable,id_JARJARBINKS,32031,32031,1,legoapi/world/levels/episodeII.h,users,id_JARJARBINKS: only legogame/episodeII.c android-path
+variable:id_OBIWANKENOBIJEDIMASTER,variable,id_OBIWANKENOBIJEDIMASTER,32032,32032,1,legoapi/world/levels/episodeII.h,users,id_OBIWANKENOBIJEDIMASTER: only legogame/episodeII.c android-path
+variable:id_SHAAKTI,variable,id_SHAAKTI,32033,32033,1,legoapi/world/levels/episodeII.h,users,id_SHAAKTI: only legogame/episodeII.c android-path
+variable:id_LUMINARA,variable,id_LUMINARA,32034,32034,1,legoapi/world/levels/episodeII.h,users,id_LUMINARA: only legogame/episodeII.c android-path
 variable:jedib_netpacket,variable,jedib_netpacket,32035,32035,1,legoapi/world/levels/episodeII.h,android,jedib_netpacket
 variable:jedi_b_phase1,variable,jedi_b_phase1,32036,32036,1,legoapi/world/levels/episodeII.h,users,jedi_b_phase1: only legogame/episodeII.c android-path
 variable:jedi_b_phase2,variable,jedi_b_phase2,32037,32037,1,legoapi/world/levels/episodeII.h,users,jedi_b_phase2: only legogame/episodeII.c android-path

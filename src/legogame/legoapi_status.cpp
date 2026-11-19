@@ -379,7 +379,7 @@ extern "C" {
         } else {
             i16 temple_ids[2];
             i16 *ids;
-            temple_ids[0] = dat_007f17d4;
+            temple_ids[0] = id_HANSOLOINDY;
             temple_ids[1] = -1;
             ids = packet->area != NULL && packet->area == LOSTTEMPLE_ADATA ? temple_ids : Area_PlayerIDList;
             while (*ids != -1 && count < 7) {
@@ -890,7 +890,7 @@ extern "C" {
                 AddStatusStage(p, STATUS_STAGE_MINIKIT, gold);
             }
             if ((p->result_flags & STATUSPACKET_NEW_MINIKIT_COMPLETE) != 0 && AllMiniKitsDone((AREASAVE_s *)Game.area_save) != 0) {
-                AddToCollection(dat_007f195c);
+                AddToCollection(id_SLAVE1);
                 AddStatusStage(p, STATUS_STAGE_ALL_MINIKITS, 0);
             }
         }
@@ -1419,10 +1419,10 @@ extern "C" void DrawStatusScreen(WORLDINFO *) {
 
 extern "C" void FinishStatusPacket(i32 choice) {
     if (LOSTTEMPLE_ADATA != NULL && StatusPacket.area_id == (i16)LOSTTEMPLE_ADATA->index) {
-        if (StatusPacket.player0_model == (u16)dat_007f17d0) {
-            StatusPacket.player0_model = (u16)dat_007f17d4;
-        } else if (StatusPacket.player1_model == (u16)dat_007f17d0) {
-            StatusPacket.player1_model = (u16)dat_007f17d4;
+        if (StatusPacket.player0_model == (u16)id_INDIANAJONES) {
+            StatusPacket.player0_model = (u16)id_HANSOLOINDY;
+        } else if (StatusPacket.player1_model == (u16)id_INDIANAJONES) {
+            StatusPacket.player1_model = (u16)id_HANSOLOINDY;
         }
     }
     RememberPlayerIDs(1, (i16)StatusPacket.player0_model, (i16)StatusPacket.player1_model);

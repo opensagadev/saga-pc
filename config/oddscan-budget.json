@@ -35,7 +35,7 @@
   "assert-sizeof": 0,
   "placeholder-field": 1166,
   "hex-name": 121,
-  "address-name": 6545,
+  "address-name": 6080,
   "candidate-name": 16,
   "pc-suffix": 56,
   "comment-draft": 0,
@@ -70,6 +70,6 @@
   "stdcall": 262,
   "declspec-align": 193,
   "declspec-other": 17,
-  "other-platform": 0,
+  "other-platform": 4,
   "decomp-type": 0
 }

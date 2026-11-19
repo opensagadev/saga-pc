@@ -51,7 +51,7 @@
 
 extern "C" {
 
-    i16 dat_007f195c = -1;
+    i16 id_SLAVE1 = -1;
     /* Install in extern C data section. */
     CHEAT ExtrasCheats[46] = {
         {"extratoggle", &dat_00880990, 0, {0, 0}, -1, -1, "MZY419", 25000, "shop_tool1", 0x100},
@@ -251,7 +251,7 @@ extern "C" {
 
     /* Stage type 17. */
     void AllMiniKits_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-        AddToCollection(dat_007f195c);
+        AddToCollection(id_SLAVE1);
         NextStatusStage(packet);
     }
 
@@ -2196,11 +2196,11 @@ extern "C" {
             }
         }
         if (icon_alpha > 0.0f) {
-            DrawCharIcon(dat_007f195c, 0.0f,
+            DrawCharIcon(id_SLAVE1, 0.0f,
                          (sliding ? (1.0f - NuTrigTable[((i32)(icon_alpha * 16384.0f) >> 1) & 0x7fff]) * -0.5f : 0.0f) + 0.225f, 0.0f, 0.4f,
                          0xa7, icon_alpha, icon_alpha, 1, NULL);
-            SmartTextEx(TTab[CDataList[dat_007f195c].name_id], 0.0f, -0.1f, 1.0f, dat_007f823c, dat_007f823c, dat_007f823c, 0,
-                        (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, (i32)(icon_alpha * 128.0f));
+            SmartTextEx(TTab[CDataList[id_SLAVE1].name_id], 0.0f, -0.1f, 1.0f, dat_007f823c, dat_007f823c, dat_007f823c, 0, (u8)StatusRed,
+                        (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, (i32)(icon_alpha * 128.0f));
         }
         if (title_alpha > 0.0f) {
             DrawStatusText(TTab[dat_00880740], StatusAltSpin, 0.0f, 0.225f, dat_007f8278,

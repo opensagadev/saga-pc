@@ -13,7 +13,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i16 dat_007f17d4;
+    extern i16 id_HANSOLOINDY;
     i32 Shop_UpdateHint(HINT *);
     extern i32 shop_from_cutsceneplayer;
 #ifdef __cplusplus

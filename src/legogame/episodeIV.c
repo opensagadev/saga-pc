@@ -158,9 +158,9 @@ void DeathStarEscapeB_Update(WORLDINFO *world) {
     }
 }
 
-i16 dat_007f1a3c = -1;
-i16 dat_007f1a40 = -1;
-i16 dat_007f1a44 = -1;
+i16 id_STORMTROOPER = -1;
+i16 id_BEACHTROOPER = -1;
+i16 id_IMPERIALSHUTTLEPILOT = -1;
 /* Episode IV FixUpLevels callbacks (Mos Eisley, Blockade Runner, Death Star rescue and escape). */
 i32 test_tb = 1;
 
@@ -217,10 +217,10 @@ static void BlockadeRunnerDEjectCreature(i32 eject_index) {
     ADDPART params;
     i32 i;
     i32 model;
-    models[0] = dat_007f1a3c;
-    models[1] = dat_007f1a40;
-    models[2] = dat_007f1a3c;
-    models[3] = dat_007f1a44;
+    models[0] = id_STORMTROOPER;
+    models[1] = id_BEACHTROOPER;
+    models[2] = id_STORMTROOPER;
+    models[3] = id_IMPERIALSHUTTLEPILOT;
     if ((u32)eject_index > 1) {
         return;
     }
@@ -643,7 +643,7 @@ void DeathStarBattleDUpdate(WORLDINFO *world) {
                     }
                     NuVecAdd(&spawn, &spawn, &offset);
                     if (trenchrun.midtro_played == 0 && index == 1) {
-                        model = dat_007f196c;
+                        model = id_TIEFIGHTERDARTH;
                     } else {
                         model = id_TIEFIGHTER;
                     }

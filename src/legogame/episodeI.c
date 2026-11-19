@@ -177,9 +177,9 @@ void GunganA_Init(WORLDINFO *world) {
     i32 i;
     if (netclient == 0) {
         memset(&gungan_a, 0, sizeof(gungan_a));
-        gungan_a.models[0] = dat_007f19ac;
+        gungan_a.models[0] = id_KAADU;
         gungan_a.models[1] = dat_007f19b0;
-        gungan_a.models[2] = dat_007f19b4;
+        gungan_a.models[2] = id_FALUMPASET;
         gungan_a.models[3] = dat_007f19b0;
         for (i = 0; i < 32; i++) {
             sprintf(name, "origin_%d", i);
@@ -195,9 +195,9 @@ void GunganA_Init(WORLDINFO *world) {
 }
 
 i16 id_BATTLEDROID = -1;
-i16 dat_007f19ac = -1;
+i16 id_KAADU = -1;
 i16 dat_007f19b0 = -1;
-i16 dat_007f19b4 = -1;
+i16 id_FALUMPASET = -1;
 i16 id_ROYALGUARD = -1;
 i16 id_ANAKINSPOD = -1;
 f32 sockstep = 10.0f;
@@ -1521,10 +1521,10 @@ f32 PodSprint_InStartCountdown(WORLDINFO *world) {
 
 float PodSprint_RollMul(GAMEOBJECT *object) {
     i16 id = ((i16)(object->id));
-    if (id == dat_007f1a98 || id == dat_007f1a2c || id == dat_007f1a9c) {
+    if (id == id_CLONEARC || id == id_IMPERIALSHUTTLE || id == id_NABOOSTARFIGHTER) {
         return 0.6f;
     }
-    if (id == id_XWING || id == dat_007f1a24 || id == dat_007f19a4 || id == id_NEW_REPUBLIC_GUNSHIP) {
+    if (id == id_XWING || id == id_SNOWSPEEDER || id == id_MILLENNIUMFALCON || id == id_NEW_REPUBLIC_GUNSHIP) {
         return 0.8f;
     }
     return 1.0f;

@@ -134,7 +134,7 @@ void CruiserCUpdate(WORLDINFO *world) {
         cruiser_c.dooku_fight->value = (f32)crusiserc_netpacket->dooku_fight;
     }
     if (cruiser_c.palpatine == NULL) {
-        cruiser_c.palpatine = FindGameObject(dat_007f1a0c, APIOBJECT_CREATURE, 1, 1, 0);
+        cruiser_c.palpatine = FindGameObject(id_PALPATINE, APIOBJECT_CREATURE, 1, 1, 0);
     }
     if (cruiser_c.palpatine_locator == NULL) {
         cruiser_c.palpatine_locator = AIPathFindLocator(WORLD->ai_sys, "Palpatine");
@@ -182,7 +182,7 @@ void CruiserDInit(WORLDINFO *world) {
 }
 
 i16 id_DOOKU = -1;
-i16 dat_007f1a0c = -1;
+i16 id_PALPATINE = -1;
 static f32 CruiserD_LiftSpeed = 0.1f;
 static f32 CruiserD_frame = 1.0f;
 static i32 CruiserD_direction = 1;

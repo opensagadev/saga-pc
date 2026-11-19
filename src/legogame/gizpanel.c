@@ -268,8 +268,8 @@ i32 GizPanel_CanUsePanel(GAMEOBJECT *object, PANEL_MOVEMENT *panel) {
                 GCDataList[(i16)object->id].variant == CHARVARIANT_CLONE) {
                 return 1;
             }
-            if ((i16)object->id == dat_007f199c || (i16)object->id == id_THEEMPEROR || (i16)object->id == dat_007f1a4c ||
-                (i16)object->id == dat_007f1a48 || (i16)object->id == dat_007f1a44) {
+            if ((i16)object->id == id_DARTHVADER || (i16)object->id == id_THEEMPEROR || (i16)object->id == id_GRANDMOFFTARKIN ||
+                (i16)object->id == id_IMPERIALOFFICER || (i16)object->id == id_IMPERIALSHUTTLEPILOT) {
                 return 1;
             }
             break;

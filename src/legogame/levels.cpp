@@ -177,8 +177,8 @@ static i32 World_HasImperialPrivate(APICHARACTERMODELLIST *list) {
         if (Collection_Got(list->model_id) != 0) {
             i16 id = list->model_id;
             i8 action = GCDataList[id].variant;
-            if (action == CHARVARIANT_STORMTROOPER || action == CHARVARIANT_CLONE || id == dat_007f199c || id == id_THEEMPEROR ||
-                id == dat_007f1a4c || id == dat_007f1a48 || id == dat_007f1a44) {
+            if (action == CHARVARIANT_STORMTROOPER || action == CHARVARIANT_CLONE || id == id_DARTHVADER || id == id_THEEMPEROR ||
+                id == id_GRANDMOFFTARKIN || id == id_IMPERIALOFFICER || id == id_IMPERIALSHUTTLEPILOT) {
                 return 1;
             }
         }
@@ -202,8 +202,8 @@ static i32 World_RandomImperialPrivate(APICHARACTERMODELLIST *excluded) {
             continue;
         }
         action = GCDataList[id].variant;
-        if ((action == CHARVARIANT_STORMTROOPER || action == CHARVARIANT_CLONE || id == dat_007f199c || id == id_THEEMPEROR ||
-             id == dat_007f1a4c || id == dat_007f1a48 || id == dat_007f1a44) &&
+        if ((action == CHARVARIANT_STORMTROOPER || action == CHARVARIANT_CLONE || id == id_DARTHVADER || id == id_THEEMPEROR ||
+             id == id_GRANDMOFFTARKIN || id == id_IMPERIALOFFICER || id == id_IMPERIALSHUTTLEPILOT) &&
             count < 500) {
             candidates[count++] = (i16)id;
         }
@@ -263,12 +263,12 @@ void MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, i32 para
     models[1] = model2;
     lost_temple = LOSTTEMPLE_ADATA;
     if (StartupGameFlag1 != 0 && lost_temple != NULL && area == lost_temple->index) {
-        World_AppendFreePlayPrivate(dat_007f17d0);
-        World_AppendFreePlayPrivate(dat_007f1aac);
-        World_AppendFreePlayPrivate(dat_007f1ab0);
-        World_AppendFreePlayPrivate(dat_007f1ab4);
+        World_AppendFreePlayPrivate(id_INDIANAJONES);
+        World_AppendFreePlayPrivate(id_SATIPO);
+        World_AppendFreePlayPrivate(id_CHUCK);
+        World_AppendFreePlayPrivate(id_BELLOQ);
         World_AppendFreePlayPrivate(VehicleSpecialShooterId);
-        World_AppendFreePlayPrivate(dat_007f1abc);
+        World_AppendFreePlayPrivate(id_BARRANCA);
     } else if ((ADataList[area].flags & (AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA)) == 5) {
         for (index = 0; index < 2; ++index) {
             if (models[index] != -1) {
@@ -326,25 +326,25 @@ void MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, i32 para
             if (StartupGameFlag1 != 0) {
                 ids[0] = id_XWING;
                 ids[1] = id_YWING;
-                ids[2] = dat_007f1a24;
-                ids[3] = dat_007f19a4;
+                ids[2] = id_SNOWSPEEDER;
+                ids[3] = id_MILLENNIUMFALCON;
                 ids[4] = id_TIEFIGHTER;
-                ids[5] = dat_007f1a28;
-                ids[6] = dat_007f196c;
+                ids[5] = id_TIEINTERCEPTOR;
+                ids[6] = id_TIEFIGHTERDARTH;
                 ids[7] = id_TIEBOMBER;
-                ids[8] = dat_007f1a2c;
-                ids[9] = dat_007f195c;
+                ids[8] = id_IMPERIALSHUTTLE;
+                ids[9] = id_SLAVE1;
                 ids[10] = id_ANAKINSNEWPOD;
-                ids[11] = dat_007f1a9c;
-                ids[12] = dat_007f1b34;
+                ids[11] = id_NABOOSTARFIGHTER;
+                ids[12] = id_ANAKINSSPEEDER;
                 ids[13] = id_NEW_REPUBLIC_GUNSHIP;
                 ids[14] = id_JEDISTARFIGHTERYELLOWEP3;
-                ids[15] = dat_007f19e8;
+                ids[15] = id_JEDISTARFIGHTERREDEP3;
                 ids[16] = id_SEBULBASPOD;
                 ids[17] = id_ZAMSSPEEDER;
-                ids[18] = dat_007f1b44;
-                ids[19] = dat_007f1b40;
-                ids[20] = dat_007f1a98;
+                ids[18] = id_DROIDTRIFIGHTER;
+                ids[19] = id_VULTUREDROID;
+                ids[20] = id_CLONEARC;
                 index = 21;
             }
             ids[index] = -1;
@@ -1722,15 +1722,15 @@ extern "C" {
     }
 
     void LC_BL_max_gizmoblowuptypes(NUFPAR *parser) {
-        levelconfig_ldata->max_gizmoblowuptypes = (i16)NuFParGetInt(parser);
-        if ((u16)levelconfig_ldata->max_gizmoblowuptypes > 0xff) {
+        levelconfig_ldata->max_gizmoblowuptypes = (u16)NuFParGetInt(parser);
+        if (levelconfig_ldata->max_gizmoblowuptypes > 0xff) {
             levelconfig_ldata->max_gizmoblowuptypes = 0xff;
         }
     }
 
     void LC_BL_max_gizmoblowups(NUFPAR *parser) {
-        levelconfig_ldata->max_gizmoblowups = (i16)NuFParGetInt(parser);
-        if ((u16)levelconfig_ldata->max_gizmoblowups > 0x200) {
+        levelconfig_ldata->max_gizmoblowups = (u16)NuFParGetInt(parser);
+        if (levelconfig_ldata->max_gizmoblowups > 0x200) {
             levelconfig_ldata->max_gizmoblowups = 0x200;
         }
     }
@@ -2145,24 +2145,24 @@ extern "C" void Credits_Update_Game(WORLDINFO *world) {
 }
 
 extern "C" {
-    i16 dat_007f17d0 = -1;
-    AREA_EXTRA_MODEL ExtraModelList[6] = {{&ID_DEFAULTCHARACTER_A, &dat_007f17bc}, {&PunchRangeUnitId, &PunchRangeCompanionId},
-                                          {&dat_007f17c8, &dat_007f17cc},          {&dat_007f17d0, &PunchRangeCompanionId},
-                                          {&dat_007f17d4, &PunchRangeCompanionId}, {NULL, NULL}};
+    i16 id_INDIANAJONES = -1;
+    AREA_EXTRA_MODEL ExtraModelList[6] = {
+        {&ID_DEFAULTCHARACTER_A, &id_GLIDEPACK},    {&PunchRangeUnitId, &PunchRangeCompanionId}, {&id_PENGUIN, &id_UMBRELLA},
+        {&id_INDIANAJONES, &PunchRangeCompanionId}, {&id_HANSOLOINDY, &PunchRangeCompanionId},   {NULL, NULL}};
     i16 id_DEFAULTCHARACTER[2] = {-1, -1};
     i16 id_JEDISTARFIGHTERYELLOWEP3 = -1;
-    i16 dat_007f19e8 = -1;
-    i16 dat_007f1a48 = -1;
-    i16 dat_007f1a4c = -1;
-    i16 dat_007f1aac = -1;
-    i16 dat_007f1ab0 = -1;
-    i16 dat_007f1ab4 = -1;
+    i16 id_JEDISTARFIGHTERREDEP3 = -1;
+    i16 id_IMPERIALOFFICER = -1;
+    i16 id_GRANDMOFFTARKIN = -1;
+    i16 id_SATIPO = -1;
+    i16 id_CHUCK = -1;
+    i16 id_BELLOQ = -1;
     i16 VehicleSpecialShooterId = -1;
-    i16 dat_007f1abc = -1;
+    i16 id_BARRANCA = -1;
     i16 id_SEBULBASPOD = -1;
     i16 id_ANAKINSNEWPOD = -1;
-    i16 dat_007f1b40 = -1;
-    i16 dat_007f1b44 = -1;
+    i16 id_VULTUREDROID = -1;
+    i16 id_DROIDTRIFIGHTER = -1;
     APICHARACTERMODELLIST PermModelList[1] = {{-1, 0}};
     i16 PermanentCustomiserActions[5] = {97, 190, 98, 99, -1};
     char *TexAnimScriptNamesTitle[3] = {"coin", "coin_pause", 0};
