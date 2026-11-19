@@ -6,7 +6,7 @@ config/oddscan-budget.json dense-function 1196 new layout class (tools/oddscan.p
 config/oddscan-budget.json long-function 21 new layout class (tools/oddscan.py group h), counted after the stricter clang-format style
 config/oddscan-budget.json long-file 12 new layout class (tools/oddscan.py group h), counted after the stricter clang-format style
 config/oddscan-budget.json data-file 6 new layout class (tools/oddscan.py group h), counted after the stricter clang-format style
-config/oddscan-budget.json address-name 2272 rename batch 1: fun_0041aec0 and fun_006272a0 (source and map row each) and the keyboard-state accessors SetCustomBindingsActive/40/50 replace address- and offset-named provisional names
+config/oddscan-budget.json address-name 2272 rename batch 1: fun_0041aec0 and fun_006272a0 (source and map row each) and the keyboard-state accessors fun_006d4e20/40/50 replace address- and offset-named provisional names
 config/oddscan-budget.json data-file 7 one declarator per declaration (tools/onedecl.py) grows one file of declarations over 200 lines
 config/oddscan-budget.json dense-function 1216 one declarator per declaration (tools/onedecl.py): split local declarations lengthen 20 functions past 40 lines without a blank line
 config/oddscan-budget.json local-extern 51 one declarator per declaration (tools/onedecl.py): the class counts lines, split extern declarations in function bodies are 30 more lines
@@ -118,7 +118,7 @@ config/castscan-budget.json scalar-pun 305 port batch 3: the header-static Fabs 
 config/castscan-budget.json view-type 532 port batch 3: casts the new code keeps where saga.h types the member void * or as an overlay view
 config/castscan-budget.json void-pointer-cpp 1274 port batch 3: casts the new code keeps where saga.h types the member void * or as an overlay view
 config/declscan-budget.json D 2615 port batch 3: unit-local declarations of callees and globals the new functions need
-config/oddscan-budget.json address-name 3473 the keyboard-state accessors SetCustomBindingsActive/40/50 become PC_INPUT_RUNTIME_PC members: the class declaration in PCInput.h names them a second time
+config/oddscan-budget.json address-name 3473 the keyboard-state accessors fun_006d4e20/40/50 become PC_INPUT_RUNTIME_PC members: the class declaration in PCInput.h names them a second time
 config/oddscan-budget.json magic-bound 1668 the 24 appends of PC_INPUT_RUNTIME_PC::InitializeDefaultRecords become the member AddInputRecord: its existing record bound 32 leaves the macro body the textual scan skipped
 config/oddscan-budget.json view-type 197 header plan step 2: pointers to existing decomp.h view types spelled with their struct tag (and the tag forward-declared) in the module headers that use them, so those headers need not include decomp.h; no new view type
 config/oddscan-budget.json address-name 3513 port batch 4 (members pinned by class, misjudged cdecl functions): new address names fun_XXXXXXXX, literal flags and states, existing Pc and view member names
@@ -334,3 +334,14 @@ config/castscan-budget.json raw-offset 359 quick run, settled in the refix
 config/oddscan-budget.json magic-flag 2473 quick run, settled in the refix
 config/oddscan-budget.json match-exception 80 refix of SetPodMergeAnims: the original writes GAMEOBJECT.anim_overlay_weight through the anim_packet pointer its caller passes, past the end of ANIMPACKET (one site, marked)
 config/castscan-budget.json scalar-pun 278 the SetPodMergeAnims MATCH-EXCEPTION: the (f32 *) of the word after the ANIMPACKET (GAMEOBJECT.anim_overlay_weight)
+config/oddscan-budget.json data-file 9 nu2api cleanup batch: hardware_dispatch.cpp hands its local declarations to the headers, so its tables are now most of the file
+config/oddscan-budget.json forceinline 19 nu2api cleanup batch: the unit macros become __forceinline helpers (they were macros, so they inline), and EmitProgram's inlined AddDefinition body is one more
+config/oddscan-budget.json magic-flag 2472 nu2api cleanup batch: flag literals in the unit macro bodies (not scanned as macros) now count in the helper functions that replace them
+config/oddscan-budget.json magic-mask 1048 nu2api cleanup batch: a mask literal in a unit macro body now counts in the helper function that replaces it
+config/oddscan-budget.json magic-state 4312 nu2api cleanup batch: state literals in unit macro bodies now count in the helper functions that replace them
+config/oddscan-budget.json match-exception 81 nu2api refix: ConfigureJoystickRanges keeps the C++ DirectInput interface call, the method table call schedules differently
+config/castscan-budget.json byte-pointer 363 nu2api cleanup batch: NuAnimCurve2CalcValEx reads the key mask bytes of the merged PCCurveBlock record
+config/castscan-budget.json function-pointer 535 nu2api cleanup batch: the NuTexAnimProgReadCFG handler macros expand to their call sites, and the D3D9 device view types CreateTexture's real signature
+config/castscan-budget.json layout-compatible 104 nu2api cleanup batch: AdaptDescriptor's descriptor and material views became NUSHADERMTLDESC and NUMTL, so the const casts count as layout-compatible
+config/castscan-budget.json scalar-pun 279 nu2api refix: NuRndrQuadBufferInit locks the vertex buffer straight into its typed vertex pointer, as the original reloads it
+config/castscan-budget.json truncation 2189 nu2api cleanup batch: casts in unit macro bodies (counted once per macro) now count at each site of the helper functions and NUMTL fields that replace them (NuMtlUpdatePS shader handles, ShaderAddDefinition, TerrainFinishScanGroup)

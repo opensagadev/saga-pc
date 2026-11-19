@@ -4,7 +4,6 @@
 
 #include "nu2api/numath/nuplane.h"
 #include "nu2api/numath/numtx.h"
-#include "nu2api/numath/nuplane.h"
 
 struct nugraph_s;
 
