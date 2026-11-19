@@ -16,31 +16,6 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numath/nuvec4.h"
-#include "nu2api/trigger.h"
-
-typedef struct CUT_LOOKAT_TEXTURE { // size 0x20
-    char *name;                     // 0x00
-    u32 unknown_04;                 // 0x04
-    i16 *frames;                    // 0x08
-    i16 frame_count;                // 0x0c
-    i16 unknown_0e;                 // 0x0e
-    NUMTL *material;                // 0x10
-    u8 unknown_14[12];              // 0x14
-} CUT_LOOKAT_TEXTURE;
-
-typedef struct CUT_LOOKAT_HIERARCHY { // size 0x68
-    u8 unknown_00[12];                // 0x00
-    NUMTL **materials;                // 0x0c
-    i32 material_count;               // 0x10
-    u8 unknown_14[0x4c];              // 0x14
-    i32 texture_count;                // 0x60
-    CUT_LOOKAT_TEXTURE *textures;     // 0x64
-} CUT_LOOKAT_HIERARCHY;
-
-typedef struct CUT_LOOKAT_MATERIAL { // size 0x9b
-    u8 unknown_00[0x9a];             // 0x00
-    u8 type;                         // 0x9a
-} CUT_LOOKAT_MATERIAL;
 
 typedef struct CUT_LOOKAT_LOCATOR_INFO { // size 0x60
     u8 unknown_00[0x5b];                 // 0x00
@@ -51,7 +26,7 @@ typedef struct CUT_LOOKAT_LOCATOR_INFO { // size 0x60
     u8 tertiary_material;                // 0x5f
 } CUT_LOOKAT_LOCATOR_INFO;
 
-struct CUT_LOOKAT_STATE {             // size 0x18
+typedef struct CUT_LOOKAT_STATE {     // size 0x18
     NUHGOBJ_EVAL *hierarchy;          // 0x00
     f32 blend;                        // 0x04
     u16 character;                    // 0x08
@@ -61,14 +36,12 @@ struct CUT_LOOKAT_STATE {             // size 0x18
     u16 tertiary_material;            // 0x10
     u16 joint;                        // 0x12
     CUT_LOOKAT_LOCATOR_INFO *locator; // 0x14
-};
+} CUT_LOOKAT_STATE;
 
 i32 FindMtlInHGObj(NUHGOBJ_EVAL *hierarchy, i32 material_type) {
-    CUT_LOOKAT_HIERARCHY *view = (CUT_LOOKAT_HIERARCHY *)hierarchy;
     i32 index;
-    for (index = 0; index < view->material_count; ++index) {
-        CUT_LOOKAT_MATERIAL *material = (CUT_LOOKAT_MATERIAL *)view->materials[index];
-        if (material->type == material_type) {
+    for (index = 0; index < hierarchy->material_count; ++index) {
+        if (hierarchy->materials[index]->override_slot == material_type) {
             return index + 1;
         }
     }
@@ -76,10 +49,9 @@ i32 FindMtlInHGObj(NUHGOBJ_EVAL *hierarchy, i32 material_type) {
 }
 
 i32 FindTexAnimFromMtl(NUHGOBJ_EVAL *hierarchy, NUMTL *material) {
-    CUT_LOOKAT_HIERARCHY *view = (CUT_LOOKAT_HIERARCHY *)hierarchy;
     i32 index;
-    for (index = 0; index < view->texture_count; ++index) {
-        if (view->textures[index].material == material) {
+    for (index = 0; index < hierarchy->texture_count; ++index) {
+        if (hierarchy->textures[index].material == material) {
             return index + 1;
         }
     }
@@ -121,7 +93,7 @@ void instGetLookAtLocatorInfo(INSTNUGCUTSCENE *instance, CUT_LOOKAT_STATE *state
     }
     state->material = (u16)FindMtlInHGObj(hierarchy, locator->material);
     if (state->material != 0) {
-        state->texture = (u16)FindTexAnimFromMtl(hierarchy, ((CUT_LOOKAT_HIERARCHY *)hierarchy)->materials[state->material - 1]);
+        state->texture = (u16)FindTexAnimFromMtl(hierarchy, hierarchy->materials[state->material - 1]);
     }
     state->secondary_material = (u16)FindMtlInHGObj(hierarchy, locator->secondary_material);
     state->tertiary_material = (u16)FindMtlInHGObj(hierarchy, locator->tertiary_material);
@@ -297,21 +269,14 @@ static void CutSceneLocatorVfxUpdate(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LOCATOR
     }
 }
 
-typedef struct CUT_LOOKAT_MATERIAL_VALUES { // size 0x88
-    u8 unknown_00[0x80];                    // 0x00
-    f32 look_x;                             // 0x80
-    f32 look_y;                             // 0x84
-} CUT_LOOKAT_MATERIAL_VALUES;
-
 static void CutSceneLocatorLookAtUpdate(CUT_LOAD_LOCATOR_INSTANCE *instance, CUT_LOAD_LOCATOR *locator, f32 frame, NUMTX *parent,
                                         INSTNUGCUTSCENE *owner) {
     CUT_LOOKAT_STATE *state;
     NUHGOBJ_EVAL *hierarchy;
-    CUT_LOOKAT_HIERARCHY *hierarchy_view;
-    CUT_LOOKAT_MATERIAL_VALUES *eye_material;
+    NUMTL *eye_material;
     CUT_LOAD_CHARACTER *character;
     CUT_LOAD_CHARACTER_INSTANCE *character_instance;
-    CUT_LOOKAT_TEXTURE *texture;
+    NUHGOBJ_TEXTURE_ANIM *texture;
     NUMTL *material;
     NUMTX locator_matrix;
     NUMTX character_matrix;
@@ -348,7 +313,6 @@ static void CutSceneLocatorLookAtUpdate(CUT_LOAD_LOCATOR_INSTANCE *instance, CUT
         return;
     }
     hierarchy = state->hierarchy;
-    hierarchy_view = (CUT_LOOKAT_HIERARCHY *)hierarchy;
     values = NuGCutLocatorCalcMtx((CUT_LOCATOR_GENERIC *)locator, frame, &locator_matrix, NULL);
     if ((locator->flags & CUTLOC_PIVOT) != 0) {
         NuMtxPreTranslate(&locator_matrix, &locator->pivot);
@@ -383,7 +347,7 @@ static void CutSceneLocatorLookAtUpdate(CUT_LOAD_LOCATOR_INSTANCE *instance, CUT
                 y = (f32)((f64)local_direction.y * 0.5);
             }
         }
-        eye_material = (CUT_LOOKAT_MATERIAL_VALUES *)hierarchy_view->materials[state->secondary_material - 1];
+        eye_material = hierarchy->materials[state->secondary_material - 1];
         if ((f64)x > 0.23999999463558197) {
             x = 0.24f;
         }
@@ -400,11 +364,11 @@ static void CutSceneLocatorLookAtUpdate(CUT_LOAD_LOCATOR_INSTANCE *instance, CUT
         if (y < -limit) {
             y = -limit;
         }
-        dx = (f32)(((f64)x - eye_material->look_x) * 0.125);
-        eye_material->look_x += dx;
-        dy = (f32)((-(f64)y - eye_material->look_y) * 0.125);
-        eye_material->look_y += dy;
-        if (eye_material->look_y < -0.15f) {
+        dx = (f32)(((f64)x - eye_material->delta_u) * 0.125);
+        eye_material->delta_u += dx;
+        dy = (f32)((-(f64)y - eye_material->delta_v) * 0.125);
+        eye_material->delta_v += dy;
+        if (eye_material->delta_v < -0.15f) {
             minimum_frame = 1;
         }
     }
@@ -426,8 +390,8 @@ static void CutSceneLocatorLookAtUpdate(CUT_LOAD_LOCATOR_INSTANCE *instance, CUT
     if (selected_frame < minimum_frame) {
         selected_frame = minimum_frame;
     }
-    material = hierarchy_view->materials[state->material - 1];
-    texture = &hierarchy_view->textures[state->texture - 1];
+    material = hierarchy->materials[state->material - 1];
+    texture = &hierarchy->textures[state->texture - 1];
     if (selected_frame < texture->frame_count) {
         material->texture_id = texture->frames[selected_frame];
         NuMtlUpdate(material);

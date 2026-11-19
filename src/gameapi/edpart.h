@@ -34,6 +34,8 @@ extern "C" {
     void edpartSetScaleFactor(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     extern i32 edpart_filter;
     extern char edpart_filter_string[16];
+    extern struct eduimenu_s *edpart_debrisindex_menu;
+    extern struct eduimenu_s *edpart_partindex_menu;
     extern struct eduimenu_s *edpart_grav_menu;
     extern struct eduimenu_s *edpart_instorient_menu;
     extern i32 edpart_superscale;

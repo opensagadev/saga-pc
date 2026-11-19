@@ -13,7 +13,6 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/nustencilshadows_PC.h"
-#include "nu2api/trigger.h"
 #include <stdio.h>
 
 void instNuGCutSceneEndButNotSystems(INSTNUGCUTSCENE *instance) {

@@ -38,10 +38,6 @@
 #include <string.h>
 
 extern "C" {
-    void AreasConfigDiagnostic(char *message);
-}
-
-extern "C" {
     APICHARACTERMODELLIST Area_StoryModelList[49] = {0};
     i32 BonusArea = 0;
 }

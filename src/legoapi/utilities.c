@@ -50,7 +50,6 @@
 #include <stdlib.h>
 #include "legoapi/menus/screens/gamestatus_lsw.h"
 
-void NuTexAnimScriptMissing(char *path);
 extern const f64 GameObjectNearFloorNoFloorHeight;
 
 static f32 UtilitiesFabs(f32 value);

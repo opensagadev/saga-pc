@@ -549,9 +549,6 @@ void edpartCancelInstanceFlagsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edpart_instanceflags_menu = NULL;
 }
 
-extern struct eduimenu_s *edpart_debrisindex_menu;
-extern struct eduimenu_s *edpart_partindex_menu;
-
 void edpartChangeDebrisIndex(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type != NULL) {
         if (edpart_set_debris == 0) {

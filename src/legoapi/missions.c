@@ -11,11 +11,6 @@
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/nufile/nufpar.h"
 
-/* Original name unknown. Empty on PC; called when the file cannot be
-   opened. VC8 drops calls to an empty body it can see, so the definition lives outside this file
-   (see SpecialMovesConfigMissing). */
-void MissionsConfigMissing(char *filename);
-
 MISSIONSYS *Missions_Configure(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end, MISSION_SAVE_READER *save) {
     NUFPAR *parser;
     MISSIONSYS temporary;

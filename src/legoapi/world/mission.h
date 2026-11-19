@@ -54,6 +54,7 @@ extern "C" {
 extern "C" {
 #endif
     struct gameobject_s *Mission_FindTarget(struct mission_sys_s *, u64 *);
+    void MissionsConfigMissing(char *filename);
 #ifdef __cplusplus
 }
 #endif

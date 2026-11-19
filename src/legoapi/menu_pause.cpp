@@ -7,9 +7,6 @@
 /* Native autosave-cancel child1011 reached by PauseGame; save1000 child already implemented. */
 extern "C" {
     extern u8 MenuAutoSaveCancelFirst;
-    extern i32 SaveloadPending;
-    extern u32 savetimer;
-    i32 saveload_getinfo(void);
 
     void MenuDrawAutoSaveCancel(MENU *menu) {
         if (!MenuASCancelFinished && !memcard_savefailed) {

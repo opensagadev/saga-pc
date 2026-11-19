@@ -41,6 +41,7 @@ extern "C" {
     i32 LookupDebrisEffect(char *);
 
     APIDEBRISSYS *InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i32);
+    void NuRainDraw(i32 reserved);
 #ifdef __cplusplus
 }
 #endif

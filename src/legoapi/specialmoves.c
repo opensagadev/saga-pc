@@ -15,8 +15,6 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
-void SpecialMovesConfigMissing(char *filename);
-
 static void SpecialMove_ConfigParticipant(NUFPAR *parser, i16 *character, i8 *variant, i16 *animation) {
     while (NuFParGetWord(parser)) {
         if (NuStrICmp(parser->word_buffer_ptr, "character") == 0) {

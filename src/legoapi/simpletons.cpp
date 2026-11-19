@@ -19,6 +19,7 @@
 #include "legoapi/world/levels/levels.h"
 #include "legoapi/world/world.h"
 #include "legogame/game.h"
+#include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/nu3d/nuspline.h"
 #include "nu2api/numath/numath_includes.h"
@@ -30,7 +31,6 @@
 #include <math.h>
 
 extern "C" {
-    void NuSpecialBurstDrawAt(struct nuhspecial_s *, u32, NUMTX *, i32);
     i32 droid_hack = 0;
     nuhspecial_s *hothtroopers = 0;
     i16 gunship_bolts[2] = {0};

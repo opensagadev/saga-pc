@@ -69,14 +69,12 @@ typedef struct partdebrissys_s { // size 0xc
 } PARTDEBRISSYS;
 
 typedef struct RTL_SET RTLSET;
-struct PART;
 
 typedef struct debris_collision_entry_s { // size 0x8
     i32 key_index;                        // 0x0
     u32 flags;                            // 0x4
 } DEBRIS_COLLISION_ENTRY;
 
-typedef struct PART PART;
 #ifdef __cplusplus
 extern "C" {
 #endif

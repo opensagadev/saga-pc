@@ -123,7 +123,7 @@ typedef void (*PART_KILL)(struct PART *, i32);
 #define PART_FLAG_DEBRIS_STOPS_WITH_PART 0x200000  /* "Debris stops when Part stops" */
 #define PART_FLAG_TRIGGER_INSIDE_CUTOFF 0x400000   /* "Trigger effect inside cutoff" */
 
-struct PART { // size 0x220
+typedef struct PART { // size 0x220
 
     union { // size 0x40
         NUMTX transform;
@@ -226,7 +226,7 @@ struct PART { // size 0x220
         u32 trail_state;
         f32 reflection_height;
     }; // 0x21c
-};
+} PART;
 
 typedef struct ADDPART {            // size 0xc8
     struct numtx_s *matrix;         // 0x00

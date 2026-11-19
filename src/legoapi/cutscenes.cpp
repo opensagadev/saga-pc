@@ -56,7 +56,6 @@
 #include "nu2api/nuwin32/d3dApiCalls.h"
 #include "nu2api/nuwin32/d3dCore.h"
 #include "nu2api/nuwin32/pcapi.h"
-#include "nu2api/trigger.h"
 #include <stdio.h>
 #include "legoapi/menus/screens/gamestatus_lsw.h"
 
@@ -115,19 +114,6 @@ static f32 CutscenesFabs(f32 f) {
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
     return rv;
 }
-
-struct CUT_LOAD_SYS {    // size 0xc
-    CUTINFO **records;   // 0x0
-    i32 count;           // 0x4
-    u32 *character_bits; // 0x8
-};
-
-struct CUT_LOAD_LIST_ENTRY { // size 0xc
-    char *directory;         // 0x0
-    char *name;              // 0x4
-    i16 level;               // 0x8
-    u8 unknown_0a[2];        // 0xa
-};
 
 typedef struct CUT_DRAW_LOCATOR CUT_DRAW_LOCATOR;
 

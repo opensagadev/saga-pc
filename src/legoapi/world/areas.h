@@ -147,6 +147,7 @@ extern "C" {
     i8 Area_CharIDInCurrentList(i32 character_id);
     struct area_data_s *Areas_ConfigureList(char *path, union variptr_u *buffer, union variptr_u *buffer_end, i32 max_count,
                                             i32 *count_out);
+    void AreasConfigDiagnostic(char *message);
 #ifdef __cplusplus
 }
 #endif

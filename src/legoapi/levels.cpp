@@ -42,13 +42,6 @@
 #include <stdio.h>
 
 typedef void (*LEVELSETDEFAULTS)(LEVELDATA *level);
-extern "C" {
-    void LevelsConfigDiagnostic(char *message);
-}
-
-extern "C" {
-    void LevelObjectsArenaDiagnostic(i32 size);
-}
 
 extern "C" {
 

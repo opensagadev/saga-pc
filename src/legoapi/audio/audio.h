@@ -92,7 +92,13 @@ extern "C" {
     void SfxSetFileTable(struct sfx_file_info_s *records);
     extern i16 *AmbientPairTab;
     void PlayFootStepSfx(struct gameobject_s *);
-    typedef struct PC_MUSIC_ACTION_PAIR PC_MUSIC_ACTION_PAIR;
+
+    typedef struct PC_MUSIC_ACTION_PAIR { // size 0x1c
+        i16 quiet_id;                     // 0x00
+        i16 action_id;                    // 0x02
+        u8 unknown_004[0x18];             // 0x04
+    } PC_MUSIC_ACTION_PAIR;
+
     extern PC_MUSIC_ACTION_PAIR *ActionPairTab;
     extern i32 (*CheckMusicOtherFn)(void);
     extern i32 (*GameAudio_ActionMusicFn)(void);

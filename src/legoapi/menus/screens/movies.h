@@ -6,6 +6,7 @@
 extern "C" {
 #endif
     void Movies_ConfigureList(char *, VARIPTR *, VARIPTR *);
+    void MoviesListNoOp(char *path);
 #ifdef __cplusplus
 }
 #endif

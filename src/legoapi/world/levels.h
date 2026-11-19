@@ -402,6 +402,8 @@ extern "C" {
     void Game_WorldInfo_InitLast(struct WORLDINFO_s *world);
     void Game_WorldInfo_InitMenu(struct WORLDINFO_s *world, i32 *menu_id, i32 *menu_y);
     void LevelScriptReStoreProgress(struct WORLDINFO_s *, struct level_script_process_s *);
+    void LevelObjectsArenaDiagnostic(i32 size);
+    void LevelsConfigDiagnostic(char *message);
 #ifdef __cplusplus
 }
 #endif

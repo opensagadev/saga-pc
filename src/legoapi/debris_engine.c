@@ -1827,8 +1827,6 @@ void DebrisGlassInit(void) {
     DebrisGlassInitialized = 1;
 }
 
-void NuRainDraw(i32 reserved);
-
 void DebrisDrawGlassEx(i32 flicker) {
     i32 reserved;
     if (DebrisGlassInitialized == 0) {

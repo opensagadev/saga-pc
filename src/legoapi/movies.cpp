@@ -10,19 +10,13 @@
 #include "nu2api/nufile/nufpar.h"
 #include "nu2api/nusound/nusound.h"
 #include "legoapi/core/input/gamepads.h"
+#include "nu2api/pc_fmv_native.h"
 
 extern "C" {
     extern i32 movie_skipped;
     extern f32 MoviePlayTime;
     extern f32 MovieFrameTime;
     extern i32 (*MovieInputFn)(void);
-}
-
-extern "C" {
-    void MoviesListNoOp(char *path);
-}
-extern "C" {
-    i32 NuFmvPlayV(i32 tag, ...);
 }
 
 extern "C" {}

@@ -810,6 +810,7 @@ extern "C" {
     extern NUMTX NuVpIdentityMatrix;
     extern NUMTX NuCameraScissorProjectionScratch;
     i32 NuSpecialDrawAt(nuhspecial_s *, NUMTX *);
+    void NuSpecialBurstDrawAt(nuhspecial_s *special, u32 count, NUMTX *matrices, i32 clip);
     void __fastcall NuQuatMulAligned(const NUQUAT *parent, const NUQUAT *rotation, NUQUAT *out);
     void NuSpecialSetDrawMtx(nuhspecial_s *special, NUMTX *matrix);
     extern NUMTX VisibilityPrimaryPlaneMatrix;
@@ -932,11 +933,25 @@ typedef struct nudisplay_list_s {            // size 0x90
     struct PC_MATERIAL_ANIM_SET *material_animations; // 0x8c
 } NUDISPLAY_LIST;
 
+/* A material's texture flip-book in a hierarchy: the cut-scene look-at locators pick a frame from it. */
+typedef struct NUHGOBJ_TEXTURE_ANIM { // size 0x20
+    char *name;                       // 0x00
+    u32 unknown_04;                   // 0x04
+    i16 *frames;                      // 0x08
+    i16 frame_count;                  // 0x0c
+    i16 unknown_0e;                   // 0x0e
+    struct numtl_s *material;         // 0x10
+    u8 unknown_14[12];                // 0x14
+} NUHGOBJ_TEXTURE_ANIM;
+
 typedef struct NUHGOBJ_EVAL {                 // size 0x1c4
     u8 unknown_0[0xc];                        // 0x000
     struct numtl_s **materials;               // 0x00c
     i32 material_count;                       // 0x010
-    u8 unknown_14[0xfc];                      // 0x014
+    u8 unknown_14[0x4c];                      // 0x014
+    i32 texture_count;                        // 0x060
+    NUHGOBJ_TEXTURE_ANIM *textures;           // 0x064
+    u8 unknown_68[0xa8];                      // 0x068
     struct nudisplay_list_s *display_list;    // 0x110
     u8 data_0x114[84];                        // 0x114
     i32 joint_count;                          // 0x168

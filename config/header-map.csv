@@ -4234,7 +4234,7 @@ variable:memcard_drawasiconfn,variable,memcard_drawasiconfn,12178,12178,1,gamefr
 forward:cut_load_locator_s,forward,cut_load_locator_s CUT_LOAD_LOCATOR,12180,12180,2,legoapi/cutscenes/gcutscn.h,rule,used most in nu2api/cutscene_include.cpp[gcutscn.cpp] (17) android-path
 forward:cut_load_locator_type_s,forward,cut_load_locator_type_s CUT_LOAD_LOCATOR_TYPE,12181,12181,1,legoapi/cutscenes/gcutscn.h,rule,used most in nu2api/cutscene_include.cpp[gcutscn.cpp] (7) android-path
 forward:cut_load_locator_system_s,forward,cut_load_locator_system_s CUT_LOAD_LOCATOR_SYSTEM,12182,12182,1,legoapi/cutscenes/gcutscn.h,rule,used most in nu2api/cutscene_include.cpp[gcutscn.cpp] (19) android-path
-forward:cut_load_locator_instance_s,forward,cut_load_locator_instance_s CUT_LOAD_LOCATOR_INSTANCE,12183,12183,1,nu2api/trigger.h,rule,used most in nu2api/cutscene_include.cpp[trigger.c] (9) pc-path
+forward:cut_load_locator_instance_s,forward,cut_load_locator_instance_s CUT_LOAD_LOCATOR_INSTANCE,12183,12183,1,legoapi/cutscenes/gcutscn.h,rule,used most in nu2api/cutscene_include.cpp[trigger.c] (9) pc-path
 struct:CUT_DRAW_SETTINGS,struct,CUT_DRAW_SETTINGS,12185,12191,8,legogame/game.h,rule,used most in legogame/game.c (2) android-path
 assert:-#3049,assert,,12193,12193,2,legogame/game.h,follow-type,CUT_DRAW_SETTINGS
 assert:-#3050,assert,,12194,12194,1,legogame/game.h,follow-type,CUT_DRAW_SETTINGS
@@ -4253,8 +4253,8 @@ variable:NuCutSceneCharacterRender,variable,NuCutSceneCharacterRender,12206,1220
 variable:NuCutSceneResetCharacters,variable,NuCutSceneResetCharacters,12207,12207,1,legoapi/cutscenes/gcutscn.h,users,NuCutSceneResetCharacters: only nu2api/cutscene_include.cpp[gcutscn.cpp] android-path
 variable:NuCutSceneRigidPostRender,variable,NuCutSceneRigidPostRender,12208,12208,1,nu2api/nucore/nugcutscene.h,android,NuCutSceneRigidPostRender
 variable:NuCutSceneSFXUpdate,variable,NuCutSceneSFXUpdate,12209,12210,2,nu2api/nucore/nugcutscene.h,android,NuCutSceneSFXUpdate
-variable:CutSceneDebrisAxisSize,variable,CutSceneDebrisAxisSize,12211,12211,1,nu2api/trigger.h,users,CutSceneDebrisAxisSize: only nu2api/cutscene_include.cpp[trigger.c] pc-path
-variable:CutSceneDebrisProcessMode,variable,CutSceneDebrisProcessMode,12212,12212,1,nu2api/trigger.h,users,CutSceneDebrisProcessMode: only nu2api/cutscene_include.cpp[trigger.c] pc-path
+variable:CutSceneDebrisAxisSize,variable,CutSceneDebrisAxisSize,12211,12211,1,legoapi/cutscenes/gcutscn.h,users,CutSceneDebrisAxisSize: only nu2api/cutscene_include.cpp[trigger.c] pc-path
+variable:CutSceneDebrisProcessMode,variable,CutSceneDebrisProcessMode,12212,12212,1,legoapi/cutscenes/gcutscn.h,users,CutSceneDebrisProcessMode: only nu2api/cutscene_include.cpp[trigger.c] pc-path
 variable:MatrixReflection_CanOverrideFn,variable,MatrixReflection_CanOverrideFn,12213,12213,1,globals.h,android-weak,catch-all (needs a module owner); MatrixReflection_CanOverrideFn
 variable:dco_gcdata,variable,dco_gcdata,12214,12214,1,legoapi/misc/utilities.h,android,dco_gcdata
 variable:dco_cmodel,variable,dco_cmodel,12215,12215,1,legoapi/misc/utilities.h,android,dco_cmodel
@@ -4264,7 +4264,7 @@ variable:dco_prerotatez,variable,dco_prerotatez,12218,12218,1,legoapi/misc/utili
 variable:dco_locatorposonly,variable,dco_locatorposonly,12219,12219,1,legoapi/render/core/render.h,android,dco_locatorposonly
 variable:DisguiseAdjustFn,variable,DisguiseAdjustFn,12220,12220,1,legoapi/render/core/render.h,android,DisguiseAdjustFn
 variable:CutSceneWaiting,variable,CutSceneWaiting,12221,12221,1,batman.h,android-weak,CutSceneWaiting
-forward:CUT_LOOKAT_STATE,forward,CUT_LOOKAT_STATE,12226,12226,5,nu2api/trigger.h,users,CUT_LOOKAT_STATE: only nu2api/cutscene_include.cpp[trigger.c] pc-path
+forward:CUT_LOOKAT_STATE,forward,CUT_LOOKAT_STATE,12226,12226,5,legoapi/cutscenes/gcutscn.h,users,CUT_LOOKAT_STATE: only nu2api/cutscene_include.cpp[trigger.c] pc-path
 typedef:CUT_DRAW_RENDER_CALLBACK,typedef,CUT_DRAW_RENDER_CALLBACK,12227,12227,1,legoapi/cutscenes/gcutscn.h,rule,used most in nu2api/cutscene_include.cpp[gcutscn.cpp] (2) android-path
 typedef:CUT_DRAW_EVAL_CALLBACK,typedef,CUT_DRAW_EVAL_CALLBACK,12228,12228,1,legoapi/cutscenes/gcutscn.h,rule,used most in nu2api/cutscene_include.cpp[gcutscn.cpp] (2) android-path
 typedef:CUT_DRAW_RIGID_CALLBACK,typedef,CUT_DRAW_RIGID_CALLBACK,12229,12229,1,legoapi/cutscenes/gcutscn.h,rule,used most in nu2api/cutscene_include.cpp[gcutscn.cpp] (2) android-path
@@ -9190,7 +9190,7 @@ function:PARTLookupTypePageOnly,function,PARTLookupTypePageOnly,18052,18052,1,le
 function:DebFree,function,DebFree,18053,18053,1,legoapi/render/core/gameliball.h,android,DebFree
 function:NuGCutSceneDestroy,function,NuGCutSceneDestroy,18054,18054,1,nu2api/nucore/nugcutscene.h,android,NuGCutSceneDestroy
 function:instNuGCutSceneDestroy,function,instNuGCutSceneDestroy,18055,18055,1,legoapi/cutscenes/gcutscn.h,android,instNuGCutSceneDestroy
-function:instNuGCutSceneEnd,function,instNuGCutSceneEnd,18056,18056,1,nu2api/trigger.h,symbol,nu2api/cutscene_include.cpp[trigger.c] pc-path
+function:instNuGCutSceneEnd,function,instNuGCutSceneEnd,18056,18056,1,legoapi/cutscenes/gcutscn.h,symbol,nu2api/cutscene_include.cpp[trigger.c] pc-path
 function:instNuGCutSceneEndButNotSystems,function,instNuGCutSceneEndButNotSystems,18057,18057,1,legoapi/cutscenes/gcutscn.h,android,instNuGCutSceneEndButNotSystems
 function:CutScenes_Destroy,function,CutScenes_Destroy,18058,18058,1,legoapi/cutscenes/cutscenes.h,android,CutScenes_Destroy
 function:DebrisProcessControlChunks,function,DebrisProcessControlChunks,18060,18060,2,legoapi/render/core/gameliball.h,symbol,gameapi/gameliball.cpp android-path
@@ -11227,7 +11227,7 @@ function:instNuGCutSceneEndFirstFrame,function,instNuGCutSceneEndFirstFrame,2250
 function:instNuGCutSceneStart,function,instNuGCutSceneStart,22501,22501,1,legoapi/cutscenes/gcutscn.h,android,instNuGCutSceneStart
 function:instNuGCutSceneReset,function,instNuGCutSceneReset,22502,22502,1,legoapi/cutscenes/gcutscn.h,android,instNuGCutSceneReset
 function:instNuGCutSceneFindActive,function,instNuGCutSceneFindActive,22503,22503,1,legoapi/cutscenes/gcutscn.h,symbol,nu2api/cutscene_include.cpp[gcutscn.cpp] android-path
-function:instNuGCutScenePlay,function,instNuGCutScenePlay,22504,22504,1,nu2api/trigger.h,symbol,nu2api/cutscene_include.cpp[trigger.c] pc-path
+function:instNuGCutScenePlay,function,instNuGCutScenePlay,22504,22504,1,legoapi/cutscenes/gcutscn.h,symbol,nu2api/cutscene_include.cpp[trigger.c] pc-path
 function:NuGCutSceneSysRender,function,NuGCutSceneSysRender,22505,22505,1,legoapi/cutscenes/gcutscn.h,android,NuGCutSceneSysRender
 forward:cut_load_rigid_s,forward,cut_load_rigid_s,22506,22506,1,legoapi/cutscenes/gcutscn.h,rule,used most in nu2api/cutscene_include.cpp[gcutscn.cpp] (1) android-path
 variable:NuCutSceneRigidCollisionCheck,variable,NuCutSceneRigidCollisionCheck,22507,22507,1,nu2api/nucore/nugcutscene.h,android,NuCutSceneRigidCollisionCheck

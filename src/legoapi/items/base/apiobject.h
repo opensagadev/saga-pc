@@ -884,12 +884,6 @@ extern "C" {
 
 #pragma pack(push, 1)
 
-typedef struct AI_SPECIAL_PROGRESS { // size 0x6
-    u8 reserved_1072;                // 0x0
-    u8 flags;                        // 0x1
-    f32 progress;                    // 0x2
-} AI_SPECIAL_PROGRESS;
-
 typedef struct INDY_GUIDELINE_STATE {     // size 0x6
     u8 movement_direction;                // 0x0
     i8 endpoint;                          // 0x1
@@ -1721,7 +1715,6 @@ typedef struct gameobject_s { // size 0x10d8
         u8 unknown_1072[6];
         u8 ai_frame_event;
         u8 input_flags; /* also the AI grapple trigger: 1 toward the ground position, 2 away */
-        AI_SPECIAL_PROGRESS special_move_progress_view;
         INDY_GUIDELINE_STATE indy_guideline_state;
     }; // 0x1072
 

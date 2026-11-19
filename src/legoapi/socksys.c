@@ -415,10 +415,6 @@ typedef struct SOCKPAR_CONTEXT {
     SOCK *sock;
 } SOCKPAR_CONTEXT;
 
-// Empty on PC, like SockSysMissingCameraDiagnostic: the warning for a
-// sock block without sock_end was compiled out.
-void SockSysMissingSockEndDiagnostic(char *file_name);
-
 void SockSysConfigureNuFPar(NUFPAR *parser, void *data) {
     SOCKPAR_CONTEXT *context;
     i32 sock_index;
@@ -499,8 +495,6 @@ static void AdjustMinMaxBox(NUVEC *pnt, NUVEC *min, NUVEC *max) {
         max->z = pnt->z;
     }
 }
-
-void SockSysMissingCameraDiagnostic(char *name);
 
 void SockSysFindInScene(SOCKSYS *sock_sys, NUGSCN *gscn) {
     i32 i;

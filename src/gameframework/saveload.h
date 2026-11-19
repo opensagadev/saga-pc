@@ -56,6 +56,10 @@ extern "C" {
     void saveloadASFormat(void);
     void saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash);
     void PcRegisterSaveMetadata(const void *metadata);
+    extern i32 SaveloadPending;
+    extern u32 savetimer;
+    i32 saveloadCheckKeyCode(char *id, u8 *code);
+    i32 saveload_getinfo(void);
 #ifdef __cplusplus
 }
 #endif

@@ -1518,8 +1518,6 @@ static void edanimcbMCTBCardWriteKeyCard(eduimenu_s *menu, eduiitem_s *unused1, 
     }
 }
 
-i32 saveloadCheckKeyCode(char *id, u8 *code);
-
 static void edanimcbMCTBCardCheckKeyCard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (saveloadCheckKeyCode(id_test, code_test)) {
         eduiCreateMessageMenu(menu, (char *)("KeyCard Check OK"), 1);

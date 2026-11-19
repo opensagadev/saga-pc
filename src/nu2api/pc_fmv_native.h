@@ -143,3 +143,11 @@ extern "C" {
     void NuFmvTextureRelease(void);
     void NuFmvTextureRestore(void);
 }
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    i32 NuFmvPlayV(i32 tag, ...);
+#ifdef __cplusplus
+}
+#endif

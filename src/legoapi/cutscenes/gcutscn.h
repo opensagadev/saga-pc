@@ -74,7 +74,11 @@ extern "C" {
     extern const f64 AIPathAngularScale;
 
     void instNuGCutSceneDestroy(struct instnugcutscene_s *);
+    void instNuGCutSceneEnd(struct instnugcutscene_s *);
     void instNuGCutSceneEndButNotSystems(struct instnugcutscene_s *);
+    void instNuGCutScenePlay(struct instnugcutscene_s *owner, i32 forward);
+    extern f32 CutSceneDebrisAxisSize;
+    extern i32 CutSceneDebrisProcessMode;
 
     void instNuGCutSceneEndFirstFrame(struct instnugcutscene_s *);
     void instNuGCutSceneStart(struct instnugcutscene_s *);
@@ -393,6 +397,10 @@ typedef struct cut_load_locator_instance_s { // size 0x8
         CUT_LOAD_SOUND_STATE *sound;
     } effect; // 0x4
 } CUT_LOAD_LOCATOR_INSTANCE;
+
+typedef struct cut_load_locator_instance_system_s {
+    CUT_LOAD_LOCATOR_INSTANCE *locators;
+} CUT_LOAD_LOCATOR_INSTANCE_SYSTEM;
 
 typedef struct cut_load_trigger_entry_s { // size 0x34
     char *name;                           // 0x00

@@ -18,6 +18,7 @@ extern "C" {
 
     void SpecialMoves_Configure(char *, VARIPTR *, VARIPTR *);
     void SpecialMove_VictimCode(GAMEOBJECT *);
+    void SpecialMovesConfigMissing(char *filename);
 #ifdef __cplusplus
 }
 #endif

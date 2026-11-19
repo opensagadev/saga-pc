@@ -27,7 +27,6 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuquat.h"
 #include "nu2api/numath/nuvec.h"
-#include "nu2api/trigger.h"
 #include <stdio.h>
 #include <float.h>
 NUMTX CutSceneCameraMatrix = {0};

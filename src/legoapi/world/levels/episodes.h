@@ -14,6 +14,7 @@ extern "C" {
     extern i32 EpGoldBrickCount;
     extern i32 EpGoldBrickTotal;
     i32 Episodes_Completed(void);
+    void EpisodesConfigDiagnostic(char *path);
 #ifdef __cplusplus
 }
 #endif

@@ -8,7 +8,6 @@
 #include "nu2api/nufile/nufpar.h"
 
 extern "C" {
-    void EpisodesConfigDiagnostic(char *path);
 
     EPISODEDATA *Episodes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out) {
         NUFPAR *parser = NuFParCreate(path);

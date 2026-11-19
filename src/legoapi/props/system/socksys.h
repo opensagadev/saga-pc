@@ -244,6 +244,8 @@ extern "C" {
     void SetSockBit(SOCK *sock, i32 index);
     void SockOff(SOCKSYS *sys, i32 index);
     void SockOn(SOCKSYS *sys, i32 index);
+    void SockSysMissingCameraDiagnostic(char *name);
+    void SockSysMissingSockEndDiagnostic(char *file_name);
 #ifdef __cplusplus
 }
 #endif

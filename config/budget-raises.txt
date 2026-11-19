@@ -305,3 +305,5 @@ config/oddscan-budget.json magic-state 4314 quick run 2: views merged into the r
 config/castscan-budget.json redundant-identity 6 quick run, settled in the refix
 config/oddscan-budget.json pc-suffix 57 quick run, settled in the refix
 config/declscan-budget.json A 22 quick run, settled in the refix
+config/castscan-budget.json layout-compatible 56 quick run, settled in the refix
+config/castscan-budget.json record-pun 368 quick run, settled in the refix
