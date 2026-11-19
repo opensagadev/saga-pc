@@ -3661,9 +3661,9 @@ variable:PCShadowSurfaceSamplingEnabled,variable,PCShadowSurfaceSamplingEnabled,
 variable:PCShadowPackets,variable,PCShadowPackets,11328,11328,1,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (14) pc-path
 variable:PCSpecialForceMaterialCount,variable,PCSpecialForceMaterialCount,11329,11329,1,nu2api/nu3d/nu3d_includes.h,users,PCSpecialForceMaterialCount: only nu2api/nu3d_includes.cpp android-path
 variable:dat_0097391c,variable,dat_0097391c,11330,11330,1,nu2api/nustencilshadows_PC.h,users,dat_0097391c: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
-variable:dat_0280d838,variable,dat_0280d838,11331,11331,1,nu2api/nustencilshadows_PC.h,users,dat_0280d838: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
-variable:dat_02854cb0,variable,dat_02854cb0,11332,11332,1,nu2api/nustencilshadows_PC.h,users,dat_02854cb0: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
-variable:dat_02854cac,variable,dat_02854cac,11333,11333,1,nu2api/nustencilshadows_PC.h,users,dat_02854cac: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
+variable:PCFogColour,variable,PCFogColour,11331,11331,1,nu2api/nustencilshadows_PC.h,users,PCFogColour: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
+variable:PCFogColourSuppressed,variable,PCFogColourSuppressed,11332,11332,1,nu2api/nustencilshadows_PC.h,users,PCFogColourSuppressed: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
+variable:PCFogEnabled,variable,PCFogEnabled,11333,11333,1,nu2api/nustencilshadows_PC.h,users,PCFogEnabled: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 variable:dat_0080e21c,variable,dat_0080e21c,11334,11334,1,nu2api/nustencilshadows_PC.h,users,dat_0080e21c: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 variable:dat_02854c90,variable,dat_02854c90,11335,11335,1,nu2api/nustencilshadows_PC.h,users,dat_02854c90: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 variable:dat_02854c94,variable,dat_02854c94,11336,11336,1,nu2api/nustencilshadows_PC.h,users,dat_02854c94: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
@@ -3675,8 +3675,8 @@ variable:dat_0080e6a4,variable,dat_0080e6a4,11342,11342,1,nu2api/nustencilshadow
 variable:dat_0097f990,variable,dat_0097f990,11343,11343,1,nu2api/nustencilshadows_PC.h,users,dat_0097f990: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 variable:dat_0280d3a0,variable,dat_0280d3a0,11344,11344,1,nu2api/nustencilshadows_PC.h,users,dat_0280d3a0: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 variable:dat_02854f54,variable,dat_02854f54,11345,11345,1,nu2api/nustencilshadows_PC.h,users,dat_02854f54: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
-variable:dat_0280a598,variable,dat_0280a598,11346,11346,1,nu2api/nustencilshadows_PC.h,users,dat_0280a598: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
-variable:dat_0080e864,variable,dat_0080e864,11347,11347,1,nu2api/nustencilshadows_PC.h,users,dat_0080e864: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
+variable:NuCameraStack,variable,NuCameraStack,11346,11346,1,nu2api/nustencilshadows_PC.h,users,NuCameraStack: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
+variable:NuCameraStackTop,variable,NuCameraStackTop,11347,11347,1,nu2api/nustencilshadows_PC.h,users,NuCameraStackTop: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 variable:CutSceneBoundingBoxTrackRoot,variable,CutSceneBoundingBoxTrackRoot,11348,11348,1,nu2api/nu3d/nu3d_includes.h,android,CutSceneBoundingBoxTrackRoot
 variable:PCShadowPacketSequence,variable,PCShadowPacketSequence,11349,11349,1,nu2api/nustencilshadows_PC.h,users,PCShadowPacketSequence: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 variable:PCShadowNearValue,variable,PCShadowNearValue,11350,11350,1,nu2api/nustencilshadows_PC.h,users,PCShadowNearValue: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
@@ -10758,37 +10758,37 @@ variable:PcInputStateInitializedCallback,variable,PcInputStateInitializedCallbac
 variable:PcUserFolder,variable,PcUserFolder,21341,21341,1,nu2api/pc_options.h,rule,used most in nu2api/pc_options.cpp (2) pc-path
 variable:PcFileDirectory,variable,PcFileDirectory,21342,21342,1,nu2api/platform_files.h,rule,used most in nu2api/platform_files.cpp (19) pc-path
 variable:PcFilePath,variable,PcFilePath,21343,21343,1,nu2api/platform_files.h,rule,used most in nu2api/platform_files.cpp (4) pc-path
-variable:dat_00820560,variable,dat_00820560,21344,21344,1,nu2api/PCInput.h,users,dat_00820560: only nu2api/PCInput.cpp pc-path
-variable:dat_00820480,variable,dat_00820480,21345,21345,1,nu2api/PCInput.h,users,dat_00820480: only nu2api/PCInput.cpp pc-path
-variable:dat_00820aa0,variable,dat_00820aa0,21346,21346,1,nu2api/PCInput.h,users,dat_00820aa0: only nu2api/PCInput.cpp pc-path
-variable:dat_00820d40,variable,dat_00820d40,21347,21347,1,nu2api/PCInput.h,users,dat_00820d40: only nu2api/PCInput.cpp pc-path
-variable:dat_00820c60,variable,dat_00820c60,21348,21348,1,nu2api/PCInput.h,users,dat_00820c60: only nu2api/PCInput.cpp pc-path
-variable:dat_00820b80,variable,dat_00820b80,21349,21349,1,nu2api/PCInput.h,users,dat_00820b80: only nu2api/PCInput.cpp pc-path
-variable:dat_00820640,variable,dat_00820640,21350,21350,1,nu2api/PCInput.h,users,dat_00820640: only nu2api/PCInput.cpp pc-path
-variable:dat_008209c0,variable,dat_008209c0,21351,21351,1,nu2api/PCInput.h,users,dat_008209c0: only nu2api/PCInput.cpp pc-path
-variable:dat_00820e20,variable,dat_00820e20,21352,21352,1,nu2api/PCInput.h,users,dat_00820e20: only nu2api/PCInput.cpp pc-path
-variable:dat_008210c0,variable,dat_008210c0,21353,21353,1,nu2api/PCInput.h,users,dat_008210c0: only nu2api/PCInput.cpp pc-path
-variable:dat_00820f00,variable,dat_00820f00,21354,21354,1,nu2api/PCInput.h,users,dat_00820f00: only nu2api/PCInput.cpp pc-path
-variable:dat_00820fe0,variable,dat_00820fe0,21355,21355,1,nu2api/PCInput.h,users,dat_00820fe0: only nu2api/PCInput.cpp pc-path
-variable:dat_00820800,variable,dat_00820800,21356,21356,1,nu2api/PCInput.h,users,dat_00820800: only nu2api/PCInput.cpp pc-path
-variable:dat_00820720,variable,dat_00820720,21357,21357,1,nu2api/PCInput.h,users,dat_00820720: only nu2api/PCInput.cpp pc-path
-variable:dat_008208e0,variable,dat_008208e0,21358,21358,1,nu2api/PCInput.h,users,dat_008208e0: only nu2api/PCInput.cpp pc-path
-variable:dat_00821910,variable,dat_00821910,21359,21359,1,nu2api/PCInput.h,users,dat_00821910: only nu2api/PCInput.cpp pc-path
-variable:dat_00822080,variable,dat_00822080,21360,21360,1,nu2api/PCInput.h,users,dat_00822080: only nu2api/PCInput.cpp pc-path
-variable:dat_00822ae8,variable,dat_00822ae8,21361,21361,1,nu2api/PCInput.h,users,dat_00822ae8: only nu2api/PCInput.cpp pc-path
-variable:dat_00822770,variable,dat_00822770,21362,21362,1,nu2api/PCInput.h,users,dat_00822770: only nu2api/PCInput.cpp pc-path
-variable:dat_008223f8,variable,dat_008223f8,21363,21363,1,nu2api/PCInput.h,users,dat_008223f8: only nu2api/PCInput.cpp pc-path
-variable:dat_008231d8,variable,dat_008231d8,21364,21364,1,nu2api/PCInput.h,users,dat_008231d8: only nu2api/PCInput.cpp pc-path
-variable:dat_008240b8,variable,dat_008240b8,21365,21365,1,nu2api/PCInput.h,users,dat_008240b8: only nu2api/PCInput.cpp pc-path
-variable:dat_00822e60,variable,dat_00822e60,21366,21366,1,nu2api/PCInput.h,users,dat_00822e60: only nu2api/PCInput.cpp pc-path
-variable:dat_00821cc8,variable,dat_00821cc8,21367,21367,1,nu2api/PCInput.h,users,dat_00821cc8: only nu2api/PCInput.cpp pc-path
-variable:dat_00823590,variable,dat_00823590,21368,21368,1,nu2api/PCInput.h,users,dat_00823590: only nu2api/PCInput.cpp pc-path
-variable:dat_00823948,variable,dat_00823948,21369,21369,1,nu2api/PCInput.h,users,dat_00823948: only nu2api/PCInput.cpp pc-path
-variable:dat_00824828,variable,dat_00824828,21370,21370,1,nu2api/PCInput.h,users,dat_00824828: only nu2api/PCInput.cpp pc-path
-variable:dat_00824470,variable,dat_00824470,21371,21371,1,nu2api/PCInput.h,users,dat_00824470: only nu2api/PCInput.cpp pc-path
-variable:dat_00823d00,variable,dat_00823d00,21372,21372,1,nu2api/PCInput.h,users,dat_00823d00: only nu2api/PCInput.cpp pc-path
-variable:dat_00824be0,variable,dat_00824be0,21373,21373,1,nu2api/PCInput.h,users,dat_00824be0: only nu2api/PCInput.cpp pc-path
-variable:dat_00821558,variable,dat_00821558,21374,21374,1,nu2api/PCInput.h,users,dat_00821558: only nu2api/PCInput.cpp pc-path
+variable:TextInputLabelsJapanese,variable,TextInputLabelsJapanese,21344,21344,1,nu2api/PCInput.h,users,TextInputLabelsJapanese: only nu2api/PCInput.cpp pc-path
+variable:TextInputLabelsEnglish,variable,TextInputLabelsEnglish,21345,21345,1,nu2api/PCInput.h,users,TextInputLabelsEnglish: only nu2api/PCInput.cpp pc-path
+variable:TextInputLabelsFrench,variable,TextInputLabelsFrench,21346,21346,1,nu2api/PCInput.h,users,TextInputLabelsFrench: only nu2api/PCInput.cpp pc-path
+variable:TextInputLabelsSpanish,variable,TextInputLabelsSpanish,21347,21347,1,nu2api/PCInput.h,users,TextInputLabelsSpanish: only nu2api/PCInput.cpp pc-path
+variable:TextInputLabelsGerman,variable,TextInputLabelsGerman,21348,21348,1,nu2api/PCInput.h,users,TextInputLabelsGerman: only nu2api/PCInput.cpp pc-path
+variable:TextInputLabelsItalian,variable,TextInputLabelsItalian,21349,21349,1,nu2api/PCInput.h,users,TextInputLabelsItalian: only nu2api/PCInput.cpp pc-path
+variable:TextInputLabelsDutch,variable,TextInputLabelsDutch,21350,21350,1,nu2api/PCInput.h,users,TextInputLabelsDutch: only nu2api/PCInput.cpp pc-path
+variable:TextInputLabelsPortuguese,variable,TextInputLabelsPortuguese,21351,21351,1,nu2api/PCInput.h,users,TextInputLabelsPortuguese: only nu2api/PCInput.cpp pc-path
+variable:TextInputLabelsDanish,variable,TextInputLabelsDanish,21352,21352,1,nu2api/PCInput.h,users,TextInputLabelsDanish: only nu2api/PCInput.cpp pc-path
+variable:TextInputLabelsCzech,variable,TextInputLabelsCzech,21353,21353,1,nu2api/PCInput.h,users,TextInputLabelsCzech: only nu2api/PCInput.cpp pc-path
+variable:TextInputLabelsPolish,variable,TextInputLabelsPolish,21354,21354,1,nu2api/PCInput.h,users,TextInputLabelsPolish: only nu2api/PCInput.cpp pc-path
+variable:TextInputLabelsRussian,variable,TextInputLabelsRussian,21355,21355,1,nu2api/PCInput.h,users,TextInputLabelsRussian: only nu2api/PCInput.cpp pc-path
+variable:TextInputLabelsSwedish,variable,TextInputLabelsSwedish,21356,21356,1,nu2api/PCInput.h,users,TextInputLabelsSwedish: only nu2api/PCInput.cpp pc-path
+variable:TextInputLabelsNorwegian,variable,TextInputLabelsNorwegian,21357,21357,1,nu2api/PCInput.h,users,TextInputLabelsNorwegian: only nu2api/PCInput.cpp pc-path
+variable:TextInputLabelsFinnish,variable,TextInputLabelsFinnish,21358,21358,1,nu2api/PCInput.h,users,TextInputLabelsFinnish: only nu2api/PCInput.cpp pc-path
+variable:TextInputKeyNamesJapanese,variable,TextInputKeyNamesJapanese,21359,21359,1,nu2api/PCInput.h,users,TextInputKeyNamesJapanese: only nu2api/PCInput.cpp pc-path
+variable:TextInputKeyNamesFrench,variable,TextInputKeyNamesFrench,21360,21360,1,nu2api/PCInput.h,users,TextInputKeyNamesFrench: only nu2api/PCInput.cpp pc-path
+variable:TextInputKeyNamesSpanish,variable,TextInputKeyNamesSpanish,21361,21361,1,nu2api/PCInput.h,users,TextInputKeyNamesSpanish: only nu2api/PCInput.cpp pc-path
+variable:TextInputKeyNamesGerman,variable,TextInputKeyNamesGerman,21362,21362,1,nu2api/PCInput.h,users,TextInputKeyNamesGerman: only nu2api/PCInput.cpp pc-path
+variable:TextInputKeyNamesItalian,variable,TextInputKeyNamesItalian,21363,21363,1,nu2api/PCInput.h,users,TextInputKeyNamesItalian: only nu2api/PCInput.cpp pc-path
+variable:TextInputKeyNamesDutch,variable,TextInputKeyNamesDutch,21364,21364,1,nu2api/PCInput.h,users,TextInputKeyNamesDutch: only nu2api/PCInput.cpp pc-path
+variable:TextInputKeyNamesPortuguese,variable,TextInputKeyNamesPortuguese,21365,21365,1,nu2api/PCInput.h,users,TextInputKeyNamesPortuguese: only nu2api/PCInput.cpp pc-path
+variable:TextInputKeyNamesDanish,variable,TextInputKeyNamesDanish,21366,21366,1,nu2api/PCInput.h,users,TextInputKeyNamesDanish: only nu2api/PCInput.cpp pc-path
+variable:TextInputKeyNamesCzech,variable,TextInputKeyNamesCzech,21367,21367,1,nu2api/PCInput.h,users,TextInputKeyNamesCzech: only nu2api/PCInput.cpp pc-path
+variable:TextInputKeyNamesPolish,variable,TextInputKeyNamesPolish,21368,21368,1,nu2api/PCInput.h,users,TextInputKeyNamesPolish: only nu2api/PCInput.cpp pc-path
+variable:TextInputKeyNamesRussian,variable,TextInputKeyNamesRussian,21369,21369,1,nu2api/PCInput.h,users,TextInputKeyNamesRussian: only nu2api/PCInput.cpp pc-path
+variable:TextInputKeyNamesSwedish,variable,TextInputKeyNamesSwedish,21370,21370,1,nu2api/PCInput.h,users,TextInputKeyNamesSwedish: only nu2api/PCInput.cpp pc-path
+variable:TextInputKeyNamesNorwegian,variable,TextInputKeyNamesNorwegian,21371,21371,1,nu2api/PCInput.h,users,TextInputKeyNamesNorwegian: only nu2api/PCInput.cpp pc-path
+variable:TextInputKeyNamesBrazilianPortuguese,variable,TextInputKeyNamesBrazilianPortuguese,21372,21372,1,nu2api/PCInput.h,users,TextInputKeyNamesBrazilianPortuguese: only nu2api/PCInput.cpp pc-path
+variable:TextInputKeyNamesFinnish,variable,TextInputKeyNamesFinnish,21373,21373,1,nu2api/PCInput.h,users,TextInputKeyNamesFinnish: only nu2api/PCInput.cpp pc-path
+variable:TextInputKeyNamesDefault,variable,TextInputKeyNamesDefault,21374,21374,1,nu2api/PCInput.h,users,TextInputKeyNamesDefault: only nu2api/PCInput.cpp pc-path
 typedef:PC_WINDOW_CALLBACK,typedef,PC_WINDOW_CALLBACK,21377,21377,2,nu2api/nuwin32/nu2api_windows.h,users,PC_WINDOW_CALLBACK: only nu2api/nuwin32/windows.cpp pc-path; renamed from nu2api/nuwin32/windows.h (SDK/CRT header name)
 function:PcShutdown,function,PcShutdown,21380,21380,2,nu2api/nuwin32/nu2api_windows.h,symbol,nu2api/nuwin32/windows.cpp pc-path; renamed from nu2api/nuwin32/windows.h (SDK/CRT header name)
 function:PcKeyDown,function,PcKeyDown,21381,21381,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path

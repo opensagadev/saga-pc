@@ -88,9 +88,9 @@ extern "C" {
 
     extern i32 PCShadowSubmissionEnabled;
     extern i32 dat_0097391c;
-    extern u32 dat_0280d838;
-    extern i32 dat_02854cb0;
-    extern i32 dat_02854cac;
+    extern u32 PCFogColour;
+    extern i32 PCFogColourSuppressed;
+    extern i32 PCFogEnabled;
     extern i32 dat_0080e21c;
     extern i32 dat_02854c90;
     extern i32 dat_02854c94;
@@ -410,8 +410,8 @@ extern "C" {
     };
 
     extern struct PC_HG_SHADOW_PACKET PCShadowPackets[280];
-    extern NU_CAMERA_STACK_ENTRY dat_0280a598[64];
-    extern NU_CAMERA_STACK_ENTRY *dat_0080e864;
+    extern NU_CAMERA_STACK_ENTRY NuCameraStack[64];
+    extern NU_CAMERA_STACK_ENTRY *NuCameraStackTop;
     void PCEnqueueHierarchyShadowGroup(NUMTX *, void *, i32, void *, i32, void *, i32);
     extern NUMTX NuRndr_DebrisMtx;
     extern NUVEC4 NuRndr_DebrisPlane;

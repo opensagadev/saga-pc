@@ -572,7 +572,7 @@ extern "C" {
     u32 NuRndrFxColour = 0;
     u8 PCGraphicsRenderTextureActive[32] = {};
     NUVEC4 PcGeometryDistanceOrigin = {0};
-    u32 dat_0280d838 = 0;
+    u32 PCFogColour = 0;
     NUMTX PcGeometryProjectionMatrix = {0};
     NUMTX PcGeometryInverseViewProjectionMatrix = {0};
     u32 nudlist_field_1598 = 0;
@@ -623,7 +623,7 @@ extern "C" {
     i32 DwaBlockCount = 0;
     static u32 rndrstream_used = 0;
     u8 NuPortalVisibilityBits[625] = {0};
-    NU_CAMERA_STACK_ENTRY dat_0280a598[64] = {0};
+    NU_CAMERA_STACK_ENTRY NuCameraStack[64] = {0};
     __declspec(align(16)) NUMTX clip_test_mtx = {0};
     PC_SHADOW_QUEUE_RECORD NuRndrShadPolDat[128] = {0};
     static u32 rndrstream_max_used = 0;
@@ -1050,7 +1050,7 @@ extern "C" {
         };
         PC_DISPLAY_ITEM_HANDLER *CurrentItemTable = PCDisplayItemHandlerPrefix;
         i32 PCClipExtentsEnabled = 1;
-        NU_CAMERA_STACK_ENTRY *dat_0080e864 = dat_0280a598;
+        NU_CAMERA_STACK_ENTRY *NuCameraStackTop = NuCameraStack;
         __declspec(align(16)) f32 ClipFarLimits[4] = {1.0f, 1.0f, 1.0f, 1.0f};
         i32 NuUnresolvedTextureIDPC = -1;
 
@@ -7530,26 +7530,26 @@ extern "C" {
     }
 
     void fun_005fe470(u32 colour) {
-        dat_0280d838 = colour & 0xffffff;
+        PCFogColour = colour & 0xffffff;
         PCDeviceSetRenderState(D3DRS_FOGCOLOR, colour);
-        dat_02854cb0 = 0;
+        PCFogColourSuppressed = 0;
     }
 
     void PCFogSetDensity(u32 density) {
         PCDeviceSetRenderState(D3DRS_FOGDENSITY, density);
     }
 
-    void fun_005fe4b0(void) {
-        if (dat_02854cb0 == 0) {
+    void PCFogSuppressColour(void) {
+        if (PCFogColourSuppressed == 0) {
             PCDeviceSetRenderState(D3DRS_FOGCOLOR, 0);
         }
-        dat_02854cb0 = 1;
+        PCFogColourSuppressed = 1;
     }
 
-    void fun_005fe4d0(void) {
-        if (dat_02854cb0 != 0) {
-            PCDeviceSetRenderState(D3DRS_FOGCOLOR, dat_0280d838);
-            dat_02854cb0 = 0;
+    void PCFogRestoreColour(void) {
+        if (PCFogColourSuppressed != 0) {
+            PCDeviceSetRenderState(D3DRS_FOGCOLOR, PCFogColour);
+            PCFogColourSuppressed = 0;
         }
     }
 
@@ -7558,14 +7558,14 @@ extern "C" {
         PCDeviceSetRenderState(D3DRS_FOGEND, end);
     }
 
-    void fun_005fe520(u32 density) {
+    void PCFogSetDensity2(u32 density) {
         PCDeviceSetRenderState(D3DRS_FOGDENSITY, density);
     }
 
-    i32 fun_005fe530(i32 enable) {
-        i32 previous = dat_02854cac;
-        dat_02854cac = enable != 0;
-        PCDeviceSetRenderState(D3DRS_FOGENABLE, dat_02854cac);
+    i32 PCFogSetEnabled(i32 enable) {
+        i32 previous = PCFogEnabled;
+        PCFogEnabled = enable != 0;
+        PCDeviceSetRenderState(D3DRS_FOGENABLE, PCFogEnabled);
         return previous;
     }
 
@@ -8142,8 +8142,8 @@ extern "C" {
     }
 
     void fun_00607b40(i32 enable, i32 mode) {
-        dat_02854cac = enable != 0;
-        PCDeviceSetRenderState(D3DRS_FOGENABLE, dat_02854cac);
+        PCFogEnabled = enable != 0;
+        PCDeviceSetRenderState(D3DRS_FOGENABLE, PCFogEnabled);
         if (enable) {
             if (mode == 1) {
                 PCDeviceSetRenderState(D3DRS_FOGTABLEMODE, 1);
@@ -8165,8 +8165,8 @@ extern "C" {
     i32 dat_02854c90 = 0;
     i32 dat_02854c94 = 0;
     i32 NuRndrShadowCnt = 0;
-    i32 dat_02854cac = 0;
-    i32 dat_02854cb0 = 0;
+    i32 PCFogEnabled = 0;
+    i32 PCFogColourSuppressed = 0;
     i32 PCFramePresentationState = 0;
     f32 NuRndrFxHeightOverride = 0;
     NUMTL *dat_02854d00 = NULL;
@@ -8472,25 +8472,25 @@ extern "C" {
     }
 
     void fun_00603e30(void) {
-        dat_0080e864 = dat_0280a598;
+        NuCameraStackTop = NuCameraStack;
     }
 
     void fun_00603e40(void) {
-        if (dat_0080e864 != dat_0280a598 + 64) {
-            dat_0080e864->camera = global_camera;
-            dat_0080e864->camera_id = (i16)render_state.camera_id;
-            dat_0080e864++;
+        if (NuCameraStackTop != NuCameraStack + 64) {
+            NuCameraStackTop->camera = global_camera;
+            NuCameraStackTop->camera_id = (i16)render_state.camera_id;
+            NuCameraStackTop++;
         } else {
             PCGraphicsRenderTextureAllocationError();
         }
     }
 
     void fun_00603e80(void) {
-        if (dat_0080e864 != dat_0280a598) {
-            dat_0080e864--;
-            if (dat_0080e864->camera_id != (i16)render_state.camera_id) {
-                NuCameraSetEx(&dat_0080e864->camera, 0);
-                render_state.camera_id = dat_0080e864->camera_id;
+        if (NuCameraStackTop != NuCameraStack) {
+            NuCameraStackTop--;
+            if (NuCameraStackTop->camera_id != (i16)render_state.camera_id) {
+                NuCameraSetEx(&NuCameraStackTop->camera, 0);
+                render_state.camera_id = NuCameraStackTop->camera_id;
             }
         } else {
             PCGraphicsRenderTextureAllocationError();

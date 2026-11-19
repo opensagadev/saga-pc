@@ -1,0 +1,5 @@
+old,new,evidence
+fun_005fe4b0,PCFogSuppressColour,forces D3DRS_FOGCOLOR to 0 and sets PCFogColourSuppressed
+fun_005fe4d0,PCFogRestoreColour,restores PCFogColour when suppressed
+fun_005fe530,PCFogSetEnabled,sets D3DRS_FOGENABLE and returns the previous state
+fun_005fe520,PCFogSetDensity2,D3DRS_FOGDENSITY (second copy)

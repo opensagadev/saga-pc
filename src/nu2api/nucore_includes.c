@@ -7154,7 +7154,7 @@ void NuStrSubstituteString(char *dst, char *src, char *search, char *replacement
 
 static u16 **BadWords;
 static i32 NumBadWords;
-u32 dat_0091ef20 = 0;
+u32 NuTimeStartMilliseconds = 0;
 void (*NuApiEndFrameCallback)(void) = 0;
 i32 argc = 0;
 char **argv = 0;
@@ -7460,16 +7460,16 @@ static void NuFileAddExtensionPC(const char *extension, i32 type, i32 platform) 
 }
 
 void NuTimeStartFrame(void) {
-    dat_0091ef20 = PCThreadMilliseconds();
+    NuTimeStartMilliseconds = PCThreadMilliseconds();
 }
 
 u32 NuTimeGetStartFrame(void) {
-    return dat_0091ef20;
+    return NuTimeStartMilliseconds;
 }
 
 u32 NuTimeGetSinceStartFrame(void) {
     u32 now = PCThreadMilliseconds();
-    return now - dat_0091ef20;
+    return now - NuTimeStartMilliseconds;
 }
 
 f32 NuTimeGetFrameTime(void) {

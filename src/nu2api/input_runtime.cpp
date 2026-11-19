@@ -344,89 +344,89 @@ PC_INPUT_RUNTIME::PC_INPUT_RUNTIME() {
     InitKeyboardProfiles();
     switch (NuLanguageGet()) {
         case NULANGUAGE_JAPANESE:
-            TextInputKeyNames = dat_00821910;
-            TextInputDefaultLabels = &dat_00820560;
-            TextInputAlternateLabels = &dat_00820560;
+            TextInputKeyNames = TextInputKeyNamesJapanese;
+            TextInputDefaultLabels = &TextInputLabelsJapanese;
+            TextInputAlternateLabels = &TextInputLabelsJapanese;
             break;
         case NULANGUAGE_ENGLISH:
             TextInputKeyNames = TextInputKeyNameTable;
-            TextInputDefaultLabels = &dat_00820480;
-            TextInputAlternateLabels = &dat_00820480;
+            TextInputDefaultLabels = &TextInputLabelsEnglish;
+            TextInputAlternateLabels = &TextInputLabelsEnglish;
             break;
         case NULANGUAGE_FRENCH:
-            TextInputKeyNames = dat_00822080;
-            TextInputDefaultLabels = &dat_00820aa0;
-            TextInputAlternateLabels = &dat_00820aa0;
+            TextInputKeyNames = TextInputKeyNamesFrench;
+            TextInputDefaultLabels = &TextInputLabelsFrench;
+            TextInputAlternateLabels = &TextInputLabelsFrench;
             break;
         case NULANGUAGE_SPANISH:
-            TextInputKeyNames = dat_00822ae8;
-            TextInputDefaultLabels = &dat_00820d40;
-            TextInputAlternateLabels = &dat_00820d40;
+            TextInputKeyNames = TextInputKeyNamesSpanish;
+            TextInputDefaultLabels = &TextInputLabelsSpanish;
+            TextInputAlternateLabels = &TextInputLabelsSpanish;
             break;
         case NULANGUAGE_GERMAN:
-            TextInputKeyNames = dat_00822770;
-            TextInputDefaultLabels = &dat_00820c60;
-            TextInputAlternateLabels = &dat_00820c60;
+            TextInputKeyNames = TextInputKeyNamesGerman;
+            TextInputDefaultLabels = &TextInputLabelsGerman;
+            TextInputAlternateLabels = &TextInputLabelsGerman;
             break;
         case NULANGUAGE_ITALIAN:
-            TextInputKeyNames = dat_008223f8;
-            TextInputDefaultLabels = &dat_00820b80;
-            TextInputAlternateLabels = &dat_00820b80;
+            TextInputKeyNames = TextInputKeyNamesItalian;
+            TextInputDefaultLabels = &TextInputLabelsItalian;
+            TextInputAlternateLabels = &TextInputLabelsItalian;
             break;
         case NULANGUAGE_DUTCH:
-            TextInputKeyNames = dat_008231d8;
-            TextInputDefaultLabels = &dat_00820640;
-            TextInputAlternateLabels = &dat_00820640;
+            TextInputKeyNames = TextInputKeyNamesDutch;
+            TextInputDefaultLabels = &TextInputLabelsDutch;
+            TextInputAlternateLabels = &TextInputLabelsDutch;
             break;
         case NULANGUAGE_PORTUGUESE:
-            TextInputKeyNames = dat_008240b8;
-            TextInputDefaultLabels = &dat_008209c0;
-            TextInputAlternateLabels = &dat_008209c0;
+            TextInputKeyNames = TextInputKeyNamesPortuguese;
+            TextInputDefaultLabels = &TextInputLabelsPortuguese;
+            TextInputAlternateLabels = &TextInputLabelsPortuguese;
             break;
         case NULANGUAGE_DANISH:
-            TextInputKeyNames = dat_00822e60;
-            TextInputDefaultLabels = &dat_00820e20;
-            TextInputAlternateLabels = &dat_00820e20;
+            TextInputKeyNames = TextInputKeyNamesDanish;
+            TextInputDefaultLabels = &TextInputLabelsDanish;
+            TextInputAlternateLabels = &TextInputLabelsDanish;
             break;
         case NULANGUAGE_CZECH:
-            TextInputKeyNames = dat_00821cc8;
-            TextInputDefaultLabels = &dat_008210c0;
-            TextInputAlternateLabels = &dat_008210c0;
+            TextInputKeyNames = TextInputKeyNamesCzech;
+            TextInputDefaultLabels = &TextInputLabelsCzech;
+            TextInputAlternateLabels = &TextInputLabelsCzech;
             break;
         case NULANGUAGE_POLISH:
-            TextInputKeyNames = dat_00823590;
-            TextInputDefaultLabels = &dat_00820f00;
-            TextInputAlternateLabels = &dat_00820f00;
+            TextInputKeyNames = TextInputKeyNamesPolish;
+            TextInputDefaultLabels = &TextInputLabelsPolish;
+            TextInputAlternateLabels = &TextInputLabelsPolish;
             break;
         case NULANGUAGE_RUSSIAN:
-            TextInputKeyNames = dat_00823948;
-            TextInputDefaultLabels = &dat_00820fe0;
-            TextInputAlternateLabels = &dat_00820fe0;
+            TextInputKeyNames = TextInputKeyNamesRussian;
+            TextInputDefaultLabels = &TextInputLabelsRussian;
+            TextInputAlternateLabels = &TextInputLabelsRussian;
             break;
         case NULANGUAGE_SWEDISH:
-            TextInputKeyNames = dat_00824828;
-            TextInputDefaultLabels = &dat_00820800;
-            TextInputAlternateLabels = &dat_00820800;
+            TextInputKeyNames = TextInputKeyNamesSwedish;
+            TextInputDefaultLabels = &TextInputLabelsSwedish;
+            TextInputAlternateLabels = &TextInputLabelsSwedish;
             break;
         case NULANGUAGE_NORWEGIAN:
-            TextInputKeyNames = dat_00824470;
-            TextInputDefaultLabels = &dat_00820720;
-            TextInputAlternateLabels = &dat_00820720;
+            TextInputKeyNames = TextInputKeyNamesNorwegian;
+            TextInputDefaultLabels = &TextInputLabelsNorwegian;
+            TextInputAlternateLabels = &TextInputLabelsNorwegian;
             break;
         case NULANGUAGE_BRAZILIAN_PORTUGUESE:
-            TextInputKeyNames = dat_00823d00;
-            TextInputDefaultLabels = &dat_008209c0;
-            TextInputAlternateLabels = &dat_008209c0;
+            TextInputKeyNames = TextInputKeyNamesBrazilianPortuguese;
+            TextInputDefaultLabels = &TextInputLabelsPortuguese;
+            TextInputAlternateLabels = &TextInputLabelsPortuguese;
             break;
         case NULANGUAGE_FINNISH:
-            TextInputKeyNames = dat_00824be0;
-            TextInputDefaultLabels = &dat_008208e0;
-            TextInputAlternateLabels = &dat_008208e0;
+            TextInputKeyNames = TextInputKeyNamesFinnish;
+            TextInputDefaultLabels = &TextInputLabelsFinnish;
+            TextInputAlternateLabels = &TextInputLabelsFinnish;
             break;
         default:
-            TextInputKeyNames = dat_00821558;
-            TextInputDefaultLabels = &dat_00820480;
-            TextInputAlternateLabels = &dat_00820480;
+            TextInputKeyNames = TextInputKeyNamesDefault;
+            TextInputDefaultLabels = &TextInputLabelsEnglish;
+            TextInputAlternateLabels = &TextInputLabelsEnglish;
             break;
     }
 }
