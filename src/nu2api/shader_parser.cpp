@@ -691,7 +691,7 @@ bool ShaderCompilerParser::NextIncludeDirectory(const char *paths, i32 *cursor, 
 extern "C" void fun_0074b9f0(void) {
 }
 
-extern "C" void fun_0074bae0(void) {
+extern "C" void ShaderParserNuError(void) {
 }
 
 ShaderCompilerBufferAllocator *ShaderCompilerParser::LoadInclude(const char *name) {

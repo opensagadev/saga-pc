@@ -7303,7 +7303,7 @@ extern "C" {
         Nu360MtlInit();
     }
 
-    void fun_0060dee0(void) {
+    void Nu3dPlatformNuError(void) {
     }
 
     // @@END

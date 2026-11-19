@@ -135,5 +135,5 @@ extern "C" i32 fun_00743d50(void) {
     return 0;
 }
 
-extern "C" void fun_00743de0(void) {
+extern "C" void NushaderobjectbaseNuError(void) {
 }

@@ -871,7 +871,7 @@ extern "C" void NuSound3SuspendForFocus(void) {
 extern "C" void fun_00698fe0(void) {
 }
 
-extern "C" void fun_00698ff0(void) {
+extern "C" void NuStreamNuError(void) {
 }
 
 i32 SoundQueue::FormatDiffers(const WAVEFORMATEX *format) {

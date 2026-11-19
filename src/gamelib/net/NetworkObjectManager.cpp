@@ -13,7 +13,7 @@
 void NetTrace(...) {
 }
 
-extern "C" void fun_006118a0() {
+extern "C" void NetworkObjectManagerNuError() {
 }
 
 /* The engine's VuAngleDifference: signed difference of two 16-bit angles, in -0x8000..0x7fff. */

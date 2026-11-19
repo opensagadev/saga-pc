@@ -230,7 +230,7 @@ void TTNetwork::RecordReceived(NETMESSAGE message, u8 channel) {
     message.Release();
 }
 
-extern "C" void fun_0060e650() {
+extern "C" void TtNetworkNuError() {
 }
 
 extern "C" void fun_0060e680() {

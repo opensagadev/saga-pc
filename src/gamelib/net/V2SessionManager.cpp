@@ -138,7 +138,7 @@ void V2SessionManager::RemovePeer(V2Peer *peer, i32 reason) {
     }
 }
 
-extern "C" void fun_006104b0() {
+extern "C" void V2SessionManagerNuError() {
 }
 
 V2SessionManager::V2SessionManager(const char *session_name) : stats("SessionAll") {

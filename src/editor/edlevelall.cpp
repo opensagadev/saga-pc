@@ -11169,7 +11169,7 @@ extern "C" void fun_006d3070(void) {
 extern "C" void fun_006d3080(void) {
 }
 
-extern "C" void fun_006d3090(void) {
+extern "C" void EdLevelAllNuError(void) {
 }
 
 extern "C" i32 edLevelGetHardwareVertexProcessing(void) {

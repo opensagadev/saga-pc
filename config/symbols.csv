@@ -9195,7 +9195,7 @@ address,symbol,size,ctype
 0x60dd60,?initResources@NuSpeedBlurFilter@@UAEXXZ,81,native exactVT binding; unimplemented extent unclaimed
 0x60ddc0,_Nu360MtlInit,265,void __cdecl(void)
 0x60ded0,_NuMtlInitExPS,5,void __cdecl(VARIPTR*)
-0x60dee0,_fun_0060dee0,1,
+0x60dee0,_Nu3dPlatformNuError,1,
 0x60def0,_fun_0060def0,28,
 0x60df10,??0NetStatCounters@@QAE@XZ,16,
 0x60df20,??0NetSmallStats@@QAE@PBD@Z,32,
@@ -9227,7 +9227,7 @@ address,symbol,size,ctype
 0x60e510,?DeliverMessage@TTNetwork@@QAEXAAUNETMESSAGE@@EABVV2Peer@@@Z,118,
 0x60e590,?RecordSent@TTNetwork@@QAEXUNETMESSAGE@@E@Z,92,
 0x60e5f0,?RecordReceived@TTNetwork@@QAEXUNETMESSAGE@@E@Z,92,
-0x60e650,_fun_0060e650,1,
+0x60e650,_TtNetworkNuError,1,
 0x60e660,_fun_0060e660,28,
 0x60e680,_fun_0060e680,1,
 0x60e690,_fun_0060e690,4,
@@ -9346,7 +9346,7 @@ address,symbol,size,ctype
 0x610480,?AcceptInvitation@V2SessionManager@@UAEXXZ,1,
 0x610490,?SendInvitation@V2SessionManager@@UAEXPAD@Z,3,
 0x6104a0,?ViewInvitations@V2SessionManager@@UAEXXZ,1,
-0x6104b0,_fun_006104b0,1,
+0x6104b0,_V2SessionManagerNuError,1,
 0x6104c0,_fun_006104c0,28,
 0x6104e0,?AllocLinear@memorymanager_s@@QAEPAXIIH@Z,92,"void *__thiscall(u32,u32,i32)"
 0x00610540,_RefpackGetMatchLength,46,"u32 __cdecl(u8 *,u8 *,u32)"
@@ -9380,7 +9380,7 @@ address,symbol,size,ctype
 0x611480,?SendTo@NuNetEmu@@QAEHPAXHPAIH@Z,432,
 0x611630,?Update@NuNetEmu@@QAEXXZ,601,
 0x611890,?NetTrace@@YAXZZ,1,
-0x6118a0,_fun_006118a0,1,
+0x6118a0,_NetworkObjectManagerNuError,1,
 0x6118b0,_SequenceDifference,22,
 0x6118d0,_fun_006118d0,28,
 0x6118f0,?NOSTrace@@YAXZZ,1,
@@ -11909,7 +11909,7 @@ address,symbol,size,ctype
 0x698fa0,_NuSound3SuspendForFocus,42,void __cdecl(void)
 0x698fd0,_fun_00698fd0,5,
 0x698fe0,_fun_00698fe0,1,
-0x698ff0,_fun_00698ff0,1,
+0x698ff0,_NuStreamNuError,1,
 0x699000,_fun_00699000,28,
 0x699020,_NustreamOvHeaderFseekWrap,32,
 0x699040,?FormatDiffers@SoundQueue@@QAEHPBUtWAVEFORMATEX@@@Z,38,
@@ -13241,7 +13241,7 @@ address,symbol,size,ctype
 0x6d2cd0,?Process@ClassEditor@@UAEXAAUEdInputContext@@@Z,927,
 0x6d3070,_fun_006d3070,1,
 0x6d3080,_fun_006d3080,1,
-0x6d3090,_fun_006d3090,1,
+0x6d3090,_EdLevelAllNuError,1,
 0x6d30a0,_fun_006d30a0,28,
 0x6d30c0,_fun_006d30c0,7,
 0x6d30d0,_fun_006d30d0,7,
@@ -15628,7 +15628,7 @@ address,symbol,size,ctype
 0x743d80,_fun_00743d80,21,
 0x743da0,_fun_00743da0,21,
 0x743dc0,_fun_00743dc0,21,
-0x743de0,_fun_00743de0,1,
+0x743de0,_NushaderobjectbaseNuError,1,
 0x743df0,_fun_00743df0,28,
 0x743e10,?SetClassValues@PC_SHADER_PARAMETER_LOCAL@@QAEXHHPBM@Z,60,
 0x743e50,_PCShaderObjectInitHLSLPc,612,"void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*,const u32*,i32,const char*,i32,const char*,i32,i32)"
@@ -15927,7 +15927,7 @@ address,symbol,size,ctype
 0x0074ba70,??$_Iter_cat@PAPAUShaderParserInclude@@@std@@YA?AUrandom_access_iterator_tag@0@ABQAPAUShaderParserInclude@@@Z,5,
 0x0074ba80,??$_Fill_n@PAPAUShaderParserInclude@@IPAU1@@std@@YAXPAPAUShaderParserInclude@@IABQAU1@U_Range_checked_iterator_tag@0@@Z,33,
 0x0074bab0,??$_Uninit_copy@PAPAUShaderParserInclude@@PAPAU1@V?$allocator@PAUShaderParserInclude@@@std@@@std@@YAPAPAUShaderParserInclude@@PAPAU1@00AAV?$allocator@PAUShaderParserInclude@@@0@U_Scalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,46,
-0x74bae0,_fun_0074bae0,1,
+0x74bae0,_ShaderParserNuError,1,
 0x74baf0,_fun_0074baf0,28,
 0x0074bb10,??1ShaderParserInclude@@AAE@XZ,33,
 0x74bb40,?LoadSourceLines@ShaderCompilerParser@@QAEXPAUShaderCompilerBufferAllocator@@H@Z,299,"void __thiscall (ShaderCompilerBufferAllocator *, i32)"
