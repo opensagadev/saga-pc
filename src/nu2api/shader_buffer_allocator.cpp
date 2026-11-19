@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 ShaderCompilerBufferAllocator::ShaderCompilerBufferAllocator(i32 size, bool owns) {
-    data = new u8[size];
+    data = new char[size];
     length = 0;
     capacity = size;
     owns_memory = owns;
@@ -12,7 +12,7 @@ ShaderCompilerBufferAllocator::ShaderCompilerBufferAllocator(i32 size, bool owns
 ShaderCompilerBufferAllocator::ShaderCompilerBufferAllocator(VirtualStackAllocator &parent, i32 size) {
     u8 *memory = parent.cursor;
     parent.cursor = memory + size;
-    data = memory;
+    data = reinterpret_cast<char *>(memory);
     capacity = size;
     length = 0;
     owns_memory = 0;
@@ -26,7 +26,7 @@ ShaderCompilerBufferAllocator::~ShaderCompilerBufferAllocator() {
 }
 
 void ShaderCompilerBufferAllocator::Resize(i32 size) {
-    u8 *memory = new u8[size];
+    char *memory = new char[size];
     i32 copied = length < size ? length : size;
     memcpy(memory, data, copied);
     delete[] data;
@@ -42,7 +42,7 @@ void ShaderCompilerBufferAllocator::AppendBytes(const char *source, i32 count) {
     if (required > capacity) {
         Resize((3 * required) / 2);
     }
-    strncpy(reinterpret_cast<char *>(data + length), source, count);
+    strncpy(data + length, source, count);
     length += count;
 }
 
@@ -67,7 +67,7 @@ char *ShaderCompilerBufferAllocator::CopyText() {
 /* Position of the first occurrence of text at or after start, or -1. */
 i32 ShaderCompilerBufferAllocator::Find(const char *text, i32 start) {
     const char *match = text;
-    char *cursor = (char *)data + start;
+    char *cursor = data + start;
     for (; start < length; ++start, ++cursor) {
         if (*match == 0) {
             return start - (match - text);
@@ -85,7 +85,7 @@ i32 ShaderCompilerBufferAllocator::Find(const char *text, i32 start) {
 
 /* True when the buffer holds text at start (as far as the buffer goes). */
 bool ShaderCompilerBufferAllocator::MatchesAt(i32 start, const char *text) {
-    char *cursor = (char *)data + start;
+    char *cursor = data + start;
     for (; start < length && *text != 0; ++start, ++cursor, ++text) {
         if (*cursor != *text) {
             return false;
@@ -96,7 +96,7 @@ bool ShaderCompilerBufferAllocator::MatchesAt(i32 start, const char *text) {
 
 /* Overwrites the buffer from start with text, without growing it. */
 void ShaderCompilerBufferAllocator::OverwriteText(i32 start, const char *text) {
-    char *cursor = (char *)data + start;
+    char *cursor = data + start;
     for (; start < length && *text != 0; ++start, ++cursor, ++text) {
         *cursor = *text;
     }

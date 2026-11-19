@@ -333,7 +333,7 @@ const char *ShaderCompilerDictionary::RenderASTName(ShaderSourceNode *node) {
         }
         buffer->data[buffer->length++] = 0;
     }
-    return reinterpret_cast<const char *>(buffer->data);
+    return buffer->data;
 }
 
 ShaderSourceNode *ShaderCompilerDictionary::FindASTExact(const char *name, u32 flags) {

@@ -1,0 +1,4 @@
+old,new,evidence
+fun_00746400,ShaderBufferReserve,advances the buffer length by count and returns the old length
+fun_00746450,AppendChar,appends one character and grows the buffer when full
+fun_00746490,TerminatedText,appends a terminator when missing and returns the text

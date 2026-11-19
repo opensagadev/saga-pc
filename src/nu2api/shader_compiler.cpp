@@ -414,7 +414,7 @@ void *ShaderCompilerBase::ParseSource(const char *source, i32 length, ShaderComp
         buffer->Resize(size);
     }
     buffer->length = size;
-    strncpy(reinterpret_cast<char *>(buffer->data + prefix), source, length);
+    strncpy(buffer->data + prefix, source, length);
     memset(buffer->data, ' ', prefix);
     for (i32 i = 0; i < prefix; i += 100) {
         buffer->data[i] = '\n';

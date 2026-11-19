@@ -161,7 +161,7 @@ i32 ShaderLexicalSlice::AsInteger(i32 skipped_prefix) {
 }
 
 bool ShaderLexicalReader::Next(ShaderCompilerBufferAllocator *input, i32 *cursor, ShaderLexicalSlice *slice) {
-    const char *p = reinterpret_cast<const char *>(input->data) + *cursor;
+    const char *p = input->data + *cursor;
     while (*cursor < input->length && ShaderLexicalClasses[(u8)*p] == SHADER_CHAR_BLANK) {
         ++*cursor;
         ++p;
@@ -172,7 +172,7 @@ bool ShaderLexicalReader::Next(ShaderCompilerBufferAllocator *input, i32 *cursor
     slice->begin = p;
     slice->length = 0;
     i32 first = *cursor;
-    if ((ShaderLexicalClasses[(u8) reinterpret_cast<const char *>(input->data)[first]] & SHADER_CHAR_IDENTIFIER) != 0) {
+    if ((ShaderLexicalClasses[(u8) input->data[first]] & SHADER_CHAR_IDENTIFIER) != 0) {
         do {
             ++*cursor;
             ++p;

@@ -802,8 +802,8 @@ void ShaderCompilerParser::LoadSourceLines(ShaderCompilerBufferAllocator *input,
     VirtualStackAllocator memory(line_memory, sizeof(line_memory));
     ShaderCompilerBufferAllocator line(memory, sizeof(line_memory));
     while (offset < input->length) {
-        const char *first = reinterpret_cast<const char *>(input->data) + offset;
-        const char *end = reinterpret_cast<const char *>(input->data) + input->length;
+        const char *first = input->data + offset;
+        const char *end = input->data + input->length;
         const char *p = first;
         i32 count = 0;
         while (p < end) {
@@ -824,7 +824,7 @@ void ShaderCompilerParser::LoadSourceLines(ShaderCompilerBufferAllocator *input,
             cursor = position + 1;
             ProcessDirective(&line, &cursor);
         } else if (emit_text != 0) {
-            text.AppendBytes(reinterpret_cast<const char *>(line.data), line.length);
+            text.AppendBytes(line.data, line.length);
         }
         line.length = 0;
     }

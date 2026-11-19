@@ -15756,11 +15756,11 @@ address,symbol,size,ctype
 0x746360,?hash@CRC16@@SAIPBEH@Z,61,"u32 __cdecl CRC16::hash(const u8*,i32)"
 0x7463a0,?hashInverse@CRC16@@SAIPBEH@Z,64,"u32 __cdecl CRC16::hashInverse(const u8*,i32)"
 0x7463e0,?CRC16VuVecMake@@YA?AUVuVec@@MMMM@Z,28,
-0x746400,_fun_00746400,17,
+0x746400,_ShaderBufferReserve,17,
 0x746420,_fun_00746420,12,
 0x746430,_fun_00746430,20,
-0x746450,?fun_00746450@ShaderCompilerBufferAllocator@@QAEXD@Z,51,
-0x746490,?fun_00746490@ShaderCompilerBufferAllocator@@QAEPAEXZ,65,
+0x746450,?AppendChar@ShaderCompilerBufferAllocator@@QAEXD@Z,51,
+0x746490,?TerminatedText@ShaderCompilerBufferAllocator@@QAEPADXZ,65,
 0x7464e0,??6ShaderCompilerBufferAllocator@@QAEAAU0@PBD@Z,19,
 0x746500,??6ShaderCompilerBufferAllocator@@QAEAAU0@H@Z,19,
 0x746520,_fun_00746520,11,

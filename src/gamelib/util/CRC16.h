@@ -208,7 +208,7 @@ extern "C" u32 ShaderDeclarationFlags(u8, u8, u8);
 #ifdef __cplusplus
 
 struct ShaderCompilerBufferAllocator { // size 0x10
-    u8 *data;                          // 0x0
+    char *data;                        // 0x0
     i32 length;                        // 0x4
     i32 capacity;                      // 0x8
     u8 owns_memory;                    // 0xc
@@ -228,8 +228,8 @@ struct ShaderCompilerBufferAllocator { // size 0x10
     void AppendInt(i32);
     void AppendSlice(const ShaderLexicalSlice &slice);
     ShaderCompilerBufferAllocator &operator<<(const ShaderLexicalSlice &slice);
-    void fun_00746450(char value);
-    u8 *fun_00746490();
+    void AppendChar(char value);
+    char *TerminatedText();
 };
 
 #endif

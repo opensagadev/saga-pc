@@ -7959,8 +7959,8 @@ bool ShaderManagerHLSL::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *filte
     vertex_source.length = 0;
     pixel_source.length = 0;
     compiler->Generate(const_cast<PC_SHADER_MATERIAL_FILTER_VIEW *>(filter), &vertex_source, &pixel_source);
-    PCShaderObjectInitHLSLPc(shader, &key, index, reinterpret_cast<const char *>(vertex_source.data), vertex_source.length,
-                             reinterpret_cast<const char *>(pixel_source.data), pixel_source.length, compiler->dictionary.profile);
+    PCShaderObjectInitHLSLPc(shader, &key, index, vertex_source.data, vertex_source.length,
+                             pixel_source.data, pixel_source.length, compiler->dictionary.profile);
     NuShaderObjectPaths *paths = reinterpret_cast<NuShaderObjectPaths *>(&shader->stage_flags);
     paths->base = filter->variant == 0;
     paths->first = filter->first_path != 0;
