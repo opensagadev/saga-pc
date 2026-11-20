@@ -829,13 +829,27 @@ eduimenu_s *eduiClearActiveMenu(void) {
     return NULL;
 }
 
+char NuKeyToAscii(u32 key, i32 shifted) {
+    NUKEYCHAR *entry;
+
+    for (entry = NuKeyChar; entry->key != 0; ++entry) {
+        if (entry->key == key) {
+            if (shifted) {
+                return entry->shifted;
+            }
+            return entry->normal;
+        }
+    }
+    return 0;
+}
+
 // noinline: the original calls cbInteractMenuKeySelect out of line from eduiMenuProcessInput; VC8 would inline it
 // there.
 __declspec(noinline) void cbInteractMenuKeySelect(eduimenu_s *menu) {
     u32 modifiers;
     char text[2];
     i32 key = NuKeyGet(&modifiers);
-    if (key >= 0) {
+    if (key > -1) {
         text[0] = NuKeyToAscii(key, modifiers & 1);
         text[1] = 0;
         cbInteractMenuScrollTo(menu, text);
