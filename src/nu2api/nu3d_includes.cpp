@@ -7116,7 +7116,10 @@ extern "C" {
     }
 
     u16 NuPortalGetRoomCount(NUGSCN *scene) {
-        return scene != NULL ? scene->num_rooms : 0;
+        if (scene != NULL) {
+            return scene->num_rooms;
+        }
+        return 0;
     }
 
     i32 clipTestSphere(NUPORTALSPHERE *sphere, NUPORTAL_FRUSTUM *frustum) {

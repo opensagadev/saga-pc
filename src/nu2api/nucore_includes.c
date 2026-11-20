@@ -2498,14 +2498,14 @@ static i32 NuFileMatchExtensionPC(char *extension, char *path_end, i32 path_len)
 
 static PC_FILEEXTINFO *NuFileExtGetInfoPC(char *path, i32 path_len) {
     PC_FILEEXTINFO *info;
+    char *path_end;
     if (path_len == 0) {
-        while (path[path_len] != '\0') {
-            ++path_len;
-        }
+        path_len = NuStrLen(path);
     }
+    path_end = path + path_len;
     info = extensions;
     while (info->extension[0] != '\0') {
-        if (NuFileMatchExtensionPC(info->extension, path + path_len, path_len) != 0) {
+        if (NuFileMatchExtensionPC(info->extension, path_end, path_len) != 0) {
             return info;
         }
         ++info;
