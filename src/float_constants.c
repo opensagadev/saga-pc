@@ -26,6 +26,7 @@ const f32 ApplyGravityMinimumFrameTime = 0.016666668f;
 const f32 PermLegalScale = 2.2f;
 const f64 AIPathAngularScale = 10430.3779296875;
 const f64 NuTime_RefreshRate = 60.0;
+const f32 ForcePushApproachOuterSquare = 0.040000003f;
 const f32 ForcePushApproachInnerSquare = 0.010000001f;
 const f64 PCAtan2RadianScale = 9.58738019107841e-05;
 const f32 NuTimeBarFontScale = 0.85f;

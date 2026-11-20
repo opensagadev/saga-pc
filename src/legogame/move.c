@@ -5232,8 +5232,6 @@ static void ForcePushed_MoveCode(GAMEOBJECT *object) {
     }
 }
 
-const f32 ForcePushApproachOuterSquare = 0.040000003f;
-
 i32 ForcePushed_SetTargetMom(GAMEOBJECT *object, f32 *seek_rate) {
     GAMEOBJECT *source = object->player.force_target;
     GAMEOBJECT *nearest;
