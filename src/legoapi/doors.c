@@ -116,12 +116,10 @@ i32 StartDoorPositions(void) {
                             NuVecSub(&direction, &door->spline->pts[point], start->position);
                             angle = NuAtan2D(direction.x, direction.z);
                         } else {
-                            /* Reads start[-1] here, which in the original data layout is
-                               PlayerList. PlayerList is not placed before PlayerStart here,
-                               so it is named explicitly. */
-                            PLAYER_POSITION_RECORD *previous = point == 5 ? (PLAYER_POSITION_RECORD *)PlayerList : start - 1;
-                            start->position = previous->position;
-                            angle = previous->angle;
+                            /* A spline too short for the first start reads start[-1], the
+                               PlayerList words before PlayerStart, as retail does. */
+                            start->position = start[-1].position;
+                            angle = start[-1].angle;
                         }
                         start->angle = angle;
                     }
