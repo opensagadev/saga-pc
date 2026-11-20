@@ -98,30 +98,26 @@ i16 PlayerList[8] = {0};
 
 i32 StartDoorPositions(void) {
     DOOR_s *door;
-    PLAYER_POSITION_RECORD *start;
     i32 index;
-    i32 point;
+    i32 player;
     Door_Start = 0;
     if (DoorExitName[0] != '\0') {
         door = WORLD->doors;
         if (door != NULL) {
             for (index = 0; index < WORLD->door_count; ++index, ++door) {
                 if (door->spline != NULL && NuStrICmp(door->name, DoorExitName) == 0) {
-                    start = PlayerStart;
-                    for (point = 5; point < 21; point += 2, ++start) {
-                        NUANG angle;
-                        if (door->spline->length > point) {
+                    for (player = 0; player < 8; ++player) {
+                        if (door->spline->length > player * 2 + 5) {
                             NUVEC direction;
-                            start->position = &door->spline->pts[point - 1];
-                            NuVecSub(&direction, &door->spline->pts[point], start->position);
-                            angle = NuAtan2D(direction.x, direction.z);
+                            PlayerStart[player].position = &door->spline->pts[player * 2 + 4];
+                            NuVecSub(&direction, &door->spline->pts[player * 2 + 5], PlayerStart[player].position);
+                            PlayerStart[player].angle = NuAtan2D(direction.x, direction.z);
                         } else {
-                            /* A spline too short for the first start reads start[-1], the
+                            /* A spline too short for the first start reads PlayerStart[-1], the
                                PlayerList words before PlayerStart. */
-                            start->position = start[-1].position;
-                            angle = start[-1].angle;
+                            PlayerStart[player].position = PlayerStart[player - 1].position;
+                            PlayerStart[player].angle = PlayerStart[player - 1].angle;
                         }
-                        start->angle = angle;
                     }
                     Door_Start = 1;
                     return 1;
