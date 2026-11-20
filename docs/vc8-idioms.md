@@ -648,6 +648,34 @@ u16 from)` zero-extended `ax` before `cx`, retail does `cx` first; declaring
 `(u16 from, u16 to)` and swapping the six call sites made the helper exact
 with both callers unchanged.
 
+### I56: `memset` of a one-word array keeps its store in place
+
+```
+retail                                   ours (progress->pulled_down[0] = 0;)
+  or   eax, -1                             or   eax, -1
+  mov  dword ptr [ebx], 0                  mov  [ebx+4], eax
+  mov  [ebx+4], eax                        ...
+  ...                                      test eax, eax
+  test eax, eax                            mov  dword ptr [ebx], 0   ; sunk
+```
+
+VC8 expands `memset(a, 0, sizeof(a))` of a 4-byte array into the same
+`mov dword ptr [m], 0`, but the scheduler leaves an expanded `memset` store
+where it is, while a plain element store may sink below later loads. The
+gizmo progress records clear their one-word bit arrays with `memset`, like the
+exact `Shards_ClearProgress`. Examples: `Levers_StoreProgress`,
+`GizPanels_StoreProgress` (now calling `GizPanels_ClearProgress`),
+`Attractos_StoreProgress` (all exact).
+
+### I57: the SDK `NuFabs` form of a unit's float helper
+
+A unit's `static f32 XxxFabs(f32 f)` is the SDK shape
+`f32 rv; *(i32 *)&rv = *(i32 *)&f & 0x7fffffff; return rv;`. A
+`i32 bits = ...; bits &= mask; return *(f32 *)&bits;` body compiles to the
+same standalone copy, but where a caller inlines it the two forms give the
+temporaries different stack slots. `CutScene_PreUpdateFn_LSW` became exact
+with the SDK form and the call written inside the expression that uses it.
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated

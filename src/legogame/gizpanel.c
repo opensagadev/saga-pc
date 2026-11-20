@@ -672,9 +672,9 @@ void GizPanels_ClearProgress(void *owner, void *progress_ptr) {
     if (progress == NULL) {
         return;
     }
-    progress->triggered[0] = 0;
-    progress->enabled[0] = 0xffffffffu;
-    progress->visible[0] = 0xffffffffu;
+    memset(progress->triggered, 0, sizeof(progress->triggered));
+    memset(progress->enabled, 0xff, sizeof(progress->enabled));
+    memset(progress->visible, 0xff, sizeof(progress->visible));
 }
 
 void GizPanels_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
@@ -688,10 +688,7 @@ void GizPanels_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     if (progress == NULL) {
         return;
     }
-    progress->triggered[0] = 0;
-    progress->enabled[0] = 0xffffffffu;
-    progress->visible[0] = 0xffffffffu;
-
+    GizPanels_ClearProgress(NULL, progress);
     if (world == NULL || world->giz_panel_sys == NULL || world->giz_panel_sys->panels == NULL) {
         return;
     }

@@ -358,9 +358,9 @@ static void Levers_ClearProgress(void *world, void *progress_ptr) {
     if (progress == NULL) {
         return;
     }
-    progress->pulled_down[0] = 0;
-    progress->enabled[0] = ~0u;
-    progress->visible[0] = ~0u;
+    memset(progress->pulled_down, 0, sizeof(progress->pulled_down));
+    memset(progress->enabled, 0xff, sizeof(progress->enabled));
+    memset(progress->visible, 0xff, sizeof(progress->visible));
 }
 
 static void Levers_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
