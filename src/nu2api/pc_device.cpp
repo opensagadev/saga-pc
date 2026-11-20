@@ -341,7 +341,7 @@ extern "C" void PCDeviceReleaseResource(PC_TEXTURE_RESOURCE *resource) {
     PCDeviceLastResult = static_cast<HRESULT>(resource->methods->release(resource));
 }
 
-extern "C" void D3dCoreNuErrorPc(void) {
+extern "C" void D3dCoreNuError(void) {
 }
 
 i32 PC_WINDOW_OPTIONS::GetDeviceWidth() {

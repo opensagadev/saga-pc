@@ -1524,7 +1524,7 @@ void NewTerrPlatformsOff(void) {
 }
 
 /* Uncalled: the crash data of the terrain file being read. */
-u8 *fun_0067bef0(void) {
+u8 *TerrainGetCrashData(void) {
     return TerrainCrashData;
 }
 

@@ -264,10 +264,10 @@ extern "C" void fun_006dffb0(void) {
 }
 
 /* Two uncalled copies of the SDK's NuFabs (nufloat.h). */
-extern "C" f32 fun_006e1800(f32 value) {
-    return fabsf(value);
+extern "C" f32 PCNativeDebugFabs(f32 value) {
+    return (f32)fabs(value);
 }
 
-extern "C" f32 fun_006e1810(f32 value) {
-    return fabsf(value);
+extern "C" f32 PCNativeDebugNuFabs(f32 value) {
+    return (f32)fabs(value);
 }

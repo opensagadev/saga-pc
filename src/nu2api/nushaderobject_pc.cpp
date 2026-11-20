@@ -141,7 +141,7 @@ void PCShaderObjectInitHLSLPc(NuShaderObject *shader, const u32 *key, i32 index,
     }
 }
 
-extern "C" void NushaderobjectNuErrorPc(void) {
+extern "C" void NushaderobjectNuError(void) {
 }
 
 void PC_SHADER_PARAMETER_LOCAL::SetScalarValues(i32 first_element, i32 count, const f32 *values) {

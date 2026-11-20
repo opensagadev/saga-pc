@@ -1831,7 +1831,7 @@ void NuKeyboardOwner::SetMouseEnabled(u8 enabled) {
     mouse_enabled = enabled;
 }
 
-extern "C" void PCInputNuErrorPc(void) {
+extern "C" void PCInputNuError(void) {
 }
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */

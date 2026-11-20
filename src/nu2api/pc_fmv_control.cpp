@@ -22,7 +22,7 @@ struct PC_FMV_REALTIME {   // size 0x38
     u32 data_rate;         // 0x34
 };
 
-extern "C" void DsplayBinkNuErrorPc(void) {
+extern "C" void DsplayBinkNuError(void) {
 }
 
 /* Uncalled. Seconds played of the current movie. */

@@ -8394,7 +8394,7 @@ address,symbol,size,ctype
 0x5f7490,_NuTexBmpUnsupportedDepth,1,"void __cdecl (i32, const char *)"
 0x5f7490,_NuQFntAtlasError,1,void __cdecl (void)
 0x5f74a0,_NuPtlDmaSlotsExhausted,1,void __cdecl(void)
-0x5f74b0,_Nu3dPcIncludesNuError,1,
+0x5f74b0,_Nu3dPlatformIncludesNuError,1,
 0x5f74c0,?Nu3dPcIncludesVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x5f74e0,?Nu3dPcIncludesVuVecAdd@@YA?AUVuVec@@ABU1@0@Z,29,
 0x5f7500,?Nu3dPcIncludesVuVecSub@@YA?AUVuVec@@ABU1@0@Z,29,
@@ -10118,7 +10118,7 @@ address,symbol,size,ctype
 0x630de0,_fun_00630de0,20,
 0x630e00,_NuFmvPlayV,612,
 0x631070,_NuFmvPlay,70,
-0x6310c0,_DsplayBinkNuErrorPc,1,
+0x6310c0,_DsplayBinkNuError,1,
 0x6310d0,?DsplayBinkVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x6310f0,_fun_006310f0,4,
 0x631100,_fun_00631100,3,
@@ -11433,7 +11433,7 @@ address,symbol,size,ctype
 0x67bcd0,_NewRayCastSetMask,393,"i32 __cdecl(NUVEC *,NUVEC *,f32,f32,f32,i32,i32,i32)"
 0x67be60,_NewTerrAxisFreedom,113,"void __cdecl(TERRAIN_AXIS_FREEDOM_SHAPE *,NUVEC *)"
 0x67bee0,_TerrainVecZero,15,
-0x67bef0,_fun_0067bef0,6,
+0x67bef0,_TerrainGetCrashData,6,
 0x67bf00,_TerrainHasPlatformForInstance,78,
 0x0067bf50,_NewPlatInst,528,"i32 __cdecl (void *, i32)"
 0x67c160,_NewPlatInstMSitu,444,
@@ -13262,7 +13262,7 @@ address,symbol,size,ctype
 0x6d3520,_StartupDats_SelectSecond,40,
 0x6d3550,?wcsstr@@YAPA_WPA_WPB_W@Z,5,"wchar_t *__cdecl (wchar_t *, const wchar_t *)"
 0x6d3560,_fun_006d3560,1,
-0x6d3570,_PCInputNuErrorPc,1,
+0x6d3570,_PCInputNuError,1,
 0x6d3580,?PCInputFabs@@YAMM@Z,18,
 0x6d35a0,?PCInputVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x6d35c0,_fun_006d35c0,4,
@@ -13728,7 +13728,7 @@ address,symbol,size,ctype
 0x6def80,_fun_006def80,3,
 0x6def90,??0D3DXMATRIX@@QAE@MMMMMMMMMMMMMMMM@Z,116,"D3DXMATRIX *__thiscall(f32,f32,f32,f32,f32,f32,f32,f32,f32,f32,f32,f32,f32,f32,f32,f32)"
 0x6df010,_fun_006df010,1,
-0x6df020,_D3dApiCallsNuErrorPc,1,
+0x6df020,_D3dApiCallsNuError,1,
 0x6df030,?D3dApiCallsVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x6df050,?IsMultisampled@PC_DEVICE_BACKEND@@QAEHXZ,12,
 0x6df060,?GetEnabledOption0@PC_DEVICE_BACKEND@@QAEIXZ,7,
@@ -13804,9 +13804,9 @@ address,symbol,size,ctype
 0x6e1710,??0PC_NATIVE_DEBUG_STATE@@QAE@XZ,30,
 0x6e1730,??1PC_NATIVE_DEBUG_STATE@@QAE@XZ,31,
 0x6e1750,?Initialize@PC_NATIVE_DEBUG_STATE@@QAEXXZ,172,void __thiscall(void)
-0x6e1800,_fun_006e1800,15,
-0x6e1810,_fun_006e1810,15,
-0x6e1820,_D3dCoreNuErrorPc,1,
+0x6e1800,_PCNativeDebugFabs,15,
+0x6e1810,_PCNativeDebugNuFabs,15,
+0x6e1820,_D3dCoreNuError,1,
 0x6e1830,?D3dCoreVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x6e1850,?GetDeviceWidth@PC_WINDOW_OPTIONS@@QAEHXZ,7,
 0x6e1860,?GetDeviceHeight@PC_WINDOW_OPTIONS@@QAEHXZ,7,
@@ -15536,7 +15536,7 @@ address,symbol,size,ctype
 0x7412c0,?GetRefCount@NuShaderObject@@QBEHXZ,4,
 0x7412d0,?GetKeyAddress@NuShaderObject@@QAEPAIXZ,4,
 0x7412e0,_NuShaderManagerInit,124,"void __cdecl(VARIPTR *,VARIPTR)"
-0x741360,_fun_00741360,42,
+0x741360,_NuShaderManagerBuildPrecompiledShader,42,
 0x741390,_NuShaderManagerSetfv,22,"void __cdecl(i32,const f32*)"
 0x7413b0,_NuShaderManagerSetElementfv,27,"void __cdecl(i32,i32,const f32*)"
 0x007413d0,_NuShaderManagerSetElementsfv,32,
@@ -15595,7 +15595,7 @@ address,symbol,size,ctype
 0x742330,_NuShaderObjectCreate,24,void __cdecl NuShaderObjectCreate(PC_SHADER_OBJECT_FULL_VIEW *)
 0x742350,_NuShaderObjectInit,33,"void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*,const u32*,i32,const char*,i32,const char*,i32,i32)"
 0x742380,_NuShaderObjectUnInit,5,void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*)
-0x742390,_NushaderobjectNuErrorPc,1,
+0x742390,_NushaderobjectNuError,1,
 0x7423a0,?NushaderobjectVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x007423c0,?SetScalar@PC_SHADER_PARAMETER_LOCAL@@QAEXM@Z,48,void __thiscall PC_SHADER_PARAMETER_LOCAL::SetScalar(f32)
 0x007423f0,?SetValues@PC_SHADER_PARAMETER_LOCAL@@QAEXHHPBM@Z,60,"void __thiscall PC_SHADER_PARAMETER_LOCAL::SetValues(i32,i32,const f32*)"
@@ -15733,7 +15733,7 @@ address,symbol,size,ctype
 0x7454b0,_NuShaderManagerGetHardwareVertexProcessing,6,
 0x7454c0,?AdaptDescriptor@ShaderManagerHLSL@@UAEXPBUnushadermtldesc_s@@PBUnumtl_s@@@Z,835,"void __thiscall ShaderManagerHLSL::AdaptDescriptor(const NUSHADERMTLDESC *, const NUMTL *)"
 0x745810,?CreateShader@ShaderManagerHLSL@@UAE_NPBUPC_SHADER_MATERIAL_FILTER@@_NPAVNuShaderObject@@H@Z,265,
-0x745920,_ShaderManagerHLSLNuErrorPc,1,
+0x745920,_ShaderManagerHLSLNuError,1,
 0x745930,?ShaderManagerHLSLVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x745950,??_EHLSLShaderBuilder@@UAEPAXI@Z,,COFF weak alias to same scalar deleting destructor; zero new byte credit
 0x745950,??_GHLSLShaderBuilder@@UAEPAXI@Z,74,

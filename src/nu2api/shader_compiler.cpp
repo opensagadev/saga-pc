@@ -372,7 +372,7 @@ ShaderBuilderGen::~ShaderBuilderGen() {
     parsed_source = NULL;
 }
 
-extern "C" void ShaderManagerHLSLNuErrorPc(void) {
+extern "C" void ShaderManagerHLSLNuError(void) {
 }
 
 HLSLShaderBuilder::HLSLShaderBuilder(VirtualStackAllocator &allocator) : ShaderCompilerBase(allocator, 0) {
