@@ -883,9 +883,9 @@ extern "C" {
         };
         /* Special the save icon is drawn from (LoadPermLoadSaveIconScene). */
         char *lsw_memcard_objname = "mem_card";
-        i32 PermDataLoaded = 1;
+        volatile i32 PermDataLoaded = 1;
         volatile i32 LoadPerm_LanguageSelect = 0;
-        i32 LoadPerm_StringsLoaded = 0;
+        volatile i32 LoadPerm_StringsLoaded = 0;
 
         void LoadPermData(void *process) {
             PC_CONTROL_CONFIG control_config;

@@ -311,3 +311,4 @@ config/oddscan-budget.json magic-flag 2569 CInfo flags retyped to u64: the exist
 config/oddscan-budget.json magic-mask 1055 same CInfo u64 retype: existing context masks now visible to the scanner
 config/castscan-budget.json float-width 3971 match3 gameapi: EdManScale::Process scales by (f64)0.005f, the double of the float literal that retail multiplies by (__real@3f747ae140000000), where the port had the double 0.005
 config/oddscan-budget.json volatile-other 44 AreaDataLoaded/CharacterDataLoad are set by the background loader; retail loads them into a register before every test and re-reads per use (I66)
+config/oddscan-budget.json volatile-other 48 PermDataLoaded/LoadPerm_StringsLoaded are set by LoadPermData on the background thread (LoadPerm_LanguageSelect beside them already is volatile); retail loads them into a register per test (I66)
