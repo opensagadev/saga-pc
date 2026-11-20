@@ -2,6 +2,8 @@
 
 #include "nu2api/nucore/common.h"
 
+#include "nu2api/nu3d/nuhspecial.h"
+
 struct GIZMOPICKUP;
 struct area_data_s;
 struct gizmo_s;
@@ -14,7 +16,7 @@ typedef struct area_supercounter_s AREA_SUPERCOUNTER;
 typedef struct area_supercounter_pickup_s { // size 0x30
     void *gizmo;                            // 0x00
     void *position_gizmo;                   // 0x04
-    void *position_special[3];              // 0x08
+    nuhspecial_s position_special;          // 0x08
     char name[8];                           // 0x14
     char position_name[16];                 // 0x1c
     i16 level_index;                        // 0x2c

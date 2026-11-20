@@ -264,7 +264,7 @@ void GizmoPickups_Draw(void *world_pointer, void *unused_system, f32 unused_time
 i32 GizmoPickups_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = world_ptr;
     if (world != NULL) {
-        return (u16)world->current_level->max_pickups;
+        return world->current_level->max_pickups;
     }
     return 0;
 }
@@ -454,10 +454,10 @@ void *GizmoPickups_ReserveBufferSpace(void *world_ptr) {
     SetAreaPickupScale(world->area_index);
     world->pickup_runtime_sys->pickup_scale = AreaPickupScale;
     SetAreaPickupGravity(world->area_index, world->level_idx);
-    if ((u16)world->current_level->max_pickups > 0) {
+    if (world->current_level->max_pickups > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
         world->pickup_runtime_sys->pickups = (GIZMOPICKUP *)world->giz_buffer.addr;
-        world->giz_buffer.addr += (u16)world->current_level->max_pickups * sizeof(GIZMOPICKUP);
+        world->giz_buffer.addr += world->current_level->max_pickups * sizeof(GIZMOPICKUP);
     }
     world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
     world->pickup_runtime_sys->temporary_pickups = (GIZMOPICKUP *)world->giz_buffer.addr;

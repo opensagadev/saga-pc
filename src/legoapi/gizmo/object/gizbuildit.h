@@ -28,7 +28,7 @@ typedef struct GIZBUILDIT {              // size 0x7c
     f32 interaction_radius;              // 0x4c
     f32 reflection_height;               // 0x50
     i16 wobble_parameter;                // 0x54
-    i16 completion_score;                // 0x56
+    u16 completion_score;                // 0x56
     i16 reward_pitch;                    // 0x58
     i16 reward_yaw;                      // 0x5a
     NUVEC effect_position;               // 0x5c

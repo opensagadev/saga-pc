@@ -988,7 +988,7 @@ extern "C" {
             buildit = system->buildits;
             if (buildit != NULL) {
                 for (i = 0; i < system->count; i++, buildit++) {
-                    total += (u16)buildit->completion_score;
+                    total += buildit->completion_score;
                 }
             }
         }
@@ -1283,10 +1283,10 @@ extern "C" {
                     if ((buildit->availability_flags & 0x200) == 0) {
                         buildit->availability_flags |= 0x200;
                         hearts = ReleaseHearts();
-                        if ((u16)buildit->completion_score > 0 || hearts != 0) {
+                        if (buildit->completion_score > 0 || hearts != 0) {
                             NuVecRotateX(&reward_direction, &v010, (u16)buildit->reward_pitch);
                             NuVecRotateY(&reward_direction, &reward_direction, (u16)buildit->reward_yaw);
-                            AddPickups((u16)buildit->completion_score, hearts, 0, 0, &finish_position, &reward_direction, 2.0f, -1, 1.75f,
+                            AddPickups(buildit->completion_score, hearts, 0, 0, &finish_position, &reward_direction, 2.0f, -1, 1.75f,
                                        2000000.0f, NULL, 1, 0);
                         }
                     }

@@ -172,7 +172,7 @@ typedef struct level_data_s { // size 0x130
     i16 max_gameantinodes;         // 0x0d8
     u16 max_gizmoblowups;          // 0x0da
     u16 max_gizmoblowuptypes;      // 0x0dc
-    i16 max_pickups;               // 0x0de
+    u16 max_pickups;               // 0x0de
     i16 max_obstacle_objects;      // 0x0e0
     i16 max_buildit_objects;       // 0x0e2
     i16 max_force_objects;         // 0x0e4
