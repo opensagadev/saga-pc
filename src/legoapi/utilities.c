@@ -49,6 +49,7 @@
 #include "nu2api/numath/nuvec.h"
 
 #include <stdlib.h>
+#include "legoapi/menus/core/text.h"
 #include "legoapi/menus/screens/gamestatus_lsw.h"
 
 static f32 UtilitiesFabs(f32 value);
@@ -1380,9 +1381,10 @@ void DrawRectRGBA(f32 x, f32 y, f32 width, f32 height, i32 colour, NUMTL *materi
     } else if ((alignment & 5) == 0) {
         y += height * 0.5;
     }
-    if ((alignment & 10) == 8) {
+    alignment &= TEXT_ALIGN_LEFT | TEXT_ALIGN_RIGHT;
+    if (alignment == TEXT_ALIGN_RIGHT) {
         x -= width;
-    } else if ((alignment & 10) == 0) {
+    } else if (alignment == 0) {
         x -= width * 0.5;
     }
     NuRndrRect2di(((x + 1.0) * 0.5 * 10240.0), ((2.0 - (y + 1.0)) * 0.5 * 3584.0), rect_width, rect_height, colour, material);
