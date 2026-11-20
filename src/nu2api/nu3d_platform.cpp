@@ -5360,34 +5360,84 @@ extern "C" {
         return 0;
     }
 
+    static void PcItemSetNext(NUDISPLAYLISTITEM *item, void *next) {
+        item->next = next;
+    }
+
+    static void PcItemSetCall(NUDISPLAYLISTITEM *item) {
+        item->id = NUDLISTITEM_CALL;
+    }
+
+    static void PcItemSetSkip(NUDISPLAYLISTITEM *item) {
+        item->id = NUDLISTITEM_SKIP;
+    }
+
+    static void PcItemSetJump(NUDISPLAYLISTITEM *item) {
+        item->id = NUDLISTITEM_JUMP;
+    }
+
+    static void PcItemSetEnd(NUDISPLAYLISTITEM *item) {
+        item->id = NUDLISTITEM_END;
+    }
+
+    static void PcItemSetOp(NUDISPLAYLISTITEM *item, u8 op) {
+        switch (op) {
+            case NUDLISTITEM_CALL:
+                PcItemSetCall(item);
+                break;
+            case NUDLISTITEM_SKIP:
+                PcItemSetSkip(item);
+                break;
+            case NUDLISTITEM_JUMP:
+                PcItemSetJump(item);
+                break;
+            case NUDLISTITEM_END:
+                PcItemSetEnd(item);
+                break;
+        }
+    }
+
+    static void PcItemInit(NUDISPLAYLISTITEM *item, u8 type, u8 op, void *next) {
+        item->type = type;
+        PcItemSetNext(item, next);
+        PcItemSetOp(item, op);
+    }
+
+    /* Appends an item that calls the handler of `type` with `next` and returns it. */
+    static NUDISPLAYLISTITEM *PcAppendItem(NUDISPLAYLIST *list, u8 type, void *next) {
+        list->items->type = type;
+        PcItemSetCall(list->items);
+        PcItemSetNext(list->items, next);
+        list->items++;
+        return list->items - 1;
+    }
+
     void NuDisplayListAddClut(NUDISPLAYLISTITEM *item, i32 texture_id) {
         item->type = NUDLIST_DUMMY;
-        item->next = NULL;
-        item->id = NUDLISTITEM_SKIP;
+        PcItemSetNext(item, NULL);
+        PcItemSetSkip(item);
     }
 
     void NuDisplayListAddTexture(NUDISPLAYLISTITEM *item, i32 texture_id) {
         item->type = NUDLIST_DUMMY;
-        item->next = NULL;
-        item->id = NUDLISTITEM_SKIP;
+        PcItemSetNext(item, NULL);
+        PcItemSetSkip(item);
     }
 
     void NuDisplayListAddMaterialState(NUDISPLAYLISTITEM *item, NUMTL *material) {
-        item->type = NUDLIST_MTL;
-        item->next = material;
-        item->id = NUDLISTITEM_CALL;
+        PcItemInit(item, NUDLIST_MTL, NUDLISTITEM_CALL, material);
     }
 
     void NuDisplayListAddMicrocode(NUDISPLAYLISTITEM *item, NUMTL *material) {
         item->type = NUDLIST_DUMMY;
-        item->next = NULL;
-        item->id = NUDLISTITEM_SKIP;
+        PcItemSetNext(item, NULL);
+        PcItemSetSkip(item);
     }
 
     void NuDisplayListAddLightState(NUDISPLAYLISTITEM *item, NUMTL *material) {
         item->type = NUDLIST_DUMMY;
-        item->next = NULL;
-        item->id = NUDLISTITEM_SKIP;
+        PcItemSetNext(item, NULL);
+        PcItemSetSkip(item);
     }
 
     void DisplayListCreatePS(NUDISPLAY_LIST *scene, VARIPTR *buffer, VARIPTR end) {
@@ -5406,7 +5456,7 @@ extern "C" {
             cursor->dlist_ptr->next = cursor->dlist_ptr + 2;
         }
         cursor->dlist_ptr[1].type = NUDLIST_NEXT;
-        cursor->dlist_ptr[1].id = NUDLISTITEM_JUMP;
+        PcItemSetJump(&cursor->dlist_ptr[1]);
         cursor->dlist_ptr[1].next = list->dynamic_geometry + 1;
         list->mtl_last = cursor->dlist_ptr + 1;
         cursor->addr += 2 * sizeof(NUDISPLAYLISTITEM);
@@ -6216,23 +6266,6 @@ extern "C" {
             buffer->addr += NuDebrisVertexBufferSize;
         }
         debris_InitializeD3D();
-    }
-
-    static void PcItemSetNext(NUDISPLAYLISTITEM *item, void *next) {
-        item->next = next;
-    }
-
-    static void PcItemSetCall(NUDISPLAYLISTITEM *item) {
-        item->id = NUDLISTITEM_CALL;
-    }
-
-    /* Appends an item that calls the handler of `type` with `next` and returns it. */
-    static NUDISPLAYLISTITEM *PcAppendItem(NUDISPLAYLIST *list, u8 type, void *next) {
-        list->items->type = type;
-        PcItemSetCall(list->items);
-        PcItemSetNext(list->items, next);
-        list->items++;
-        return list->items - 1;
     }
 
     void AddParticleGroupToDisplayList(NATIVE_PARTICLE_PACKET *group) {

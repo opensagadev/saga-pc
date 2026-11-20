@@ -150,8 +150,24 @@ static void Nu3dIncludesItemSetNext(NUDISPLAYLISTITEM *item, void *next) {
     item->next = next;
 }
 
+static void *Nu3dIncludesItemGetNext(NUDISPLAYLISTITEM *item) {
+    return item->next;
+}
+
 static void Nu3dIncludesItemSetCall(NUDISPLAYLISTITEM *item) {
     item->id = NUDLISTITEM_CALL;
+}
+
+static void Nu3dIncludesItemSetSkip(NUDISPLAYLISTITEM *item) {
+    item->id = NUDLISTITEM_SKIP;
+}
+
+static void Nu3dIncludesItemSetJump(NUDISPLAYLISTITEM *item) {
+    item->id = NUDLISTITEM_JUMP;
+}
+
+static void Nu3dIncludesItemSetEnd(NUDISPLAYLISTITEM *item) {
+    item->id = NUDLISTITEM_END;
 }
 
 /* Appends an item that calls the handler of `type` with `next` and returns it. */
@@ -163,18 +179,41 @@ static NUDISPLAYLISTITEM *Nu3dIncludesAppendItem(NUDISPLAYLIST *list, u8 type, v
     return list->items - 1;
 }
 
+static void Nu3dIncludesItemSetOp(NUDISPLAYLISTITEM *item, u8 op) {
+    switch (op) {
+        case NUDLISTITEM_CALL:
+            Nu3dIncludesItemSetCall(item);
+            break;
+        case NUDLISTITEM_SKIP:
+            Nu3dIncludesItemSetSkip(item);
+            break;
+        case NUDLISTITEM_JUMP:
+            Nu3dIncludesItemSetJump(item);
+            break;
+        case NUDLISTITEM_END:
+            Nu3dIncludesItemSetEnd(item);
+            break;
+    }
+}
+
+static void Nu3dIncludesItemInit(NUDISPLAYLISTITEM *item, u8 type, u8 op, void *next) {
+    item->type = type;
+    Nu3dIncludesItemSetNext(item, next);
+    Nu3dIncludesItemSetOp(item, op);
+}
+
 /* The display list item writers of nudlist (the PC build fills the texture, clut, microcode and light items with
  * skipped dummies). */
 static void Nu3dIncludesAddClut(NUDISPLAYLISTITEM *item, i32 texture_id) {
     item->type = NUDLIST_DUMMY;
-    item->next = NULL;
-    item->id = NUDLISTITEM_SKIP;
+    Nu3dIncludesItemSetNext(item, NULL);
+    Nu3dIncludesItemSetSkip(item);
 }
 
 static void Nu3dIncludesAddTexture(NUDISPLAYLISTITEM *item, i32 texture_id) {
     item->type = NUDLIST_DUMMY;
-    item->next = NULL;
-    item->id = NUDLISTITEM_SKIP;
+    Nu3dIncludesItemSetNext(item, NULL);
+    Nu3dIncludesItemSetSkip(item);
 }
 
 static void Nu3dIncludesAddMaterialState(NUDISPLAYLISTITEM *item, NUMTL *material) {
@@ -185,14 +224,14 @@ static void Nu3dIncludesAddMaterialState(NUDISPLAYLISTITEM *item, NUMTL *materia
 
 static void Nu3dIncludesAddMicrocode(NUDISPLAYLISTITEM *item, NUMTL *material) {
     item->type = NUDLIST_DUMMY;
-    item->next = NULL;
-    item->id = NUDLISTITEM_SKIP;
+    Nu3dIncludesItemSetNext(item, NULL);
+    Nu3dIncludesItemSetSkip(item);
 }
 
 static void Nu3dIncludesAddLightState(NUDISPLAYLISTITEM *item, NUMTL *material) {
     item->type = NUDLIST_DUMMY;
-    item->next = NULL;
-    item->id = NUDLISTITEM_SKIP;
+    Nu3dIncludesItemSetNext(item, NULL);
+    Nu3dIncludesItemSetSkip(item);
 }
 
 extern "C" {
@@ -9700,9 +9739,7 @@ extern "C" {
         NUDISPLAYLISTITEM *items = (NUDISPLAYLISTITEM *)cursor->addr;
         NUMTL *view = material;
         cursor->addr += 0x80;
-        items[0].type = NUDLIST_MTL_CLIP;
-        items[0].next = items + PCMaterialBlockItemCount - 1;
-        items[0].id = NUDLISTITEM_JUMP;
+        Nu3dIncludesItemInit(&items[0], NUDLIST_MTL_CLIP, NUDLISTITEM_JUMP, items + PCMaterialBlockItemCount - 1);
         NuDisplayListAddClut(items + 1, view->texture_id);
         NuDisplayListAddTexture(items + 2, view->texture_id);
         NuDisplayListAddMaterialState(items + 3, material);
@@ -9711,9 +9748,7 @@ extern "C" {
         items[6].next = items + PCMaterialBlockItemCount - 1;
         items[6].type = NUDLIST_DYNAMIC_GEOMETRY;
         items[6].id = NUDLISTITEM_JUMP;
-        items[7].type = NUDLIST_TERMINATE;
-        items[7].next = NULL;
-        items[7].id = NUDLISTITEM_END;
+        Nu3dIncludesItemInit(&items[7], NUDLIST_TERMINATE, NUDLISTITEM_END, NULL);
         return items;
     }
 
@@ -10119,7 +10154,7 @@ extern "C" {
         NUDISPLAY_LIST *scene = list->scene;
         void *packet = DisplayListCreateFaceonTransformPS(buffer, matrix, scene->display_materials[list->material_id], geometry->next);
         output[0] = Nu3dIncludesAppendItem(list, NUDLIST_FACEON_TRANSFORM, packet);
-        packet = NuDisplayListPrepareFaceonPS(buffer, geometry->next, matrix);
+        packet = NuDisplayListPrepareFaceonPS(buffer, Nu3dIncludesItemGetNext(geometry), matrix);
         output[1] = Nu3dIncludesAppendItem(list, NUDLIST_FACEON, packet);
         DisplayListSetAlphaPS(output[0], output[1], alpha);
     }
@@ -12829,7 +12864,7 @@ void NuDisplayListLinkMtl(NUDISPLAYLIST *list, NUMTL *material) {
     command++;
     command->next = NULL;
     command->type = NUDLIST_NEXT;
-    command->id = NUDLISTITEM_JUMP;
+    Nu3dIncludesItemSetJump(command);
 
     list->mtl_last = command;
     list->state->mtl = material;
