@@ -183,7 +183,7 @@ GAMEOBJECT *FindGameObject(i32 character_id, u32 required_flags, i32 alive_only,
         if (character_id != -1 && (i16)object->id != character_id) {
             continue;
         }
-        if (alive_only != 0 && (object->dead != 0 || (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x8000) != 0)) {
+        if (alive_only != 0 && (object->dead != 0 || (CInfo[object->player.character_context].flags & 0x8000) != 0)) {
             continue;
         }
         if (non_level_only != 0 && object->level_object_index != -1) {
@@ -208,7 +208,7 @@ GAMEOBJECT *FindNearestGameObject(NUVEC *position, GAMEOBJECT *exclude, u32 requ
         f32 z;
         f32 distance;
         if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
-            object->dead != 0 || (object->player.flags_e20 & 0x20) || (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x8000)) {
+            object->dead != 0 || (object->player.flags_e20 & 0x20) || (CInfo[object->player.character_context].flags & 0x8000)) {
             continue;
         }
         if (character_id != -1 && (i16)object->id != character_id) {
@@ -367,10 +367,10 @@ void GameObjectOrigin(GAMEOBJECT *object) {
     object->collision_origin.y = object->previous_velocity.y * FRAMETIME + min_y;
     object->collision_origin.z = object->position.z + object->previous_velocity.z * FRAMETIME;
     object->ai_terrain_origin = object->collision_origin;
-    if ((U64_PAIR(&CInfo[object->player.character_context].flags) & 0x80000) != 0 && (object->player.context_variant_flags & 0x800) != 0) {
+    if ((CInfo[object->player.character_context].flags & 0x80000) != 0 && (object->player.context_variant_flags & 0x800) != 0) {
         height = max_y - min_y;
         object->ai_terrain_origin.y += height;
-    } else if ((U64_PAIR(&CInfo[object->player.character_context].flags) & 0x100000) != 0) {
+    } else if ((CInfo[object->player.character_context].flags & 0x100000) != 0) {
         object->ai_terrain_origin = object->position;
     } else {
         object->ai_terrain_origin.y -= object->player.terrain_origin_floor_offset;
@@ -460,7 +460,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
                 break;
             }
             context = object->player.character_context;
-            if ((U64_PAIR(&CInfo[context].flags) & 0x800000000ULL) != 0) {
+            if ((CInfo[context].flags & 0x800000000ULL) != 0) {
                 break;
             }
             if (object->ground_flags == 0 &&

@@ -178,8 +178,8 @@ extern "C" i32 Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object, i32 aut
     candidate = Obj;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++candidate) {
         if ((candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
-            candidate->dead != 0 || (U64_PAIR(&CInfo[candidate->player.character_context].flags) & 0x8000) != 0 ||
-            candidate->model_draw_result == 0 || candidate == object || candidate->player_index != -1 ||
+            candidate->dead != 0 || (CInfo[candidate->player.character_context].flags & 0x8000) != 0 || candidate->model_draw_result == 0 ||
+            candidate == object || candidate->player_index != -1 ||
             candidate->player.character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER ||
             candidate->player.character_context == CHARACTER_CONTEXT_EATEN ||
             candidate->player.character_context == CHARACTER_CONTEXT_GET_IN ||

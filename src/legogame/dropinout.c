@@ -73,7 +73,7 @@ i32 FreePlay_DropInToPlayerPos(GAMEOBJECT *object) {
         return 0;
     }
     if (player != NULL && FreePlay != 0 && drop_in_teleport >= 2 && VehicleArea == 0 && (Arcade != 0 || teleport_all_freeplay_modes != 0) &&
-        object->player.takeover_source == NULL && (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x8000) == 0 &&
+        object->player.takeover_source == NULL && (CInfo[object->player.character_context].flags & 0x8000) == 0 &&
         object->player.character_context != CHARACTER_CONTEXT_DOOMED && object->model_draw_result == 0 &&
         (object->player.tag_flags & APIOBJECT_TAG_DISABLED) == 0) {
         NUVEC position = player->last_safe_position;

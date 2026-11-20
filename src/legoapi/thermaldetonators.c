@@ -383,8 +383,7 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
         return 0;
     }
     if (object->player.character_context != CHARACTER_CONTEXT_NONE && object->player.character_context != CHARACTER_CONTEXT_WEAPON_IN &&
-        object->player.character_context != CHARACTER_CONTEXT_WEAPON_OUT &&
-        (U64_PAIR(&CInfo[object->player.character_context].flags) & 4) == 0) {
+        object->player.character_context != CHARACTER_CONTEXT_WEAPON_OUT && (CInfo[object->player.character_context].flags & 4) == 0) {
         return 0;
     }
     part = FindPart(NULL, 0, object);

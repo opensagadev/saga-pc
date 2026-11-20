@@ -399,7 +399,7 @@ ADDGIZMOTYPE *Signals_RegisterGizmo(i32 unused_type_id) {
     SignalAddType.name = name;
     SignalAddType.prefix = "";
     SignalAddType.fns.options = sizeof(SIGNALPROGRESS_s);
-    SignalAddType.fns.get_max_gizmos_fn = (i32(*)(void *))Signals_GetMaxGizmos;
+    SignalAddType.fns.get_max_gizmos_fn = (i32 (*)(void *))Signals_GetMaxGizmos;
     SignalAddType.fns.add_gizmos_fn = (void *)Signals_AddGizmos;
     SignalAddType.fns.early_update_fn = NULL;
     SignalAddType.fns.late_update_fn = (void (*)(void *, void *, f32))Signals_Update;
@@ -423,7 +423,7 @@ ADDGIZMOTYPE *Signals_RegisterGizmo(i32 unused_type_id) {
     SignalAddType.fns.store_progress_fn = (void (*)(void *, void *, void *))Signals_StoreProgress;
     SignalAddType.fns.reset_fn = (void (*)(void *, void *, void *))Signals_Reset;
     SignalAddType.fns.reserve_buffer_space_fn = (void *(*)(void *))Signals_ReserveBufferSpace;
-    SignalAddType.fns.load_fn = (i32(*)(void *, void *))Signals_Load;
+    SignalAddType.fns.load_fn = (i32 (*)(void *, void *))Signals_Load;
     SignalAddType.fns.post_load_fn = NULL;
     SignalAddType.fns.add_level_sfx_fn = NULL;
     return &SignalAddType;
@@ -492,8 +492,7 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     }
     if (object->ground_flags != 0 || object->player.character_context == CHARACTER_CONTEXT_BIG_JUMP ||
         object->player.character_context == CHARACTER_CONTEXT_DOOMED || object->player.character_context == CHARACTER_CONTEXT_FLOAT ||
-        (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
-        (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x800) != 0) {
+        (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || (CInfo[object->player.character_context].flags & 0x800) != 0) {
         return;
     }
     {

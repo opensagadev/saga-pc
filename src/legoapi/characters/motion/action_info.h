@@ -5,8 +5,7 @@
 typedef struct CHARACTER_CONTEXT_INFO_s { // size 0x10
     const char *name;                     // 0x0
     i32 action;                           // 0x4
-    u32 flags;                            // 0x8
-    i32 parameter;                        // 0xc
+    u64 flags;                            // 0x8
 } CHARACTER_CONTEXT_INFO;
 
 #ifdef __cplusplus

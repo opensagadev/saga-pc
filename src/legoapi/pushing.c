@@ -404,7 +404,7 @@ i32 WallShuffle_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
 
 void ReleasePush(GAMEOBJECT *object) {
     i32 context = object->player.character_context;
-    if ((U64_PAIR(&CInfo[context].flags) & 0x2000) != 0) {
+    if ((CInfo[context].flags & 0x2000) != 0) {
         if (LEGOCONTEXT_PUSHOBSTACLE != -1 && context == LEGOCONTEXT_PUSHOBSTACLE) {
             GameCam_Blend(NULL, 0.5f, 0.0f, 1);
         }

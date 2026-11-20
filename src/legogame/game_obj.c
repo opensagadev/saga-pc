@@ -632,8 +632,8 @@ void CollideGameObjects(WORLDINFO *world) {
             continue;
         }
         context = object->player.character_context;
-        if ((U64_PAIR(&CInfo[context].flags) & 0x8000) || context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER ||
-            context == CHARACTER_CONTEXT_GET_IN || context == CHARACTER_CONTEXT_TELEPORT || context == CHARACTER_CONTEXT_EATEN) {
+        if ((CInfo[context].flags & 0x8000) || context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER || context == CHARACTER_CONTEXT_GET_IN ||
+            context == CHARACTER_CONTEXT_TELEPORT || context == CHARACTER_CONTEXT_EATEN) {
             continue;
         }
         if (context == CHARACTER_CONTEXT_PUNCH && object->player.special_move != -1 &&
@@ -1656,7 +1656,7 @@ GAMEOBJECT *TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC *directi
         }
         context = target->player.character_context;
         if (context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER || context == CHARACTER_CONTEXT_EATEN || context == CHARACTER_CONTEXT_GET_IN ||
-            (U64_PAIR(&CInfo[context].flags) & 0x8000) != 0) {
+            (CInfo[context].flags & 0x8000) != 0) {
             continue;
         }
         if (model_mask != 0) {
@@ -2054,7 +2054,7 @@ void UpdateGameObjects(WORLDINFO *world) {
             interval = 1;
             if (timebase_updates != 0 && (object->flags_1f8 & APIOBJECT_CREATURE) != 0) {
                 if ((object->portal_flags & APIOBJECT_BOSS) != 0 || (APIOBJECT_NO_TIME_BASED_UPDATE & object->flags_ef4) != 0 ||
-                    0 != (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x200) || object->supporting_platform_id != -1 ||
+                    0 != (CInfo[object->player.character_context].flags & 0x200) || object->supporting_platform_id != -1 ||
                     (object->player.rider != NULL && object->player.character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER)) {
                     object->flags_ef4 |= APIOBJECT_AI_EVERY_FRAME;
                     interval = 1;
@@ -3351,7 +3351,7 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
             return 0;
         }
     }
-    if (U64_PAIR(&CInfo[target->player.character_context].flags) & 0x400000000ULL) {
+    if (CInfo[target->player.character_context].flags & 0x400000000ULL) {
         return 0;
     }
     if (attacker && !(attacker->flags_1fc_word & APIOBJECT_FLAG_IN_USE)) {
@@ -3370,7 +3370,7 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
         target->portal_flags |= APIOBJECT_BEEN_HIT;
     }
     if (flags & OBJHIT_SABRE) {
-        if ((U64_PAIR(&CInfo[target->player.character_context].flags) & 0x4000000) ||
+        if ((CInfo[target->player.character_context].flags & 0x4000000) ||
             (target->player.character_context != CHARACTER_CONTEXT_NONE &&
              (target->player.character_context == LEGOCONTEXT_LAND_SLAM || target->player.character_context == LEGOCONTEXT_LAND_LUNGE))) {
             i32 rotation_difference = abs(RotDiff(attacker->movement_facing_angle, target->movement_facing_angle));

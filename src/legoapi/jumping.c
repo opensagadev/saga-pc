@@ -184,7 +184,7 @@ void FindSlamOrigin(GAMEOBJECT *object, NUVEC *start, NUVEC *end) {
 
 i32 ObjLandReady(GAMEOBJECT *object) {
     i32 context = object->player.character_context;
-    if ((U64_PAIR(&CInfo[context].flags) & 0x1004) != 0 &&
+    if ((CInfo[context].flags & 0x1004) != 0 &&
         (ZipUpLandCombatRollContext == -1 || context != ZipUpLandCombatRollContext || object->player.context_phase >= 1)) {
         if (ZipUpWallShuffleContext != -1 && context == ZipUpWallShuffleContext) {
             return 0;
@@ -195,7 +195,7 @@ i32 ObjLandReady(GAMEOBJECT *object) {
 }
 
 i32 UseFallAnim(GAMEOBJECT *object) {
-    if ((U64_PAIR(&CInfo[object->player.character_context].flags) & 8) != 0 && LEGOACT_FALL != -1 &&
+    if ((CInfo[object->player.character_context].flags & 8) != 0 && LEGOACT_FALL != -1 &&
         object->character_model->model_data_b[LEGOACT_FALL] != NULL) {
         return 1;
     }
@@ -787,7 +787,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
             if ((animation_set & 0x80) == 0 && LEGOCONTEXT_JUMP != -1 && object->fall_acceleration_timer <= 0.0f &&
                 (jump_pressed != 0 || ((object->portal_flags & APIOBJECT_ALWAYS_BACK_FLIP) != 0 && flip_kind != 0)) &&
                 (object->ground_flags != 0 || object->player.ground_contact_grace_timer > 0.0f) &&
-                (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x1000) != 0 &&
+                (CInfo[object->player.character_context].flags & 0x1000) != 0 &&
                 ((animation_set & 4) == 0 ||
                  (!(object->player.jump_chain_timer > 0.0f) && (object->is_underwater == 0 || object->player.communicate_blend == 0.0f)))) {
             jump_takeoff:;

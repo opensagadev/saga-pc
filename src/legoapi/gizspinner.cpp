@@ -1200,8 +1200,8 @@ extern "C" void GizSpinner_Update(GIZSPINNER_s *spinner) {
         for (i32 index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
             if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
                 object->dead != 0 || (object->player.flags_e20 & 0x20) != 0 ||
-                (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x40000000) != 0 ||
-                (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x8000) != 0 || minimum.x > object->collision_max.x ||
+                (CInfo[object->player.character_context].flags & 0x40000000) != 0 ||
+                (CInfo[object->player.character_context].flags & 0x8000) != 0 || minimum.x > object->collision_max.x ||
                 maximum.x < object->collision_min.x || minimum.z > object->collision_max.z || maximum.z < object->collision_min.z) {
                 continue;
             }
@@ -1483,13 +1483,13 @@ extern "C" ADDGIZMOTYPE *Spinner_RegisterGizmo(i32 type_id) {
     addtype->name = "Spinner";
     addtype->prefix = "";
     addtype->fns.options = 0x40;
-    addtype->fns.get_max_gizmos_fn = (i32(*)(void *))GizSpinner_GetMaxGizmos;
+    addtype->fns.get_max_gizmos_fn = (i32 (*)(void *))GizSpinner_GetMaxGizmos;
     addtype->fns.add_gizmos_fn = (void *)GizSpinner_AddGizmos;
     addtype->fns.early_update_fn = (void (*)(void *, void *, f32))GizSpinners_Update;
     addtype->fns.draw_fn = (void (*)(void *, void *, f32))GizSpinner_Draw;
     addtype->fns.panel_draw_fn = (void (*)(void *, void *, f32))GizSpinner_PanelDraw;
     addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO *))GizSpinner_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(*)(GIZMO *, i32, i32))GizSpinner_GetOutput;
+    addtype->fns.get_output_fn = (i32 (*)(GIZMO *, i32, i32))GizSpinner_GetOutput;
     addtype->fns.get_output_name_fn = (char *(*)(GIZMO *, i32))GizSpinner_GetOutputName;
     addtype->fns.get_num_outputs_fn = (void *)GizSpinner_GetNumOutputs;
     addtype->fns.activate_fn = (void (*)(GIZMO *, i32))GizSpinner_Activate;
@@ -1505,6 +1505,6 @@ extern "C" ADDGIZMOTYPE *Spinner_RegisterGizmo(i32 type_id) {
     addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))GizSpinner_StoreProgressData;
     addtype->fns.reset_fn = (void (*)(void *, void *, void *))GizSpinner_ResetAll;
     addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))GizSpinner_ReserveBufferSpace;
-    addtype->fns.load_fn = (i32(*)(void *, void *))GizSpinner_Load;
+    addtype->fns.load_fn = (i32 (*)(void *, void *))GizSpinner_Load;
     return addtype;
 }

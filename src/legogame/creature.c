@@ -1525,7 +1525,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                 api->velocity.z = 0.0f;
                 shadow_grounding = 1;
                 retain_floor = 0;
-            } else if ((api->flags_1fc_word & 0x40) == 0 && (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x8000) == 0) {
+            } else if ((api->flags_1fc_word & 0x40) == 0 && (CInfo[object->player.character_context].flags & 0x8000) == 0) {
                 i32 ordinary_ai_path;
 
                 ordinary_ai_path =
@@ -1566,9 +1566,8 @@ void TerrainPlayer(GAMEOBJECT *object) {
                 i32 probe_edge;
 
                 walkable_floor = api->floor_height != 2000000.0f && object->surface_normal.y > NuTrigTable[0x238e];
-                probe_edge = walkable_floor
-                                 ? (player_edge_probe || 0 != ((U64_PAIR(&CInfo[object->player.character_context].flags) & 0x100000000ULL)))
-                                 : 0;
+                probe_edge =
+                    walkable_floor ? (player_edge_probe || 0 != ((CInfo[object->player.character_context].flags & 0x100000000ULL))) : 0;
                 if (probe_edge && api->movement_direction_x == 0.0f && api->movement_direction_z == 0.0f &&
                     (api->velocity.x != 0.0f || api->velocity.z != 0.0f)) {
                     NUVEC next_position;
@@ -2215,7 +2214,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
 
                     splash = object->player.character_context == CHARACTER_CONTEXT_JUMP ||
                              object->player.character_context == CHARACTER_CONTEXT_BIG_JUMP ||
-                             (U64_PAIR(&CInfo[object->player.character_context].flags) & 4) != 0 ||
+                             (CInfo[object->player.character_context].flags & 4) != 0 ||
                              object->player.character_context == CHARACTER_CONTEXT_LAND_SLAM ||
                              object->player.character_context == CHARACTER_CONTEXT_LAND_LUNGE;
                     if (!splash) {

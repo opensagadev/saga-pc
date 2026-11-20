@@ -122,8 +122,8 @@ void UpdateExplosion_Generic(EXPLOSION *explosion) {
                 object->dead != 0) {
                 continue;
             }
-            if ((U64_PAIR(&CInfo[target->player.character_context].flags) & 0x8000) != 0 ||
-                (U64_PAIR(&CInfo[target->player.character_context].flags) & 0x20000000) != 0) {
+            if ((CInfo[target->player.character_context].flags & 0x8000) != 0 ||
+                (CInfo[target->player.character_context].flags & 0x20000000) != 0) {
                 continue;
             }
             if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) != 0) {
