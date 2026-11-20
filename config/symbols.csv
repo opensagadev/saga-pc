@@ -6629,7 +6629,7 @@ address,symbol,size,ctype
 0x5ab140,_AIPathCnxHelperSys_AddHelper,153,"AI_HELPER_SLOT *__cdecl(AI_HELPER_SYSTEM *, AIPATHCNX *, u8, void *, u8)"
 0x5ab1e0,_AIPathCnxHelperSys_Find,148,"AI_HELPER_SLOT *__cdecl(AI_HELPER_SYSTEM *, GAMEOBJECT *, AIPATHCNX *, u8, u8, AI_HELPER_FILTER)"
 0x5ab280,_fun_005ab280,1,
-0x5ab290,_fun_005ab290,28,
+0x5ab290,?GizturretMtxSetRotationXY@@YAXPAUnumtx_s@@HH@Z,28,
 0x5ab2b0,_GizturretVuVecMake,28,
 0x005ab2d0,_GizTurretClear,185,
 0x005ab390,_GizTurretReadAnimSetData,62,"void __cdecl(GAMEANIMOBJ *, u8)"

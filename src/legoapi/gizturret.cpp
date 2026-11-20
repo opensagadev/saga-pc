@@ -45,6 +45,13 @@
 #include "nu2api/numusic/sfx.h"
 #include "gameapi/ai/aisys/gameaiscript.h"
 
+static void GizturretMtxSetRotationXY(NUMTX *matrix, NUANG x, NUANG y) {
+    NUANGVEC angles;
+    angles.x = x;
+    angles.y = y;
+    NuMtxSetRotationXYVU0(matrix, &angles);
+}
+
 typedef struct TURRET_ANIM_DATA { // size 0x4
     u8 flags;                     // 0x0
     u8 role;                      // 0x1
@@ -777,10 +784,7 @@ extern "C" {
                                                 &muzzle_matrix.translation, primary_draw, &autoaim_target->collision_position,
                                                 &autoaim_target->velocity, bolt_type->speed, &direction, NULL, turret->controller != NULL);
                                             FindAnglesXY(&direction, NULL, NULL);
-                                            NUANGVEC angles;
-                                            angles.x = temp_zrot;
-                                            angles.y = temp_yrot;
-                                            NuMtxSetRotationXYVU0(&direction_matrix, &angles);
+                                            GizturretMtxSetRotationXY(&direction_matrix, temp_zrot, temp_yrot);
                                         }
                                         i32 flags = turret->controller != NULL ? 4 : 2;
                                         if (muzzle != sound_muzzle) {

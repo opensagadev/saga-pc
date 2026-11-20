@@ -723,7 +723,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x005aab30,28,_GizmessageVuVecMake,copy,,legoapi/gizmessage.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x005ab080,28,_AipathcnxhelperVuVecMake,copy,,legoapi/gizmessage.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x005ab280,1,_fun_005ab280,extent,,legoapi/aipathcnxhelper.c,unreferenced,
-0x005ab290,28,_fun_005ab290,extent,,legoapi/aipathcnxhelper.c,unreferenced,
+0x005ab290,28,?GizturretMtxSetRotationXY@@YAXPAUnumtx_s@@HH@Z,extent,,legoapi/aipathcnxhelper.c,unreferenced,
 0x005ab2b0,28,_GizturretVuVecMake,copy,,legoapi/aipathcnxhelper.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x005ab9c0,45,_GizTurret_SetVisible,extent,,legoapi/gizturret.c,unreferenced,
 0x005ad120,162,_GizTurret_FindNearest,sibling,,legoapi/gizturret.c,position between GizTurrets_OpponentSelection and GizTurrets_Draw in liblegoapi.a(gizturret.o); calls NuVecDistSqr,android:src/legoapi/gizmos/traps/gizturret.cpp
