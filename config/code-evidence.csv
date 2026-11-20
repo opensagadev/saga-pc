@@ -1585,7 +1585,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x00612f10,3,_fun_00612f10,extent,,,unreferenced,
 0x00612f40,3,?Next@?$CSListLink@VNetReplicator@@@@QAEPAVNetReplicator@@XZ,extent,,,unreferenced,
 0x00612f50,13,??0ReplicatorList@NetworkObjectManager@@QAE@XZ,extent,,,unreferenced,
-0x00612f60,3,_fun_00612f60,extent,,,unreferenced,
+0x00612f60,3,?First@ReplicatorList@NetworkObjectManager@@QAEPAVNetReplicator@@XZ,extent,,,unreferenced,
 0x00612f70,101,?InsertReplicatorAfter@ReplicatorList@NetworkObjectManager@@QAEXPAVNetReplicator@@0@Z,extent,,,unreferenced,
 0x00612fe0,6,_fun_00612fe0,extent,,,unreferenced,
 0x00612ff0,27,??$Allocate@I@ReplicatorData@@QAEPAII@Z,extent,,,unreferenced,

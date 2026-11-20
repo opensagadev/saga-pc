@@ -9485,7 +9485,7 @@ address,symbol,size,ctype
 0x612f20,??0?$CSListLink@VNetReplicator@@@@QAE@XZ,20,
 0x612f40,?Next@?$CSListLink@VNetReplicator@@@@QAEPAVNetReplicator@@XZ,3,
 0x612f50,??0ReplicatorList@NetworkObjectManager@@QAE@XZ,13,
-0x612f60,_fun_00612f60,3,
+0x612f60,?First@ReplicatorList@NetworkObjectManager@@QAEPAVNetReplicator@@XZ,3,
 0x612f70,?InsertReplicatorAfter@ReplicatorList@NetworkObjectManager@@QAEXPAVNetReplicator@@0@Z,101,
 0x612fe0,_fun_00612fe0,6,
 0x612ff0,??$Allocate@I@ReplicatorData@@QAEPAII@Z,27,

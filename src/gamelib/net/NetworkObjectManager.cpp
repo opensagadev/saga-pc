@@ -1144,7 +1144,7 @@ i32 NetworkObjectManager::PushObject(NetworkObject *object, NetPeerPush *push, i
     }
     i32 permit = 1;
     if (allowed || force) {
-        NetReplicator *replicator = replicators[class_id].head;
+        NetReplicator *replicator = replicators[class_id].First();
         i32 offset = 0;
         while (replicator != NULL) {
             if (object->flags & 2) {
@@ -1180,7 +1180,7 @@ void NetworkObjectManager::Update() {
         if (object->owner->local) {
             PushObject(object, NULL, 0);
         } else if ((object->flags & 2) == 0) {
-            NetReplicator *replicator = replicators[theRegistry.GetClassId(object->object_class)].head;
+            NetReplicator *replicator = replicators[theRegistry.GetClassId(object->object_class)].First();
             i32 offset = 0;
             while (replicator != NULL) {
                 i32 size = replicator->data_size;
@@ -1312,7 +1312,7 @@ void NetworkObjectManager::ReceiveReplicaMessage(NETMESSAGE &message, const V2Pe
     NetworkObject *object = &objects[guid];
     object->flags = flags | 8;
     NetReplicator *replicator;
-    for (replicator = replicators[class_id].head; replicator != NULL; replicator = replicator->Next()) {
+    for (replicator = replicators[class_id].First(); replicator != NULL; replicator = replicator->Next()) {
         if (replicator_id == replicator->id) {
             break;
         }
