@@ -812,7 +812,7 @@ void Coins_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed
                         threshold *= 10u;
                         rate *= 10u;
                     }
-                    amount = (u32)((f64)rate * (f64)elapsed);
+                    amount = (u32)(rate * elapsed);
                     if (amount > remaining) {
                         amount = remaining;
                     } else if (amount < 1) {

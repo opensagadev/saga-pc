@@ -845,7 +845,7 @@ void GameObjectRotation(GAMEOBJECT *object, i32 mode) {
                    (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_SHADOW_ORIENTATION) != 0 || sliding) {
             alignment = 1;
         } else if ((object->character_data->model_flags & CHARACTER_MODEL_ORIENTATE) != 0 &&
-                   0.0f == object->character_data->game_character->hover_height &&
+                   object->character_data->game_character->hover_height == 0.0f &&
                    (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TURNING_CIRCLE) != 0 &&
                    GameObjectNearFloorNoFloorHeight != object->floor_height) {
             f32 vertical_gap = object->collision_min.y - object->floor_height;
