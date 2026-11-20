@@ -2159,7 +2159,7 @@ static eduimenu_s *EduiDeepestChild(eduimenu_s *menu) {
         if (child == NULL) {
             return menu;
         }
-        return EduiDeepestChild(child);
+        return EduiDeepestChild(menu->child);
     }
     return NULL;
 }

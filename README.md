@@ -9,7 +9,7 @@
 | --- | --- |
 | **Code** | |
 | &nbsp;&nbsp;↳ **Fuzzy match**: objdiff's fuzzy match over all original code, by size ([details](docs/mapping-status.md#what-the-readme-numbers-measure)). | <img src="docs/badges/fuzzy.svg" alt="95.995%" width="84" height="28"> |
-| &nbsp;&nbsp;↳ **Exact match**: byte-identical code, with the padding after it. | <img src="docs/badges/exact.svg" alt="63.104%" width="84" height="28"> |
+| &nbsp;&nbsp;↳ **Exact match**: byte-identical code, with the padding after it. | <img src="docs/badges/exact.svg" alt="63.105%" width="84" height="28"> |
 | &nbsp;&nbsp;↳ **Mapped**: known code, with the padding between functions (3.3%). | <img src="docs/badges/mapped-code.svg" alt="100.000%" width="92" height="28"> |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↳ **Named**: mapped functions with real names; 0.6% are `fun_XXXXXXXX`. | <img src="docs/badges/named-code.svg" alt="99.351%" width="84" height="28"> |
 | **Data** | |
