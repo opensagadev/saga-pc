@@ -84,6 +84,14 @@ static f32 ChrisVuVecLengthSq(const VuVec &v) {
     return v.x * v.x + v.y * v.y + v.z * v.z;
 }
 
+static void ChrisVuVecInvMtxRotate(NUVEC4 *destination, NUVEC4 *v, NUMTX *matrix) {
+    NuVecInvMtxRotate(&destination->xyz, &v->xyz, matrix);
+}
+
+static void ChrisVuVecMtxTransform(NUVEC4 *destination, NUVEC4 *v, NUMTX *matrix) {
+    NuVecMtxTransform(&destination->xyz, &v->xyz, matrix);
+}
+
 static f32 ChrisVuVecLength(const VuVec &v) {
     f32 length_squared = ChrisVuVecLengthSq(v);
     return NuFsqrt(length_squared);
@@ -1095,7 +1103,7 @@ extern "C" {
         i16 roll;
         f64 limit;
         f32 adjustment;
-        NuVecInvMtxRotate(&local.xyz, &direction->xyz, &fighter->matrix);
+        ChrisVuVecInvMtxRotate(&local, direction, &fighter->matrix);
         yaw = (i16)NuAtan2D(local.x, local.z);
         fighter->yaw = yaw;
         NuVecRotateY(&local.xyz, &local.xyz, -yaw);
@@ -1115,7 +1123,7 @@ extern "C" {
         NuVecRotateZ(&up.xyz, &up.xyz, (i16)(i32)fighter->target_position.w + 16384);
         NuVecRotateX(&up.xyz, &up.xyz, -world_pitch);
         NuVecRotateY(&up.xyz, &up.xyz, world_yaw);
-        NuVecInvMtxRotate(&up.xyz, &up.xyz, &fighter->matrix);
+        ChrisVuVecInvMtxRotate(&up, &up, &fighter->matrix);
         roll = (i16)NuAtan2D(up.x, up.y);
         limit = (f64)FRAMETIME * 24000.0;
         if (roll > limit) {
@@ -1393,7 +1401,7 @@ extern "C" {
                 parent_position.x = parent_position.y = 0.0f;
                 parent_position.z = -10.0f;
                 parent_position.w = 1.0f;
-                NuVecMtxTransform(&parent_position.xyz, &parent_position.xyz, &fighter->matrix);
+                ChrisVuVecMtxTransform(&parent_position, &parent_position, &fighter->matrix);
                 fighter->shoot_timer = 1.0f;
             }
             return 1;
@@ -2457,12 +2465,12 @@ extern "C" {
                     start.z = -10.0f;
                     start.w = 1.0f;
                     NuVecRotateZ(&start.xyz, &start.xyz, qrand());
-                    NuVecMtxTransform(&start.xyz, &start.xyz, &GameCam->render_mtx);
+                    ChrisVuVecMtxTransform(&start, &start, &GameCam->render_mtx);
                     target.x = 0.0f;
                     target.y = 0.0f;
                     target.z = 400.0f;
                     target.w = 1.0f;
-                    NuVecMtxTransform(&target.xyz, &target.xyz, &GameCam->render_mtx);
+                    ChrisVuVecMtxTransform(&target, &target, &GameCam->render_mtx);
                     MakeWingFormation(&start, &target, state->current->value, 0);
                     state->command = 4;
                     break;
@@ -2472,7 +2480,7 @@ extern "C" {
                     start.y = 0.0f;
                     start.z = 300.0f;
                     start.w = 1.0f;
-                    NuVecMtxTransform(&start.xyz, &start.xyz, &GameCam->render_mtx);
+                    ChrisVuVecMtxTransform(&start, &start, &GameCam->render_mtx);
                     MakeWingFormation(&start, &target, state->current->value, 1);
                     state->command = 4;
                     break;

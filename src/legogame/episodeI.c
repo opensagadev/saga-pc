@@ -166,6 +166,10 @@ static void EpisodeIVuVecSub(NUVEC4 *destination, const NUVEC4 *a, const NUVEC4 
     destination->z = a->z - b->z;
 }
 
+static void EpisodeIVuVecInvMtxRotate(NUVEC4 *destination, NUVEC4 *v, NUMTX *matrix) {
+    NuVecInvMtxRotate(&destination->xyz, &v->xyz, matrix);
+}
+
 static void EpisodeIVuVecScale(NUVEC4 *destination, const NUVEC4 *v, f32 scale) {
     destination->x = v->x * scale;
     destination->y = v->y * scale;
@@ -657,7 +661,7 @@ static void RacePodAlignPrivate(RACEPOD_RESOURCE *pod, NUVEC4 *direction, f32 bl
     i16 direction_pitch;
     f32 roll;
     i16 angle;
-    NuVecInvMtxRotate(&local.xyz, &direction->xyz, &pod->matrix);
+    EpisodeIVuVecInvMtxRotate(&local, direction, &pod->matrix);
     yaw = NuAtan2D(local.x, local.z);
     pod->yaw = yaw;
     NuVecRotateY(&local.xyz, &local.xyz, -yaw);
@@ -679,7 +683,7 @@ static void RacePodAlignPrivate(RACEPOD_RESOURCE *pod, NUVEC4 *direction, f32 bl
     NuVecRotateZ(&axis.xyz, &axis.xyz, (i16)(i32)pod->previous_position.w + 0x4000);
     NuVecRotateX(&axis.xyz, &axis.xyz, -direction_pitch);
     NuVecRotateY(&axis.xyz, &axis.xyz, direction_yaw);
-    NuVecInvMtxRotate(&axis.xyz, &axis.xyz, &pod->matrix);
+    EpisodeIVuVecInvMtxRotate(&axis, &axis, &pod->matrix);
     angle = NuAtan2D(axis.x, axis.y);
     if (angle > 24000.0 * FRAMETIME) {
         angle = (i16)(24000.0 * FRAMETIME);

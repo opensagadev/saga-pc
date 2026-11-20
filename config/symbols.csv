@@ -157,9 +157,9 @@ address,symbol,size,ctype
 0x40e810,?ChrisVuVecLengthSq@@YAMABUVuVec@@@Z,33,
 0x40e840,?ChrisVuVecLength@@YAMABUVuVec@@@Z,46,
 0x40e870,_CopyFlightMatrix,95,"void __cdecl (NUMTX *, const NUMTX *)"
-0x40e8d0,_fun_0040e8d0,16,
+0x40e8d0,?ChrisVuVecMtxTransform@@YAXPAUNUVEC4@@0PAUnumtx_s@@@Z,16,
 0x40e8e0,_TransformFlightVector,91,"static void(NUMTX *, NUVEC *, NUVEC *)"
-0x40e940,_fun_0040e940,16,
+0x40e940,?ChrisVuVecInvMtxRotate@@YAXPAUNUVEC4@@0PAUnumtx_s@@@Z,16,
 0x40e950,_fun_0040e950,1,
 0x40e960,_fun_0040e960,1,
 0x40e970,_fun_0040e970,1,
@@ -2542,7 +2542,7 @@ address,symbol,size,ctype
 0x4d8230,_EpisodeIVuVecDot,29,
 0x4d8250,_EpisodeIVuVecLengthSq,33,
 0x4d8280,_PodMatrixCopyPrivate,95,
-0x4d82e0,_fun_004d82e0,16,
+0x4d82e0,_EpisodeIVuVecInvMtxRotate,16,
 0x004d82f0,_GunganA_Init,230,void __cdecl(WORLDINFO *)
 0x4d83e0,_GunganA_Update,298,
 0x4d8510,_PodRaceSnipersReset,278,
