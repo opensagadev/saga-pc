@@ -16043,7 +16043,7 @@ address,symbol,size,ctype
 0x74fe00,??__EGame_LanguageList@@YAXXZ,69,
 0x74fe50,??__Emusic_man@@YAXXZ,22,
 0x74fe70,??__EText_LanguageList_Default@@YAXXZ,69,
-0x74fec0,_fun_0074fec0,12,
+0x74fec0,??__EFadeSys@@YAXXZ,12,
 0x74fed0,??__Efade@@YAXXZ,12,
 0x74fee0,??__EfadeWipe@@YAXXZ,12,
 0x74fef0,??__EfadeStillWipe@@YAXXZ,12,
@@ -16087,7 +16087,7 @@ address,symbol,size,ctype
 0x7502f0,??__ECRC16InstancePC@@YAXXZ,10,void __cdecl(void)
 0x750300,_fun_00750300,1,
 0x750310,??__Fmusic_man@@YAXXZ,10,
-0x750320,_fun_00750320,1,
+0x750320,??__FFadeSys@@YAXXZ,1,
 0x750330,??__Ffade@@YAXXZ,11,
 0x750340,??__FfadeWipe@@YAXXZ,11,
 0x750350,??__FfadeStillWipe@@YAXXZ,11,
