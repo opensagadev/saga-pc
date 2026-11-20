@@ -428,7 +428,7 @@
     "src/nu2api/save_folder.h": "776a18c43805e45817ed6d5aecfdd524e6893c90e415e7a385697b42472acf1c",
     "src/nu2api/shader_parser.h": "1659929acf7d21ce69a42060e3ffbd71bd91c13a29df2bdf9f3f347c3e2077d3",
     "src/nu2api/wavreader.h": "6acb0f5ca7ccbcef5945e705cc918a66f14f3af9f07cc9b5ce7fa31e78f05043",
-    "config/budget-raises.txt": "70fa31cb1c7c34c21584ba5a500bd9837264b3c6adc760d9fad3c56010d857cf",
+    "config/budget-raises.txt": "7a8a5af3d4a925769ca14638f6d3d83d441e5ba91af85e470d30554b7a5cf351",
     "config/candidate-only.json": "fb7e6408ec003a7401a80e789621be724336b6f3eeef841d3b982b192991fb7a",
     "config/castscan-budget.json": "1202ca860f0b8d39db4ba620eef5f759c730d3d966568728ddbbc2bc202ec8dc",
     "config/castscan-keep.csv": "bcfd25f84df27a9c57e603824516f7ddcb3177ee382141d9a9a7050afbc40c0f",
@@ -436,7 +436,7 @@
     "config/code-evidence.csv": "0d378cdbef7597babc5bbbe10e4b5ac3b954b5cb552fea1bbd7692a5a53c7cec",
     "config/code-groups.json": "ea6681492ff67f8b1fc3d51627d335b549941a4c77b26fb1811d96ffed572002",
     "config/data-members.json": "a005dfb7254f87304ba5e7d1c5083ab46db1e8272ef5fdd2e11a8953a1d1d2d5",
-    "config/declscan-budget.json": "bc2dbc1dc095586e7b48f387df33256f3d518f116de83ee6b8f3fa9f78f0be38",
+    "config/declscan-budget.json": "da4512c3ddfe2f01adaad7796aa3157999e16264627a6510b6522b4b6a2b662a",
     "config/header-map.csv": "1be38a7f9092a243e4fd4ba95caeec005a19b37e48b28a6b1ef9d00a35eac4c6",
     "config/layout-android-units.csv": "e746c9966cf3cb289a48dd1df1bee1e9c8fbbbf8a1891ca973f2b865a6e89fbc",
     "config/layout-target.csv": "179919b11805350095de496eface305e16899b2cde7797ca595d2f584bdf4d07",
@@ -718,7 +718,8 @@
     "src/debug/stream_capture.c": "6558f2660234fa7e86ed8ee86694665bf26cc97ecae952ea7a63125fc1ef66cf",
     "src/editor/edtoolsall.c": "e2d7b1c9273d3a0ff82609fa5cf5adfd3893974726e70719183881e7c770fc9f",
     "src/float_constants.c": "600f34d3710851640bc9b36d8f2a5382663aa420fe1e411c96865ed7d00a9eda",
-    "src/gameapi/aisysall.c": "3236f25cbc4e72e33113e4d42d0126904ddf1c8502d04959414d707a878e4e04",
+    "src/gameapi/aisys_empty.c": "cdc3c4c34e851f27734937a302108a3129692b3e7141d290c560396a160a251b",
+    "src/gameapi/aisysall.c": "d94ea5e7fcd933c5b2a39837f73209da26060e0cfa5b7f49040b6c9f63a5f66d",
     "src/gameapi/apiobject.c": "f9f578fc7f3a8031201f9dfaa6e3c06ba3e45c9be85c4936aea7d2d06dcd09f3",
     "src/gameapi/apisave.c": "87e03567fae7fdffca17011c7f19bdd13d7e53a48e5f845ce170ab3ab9e7cb96",
     "src/gameapi/edanim_load.c": "8541bc1699302f24e6c0390494ef2d1ca2f2742bfaa18a967d6baeaad9337f71",
@@ -996,7 +997,8 @@
     "build/obj/editor/edlevelall.obj": "5d3395091f3dcfc386ec6fb05742d1b8447d8bb6928b8a6e4a41c0c514aee053",
     "build/obj/editor/edtoolsall.obj": "2604bc787b498c2c24f26733584a7945e10639fe0d05dde32fcc9cdd3f9fd786",
     "build/obj/float_constants.obj": "5a1a89e39dae3f4d574b3df8a1be6f0f86afc5d533f4e2df9d228b8f38b9e99b",
-    "build/obj/gameapi/aisysall.obj": "9e014b805190707bfea9c7b7f8865dd165b1a0953364ef6d5714662219c5d1f2",
+    "build/obj/gameapi/aisys_empty.obj": "ba4ca29f5a8f875b96a6457a5fb2d044cd7fb23c3edbcdeab8fb04edc6762be0",
+    "build/obj/gameapi/aisysall.obj": "9f4b99b52fdd78a5b4d5eaf5e02fba785954b71a302302523994dd5ac299e189",
     "build/obj/gameapi/apiobject.obj": "9c2be0e1b9117a7ddb2db0ac2e02c64a591dae70460a216858659b2b7731fae0",
     "build/obj/gameapi/apisave.obj": "64b22982e6cdd6804b8dc46d9e3dc3d45be1036e3aecac34263a6228f2a42b8f",
     "build/obj/gameapi/edanim_load.obj": "3a8c7141f2140c42f947b8d84b5d3f344a41fdc68479f9af35afee9f7686bde4",
@@ -95908,19 +95910,19 @@
       "symbol": "_AIScriptMissingConditionDiagnostic",
       "address": "0x00512870",
       "units": [
-        "src/gameapi/aisysall.c"
+        "src/gameapi/aisys_empty.c"
       ],
       "target_size": 1,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/gameapi/aisysall.c",
+          "unit": "src/gameapi/aisys_empty.c",
           "base_size": 1,
           "exact_match": true,
           "target_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
           "base_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
           "relocation_count": 0,
-          "comparison_unit": "00512870-26d327f90006",
+          "comparison_unit": "00512870-8444c55488f9",
           "objdiff_percent": 100.0
         }
       ],
@@ -96577,29 +96579,28 @@
       "objects": [
         {
           "unit": "src/gameapi/aisysall.c",
-          "base_size": 332,
+          "base_size": 347,
           "exact_match": false,
           "target_sha256": "0031b44eb88f531fcdb4e47610f1f2515d99eabcf4e02083f6b996a86c6966d8",
-          "base_sha256": "927c709cb86f37b110204309cbff98c9a01d695dc0e9d83c60560d7e90e257a8",
-          "relocation_count": 22,
+          "base_sha256": "ac4aacd73066c5662ab1d78440d48b54deba628dc8cb2a35d70a5cdbbc7314a6",
+          "relocation_count": 24,
           "comparison_unit": "00513400-b06608756dd8",
-          "objdiff_percent": 76.12
+          "objdiff_percent": 77.67
         }
       ],
       "diff_class": "structural",
-      "diff_hunks": 17,
+      "diff_hunks": 14,
       "idioms": [
         "C",
         "I4",
         "I17",
-        "I22",
         "U3",
         "U7",
         "U8",
         "?"
       ],
       "status": "different",
-      "objdiff_percent": 76.12
+      "objdiff_percent": 77.67
     },
     {
       "name": "xState",
@@ -106419,20 +106420,21 @@
           "base_size": 607,
           "exact_match": false,
           "target_sha256": "52dfc5523b4fe4f563d3e52474bbde1aa772821e3754139e9e3e2e022e9904dc",
-          "base_sha256": "284f60a223845f55add6369e45a106d6c38eba66ec86c5de24d2ab16860a6bd0",
+          "base_sha256": "efaa4859903607ba985977ba25c170302635928d67cac36600b38328b754d552",
           "relocation_count": 34,
           "comparison_unit": "0052c470-395191b57bbe",
-          "objdiff_percent": 98.30052
+          "objdiff_percent": 98.17098
         }
       ],
       "diff_class": "structural",
       "diff_hunks": 3,
       "idioms": [
         "I8",
+        "U3",
         "U7"
       ],
       "status": "different",
-      "objdiff_percent": 98.30052
+      "objdiff_percent": 98.17098
     },
     {
       "name": "AIScriptLoadAll",
@@ -898098,10 +898100,10 @@
     "matching_with_padding_percent": 63.63158934860854,
     "fuzzy_text_data_bytes": 6896,
     "fuzzy_denominator_bytes": 3349891,
-    "fuzzy_coverage_percent": 96.10455369421716,
+    "fuzzy_coverage_percent": 96.10467319638006,
     "mapped_functions": 15914,
     "matched_functions": 13862,
-    "objdiff_fuzzy_percent": 96.885376,
+    "objdiff_fuzzy_percent": 96.88549,
     "objdiff_total_code": 3328867,
     "image_bytes": 40067072,
     "mapped_bytes": 38523205,
@@ -899506,7 +899508,7 @@
       "metadata_sha256": "a005dfb7254f87304ba5e7d1c5083ab46db1e8272ef5fdd2e11a8953a1d1d2d5",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "537eaf05a53369f4e9753a214c51d22161d3bff0111e8a3685eaa1f1b42f50c3",
+      "geometry_object_sha256": "c67b5d5daa71b0520c4c5bed1697fd8ecd6bcebc480edfe401a7783ee655a8d2",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
