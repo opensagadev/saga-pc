@@ -3911,7 +3911,7 @@ void CastPart(PART *part, f32 time) {
             ((part->flags & 0x10000000) == 0 || NewRayCastHitWallSpline() != 4)) {
             part->active |= PART_STATE_IMPACT_PENDING;
             part->platform_id = PartPlatId();
-            part->active ^= (((u32)(part->platform_id != (u32)-1) << 4) ^ part->active) & 0x10;
+            part->active ^= (((part->platform_id != -1) << 4) ^ part->active) & 0x10;
             part->time_of_impact *= NewRayCastGetTOFI();
             part->impact_position.x = part->position.x + cast_movement.x;
             part->impact_position.y = part->position.y + cast_movement.y;
@@ -3937,7 +3937,7 @@ void CastPart(PART *part, f32 time) {
         ((part->flags & 0x10000000) == 0 || NewRayCastHitWallSpline() != 4)) {
         part->active |= PART_STATE_IMPACT_PENDING;
         part->platform_id = PartPlatId();
-        part->active ^= (((u32)(part->platform_id != (u32)-1) << 4) ^ part->active) & 0x10;
+        part->active ^= (((part->platform_id != -1) << 4) ^ part->active) & 0x10;
         part->time_of_impact *= NewRayCastGetTOFI();
         part->impact_position.x = part->position.x + cast_movement.x;
         part->impact_position.y = part->position.y + cast_movement.y;
@@ -3966,7 +3966,7 @@ void CastPart(PART *part, f32 time) {
     }
     part->active |= PART_STATE_IMPACT_PENDING;
     part->platform_id = PartPlatId();
-    part->active ^= (((u32)(part->platform_id != (u32)-1) << 4) ^ part->active) & 0x10;
+    part->active ^= (((part->platform_id != -1) << 4) ^ part->active) & 0x10;
     part->time_of_impact *= NewRayCastGetTOFI();
     part->impact_position.x = part->position.x + cast_movement.x;
     part->impact_position.y = part->position.y + cast_movement.y;
