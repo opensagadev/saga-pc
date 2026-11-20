@@ -580,6 +580,24 @@ symbols.csv lacks (the map's unmapped symbols with byte-identical retail
 twins): `??0ReplicatorList@NetworkObjectManager@@QAE@XZ` and
 `?Self@ClassObject@@QAEAAU1@XZ` only needed their row.
 
+### I49: `fabs` on a float in a C++ unit is the float overload
+
+`<math.h>` under C++ adds `float fabs(float)` and `fabsf`, both inline
+functions: a C++ unit that calls either on an `f32` emits a COMDAT
+(`?fabs@@YAMM@Z`, `_fabsf`) that the map does not know, even when the call
+itself is inlined. Retail's uncalled NuFabs copies (`fld; fabs; fstp; fld`)
+come from a C unit, where `fabs` is the double intrinsic and the implicit
+narrowing back to `f32` needs no cast. `PCNativeDebugFabs`,
+`PCNativeDebugNuFabs` (0 -> exact).
+
+### I50: an inline default constructor of a local is emitted as a COMDAT
+
+Giving a C++ struct an empty `D3DXMATRIX() {}` so that a local can be
+declared compiles the caller exact but leaves `??0D3DXMATRIX@@QAE@XZ` in the
+object. Write such a function in C, where the SDK names are plain structs
+(`struct _D3DMATRIX`, `struct _D3DVECTOR` behind `D3DXMATRIX`/`D3DXVECTOR3`
+in `externals.h`). `NuCameraLookAt` (0 -> exact, `nucamera.c`).
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated

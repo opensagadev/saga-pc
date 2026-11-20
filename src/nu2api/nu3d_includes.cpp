@@ -9684,7 +9684,7 @@ extern "C" {
             NUDISPLAY_LIST *scene = sort->display_scene;
             if (scene == NULL) {
                 RndrStateUpdateFx(&state, sort->items);
-            } else if ((scene->render_flags & 6) != 0) {
+            } else if ((scene->render_flags & (NUDISPLAY_RENDER_MATERIAL_ADDED | NUDISPLAY_RENDER_SCENE_ADDED)) != 0) {
                 for (i = 0; i < sort->nmtls; ++i) {
                     i32 index = sort->mtl_first + i;
                     NUDISPLAYLIST *list = scene->material_lists[index];
@@ -10631,6 +10631,22 @@ extern "C" i32 dat_00974020;
 
 extern "C" void fun_005f5a00(void) {
     dat_00974020 = 1;
+}
+
+/* Uncalled: marks every display scene that was drawn this frame (the dynamic scene: when a material went in). */
+extern "C" void NuDisplayListFlagScenes(void) {
+    i32 i;
+    NuThreadCriticalSectionBegin(nudlist_field_fc4);
+    for (i = 0; i < nudlist_field_9d8; ++i) {
+        NUDISPLAY_LIST *scene = PCDisplayScenes[i];
+        if ((scene->render_flags & 6) != 0) {
+            scene->render_flags |= NUDISPLAY_RENDER_MARKED;
+        }
+    }
+    if ((PCDynamicDisplayScene.render_flags & NUDISPLAY_RENDER_MATERIAL_ADDED) != 0) {
+        PCDynamicDisplayScene.render_flags |= NUDISPLAY_RENDER_MARKED;
+    }
+    NuThreadCriticalSectionEnd(nudlist_field_fc4);
 }
 
 static f32 FrameMaterialAnimationTime = 0;

@@ -889,6 +889,11 @@ extern "C" {
 }
 #endif
 
+/* NUDISPLAY_LIST.render_flags bits named where they are used. */
+#define NUDISPLAY_RENDER_MATERIAL_ADDED 0x2 /* a material of the scene went into a display list this frame */
+#define NUDISPLAY_RENDER_SCENE_ADDED 0x4    /* the scene was added to the render this frame (it has clip entries) */
+#define NUDISPLAY_RENDER_MARKED 0x8         /* set by NuDisplayListFlagScenes; nothing in this source reads it */
+
 typedef struct nudisplay_list_s {            // size 0x90
     const char *name;                        // 0x00
     i32 item_count;                          // 0x04

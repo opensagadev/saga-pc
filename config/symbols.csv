@@ -3413,7 +3413,7 @@ address,symbol,size,ctype
 0x004fecf0,_bgPostRequest,151,"BGPROCINFO * __cdecl (void (__cdecl *)(BGPROCINFO *), void (__cdecl *)(BGPROCINFO *), void *, i32)"
 0x004fed90,_bgProcWorker@4,348,DWORD __stdcall (void *)
 0x004feef0,_bgProcInit,162,void __cdecl(void)
-0x4fefa0,_fun_004fefa0,113,
+0x4fefa0,_bgProcCancelPending,113,
 0x004ff020,_bgprocFreeze,36,void __cdecl(void)
 0x004ff050,_bgprocUnFreeze,23,void __cdecl(void)
 0x004ff070,_bgprocIsFrozen,12,i32 __cdecl(void)
@@ -8044,7 +8044,7 @@ address,symbol,size,ctype
 0x5df880,_DisplayUpdateAlphaPC,135,void __cdecl(NUDISPLAY_LIST *)
 0x5df910,_DisplayUpdateClipWordsPC,412,void __cdecl(NUDISPLAY_LIST *)
 0x5dfab0,_NuDisplayListBeginFrame,188,void __cdecl(void)
-0x5dfb70,_fun_005dfb70,92,
+0x5dfb70,_NuDisplayListFlagScenes,92,
 0x5dfbd0,_NuDisplayListAnimateMtls,616,void __cdecl(f32)
 0x5dfe40,_NuDisplayListAppendJump,38,
 0x5dfe70,_fun_005dfe70,10,
@@ -8700,7 +8700,7 @@ address,symbol,size,ctype
 0x5fe6f0,_fun_005fe6f0,1,
 0x5fe700,_RendererClearUpdate,248,
 0x5fe800,_fun_005fe800,1,
-0x5fe810,_fun_005fe810,60,
+0x5fe810,_NuRndrFxSet,60,
 0x5fe850,_fun_005fe850,10,
 0x5fe860,_NuRndrFxApplyHeight,72,
 0x5fe8b0,_fun_005fe8b0,89,
@@ -8858,7 +8858,7 @@ address,symbol,size,ctype
 0x603290,_PCBuildGammaTable,189,
 0x603350,_NuDisplayListInit,127,"void __cdecl(VARIPTR *, i32)"
 0x006033d0,_NuDisplayListDrawItems,20,void __cdecl(NUDISPLAYLISTITEM*)
-0x6033f0,_fun_006033f0,53,
+0x6033f0,_NuDisplayListDrawSortPris,53,
 0x603430,_DisplayListDebugPS,3,"i32 __cdecl(NUDISPLAYLISTITEM *,char *)"
 0x603440,_NuDisplayListAddClut,16,"void __cdecl(NUDISPLAYLISTITEM *,i32)"
 0x603450,_NuDisplayListAddTexture,16,"void __cdecl(NUDISPLAYLISTITEM *,i32)"
@@ -8905,7 +8905,7 @@ address,symbol,size,ctype
 0x00604110,_PCVecMtxTransformClipBlocks,456,"void __cdecl (NUVEC4BLOCK *, NUVEC4BLOCK *, NUMTX *, i32, u32 *)"
 0x006042e0,_NuCameraClipTestExtents,1608,"i32 __cdecl (NUVEC *, NUVEC *, NUMTX *, f32, i32)"
 0x604930,_PCClipSetExtentsEnabled,10,
-0x604940,_fun_00604940,302,
+0x604940,_NuCameraRestoreState,302,
 0x604a70,_NuCameraGetScreenMatrix,6,
 0x00604a80,_NuCameraSetProjectionMtx,200,"void __cdecl (NUMTX *, f32, f32, f32, f32)"
 0x604b50,_NuCameraClipTestExtentsDefault,33,

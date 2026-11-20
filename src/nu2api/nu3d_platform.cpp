@@ -7520,6 +7520,14 @@ extern "C" {
         NuDisplayListBeginFrame();
     }
 
+    /* Uncalled: executes the item list of every sort priority of a display scene. */
+    void NuDisplayListDrawSortPris(NUDISPLAY_LIST *display) {
+        i32 i;
+        for (i = 0; i < display->sort_count; ++i) {
+            NuDisplayListExecute(display->sort_pris[i].items, CurrentItemTable);
+        }
+    }
+
     u8 DwaBlockTable[0x400] = {0};
 
     void NuRndrDwaInit(void) {
@@ -7993,6 +8001,15 @@ extern "C" {
     }
 
     void fun_005fe800(void) {
+    }
+
+    /* Uncalled: sets the effect plane height and its colour, given as 0xAARRGGBB and kept as 0xAABBGGRR. */
+    void NuRndrFxSet(f32 height, u32 colour) {
+        NuRndrFxHeight = height;
+        u32 swapped = colour >> 24;
+        swapped = (swapped << 8) + (u8)colour;
+        swapped = (swapped << 8) + ((colour >> 8) & 0xff);
+        NuRndrFxColour = (swapped << 8) + ((colour >> 16) & 0xff);
     }
 
     void fun_005fe850(i32 value) {
@@ -8626,6 +8643,31 @@ extern "C" {
 
     void PCClipSetExtentsEnabled(i32 enabled) {
         PCClipExtentsEnabled = enabled;
+    }
+
+    /* Uncalled: the counterpart of NuCameraSaveState; restores the camera, its matrices and the effect mode saved under
+     * a handle. */
+    void NuCameraRestoreState(i32 handle) {
+        i32 index = handle - 1;
+        if (index < cam_state_count) {
+            CAMERA_SAVED_STATE *state = &CameraSavedStates[index];
+            global_camera = state->camera;
+            zx = state->zx;
+            zy = state->zy;
+            zxs = state->zxs;
+            zys = state->zys;
+            NuCameraMode = state->effects;
+            vmtx = state->view;
+            pmtx = state->projection;
+            smtx = state->screen;
+            vpmtx = state->view_projection;
+            vpc_sci_mtx = state->view_projection_scissor;
+            vpc_vport_mtx = state->view_projection_viewport;
+            pc_vport_mtx = state->viewport;
+            vpsmtx = state->view_projection_screen;
+            psmtx = state->projection_screen;
+            NuAtan2D(-global_camera.mtx.m20, -global_camera.mtx.m22);
+        }
     }
 
     NUMTX *NuCameraGetScreenMatrix(void) {
