@@ -758,50 +758,29 @@ void RTLHelper::Initialise() {
 #undef RegisterClass
     EdClass *object_class = theRegistry.RegisterClass("Light", this, EDCLASS_RENDER_ALL | EDREF_ATTR_NOT_IN_STATE);
 #pragma pop_macro("RegisterClass")
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefRTL), 1))
-                              EdRefRTL("String", "Name", EDREF_LIGHT_NAME, 0x40, 0x10000002,
-                                       new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
-                              EdRef("Short", "LEDFile", 0x80, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_LED_FILE, NULL, 0));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefRTL), 1))
-                              EdRefRTL("Int", "Type", EDREF_LIGHT_TYPE, 0, 0,
-                                       new (theMemoryManager.AllocPool(sizeof(EdEnumControl), 1)) EdEnumControl(rtl_helper_type_items)));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef(
-        "Colour3", "Hi Col", 0x24, 0, 0, new (theMemoryManager.AllocPool(sizeof(EdColourControl), 1)) EdColourControl, 0));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef(
-        "Colour3", "Lo Col", 0x30, 0, 0, new (theMemoryManager.AllocPool(sizeof(EdColourControl), 1)) EdColourControl, 0));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
-                              EdRef("Float", "Multiplier", 0x6c, 0, 0, new EdFloatControl(0.1f, 127.0f), 0));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
-                              EdRef("Float", "High Time", 0x44, 0, 0, new EdFloatControl, 0));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
-                              EdRef("Float", "High Rand", 0x48, 0, 0, new EdFloatControl, 0));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Float", "Low Time", 0x4c, 0, 0, new EdFloatControl, 0));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Float", "Low Rand", 0x50, 0, 0, new EdFloatControl, 0));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefRTL), 1)) EdRefRTL(
-        "VuMtx", "Pos/Rot", EDREF_LIGHT_POS_ROT, 0, 0x18, new (theMemoryManager.AllocPool(sizeof(EdMatrixControl), 1)) EdMatrixControl));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefRTL), 1))
-                              EdRefRTL("Float", "Inner", EDREF_LIGHT_INNER, 0, 0, new EdFloatControl));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefRTL), 1))
-                              EdRefRTL("Float", "Outer", EDREF_LIGHT_OUTER, 0, 0, new EdFloatControl));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefRTL), 1)) EdRefRTL(
-        "Int", "Associate IDs", EDREF_LIGHT_ASSOCIATE_IDS, 0, 0,
-        new (theMemoryManager.AllocPool(sizeof(EdBitControl), 1)) EdBitControl(0xffff, EdEnumControl::YesNoItems)));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefRTL), 1)) EdRefRTL(
-        "Int", "Exclude IDs", EDREF_LIGHT_EXCLUDE_IDS, 0, 0,
-        new (theMemoryManager.AllocPool(sizeof(EdBitControl), 1)) EdBitControl(0xffff, EdEnumControl::YesNoItems)));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefRTL), 1))
-                              EdRefRTL("Int", "User ID", EDREF_LIGHT_USER_ID, 0, 0, new EdIntControl(0, 16)));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefRTL), 1))
-                              EdRefRTL("Int", "Group ID", EDREF_LIGHT_GROUP_ID, 0, 0, new EdIntControl(0, 255)));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefRTL), 1))
-                              EdRefRTL("Int", "Modifier Id", EDREF_LIGHT_MODIFIER_ID, 0, 0, new EdIntControl(0, 32)));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefRTL), 1)) EdRefRTL(
-        "Int", "Cast Shadows", EDREF_LIGHT_CAST_SHADOWS, 0, 0,
-        new (theMemoryManager.AllocPool(sizeof(EdEnumControl), 1)) EdEnumControl(EdEnumControl::YesNoItems)));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefRTL), 1)) EdRefRTL(
-        "Int", "Specular", EDREF_LIGHT_SPECULAR, 0, 0,
-        new (theMemoryManager.AllocPool(sizeof(EdEnumControl), 1)) EdEnumControl(EdEnumControl::YesNoItems)));
+    object_class->AddType(new EdRefRTL("String", "Name", EDREF_LIGHT_NAME, 0x40, 0x10000002, new EdStringControl));
+    object_class->AddType(new EdRef("Short", "LEDFile", 0x80, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_LED_FILE, NULL, 0));
+    object_class->AddType(new EdRefRTL("Int", "Type", EDREF_LIGHT_TYPE, 0, 0, new EdEnumControl(rtl_helper_type_items)));
+    object_class->AddType(new EdRef("Colour3", "Hi Col", 0x24, 0, 0, new EdColourControl, 0));
+    object_class->AddType(new EdRef("Colour3", "Lo Col", 0x30, 0, 0, new EdColourControl, 0));
+    object_class->AddType(new EdRef("Float", "Multiplier", 0x6c, 0, 0, new EdFloatControl(0.1f, 127.0f), 0));
+    object_class->AddType(new EdRef("Float", "High Time", 0x44, 0, 0, new EdFloatControl, 0));
+    object_class->AddType(new EdRef("Float", "High Rand", 0x48, 0, 0, new EdFloatControl, 0));
+    object_class->AddType(new EdRef("Float", "Low Time", 0x4c, 0, 0, new EdFloatControl, 0));
+    object_class->AddType(new EdRef("Float", "Low Rand", 0x50, 0, 0, new EdFloatControl, 0));
+    object_class->AddType(new EdRefRTL("VuMtx", "Pos/Rot", EDREF_LIGHT_POS_ROT, 0, 0x18, new EdMatrixControl));
+    object_class->AddType(new EdRefRTL("Float", "Inner", EDREF_LIGHT_INNER, 0, 0, new EdFloatControl));
+    object_class->AddType(new EdRefRTL("Float", "Outer", EDREF_LIGHT_OUTER, 0, 0, new EdFloatControl));
+    object_class->AddType(
+        new EdRefRTL("Int", "Associate IDs", EDREF_LIGHT_ASSOCIATE_IDS, 0, 0, new EdBitControl(0xffff, EdEnumControl::YesNoItems)));
+    object_class->AddType(
+        new EdRefRTL("Int", "Exclude IDs", EDREF_LIGHT_EXCLUDE_IDS, 0, 0, new EdBitControl(0xffff, EdEnumControl::YesNoItems)));
+    object_class->AddType(new EdRefRTL("Int", "User ID", EDREF_LIGHT_USER_ID, 0, 0, new EdIntControl(0, 16)));
+    object_class->AddType(new EdRefRTL("Int", "Group ID", EDREF_LIGHT_GROUP_ID, 0, 0, new EdIntControl(0, 255)));
+    object_class->AddType(new EdRefRTL("Int", "Modifier Id", EDREF_LIGHT_MODIFIER_ID, 0, 0, new EdIntControl(0, 32)));
+    object_class->AddType(
+        new EdRefRTL("Int", "Cast Shadows", EDREF_LIGHT_CAST_SHADOWS, 0, 0, new EdEnumControl(EdEnumControl::YesNoItems)));
+    object_class->AddType(new EdRefRTL("Int", "Specular", EDREF_LIGHT_SPECULAR, 0, 0, new EdEnumControl(EdEnumControl::YesNoItems)));
 }
 
 /* Editor member references into a fog zone; colours are edited as 0..1
@@ -904,29 +883,17 @@ void FogHelper::Initialise() {
 #undef RegisterClass
     EdClass *object_class = theRegistry.RegisterClass("Fog", this, EDCLASS_RENDER_ALL | EDREF_ATTR_NOT_IN_STATE);
 #pragma pop_macro("RegisterClass")
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefFog), 1)) EdRefFog(
-        "String", "Name", EDREF_FOG_NAME, 0x40, 0x10000002, new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
-                              EdRef("Short", "LEDFile", 0x38, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_LED_FILE, NULL, 0));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefFog), 1)) EdRefFog(
-        "Colour3", "Fog Colour", EDREF_FOG_FOG_COLOUR, 0, 0, new (theMemoryManager.AllocPool(sizeof(EdColourControl), 1)) EdColourControl));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefFog), 1))
-                              EdRefFog("Float", "Fog Alpha", EDREF_FOG_FOG_ALPHA, 0, 0x10000000, new EdFloatControl(0.0f, 1.0f)));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
-                              EdRef("Float", "Fog Density", 0x2c, 0, 0, new EdFloatControl(0.0f, 4.0f), 0));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Float", "Fog Start", 0x0, 0, 0, new EdFloatControl, 0));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Float", "Fog End", 0x4, 0, 0, new EdFloatControl, 0));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefFog), 1))
-                              EdRefFog("Colour3", "Haze Colour", EDREF_FOG_HAZE_COLOUR, 0, 0,
-                                       new (theMemoryManager.AllocPool(sizeof(EdColourControl), 1)) EdColourControl));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefFog), 1))
-                              EdRefFog("Float", "Haze Density", EDREF_FOG_HAZE_DENSITY, 0, 0x10000000, new EdFloatControl(0.0f, 1.0f)));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefFog), 1))
-                              EdRefFog("Float", "Blur Density", EDREF_FOG_BLUR_DENSITY, 0, 0, new EdFloatControl(0.0f, 1.0f)));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefFog), 1))
-                              EdRefFog("Float", "DOF F-Stop", EDREF_FOG_DOF_F_STOP, 0, 0, new EdFloatControl(1.0f, 21.0f)));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
-                              EdRef("Float", "Range", 0x1c, 0, 0, new EdFloatControl(1.0f, 1000.0f), 0));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefFog), 1)) EdRefFog(
-        "VuVec", "Position", EDREF_FOG_POSITION, 0, 8, new (theMemoryManager.AllocPool(sizeof(EdVectorControl), 1)) EdVectorControl));
+    object_class->AddType(new EdRefFog("String", "Name", EDREF_FOG_NAME, 0x40, 0x10000002, new EdStringControl));
+    object_class->AddType(new EdRef("Short", "LEDFile", 0x38, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_LED_FILE, NULL, 0));
+    object_class->AddType(new EdRefFog("Colour3", "Fog Colour", EDREF_FOG_FOG_COLOUR, 0, 0, new EdColourControl));
+    object_class->AddType(new EdRefFog("Float", "Fog Alpha", EDREF_FOG_FOG_ALPHA, 0, 0x10000000, new EdFloatControl(0.0f, 1.0f)));
+    object_class->AddType(new EdRef("Float", "Fog Density", 0x2c, 0, 0, new EdFloatControl(0.0f, 4.0f), 0));
+    object_class->AddType(new EdRef("Float", "Fog Start", 0x0, 0, 0, new EdFloatControl, 0));
+    object_class->AddType(new EdRef("Float", "Fog End", 0x4, 0, 0, new EdFloatControl, 0));
+    object_class->AddType(new EdRefFog("Colour3", "Haze Colour", EDREF_FOG_HAZE_COLOUR, 0, 0, new EdColourControl));
+    object_class->AddType(new EdRefFog("Float", "Haze Density", EDREF_FOG_HAZE_DENSITY, 0, 0x10000000, new EdFloatControl(0.0f, 1.0f)));
+    object_class->AddType(new EdRefFog("Float", "Blur Density", EDREF_FOG_BLUR_DENSITY, 0, 0, new EdFloatControl(0.0f, 1.0f)));
+    object_class->AddType(new EdRefFog("Float", "DOF F-Stop", EDREF_FOG_DOF_F_STOP, 0, 0, new EdFloatControl(1.0f, 21.0f)));
+    object_class->AddType(new EdRef("Float", "Range", 0x1c, 0, 0, new EdFloatControl(1.0f, 1000.0f), 0));
+    object_class->AddType(new EdRefFog("VuVec", "Position", EDREF_FOG_POSITION, 0, 8, new EdVectorControl));
 }

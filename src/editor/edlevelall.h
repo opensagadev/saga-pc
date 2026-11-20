@@ -243,6 +243,10 @@ template <class T> class CSListLink {
  * in theMemoryManager's size-class pools. */
 class EdControl { // size 0x10
   public:
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
+
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(EdControl));
     }
@@ -268,6 +272,10 @@ class EdControl { // size 0x10
 
 class EdEnumControl : public EdControl { // size 0x14
   public:
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
+
     struct Item {
         char *name;
         i32 value;
@@ -295,6 +303,10 @@ class EdEnumControl : public EdControl { // size 0x14
 
 class EdBitControl : public EdEnumControl { // size 0x18
   public:
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
+
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(EdBitControl));
     }
@@ -514,6 +526,10 @@ struct EdDefunctList { // size 0xc
 
 class EdRef : public CSListLink<EdRef> { // size 0x28
   public:
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
+
     EdRef(char *type_name, char *member_name, i32 offset, i32 member_size, i32 member_attributes, EdControl *member_control, i32 group);
 
     EdRef() {

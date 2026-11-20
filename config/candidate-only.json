@@ -308,11 +308,6 @@
   },
   {
    "unit": "src/legoapi/rtlhelper.cpp",
-   "symbol": "??2@YAPAXIPAX@Z",
-   "kind": "function"
-  },
-  {
-   "unit": "src/legoapi/rtlhelper.cpp",
    "symbol": "??0?$EdValueControl@H@@QAE@XZ",
    "kind": "function"
   },

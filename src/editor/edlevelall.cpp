@@ -567,6 +567,10 @@ class SceneObject : public SpecialObject { // size 0x2c
 /* Editor-created copy of a scene object with its own transforms. */
 class SceneInstance : public SceneObject, public CSListLink<SceneInstance> { // size 0xd0
   public:
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
+
     static void operator delete(void *memory);
     SceneInstance();
     virtual const char *GetName() const;
@@ -658,6 +662,10 @@ class EdRefSpecialObject : public EdRef {
  * special objects of the loaded scenes, the typed name picks one by name. */
 class EdSpecialObjectControl : public EdControl { // size 0x14
   public:
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
+
     static void operator delete(void *memory);
     EdSpecialObjectControl();
     virtual ~EdSpecialObjectControl();
@@ -723,6 +731,10 @@ i32 EdType_NuMtx;
  * effect, and picking one plays it and stores its name. */
 class EdSfxNameControl : public EdStringControl { // size 0x10
   public:
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
+
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(EdSfxNameControl));
     }
@@ -739,6 +751,10 @@ class EdSfxNameControl : public EdStringControl { // size 0x10
  * and holding the pick input over an editor object names that object. */
 class PlaceableNameControl : public EdStringControl { // size 0x14
   public:
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
+
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(PlaceableNameControl));
     }
@@ -770,6 +786,10 @@ class EdRefPlaceable : public EdRef { // size 0x28
  * picks a registered class, then one of its named objects. */
 class EdClassObjectNameControl : public EdStringControl { // size 0x1c
   public:
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
+
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(EdClassObjectNameControl));
     }
@@ -918,6 +938,10 @@ struct SplinePointList {
 /* A named editor spline; the knot list is followed by its generated points. */
 class SplineObject : public CSListLink<SplineObject> { // size 0x58
   public:
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
+
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(SplineObject));
     }
@@ -4312,7 +4336,7 @@ void *SceneObjectHelper::GetNextObject(void *object) {
 }
 
 void *SceneObjectHelper::CreateObject(void *, i32, i32) {
-    SceneInstance *object = new (theMemoryManager.AllocPool(sizeof(SceneInstance), 1)) SceneInstance;
+    SceneInstance *object = new SceneInstance;
     if (object != NULL) {
         owned.InsertAfter(object, NULL);
         object->SetName("object");
@@ -7008,7 +7032,7 @@ void *SplineHelper::GetNextObject(void *object) {
 void *SplineHelper::CreateObject(void *, i32, i32) {
     void *memory = theMemoryManager.AllocPool(sizeof(SplineObject), 1);
     if (memory != NULL) {
-        SplineObject *spline = new (memory) SplineObject;
+        SplineObject *spline = ::new (memory) SplineObject;
         objects.InsertAfter(spline, NULL);
         return spline;
     }
@@ -8232,7 +8256,7 @@ void EdVectorControl::cbSelected(eduimenu_s *menu, eduiitem_s *item, u32) {
 }
 
 void EdVectorControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
-    EdVectorControl *control = new (theMemoryManager.AllocPool(sizeof(EdVectorControl), 1)) EdVectorControl;
+    EdVectorControl *control = new EdVectorControl;
     if (control == NULL) {
         return;
     }
@@ -8279,7 +8303,7 @@ void EdMatrixControl::cbButton(eduimenu_s *menu, eduiitem_s *item, u32 value) {
 }
 
 void EdMatrixControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
-    EdMatrixControl *control = new (theMemoryManager.AllocPool(sizeof(EdMatrixControl), 1)) EdMatrixControl;
+    EdMatrixControl *control = new EdMatrixControl;
     if (control == NULL) {
         return;
     }
@@ -8886,21 +8910,17 @@ void PlaceableHelper::Initialise() {
 #undef RegisterClass
     EdClass *object_class = theRegistry.RegisterClass("Placeable", NULL, 0);
 #pragma pop_macro("RegisterClass")
-    EdRefPlaceable *reference = new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
-        EdRefPlaceable("Short", "LEDFile", EDREF_PLACEABLE_LEDFILE, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_LED_FILE, NULL);
+    EdRefPlaceable *reference =
+        new EdRefPlaceable("Short", "LEDFile", EDREF_PLACEABLE_LEDFILE, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_LED_FILE, NULL);
     object_class->AddType(reference);
-    reference = new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
-        EdRefPlaceable("Int", "Attributes", EDREF_PLACEABLE_ATTRIBUTES, 0, EDREF_ATTR_FLAGS, NULL);
+    reference = new EdRefPlaceable("Int", "Attributes", EDREF_PLACEABLE_ATTRIBUTES, 0, EDREF_ATTR_FLAGS, NULL);
     object_class->AddType(reference);
-    reference = new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1)) EdRefPlaceable(
-        "String", "Name", EDREF_PLACEABLE_NAME, 250, 2, new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl);
+    reference = new EdRefPlaceable("String", "Name", EDREF_PLACEABLE_NAME, 250, 2, new EdStringControl);
     object_class->AddType(reference);
-    reference = new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1)) EdRefPlaceable(
-        "String", "Params", EDREF_PLACEABLE_PARAMS, 250, 0, new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl);
+    reference = new EdRefPlaceable("String", "Params", EDREF_PLACEABLE_PARAMS, 250, 0, new EdStringControl);
     object_class->AddType(reference);
-    reference = new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
-        EdRefPlaceable("VuMtx", "Mtx", 0x80000006, 0, EDREF_ATTR_SCALE | EDREF_ATTR_ROTATION | EDREF_ATTR_POSITION,
-                       new (theMemoryManager.AllocPool(sizeof(EdMatrixControl), 1)) EdMatrixControl);
+    reference = new EdRefPlaceable("VuMtx", "Mtx", 0x80000006, 0, EDREF_ATTR_SCALE | EDREF_ATTR_ROTATION | EDREF_ATTR_POSITION,
+                                   new EdMatrixControl);
     object_class->AddType(reference);
 }
 
@@ -9238,14 +9258,14 @@ void EdClass::Serialise(EdStream &stream, i32 *class_mapping) {
         if (stream.version < 3) {
             stream.SerialiseBuffer(&count, sizeof(count), 1);
             for (i32 index = 0; index < count; index++) {
-                EdRef *member = new (stream.secondary_buffer->Allocate(sizeof(EdRef))) EdRef;
+                EdRef *member = ::new (stream.secondary_buffer->Allocate(sizeof(EdRef))) EdRef;
                 member->Serialise(stream, NULL);
                 AddType(member);
             }
         }
         stream.SerialiseBuffer(&count, sizeof(count), 1);
         for (i32 index = 0; index < count; index++) {
-            EdRef *member = new (stream.secondary_buffer->Allocate(sizeof(EdRef))) EdRef;
+            EdRef *member = ::new (stream.secondary_buffer->Allocate(sizeof(EdRef))) EdRef;
             if (member != NULL) {
                 member->Serialise(stream, NULL);
                 AddType(member);
@@ -9353,24 +9373,19 @@ void SceneObjectHelper::Initialise() {
 #undef RegisterClass
     EdClass *object_class = theRegistry.RegisterClass("SceneObject", this, EDREF_ATTR_LED_FILE);
 #pragma pop_macro("RegisterClass")
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Placeable", "Placeable", 0, 0, 0, NULL, 0));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpecialObject), 1)) EdRefSpecialObject(
-        "NuHSpecial", "Object", EDREF_SPECIAL_OBJECT_OBJECT, 0, 0,
-        new (theMemoryManager.AllocPool(sizeof(EdSpecialObjectControl), 1)) EdSpecialObjectControl));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpecialObject), 1)) EdRefSpecialObject(
-        "Int", "Visible", EDREF_SPECIAL_OBJECT_VISIBLE, 0, 0,
-        new (theMemoryManager.AllocPool(sizeof(EdEnumControl), 1)) EdEnumControl(EdEnumControl::YesNoItems)));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpecialObject), 1)) EdRefSpecialObject(
-        "Int", "Collision", EDREF_SPECIAL_OBJECT_COLLISION, 0, 0,
-        new (theMemoryManager.AllocPool(sizeof(EdEnumControl), 1)) EdEnumControl(EdEnumControl::YesNoItems)));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1)) EdRefPlaceable(
-        "Int", "Attributes", EDREF_PLACEABLE_ATTRIBUTES, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_NOT_IN_STATE, NULL));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1)) EdRefPlaceable(
-        "Short", "LEDFile", EDREF_PLACEABLE_LEDFILE, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_NOT_IN_STATE, NULL));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1)) EdRefPlaceable(
-        "String", "Name", EDREF_PLACEABLE_NAME, 250, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_NOT_IN_STATE, NULL));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
-                              EdRefPlaceable("VuMtx", "Pos", 0x80000006, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_NOT_IN_STATE, NULL));
+    object_class->AddType(new EdRef("Placeable", "Placeable", 0, 0, 0, NULL, 0));
+    object_class->AddType(new EdRefSpecialObject("NuHSpecial", "Object", EDREF_SPECIAL_OBJECT_OBJECT, 0, 0, new EdSpecialObjectControl));
+    object_class->AddType(
+        new EdRefSpecialObject("Int", "Visible", EDREF_SPECIAL_OBJECT_VISIBLE, 0, 0, new EdEnumControl(EdEnumControl::YesNoItems)));
+    object_class->AddType(
+        new EdRefSpecialObject("Int", "Collision", EDREF_SPECIAL_OBJECT_COLLISION, 0, 0, new EdEnumControl(EdEnumControl::YesNoItems)));
+    object_class->AddType(
+        new EdRefPlaceable("Int", "Attributes", EDREF_PLACEABLE_ATTRIBUTES, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_NOT_IN_STATE, NULL));
+    object_class->AddType(
+        new EdRefPlaceable("Short", "LEDFile", EDREF_PLACEABLE_LEDFILE, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_NOT_IN_STATE, NULL));
+    object_class->AddType(
+        new EdRefPlaceable("String", "Name", EDREF_PLACEABLE_NAME, 250, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_NOT_IN_STATE, NULL));
+    object_class->AddType(new EdRefPlaceable("VuMtx", "Pos", 0x80000006, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_NOT_IN_STATE, NULL));
     thePlaceableHelper.RegisterObjectType("Scene Object", this);
     theEdSystem.RegisterSubSystem(this);
     for (i32 i = 0; i < 10; i++) {
@@ -9478,7 +9493,7 @@ void SplineObject::SmoothKnots() {
 /* Copies the spline with its knots; the points are regenerated on this
  * spline, not on the copy. */
 SplineObject *SplineObject::Clone() {
-    SplineObject *clone = new (theMemoryManager.AllocPool(sizeof(SplineObject), 1)) SplineObject;
+    SplineObject *clone = new SplineObject;
     NuStrCpy(clone->name, name);
     SplineKnot *source = knots.first;
     for (i32 index = 0; index < knots.count; index++) {
@@ -9563,44 +9578,28 @@ void SplineHelper::Initialise() {
 #undef RegisterClass
     EdClass *spline_class = theRegistry.RegisterClass("Spline", this, EDCLASS_RENDER_ALL | EDREF_ATTR_NOT_IN_STATE | EDREF_ATTR_LED_FILE);
 #pragma pop_macro("RegisterClass")
-    spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef(
-        "String", "Spline", 0xc, 0x20, 2, new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl, 0));
-    spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
-                              EdRef("Short", "LEDFile", 0x44, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_LED_FILE, NULL, 0));
-    spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpline), 1))
-                              EdRefSpline("Float", "Height", EDREF_SPLINE_HEIGHT, 0, 0, new EdFloatControl));
-    spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpline), 1))
-                              EdRefSpline("Float", "Step", EDREF_SPLINE_STEP, 0, 0, new EdFloatControl(0.0f, 1000.0f)));
-    spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpline), 1)) EdRefSpline(
-        "Int", "Drop", EDREF_SPLINE_DROP, 0, 0,
-        new (theMemoryManager.AllocPool(sizeof(EdEnumControl), 1)) EdEnumControl(EdEnumControl::YesNoItems)));
-    spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpline), 1)) EdRefSpline(
-        "Int", "Closed", EDREF_SPLINE_CLOSED, 0, 0,
-        new (theMemoryManager.AllocPool(sizeof(EdEnumControl), 1)) EdEnumControl(EdEnumControl::YesNoItems)));
+    spline_class->AddType(new EdRef("String", "Spline", 0xc, 0x20, 2, new EdStringControl, 0));
+    spline_class->AddType(new EdRef("Short", "LEDFile", 0x44, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_LED_FILE, NULL, 0));
+    spline_class->AddType(new EdRefSpline("Float", "Height", EDREF_SPLINE_HEIGHT, 0, 0, new EdFloatControl));
+    spline_class->AddType(new EdRefSpline("Float", "Step", EDREF_SPLINE_STEP, 0, 0, new EdFloatControl(0.0f, 1000.0f)));
+    spline_class->AddType(new EdRefSpline("Int", "Drop", EDREF_SPLINE_DROP, 0, 0, new EdEnumControl(EdEnumControl::YesNoItems)));
+    spline_class->AddType(new EdRefSpline("Int", "Closed", EDREF_SPLINE_CLOSED, 0, 0, new EdEnumControl(EdEnumControl::YesNoItems)));
 
 #pragma push_macro("RegisterClass")
 #undef RegisterClass
     EdClass *knot_class =
         theRegistry.RegisterClass("Knot", &theKnotHelper, EDREF_ATTR_NOT_IN_FILE | EDCLASS_RENDER_ALL | EDREF_ATTR_NOT_IN_STATE);
 #pragma pop_macro("RegisterClass")
-    theKnotHelper.position_ref = new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1))
-        EdRefKnot("VuVec", "Pos", EDREF_KNOT_POS, 0, EDREF_ATTR_POSITION,
-                  new (theMemoryManager.AllocPool(sizeof(EdVectorControl), 1)) EdVectorControl);
-    theKnotHelper.in_tangent_ref = new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1)) EdRefKnot(
-        "VuVec", "In", EDREF_KNOT_IN, 0, EDREF_ATTR_POSITION, new (theMemoryManager.AllocPool(sizeof(EdVectorControl), 1)) EdVectorControl);
-    theKnotHelper.out_tangent_ref = new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1))
-        EdRefKnot("VuVec", "Out", EDREF_KNOT_OUT, 0, EDREF_ATTR_POSITION,
-                  new (theMemoryManager.AllocPool(sizeof(EdVectorControl), 1)) EdVectorControl);
-    knot_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1))
-                            EdRefKnot("String", "Spline", EDREF_KNOT_SPLINE, 0x20, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_NAME,
-                                      new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl));
-    knot_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
-                            EdRef("Short", "LEDFile", 0x44, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_LED_FILE, NULL, 0));
+    theKnotHelper.position_ref = new EdRefKnot("VuVec", "Pos", EDREF_KNOT_POS, 0, EDREF_ATTR_POSITION, new EdVectorControl);
+    theKnotHelper.in_tangent_ref = new EdRefKnot("VuVec", "In", EDREF_KNOT_IN, 0, EDREF_ATTR_POSITION, new EdVectorControl);
+    theKnotHelper.out_tangent_ref = new EdRefKnot("VuVec", "Out", EDREF_KNOT_OUT, 0, EDREF_ATTR_POSITION, new EdVectorControl);
+    knot_class->AddType(
+        new EdRefKnot("String", "Spline", EDREF_KNOT_SPLINE, 0x20, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_NAME, new EdStringControl));
+    knot_class->AddType(new EdRef("Short", "LEDFile", 0x44, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_LED_FILE, NULL, 0));
     knot_class->AddType(theKnotHelper.position_ref);
     knot_class->AddType(theKnotHelper.in_tangent_ref);
     knot_class->AddType(theKnotHelper.out_tangent_ref);
-    knot_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1))
-                            EdRefKnot("Float", "Radius", EDREF_KNOT_RADIUS, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_RADIUS, NULL));
+    knot_class->AddType(new EdRefKnot("Float", "Radius", EDREF_KNOT_RADIUS, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_RADIUS, NULL));
 }
 
 void SplineHelper::PostLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {
@@ -9709,7 +9708,7 @@ void *KnotHelper::CreateObject(void *, i32, i32) {
         }
     }
     if (spline == NULL) {
-        spline = new (theMemoryManager.AllocPool(sizeof(SplineObject), 1)) SplineObject;
+        spline = new SplineObject;
         if (spline == NULL) {
             return NULL;
         }
@@ -9903,7 +9902,7 @@ void EdControl::cbSelected(eduimenu_s *menu, eduiitem_s *item, u32) {
 }
 
 void EdControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
-    EdControl *control = new (theMemoryManager.AllocPool(sizeof(EdControl), 1)) EdControl;
+    EdControl *control = new EdControl;
     if (control != NULL) {
         control->reference = member;
         control->object = target;
@@ -9913,7 +9912,7 @@ void EdControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
 }
 
 void EdEnumControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
-    EdEnumControl *control = new (theMemoryManager.AllocPool(sizeof(EdEnumControl), 1)) EdEnumControl(items);
+    EdEnumControl *control = new EdEnumControl(items);
     if (control != NULL) {
         control->reference = member;
         control->object = target;
@@ -9927,7 +9926,7 @@ void EdEnumControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
 
 /* One expander with a child property per bit of the mask. */
 void EdBitControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
-    EdBitControl *control = new (theMemoryManager.AllocPool(sizeof(EdBitControl), 1)) EdBitControl(bit_mask, items);
+    EdBitControl *control = new EdBitControl(bit_mask, items);
     if (control != NULL) {
         control->reference = member;
         control->object = target;
@@ -9949,7 +9948,7 @@ void EdBitControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
 }
 
 void EdClassObjectNameControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
-    EdClassObjectNameControl *control = new (theMemoryManager.AllocPool(sizeof(EdClassObjectNameControl), 1)) EdClassObjectNameControl;
+    EdClassObjectNameControl *control = new EdClassObjectNameControl;
     if (control == NULL) {
         return;
     }
@@ -9963,7 +9962,7 @@ void EdClassObjectNameControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void
 }
 
 void EdStringControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
-    EdStringControl *control = new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl;
+    EdStringControl *control = new EdStringControl;
     if (control != NULL) {
         control->reference = member;
         control->object = target;
@@ -9975,7 +9974,7 @@ void EdStringControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target)
 }
 
 void PlaceableNameControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
-    PlaceableNameControl *control = new (theMemoryManager.AllocPool(sizeof(PlaceableNameControl), 1)) PlaceableNameControl;
+    PlaceableNameControl *control = new PlaceableNameControl;
     if (control == NULL) {
         return;
     }
@@ -9988,7 +9987,7 @@ void PlaceableNameControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *ta
 }
 
 void EdColourControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
-    EdColourControl *control = new (theMemoryManager.AllocPool(sizeof(EdColourControl), 1)) EdColourControl;
+    EdColourControl *control = new EdColourControl;
     if (control != NULL) {
         control->reference = member;
         control->object = target;
@@ -10013,7 +10012,7 @@ void EdColourControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target)
 }
 
 void EdSfxNameControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
-    EdSfxNameControl *control = new (theMemoryManager.AllocPool(sizeof(EdSfxNameControl), 1)) EdSfxNameControl;
+    EdSfxNameControl *control = new EdSfxNameControl;
     if (control != NULL) {
         control->reference = member;
         control->object = target;
@@ -10542,7 +10541,7 @@ void EdRegistry::SerialiseObjects(EdStream &stream, EdRegistry *source_registry)
 }
 
 void EdSpecialObjectControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
-    EdSpecialObjectControl *control = new (theMemoryManager.AllocPool(sizeof(EdSpecialObjectControl), 1)) EdSpecialObjectControl;
+    EdSpecialObjectControl *control = new EdSpecialObjectControl;
     if (control == NULL) {
         return;
     }

@@ -13,6 +13,10 @@
  * and the button opens a text picker on it. */
 class EdStringControl : public EdControl { // size 0x10
   public:
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
+
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(EdStringControl));
     }
@@ -30,6 +34,10 @@ class EdStringControl : public EdControl { // size 0x10
  * button shows the colour and opens a colour picker. */
 class EdColourControl : public EdControl { // size 0x10
   public:
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
+
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(EdColourControl));
     }
@@ -48,6 +56,10 @@ class EdColourControl : public EdControl { // size 0x10
 /* Three "%.2f" rows (x, y, z) under an expander for a VuVec member. */
 class EdVectorControl : public EdControl { // size 0x1c
   public:
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
+
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(EdVectorControl));
     }
@@ -92,6 +104,10 @@ class EdVectorControl : public EdControl { // size 0x1c
  * VuMtx member; the member's attributes 8, 0x10 and 0x20 pick the groups. */
 class EdMatrixControl : public EdControl { // size 0x34
   public:
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
+
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(EdMatrixControl));
     }

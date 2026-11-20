@@ -605,6 +605,27 @@ After the last call of a function, VC8 drops a single pushed argument with
 function returns it. `LightingSetAmbientLight` and `PartsSetAmbientLight`
 (`return NuRndrSetAmbientLightPS(ambient);`, 94 -> 100).
 
+### I52: nested guard blocks are inlined guarded wrappers
+
+`if (g == 0) { A(); if (g == 0) { B(); if (g == 0) { C(); } } }` is what
+three calls of small `static void X(...) { if (g == 0) Y(...); }` wrappers
+look like once VC8 inlines them: after each call the global is tested again,
+and when a test fails the later ones are skipped. Retail keeps every such
+wrapper as a standalone copy (I48), so write the calls: the edui renderers
+call `EduiRndrRect2di`, `EduiQFntSet`, `EduiQFntSetColour`, ... (nine
+wrappers exact, every caller unchanged). Blocks that compute their arguments
+into braced locals first (`{ f32 x0 = ...; if (g == 0) NuRndrLine2di((i32)(x0
+* EduiScaleX), ...); }`) are the same for a wrapper taking floats
+(`EduiDrawLine`, `EduiDrawLineRect`).
+
+### I53: placement new from a pool is an inlined class `operator new`
+
+`new (theMemoryManager.AllocPool(sizeof(X), 1)) X(...)` compiles like
+`new X(...)` with `static void *operator new(size_t size) { return
+theMemoryManager.AllocPool(size, 1); }` in X, but only the latter emits the
+`??2X@@SAPAXI@Z` copy retail keeps (18 bytes, seven of them in the RTL helper
+unit; classes derived from `EdRef` use its copy).
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated
