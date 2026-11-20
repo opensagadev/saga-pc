@@ -2564,14 +2564,14 @@ i32 NuFileExtGetExt(char *dest, i32 dest_size, i32 type) {
         if (info->platform == NUFILEEXT_PLATFORM_WINDOWS && info->type == type) {
             i32 i;
             const char *source;
-            if (info->len > dest_size) {
+            if (dest_size < info->len) {
                 return 0;
             }
             source = info->extension + info->len;
             for (i = 0; i < info->len; ++i) {
                 dest[i] = *--source;
             }
-            dest[info->len] = '\0';
+            dest[i] = '\0';
             return 1;
         }
     }
