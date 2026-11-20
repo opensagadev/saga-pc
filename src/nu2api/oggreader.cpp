@@ -21,6 +21,12 @@ extern "C" {
     i32 PCOggCriticalSection = 0;
 }
 
+extern "C" void fun_0069a7f0(void) {
+}
+
+extern "C" void OggreaderNuError(void) {
+}
+
 OggReader::OggReader(void) {
     compressed = 0;
     cache = NULL;

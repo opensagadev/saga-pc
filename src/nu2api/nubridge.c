@@ -15,6 +15,9 @@
 #include "nu2api/numath/nuvec4.h"
 #include <stdio.h>
 
+void NubridgeNuError(void) {
+}
+
 /* NuFabs: copies the value with the sign bit cleared into a new float. */
 static __inline f32 NuBridgeFabs(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;

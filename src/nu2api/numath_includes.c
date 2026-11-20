@@ -44,6 +44,9 @@ static f32 NumathIncludesFdiv(f32 a, f32 b) {
     return a / b;
 }
 
+void NumathIncludesNuError(void) {
+}
+
 static f32 NumathIncludesFabs(f32 f) {
     f32 rv;
 

@@ -2,6 +2,9 @@
 #include "nu2api/nucore/nupad.h"
 #include "nu2api/nuwin32/Stubs.h"
 
+void StubsNuError(void) {
+}
+
 void NuPadSetDeviceMotors(FRAME_PAD *pad, i32 motor0, i32 motor1) {
 }
 

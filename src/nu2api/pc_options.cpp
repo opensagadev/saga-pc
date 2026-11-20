@@ -410,6 +410,9 @@ void PC_WINDOW_OPTIONS::Load() {
     Validate();
 }
 
+extern "C" void PcapiNuError(void) {
+}
+
 u32 PC_DEVICE_BACKEND::GetShaderFlags() {
     return shader_flags;
 }

@@ -7306,6 +7306,9 @@ extern "C" {
     void Nu3dPlatformNuError(void) {
     }
 
+    void Nu3dPcIncludesNuError(void) {
+    }
+
     // @@END
 
 } // extern "C"

@@ -141,6 +141,9 @@ void PCShaderObjectInitHLSLPc(NuShaderObject *shader, const u32 *key, i32 index,
     }
 }
 
+extern "C" void NushaderobjectNuErrorPc(void) {
+}
+
 void PC_SHADER_PARAMETER_LOCAL::SetScalarValues(i32 first_element, i32 count, const f32 *values) {
     if ((metadata & 0xf0000000U) == 0x10000000U) {
         PCDeviceSetVertexShaderConstantsF(register_index + first_element, values, count);

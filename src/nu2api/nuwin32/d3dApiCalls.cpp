@@ -69,6 +69,9 @@ struct D3DXMATRIX { // size 0x40
 extern "C" void fun_006df010(void) {
 }
 
+extern "C" void D3dApiCallsNuErrorPc(void) {
+}
+
 i32 PC_DEVICE_BACKEND::IsMultisampled() {
     return multisample_index != 0;
 }
