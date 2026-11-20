@@ -467,13 +467,13 @@ static void AttractoStartSuction(GAMEOBJECT *object) {
 NUVEC AttractoBackPackCountPos = {0.0f, 0.45f, 0.15f};
 
 void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
-    i32 available = 0;
+    i32 available;
     char text[32];
     NUVEC position;
-    if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->player.suit != NULL &&
-        (object->player.suit->flags & SUIT_ATTRACT) != 0) {
+    available = (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->player.suit != NULL &&
+                (object->player.suit->flags & SUIT_ATTRACT) != 0;
+    if (available) {
         GAME_MESSAGE *message;
-        available = 1;
         sprintf(text, "%i", object->attract_count);
         NuVecMtxRotate(&position, &AttractoBackPackCountPos, &object->transform);
         NuVecAdd(&position, &position, &object->position);
