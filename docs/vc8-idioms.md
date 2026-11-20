@@ -372,6 +372,10 @@ globals into 44 units as `static`: 19 functions became exact
 `Move_CRITTER`, ...) and 54 improved. Scanner: the `I4` moves of a single
 store to an absolute address. Globals a `data.cpp` table takes the address of
 (character fixup ids) cannot be static.
+The converse also holds: where retail reloads a global after every store
+through the pointer it holds (`mov edx, [global]; mov [edx+0x74], ...` per
+field), the global has external linkage; `FixUpLevels` had 17 level globals
+made static by that search and kept them in a register.
 
 ### I33: a function compiled in another unit is called, not inlined
 
