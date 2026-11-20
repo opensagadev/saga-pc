@@ -78,6 +78,9 @@
 #include <stdio.h>
 #include "legoapi/props/objects/tightrope.h"
 
+void GameaiNuError(void) {
+}
+
 void *CutScene_FindInst(void *, char *);
 
 void __movsd(unsigned long *, unsigned long const *, unsigned int);

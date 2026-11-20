@@ -62,6 +62,10 @@
 #include "nu2api/nuwin32/Stubs.h"
 #include "nu2api/nuwin32/d3dCore.h"
 #include "legoapi/items/collect/minikits.h"
+
+extern "C" void LegoapiStatusNuError(void) {
+}
+
 static i32 goldbrickmsgcount = 0;
 
 /* Walks the two adjacent 0x14-byte rumble records. */

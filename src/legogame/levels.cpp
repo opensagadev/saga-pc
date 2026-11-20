@@ -140,6 +140,9 @@
 #include "legoapi/props/objects/legoapi_signal.h"
 #include "legoapi/characters/motion/chris.h"
 
+extern "C" void LevelsNuError(void) {
+}
+
 extern "C" void FmvPlatformUpdate(void);
 
 extern "C" {

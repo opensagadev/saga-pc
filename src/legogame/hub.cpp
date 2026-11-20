@@ -99,6 +99,9 @@
 #include "legoapi/props/doors/doors.h"
 #include "legoapi/world/levels/episodeV.h"
 
+extern "C" void HubNuError(void) {
+}
+
 extern "C" {
     extern i32 HubDoorNewLevel;
 }

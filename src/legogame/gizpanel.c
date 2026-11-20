@@ -44,6 +44,9 @@
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numusic/sfx.h"
 
+void GizpanelNuError(void) {
+}
+
 typedef struct {
     u32 triggered[1];
     u32 enabled[1];

@@ -27,6 +27,9 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
+void SecuritydoorNuError(void) {
+}
+
 typedef struct security_door_progress_s { // size 0xc
     u32 visible_mask[1];                  // 0x0
     u32 active_mask[1];                   // 0x4

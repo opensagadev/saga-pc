@@ -21,6 +21,9 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
+extern "C" void LedgeNuError(void) {
+}
+
 typedef struct LEDGEPIECE { // size 0x20
     i16 object_id;          // 0x00
     i8 type_code;           // 0x02

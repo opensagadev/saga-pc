@@ -17,6 +17,9 @@
 #include "nu2api/numath/nuvec.h"
 #include "legoapi/misc/utilities.h"
 
+void GiztorpedoNuError(void) {
+}
+
 i32 GizTorp_Load(void *world_pointer, void *unused) {
     WORLDINFO *world = world_pointer;
     TORPEDO_MACHINE_SYS *system;

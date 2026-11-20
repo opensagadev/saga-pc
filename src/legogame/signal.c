@@ -35,6 +35,9 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
+void SignalNuError(void) {
+}
+
 i32 Signals_Load(WORLDINFO *world, void *unused) {
     i32 version;
     i32 index;

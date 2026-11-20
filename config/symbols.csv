@@ -2484,8 +2484,8 @@ address,symbol,size,ctype
 0x4d4380,_Traffic_FindVehicle,205,i32 __cdecl (char *)
 0x4d4450,_Traffic_vehicle,77,void __cdecl (NUFPAR *)
 0x004d44a0,_TrafficAnimSys_Configure,650,"void __cdecl (WORLDINFO *, char *)"
-0x4d4730,_fun_004d4730,153,
-0x4d47d0,_fun_004d47d0,50,
+0x4d4730,_TrafficAnimSys_Spawn,153,
+0x4d47d0,_TrafficAnimSys_Free,50,
 0x4d4810,_TrafficAnimSys_Reset,363,
 0x4d4980,_TrafficAnimSys_Update,373,
 0x4d4b00,_TrafficAnimSys_Draw,434,

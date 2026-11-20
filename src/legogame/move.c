@@ -131,6 +131,9 @@
 #include "legoapi/items/collect/detonator.h"
 #include "legoapi/actions/character/transform.h"
 
+void MoveNuError(void) {
+}
+
 extern i32 LandspeederExhaustJoints[3];
 
 extern f32 DirectionalGrappleSeekScale;

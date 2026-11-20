@@ -32,6 +32,9 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
+extern "C" void TeleportNuError(void) {
+}
+
 typedef struct TELEPORT_KEYWORDS { // size 0x64
     char *name_prefix;             // 0x00
     NUFPCOMJMP keywords[12];       // 0x04

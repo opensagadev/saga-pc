@@ -19,6 +19,9 @@
 #include "nu2api/numath/nurand.h"
 #include "nu2api/numath/nuvec.h"
 
+void TrafficNuError(void) {
+}
+
 static TRAFFICANIM_s reference_trafficanim = {0};
 static TRAFFICANIM_s *parse_trafficanim = 0;
 static TRAFFICANIMSYS_s *parse_trafficanimsys = 0;
@@ -187,6 +190,36 @@ void TrafficAnimSys_Configure(WORLDINFO *world, char *config) {
     parse_worldinfo = NULL;
 }
 
+/* Moves an instance from the free list to the active list and starts it on the animation at the given frame; a
+   vehicle index outside 0..15 picks a random vehicle of the animation. NULL when there is nothing to spawn. */
+static TRAFFICANIMINSTANCE_s *TrafficAnimSys_Spawn(TRAFFICANIMSYS_s *system, TRAFFICANIM_s *animation, i32 vehicle_index, f32 frame) {
+    TRAFFICANIMINSTANCE_s *instance = NULL;
+    if (system != NULL && animation != NULL && animation->vehicle_count != 0) {
+        instance = (TRAFFICANIMINSTANCE_s *)(NuLinkedListGetHead(&system->free_instances));
+        if (instance != NULL) {
+            NuLinkedListRemove(&system->free_instances, &instance->link);
+            NuLinkedListAppend(&system->active_instances, &instance->link);
+            instance->frame = frame;
+            if (vehicle_index < 0 || vehicle_index >= 16) {
+                vehicle_index = qrand() / (0xffff / animation->vehicle_count + 1);
+            }
+            instance->animation = animation;
+            instance->vehicle_index = vehicle_index;
+        }
+    }
+    return instance;
+}
+
+/* Returns an active instance to the free list. */
+static TRAFFICANIMINSTANCE_s *TrafficAnimSys_Free(TRAFFICANIMSYS_s *system, TRAFFICANIMINSTANCE_s *instance) {
+    if (system != NULL && instance != NULL) {
+        NuLinkedListRemove(&system->active_instances, &instance->link);
+        instance->link.next = NULL;
+        NuLinkedListAppend(&system->free_instances, &instance->link);
+    }
+    return instance;
+}
+
 void TrafficAnimSys_Reset(TRAFFICANIMSYS_s *system) {
     i32 i;
     struct TRAFFICANIM_s *animation;
@@ -211,18 +244,10 @@ void TrafficAnimSys_Reset(TRAFFICANIMSYS_s *system) {
     animation = system->animations;
     for (animation_index = 0; animation_index < system->animation_count; ++animation_index, ++animation) {
         f32 frame = 0.0f;
-        while (frame < animation->end_frame && animation->vehicle_count != 0) {
-            i32 random;
-            TRAFFICANIMINSTANCE_s *instance = (TRAFFICANIMINSTANCE_s *)(NuLinkedListGetHead(&system->free_instances));
-            if (instance == NULL) {
+        while (frame < animation->end_frame) {
+            if (TrafficAnimSys_Spawn(system, animation, -1, frame) == NULL) {
                 break;
             }
-            NuLinkedListRemove(&system->free_instances, &instance->link);
-            NuLinkedListAppend(&system->active_instances, &instance->link);
-            instance->frame = frame;
-            random = qrand() / (0xffff / animation->vehicle_count + 1);
-            instance->animation = animation;
-            instance->vehicle_index = random;
             frame += animation->frame_interval - animation->random_interval + animation->random_interval * 2.0f * NuRandFloat();
         }
 
@@ -245,9 +270,7 @@ void TrafficAnimSys_Update(TRAFFICANIMSYS_s *system) {
         TRAFFICANIM_s *animation = instance->animation;
         instance->frame += animation->tfactor * FRAMETIME * 60.0f;
         if (instance->frame > animation->end_frame) {
-            NuLinkedListRemove(&system->active_instances, &instance->link);
-            instance->link.next = NULL;
-            NuLinkedListAppend(&system->free_instances, &instance->link);
+            TrafficAnimSys_Free(system, instance);
         }
         instance = next;
     }
@@ -256,18 +279,7 @@ void TrafficAnimSys_Update(TRAFFICANIMSYS_s *system) {
     for (animation_index = 0; animation_index < system->animation_count; ++animation_index, ++animation) {
         animation->next_spawn_time -= animation->tfactor * FRAMETIME * 60.0f;
         if (animation->next_spawn_time <= 0.0f) {
-            if (animation->vehicle_count != 0) {
-                instance = (TRAFFICANIMINSTANCE_s *)(NuLinkedListGetHead(&system->free_instances));
-                if (instance != NULL) {
-                    i32 random;
-                    NuLinkedListRemove(&system->free_instances, &instance->link);
-                    NuLinkedListAppend(&system->active_instances, &instance->link);
-                    instance->frame = 0.0f;
-                    random = qrand() / (0xffff / animation->vehicle_count + 1);
-                    instance->animation = animation;
-                    instance->vehicle_index = random;
-                }
-            }
+            TrafficAnimSys_Spawn(system, animation, -1, 0.0f);
 
             animation->next_spawn_time =
                 animation->frame_interval - animation->random_interval + animation->random_interval * 2.0f * NuRandFloat();

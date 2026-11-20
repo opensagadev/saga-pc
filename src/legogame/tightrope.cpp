@@ -27,6 +27,9 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
+extern "C" void TightropeNuError(void) {
+}
+
 typedef struct tightrope_progress_recovered_s {
     u32 active_mask[1];
     u32 visible_mask[1];

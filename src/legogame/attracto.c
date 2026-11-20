@@ -34,6 +34,9 @@
 #include <stdio.h>
 #include "legoapi/items/collect/batarang.h"
 
+void AttractoNuError(void) {
+}
+
 typedef struct attracto_progress_recovered_s { // size 0x2c
     u8 counts[32];                             // 0x00
     u32 visible[1];                            // 0x20

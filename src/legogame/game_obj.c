@@ -106,6 +106,9 @@
 #include <float.h>
 #include "legoapi/actions/movement/carrying.h"
 
+void GameObjNuError(void) {
+}
+
 /* Full PC ObjHitObj source contract: complete 5764-byte original interval,
    physical calling convention and finite reader cohorts independently reviewed.
    PC-only reaction and adaptive branches and PC DWORD masks are preserved.

@@ -17,6 +17,9 @@
 #include "nu2api/numath/nuvec.h"
 #include "legoapi/gizmos/traps/attracto.h"
 
+void ShardNuError(void) {
+}
+
 typedef struct shard_progress_recovered_s { // size 0x30
     u32 collected[4];                       // 0x00
     u32 active[4];                          // 0x10

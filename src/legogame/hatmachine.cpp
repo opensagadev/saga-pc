@@ -39,6 +39,9 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
+extern "C" void HatmachineNuError(void) {
+}
+
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 extern "C" {
     static f32 HatmachineFabs(f32 f) {

@@ -44,6 +44,9 @@
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
 
+void TorpedoNuError(void) {
+}
+
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 TorpedoFabs(f32 f) {
     f32 rv;

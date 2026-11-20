@@ -45,6 +45,9 @@
 #include "nu2api/numath/nuvec.h"
 #include "legoapi/ai/game/creature.h"
 
+void ZipupNuError(void) {
+}
+
 static f32 ZipUpRiderHeight = 0.5f;
 static f32 ZipUpRiderOffsetScale = 0.9f;
 static f32 ZipUpSwingDuration = 1.5f;

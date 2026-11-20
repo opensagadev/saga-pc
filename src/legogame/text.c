@@ -14,6 +14,9 @@
 #include <string.h>
 #include "legoapi/text_tables.h"
 
+void TextNuError(void) {
+}
+
 void Text_SetLanguage_Game(i32 language) {
     switch (language) {
         case NULANGUAGE_GERMAN:

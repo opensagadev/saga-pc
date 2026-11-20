@@ -20,6 +20,9 @@
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/nuvec.h"
 
+void GizbombgenNuError(void) {
+}
+
 typedef struct bomb_generator_progress_s {
     u32 active[3];
     u32 visible[3];

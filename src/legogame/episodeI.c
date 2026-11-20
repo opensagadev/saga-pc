@@ -65,6 +65,9 @@
 #include "nu2api/numath/nuvec4.h"
 #include <math.h>
 
+void EpisodeINuError(void) {
+}
+
 extern f32 sebulba_goal_ahead_vals[4];
 extern f32 sebulba_fallback_lerpf;
 extern f32 sebulba_fallback_dist;

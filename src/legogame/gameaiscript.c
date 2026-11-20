@@ -111,6 +111,9 @@
 #include "legoapi/world/levels/episodeIII.h"
 #include "nu2api/nu3d/nurndr.h"
 
+void GameaiscriptNuError(void) {
+}
+
 typedef union AI_ACTION_FLAGS_EF4 { // size 0x4
     u32 word;
 
