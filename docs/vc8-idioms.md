@@ -849,6 +849,12 @@ as recorded differences.
   (`DestroyRippleMtls`); a duplicated idempotent store plus parameter copies
   (`PushSeekComplete`). Patches are in `build/permute2/` of the trial.
 
+- U21 a range test `x >= 0 && x < N` on a small signed value: ours is folded
+  into one unsigned compare (`cmp al, N-1; ja`), retail keeps the two signed
+  tests (`test al, al; jl` then `cmp al, N; jge`). `> -1`, `<= N-1`, the
+  operand type and the test order did not change it. `TrafficAnimSys_Configure`
+  (room id), `PartImpact_ThermalDetonator` (surface type).
+
 ### U3 investigation (register choice)
 
 Micro-tests compiled with the project flags (scratch C, `/O2 /Gy /GS`) and the
