@@ -777,6 +777,24 @@ pointer is taken, 99.09 -> 99.30).
 - `tools/refscan.py` lists functions whose two sides use different conversion
   constants.
 
+### I65: an unreferenced static copy names the helper its unit wrote out
+
+A not-implemented function nothing calls, with register arguments (`eax`,
+`ecx`, `esi` read before any stack load), is the standalone copy of a
+`static` helper whose every call was inlined (I48). Its body tells which
+helper; the unit's source usually still has that body written out at each
+use. Compare it with the mapped functions of other units (relocations
+masked): a twin such as `CreatureMtxSetRotationXY` or `DebrisMtxCopyPrivate`
+names the helper, then replace the written-out copies with calls:
+`SnakeMtxSetRotationXY` (also made `DrawSnakeBody` and `SnakeBeenHit`
+exact), `TorpedoMtxCopy`/`TorpedoMtxSetIdentity`, `VuMtxSetIdentity`,
+`AiEditorSetCameraPos` (`pathEditor_Process` 99.1 -> 99.9),
+`AiEditorLocatorInSet`, `GuideLine_Init`, `EduiTextPickCursorLeft`. The
+same holds for inline accessors (`ReplicatorList::First`,
+`V2Peer::GetStats`). When the written-out form compiles differently from
+the copy (the copy stores `z, y, x`, the sites `x, y, z`), the sites did
+not use that helper: leave it unwritten.
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated
