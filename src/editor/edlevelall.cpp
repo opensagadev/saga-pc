@@ -4589,21 +4589,20 @@ void BezierLineEval(VuVec &result, VuVec &start, VuVec &first_control, VuVec &en
  * its distance from the camera. */
 void DrawBezierLine(VuVec &start, VuVec &start_control, VuVec &end, VuVec &end_control, NUMTL *material, i32 colour) {
     VuVec camera;
-    camera.x = global_camera.mtx.m30;
-    camera.y = global_camera.mtx.m31;
-    camera.z = global_camera.mtx.m32;
+    camera.xyz = global_camera.mtx.translation;
     VuVec offset = start - camera;
     f32 distance = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
     offset = end - camera;
     f32 end_distance = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
-    if (distance > end_distance) {
+    if (end_distance < distance) {
         distance = end_distance;
     }
-    if (5.5f > distance) {
+    if (distance < 5.5f) {
         distance = 5.5f;
     }
     VuVec chord = end - start;
-    if (BezierDrawTolerance * distance < chord.x * chord.x + chord.y * chord.y + chord.z * chord.z && bezierdraw_depth < 16) {
+    f32 length = chord.x * chord.x + chord.y * chord.y + chord.z * chord.z;
+    if (BezierDrawTolerance * distance < length && bezierdraw_depth < 16) {
         bezierdraw_depth++;
         __declspec(align(16)) VuVec points[6];
         VuVecCopy(points[0], (start_control + end_control) * 0.5);
@@ -8920,7 +8919,7 @@ i32 EdManScale::Process(EdInputContext &input, ClassObjectList &objects) {
                 if (movement == 0.0f) {
                     continue;
                 }
-                movement = movement * 0.005;
+                movement = movement * (f64)0.005f;
                 f32 factor = movement + 1.0;
                 VuVecCopy(scale, unit * factor);
                 VuMtxSetScale(scaling, scale);

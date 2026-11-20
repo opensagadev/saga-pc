@@ -14108,10 +14108,8 @@ AIPATHSYS *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch_cu
                             AIPATHNODE *node = &path->nodes[node_index];
                             AISysGetPathPosEx(aieditor->ai_system, &node->position, &info, first_path, 0xff, 0, NULL);
                             if ((info.flags & AIPATHINFO_FLAG_ON_PATH)) {
-                                f64 half = 0.5f;
-                                f64 path_distance = info.distance;
                                 node->path_flags = info.connection - path->connections;
-                                if (path_distance > half || (info.direction != 0 && path_distance < half)) {
+                                if (info.distance > 0.5f || (info.direction != 0 && info.distance < 0.5f)) {
                                     node->runtime_flags |= 4;
                                 }
                                 node->runtime_flags |= 1;

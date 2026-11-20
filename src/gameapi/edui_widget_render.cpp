@@ -1824,20 +1824,20 @@ extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta
     edui_slider_s *slider = (edui_slider_s *)item;
     u32 buttons = pad->digital_buttons;
     if ((buttons & PAD_BUTTON_L1) && (buttons & PAD_BUTTON_R1)) {
-        f32 value;
         if (slider->minimum <= 0.0f && 0.0f <= slider->minimum + slider->range) {
-            value = 0.0f;
+            slider->value = 0.0f;
+            slider->normalized_value = (0.0f - slider->minimum) / slider->range;
+            slider->change_timer = 60;
+            if (slider->changed) {
+                slider->changed(menu, item, pad->digital_buttons);
+            }
         } else if (slider->minimum <= 1.0f && 1.0f <= slider->minimum + slider->range) {
-            value = 1.0f;
-        } else {
-            EduiSliderRepeatTimer = 30;
-            return 0;
-        }
-        slider->value = value;
-        slider->normalized_value = (value - slider->minimum) / slider->range;
-        slider->change_timer = 60;
-        if (slider->changed) {
-            slider->changed(menu, item, pad->digital_buttons);
+            slider->value = 1.0f;
+            slider->normalized_value = (1.0f - slider->minimum) / slider->range;
+            slider->change_timer = 60;
+            if (slider->changed) {
+                slider->changed(menu, item, pad->digital_buttons);
+            }
         }
         EduiSliderRepeatTimer = 30;
     } else if (buttons & PAD_BUTTON_L1) {
