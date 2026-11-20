@@ -13,12 +13,12 @@ struct PC_CONTROL_CONFIG;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i32 PermDataLoaded;
+    extern volatile i32 PermDataLoaded;
     extern volatile i32 LoadPerm_LanguageSelect;
     extern NUMTL *legal_mtl;
     extern i32 legal_tid;
     extern i32 loadlegal_done;
-    extern i32 LoadPerm_StringsLoaded;
+    extern volatile i32 LoadPerm_StringsLoaded;
     extern NUGSCN *save_icon_scene;
     extern LEVELSPLINE LevelSplinesTable[26];
     extern i32 LevelHackDataSize;
