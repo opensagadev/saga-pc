@@ -1949,8 +1949,11 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
                 continue;
             }
         } else {
-            result = CharConfig(id, directory, filename, permanent != 0 ? &permbuffer_ptr : NULL, permanent != 0 ? &permbuffer_end : NULL,
-                                permanent != 0, NULL, 0, 1, game_keywords);
+            if (permanent != 0) {
+                result = CharConfig(id, directory, filename, &permbuffer_ptr, &permbuffer_end, 1, NULL, 0, 1, game_keywords);
+            } else {
+                result = CharConfig(id, directory, filename, NULL, NULL, 0, NULL, 0, 1, game_keywords);
+            }
         }
         if (result != 2) {
             continue;
@@ -1972,8 +1975,11 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
             CharConfig(id, NULL, NULL, &permbuffer_ptr, &permbuffer_end, 0, ConfigBuffer.bytes, size, 0, game_keywords);
         } else {
             SecondCharConfigure = 1;
-            CharConfig(id, directory, filename, permanent != 0 ? &permbuffer_ptr : NULL, permanent != 0 ? &permbuffer_end : NULL,
-                       permanent != 0, NULL, 0, 0, game_keywords);
+            if (permanent != 0) {
+                CharConfig(id, directory, filename, &permbuffer_ptr, &permbuffer_end, 1, NULL, 0, 0, game_keywords);
+            } else {
+                CharConfig(id, directory, filename, NULL, NULL, 0, NULL, 0, 0, game_keywords);
+            }
         }
     }
 }
