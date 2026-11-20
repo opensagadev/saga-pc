@@ -107,6 +107,32 @@ extern "C" {
     i32 PCSoundVolumeMultiplier = 0x4000;
 }
 
+/* Uncalled: the sound master volume, 0 to 1, as the 1.15 fixed-point multiplier of every voice volume. */
+extern "C" void PCSoundSetMasterVolume(f32 volume) {
+    if (volume > 1.0f) {
+        volume = 1.0f;
+    }
+    if (volume < 0.0) {
+        volume = 0.0f;
+    } else if (volume > 1.0f) {
+        volume = 1.0f;
+    }
+    PCSoundVolumeMultiplier = volume * 16384.0;
+}
+
+/* Scales a left and right volume (either may be absent) by the master volume multiplier. */
+static void PCSoundScaleVolumes(i32 *left, i32 *right) {
+    i32 multiplier = PCSoundVolumeMultiplier;
+    if (multiplier != 0x4000) {
+        if (left != NULL) {
+            *left = (*left * multiplier) >> 15;
+        }
+        if (right != NULL) {
+            *right = (*right * multiplier) >> 15;
+        }
+    }
+}
+
 extern "C" void PCSoundPlayUnpositioned(i32 sample_id, i32 volume_index, i32 arg3, i32 arg4, f32 arg5, i32 arg6, f32 arg7, f32 arg8,
                                         i32 arg9) {
     SoundSamplePC *sample;
@@ -123,11 +149,8 @@ extern "C" void PCSoundPlayUnpositioned(i32 sample_id, i32 volume_index, i32 arg
         return;
     }
 
-    if (PCSoundVolumeMultiplier != 0x4000) {
-        scaled_volume = (PCSoundVolumeMultiplier * volume_index) >> 15;
-    } else {
-        scaled_volume = volume_index;
-    }
+    PCSoundScaleVolumes(&volume_index, NULL);
+    scaled_volume = volume_index;
 
     voice_id = SoundVoiceManager.AllocateVoice(sample_id, 0);
     if (voice_id <= -1) {
