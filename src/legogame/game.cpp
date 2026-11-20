@@ -262,10 +262,11 @@ static void LEGO_AllGoldBricksFn(void);
 extern "C" {
 
     /* This unit keeps its own out-of-line NuFabs copy. */
-    static f32 CutSceneFabs(f32 value) {
-        i32 bits = *(i32 *)&value;
-        bits &= 0x7fffffff;
-        return *(f32 *)&bits;
+    static f32 CutSceneFabs(f32 f) {
+        f32 rv;
+
+        *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+        return rv;
     }
 
     /* A new game starts on the first difficulty level with the accumulator half way. */
@@ -2716,8 +2717,7 @@ extern "C" {
         if (intensity < -(PodAvalancheShakeFrames - 1.0f)) {
             intensity = -(PodAvalancheShakeFrames - 1.0f);
         }
-        intensity = CutSceneFabs(intensity);
-        intensity = 1.0f - intensity / (PodAvalancheShakeFrames - 1.0f);
+        intensity = 1.0f - CutSceneFabs(intensity) / (PodAvalancheShakeFrames - 1.0f);
 
         distance = NuVecDist(&GameCam->position, &PodAvalanchePeakPos, NULL);
         if (distance < PodAvalancheShakeRange) {
