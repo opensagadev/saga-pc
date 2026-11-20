@@ -1113,7 +1113,7 @@ i32 PushBlock_GetOutput(PUSH_BLOCK *block, i32 output_index) {
         if (output_index == 0) {
             return block->completed_snap_positions != 0;
         }
-        return ((u8)(1 << output_index) & block->completed_snap_positions) != 0;
+        return (block->completed_snap_positions & (1 << output_index)) != 0;
     }
     return -1;
 }
