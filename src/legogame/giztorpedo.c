@@ -91,6 +91,11 @@ void GizTorp_Activate(void *input, i32 active) {
     }
 }
 
+/* Back to visible and active. */
+static void GizTorpReset(TORPEDO_MACHINE *torp) {
+    torp->flags |= 3;
+}
+
 void GizTorps_Reset(void *world_ptr, void *data, void *progress) {
     WORLDINFO *w = world_ptr;
     TORPEDO_MACHINE_SYS *s;
@@ -103,8 +108,7 @@ void GizTorps_Reset(void *world_ptr, void *data, void *progress) {
         return;
     }
     for (i = 0; i < s->count; ++i) {
-        TORPEDO_MACHINE *torp = &s->machines[i];
-        torp->flags |= 3;
+        GizTorpReset(&s->machines[i]);
     }
 }
 

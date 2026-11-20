@@ -1400,7 +1400,7 @@ address,symbol,size,ctype
 0x46f990,_GizTorps_ReserveBufferSpace,174,void * __cdecl(void *)
 0x46fa40,_GizTorp_SetVisibility,30,"void __cdecl(GIZMO *, i32)"
 0x46fa60,_GizTorp_Activate,28,"void __cdecl(GIZMO *, i32)"
-0x46fa80,_fun_0046fa80,5,
+0x46fa80,_GizTorpReset,5,
 0x46fa90,_GizTorps_Reset,55,"void __cdecl(void *, void *, void *)"
 0x46fad0,_GizTorpMachine_FindNearest,171,"void *__cdecl(WORLDINFO*,NUVEC*,f32*)"
 0x46fb80,_GizTorp_Update,94,"void __cdecl(void *, void *, f32)"

@@ -94,6 +94,15 @@ static f32 CameraFabs(f32 f) {
     return rv;
 }
 
+/* Signed difference of two 16-bit angles, in -0x8000..0x7fff. */
+static i32 CameraVuAngleDifference(i32 from, i32 to) {
+    i32 difference = (from - to) & 0xffff;
+    if (difference >= 0x8000) {
+        difference -= 0x10000;
+    }
+    return difference;
+}
+
 f32 __fastcall PCDeviceBackend_GetActiveAspect(PC_DEVICE_BACKEND *backend) {
     switch (PcWindowOptions.aspect_mode) {
         case PC_ASPECT_16_9:
@@ -1227,7 +1236,7 @@ mode_selected:
     } else {
         if (pitch_override == -1) {
             f32 pitch_seek;
-            if (((camera->pitch - pitch) & 0xffff) > 0x7fff) {
+            if (CameraVuAngleDifference(camera->pitch, pitch) < 0) {
                 CamStopBlend += FRAMETIME;
                 if (CamStopBlend > 1.0f) {
                     CamStopBlend = 1.0f;

@@ -145,7 +145,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x0046f6f0,60,_fun_0046f6f0,extent,,legogame/gizpanel.c,unreferenced,
 0x0046f890,1,_GiztorpedoNuError,copy,,legogame/giztorpedo.c,"empty static directly before the VuVecMake copy at 0x46f8a0; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x0046f8a0,28,_GiztorpedoVuVecMake,copy,,legogame/giztorpedo.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
-0x0046fa80,5,_fun_0046fa80,extent,,legogame/giztorpedo.c,unreferenced,
+0x0046fa80,5,_GizTorpReset,extent,,legogame/giztorpedo.c,unreferenced,
 0x00470010,23,_GrabberVuVecCopy,copy,,legogame/grabber.c,bytes equal ?VuVecCopy@@YAXAAUVuVec@@ABU1@@Z,
 0x00470030,28,_GrabberVuVecMake,copy,,legogame/grabber.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x00472770,1,_HatmachineNuError,copy,,legogame/hatmachine.c,"empty static directly before the Fabs copy at 0x472780; sibling build: the empty extern ""C"" NuError heads each object's header statics",
