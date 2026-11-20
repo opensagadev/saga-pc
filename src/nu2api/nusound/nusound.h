@@ -66,6 +66,7 @@ typedef struct SoundVoiceManagerPC { // size 0xda8
     ~SoundVoiceManagerPC();
     void Init(i32, u8, u8);
     i32 LoadWavSample(const char *, i32);
+    void PlaySample(i32 sample_index, u8 loop);
     void UnloadSample(i32);
     void ClearSamples(void);
     void SetOptionD14(u8);

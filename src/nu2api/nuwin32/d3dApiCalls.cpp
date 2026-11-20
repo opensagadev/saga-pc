@@ -542,3 +542,13 @@ extern "C" void PcCaptureScreenshot(u32 width, u32 height) {
 
 extern "C" void fun_006dff30(void) {
 }
+
+/* Uncalled: draws the screen triangle, optionally with no pixel shader bound. */
+void PC_DEVICE_BACKEND::DrawScreenTriangle(u8 without_pixel_shader) {
+    PCDeviceSetVertexDeclaration(screen_uv_declaration);
+    PCDeviceSetStreamSource(0, triangle_buffer, 0, 16);
+    if (without_pixel_shader) {
+        PCDeviceSetPixelShader(NULL);
+    }
+    PCDeviceDrawPrimitive(4, 0, 1);
+}

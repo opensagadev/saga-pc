@@ -851,6 +851,16 @@ i32 SoundVoiceManagerPC::LoadWavSample(const char *name, i32 index) {
     return 0;
 }
 
+/* Uncalled: starts a loaded sample's own buffer, looping or once. */
+void SoundVoiceManagerPC::PlaySample(i32 sample_index, u8 loop) {
+    u32 flags = 0;
+    if (loop) {
+        flags = 1;
+    }
+    SoundSamplePC *sample = &samples[sample_index];
+    sample->buffer->vtable->play(sample->buffer, 0, 0, flags);
+}
+
 u8 SoundVoiceManagerPC::IsSampleValid(i32 sample_index) {
     if (samples != NULL) {
         return samples[sample_index].valid_byte;

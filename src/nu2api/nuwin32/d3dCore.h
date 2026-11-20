@@ -329,6 +329,7 @@ typedef struct PC_DEVICE_BACKEND {          // size 0x700
     i32 ShaderVariant16();
     i32 ShaderVariant1();
     void Shutdown();
+    void DrawScreenTriangle(u8 without_pixel_shader);
     void DrawPostEffectQuad();
     void DrawPostEffectIndexed();
     void PostEffectBarrier();

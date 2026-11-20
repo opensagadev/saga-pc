@@ -247,24 +247,6 @@ void bgProcInit(void) {
     }
 }
 
-/* Uncalled: finishes every request queued behind the active one through its acknowledge callback and frees it,
- * then marks the active request finished. */
-void bgProcCancelPending(void) {
-    BGPROCINFO *proc = (BGPROCINFO *)NuLstGetNext(bgproc_procinfo_pool, (NULNKHDR *)bgproc_active);
-    while (proc != NULL) {
-        BGPROCINFO *next = (BGPROCINFO *)NuLstGetNext(bgproc_procinfo_pool, (NULNKHDR *)proc);
-        proc->work_finished = 1;
-        if (proc->ack_fn != NULL) {
-            proc->ack_fn(proc);
-        }
-        NuLstFree((NULNKHDR *)proc);
-        proc = next;
-    }
-    if (bgproc_active != NULL) {
-        bgproc_active->work_finished = 1;
-    }
-}
-
 void bgprocFreeze(void) {
     bgproc_freeze = 1;
     ResetEvent(bgproc_resume_event);

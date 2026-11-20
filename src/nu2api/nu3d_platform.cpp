@@ -8007,7 +8007,7 @@ extern "C" {
     void NuRndrFxSet(f32 height, u32 colour) {
         NuRndrFxHeight = height;
         u32 swapped = colour >> 24;
-        swapped = (swapped << 8) + (u8)colour;
+        swapped = (swapped << 8) + colour % 256;
         swapped = (swapped << 8) + ((colour >> 8) & 0xff);
         NuRndrFxColour = (swapped << 8) + ((colour >> 16) & 0xff);
     }

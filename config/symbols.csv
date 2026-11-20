@@ -3413,7 +3413,7 @@ address,symbol,size,ctype
 0x004fecf0,_bgPostRequest,151,"BGPROCINFO * __cdecl (void (__cdecl *)(BGPROCINFO *), void (__cdecl *)(BGPROCINFO *), void *, i32)"
 0x004fed90,_bgProcWorker@4,348,DWORD __stdcall (void *)
 0x004feef0,_bgProcInit,162,void __cdecl(void)
-0x4fefa0,_bgProcCancelPending,113,
+0x4fefa0,_fun_004fefa0,113,
 0x004ff020,_bgprocFreeze,36,void __cdecl(void)
 0x004ff050,_bgprocUnFreeze,23,void __cdecl(void)
 0x004ff070,_bgprocIsFrozen,12,i32 __cdecl(void)
@@ -11795,7 +11795,7 @@ address,symbol,size,ctype
 0x00696f10,?SetSampleName@SoundVoiceManagerPC@@QAEXPBDH@Z,141,"void __thiscall (SoundVoiceManagerPC *, const char *, i32)"
 0x696fa0,?LoadWavSample@SoundVoiceManagerPC@@QAEHPBDH@Z,805,"i32 __thiscall SoundVoiceManagerPC::LoadWavSample(const char *name, i32 index)"
 0x6972d0,_fun_006972d0,65,
-0x697320,_fun_00697320,51,
+0x697320,?PlaySample@SoundVoiceManagerPC@@QAEXHE@Z,51,
 0x697360,?IsSampleValid@SoundVoiceManagerPC@@QAEEH@Z,35,
 0x697390,?IsSampleFailed@SoundVoiceManagerPC@@QAEEH@Z,35,
 0x6973c0,?ClearSamples@SoundVoiceManagerPC@@QAEXXZ,167,void __thiscall SoundVoiceManagerPC::ClearSamples(void)
@@ -13844,7 +13844,7 @@ address,symbol,size,ctype
 0x6e22e0,?CopyBackBufferTo@PC_DEVICE_BACKEND@@QAEJPAUPC_EFFECT_SURFACE@@H@Z,62,
 0x6e2320,?CopySurfaceTarget@PC_DEVICE_BACKEND@@QAEJPAUPC_EFFECT_SURFACE@@HH@Z,43,"HRESULT __thiscall PC_DEVICE_BACKEND::CopySurfaceTarget(PC_EFFECT_SURFACE*,i32,i32)"
 0x6e2350,?SwapTargets@PC_DEVICE_BACKEND@@QAEXXZ,49,
-0x6e2390,_fun_006e2390,71,
+0x6e2390,?DrawScreenTriangle@PC_DEVICE_BACKEND@@QAEXE@Z,71,
 0x6e23e0,?DrawPostEffectQuad@PC_DEVICE_BACKEND@@QAEXXZ,49,
 0x6e2420,?DrawPostEffectIndexed@PC_DEVICE_BACKEND@@QAEXXZ,77,
 0x006e2470,?ApplyViewport@PC_DEVICE_BACKEND@@QAEXPBUPC_VIEWPORT@@@Z,159,
