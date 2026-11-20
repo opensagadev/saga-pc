@@ -11714,7 +11714,6 @@ address,symbol,size,ctype
 0x694930,?InitData@NuMusic@@QAEXPBDPATvariptr_u@@T2@@Z,577,"void  __thiscall NuMusic::InitData(const char *,VARIPTR *,VARIPTR)"
 0x00694b80,?GetAlbumHandle@NuMusic@@QAEHPBD@Z,90,"i32 __thiscall (NuMusic *, const char *)"
 0x694be0,?SetAlbum@NuMusic@@QAEHH@Z,61,"i32 __thiscall (NuMusic *, i32)"
-0x00694c20,?Initialise@NuMusic@@QAEHPBDPADPATVARIPTR@@T2@@Z,154,"i32 __thiscall (NuMusic *, const char *, char *, VARIPTR *, VARIPTR)"
 0x694c20,?Initialise@NuMusic@@QAEHPBDPADPATvariptr_u@@T2@@Z,154,"i32  __thiscall NuMusic::Initialise(const char *,char *,VARIPTR *,VARIPTR)"
 0x00694cc0,?SetMasterVolume@NuMusic@@QAEXM@Z,139,"void __thiscall (NuMusic *, f32)"
 0x00694d50,?SetFader@NuMusic@@QAEXMM@Z,84,"void __thiscall (NuMusic *, f32, f32)"
