@@ -439,8 +439,14 @@ static void *CreatePodRaceMine(NUVEC *pos) {
     return NULL;
 }
 
+/* Clears the mine's slot and its bit in pod_mines_bitfield. */
+static void PodRaceRemoveMine(MINE_ENTRY *entry) {
+    pod_mines_bitfield.bits &= (u64)(i64) ~(1 << (entry - minesys.mines));
+    memset(entry, 0, sizeof(*entry));
+    mine_count--;
+}
+
 static void PodRaceExplodeMine(MINE_ENTRY *entry, GAMEOBJECT *object) {
-    u64 mask;
     if (minesys.mine_debris != -1) {
         AddGameDebris(WORLD->game_debris_sys, minesys.mine_debris, &entry->pos);
     }
@@ -451,10 +457,7 @@ static void PodRaceExplodeMine(MINE_ENTRY *entry, GAMEOBJECT *object) {
     GameCam_NewShake(NULL, 0.75f, 1.0f, 1.0f);
     PlaySfx("Explode1", &object->collision_position);
     PodLoseSpeed(object, 1, 1);
-    mask = (u64)(i64) ~(1 << (entry - minesys.mines));
-    pod_mines_bitfield.bits &= mask;
-    memset(entry, 0, sizeof(*entry));
-    mine_count--;
+    PodRaceRemoveMine(entry);
 }
 
 static void PodRaceExplodeClientMine(NUVEC *position, GAMEOBJECT *object) {
@@ -498,9 +501,7 @@ void UpdatePodRaceMines(void) {
             }
             NuVecSub(&delta, &entry->pos, &GameCam->position);
             if (GameCam->dir.x * delta.x + GameCam->dir.y * delta.y + GameCam->dir.z * delta.z < 0.0) {
-                pod_mines_bitfield.bits &= (u64)(i64) ~(1 << (entry - minesys.mines));
-                memset(entry, 0, sizeof(*entry));
-                mine_count--;
+                PodRaceRemoveMine(entry);
                 continue;
             }
             entry->grow_alpha = (entry->grow += FRAMETIME) * PodMineAreaScale / PodMineGrowTime;

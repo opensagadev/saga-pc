@@ -2934,6 +2934,21 @@ static SPECIAL_LAYER SpecialLayer[42] = {
     {&ID_DEFAULTCHARACTER_B, "hires_limbs_blue", 0},    {&ID_DEFAULTCHARACTER_B, "lowres_limbs_blue", 0},
 };
 
+/* The first of up to three layer swaps whose source layer is set in the mask: that layer is replaced by its
+   partner. -1 leaves a pair out. */
+static void SwapSpecialLayer(u32 *mask, i32 from0, i32 to0, i32 from1, i32 to1, i32 from2, i32 to2) {
+    if (from0 != -1 && to0 != -1 && (*mask & SpecialLayer[from0].mask) != 0) {
+        *mask &= ~SpecialLayer[from0].mask;
+        *mask |= SpecialLayer[to0].mask;
+    } else if (from1 != -1 && to1 != -1 && (*mask & SpecialLayer[from1].mask) != 0) {
+        *mask &= ~SpecialLayer[from1].mask;
+        *mask |= SpecialLayer[to1].mask;
+    } else if (from2 != -1 && to2 != -1 && (*mask & SpecialLayer[from2].mask) != 0) {
+        *mask &= ~SpecialLayer[from2].mask;
+        *mask |= SpecialLayer[to2].mask;
+    }
+}
+
 u32 AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG *data = object->character_data->game_character;
     i32 cape_layer = data->cape_layer;
@@ -2949,68 +2964,30 @@ u32 AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
         if ((suit->flags & SUIT_DEMOLITION) != 0) {
             mask = (mask & ~cape) | SpecialLayer[0].mask;
             mask = (mask & ~SpecialLayer[3].mask) | SpecialLayer[5].mask;
-            if ((mask & SpecialLayer[20].mask) != 0) {
-                mask = (mask & ~SpecialLayer[20].mask) | SpecialLayer[24].mask;
-            } else if ((mask & SpecialLayer[21].mask) != 0) {
-                mask = (mask & ~SpecialLayer[21].mask) | SpecialLayer[25].mask;
-            }
+            SwapSpecialLayer(&mask, 20, 24, 21, 25, -1, -1);
             mask = (mask & ~SpecialLayer[17].mask) | SpecialLayer[19].mask;
         } else if ((suit->flags & SUIT_GLIDE) != 0) {
             mask &= ~cape;
         } else if ((suit->flags & SUIT_SONAR) != 0) {
-            mask = (mask & ~cape) | SpecialLayer[1].mask | SpecialLayer[7].mask;
+            mask = (mask & ~cape) | SpecialLayer[7].mask | SpecialLayer[1].mask;
             mask = (mask & ~SpecialLayer[3].mask) | SpecialLayer[4].mask;
-            if ((mask & SpecialLayer[20].mask) != 0) {
-                mask = (mask & ~SpecialLayer[20].mask) | SpecialLayer[22].mask;
-            } else if ((mask & SpecialLayer[21].mask) != 0) {
-                mask = (mask & ~SpecialLayer[21].mask) | SpecialLayer[23].mask;
-            }
+            SwapSpecialLayer(&mask, 20, 22, 21, 23, -1, -1);
             mask = (mask & ~SpecialLayer[17].mask) | SpecialLayer[18].mask;
-            if ((mask & SpecialLayer[8].mask) != 0) {
-                mask = (mask & ~SpecialLayer[8].mask) | SpecialLayer[14].mask;
-            } else if ((mask & SpecialLayer[9].mask) != 0) {
-                mask = (mask & ~SpecialLayer[9].mask) | SpecialLayer[15].mask;
-            } else if ((mask & SpecialLayer[10].mask) != 0) {
-                mask = (mask & ~SpecialLayer[10].mask) | SpecialLayer[16].mask;
-            }
+            SwapSpecialLayer(&mask, 8, 14, 9, 15, 10, 16);
         } else if ((suit->flags & SUIT_SHADOW) != 0) {
             mask |= SpecialLayer[2].mask;
-            if ((mask & SpecialLayer[8].mask) != 0) {
-                mask = (mask & ~SpecialLayer[8].mask) | SpecialLayer[11].mask;
-            } else if ((mask & SpecialLayer[9].mask) != 0) {
-                mask = (mask & ~SpecialLayer[9].mask) | SpecialLayer[12].mask;
-            } else if ((mask & SpecialLayer[10].mask) != 0) {
-                mask = (mask & ~SpecialLayer[10].mask) | SpecialLayer[13].mask;
-            }
+            SwapSpecialLayer(&mask, 8, 11, 9, 12, 10, 13);
         }
     } else if (suit != NULL && object->id == (u16)ID_DEFAULTCHARACTER_B) {
         if ((suit->flags & SUIT_WATER) != 0) {
             mask = (mask & ~hair & ~cape) | SpecialLayer[27].mask;
-            if ((mask & SpecialLayer[30].mask) != 0) {
-                mask = (mask & ~SpecialLayer[30].mask) | SpecialLayer[39].mask;
-            } else if ((mask & SpecialLayer[31].mask) != 0) {
-                mask = (mask & ~SpecialLayer[31].mask) | SpecialLayer[40].mask;
-            } else if ((mask & SpecialLayer[32].mask) != 0) {
-                mask = (mask & ~SpecialLayer[32].mask) | SpecialLayer[41].mask;
-            }
+            SwapSpecialLayer(&mask, 30, 39, 31, 40, 32, 41);
         } else if ((suit->flags & SUIT_MAGNET) != 0) {
             mask = (mask & ~cape) | SpecialLayer[26].mask;
-            if ((mask & SpecialLayer[30].mask) != 0) {
-                mask = (mask & ~SpecialLayer[30].mask) | SpecialLayer[36].mask;
-            } else if ((mask & SpecialLayer[31].mask) != 0) {
-                mask = (mask & ~SpecialLayer[31].mask) | SpecialLayer[37].mask;
-            } else if ((mask & SpecialLayer[32].mask) != 0) {
-                mask = (mask & ~SpecialLayer[32].mask) | SpecialLayer[38].mask;
-            }
+            SwapSpecialLayer(&mask, 30, 36, 31, 37, 32, 38);
         } else if ((suit->flags & SUIT_TECHNOLOGY) != 0) {
             mask = (mask & ~cape) | SpecialLayer[28].mask;
-            if ((mask & SpecialLayer[30].mask) != 0) {
-                mask = (mask & ~SpecialLayer[30].mask) | SpecialLayer[33].mask;
-            } else if ((mask & SpecialLayer[31].mask) != 0) {
-                mask = (mask & ~SpecialLayer[31].mask) | SpecialLayer[34].mask;
-            } else if ((mask & SpecialLayer[32].mask) != 0) {
-                mask = (mask & ~SpecialLayer[32].mask) | SpecialLayer[35].mask;
-            }
+            SwapSpecialLayer(&mask, 30, 33, 31, 34, 32, 35);
         } else if ((suit->flags & SUIT_ATTRACT) != 0) {
             mask = (mask & ~cape) | SpecialLayer[29].mask;
         }

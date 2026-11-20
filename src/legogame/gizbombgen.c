@@ -71,12 +71,16 @@ void GizmoBombGen_Activate(GIZMO *gizmo, i32 active) {
     }
 }
 
-void GizmoBombGen_SetVisibility(GIZMO *gizmo, i32 visible) {
-    GIZBOMBGEN_s *generator;
-    if (gizmo != NULL && gizmo->object != NULL) {
-        generator = gizmo->object;
+static void BombGeneratorSetVisibility(GIZBOMBGEN_s *generator, i32 visible) {
+    if (generator != NULL) {
         GameAnimSet_SetVisibility(generator->anim_set, visible);
         generator->visible = visible != 0;
+    }
+}
+
+void GizmoBombGen_SetVisibility(GIZMO *gizmo, i32 visible) {
+    if (gizmo != NULL) {
+        BombGeneratorSetVisibility(gizmo->object, visible);
     }
 }
 
@@ -99,21 +103,26 @@ void GizBombGens_SetResetFlag(void *world_ptr, void *data, void *progress) {
     s->progress = progress;
 }
 
+/* Back to the generator's start state; the bomb it made goes when the system removes bombs on reset. */
+static void BombGeneratorReset(GIZBOMBGEN_s *generator, GIZBOMBGENSYS_s *system) {
+    generator->flags |= 3;
+    if (generator->anim_set != NULL) {
+        GameAnimSet_EvaluateState(generator->anim_set);
+    }
+    if (generator->generated_bomb != NULL && (system->flags & 2) != 0 &&
+        (generator->generated_bomb->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+        (generator->generated_bomb->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0) {
+        KillGameObject(generator->generated_bomb, KILL_REASON_REMOVED, 0);
+    }
+    generator->generated_bomb = NULL;
+}
+
 static void BombGeneratorsApplyReset(GIZBOMBGENSYS_s *system, BOMB_GENERATOR_PROGRESS *progress) {
     GIZBOMBGEN_s *generator = system->bomb_generators;
     i32 index;
     i32 shared_bomb;
     for (index = 0; index < system->count; ++index, ++generator) {
-        generator->flags |= 3;
-        if (generator->anim_set != NULL) {
-            GameAnimSet_EvaluateState(generator->anim_set);
-        }
-        if (generator->generated_bomb != NULL && (system->flags & 2) != 0 &&
-            (generator->generated_bomb->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
-            (generator->generated_bomb->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0) {
-            KillGameObject(generator->generated_bomb, KILL_REASON_REMOVED, 0);
-        }
-        generator->generated_bomb = NULL;
+        BombGeneratorReset(generator, system);
         if (progress != NULL && index < 96) {
             i32 word = index / 32;
             u32 mask = 1u << (index & 31);

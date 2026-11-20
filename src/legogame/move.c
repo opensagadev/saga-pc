@@ -6710,6 +6710,17 @@ static void SetDefaultCharacterAnim(GAMEOBJECT *object) {
     }
 }
 
+/* Counts how long the character has been playing a fall animation (the protocol droid has three more). */
+static void UpdateFallAnimationTimer(GAMEOBJECT *object) {
+    i16 animation = object->anim_packet.requested_animation;
+    if (animation == ACTION_FALL || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
+                                     (animation == ACTION_FALL2 || animation == ACTION_FALL3 || animation == ACTION_FALL4))) {
+        object->player.fall_animation_timer += FRAMETIME;
+    } else {
+        object->player.fall_animation_timer = 0.0f;
+    }
+}
+
 static void BeastStartFallCode(GAMEOBJECT *object) {
     if (object->player.character_context == CHARACTER_CONTEXT_NONE && object->player.jump_variant_state == 0 && object->ground_flags != 0 &&
         object->previous_ground_flags == 0) {
@@ -7299,7 +7310,6 @@ void Animate_BEAST(GAMEOBJECT *object) {
     // MATCH-EXCEPTION: the fall-timer cast is repeated at each use; a cast local at the top changes
     // register choice (U3)
     GAMEPAD *pad = object->player.pad;
-    i16 animation;
     if ((U64_PAIR(&CInfo[object->player.character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->player.context_animation;
     } else {
@@ -7318,13 +7328,7 @@ void Animate_BEAST(GAMEOBJECT *object) {
         }
     }
     UpdateCharacterIdle(object);
-    animation = object->anim_packet.requested_animation;
-    if (animation == ACTION_FALL || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
-                                     (animation == ACTION_FALL2 || animation == ACTION_FALL3 || animation == ACTION_FALL4))) {
-        object->player.fall_animation_timer += FRAMETIME;
-    } else {
-        object->player.fall_animation_timer = 0.0f;
-    }
+    UpdateFallAnimationTimer(object);
 }
 
 void Animate_CANNON(GAMEOBJECT *object) {
@@ -7667,7 +7671,6 @@ void Animate_PROTOCOL(GAMEOBJECT *object) {
 }
 
 void Animate_BATTLEDROID(GAMEOBJECT *object) {
-    i16 animation;
     if ((U64_PAIR(&CInfo[object->player.character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->player.context_animation;
     } else if (object->context_target_position != NULL) {
@@ -7687,13 +7690,7 @@ void Animate_BATTLEDROID(GAMEOBJECT *object) {
                             (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_NO_TIPTOE) == 0, 0);
         }
     }
-    animation = object->anim_packet.requested_animation;
-    if (animation == ACTION_FALL || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
-                                     (animation == ACTION_FALL2 || animation == ACTION_FALL3 || animation == ACTION_FALL4))) {
-        object->player.fall_animation_timer += FRAMETIME;
-    } else {
-        object->player.fall_animation_timer = 0.0f;
-    }
+    UpdateFallAnimationTimer(object);
 }
 
 f32 FindGunshipHoverHeight(GAMEOBJECT *object) {
@@ -7725,7 +7722,6 @@ void Animate_REPUBLICGUNSHIP(GAMEOBJECT *object) {
 }
 
 void Animate_SUPERBATTLEDROID(GAMEOBJECT *object) {
-    i16 animation;
     if ((U64_PAIR(&CInfo[object->player.character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->player.context_animation;
     } else if (object->context_target_position != NULL) {
@@ -7760,13 +7756,7 @@ void Animate_SUPERBATTLEDROID(GAMEOBJECT *object) {
         }
     }
     UpdateCharacterIdle(object);
-    animation = object->anim_packet.requested_animation;
-    if (animation == ACTION_FALL || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
-                                     (animation == ACTION_FALL2 || animation == ACTION_FALL3 || animation == ACTION_FALL4))) {
-        object->player.fall_animation_timer += FRAMETIME;
-    } else {
-        object->player.fall_animation_timer = 0.0f;
-    }
+    UpdateFallAnimationTimer(object);
 }
 
 void PeriscodeCode(GAMEOBJECT *object) {
@@ -7949,7 +7939,6 @@ static void ShieldCode(GAMEOBJECT *object) {
 }
 
 void Animate_DROIDEKA(GAMEOBJECT *object) {
-    i16 animation;
     if ((U64_PAIR(&CInfo[object->player.character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->player.context_animation;
     } else {
@@ -7965,17 +7954,10 @@ void Animate_DROIDEKA(GAMEOBJECT *object) {
             }
         }
     }
-    animation = object->anim_packet.requested_animation;
-    if (animation == ACTION_FALL || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
-                                     (animation == ACTION_FALL2 || animation == ACTION_FALL3 || animation == ACTION_FALL4))) {
-        object->player.fall_animation_timer += FRAMETIME;
-    } else {
-        object->player.fall_animation_timer = 0.0f;
-    }
+    UpdateFallAnimationTimer(object);
 }
 
 void Animate_GEONOSIAN(GAMEOBJECT *object) {
-    i16 animation;
     if ((U64_PAIR(&CInfo[object->player.character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->player.context_animation;
     } else {
@@ -7994,13 +7976,7 @@ void Animate_GEONOSIAN(GAMEOBJECT *object) {
         }
     }
     UpdateCharacterIdle(object);
-    animation = object->anim_packet.requested_animation;
-    if (animation == ACTION_FALL || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
-                                     (animation == ACTION_FALL2 || animation == ACTION_FALL3 || animation == ACTION_FALL4))) {
-        object->player.fall_animation_timer += FRAMETIME;
-    } else {
-        object->player.fall_animation_timer = 0.0f;
-    }
+    UpdateFallAnimationTimer(object);
 }
 
 void CatchUpCode(GAMEOBJECT *object, f32 divisor, f32 maximum, i32 mode) {

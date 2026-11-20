@@ -296,7 +296,7 @@ address,symbol,size,ctype
 0x41a2e0,_ActivePlayerInRange,118,"i32 __cdecl(NUVEC*, f32, f32*)"
 0x0041a360,_AvailableToPlayer,365,"i32 __cdecl (u32, i32, i32, i32)"
 0x0041a4d0,_GetOtherActivePlayer,44,GAMEOBJECT *__cdecl (GAMEOBJECT *)
-0x41a500,_fun_0041a500,162,
+0x41a500,_SwapSpecialLayer,162,
 0x0041a5b0,_AdjustLayerBits,1031,"u32 __cdecl (u32, GAMEOBJECT *)"
 0x41a9c0,_SetLayersMos,314,
 0x41ab00,_SetLayersCantina,142,
@@ -1228,10 +1228,10 @@ address,symbol,size,ctype
 0x465e00,_GizBombGens_Load,147,
 0x465ea0,_GizBombGens_ReserveBufferSpace,183,void * __cdecl(void *)
 0x465f60,_GizmoBombGen_Activate,30,"void __cdecl(GIZMO *, i32)"
-0x465f80,_fun_00465f80,37,
+0x465f80,_BombGeneratorSetVisibility,37,
 0x465fb0,_GizmoBombGen_SetVisibility,55,"void __cdecl(GIZMO *, i32)"
 0x465ff0,_GizmoBombGen_GetPos,21,NUVEC * __cdecl(GIZMO *)
-0x466010,_fun_00466010,77,
+0x466010,_BombGeneratorReset,77,
 0x466060,_GizBombGens_SetResetFlag,69,"void __cdecl(void *, void *, void *)"
 0x4660b0,_BombGeneratorsApplyReset,629,
 0x466330,_GizBombGens_Update,449,"void __cdecl(void *, void *, f32)"
@@ -2004,7 +2004,7 @@ address,symbol,size,ctype
 0x4a7840,_FloatAdvance,53,void private (GAMEOBJECT * ECX)
 0x4a7880,_FloatCode,883,void __cdecl(GAMEOBJECT*)
 0x4a7c00,_SetDefaultCharacterAnim,172,
-0x4a7cb0,_fun_004a7cb0,65,
+0x4a7cb0,_UpdateFallAnimationTimer,65,
 0x4a7d00,_BeastStartFallCode,149,
 0x4a7da0,_PooCode,1278,void __cdecl(GAMEOBJECT*)
 0x4a82a0,_AwkwardShapeCode,818,"void __cdecl(GAMEOBJECT*,i32)"
@@ -2551,7 +2551,7 @@ address,symbol,size,ctype
 0x4d8990,_InitPodRaceMines,245,private same-TU void(void)
 0x4d8a90,_PodRaceResetMines,90,private same-TU void(void)
 0x4d8af0,_CreatePodRaceMine,549,private same-TU void *(NUVEC *)
-0x4d8d20,_fun_004d8d20,79,
+0x4d8d20,_PodRaceRemoveMine,79,
 0x4d8d70,_PodRaceExplodeMine,208,"private same-TU void(MINE_ENTRY *, GAMEOBJECT *)"
 0x4d8e40,_PodRaceExplodeClientMine,118,"private same-TU void(NUVEC *, GAMEOBJECT *)"
 0x4d8ec0,_UpdatePodRaceMines,945,void __cdecl(void)
