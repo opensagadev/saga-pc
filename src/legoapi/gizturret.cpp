@@ -73,6 +73,8 @@ extern "C" {
     i32 GizTurretAnimDataVersion = 7;
     i32 gizturret_test_ang = 3640;
     f32 gizturret_rapid_fire_rate = 0.2f;
+    /* How far off target (pitch or yaw) a nearby turret may still be before it stops to aim. */
+    u16 gizturret_aim_tolerance = 0x400;
     ADDGIZMOTYPE GizmoRegistryGizTurretsAddType = {0};
 
     static void GizTurretClear(GIZTURRET_s *turret) {
@@ -735,8 +737,10 @@ extern "C" {
                                     }
                                     // These are absolute differences of unsigned angles, not wrapped rotation
                                     // differences.
-                                    if (nearby && (abs((static_cast<u16>(desired_pitch)) - (static_cast<u16>(turret->pitch))) > 0x400 ||
-                                                   abs((static_cast<u16>(desired_yaw)) - (static_cast<u16>(turret->yaw))) > 0x400)) {
+                                    if (nearby && (abs((static_cast<u16>(desired_pitch)) - (static_cast<u16>(turret->pitch))) >
+                                                       gizturret_aim_tolerance ||
+                                                   abs((static_cast<u16>(desired_yaw)) - (static_cast<u16>(turret->yaw))) >
+                                                       gizturret_aim_tolerance)) {
                                         if (!rotation_sound_playing || IsSfxLooping(turret->rotate_sfx)) {
                                             GameAudio_PlaySfxById(turret->rotate_sfx, &reference->translation, 0, 0);
                                         }

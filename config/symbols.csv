@@ -38506,6 +38506,7 @@ address,symbol,size,ctype
 0x00805e28,_GizTurretAnimDataVersion,4,i32
 0x805e2c,_gizturret_test_ang,4,i32
 0x805e30,_gizturret_rapid_fire_rate,4,f32
+0x805ea0,_gizturret_aim_tolerance,2,u16
 0x805ea4,_GizmoRegistryGizTurretsNamePtr,4,char *
 0x00805eb4,_gizspecial_prefix,8,
 0x00805ebc,_gizspecial_gizmotype_id,4,i32
