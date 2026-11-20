@@ -1056,7 +1056,7 @@ void Customiser_Update(CUSTOMISER_CONFIG *customiser, WORLDINFO *world) {
                 message.green = colour;
                 message.blue = colour;
                 message.position = &position;
-                message.scale = 1.5f;
+                message.scale = 1.25f;
                 message.alpha = 0x60;
                 message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_ONE_FRAME;
                 AddGameMsg(&message);
