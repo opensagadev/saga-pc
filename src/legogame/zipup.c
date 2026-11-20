@@ -68,7 +68,7 @@ typedef struct zipup_progress_s { // size 0x8
 
 static f32 ZipUpFabs(f32 value);
 
-static i32 ZipUpArcSine(f32 sin) {
+static i16 ZipUpArcSine(f32 sin) {
     f32 abs;
     f32 sqrt;
     f32 reduced;
@@ -94,6 +94,10 @@ static i32 ZipUpArcSine(f32 sin) {
             NEG_5_OVER_112 * POW3(upper_sign * sign * reduced) * POW4(upper_sign * sign * reduced) +
             NEG_35_OVER_1152 * POW4(upper_sign * sign * reduced) * POW5(upper_sign * sign * reduced)) *
            10430.4f;
+}
+
+static i16 ZipupACos(f32 cos) {
+    return 0x4000 - ZipUpArcSine(cos);
 }
 
 // The rope draw inlines these numtx rotations (other units call the
@@ -699,7 +703,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             NuVecNorm(&start_offset, &start_offset);
             NuVecNorm(&end_offset, &end_offset);
             object->player.attached_zipup->pitch_adjustment =
-                (u16)(0x4000 - ZipUpArcSine(start_offset.z * end_offset.z + start_offset.y * end_offset.y));
+                (u16)ZipupACos(start_offset.z * end_offset.z + start_offset.y * end_offset.y);
             object->player.attached_zipup->rider_target_position = object->player.attached_zipup->rider_start_offset;
             NuVecAdd(&object->player.attached_zipup->rider_target_position, hook, &object->player.attached_zipup->rider_target_position);
         }
