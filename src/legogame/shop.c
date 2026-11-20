@@ -206,6 +206,14 @@ extern i32 ShopMoveItems;
 extern f32 ShopPurchasePulseDuration;
 
 /* Same-unit matrix helpers, also kept as standalone copies (source in EAX, destination in ECX). */
+static void ShopMtxSetRotateXYZ(NUMTX *matrix, NUANG x, NUANG y, NUANG z) {
+    NUANGVEC angles;
+    angles.x = x;
+    angles.y = y;
+    angles.z = z;
+    NuMtxSetRotateXYZVU0(matrix, &angles);
+}
+
 static void ShopMtxCopy(NUMTX *destination, const NUMTX *source) {
     destination->m00 = source->m00;
     destination->m01 = source->m01;
@@ -1553,14 +1561,10 @@ static void Shop_DrawCharacter(shopitem_s *item, NUVEC *position, f32 scale_valu
 
 void DrawItem(nuhspecial_s *special, NUVEC *position, float scale_value, float unused3, float y_push, u16 x_rot, u16 y_rot, u16 z_rot) {
     NUVEC scale;
-    NUANGVEC rotation;
     NUMTX matrix;
     if (position != NULL) {
         if (NuSpecialExistsFn(special) != 0) {
-            rotation.x = x_rot;
-            rotation.y = y_rot;
-            rotation.z = z_rot;
-            NuMtxSetRotateXYZVU0(&matrix, &rotation);
+            ShopMtxSetRotateXYZ(&matrix, x_rot, y_rot, z_rot);
 
             scale.x = scale.y = scale.z = scale_value;
             NuMtxScaleVU0(&matrix, &scale);
@@ -1583,7 +1587,6 @@ void DrawArrow(nuhspecial_s *special, float scale_value) {
 static void Shop_DrawItem(shopitem_s *item, NUVEC *position, f32 scale_value, f32 alpha, i32 opaque, f32 ypush, u16 xrot, u16 yrot,
                           u16 zrot) {
     NUVEC scale;
-    NUANGVEC rotation;
     NUMTX matrix;
     if (item == NULL || position == NULL) {
         return;
@@ -1591,10 +1594,7 @@ static void Shop_DrawItem(shopitem_s *item, NUVEC *position, f32 scale_value, f3
     if (NuSpecialExistsFn(&item->special) == 0) {
         return;
     }
-    rotation.x = xrot;
-    rotation.y = yrot;
-    rotation.z = zrot;
-    NuMtxSetRotateXYZVU0(&matrix, &rotation);
+    ShopMtxSetRotateXYZ(&matrix, xrot, yrot, zrot);
     scale.x = scale.y = scale.z = scale_value;
     NuMtxScaleVU0(&matrix, &scale);
     matrix.translation = *position;

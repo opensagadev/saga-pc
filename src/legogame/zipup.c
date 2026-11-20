@@ -366,6 +366,17 @@ ZIPUP *ZipUp_FindNearest(WORLDINFO *world, NUVEC *position, f32 radius, f32 *dis
     return nearest;
 }
 
+/* A zip-up a character may start on: one that does not take a single rider, or whose rider has left. */
+static i32 ZipUpFree(ZIPUP *zipup) {
+    if (zipup == NULL) {
+        return 0;
+    }
+    if ((zipup->flags_word & ZIPUP_FLAG_CONFIG_0) == 0) {
+        return 1;
+    }
+    return (zipup->flags_word & ZIPUP_FLAG_IN_USE) == 0;
+}
+
 void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
     ZIPUP *zipup;
     NUVEC *hook;
@@ -582,8 +593,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
     if (zipup == NULL) {
         return;
     }
-    if ((special_pressed != 0 || objInNetWaitContext(object, 0x47)) &&
-        ((zipup->flags_word & ZIPUP_FLAG_CONFIG_0) == 0 || (zipup->flags_word & ZIPUP_FLAG_IN_USE) == 0)) {
+    if ((special_pressed != 0 || objInNetWaitContext(object, 0x47)) && ZipUpFree(zipup)) {
         if ((object->character_data->model_flags & CHARACTER_MODEL_ZIPUP) == 0) {
             destination = endpoint == 0 ? &zipup->upper_position : &zipup->lower_position;
             if (StartBigJump(object, destination, 0, 0.5f, 1.0f, 0)) {

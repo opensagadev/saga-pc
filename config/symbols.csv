@@ -245,7 +245,7 @@ address,symbol,size,ctype
 0x413b50,_ConfigVuVecMake,28,
 0x413b70,_CC_variant,910,
 0x413f00,_PlayersFabs,18,static f32 __cdecl(f32)
-0x413f20,_fun_00413f20,28,
+0x413f20,_CreatureMtxSetRotationXY,28,
 0x413f40,_CreatureVuVecCopy,23,
 0x413f60,_CreatureVuVecMake,28,
 0x413f80,_GameDrawMtxCopy,95,
@@ -2202,7 +2202,7 @@ address,symbol,size,ctype
 0x4c0c80,_Shards_HandleLostObj,82,"void __cdecl(WORLDINFO *,GAMEOBJECT *)"
 0x4c0ce0,_fun_004c0ce0,1,
 0x4c0cf0,_fun_004c0cf0,1,
-0x4c0d00,_fun_004c0d00,36,
+0x4c0d00,_ShopMtxSetRotateXYZ,36,
 0x4c0d30,_ShopVuVecMake,28,
 0x4c0d50,_ShopMtxCopy,95,
 0x4c0db0,_NuMtxRotateXInline,217,
@@ -2444,7 +2444,7 @@ address,symbol,size,ctype
 0x4d1ea0,_TorpedoRatio,54,"f32 __cdecl(f32, f32)"
 0x4d1ee0,_TorpedoArcSine,320,i32 __cdecl(f32)
 0x4d2020,_TorpedoACos,27,
-0x4d2040,_fun_004d2040,28,
+0x4d2040,_TorpedoMtxSetRotationXY,28,
 0x4d2060,_TorpedoVuVecCopy,23,
 0x4d2080,_TorpedoVuVecMake,28,
 0x4d20a0,_fun_004d20a0,95,
@@ -2511,7 +2511,7 @@ address,symbol,size,ctype
 0x4d5d20,_ZipUpResetSingle,303,
 0x4d5e50,_ZipUps_Reset,167,"void __cdecl(WORLDINFO *,void *,struct zipup_progress_s *)"
 0x004d5f00,_ZipUp_FindNearest,311,"ZIPUP *__cdecl(WORLDINFO *,NUVEC *,f32,f32 *,i32 *,GAMEOBJECT *)"
-0x4d6040,_fun_004d6040,28,
+0x4d6040,_ZipUpFree,28,
 0x4d6060,_ZipUp_MoveCode,3774,"void __cdecl(GAMEOBJECT *,i32)"
 0x4d6f20,_ZipUp_GetStartPoint,165,
 0x4d6fd0,_ZipUps_Update,133,"void __cdecl(WORLDINFO *,void *,f32)"

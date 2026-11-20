@@ -182,6 +182,13 @@ typedef union DRAW_ATTACHMENTS_PACKET {
 
 extern i32 GameKeepMergeAction;
 
+static void CreatureMtxSetRotationXY(NUMTX *matrix, NUANG x, NUANG y) {
+    NUANGVEC angles;
+    angles.x = x;
+    angles.y = y;
+    NuMtxSetRotationXYVU0(matrix, &angles);
+}
+
 static void GameDrawMtxCopy(NUMTX *destination, const NUMTX *source) {
     destination->m00 = source->m00;
     destination->m01 = source->m01;
@@ -4214,7 +4221,6 @@ void DrawParaphernalia(GAMEOBJECT *object) {
     u32 carried_layers;
     GAMEOBJECT *passenger;
     i32 passenger_locator;
-    NUANGVEC passenger_rotation;
     PLAYERCHARACTERCONFIG *config;
     i32 scene_locator;
     NUVEC glow_position;
@@ -4287,9 +4293,7 @@ void DrawParaphernalia(GAMEOBJECT *object) {
         if (passenger_locator != -1 && object->character_model->points_of_interest[passenger_locator] != NULL) {
             matrix = object->player.locator_matrices[passenger_locator];
         } else {
-            passenger_rotation.x = -0x4000;
-            passenger_rotation.y = object->movement_angle;
-            NuMtxSetRotationXYVU0(&matrix, &passenger_rotation);
+            CreatureMtxSetRotationXY(&matrix, -0x4000, object->movement_angle);
             matrix.m30 = object->position.x + NuTrigTable[object->movement_angle >> 1] * object->bounds_radius * 1.75;
             matrix.m31 = object->collision_min.y + (object->collision_max.y - object->collision_min.y) * 0.6000000238418579;
             matrix.m32 = object->position.z + NuTrigTable[((object->movement_angle + 0x4000) >> 1) & 0x7fff] * object->bounds_radius * 1.75;

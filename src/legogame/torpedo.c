@@ -95,6 +95,13 @@ static i16 TorpedoACos(f32 cos) {
     return 0x4000 - TorpedoArcSine(cos);
 }
 
+static void TorpedoMtxSetRotationXY(NUMTX *matrix, NUANG x, NUANG y) {
+    NUANGVEC angles;
+    angles.x = x;
+    angles.y = y;
+    NuMtxSetRotationXYVU0(matrix, &angles);
+}
+
 static void TorpedoSetRotationY(NUMTX *matrix, NUANG angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
@@ -406,7 +413,6 @@ void HomeNearestTorpTarget(BOLT *bolt, TORPEDOPACKET *packet) {
     u16 target_x;
     u16 target_y;
     NUMTX matrix;
-    NUANGVEC angles;
     if (bolt == NULL || packet == NULL || (packet->flags & 8) != 0) {
         return;
     }
@@ -449,9 +455,7 @@ void HomeNearestTorpTarget(BOLT *bolt, TORPEDOPACKET *packet) {
             target_x = SeekRot(current_x, target_x, seek);
             target_y = SeekRot(current_y, target_y, seek);
             NuMtxSetIdentity(&matrix);
-            angles.x = target_x;
-            angles.y = target_y;
-            NuMtxSetRotationXYVU0(&matrix, &angles);
+            TorpedoMtxSetRotationXY(&matrix, target_x, target_y);
             NuVecMtxRotate(&bolt->velocity, &bolt->velocity, &matrix);
             NuVecNorm(&bolt->direction, &bolt->velocity);
             lifetime = (f64)bolt->time + travel_time;
