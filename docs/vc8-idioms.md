@@ -626,6 +626,19 @@ theMemoryManager.AllocPool(size, 1); }` in X, but only the latter emits the
 `??2X@@SAPAXI@Z` copy retail keeps (18 bytes, seven of them in the RTL helper
 unit; classes derived from `EdRef` use its copy).
 
+### I54: a helper's `switch` keeps the case order of its source
+
+An emitted copy of a static helper with a `switch` (the display list item
+`SetOp` in both 3D units) lays out the case blocks in source order and the
+jump table points into them: retail's targets for ids 0, 1, 3, 4 sit in the
+order call (3), skip (0), jump (1), end (4), so the source lists `case CALL`
+first. Ours with the cases in numeric order compiled the same instructions
+in another order (90 % instead of exact). Callers that pass a constant id
+fold the switch away, so only the copy shows it. A call through such a
+helper can also settle a caller's scheduling: `NuDisplayListCreateMtlDlist`
+became exact once its first and last items were written with the `Init`
+helper (type, next, op) instead of three stores.
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated

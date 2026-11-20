@@ -153,6 +153,32 @@ static void Nu3dIncludesMtxGetPerspective(NUMTX *matrix, f32 *fov, f32 *aspect, 
     NuMtxGetPerspectiveD3D(matrix, fov, aspect, near_z, far_z);
 }
 
+static void Nu3dIncludesSetTint(const NUVEC4 *tint) {
+    NuDisplayHandlerTint = *tint;
+    NuShaderManagerSetfv(SHADER_UNIFORM_K_TINT, &tint->x);
+}
+
+/* The defaults of a new material: white, opaque, and the default attribute bits. */
+static void Nu3dIncludesMtlSetDefaults(NUMTL *mtl) {
+    mtl->diffuse_r = 1.0f;
+    mtl->diffuse_g = 1.0f;
+    mtl->diffuse_b = 1.0f;
+    mtl->opacity = 1.0f;
+    mtl->attribs.word = (mtl->attribs.word & 0xbf9e2fd0) | 0x3f962010;
+    mtl->attribs2 |= 0x10;
+}
+
+static void Nu3dIncludesBindEffectTexture(GRAPHICS_RENDER_TEXTURE *texture, u32 stage) {
+    if (texture != NULL) {
+        u32 *sampler_tuple = PCGraphicsEffectTextureSampler(texture);
+        if ((u32)PCDeviceSamplerInvalidation[stage][0] != sampler_tuple[0] ||
+            (u32)PCDeviceSamplerInvalidation[stage][1] != sampler_tuple[1]) {
+            PCGraphicsSetSamplerTuple(stage, PCGraphicsEffectTextureSampler(texture));
+        }
+    }
+    PCGraphicsBindEffectTexture(texture, stage);
+}
+
 static void Nu3dIncludesVecZero(NUVEC *v) {
     v->x = v->y = v->z = 0.0f;
 }
@@ -7974,12 +8000,7 @@ extern "C" {
                 AnimationDiagnosticNoOp();
             }
             memset(mtl, 0, sizeof(*mtl));
-            mtl->diffuse_r = 1.0f;
-            mtl->diffuse_g = 1.0f;
-            mtl->diffuse_b = 1.0f;
-            mtl->opacity = 1.0f;
-            mtl->attribs.word = (mtl->attribs.word & 0xbf9e2fd0) | 0x3f962010;
-            mtl->attribs2 |= 0x10;
+            Nu3dIncludesMtlSetDefaults(mtl);
             mtl->flags = (mtl->flags & 0xf00f) | (render_plane << 4) | 5;
             if (is_3d != 0) {
                 NuThreadCriticalSectionBegin(nudlist_field_fc4);
@@ -8004,12 +8025,7 @@ extern "C" {
         NUMTL *mtl = (NUMTL *)((buffer->addr + 15) & ~15u);
         buffer->addr = ((buffer->addr + 15) & ~15u) + sizeof(NUMTL);
         memset(mtl, 0, sizeof(*mtl));
-        mtl->diffuse_r = 1.0f;
-        mtl->diffuse_g = 1.0f;
-        mtl->diffuse_b = 1.0f;
-        mtl->opacity = 1.0f;
-        mtl->attribs.word = (mtl->attribs.word & 0xbf9e2fd0) | 0x3f962010;
-        mtl->attribs2 |= 0x10;
+        Nu3dIncludesMtlSetDefaults(mtl);
         mtl->flag_04 = 0;
         if (is_3d != 0) {
             NuDisplayQueueMaterialAdd(mtl);
@@ -17991,8 +18007,7 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderShadow(i32 index, PC_FRAMEBUFFER *) {
             PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
             PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 1);
             PCDeviceSetRenderState(D3DRS_ZFUNC, 4);
-            NuDisplayHandlerTint = PostShadowWhite;
-            NuShaderManagerSetfv(SHADER_UNIFORM_K_TINT, &PostShadowWhite.x);
+            Nu3dIncludesSetTint(&PostShadowWhite);
             NuDisplayListDrawItems(list.first);
             list.mtl_last = list.first;
         }
@@ -18148,42 +18163,9 @@ void NuDeferredFilterGen::render() {
         NuShaderProgramMakeCurrent(program);
         light->RenderConstants(program);
         PCGraphicsEffectTextureSetFilterFields(depth_texture, 2, 2, 0);
-        {
-            const u32 bound_stage = 0;
-            GRAPHICS_RENDER_TEXTURE *bound_texture = depth_texture;
-            if (bound_texture != NULL) {
-                u32 *sampler_tuple = PCGraphicsEffectTextureSampler(bound_texture);
-                if ((u32)PCDeviceSamplerInvalidation[bound_stage][0] != sampler_tuple[0] ||
-                    (u32)PCDeviceSamplerInvalidation[bound_stage][1] != sampler_tuple[1]) {
-                    PCGraphicsSetSamplerTuple(bound_stage, PCGraphicsEffectTextureSampler(bound_texture));
-                }
-            }
-            PCGraphicsBindEffectTexture(bound_texture, bound_stage);
-        }
-        {
-            const u32 bound_stage = 1;
-            GRAPHICS_RENDER_TEXTURE *bound_texture = textures[4];
-            if (bound_texture != NULL) {
-                u32 *sampler_tuple = PCGraphicsEffectTextureSampler(bound_texture);
-                if ((u32)PCDeviceSamplerInvalidation[bound_stage][0] != sampler_tuple[0] ||
-                    (u32)PCDeviceSamplerInvalidation[bound_stage][1] != sampler_tuple[1]) {
-                    PCGraphicsSetSamplerTuple(bound_stage, PCGraphicsEffectTextureSampler(bound_texture));
-                }
-            }
-            PCGraphicsBindEffectTexture(bound_texture, bound_stage);
-        }
-        {
-            const u32 bound_stage = 4;
-            GRAPHICS_RENDER_TEXTURE *bound_texture = textures[5];
-            if (bound_texture != NULL) {
-                u32 *sampler_tuple = PCGraphicsEffectTextureSampler(bound_texture);
-                if ((u32)PCDeviceSamplerInvalidation[bound_stage][0] != sampler_tuple[0] ||
-                    (u32)PCDeviceSamplerInvalidation[bound_stage][1] != sampler_tuple[1]) {
-                    PCGraphicsSetSamplerTuple(bound_stage, PCGraphicsEffectTextureSampler(bound_texture));
-                }
-            }
-            PCGraphicsBindEffectTexture(bound_texture, bound_stage);
-        }
+        Nu3dIncludesBindEffectTexture(depth_texture, 0);
+        Nu3dIncludesBindEffectTexture(textures[4], 1);
+        Nu3dIncludesBindEffectTexture(textures[5], 4);
         if (normal_texture != NULL) {
             PCGraphicsEffectTextureSetFilterFields(normal_texture, 1, 1, 0);
             {
@@ -18232,18 +18214,7 @@ void NuDeferredFilterGen::render() {
     PCDeviceSetPixelShaderConstantsF(0xa0, shader_parameters, 1);
     if (output == NuFramebufferGetObject(1) && PCDeviceBackend.textures[0] != NULL) {
         PCGraphicsEffectTextureSetFilterFields(color_texture, 2, 2, 0);
-        {
-            const u32 bound_stage = 4;
-            GRAPHICS_RENDER_TEXTURE *bound_texture = color_texture;
-            if (bound_texture != NULL) {
-                u32 *sampler_tuple = PCGraphicsEffectTextureSampler(bound_texture);
-                if ((u32)PCDeviceSamplerInvalidation[bound_stage][0] != sampler_tuple[0] ||
-                    (u32)PCDeviceSamplerInvalidation[bound_stage][1] != sampler_tuple[1]) {
-                    PCGraphicsSetSamplerTuple(bound_stage, PCGraphicsEffectTextureSampler(bound_texture));
-                }
-            }
-            PCGraphicsBindEffectTexture(bound_texture, bound_stage);
-        }
+        Nu3dIncludesBindEffectTexture(color_texture, 4);
         PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
         PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
     } else {

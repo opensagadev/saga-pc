@@ -7305,10 +7305,10 @@ address,symbol,size,ctype
 0x5c2440,_fun_005c2440,7,
 0x5c2450,_fun_005c2450,17,
 0x5c2470,_PCDeviceGetVertexProcessing,6,
-0x5c2480,_fun_005c2480,63,
+0x5c2480,?Nu3dIncludesBindEffectTexture@@YAXPAUGRAPHICS_RENDER_TEXTURE@@I@Z,63,
 0x5c24c0,_PcGeometryGetViewMatrix,6,
 0x5c24d0,_PcGeometryGetProjectionMatrix,6,
-0x5c24e0,_fun_005c24e0,47,
+0x5c24e0,?Nu3dIncludesSetTint@@YAXPBUNUVEC4@@@Z,47,
 0x5c2510,_fun_005c2510,256,
 0x5c2610,_fun_005c2610,140,
 0x5c26a0,_fun_005c26a0,100,
@@ -8076,7 +8076,7 @@ address,symbol,size,ctype
 0x5e4670,_NuRndrRotateVec,207,"void __cdecl(NUVEC *,f32,f32)"
 0x5e4740,_NuRndrShadowDirectionsSetup,252,void __cdecl(NUVEC *)
 0x5e4840,_NuRndrArenaBuildShadowVolumes,651,"void __cdecl(i32,i32)"
-0x5e4ad0,_fun_005e4ad0,37,
+0x5e4ad0,?Nu3dIncludesMtlSetDefaults@@YAXPAUnumtl_s@@@Z,37,
 0x5e4b00,_NuMtlUpdate,24,void __cdecl(NUMTL *)
 0x5e4b20,_NuMtlCreatePoolPC,347,
 0x5e4c80,_NuMtlAllocateBuffPC,127,
