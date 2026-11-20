@@ -1491,7 +1491,6 @@ extern "C" {
     extern f32 ShadowLightFocusHeight;
     extern f32 ShadowLightNearOffset;
     extern f32 ShadowLightSplitScale;
-    extern f32 ShadowLightWarp;
     extern i32 ShadowLightSplitCount;
     void NuPortalSetActive(NUGSCN *scene, i32 portal_id, i32 active);
     i32 NuSpecialClipTestExtents(nuhspecial_s *special, NUMTX *matrix);
