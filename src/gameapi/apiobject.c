@@ -2223,29 +2223,26 @@ void RootFnY(NUMTX *matrix, void *data, NUVEC *source_root, NUVEC *target_root, 
 
 void BlendRootFn(NUMTX *matrix, void *data, NUVEC *source_root, NUVEC *target_root, NUVEC *root_delta, f32 blend) {
     GAMEOBJECT *object;
+    NUVEC blended_offset;
     NUVEC source_motion;
     NUVEC target_motion;
     NUVEC source_position;
     NUVEC target_position;
     NUVEC source_offset;
     NUVEC target_offset;
-    NUVEC blended_offset;
-    CHARACTERANIM_CONFIG *source_config;
-    CHARACTERANIM_CONFIG *target_config;
 
     object = data;
-    source_config = object->character_model->animation_configs[object->anim_packet.blend_source_animation];
-    target_config = object->character_model->animation_configs[object->anim_packet.blend_target_animation];
 
-    if ((source_config->flags & CHARANIM_TRANSLATE) != 0) {
+    if ((object->character_model->animation_configs[object->anim_packet.blend_source_animation]->flags & CHARANIM_TRANSLATE) != 0) {
         if (object->previous_animation_root_time > object->anim_packet.blend_source_time ||
-            source_config != object->previous_animation_root_info) {
+            object->character_model->animation_configs[object->anim_packet.blend_source_animation] !=
+                object->previous_animation_root_info) {
             object->previous_animation_root = *source_root;
-            object->previous_animation_root_info = source_config;
+            object->previous_animation_root_info = object->character_model->animation_configs[object->anim_packet.blend_source_animation];
         }
 
         source_motion.x = source_root->x - object->previous_animation_root.x;
-        if ((source_config->flags & 0x200) != 0) {
+        if ((object->character_model->animation_configs[object->anim_packet.blend_source_animation]->flags & 0x200) != 0) {
             source_motion.y = source_root->y - object->previous_animation_root.y;
         } else {
             source_motion.y = 0.0f;
@@ -2254,7 +2251,9 @@ void BlendRootFn(NUMTX *matrix, void *data, NUVEC *source_root, NUVEC *target_ro
         object->previous_animation_root = *source_root;
 
         source_position.x = 0.0f;
-        source_position.y = (source_config->flags & 0x200) != 0 ? 0.0f : source_root->y;
+        source_position.y = (object->character_model->animation_configs[object->anim_packet.blend_source_animation]->flags & 0x200) != 0
+                                ? 0.0f
+                                : source_root->y;
         source_position.z = 0.0f;
         object->previous_animation_root_time = object->anim_packet.blend_source_time;
     } else {
@@ -2265,19 +2264,21 @@ void BlendRootFn(NUMTX *matrix, void *data, NUVEC *source_root, NUVEC *target_ro
         object->previous_animation_root_time = FLT_MAX;
     }
 
-    source_offset.x = source_config->root_translation.x;
-    source_offset.y = source_config->root_translation.y;
-    source_offset.z = source_config->root_translation.z;
+    source_offset.x = object->character_model->animation_configs[object->anim_packet.blend_source_animation]->root_translation.x;
+    source_offset.y = object->character_model->animation_configs[object->anim_packet.blend_source_animation]->root_translation.y;
+    source_offset.z = object->character_model->animation_configs[object->anim_packet.blend_source_animation]->root_translation.z;
 
-    if ((target_config->flags & CHARANIM_TRANSLATE) != 0) {
+    if ((object->character_model->animation_configs[object->anim_packet.blend_target_animation]->flags & CHARANIM_TRANSLATE) != 0) {
         if (object->previous_blend_target_root_time > object->anim_packet.blend_target_time ||
-            target_config != object->previous_blend_target_root_info) {
+            object->character_model->animation_configs[object->anim_packet.blend_target_animation] !=
+                object->previous_blend_target_root_info) {
             object->previous_blend_target_root = *target_root;
-            object->previous_blend_target_root_info = target_config;
+            object->previous_blend_target_root_info =
+                object->character_model->animation_configs[object->anim_packet.blend_target_animation];
         }
 
         target_motion.x = target_root->x - object->previous_blend_target_root.x;
-        if ((target_config->flags & 0x200) != 0) {
+        if ((object->character_model->animation_configs[object->anim_packet.blend_target_animation]->flags & 0x200) != 0) {
             target_motion.y = target_root->y - object->previous_blend_target_root.y;
         } else {
             target_motion.y = 0.0f;
@@ -2286,7 +2287,9 @@ void BlendRootFn(NUMTX *matrix, void *data, NUVEC *source_root, NUVEC *target_ro
         object->previous_blend_target_root = *target_root;
 
         target_position.x = 0.0f;
-        target_position.y = (target_config->flags & 0x200) != 0 ? 0.0f : target_root->y;
+        target_position.y = (object->character_model->animation_configs[object->anim_packet.blend_target_animation]->flags & 0x200) != 0
+                                ? 0.0f
+                                : target_root->y;
         target_position.z = 0.0f;
         object->previous_blend_target_root_time = object->anim_packet.blend_target_time;
     } else {
@@ -2297,9 +2300,9 @@ void BlendRootFn(NUMTX *matrix, void *data, NUVEC *source_root, NUVEC *target_ro
         object->previous_blend_target_root_time = FLT_MAX;
     }
 
-    target_offset.x = target_config->root_translation.x;
-    target_offset.y = target_config->root_translation.y;
-    target_offset.z = target_config->root_translation.z;
+    target_offset.x = object->character_model->animation_configs[object->anim_packet.blend_target_animation]->root_translation.x;
+    target_offset.y = object->character_model->animation_configs[object->anim_packet.blend_target_animation]->root_translation.y;
+    target_offset.z = object->character_model->animation_configs[object->anim_packet.blend_target_animation]->root_translation.z;
     NuVecLerp(&matrix->translation, &target_position, &source_position, blend);
 
     NuVecLerp(&blended_offset, &target_offset, &source_offset, blend);
@@ -2309,16 +2312,18 @@ void BlendRootFn(NUMTX *matrix, void *data, NUVEC *source_root, NUVEC *target_ro
     NuMtxTranslate(matrix, root_delta);
 
     NuVecMtxRotate(&source_motion, &source_motion, &object->transform);
-    if ((source_config->flags & 0x200) == 0) {
+    if ((object->character_model->animation_configs[object->anim_packet.blend_source_animation]->flags & 0x200) == 0) {
         source_motion.y = 0.0f;
     }
     NuVecMtxRotate(&target_motion, &target_motion, &object->transform);
-    if ((target_config->flags & 0x200) == 0) {
+    if ((object->character_model->animation_configs[object->anim_packet.blend_target_animation]->flags & 0x200) == 0) {
         target_motion.y = 0.0f;
     }
     NuVecLerp(&object->animation_root_delta, &target_motion, &source_motion, blend);
 
-    if (((source_config->flags & 0x200) != 0 || (target_config->flags & 0x200) != 0) && object->animation_root_delta.y == 0.0f) {
+    if (((object->character_model->animation_configs[object->anim_packet.blend_source_animation]->flags & 0x200) != 0 ||
+         (object->character_model->animation_configs[object->anim_packet.blend_target_animation]->flags & 0x200) != 0) &&
+        object->animation_root_delta.y == 0.0f) {
         object->animation_root_delta.y = 1.0e-11f;
     } else if (object->animation_root_delta.x == 0.0f && object->animation_root_delta.y == 0.0f && object->animation_root_delta.z == 0.0f) {
         object->animation_root_delta.x = 1.0e-11f;
