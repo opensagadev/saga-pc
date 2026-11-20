@@ -132,6 +132,23 @@ static f32 Nu3dIncludesVuVecDot(const VuVec &a, const VuVec &b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
+static void Nu3dIncludesVecMin(NUVEC *result, const NUVEC *a, const NUVEC *b) {
+    NuVecMin(result, a, b);
+}
+
+static void Nu3dIncludesVecMax(NUVEC *result, const NUVEC *a, const NUVEC *b) {
+    NuVecMax(result, a, b);
+}
+
+static void Nu3dIncludesVecMtxTransform(NUVEC *result, const NUVEC *v, const NUMTX *matrix) {
+    NuVecMtxTransform(result, v, matrix);
+}
+
+static void Nu3dIncludesPushCoordinateSystem(i32 system) {
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(system);
+}
+
 static void Nu3dIncludesVecZero(NUVEC *v) {
     v->x = v->y = v->z = 0.0f;
 }
@@ -4911,8 +4928,7 @@ extern "C" {
                 space_width = font->space_width * *font->x_scale;
             }
 
-            ++NuPrimCSPos;
-            NuPrimSetCoordinateSystem(0);
+            Nu3dIncludesPushCoordinateSystem(0);
             is_3d = flags & 4;
             if (is_3d) {
                 NuPrim3DBegin(12, 7, font->material, &font->platform_data->matrix);
@@ -6479,7 +6495,7 @@ void OcclusionManager::AddOccluder(const NUVEC *minimum, const NUVEC *maximum, c
                                                {max_x, min_y, min_z, 1.0f}, {min_x, min_y, max_z, 1.0f}};
     for (i32 i = 0; i < 8; ++i) {
         NUVEC *vertex = &corners[i].xyz;
-        NuVecMtxTransform(vertex, vertex, matrix);
+        Nu3dIncludesVecMtxTransform(vertex, vertex, matrix);
     }
     AddOccluder(&corners[0].xyz, &corners[1].xyz, &corners[2].xyz, &corners[3].xyz);
     AddOccluder(&corners[4].xyz, &corners[5].xyz, &corners[6].xyz, &corners[7].xyz);
@@ -7361,8 +7377,8 @@ extern "C" {
         for (i = 1; i < portal->vertex_count; ++i) {
             NUVEC point;
             NuVecMtxTransformH(&point, &portal->vertices[i], &NuPortalProjectionScratch);
-            NuVecMax(maximum, maximum, &point);
-            NuVecMin(minimum, minimum, &point);
+            Nu3dIncludesVecMax(maximum, maximum, &point);
+            Nu3dIncludesVecMin(minimum, minimum, &point);
         }
         NuVecMin(maximum, maximum, &NuPortalBoundsOne);
         NuVecMax(maximum, maximum, &NuPortalBoundsMinusOne);

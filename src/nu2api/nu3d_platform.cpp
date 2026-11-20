@@ -3155,6 +3155,14 @@ extern "C" {
         return 1;
     }
 
+    static void PcVecCross(NUVEC *result, const NUVEC *a, const NUVEC *b) {
+        NuVecCross(result, a, b);
+    }
+
+    static void PcVecMtxTransform(NUVEC *result, const NUVEC *v, const NUMTX *matrix) {
+        NuVecMtxTransform(result, v, matrix);
+    }
+
     u8 PcTransformDynamicGeometry(PC_GEOMETRY_SKIN *skin, PC_GEOMETRY_MESH *mesh, u32 *output_index) {
         for (u32 group_index = 0; group_index < mesh->group_count; ++group_index) {
             PC_GEOMETRY_GROUP *group = &mesh->groups[group_index];
@@ -3250,7 +3258,7 @@ extern "C" {
                 row2.y = partial2.y + p22.y;
                 row2.z = partial2.z + p22.z;
                 PC_GEOMETRY_BASIS_VECTOR cross;
-                NuVecCross(&cross.xyz, &row1.xyz, &row2.xyz);
+                PcVecCross(&cross.xyz, &row1.xyz, &row2.xyz);
                 PC_GEOMETRY_CORNER *corners = output->corners;
                 if (input->skin_indices[0] >= 0 && skin->matrix_group_count > 1) {
                     corners[0] = input->corners[0];
@@ -3263,7 +3271,7 @@ extern "C" {
                             if (index >= 0 && index < (i32)skin->matrix_group_count) {
                                 NUVEC transformed;
                                 f32 weight = (f32)((f64)input->skin_weights[j] * (f64)(1.0f / 255.0f));
-                                NuVecMtxTransform(&transformed, &delta, &skin->matrices[index * 3 + corner - 1]);
+                                PcVecMtxTransform(&transformed, &delta, &skin->matrices[index * 3 + corner - 1]);
                                 NuVecScale(&transformed, &transformed, weight);
                                 NuVecAdd(&corners[corner].position, &corners[corner].position, &transformed);
                             }
@@ -5879,6 +5887,10 @@ extern "C" {
         PcSurfaceRegistry[registry_index] = NULL;
     }
 
+    static void PcGeometrySetIdentity(NUMTX *matrix) {
+        PcGeometryCopyMatrix(matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+    }
+
     u8 PcInitializeGeometryBasis(PC_GEOMETRY_BASIS_SOURCE *source, NUMTX *palette, PC_GEOMETRY_MORPH_WEIGHTS *morph) {
         NUMTX identity;
         i32 morph_count;
@@ -5886,7 +5898,7 @@ extern "C" {
             PCClipScreenUnsupported();
             return 0;
         }
-        PcGeometryCopyMatrix(&identity, &ANI3_EVAL_IDENTITY_MATRIX);
+        PcGeometrySetIdentity(&identity);
         morph_count = source->morph_count;
         if (morph == NULL) {
             morph_count = 0;
@@ -7464,13 +7476,25 @@ u16 PC_EFFECT_SURFACE::GetHeight() {
     return height;
 }
 
+static void PcShaderSetMaterial(NuShaderObject *shader, NUMTL *material) {
+    PCShaderSetMaterialParameters(shader, material);
+}
+
+static void PcShaderSetWorld(const f32 *values) {
+    NuShaderManagerSetfv(SHADER_UNIFORM_WORLD, values);
+}
+
+static void PcShaderSetWorldTranspose(const f32 *values) {
+    NuShaderManagerSetElementsfv_transpose(SHADER_UNIFORM_WORLD, 0, 1, values);
+}
+
 extern "C" void NuDisplayListShadowTransform(void *data) {
     NUMTX *matrix = (NUMTX *)data;
     f32 saved33 = matrix->m33;
     f32 saved23 = matrix->m23;
     matrix->m33 = 1.0f;
     matrix->m23 = 0.0f;
-    NuShaderManagerSetfv(SHADER_UNIFORM_WORLD, &matrix->m00);
+    PcShaderSetWorld(&matrix->m00);
     matrix->m33 = saved33;
     matrix->m23 = saved23;
 }
@@ -7481,7 +7505,7 @@ extern "C" void NuDisplayListShadowTransformTranspose(void *data) {
     f32 saved32 = matrix->m32;
     matrix->m33 = 1.0f;
     matrix->m32 = 0.0f;
-    NuShaderManagerSetElementsfv_transpose(SHADER_UNIFORM_WORLD, 0, 1, &matrix->m00);
+    PcShaderSetWorldTranspose(&matrix->m00);
     matrix->m33 = saved33;
     matrix->m32 = saved32;
 }
@@ -7492,7 +7516,7 @@ extern "C" void NuDisplayListShadowMaterial(void *data) {
     if (shader != NULL) {
         NuDisplayHandlerMaterial = material;
         if (!(material->shader.vertex_format & 0x300000) && material->display_list != NULL) {
-            PCShaderSetMaterialParameters(shader, material);
+            PcShaderSetMaterial(shader, material);
             NuShaderManagerBindShader(shader);
             PCDeviceSetVertexDeclaration(material->vertex_declaration);
         }
