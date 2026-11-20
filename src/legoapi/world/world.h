@@ -349,7 +349,7 @@ extern "C" {
     void WorldInfo_ReArrangeBuffers(i32 area1, i32 area2);
     extern WORLDINFO WorldInfo[2];
     extern WORLDINFO *WORLD;
-    extern i32 level_already_loaded;
+    extern volatile i32 level_already_loaded;
     extern i32 next_level;
     extern i32 no_more_loads;
     extern volatile i32 waiting_for_level;

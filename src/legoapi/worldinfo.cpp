@@ -671,7 +671,7 @@ extern "C" {
         }
     }
 
-    i32 level_already_loaded = -1;
+    volatile i32 level_already_loaded = -1;
     TERRAIN_SURFACE TerSurface[32] = {
         {1.0f, 0, 0xffff},     {1.0f, 65, 0xffff},   {1.0f, 2, 0xffff},      {1.0f, 8, 0xffff},   {1.0f, 65536, 0xffff},
         {1.0f, 66560, 0xffff}, {1.0f, 0, 0xffff},    {1.0f, 2048, 0xffff},   {1.0f, 0, 0xffff},   {1.0f, 8192, 0xffff},
