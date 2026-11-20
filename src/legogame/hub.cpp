@@ -2169,11 +2169,11 @@ extern "C" void Hub_Reset(WORLDINFO *world) {
     HubPreventDropOutTime = 0.0f;
 }
 
-/* The player stands, free to act, on the hub pad with that number (any pad for -1). */
+/* The player stands, free to act, on the hub pad surface with that number (any pad for -1). */
 static i32 HubPlayerOnPad(GAMEOBJECT *player, i32 pad) {
     if (player->ground_flags != 0 &&
         (player->player.character_context == -1 || player->player.character_context == 0x31 || player->player.character_context == 0x32) &&
-        (pad == -1 || (i8)player->jump_animation_state == pad)) {
+        (pad == -1 || player->floor_surface == pad)) {
         return 1;
     }
     return 0;

@@ -173,6 +173,10 @@ static void PodMatrixCopyPrivate(NUMTX *destination, const NUMTX *source) {
     destination->m33 = source->m33;
 }
 
+static void PodMatrixSetIdentity(NUMTX *matrix) {
+    PodMatrixCopyPrivate(matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+}
+
 GUNGAN_A gungan_a = {0};
 
 void GunganA_Init(WORLDINFO *world) {
@@ -2345,7 +2349,7 @@ i32 Action_CreatePod(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, 
     }
     CalcSplinePointFromDist(spline, &position, start * spline->length);
     CalcSplinePointFromDist(spline, &next_position, (start + PodRaceSplineIncrement) * spline->length);
-    PodMatrixCopyPrivate(&pod->matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+    PodMatrixSetIdentity(&pod->matrix);
     *(NUVEC4 *)&pod->matrix.m30 = position;
     direction.x = next_position.x - position.x;
     direction.y = next_position.y - position.y;

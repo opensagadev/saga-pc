@@ -201,6 +201,10 @@ static void GameDrawMtxCopy(NUMTX *destination, const NUMTX *source) {
     destination->m33 = source->m33;
 }
 
+static void GameDrawMtxSetIdentity(NUMTX *matrix) {
+    GameDrawMtxCopy(matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+}
+
 static void GameDrawMtxSetYRotation(NUMTX *matrix, NUANG angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
@@ -3912,7 +3916,7 @@ i32 DrawGameObjectsProcess(void) {
         }
         if (object->dead == 0 && (f64)object->floor_height != 2000000.0 && (object->flags_1f8 & 0x40) != 0 &&
             object->character_data->game_character->shadow_locators == 0) {
-            GameDrawMtxCopy(&shadow, &ANI3_EVAL_IDENTITY_MATRIX);
+            GameDrawMtxSetIdentity(&shadow);
             GameDrawMtxRotateY(&shadow, object->movement_angle + 0x8000);
             if (object->shadow_roll != 0) {
                 GameDrawMtxRotateZ(&shadow, object->shadow_roll);

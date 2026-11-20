@@ -355,6 +355,10 @@ extern "C" {
         destination->m33 = source->m33;
     }
 
+    static void SetFlightMatrixIdentity(NUMTX *matrix) {
+        CopyFlightMatrix(matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+    }
+
     static void TransformFlightVector(NUVEC *output, NUVEC *input, NUMTX *matrix) {
         f32 x = (f64)matrix->m10 * input->y + (f64)input->x * matrix->m00 + (f64)matrix->m20 * input->z;
         f32 y = (f64)matrix->m01 * input->x + (f64)matrix->m11 * input->y + (f64)matrix->m21 * input->z;
@@ -438,6 +442,13 @@ extern "C" {
     void fun_0040eb80(GAMEOBJECT *object, NUMTX *matrix) {
         *matrix = object->transform;
         NuMtxPreRotateY(matrix, 0x8000);
+    }
+
+    static void ClearResetBuffer(DOGFIGHT_RESET_BUFFER *buffer) {
+        if (buffer != NULL && buffer->capacity != 0) {
+            memset(buffer->records, 0, buffer->capacity * sizeof(*buffer->records));
+            buffer->used = 0;
+        }
     }
 
     static void ProcessQuickBolts(DOGFIGHT_QUICK_BUFFER *buffer) {
@@ -1037,7 +1048,6 @@ extern "C" {
     }
 
     static void DogfightResetWorldRecords(WORLDINFO *world, DOGFIGHT_SPACE *space) {
-        DOGFIGHT_RESET_BUFFER *buffer;
         DogfightDrawScale.x = 4.0f;
         DogfightDrawScale.y = 4.0f;
         DogfightDrawScale.z = 4.0f;
@@ -1050,11 +1060,7 @@ extern "C" {
         if (world->current_level != DOGFIGHTA_LDATA) {
             space->formation.actions = DogfightAnakinActions;
         }
-        buffer = &space->reset_buffer;
-        if (buffer != NULL && buffer->capacity != 0) {
-            memset(buffer->records, 0, buffer->capacity * 96u);
-            buffer->used = 0;
-        }
+        ClearResetBuffer(&space->reset_buffer);
         space->formation.current = NULL;
         space->formation.next_index = 0;
         space->formation.command = 4;
@@ -2265,10 +2271,10 @@ extern "C" {
                 door->has_secondary = ((i16)(NuSpecialExistsFn(&door->secondary_special)));
             }
 
-            CopyFlightMatrix(&door->original_matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+            SetFlightMatrixIdentity(&door->original_matrix);
             door->matrix = door->original_matrix = *NuSpecialGetMtx(&door->special);
             if (door->has_secondary != 0) {
-                CopyFlightMatrix(&door->original_secondary_matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+                SetFlightMatrixIdentity(&door->original_secondary_matrix);
                 door->secondary_matrix = door->original_secondary_matrix = *NuSpecialGetMtx(&door->secondary_special);
             }
             door->platform_id = ((i16)(FindPlatInst(NuSpecialGetInstanceix(&door->special))));
@@ -2302,7 +2308,7 @@ extern "C" {
         if (spline->point_count == 0) {
             return;
         }
-        CopyFlightMatrix(&fighter->matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+        SetFlightMatrixIdentity(&fighter->matrix);
         *(NUVEC4 *)&fighter->matrix.m30 = spline->points[0];
         direction.x = spline->points[1].x - (f64)spline->points[0].x;
         direction.y = spline->points[1].y - (f64)spline->points[0].y;
@@ -2397,7 +2403,7 @@ extern "C" {
         }
         group->active = 1;
         group->draw_target = 0;
-        CopyFlightMatrix(&group->matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+        SetFlightMatrixIdentity(&group->matrix);
         group->matrix = GameCam->render_mtx;
         *(NUVEC4 *)&group->matrix.m30 = *start;
         if (mode != 0) {

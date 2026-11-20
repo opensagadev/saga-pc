@@ -170,7 +170,7 @@ address,symbol,size,ctype
 0x40eb70,_fun_0040eb70,3,
 0x40eb80,_fun_0040eb80,44,
 0x40ebb0,_fun_0040ebb0,10,
-0x40ebc0,_fun_0040ebc0,39,
+0x40ebc0,_ClearResetBuffer,39,
 0x40ebf0,_ProcessQuickBolts,513,static void (DOGFIGHT_QUICK_BUFFER *)
 0x40ee00,_DrawQuickBolts,105,static void (DOGFIGHT_QUICK_BUFFER *)
 0x40ee70,_QuickBoltRecordAllocate,132,DOGFIGHT_QUICK_BOLT *__cdecl (DOGFIGHT_QUICK_BUFFER *)
@@ -229,7 +229,7 @@ address,symbol,size,ctype
 0x412bd0,_DrawSelectedSock,960,"static void (SOCKSYS *, i32, SOCKPOSITION *, i32, i32)"
 0x412f90,_fun_00412f90,3,
 0x412fa0,_fun_00412fa0,1,
-0x412fb0,_fun_00412fb0,10,
+0x412fb0,_SetFlightMatrixIdentity,10,
 0x412fc0,_ChrisAnakinCReset,581,
 0x413210,_ChrisAnakinCInit,25,
 0x413230,_fun_00413230,52,
@@ -306,7 +306,7 @@ address,symbol,size,ctype
 0x0041aec0,_fun_0041aec0,42,
 0x41aef0,_SuperWeirdo,60,i32 __cdecl(GAMEOBJECT*)
 0x0041af30,_Player_HasPurpleForce,46,i32 __cdecl (GAMEOBJECT *)
-0x41af60,_fun_0041af60,10,
+0x41af60,_GameDrawMtxSetIdentity,10,
 0x41af70,_ResetPlayerMoves,290,void __cdecl(GAMEOBJECT *)
 0x41b0a0,_InitPlayerAI,884,void __cdecl(GAMEOBJECT *)
 0x41b420,_ResetPlayer,1900,
@@ -2614,7 +2614,7 @@ address,symbol,size,ctype
 0x004dd2f0,_AnakinsFlightB_Init,139,void __cdecl(WORLDINFO *)
 0x004dd380,_AnakinsFlightB_Update,1,void __cdecl(WORLDINFO *)
 0x004dd390,_AnakinsFlightB_Draw,1,void __cdecl(WORLDINFO *)
-0x4dd3a0,_fun_004dd3a0,10,
+0x4dd3a0,_PodMatrixSetIdentity,10,
 0x4dd3b0,_PodRaceInit,208,void __cdecl(WORLDINFO *)
 0x4dd480,_PodRaceReset,94,
 0x004dd4e0,_PodRaceAInit,5,void __cdecl(WORLDINFO *)
