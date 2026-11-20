@@ -47,7 +47,6 @@
 
 void PartImpact_ThermalDetonator(PART *part) {
     i32 stuck = 0;
-    i8 surface;
     u32 shadow;
     i32 layer;
     f32 water;
@@ -61,8 +60,8 @@ void PartImpact_ThermalDetonator(PART *part) {
         KillPart(part, 0);
         return;
     }
-    surface = (i8)part->surface_type;
-    if (surface >= 0 && surface < 32 && (TerSurface[surface].flags & TERSURFACE_BOLT_DEFLECT) != 0) {
+    if ((i8)part->surface_type >= 0 && (i8)part->surface_type < 32 &&
+        (TerSurface[(i8)part->surface_type].flags & TERSURFACE_BOLT_DEFLECT) != 0) {
         PlaySfx("imp_thermalDet_attach", &part->position);
         stuck = 2;
     } else {
