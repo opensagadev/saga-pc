@@ -21,6 +21,61 @@
 i32 ui_bgmtl = 0;
 extern "C" NUMTL *uimtls[5];
 
+/* The drawing calls of the menu renderers, skipped while edui_donotdraw is set. */
+static void EduiQFntSet(VUFNT *font) {
+    if (edui_donotdraw == 0) {
+        NuQFntSet(font);
+    }
+}
+
+static void EduiQFntSetColour(VUFNT *font, u32 colour) {
+    if (edui_donotdraw == 0) {
+        NuQFntSetColour(font, colour);
+    }
+}
+
+static void EduiRndrRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material) {
+    if (edui_donotdraw == 0) {
+        NuRndrRect2di(x, y, width, height, colour, material);
+    }
+}
+
+static void EduiRndrGradRect2di(i32 x, i32 y, i32 width, i32 height, u32 *colours, NUMTL *material) {
+    if (edui_donotdraw == 0) {
+        NuRndrGradRect2di(x, y, width, height, colours, material);
+    }
+}
+
+static void EduiRndrLine2di(i32 x0, i32 y0, i32 x1, i32 y1, i32 colour, NUMTL *material) {
+    if (edui_donotdraw == 0) {
+        NuRndrLine2di(x0, y0, x1, y1, colour, material);
+    }
+}
+
+static void EduiRndrLineRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material) {
+    if (edui_donotdraw == 0) {
+        NuRndrLineRect2di(x, y, width, height, colour, material);
+    }
+}
+
+static void EduiRndrTriStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *material) {
+    if (edui_donotdraw == 0) {
+        NuRndrTriStrip2di(positions, uvs, count, colour, material);
+    }
+}
+
+static void EduiRndrLineStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *material) {
+    if (edui_donotdraw == 0) {
+        NuRndrLineStrip2di(positions, uvs, count, colour, material);
+    }
+}
+
+static void EduiRndrRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, NUMTL *material) {
+    if (edui_donotdraw == 0) {
+        NuRndrRectUV2di(x, y, width, height, u0, v0, u1, v1, colour, material);
+    }
+}
+
 static void EduiPrintAlignedText(VUFNT *font, i32 x, i32 y, i32 alignment, char *format, ...) {
     if (edui_donotdraw == 0) {
         char text[1024];
@@ -66,15 +121,9 @@ i32 eduicbRenderSel(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32
     i32 baseline = (i32)(font_height + NuQFntBaseline(edui_font));
     item->x = x;
     item->y = y;
-    if (edui_donotdraw == 0) {
-        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
-        if (edui_donotdraw == 0) {
-            NuQFntSet(edui_font);
-            if (edui_donotdraw == 0) {
-                NuQFntSetColour(edui_font, item->colours[item->highlighted]);
-            }
-        }
-    }
+    EduiRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
+    EduiQFntSet(edui_font);
+    EduiQFntSetColour(edui_font, item->colours[item->highlighted]);
     switch (item->text_alignment) {
         case EDUI_ALIGN_LEFT:
             EduiPrintAlignedText(edui_font, x << 4, (y << 3) + baseline, item->text_alignment, item->text);
@@ -95,15 +144,9 @@ i32 eduicbRenderCheck(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i
     i32 baseline = (i32)(NuQFntHeight(edui_font) * 0.125 + NuQFntBaseline(edui_font));
     item->x = x;
     item->y = y;
-    if (edui_donotdraw == 0) {
-        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2], uimtls[ui_bgmtl]);
-        if (edui_donotdraw == 0) {
-            NuQFntSet(edui_font);
-            if (edui_donotdraw == 0) {
-                NuQFntSetColour(edui_font, item->colours[item->highlighted]);
-            }
-        }
-    }
+    EduiRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2], uimtls[ui_bgmtl]);
+    EduiQFntSet(edui_font);
+    EduiQFntSetColour(edui_font, item->colours[item->highlighted]);
     EduiPrintAlignedText(edui_font, x << 4, (y << 3) + baseline, 16, item->text);
     i32 left = ((x - height + width) << 4) - 16;
     i32 top = (y << 3) + 16;
@@ -121,9 +164,7 @@ i32 eduicbRenderCheck(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i
         points[5] = bottom;
         points[6] = right;
         points[7] = top;
-        if (edui_donotdraw == 0) {
-            NuRndrTriStrip2di(points, NULL, 4, item->colours[0], uimtls[0]);
-        }
+        EduiRndrTriStrip2di(points, NULL, 4, item->colours[0], uimtls[0]);
     } else {
         i32 quarter_x = (left + ((left + right) >> 1)) >> 1;
         i32 lower_y = (bottom + middle_y) >> 1;
@@ -137,9 +178,7 @@ i32 eduicbRenderCheck(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i
         points[7] = bottom;
         points[8] = left;
         points[9] = middle_y;
-        if (edui_donotdraw == 0) {
-            NuRndrLineStrip2di(points, NULL, 5, item->colours[0], uimtls[0]);
-        }
+        EduiRndrLineStrip2di(points, NULL, 5, item->colours[0], uimtls[0]);
     }
     return height;
 }
@@ -155,12 +194,8 @@ i32 eduicbRenderSlider(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, 
     item->y = y;
     if (skip_draw == 0) {
         NuRndrRect2di(x << 4, y << 3, width << 4, height << 4, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
-        if (edui_donotdraw == 0) {
-            NuQFntSet(edui_font);
-            if (edui_donotdraw == 0) {
-                NuQFntSetColour(edui_font, item->colours[item->highlighted]);
-            }
-        }
+        EduiQFntSet(edui_font);
+        EduiQFntSetColour(edui_font, item->colours[item->highlighted]);
     }
     NuStrCpy(format, item->text);
     NuStrCat(format, slider->format);
@@ -196,12 +231,8 @@ i32 eduicbRenderSliderInt(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 
     item->y = y;
     if (skip_draw == 0) {
         NuRndrRect2di(x << 4, y << 3, width << 4, height << 4, item->colours[2 + item->highlighted], uimtls[0]);
-        if (edui_donotdraw == 0) {
-            NuQFntSet(edui_font);
-            if (edui_donotdraw == 0) {
-                NuQFntSetColour(edui_font, item->colours[item->highlighted]);
-            }
-        }
+        EduiQFntSet(edui_font);
+        EduiQFntSetColour(edui_font, item->colours[item->highlighted]);
     }
     NuStrCpy(format, item->text);
     NuStrCat(format, slider->format);
@@ -232,31 +263,19 @@ i32 eduicbRenderFilePick(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y
     i32 baseline = (i32)(font_height + NuQFntBaseline(edui_font));
     if (picker->reserved_54 != 0) {
         i32 centre;
-        if (edui_donotdraw == 0) {
-            NuRndrRect2di(x << 4, y << 3, width << 4, height << 4, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
-            if (edui_donotdraw == 0) {
-                NuQFntSet(edui_font);
-                if (edui_donotdraw == 0) {
-                    NuQFntSetColour(edui_font, item->colours[item->highlighted]);
-                }
-            }
-        }
+        EduiRndrRect2di(x << 4, y << 3, width << 4, height << 4, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
+        EduiQFntSet(edui_font);
+        EduiQFntSetColour(edui_font, item->colours[item->highlighted]);
         centre = (x * 2 + width) << 3;
         EduiPrintAlignedText(edui_font, centre, (y << 3) + baseline, 64, item->text);
         EduiPrintAlignedText(edui_font, centre, ((y + height) << 3) + baseline, 64, picker->format, picker->name);
         return height * 2;
     } else {
         char formatted[256];
-        if (edui_donotdraw == 0) {
-            NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
-        }
+        EduiRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
         NuSPrintf(formatted, picker->format, picker->name);
-        if (edui_donotdraw == 0) {
-            NuQFntSet(edui_font);
-            if (edui_donotdraw == 0) {
-                NuQFntSetColour(edui_font, item->colours[item->highlighted]);
-            }
-        }
+        EduiQFntSet(edui_font);
+        EduiQFntSetColour(edui_font, item->colours[item->highlighted]);
         EduiPrintAlignedText(edui_font, (x * 2 + width) << 3, (y << 3) + baseline, 64, "%s %s", item->text, formatted);
         return height;
     }
@@ -284,12 +303,8 @@ i32 eduicbRenderColourSlider(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i
     item->y = y;
     if (skip_draw == 0) {
         NuRndrRect2di(x << 4, y << 3, width << 4, height << 4, item->colours[2 + item->highlighted], uimtls[0]);
-        if (edui_donotdraw == 0) {
-            NuQFntSet(edui_font);
-            if (edui_donotdraw == 0) {
-                NuQFntSetColour(edui_font, item->colours[item->highlighted]);
-            }
-        }
+        EduiQFntSet(edui_font);
+        EduiQFntSetColour(edui_font, item->colours[item->highlighted]);
     }
     EduiPrintAlignedText(edui_font, (x + 64) << 4, (y << 3) + baseline, 64, item->text);
     EduiPrintAlignedText(edui_font, (x + 116) << 4, (y << 3) + baseline, 64, slider->base.format, (i32)slider->base.value);
@@ -362,15 +377,9 @@ i32 eduicbRenderGradPick(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y
     i32 baseline = (i32)(font_height + NuQFntBaseline(edui_font));
     item->x = x;
     item->y = y;
-    if (edui_donotdraw == 0) {
-        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
-        if (edui_donotdraw == 0) {
-            NuQFntSet(edui_font);
-            if (edui_donotdraw == 0) {
-                NuQFntSetColour(edui_font, item->colours[item->highlighted]);
-            }
-        }
-    }
+    EduiRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
+    EduiQFntSet(edui_font);
+    EduiQFntSetColour(edui_font, item->colours[item->highlighted]);
     if (gradient->change_timer && gradient->selected_stage) {
         EduiPrintAlignedText(edui_font, (x * 2 + width) << 3, (y << 3) + baseline, 64, "%1.03f", gradient->selected_stage->time);
         --gradient->change_timer;
@@ -394,19 +403,13 @@ i32 eduicbRenderGradPick(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y
         f32 span = (f32)width;
         do {
             i32 left = x + (i32)(stage->time * span);
-            if (edui_donotdraw == 0) {
-                NuRndrRect2di((left - 2) << 4, ((y + (height >> 1)) << 3) - 16, 80, ((height >> 1) << 3) + 16, stage->colour, uimtls[0]);
-            }
+            EduiRndrRect2di((left - 2) << 4, ((y + (height >> 1)) << 3) - 16, 80, ((height >> 1) << 3) + 16, stage->colour, uimtls[0]);
             if (stage == gradient->selected_stage) {
-                if (edui_donotdraw == 0) {
-                    NuRndrLineRect2di((left - 2) << 4, ((y + (height >> 1)) << 3) - 16, 80, ((height >> 1) << 3) + 16, 0x80ffffff,
-                                      uimtls[EduiSelectionMaterial]);
-                }
+                EduiRndrLineRect2di((left - 2) << 4, ((y + (height >> 1)) << 3) - 16, 80, ((height >> 1) << 3) + 16, 0x80ffffff,
+                                    uimtls[EduiSelectionMaterial]);
             } else {
-                if (edui_donotdraw == 0) {
-                    NuRndrLineRect2di((left - 2) << 4, ((y + (height >> 1)) << 3) - 16, 80, ((height >> 1) << 3) + 16, 0x80000000,
-                                      uimtls[EduiSelectionMaterial]);
-                }
+                EduiRndrLineRect2di((left - 2) << 4, ((y + (height >> 1)) << 3) - 16, 80, ((height >> 1) << 3) + 16, 0x80000000,
+                                    uimtls[EduiSelectionMaterial]);
             }
             stage = stage->next;
         } while (stage != NULL);
@@ -534,15 +537,9 @@ extern "C" i32 eduicbRenderNumber(eduimenu_s *unused_menu, eduiitem_s *item, i32
     i32 baseline = (i32)(scaled_height + NuQFntBaseline(edui_font));
     item->x = x;
     item->y = y;
-    if (edui_donotdraw == 0) {
-        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
-        if (edui_donotdraw == 0) {
-            NuQFntSet(edui_font);
-            if (edui_donotdraw == 0) {
-                NuQFntSetColour(edui_font, item->colours[item->highlighted]);
-            }
-        }
-    }
+    EduiRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
+    EduiQFntSet(edui_font);
+    EduiQFntSetColour(edui_font, item->colours[item->highlighted]);
     char format[512];
     NuStrCpy(format, item->text);
     NuStrCat(format, number->format);
@@ -571,15 +568,9 @@ extern "C" i32 eduicbRenderTextSelector(eduimenu_s *unused_menu, eduiitem_s *ite
     i32 baseline = (i32)(scaled_height + NuQFntBaseline(edui_font));
     item->x = x;
     item->y = y;
-    if (edui_donotdraw == 0) {
-        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
-        if (edui_donotdraw == 0) {
-            NuQFntSet(edui_font);
-            if (edui_donotdraw == 0) {
-                NuQFntSetColour(edui_font, item->colours[item->highlighted]);
-            }
-        }
-    }
+    EduiRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
+    EduiQFntSet(edui_font);
+    EduiQFntSetColour(edui_font, item->colours[item->highlighted]);
     char format[512];
     NuStrCpy(format, item->text);
     NuStrCat(format, ": %s");
@@ -638,9 +629,7 @@ extern "C" i32 eduicbRenderSeparator(eduimenu_s *unused_menu, eduiitem_s *item, 
     item->y = y;
     if (skip_draw == 0) {
         NuRndrRect2di(x << 4, y << 3, width << 4, 64, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
-        if (edui_donotdraw == 0) {
-            NuRndrLine2di((x + 4) << 4, (y << 3) + 32, ((x + width) << 4) - 64, (y << 3) + 32, (i32)0xff000000, uimtls[ui_bgmtl]);
-        }
+        EduiRndrLine2di((x + 4) << 4, (y << 3) + 32, ((x + width) << 4) - 64, (y << 3) + 32, (i32)0xff000000, uimtls[ui_bgmtl]);
     }
     return 8;
 }
@@ -834,9 +823,7 @@ extern "C" void eduiMenuRender(eduimenu_s *menu) {
     NuPrimSetCoordinateSystem(0);
     NuQFntPushCoordinateSystem(NUQFNT_CS_SIXTEENTHS);
     NuQFntPushPrintMode(NUQFNT_MODE_2D);
-    if (edui_donotdraw == 0) {
-        NuQFntSet(edui_font);
-    }
+    EduiQFntSet(edui_font);
     NuQFntSetScale(edui_font, edui_font_scale_x, edui_font_scale_y);
     i32 title_height = (i32)(NuQFntHeight(edui_font) * 0.15625);
     f64 font_height = NuQFntHeight(edui_font) * 0.125;
@@ -845,15 +832,9 @@ extern "C" void eduiMenuRender(eduimenu_s *menu) {
         if (menu->child == NULL) {
             EduiAddInteraction((f32)x, (f32)y, (f32)menu->width, (f32)title_height, menu, NULL, cbInteractMenuTitle, 0x40, 0);
         }
-        if (edui_donotdraw == 0) {
-            NuRndrRect2di(x << 4, y << 3, menu->width << 4, title_height << 3, 0x80000000, uimtls[ui_bgmtl]);
-            if (edui_donotdraw == 0) {
-                NuQFntSet(edui_font);
-                if (edui_donotdraw == 0) {
-                    NuQFntSetColour(edui_font, 0x807f7f7f);
-                }
-            }
-        }
+        EduiRndrRect2di(x << 4, y << 3, menu->width << 4, title_height << 3, 0x80000000, uimtls[ui_bgmtl]);
+        EduiQFntSet(edui_font);
+        EduiQFntSetColour(edui_font, 0x807f7f7f);
         EduiPrintClippedText(edui_font, (x + 1) << 4, (y << 3) + baseline, 16, x << 4, menu->width << 4, menu->title);
         y += title_height;
     }
@@ -935,15 +916,11 @@ extern "C" void eduiMenuRender(eduimenu_s *menu) {
     menu->drawn_width = x - menu->x;
     menu->drawn_height = y - menu->y;
     if (active_menu == menu) {
-        if (edui_donotdraw == 0) {
-            NuRndrLineRect2di((menu->x - 1) << 4, (menu->y << 3) - 8, (menu->drawn_width + 2) << 4, (menu->drawn_height << 3) + 16,
-                              eduimenu_selected_outline_colour, uimtls[EduiSelectionMaterial]);
-        }
+        EduiRndrLineRect2di((menu->x - 1) << 4, (menu->y << 3) - 8, (menu->drawn_width + 2) << 4, (menu->drawn_height << 3) + 16,
+                            eduimenu_selected_outline_colour, uimtls[EduiSelectionMaterial]);
     } else {
-        if (edui_donotdraw == 0) {
-            NuRndrLineRect2di((menu->x - 1) << 4, (menu->y << 3) - 8, (menu->drawn_width + 2) << 4, (menu->drawn_height << 3) + 16,
-                              eduimenu_outline_colour, uimtls[EduiSelectionMaterial]);
-        }
+        EduiRndrLineRect2di((menu->x - 1) << 4, (menu->y << 3) - 8, (menu->drawn_width + 2) << 4, (menu->drawn_height << 3) + 16,
+                            eduimenu_outline_colour, uimtls[EduiSelectionMaterial]);
     }
     if (menu->child != NULL) {
         EduiAddInteraction((f32)menu->x, (f32)menu->y, (f32)menu->drawn_width, (f32)menu->drawn_height, menu, NULL,
@@ -1250,9 +1227,7 @@ static void EduiDrawGradientGrid(i32 x, i32 y, i32 width, i32 height, f32 start,
         colours[3].channel[1] = second.channel[1] + (last_second.channel[1] - second.channel[1]) * strip / steps;
         colours[3].channel[2] = second.channel[2] + (last_second.channel[2] - second.channel[2]) * strip / steps;
         colours[3].channel[3] = second.channel[3] + (last_second.channel[3] - second.channel[3]) * strip / steps;
-        if (edui_donotdraw == 0) {
-            NuRndrGradRect2di(left, y + strip * height / steps, right - left, height / steps, &colours[0].word, uimtls[ui_bgmtl]);
-        }
+        EduiRndrGradRect2di(left, y + strip * height / steps, right - left, height / steps, &colours[0].word, uimtls[ui_bgmtl]);
         colours[0] = colours[2];
         colours[1] = colours[3];
     }
@@ -1475,10 +1450,8 @@ extern "C" i32 eduicbRenderTexturePick(eduimenu_s *unused_menu, eduiitem_s *item
     colours[1] = 0x807f7f7f;
     colours[0] = 0x807f7f7f;
     colours[picker->selected_corner] = 0x80ffffff;
-    if (edui_donotdraw == 0) {
-        NuRndrRectUV2di(x << 4, y << 3, width << 4, width << 3, origin_u, origin_v, origin_u + span_u, origin_v + span_v, 0x80808080,
-                        picker->material);
-    }
+    EduiRndrRectUV2di(x << 4, y << 3, width << 4, width << 3, origin_u, origin_v, origin_u + span_u, origin_v + span_v, 0x80808080,
+                      picker->material);
     for (i32 corner = 0; corner < 2; ++corner) {
         if (edui_donotdraw == 0) {
             u32 colour = colours[corner];
@@ -1496,15 +1469,9 @@ extern "C" i32 eduicbRenderTexturePick(eduimenu_s *unused_menu, eduiitem_s *item
     i32 height = (i32)(NuQFntHeight(edui_font) * 1.25) >> 3;
     f64 font_height = NuQFntHeight(edui_font) * 0.125;
     i32 baseline = (i32)(font_height + NuQFntBaseline(edui_font));
-    if (edui_donotdraw == 0) {
-        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
-        if (edui_donotdraw == 0) {
-            NuQFntSet(edui_font);
-            if (edui_donotdraw == 0) {
-                NuQFntSetColour(edui_font, item->colours[item->highlighted]);
-            }
-        }
-    }
+    EduiRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
+    EduiQFntSet(edui_font);
+    EduiQFntSetColour(edui_font, item->colours[item->highlighted]);
     EduiPrintAlignedText(edui_font, (x * 2 + width) << 3, (y << 3) + baseline, 64, "%1.03f,%1.03f",
                          picker->uv_x[picker->selected_corner] * 256.0, picker->uv_y[picker->selected_corner] * 256.0);
     return width + height;
@@ -1677,10 +1644,8 @@ extern "C" {
             do {
                 i32 current_x = (i32)(fwidth * fraction);
                 i32 current_y = height - (i32)(nugraphGetYatX(graph, fraction * graph->x_extent * graph->x_scale, 2) * fheight);
-                if (edui_donotdraw == 0) {
-                    NuRndrLine2di((previous_x + x) << 4, (previous_y + y) << 3, (current_x + x) << 4, (current_y + y) << 3, colour,
-                                  uimtls[0]);
-                }
+                EduiRndrLine2di((previous_x + x) << 4, (previous_y + y) << 3, (current_x + x) << 4, (current_y + y) << 3, colour,
+                                uimtls[0]);
                 previous_x = current_x;
                 previous_y = current_y;
                 fraction += (f64)0.01f;
@@ -1704,9 +1669,7 @@ extern "C" {
                 px = (i32)(fwidth * t) + x;
                 top = y - (i32)(nugraphGetYatX(graph, t, EduiGraphDebugIterations) * fheight) + height;
                 bottom = y - (i32)(fheight * bound) + height;
-                if (edui_donotdraw == 0) {
-                    NuRndrLine2di(px << 4, top << 3, px << 4, bottom << 3, 0x80000080, uimtls[0]);
-                }
+                EduiRndrLine2di(px << 4, top << 3, px << 4, bottom << 3, 0x80000080, uimtls[0]);
             }
         }
     }
@@ -1730,28 +1693,16 @@ extern "C" i32 eduicbRenderGraph(eduimenu_s *unused_menu, eduiitem_s *item, i32 
     i32 plot_x = x + 30;
     i32 plot_y = y + 30;
     i32 graph_height = total_height - 60;
-    if (edui_donotdraw == 0) {
-        NuRndrRect2di(x << 4, y << 3, total_width << 4, total_height << 3, 0x80000000, uimtls[0]);
-        if (edui_donotdraw == 0) {
-            NuRndrRect2di(plot_x << 4, plot_y << 3, graph_width << 4, graph_height << 3, 0x80100000, uimtls[0]);
-        }
-    }
+    EduiRndrRect2di(x << 4, y << 3, total_width << 4, total_height << 3, 0x80000000, uimtls[0]);
+    EduiRndrRect2di(plot_x << 4, plot_y << 3, graph_width << 4, graph_height << 3, 0x80100000, uimtls[0]);
     if (picker->graph == NULL) {
-        if (edui_donotdraw == 0) {
-            NuQFntSet(edui_font);
-            if (edui_donotdraw == 0) {
-                NuQFntSetColour(edui_font, 0x80000080);
-            }
-        }
+        EduiQFntSet(edui_font);
+        EduiQFntSetColour(edui_font, 0x80000080);
         EduiPrintAlignedText(edui_font, (x + total_width) << 3, (y + total_height) << 2, 64, (char *)"Invalid Graph Pointer");
         return total_height;
     }
-    if (edui_donotdraw == 0) {
-        NuQFntSet(edui_font);
-        if (edui_donotdraw == 0) {
-            NuQFntSetColour(edui_font, 0x80808080);
-        }
-    }
+    EduiQFntSet(edui_font);
+    EduiQFntSetColour(edui_font, 0x80808080);
     if (picker->x_scale > 0.0f) {
         f32 tick_count = picker->graph->x_extent * picker->graph->x_scale / picker->x_scale;
         i32 label_interval = 1 - (i32)(tick_count / -10.0);
@@ -1759,9 +1710,7 @@ extern "C" i32 eduicbRenderGraph(eduimenu_s *unused_menu, eduiitem_s *item, i32 
             f32 tick_offset = (f32)(graph_width * tick) / tick_count;
             u32 colour;
             if (tick % label_interval == 0) {
-                if (edui_donotdraw == 0) {
-                    NuQFntSet(edui_font);
-                }
+                EduiQFntSet(edui_font);
                 EduiPrintAlignedText(edui_font, (i32)(plot_x + tick_offset) << 4,
                                      ((plot_y + graph_height) << 3) - 48 + (i32)NuQFntHeight(edui_font), 64, (char *)"%1.01f",
                                      (f32)tick * picker->x_scale);
@@ -1782,9 +1731,7 @@ extern "C" i32 eduicbRenderGraph(eduimenu_s *unused_menu, eduiitem_s *item, i32 
             f32 tick_offset = (f32)(graph_height * tick) / tick_count;
             u32 colour;
             if (tick % label_interval == 0) {
-                if (edui_donotdraw == 0) {
-                    NuQFntSet(edui_font);
-                }
+                EduiQFntSet(edui_font);
                 EduiPrintAlignedText(edui_font, (plot_x - 2) << 4,
                                      ((i32)((plot_y + graph_height) - tick_offset) << 3) + ((i32)NuQFntHeight(edui_font) >> 1), 32,
                                      (char *)"%1.01f", (f32)tick * picker->y_scale);
@@ -1798,9 +1745,7 @@ extern "C" i32 eduicbRenderGraph(eduimenu_s *unused_menu, eduiitem_s *item, i32 
             }
         }
     }
-    if (edui_donotdraw == 0) {
-        NuQFntSet(edui_font);
-    }
+    EduiQFntSet(edui_font);
     EduiPrintAlignedText(edui_font, (plot_x + graph_width) << 4, (y << 3) + (i32)NuQFntHeight(edui_font), 32, picker->x_label);
     EduiPrintAlignedText(edui_font, (x + total_width - 3) << 4, (y + total_height) << 3, 32, picker->y_label);
     EduiPrintAlignedText(edui_font, plot_x << 4, (y << 3) + (i32)NuQFntHeight(edui_font), 16, picker->title);
@@ -1823,12 +1768,8 @@ extern "C" i32 eduicbRenderGraph(eduimenu_s *unused_menu, eduiitem_s *item, i32 
     for (i32 point = 0; point < picker->graph->point_count; ++point) {
         i32 px = plot_x + (i32)(picker->graph->x[point] * (f32)graph_width);
         i32 py = plot_y - (i32)(picker->graph->y[point] * (f32)graph_height) + graph_height;
-        if (edui_donotdraw == 0) {
-            NuRndrLine2di((px - 10) << 4, py << 3, (px + 10) << 4, py << 3, 0x80505050, uimtls[0]);
-            if (edui_donotdraw == 0) {
-                NuRndrLine2di(px << 4, (py << 3) - 80, px << 4, (py << 3) + 80, 0x80505050, uimtls[0]);
-            }
-        }
+        EduiRndrLine2di((px - 10) << 4, py << 3, (px + 10) << 4, py << 3, 0x80505050, uimtls[0]);
+        EduiRndrLine2di(px << 4, (py << 3) - 80, px << 4, (py << 3) + 80, 0x80505050, uimtls[0]);
         f32 dx = picker->cursor_x - picker->graph->x[point];
         f32 dy = picker->cursor_y - picker->graph->y[point];
         f32 distance = EduiFabs(dx) + EduiFabs(dy);
@@ -1850,13 +1791,9 @@ extern "C" i32 eduicbRenderGraph(eduimenu_s *unused_menu, eduiitem_s *item, i32 
                           uimtls[EduiSelectionMaterial]);
     }
     if (show_x_scale_help || show_y_scale_help) {
-        if (edui_donotdraw == 0) {
-            NuQFntSet(edui_font);
-        }
+        EduiQFntSet(edui_font);
         i32 help_y = (plot_y << 3) + (i32)NuQFntHeight(edui_font);
-        if (edui_donotdraw == 0) {
-            NuQFntSetColour(edui_font, 0x80808080);
-        }
+        EduiQFntSetColour(edui_font, 0x80808080);
         EduiPrintAlignedText(edui_font, (plot_x + (graph_width >> 1)) << 4, help_y, 64, (char *)"Scaling %c Axis",
                              show_x_scale_help ? 'X' : 'Y');
         help_y += (i32)NuQFntHeight(edui_font);
@@ -1868,15 +1805,9 @@ extern "C" i32 eduicbRenderGraph(eduimenu_s *unused_menu, eduiitem_s *item, i32 
     i32 result = total_height + label_height;
     i32 label_row = y + total_height;
     i32 label_baseline = (((label_height << 3) - (i32)NuQFntHeight(edui_font)) >> 1) + (i32)NuQFntBaseline(edui_font);
-    if (edui_donotdraw == 0) {
-        NuRndrRect2di(x << 4, label_row << 3, total_width << 4, label_height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
-        if (edui_donotdraw == 0) {
-            NuQFntSet(edui_font);
-            if (edui_donotdraw == 0) {
-                NuQFntSetColour(edui_font, item->colours[item->highlighted]);
-            }
-        }
-    }
+    EduiRndrRect2di(x << 4, label_row << 3, total_width << 4, label_height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
+    EduiQFntSet(edui_font);
+    EduiQFntSetColour(edui_font, item->colours[item->highlighted]);
     if (picker->selected_point >= 0) {
         i32 point = picker->selected_point;
         EduiPrintAlignedText(edui_font, (x + 2) << 4, (label_row << 3) + label_baseline, 16, (char *)"Point %d = %1.02f, %1.02f", point,
@@ -2031,9 +1962,7 @@ static void EduiRenderTextCursor(char *value, i32 position, i32 x, i32 y, u32 co
         i32 width = (i32)NuQFntPrintLenU(edui_font, at_cursor);
         i32 top = y - (i32)NuQFntBaseline(edui_font);
         i32 height = (i32)NuQFntHeight(edui_font);
-        if (edui_donotdraw == 0) {
-            NuRndrRect2di(x + offset, top, width, height, colour, NULL);
-        }
+        EduiRndrRect2di(x + offset, top, width, height, colour, NULL);
     }
 }
 
@@ -2048,53 +1977,33 @@ extern "C" i32 eduicbRenderTextPick(eduimenu_s *unused_menu, eduiitem_s *item, i
     if (picker->editing) {
         EduiRenderWidth = MAX(height * 10, width);
         if (picker->keyboard_flags & 2) {
-            if (edui_donotdraw == 0) {
-                NuRndrRect2di(x << 4, y << 3, EduiRenderWidth << 4, (height * 6) << 3, item->colours[2], uimtls[ui_bgmtl]);
-            }
+            EduiRndrRect2di(x << 4, y << 3, EduiRenderWidth << 4, (height * 6) << 3, item->colours[2], uimtls[ui_bgmtl]);
         } else {
-            if (edui_donotdraw == 0) {
-                NuRndrRect2di(x << 4, y << 3, EduiRenderWidth << 4, (height * 5) << 3, item->colours[2], uimtls[ui_bgmtl]);
-            }
+            EduiRndrRect2di(x << 4, y << 3, EduiRenderWidth << 4, (height * 5) << 3, item->colours[2], uimtls[ui_bgmtl]);
         }
         i32 row;
         for (row = 0; row < 4; ++row) {
             for (i32 column = 0; column < 10; ++column) {
                 if (row == picker->keyboard_row && column == picker->keyboard_column) {
-                    if (edui_donotdraw == 0) {
-                        NuQFntSet(edui_font);
-                        if (edui_donotdraw == 0) {
-                            NuQFntSetColour(edui_font, item->colours[1]);
-                        }
-                    }
+                    EduiQFntSet(edui_font);
+                    EduiQFntSetColour(edui_font, item->colours[1]);
                 } else {
-                    if (edui_donotdraw == 0) {
-                        NuQFntSet(edui_font);
-                        if (edui_donotdraw == 0) {
-                            NuQFntSetColour(edui_font, item->colours[0]);
-                        }
-                    }
+                    EduiQFntSet(edui_font);
+                    EduiQFntSetColour(edui_font, item->colours[0]);
                 }
                 letter[0] = textrow[row][column];
                 EduiPrintAlignedText(edui_font, (x + height * column) << 4, ((y + row * height) << 3) + baseline, 16, letter);
             }
         }
-        if (edui_donotdraw == 0) {
-            NuQFntSet(edui_font);
-            if (edui_donotdraw == 0) {
-                NuQFntSetColour(edui_font, item->colours[1]);
-            }
-        }
+        EduiQFntSet(edui_font);
+        EduiQFntSetColour(edui_font, item->colours[1]);
         i32 value_y = ((y + height * row) << 3) + baseline;
         EduiPrintAlignedText(edui_font, x << 4, value_y, 16, picker->value);
         EduiRenderTextCursor(picker->value, picker->cursor, x << 4, value_y, item->colours[1] ^ 0xffffff);
         ++row;
         if (picker->keyboard_flags & 2) {
-            if (edui_donotdraw == 0) {
-                NuQFntSet(edui_font);
-                if (edui_donotdraw == 0) {
-                    NuQFntSetColour(edui_font, item->colours[0]);
-                }
-            }
+            EduiQFntSet(edui_font);
+            EduiQFntSetColour(edui_font, item->colours[0]);
             EduiPrintAlignedText(edui_font, x << 4, ((y + height * row) << 3) + baseline, 16,
                                  EduiTextCopyBuffer[0] ? EduiTextCopyBuffer : EduiTextCopyHelp);
             return height * 6;
@@ -2102,31 +2011,19 @@ extern "C" i32 eduicbRenderTextPick(eduimenu_s *unused_menu, eduiitem_s *item, i
         return height * 5;
     }
     if (picker->keyboard_flags & 1) {
-        if (edui_donotdraw == 0) {
-            NuRndrRect2di(x << 4, y << 3, width << 4, height << 4, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
-            if (edui_donotdraw == 0) {
-                NuQFntSet(edui_font);
-                if (edui_donotdraw == 0) {
-                    NuQFntSetColour(edui_font, item->colours[item->highlighted]);
-                }
-            }
-        }
+        EduiRndrRect2di(x << 4, y << 3, width << 4, height << 4, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
+        EduiQFntSet(edui_font);
+        EduiQFntSetColour(edui_font, item->colours[item->highlighted]);
         i32 centre = (x * 2 + width) << 3;
         EduiPrintAlignedText(edui_font, centre, (y << 3) + baseline, 64, item->text);
         EduiPrintAlignedText(edui_font, centre, ((y + height) << 3) + baseline, 64, picker->format, picker->value);
         return height * 2;
     }
-    if (edui_donotdraw == 0) {
-        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
-    }
+    EduiRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
     char formatted[64];
     NuSPrintf(formatted, picker->format, picker->value);
-    if (edui_donotdraw == 0) {
-        NuQFntSet(edui_font);
-        if (edui_donotdraw == 0) {
-            NuQFntSetColour(edui_font, item->colours[item->highlighted]);
-        }
-    }
+    EduiQFntSet(edui_font);
+    EduiQFntSetColour(edui_font, item->colours[item->highlighted]);
     EduiPrintAlignedText(edui_font, x << 4, (y << 3) + baseline, 16, "%s %s", item->text, formatted);
     return height;
 }
@@ -2286,15 +2183,9 @@ extern "C" i32 eduicbRenderSelWithClipColour(eduimenu_s *menu, eduiitem_s *item,
     i32 baseline = (i32)(font_height + NuQFntBaseline(edui_font));
     item->x = x;
     item->y = y;
-    if (edui_donotdraw == 0) {
-        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
-        if (edui_donotdraw == 0) {
-            NuQFntSet(edui_font);
-            if (edui_donotdraw == 0) {
-                NuQFntSetColour(edui_font, item->colours[item->highlighted]);
-            }
-        }
-    }
+    EduiRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
+    EduiQFntSet(edui_font);
+    EduiQFntSetColour(edui_font, item->colours[item->highlighted]);
     EduiPrintAlignedText(edui_font, (x * 2 + width) << 3, (y << 3) + baseline, 64, item->text);
     f32 red;
     f32 green;

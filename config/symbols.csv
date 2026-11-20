@@ -9654,22 +9654,22 @@ address,symbol,size,ctype
 0x617ff0,_EduiScaledY,15,
 0x00618000,_EduiColourRgbToHsv,378,
 0x00618180,?eduiHSVToRGB@@YAXMMMAAM00@Z,328,"private HSV conversion; three f32 inputs and three RGB output references; no original linkage claim"
-0x6182d0,_fun_006182d0,17,
-0x6182f0,_fun_006182f0,20,
+0x6182d0,?EduiQFntSet@@YAXPAUvufnt_s@@@Z,17,
+0x6182f0,?EduiQFntSetColour@@YAXPAUvufnt_s@@I@Z,20,
 0x618310,?EduiPrintAlignedText@@YAXPAUvufnt_s@@HHHPADZZ,197,"void(VUFNT *, i32, i32, i32, char *, ...)"
 0x6183e0,_EduiFntPrintScaled,57,
 0x00618420,?EduiPrintClippedText@@YAXPAUvufnt_s@@HHHHHPADZZ,290,private EDI font and ECX x; stack y/alignment/clip_x/clip_width/format and varargs
 0x618550,_eduiFntPrintClipEx,365,
-0x6186c0,_fun_006186c0,40,
-0x6186f0,_fun_006186f0,40,
+0x6186c0,?EduiRndrGradRect2di@@YAXHHHHPAIPAUnumtl_s@@@Z,40,
+0x6186f0,?EduiRndrLine2di@@YAXHHHHHPAUnumtl_s@@@Z,40,
 0x618720,_EduiDrawLine,80,
-0x618770,_fun_00618770,40,
+0x618770,?EduiRndrRect2di@@YAXHHHHHPAUnumtl_s@@@Z,40,
 0x6187a0,_EduiDrawRect,80,
-0x6187f0,_fun_006187f0,35,
-0x618820,_fun_00618820,35,
-0x618850,_fun_00618850,40,
+0x6187f0,?EduiRndrTriStrip2di@@YAXPAHPAMHHPAUnumtl_s@@@Z,35,
+0x618820,?EduiRndrLineStrip2di@@YAXPAHPAMHHPAUnumtl_s@@@Z,35,
+0x618850,?EduiRndrLineRect2di@@YAXHHHHHPAUnumtl_s@@@Z,40,
 0x618880,_fun_00618880,80,
-0x6188d0,_fun_006188d0,74,
+0x6188d0,?EduiRndrRectUV2di@@YAXHHHHMMMMHPAUnumtl_s@@@Z,74,
 0x00618920,?EduiDrawGradientSpan@@YAXHHHHIIMM@Z,148,"ordinary private C++ colour-span renderer; native colours ECX/EAX and six stack words"
 0x6189c0,?EduiDrawGradientGrid@@YAXHHHHMMIIIIH@Z,615,ordinary private source helper; full native CFG extent
 0x618c30,_eduiInitMaterials,418,
