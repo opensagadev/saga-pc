@@ -197,7 +197,6 @@ extern "C" {
     extern const char AIScriptKeywordScript[7];
     extern NULISTHDR global_aiscripts;
     void *AISysBufferAlloc(VARIPTR *cursor, VARIPTR *end, u32 size);
-    extern VARIPTR *aiscript_load_buffer;
     extern NULISTHDR *aiscript_load_refs;
     extern NULISTHDR *aiscript_load_conditions;
     extern NULISTHDR *aiscript_load_actions;

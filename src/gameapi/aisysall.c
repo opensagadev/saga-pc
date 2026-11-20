@@ -286,7 +286,7 @@ static char *load_path = 0;
 
 static AISCRIPT_CONST_RECORD AIScriptConstantRecords[8] = {0};
 f32 AiRndrCullDistance = 0;
-VARIPTR *aiscript_load_buffer = 0;
+static VARIPTR *aiscript_load_buffer = 0;
 
 static i32 AIScriptConstCursor = 0;
 i32 AIActionDiagnosticMode = 0;
