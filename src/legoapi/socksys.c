@@ -646,6 +646,17 @@ static void SockEdgeAnglesXY(NUVEC *from, NUVEC *to, u16 *x, u16 *y) {
     *y = (u16)NuAtan2D(dx, dz);
 }
 
+/* The signed difference of two 16-bit angles, in -0x8000..0x8000. */
+static i32 SockAngleDifference(u16 from, u16 to) {
+    i32 difference = to - from;
+    if (difference > 0x8000) {
+        difference -= 0x10000;
+    } else if (difference < -0x8000) {
+        difference += 0x10000;
+    }
+    return difference;
+}
+
 SOCKROT *SockRailAngles(SOCK *sock, NUGSPLINE *spline, SOCKROT *rotations) {
     i32 point;
     i32 length;
@@ -720,24 +731,8 @@ SOCKROT *SockRailAngles(SOCK *sock, NUGSPLINE *spline, SOCKROT *rotations) {
         rotations->x = x[0];
         rotations->y = y[0];
         if (edge_count > 1) {
-            {
-                i32 difference = x[1] - x[0];
-                if (difference > 0x8000) {
-                    difference -= 0x10000;
-                } else if (difference < -0x8000) {
-                    difference += 0x10000;
-                }
-                rotations->x += difference / 2;
-            }
-            {
-                i32 difference = y[1] - y[0];
-                if (difference > 0x8000) {
-                    difference -= 0x10000;
-                } else if (difference < -0x8000) {
-                    difference += 0x10000;
-                }
-                rotations->y += difference / 2;
-            }
+            rotations->x += SockAngleDifference(x[0], x[1]) / 2;
+            rotations->y += SockAngleDifference(y[0], y[1]) / 2;
         }
     }
     return rotations;
@@ -1081,34 +1076,14 @@ static void FillSockPosition(SOCKSYS *sock_sys, SOCKPOSITION *position) {
     next = position->next_segment;
     SockSysPointAlongSpline(&temp_sockcampos, sock->cam, segment, next, position->ratio);
 
-    delta = sock->cam_rotations[next].x - sock->cam_rotations[segment].x;
-    if (delta > 0x8000) {
-        delta -= 0x10000;
-    } else if (delta < -0x8000) {
-        delta += 0x10000;
-    }
+    delta = SockAngleDifference(sock->cam_rotations[segment].x, sock->cam_rotations[next].x);
     position->camera_rotation.x = (u16)((f32)delta * position->ratio + sock->cam_rotations[segment].x);
-    delta = sock->cam_rotations[next].y - sock->cam_rotations[segment].y;
-    if (delta > 0x8000) {
-        delta -= 0x10000;
-    } else if (delta < -0x8000) {
-        delta += 0x10000;
-    }
+    delta = SockAngleDifference(sock->cam_rotations[segment].y, sock->cam_rotations[next].y);
     position->camera_rotation.y = (u16)((f32)delta * position->ratio + sock->cam_rotations[segment].y);
 
-    delta = sock->mid_rotations[next].x - sock->mid_rotations[segment].x;
-    if (delta > 0x8000) {
-        delta -= 0x10000;
-    } else if (delta < -0x8000) {
-        delta += 0x10000;
-    }
+    delta = SockAngleDifference(sock->mid_rotations[segment].x, sock->mid_rotations[next].x);
     position->midpoint_rotation.x = (u16)((f32)delta * position->ratio + sock->mid_rotations[segment].x);
-    delta = sock->mid_rotations[next].y - sock->mid_rotations[segment].y;
-    if (delta > 0x8000) {
-        delta -= 0x10000;
-    } else if (delta < -0x8000) {
-        delta += 0x10000;
-    }
+    delta = SockAngleDifference(sock->mid_rotations[segment].y, sock->mid_rotations[next].y);
     position->midpoint_rotation.y = (u16)((f32)delta * position->ratio + sock->mid_rotations[segment].y);
 
     position->distance = (f32)position->segment + position->ratio;

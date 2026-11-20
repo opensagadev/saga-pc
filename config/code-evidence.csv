@@ -494,7 +494,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x0053d5c0,11,?ResetReferences@MessageData@NETMESSAGE@@QAEXXZ,extent,,,unreferenced,
 0x0053d620,32,?DropReference@MessageData@NETMESSAGE@@QAEXXZ,extent,,,unreferenced,
 0x0053db70,18,?SocksysallFabs@@YAMM@Z,copy,,nu2api/socksysall.cpp,bytes equal _AttractoFabs,
-0x0053dbd0,34,_fun_0053dbd0,extent,,nu2api/socksysall.cpp,unreferenced,
+0x0053dbd0,34,_SockAngleDifference,extent,,nu2api/socksysall.cpp,unreferenced,
 0x0053e800,1,_fun_0053e800,extent,,nu2api/socksysall.cpp,unreferenced,
 0x005435f0,35,_slotname,extent,,nu2api/socksysall.cpp,unreferenced,
 0x00543620,74,_slotfolder,extent,,nu2api/socksysall.cpp,unreferenced,

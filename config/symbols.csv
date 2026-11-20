@@ -4478,7 +4478,7 @@ address,symbol,size,ctype
 0x53db60,_SockSysMissingCameraDiagnostic,1,void __cdecl(char *)
 0x53db70,?SocksysallFabs@@YAMM@Z,18,
 0x53db90,_SockFdiv,54,"f32 __cdecl (f32, f32)"
-0x53dbd0,_fun_0053dbd0,34,
+0x53dbd0,_SockAngleDifference,34,
 0x53dc00,_AdjustMinMaxBox,119,"void __cdecl (NUVEC *, NUVEC *, NUVEC *)"
 0x53dc80,_SockSplineLength,141,"f32 __cdecl (NUGSPLINE *, i32)"
 0x53dd10,_SockOnOrOutsidePlane,54,"i32 __cdecl (NUVEC *, NUVEC *, NUVEC *)"
