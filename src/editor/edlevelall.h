@@ -231,6 +231,10 @@ template <class T> class CSListLink {
         return next;
     }
 
+    T *Previous() {
+        return previous;
+    }
+
     T *next;
     T *previous;
 };

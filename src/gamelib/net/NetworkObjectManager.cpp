@@ -1312,7 +1312,7 @@ void NetworkObjectManager::ReceiveReplicaMessage(NETMESSAGE &message, const V2Pe
     NetworkObject *object = &objects[guid];
     object->flags = flags | 8;
     NetReplicator *replicator;
-    for (replicator = replicators[class_id].head; replicator != NULL; replicator = replicator->next) {
+    for (replicator = replicators[class_id].head; replicator != NULL; replicator = replicator->Next()) {
         if (replicator_id == replicator->id) {
             break;
         }

@@ -41,6 +41,7 @@
 
 extern "C" void PushblocksNuError(void) {
 }
+
 extern "C" {
     i32 PushBlockHintId = -1;
 }

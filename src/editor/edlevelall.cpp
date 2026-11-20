@@ -5045,7 +5045,7 @@ i32 SplineKnotList::GetPoint(i32 index, VuVec &point) {
             return 0;
         }
         index--;
-        knot = knot->next;
+        knot = knot->Next();
     }
     if (knot != NULL) {
         VuVecCopy(point, knot->position);
@@ -5357,7 +5357,7 @@ void ClassEditor::cbEdClassViewMenu(eduimenu_s *parent, eduiitem_s *item, u32) {
 /* Samples the camera, the cursor ray and every logical input for this frame.
  * While a property text field is being edited every input is released. */
 i32 ClassObjectList::IsInList(ClassObject object) {
-    for (ClassObjectListEntry *entry = first; entry != NULL; entry = entry->next) {
+    for (ClassObjectListEntry *entry = first; entry != NULL; entry = entry->Next()) {
         if (entry->object == object.object && entry->reference == object.reference) {
             return 1;
         }
@@ -5367,7 +5367,7 @@ i32 ClassObjectList::IsInList(ClassObject object) {
 
 /* A NULL reference matches the object picked by any member. */
 i32 ClassObjectList::IsInList(void *object, EdRef *reference) {
-    for (ClassObjectListEntry *entry = first; entry != NULL; entry = entry->next) {
+    for (ClassObjectListEntry *entry = first; entry != NULL; entry = entry->Next()) {
         if (entry->object == object && (reference == NULL || entry->reference == reference)) {
             return 1;
         }
@@ -5376,7 +5376,7 @@ i32 ClassObjectList::IsInList(void *object, EdRef *reference) {
 }
 
 i32 ClassObjectList::IsInList(EdClass *object_class) {
-    for (ClassObjectListEntry *entry = first; entry != NULL; entry = entry->next) {
+    for (ClassObjectListEntry *entry = first; entry != NULL; entry = entry->Next()) {
         if (entry->ed_class == object_class) {
             return 1;
         }
@@ -6704,7 +6704,7 @@ i32 SplineObjectList::Count() {
 /* The point count of the last block. */
 i32 SplinePointList::GetNumPoints() {
     i32 point_count = 0;
-    for (SplinePointBlock *block = First(); block != NULL; block = block->next) {
+    for (SplinePointBlock *block = First(); block != NULL; block = block->Next()) {
         point_count = block->point_count;
     }
     return point_count;
@@ -6712,7 +6712,7 @@ i32 SplinePointList::GetNumPoints() {
 
 /* Copies a point of the first block that holds more than index points. */
 i32 SplinePointList::GetPoint(i32 index, VuVec &point) {
-    for (SplinePointBlock *block = First(); block != NULL; block = block->next) {
+    for (SplinePointBlock *block = First(); block != NULL; block = block->Next()) {
         if (index < block->point_count) {
             VuVecCopy(point, block->points[index]);
             return 1;
@@ -6725,7 +6725,7 @@ i32 SplinePointList::GetPoint(i32 index, VuVec &point) {
 void SplinePointList::AddPoint(VuVec &point) {
     SplinePointBlock *block;
     VuVec *slot;
-    for (block = First(); block != NULL; block = block->next) {
+    for (block = First(); block != NULL; block = block->Next()) {
         if (block->point_count < block->capacity) {
             slot = &block->points[block->point_count++];
             slot->x = point.x;
@@ -6767,7 +6767,7 @@ void SplinePointBlock::Draw() {
 }
 
 void SplinePointList::Draw() {
-    for (SplinePointBlock *block = First(); block != NULL; block = block->next) {
+    for (SplinePointBlock *block = First(); block != NULL; block = block->Next()) {
         block->Draw();
     }
 }
@@ -7031,7 +7031,7 @@ void SplineHelper::Render(void *object, i32 selected) {
 }
 
 SplineObject *SplineHelper::Find(char *name) {
-    for (SplineObject *spline = objects.first; spline != NULL; spline = spline->next) {
+    for (SplineObject *spline = objects.first; spline != NULL; spline = spline->Next()) {
         if (NuStrICmp(name, spline->name) == 0) {
             return spline;
         }
@@ -7042,7 +7042,7 @@ SplineObject *SplineHelper::Find(char *name) {
 /* Collects up to capacity splines whose name contains the given text. */
 i32 SplineHelper::Find(char *name, SplineObject **objects, i32 capacity) {
     i32 count = 0;
-    for (SplineObject *spline = this->objects.first; spline != NULL && count < capacity; spline = spline->next) {
+    for (SplineObject *spline = this->objects.first; spline != NULL && count < capacity; spline = spline->Next()) {
         if (NuStrIStr(spline->name, name) != NULL) {
             objects[count++] = spline;
         }
@@ -7052,7 +7052,7 @@ i32 SplineHelper::Find(char *name, SplineObject **objects, i32 capacity) {
 
 i32 KnotHelper::GetNumObjects() {
     i32 count = 0;
-    for (SplineObject *spline = theSplineHelper.objects.First(); spline != NULL; spline = spline->next) {
+    for (SplineObject *spline = theSplineHelper.objects.First(); spline != NULL; spline = spline->Next()) {
         count += spline->knots.Count();
     }
     return count;
@@ -7062,7 +7062,7 @@ i32 KnotHelper::GetNumObjects() {
 void *KnotHelper::GetNextObject(void *current) {
     SplineKnot *next = NULL;
     if (current == NULL) {
-        for (SplineObject *spline = theSplineHelper.objects.First(); spline != NULL; spline = spline->next) {
+        for (SplineObject *spline = theSplineHelper.objects.First(); spline != NULL; spline = spline->Next()) {
             if (spline->knots.Count() != 0) {
                 return spline->knots.First();
             }
@@ -7070,7 +7070,7 @@ void *KnotHelper::GetNextObject(void *current) {
     } else {
         next = static_cast<SplineKnot *>(current)->next;
         if (next == NULL) {
-            for (SplineObject *spline = static_cast<SplineKnot *>(current)->spline->next; spline != NULL; spline = spline->next) {
+            for (SplineObject *spline = static_cast<SplineKnot *>(current)->spline->next; spline != NULL; spline = spline->Next()) {
                 if (spline->knots.Count() != 0) {
                     return spline->knots.First();
                 }
@@ -7283,25 +7283,25 @@ void EdSystem::RegisterSubSystem(EdSubSystem *subsystem) {
 }
 
 void EdSystem::Initalise(variptr_u &buffer, variptr_u &buffer_end, i32 from_front) {
-    for (EdSubSystem *subsystem = subsystems.First(); subsystem != NULL; subsystem = subsystem->next) {
+    for (EdSubSystem *subsystem = subsystems.First(); subsystem != NULL; subsystem = subsystem->Next()) {
         subsystem->SubInitialise(buffer, buffer_end, from_front);
     }
 }
 
 void EdSystem::Reset() {
-    for (EdSubSystem *subsystem = subsystems.First(); subsystem != NULL; subsystem = subsystem->next) {
+    for (EdSubSystem *subsystem = subsystems.First(); subsystem != NULL; subsystem = subsystem->Next()) {
         subsystem->SubReset();
     }
 }
 
 void EdSystem::Process(f32 delta_time) {
-    for (EdSubSystem *subsystem = subsystems.First(); subsystem != NULL; subsystem = subsystem->next) {
+    for (EdSubSystem *subsystem = subsystems.First(); subsystem != NULL; subsystem = subsystem->Next()) {
         subsystem->SubProcess(delta_time);
     }
 }
 
 void EdSystem::Render() {
-    for (EdSubSystem *subsystem = subsystems.First(); subsystem != NULL; subsystem = subsystem->next) {
+    for (EdSubSystem *subsystem = subsystems.First(); subsystem != NULL; subsystem = subsystem->Next()) {
         subsystem->SubRender();
     }
 }
@@ -7913,7 +7913,7 @@ done:
 
 i32 ClassEditor::IsSelectedObject(ClassObject &object) {
     ClassObject selected = object;
-    for (ClassObjectListEntry *entry = selected_objects.first; entry != NULL; entry = entry->next) {
+    for (ClassObjectListEntry *entry = selected_objects.first; entry != NULL; entry = entry->Next()) {
         if (entry->object == selected.object && entry->reference == selected.reference) {
             return 1;
         }
@@ -7923,7 +7923,7 @@ i32 ClassEditor::IsSelectedObject(ClassObject &object) {
 
 /* A NULL reference matches the object picked by any member. */
 i32 ClassEditor::IsSelectedObject(void *object, EdRef *reference) {
-    for (ClassObjectListEntry *entry = selected_objects.first; entry != NULL; entry = entry->next) {
+    for (ClassObjectListEntry *entry = selected_objects.first; entry != NULL; entry = entry->Next()) {
         if (entry->object == object && (reference == NULL || entry->reference == reference)) {
             return 1;
         }
@@ -7932,7 +7932,7 @@ i32 ClassEditor::IsSelectedObject(void *object, EdRef *reference) {
 }
 
 i32 ClassEditor::IsSelectedClass(EdClass *object_class) {
-    for (ClassObjectListEntry *entry = selected_objects.first; entry != NULL; entry = entry->next) {
+    for (ClassObjectListEntry *entry = selected_objects.first; entry != NULL; entry = entry->Next()) {
         if (entry->ed_class == object_class) {
             return 1;
         }
@@ -8037,7 +8037,7 @@ i32 ClassObjectList::GetAveragePosition(VuVec &average) {
     average.z = 0.0f;
     average.w = 1.0f;
     i32 count = 0;
-    for (ClassObjectListEntry *entry = first; entry != NULL; entry = entry->next) {
+    for (ClassObjectListEntry *entry = first; entry != NULL; entry = entry->Next()) {
         __declspec(align(16)) VuVec position;
         if (entry->GetAttributeData(8, EdType_VuVec, &position, 0)) {
             average.x += position.x;
@@ -8065,7 +8065,7 @@ i32 ClassObjectList::GetAveragePosition(VuVec &average, f32 &radius) {
     average.y = 0.0f;
     average.z = 0.0f;
     average.w = 1.0f;
-    for (ClassObjectListEntry *entry = first; entry != NULL && count < 64; entry = entry->next) {
+    for (ClassObjectListEntry *entry = first; entry != NULL && count < 64; entry = entry->Next()) {
         if (entry->GetAttributeData(8, EdType_VuVec, &positions[count], 0)) {
             average.x += positions[count].x;
             average.y += positions[count].y;
@@ -8570,7 +8570,7 @@ i32 EdManipulator::Process(EdInputContext &input, ClassObjectList &objects) {
     last_point.w = 1.0f;
     delta.w = 1.0f;
     cursor.w = 1.0f;
-    for (ClassObjectListEntry *entry = objects.first; entry != NULL; entry = entry->next) {
+    for (ClassObjectListEntry *entry = objects.first; entry != NULL; entry = entry->Next()) {
         if (entry->ed_class->FindTypeRef(selected_attribute, 1) != NULL) {
             attribute_selected = 1;
             break;
@@ -8580,7 +8580,7 @@ i32 EdManipulator::Process(EdInputContext &input, ClassObjectList &objects) {
 }
 
 void EdManipulator::Render(ClassObjectList &objects) {
-    for (ClassObjectListEntry *entry = objects.first; entry != NULL; entry = entry->next) {
+    for (ClassObjectListEntry *entry = objects.first; entry != NULL; entry = entry->Next()) {
         theClassEditor.DrawObjectSphere(entry->Self(), 0xff800000);
     }
 }
@@ -8598,7 +8598,7 @@ i32 EdManMove::Process(EdInputContext &input, ClassObjectList &objects) {
         if (input.GetHold(3) == 0.0f && input.GetHold(38) == 0.0f) {
             return axis != 0;
         }
-        for (ClassObjectListEntry *entry = objects.first; entry != NULL; entry = entry->next) {
+        for (ClassObjectListEntry *entry = objects.first; entry != NULL; entry = entry->Next()) {
             ClassObject *object = &static_cast<ClassObject &>(*entry);
             i32 moved;
             VuVecSetOrigin(position);
@@ -8778,7 +8778,7 @@ i32 EdManScale::Process(EdInputContext &input, ClassObjectList &objects) {
     if (input.GetHold(3) == 0.0f) {
         return axis != 0;
     }
-    for (ClassObjectListEntry *entry = objects.first; entry != NULL; entry = entry->next) {
+    for (ClassObjectListEntry *entry = objects.first; entry != NULL; entry = entry->Next()) {
         ClassObject *object = &static_cast<ClassObject &>(*entry);
         VuMtx scaling;
         VuMtx result;
@@ -9379,7 +9379,7 @@ void SceneObjectHelper::Initialise() {
 /* Draws the visible editor-owned instances; hidden ones are drawn solid or
  * as a wire sphere while the editors are entered, as the menu options say. */
 void SceneObjectHelper::SubRender() {
-    for (SceneInstance *object = owned.First(); object != NULL; object = object->next) {
+    for (SceneInstance *object = owned.First(); object != NULL; object = object->Next()) {
         if (object->hidden != 0) {
             continue;
         }
@@ -9602,7 +9602,7 @@ void SplineHelper::Initialise() {
 }
 
 void SplineHelper::PostLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {
-    for (SplineObject *spline = objects.First(); spline != NULL; spline = spline->next) {
+    for (SplineObject *spline = objects.First(); spline != NULL; spline = spline->Next()) {
         spline->GenPoints();
     }
 }
@@ -9620,7 +9620,7 @@ void SplineHelper::Process(void *object, EdInputContext &input) {
 }
 
 void SplineHelper::cbEdSplineReGenPoints(eduimenu_s *, eduiitem_s *, u32) {
-    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
+    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->Next()) {
         if (entry->ed_class == theSplineHelper.object_class) {
             static_cast<SplineObject *>(entry->object)->GenPoints();
         }
@@ -9628,7 +9628,7 @@ void SplineHelper::cbEdSplineReGenPoints(eduimenu_s *, eduiitem_s *, u32) {
 }
 
 void SplineHelper::cbEdSplineReverseSpline(eduimenu_s *, eduiitem_s *, u32) {
-    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
+    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->Next()) {
         if (entry->ed_class == theSplineHelper.object_class) {
             SplineObject *spline = static_cast<SplineObject *>(entry->object);
             spline->ReverseKnots();
@@ -9640,7 +9640,7 @@ void SplineHelper::cbEdSplineReverseSpline(eduimenu_s *, eduiitem_s *, u32) {
 }
 
 void SplineHelper::cbEdSplineSmoothSpline(eduimenu_s *, eduiitem_s *, u32) {
-    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
+    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->Next()) {
         if (entry->ed_class == theSplineHelper.object_class) {
             SplineObject *spline = static_cast<SplineObject *>(entry->object);
             for (SplineKnot *knot = spline->knots.first; knot != NULL; knot = knot->next) {
@@ -9657,7 +9657,7 @@ void SplineHelper::cbEdSplineSmoothSpline(eduimenu_s *, eduiitem_s *, u32) {
 void SplineHelper::cbEdSplineSmoothKnot(eduimenu_s *, eduiitem_s *, u32) {
     SplineObject *changed[64];
     i32 changed_count = 0;
-    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
+    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->Next()) {
         if (entry->ed_class != theKnotHelper.object_class) {
             continue;
         }
@@ -9695,7 +9695,7 @@ void SplineHelper::AddMenuItems(eduimenu_s *menu) {
 void *KnotHelper::CreateObject(void *, i32, i32) {
     SplineObject *spline = NULL;
     SplineKnot *selected_knot = NULL;
-    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
+    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->Next()) {
         if (spline == NULL && entry->ed_class == theSplineHelper.object_class) {
             spline = (SplineObject *)entry->object;
         }
@@ -9727,7 +9727,7 @@ void *KnotHelper::CreateObject(void *, i32, i32) {
 /* Picking a knot selects its spline unless the spline is already selected. */
 void KnotHelper::Process(void *object, EdInputContext &) {
     SplineKnot *knot = (SplineKnot *)object;
-    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
+    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->Next()) {
         if (entry->object == knot->spline) {
             return;
         }
@@ -10286,7 +10286,7 @@ i32 PropertyTool::ProcessMenu(EdInputContext &input) {
     for (menu = menus.First(); menu != NULL; menu = menu->Next()) {
         menu->order = order++;
     }
-    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
+    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->Next()) {
         ClassObject &object = *entry;
         menu = FindItemMenu(menus.First(), entry);
         if (menu != NULL) {
@@ -10350,7 +10350,7 @@ i32 PropertyTool::Process(EdInputContext &input) {
 
 void PropertyTool::Render() {
     PropertyMenu *selected = NULL;
-    for (PropertyMenu *menu = menus.Last(); menu != NULL; menu = menu->previous) {
+    for (PropertyMenu *menu = menus.Last(); menu != NULL; menu = menu->Previous()) {
         if (menu == GetActiveMenu(menus.First())) {
             selected = menu;
         } else {
@@ -10926,7 +10926,7 @@ i32 ClassEditor::cbEdCopySelectedObject(EdInputContext &) {
 i32 ClassEditor::cbEdCreateClassNewObject(i32 class_id) {
     EdClass *object_class = theRegistry.GetClass(class_id);
     i32 created = 0;
-    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
+    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->Next()) {
         if (entry->ed_class == object_class) {
             return theClassEditor.CreateObject(*entry);
         }
@@ -11006,7 +11006,7 @@ void ClassEditor::AddMenuItems(eduimenu_s *menu) {
     eduiMenuAddItem(menu, eduiItemSelCreate(0, &EdLevelAttr, 0, 0, cbEdClassNewMenu, "New/Copy"));
     eduiMenuAddItem(menu, eduiItemSelCreate(0, &EdLevelAttr, 0, 0, cbEdClassDeleteObject, "Delete"));
     class_count = 0;
-    for (ClassObjectListEntry *entry = selected_objects.first; entry != NULL; entry = entry->next) {
+    for (ClassObjectListEntry *entry = selected_objects.first; entry != NULL; entry = entry->Next()) {
         for (index = 0; index < class_count; index++) {
             if (classes[index] == entry->ed_class) {
                 break;
@@ -11147,7 +11147,7 @@ void ClassEditor::Process(EdInputContext &input) {
     if (input.GetPress(10) != 0.0f) {
         ViewSelected();
     }
-    for (ClassObjectListEntry *entry = selected_objects.first; entry != NULL; entry = entry->next) {
+    for (ClassObjectListEntry *entry = selected_objects.first; entry != NULL; entry = entry->Next()) {
         theRegistry.ClassIFaceProcess(entry->ed_class, entry->object, input);
     }
     if (input.GetPress(39) != 0.0f) {

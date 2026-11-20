@@ -31,6 +31,7 @@
 
 void RtlNuError(void) {
 }
+
 NUVEC LightingUnitDirection = {1.0f, 0.0f, 0.0f};
 NUVEC RtlUnitDirectionYPc = {0.0f, 1.0f, 0.0f};
 i32 rtl_dynamic_lights_enabled = 1;
