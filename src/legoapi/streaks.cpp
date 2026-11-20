@@ -39,6 +39,37 @@ extern "C" STREAK_HEADER *StreakHeaderAlloc(void) {
     return header;
 }
 
+/* Takes a node from the free list onto the front of the header's nodes. */
+static STREAK_NODE *StreakNodeAlloc(STREAK_HEADER *header) {
+    STREAK_NODE *node = streaks_free;
+    if (node != NULL) {
+        STREAK_NODE *first;
+        streaks_free = node->next;
+        first = header->nodes;
+        node->next = first;
+        if (first != NULL) {
+            first->prev = node;
+        }
+        node->prev = NULL;
+        header->nodes = node;
+    }
+    return node;
+}
+
+/* Unlinks a node from its header and returns it to the free list. */
+static void StreakNodeFree(STREAK_NODE *node, STREAK_HEADER *header) {
+    if (node->prev != NULL) {
+        node->prev->next = node->next;
+    } else {
+        header->nodes = node->next;
+    }
+    if (node->next != NULL) {
+        node->next->prev = node->prev;
+    }
+    node->next = streaks_free;
+    streaks_free = node;
+}
+
 // Takes the endpoint pointers in EDI/ESI and six stack arguments; the helper
 // stays beside its sole caller for VC8's internal ABI.
 extern "C" {
@@ -77,18 +108,7 @@ extern "C" void AddStreakPoints(NUVEC *points, f32 duration, u32 colour, void **
     NUVEC edge_b;
     STREAK_HEADER *header = static_cast<STREAK_HEADER *>(*handle);
     if (header == NULL) {
-        header = streakhdrs_free;
-        if (header == NULL) {
-            return;
-        }
-        streakhdrs_free = header->next;
-        header->next = streakhdrs_used;
-        if (streakhdrs_used != NULL) {
-            streakhdrs_used->prev = header;
-        }
-        header->prev = NULL;
-        streakhdrs_used = header;
-        header->nodes = NULL;
+        header = StreakHeaderAlloc();
         if (header == NULL) {
             return;
         }
@@ -98,18 +118,9 @@ extern "C" void AddStreakPoints(NUVEC *points, f32 duration, u32 colour, void **
         header->flags = static_cast<u8>(mode);
         header->owner = owner;
     }
-    STREAK_NODE *node = streaks_free;
     header->has_new_node = 1;
     header->colour = colour;
-    if (node != NULL) {
-        streaks_free = node->next;
-        node->next = header->nodes;
-        if (header->nodes != NULL) {
-            header->nodes->prev = node;
-        }
-        node->prev = NULL;
-        header->nodes = node;
-    }
+    StreakNodeAlloc(header);
     if (header->nodes == NULL) {
         return;
     }
@@ -119,7 +130,7 @@ extern "C" void AddStreakPoints(NUVEC *points, f32 duration, u32 colour, void **
     if (header->nodes->next == NULL) {
         return;
     }
-    node = header->nodes;
+    STREAK_NODE *node = header->nodes;
     STREAK_NODE *older = node->next;
     NuVecSub(&node->start_tangent, &older->position, &node->position);
     NuVecSub(&header->nodes->end_tangent, &header->nodes->next->previous_position, &header->nodes->previous_position);
@@ -197,16 +208,7 @@ extern "C" void UpdateStreaks(f32 elapsed) {
         for (STREAK_NODE *node = header->nodes; node != NULL; node = node->next) {
             node->remaining_time -= elapsed;
             if (node->remaining_time <= 0.0f && node->next == NULL) {
-                if (node->prev != NULL) {
-                    node->prev->next = node->next;
-                } else {
-                    header->nodes = node->next;
-                }
-                if (node->next != NULL) {
-                    node->next->prev = node->prev;
-                }
-                node->next = streaks_free;
-                streaks_free = node;
+                StreakNodeFree(node, header);
                 break;
             }
         }

@@ -6524,8 +6524,8 @@ address,symbol,size,ctype
 0x5a3050,_Pulses_Update,1024,void __cdecl(LEVEL_SFX_PULSE *)
 0x5a3450,_Pulses_AddSfx,158,"void __cdecl (LEVEL_SFX_PULSE *, i32 *, i32 *, i32)"
 0x5a34f0,_fun_005a34f0,28,
-0x5a3510,_fun_005a3510,62,
-0x5a3550,_fun_005a3550,40,
+0x5a3510,?StreakNodeFree@@YAXPAUSTREAK_NODE@@PAUSTREAK_HEADER@@@Z,62,
+0x5a3550,?StreakNodeAlloc@@YAPAUSTREAK_NODE@@PAUSTREAK_HEADER@@@Z,40,
 0x5a3580,_fun_005a3580,61,
 0x5a35c0,_StreakHeaderAlloc,46,
 0x5a35f0,_StreakBezierPointPrivate,310,"void(NUVEC *,NUVEC *,NUVEC *,NUVEC *,NUVEC *,i32,i32,f32) [private native EDI start; ESI end; six stack arguments]"
