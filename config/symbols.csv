@@ -6292,7 +6292,7 @@ address,symbol,size,ctype
 0x596a30,_SetShadowLight,1656,full native scene shadow-light setup
 0x5970b0,_SnakeFabs,18,
 0x5970d0,_SnakeASin,320,i32 __cdecl(f32)
-0x597210,_fun_00597210,28,
+0x597210,_SnakeMtxSetRotationXY,28,
 0x597230,_SnakeVuVecMake,28,
 0x00597250,_InitSnakes,99,void __cdecl (WORLDINFO *)
 0x5972c0,_CreateSnakeBody,129,"void *__cdecl (GAMEOBJECT *, u16)"
