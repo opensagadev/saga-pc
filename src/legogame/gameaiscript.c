@@ -5607,13 +5607,16 @@ i32 Action_SetCurrentSpeed(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
     return 1;
 }
 
+/* The SDK's inline NuFabs: the float with its sign bit cleared. */
+static f32 GameaiscriptFabs(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
 i32 Action_SetRunSpeed(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 num_params, i32 first_time,
                        f32 elapsed) {
-    union {
-        f32 value;
-        u32 bits;
-    } magnitude, absolute;
-
     GAMEOBJECT *object;
     i32 i;
     char *value;
@@ -5653,12 +5656,8 @@ i32 Action_SetRunSpeed(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *pack
                 }
             }
         }
-        magnitude.value = minimum;
-        absolute.bits = magnitude.bits & 0x7fffffff;
-        minimum = absolute.value;
-        magnitude.value = maximum;
-        absolute.bits = magnitude.bits & 0x7fffffff;
-        maximum = absolute.value;
+        minimum = GameaiscriptFabs(minimum);
+        maximum = GameaiscriptFabs(maximum);
         if (processor->action_data_4 == 0.0f) {
             if (multiply) {
                 if (object->run_speed_override == MoveSplineRunSpeedSentinel) {
@@ -5707,9 +5706,7 @@ i32 Action_SetRunSpeed(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *pack
     }
     if (processor->action_data_4 > 0.0f && object->run_speed_override < MoveSplineRunSpeedSentinel) {
         object->run_speed_override = SeekValF(object->run_speed_override, processor->action_data_5, processor->action_data_4);
-        magnitude.value = object->run_speed_override - processor->action_data_5;
-        absolute.bits = magnitude.bits & 0x7fffffff;
-        if (absolute.value < 0.01f) {
+        if (GameaiscriptFabs(object->run_speed_override - processor->action_data_5) < 0.01f) {
             object->run_speed_override = processor->action_data_5;
         } else {
             return 0;
