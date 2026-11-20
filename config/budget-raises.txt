@@ -307,3 +307,5 @@ config/castscan-budget.json scalar-pun 281 nu2api helper batch: NuPostFilterRele
 config/oddscan-budget.json magic-bound 1577 game menu unit batch: MenuDrawMemCardFade (written from retail 0x50b420) ramps its overlay alpha up to 0x80
 config/oddscan-budget.json magic-mask 1048 game menu unit batch: MenusPrimSetColour is the menu unit's emitted copy of the release headers' prim colour helper (the ARGB to ABGR channel masks every unit's copy spells out)
 config/oddscan-budget.json magic-state 4282 NuMain's new_level_from_menu ternary is two branches in retail (UsePlayerList = 2 / = 1 literal stores)
+config/oddscan-budget.json magic-flag 2569 CInfo flags retyped to u64: the existing CONTEXT flag masks were spelled U64_PAIR(&CInfo[c].flags) & mask, which oddscan did not see; no new mask
+config/oddscan-budget.json magic-mask 1055 same CInfo u64 retype: existing context masks now visible to the scanner
