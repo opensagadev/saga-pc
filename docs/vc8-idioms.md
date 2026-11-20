@@ -761,6 +761,22 @@ Examples: `MenuUpdateMissions` (96.5 -> 97.8), `UpdateStatusScreen`
 (90.5 -> 96.4), `AITriggerSetSysProcess` (route mask read before the locator
 pointer is taken, 99.09 -> 99.30).
 
+### I64: conversion targets are visible in the code
+
+- Float to `u16`/`i16` converts inline (`fnstcw`, `fistp dword`, `movzx r, word`);
+  float to `i32` calls `_ftol2_sse`. A retail inline conversion where we call
+  `_ftol2` means the original cast straight to the 16-bit type, not
+  `(u16)(i32)x` or an `i32` local truncated later (`LoadAreaCharacters` prompt
+  phase, `Minicam_Update` change-mode pitch).
+- `u32` to float adds the 2^32 correction from `__real@4f800000` (f32) when the
+  target is `f32` and from `__real@41f0000000000000` (f64) when it is `f64`.
+  Retail's f32 constant means `u * f` with an `f32` operand, not `(f64)u * f`
+  (`Coins_LSW_Update`, `DisplayCutSceneMemory`).
+- `(u32)(i32)x << 24` converts through a 64-bit `fistp qword`; retail's
+  `_ftol2` and a signed shift is `(i32)x << 24` (`LoadPerm`).
+- `tools/refscan.py` lists functions whose two sides use different conversion
+  constants.
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated
