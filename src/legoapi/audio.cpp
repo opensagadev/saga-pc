@@ -591,6 +591,11 @@ void TickTockSfx(void) {
     }
 }
 
+static void RepeatSfxClear(REPEAT_SFX_ENTRY *entry) {
+    memset(entry, 0, sizeof(REPEAT_SFX_ENTRY));
+    entry->state = 0;
+}
+
 extern "C" void ResetRepeatSfx(void) {
     i32 i;
     memset(RepeatSfxQueue, 0, sizeof(RepeatSfxQueue));
@@ -653,8 +658,7 @@ void UpdateRepeatSfx(void) {
                     entry->start_delay = entry->repeat_delay;
                     entry->state = 3;
                 } else {
-                    memset(entry, 0, sizeof(REPEAT_SFX_ENTRY));
-                    entry->state = 0;
+                    RepeatSfxClear(entry);
                 }
                 break;
         }

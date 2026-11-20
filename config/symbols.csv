@@ -4698,7 +4698,7 @@ address,symbol,size,ctype
 0x548640,_AddLevelSfxFromId,69,"void __cdecl (i32, i32 *, i32 *, i32)"
 0x00548690,_UpdateLevelSfx,121,"void __cdecl (WORLDINFO *, i32)"
 0x548710,_TickTockSfx,76,void __cdecl (void)
-0x548760,_fun_00548760,17,
+0x548760,?RepeatSfxClear@@YAXPAUrepeat_sfx_entry_s@@@Z,17,
 0x548780,_ResetRepeatSfx,61,void __cdecl (void)
 0x005487c0,_PlayRepeatSfx,209,"void __cdecl (char *, i32, f32, char, f32, NUVEC *)"
 0x005488a0,_UpdateRepeatSfx,135,void __cdecl (void)
@@ -6213,7 +6213,7 @@ address,symbol,size,ctype
 0x5925c0,_Customiser_Dump,1,void __cdecl(void)
 0x5925c0,_CustomiserLoadTrace,1,void __cdecl (char *)
 0x5925d0,_CustomiserVuVecMake,28,
-0x5925f0,_fun_005925f0,101,
+0x5925f0,_Customiser_ResourceAvailable,101,
 0x592660,_CustomiserPieceAvailableDefaultPrivate,28,i32 __cdecl(CUSTOMPIECE_LAYERS *)
 0x592680,_CustomiserFindSetFromNamePrivate,212,
 0x592760,_Customiser_SetAnimsToLoad,178,"void __cdecl (CUSTOMISER_LAYERS *, i32)"

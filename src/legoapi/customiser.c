@@ -105,6 +105,31 @@ void Customiser_SetAnimsToLoad(CUSTOMISER_CONFIG *customiser, i32 enabled) {
     }
 }
 
+/* Whether the hub has the resource of a piece to show (category 2 and other areas always do). */
+static i32 Customiser_ResourceAvailable(CUSTOMISER_CONFIG *customiser, i32 index, i32 category) {
+    WORLDINFO *world;
+    CUSTOM_ACCESSORY_RESOURCE *resources;
+    CUSTOM_ACCESSORY_RESOURCE *resource;
+    if (category != 2) {
+        world = WorldInfo_CurrentlyActive();
+        if (world != NULL && HUB_ADATA != NULL && world->area == HUB_ADATA) {
+            resources = world->customiser_resources[category];
+            if (resources == NULL) {
+                return 0;
+            }
+            resource = &resources[index];
+            if (customiser->categories[category]->uses_special != 0) {
+                if (NuSpecialExistsFn(&resource->special) == 0) {
+                    return 0;
+                }
+            } else if (resource->texture_id == 0) {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
 /* Includes a separate NULL return. */
 i32 Customiser_NextPieceLeft(CUSTOMISER_CONFIG *customiser, i32 index, i32 count, i32 unused, i32 category) {
     i32 attempts;
@@ -115,21 +140,8 @@ i32 Customiser_NextPieceLeft(CUSTOMISER_CONFIG *customiser, i32 index, i32 count
             if (index < 0) {
                 index += count;
             }
-            if (category != 2) {
-                WORLDINFO *world = WorldInfo_CurrentlyActive();
-                if (world != NULL && HUB_ADATA != NULL && world->area == HUB_ADATA) {
-                    CUSTOM_ACCESSORY_RESOURCE *resources = world->customiser_resources[category];
-                    if (resources == NULL) {
-                        continue;
-                    }
-                    if (customiser->categories[category]->uses_special != 0) {
-                        if (NuSpecialExistsFn(&resources[index].special) == 0) {
-                            continue;
-                        }
-                    } else if (resources[index].texture_id == 0) {
-                        continue;
-                    }
-                }
+            if (Customiser_ResourceAvailable(customiser, index, category) == 0) {
+                continue;
             }
             if (((customiser->piece_sets[category][index].availability_flags &
                   (CUSTOM_PIECE_100_PERCENT_SIDE_1 | CUSTOM_PIECE_100_PERCENT_SIDE_2)) == 0 ||
