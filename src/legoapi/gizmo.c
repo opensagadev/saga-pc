@@ -933,6 +933,13 @@ i32 Gizmo_FindNuSpecial(NUGSCN *scene, nuhspecial_s *special, char *name, i32 re
     return 0;
 }
 
+static void GizmoClearErrorLog(GIZMOSYS *system) {
+    if (system != NULL && system->error_log != NULL) {
+        memset(system->error_log, 0, gizmoerrorlogsize);
+    }
+    system->flags &= ~3;
+}
+
 void LoadGizmoSys(void *system_ptr, void *world, char *config_file) {
     GIZMOSYS *system = system_ptr;
     char gizmo_name[32];
@@ -945,10 +952,7 @@ void LoadGizmoSys(void *system_ptr, void *world, char *config_file) {
         return;
     }
     system->flags |= 4;
-    if (system->error_log != NULL) {
-        memset(system->error_log, 0, gizmoerrorlogsize);
-    }
-    system->flags &= ~3;
+    GizmoClearErrorLog(system);
     if (gizmotypes != NULL) {
         sprintf(path, "%s.giz", config_file);
         EdFileSetMedia(1);

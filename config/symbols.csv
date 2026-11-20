@@ -4723,7 +4723,7 @@ address,symbol,size,ctype
 0x00549430,_ResetFrameCounters,30,void __cdecl (void)
 0x00549450,_UpdateFrameCounters,119,void __cdecl (void)
 0x5494d0,_LegoapiCameraFabs,18,
-0x5494f0,_fun_005494f0,129,
+0x5494f0,_CameraSetSpecularLight,129,
 0x549580,_LegoapiCameraVuVecMake,28,
 0x5495a0,_GameCam_ResetLookRot,52,void __cdecl (GAMECAMERA *)
 0x5495e0,_GameCam_UpdateLookRot,974,void __cdecl (GAMECAMERA *)
@@ -5048,7 +5048,7 @@ address,symbol,size,ctype
 0x55aa00,_GizmoNameUsesPrefix,89,"i32 __cdecl(char *,char *)"
 0x55aa60,_GizmoGetUniqueName,354,"i32 __cdecl(GIZMOSYS_PREFIX *,char *,char *,char *,i32)"
 0x55abd0,_GizmoSys_BoltHitPlat,118,"i32 __cdecl(void*,WORLDINFO*,BOLT*,u8*)"
-0x55ac50,_fun_0055ac50,36,
+0x55ac50,_GizmoClearErrorLog,36,
 0x55ac80,_GizmoAppendSpecialErrorPrivate,74,
 0x55acd0,_Gizmo_FindNuSpecial,151,"i32 __cdecl (NUGSCN *, nuhspecial_s *, char *, i32, void *, char *, char *)"
 0x55ad70,_LoadGizmoSys,421,"void __cdecl (void *, void *, char *)"
@@ -6251,7 +6251,7 @@ address,symbol,size,ctype
 0x5950e0,_fun_005950e0,1,
 0x5950f0,_fun_005950f0,21,
 0x595110,_ZeroLightSetupPrivate,183,
-0x5951d0,_fun_005951d0,36,
+0x5951d0,_LightingSetAmbientLight,36,
 0x595200,_fun_00595200,28,
 0x595220,_fun_00595220,18,
 0x595240,_fun_00595240,3,
@@ -6560,7 +6560,7 @@ address,symbol,size,ctype
 0x5a7030,?Push_GetMaxGizmos@@YAHPAX@Z,25,
 0x5a7050,?Push_AddGizmos@@YAXPAXH00@Z,102,
 0x5a70c0,?GizPush_GetGizmoName@@YAPADPAUgizmo_s@@@Z,17,
-0x5a70e0,_fun_005a70e0,58,
+0x5a70e0,?PushBlock_GetOutput@@YAHPAUpushblock_s@@H@Z,58,
 0x5a7120,?GizPush_GetOutput@@YAHPAUgizmo_s@@HH@Z,59,
 0x5a7160,?GizPush_GetOutputName@@YAPADPAUgizmo_s@@H@Z,75,
 0x5a71b0,?GizPush_GetNumOutputs@@YAHPAUgizmo_s@@@Z,14,
@@ -6728,7 +6728,7 @@ address,symbol,size,ctype
 0x5afa30,_Plugs_ReserveBufferSpace,109,
 0x5afaa0,_Plug_Activate,28,
 0x5afac0,_Plug_SetVisibility,30,
-0x5afae0,_fun_005afae0,13,
+0x5afae0,_Plug_Reset,13,
 0x5afaf0,_Plugs_Reset,192,
 0x5afbb0,_Plug_FindNearest,147,"CARRY_PLUG *__cdecl(CARRY_PLUG_SYS *, NUVEC *, f32 *, i32)"
 0x5afc50,_Plug_MakeDrawMtx,59,"void __cdecl(CARRY_PLUG *, NUMTX *)"
@@ -10555,7 +10555,7 @@ address,symbol,size,ctype
 0x642350,?ObjectsallFabs@@YAMM@Z,18,
 0x642370,?ObjectsallFdiv@@YAMMM@Z,54,
 0x6423b0,_PartRuntimeDirectionalLightsPrivate,183,
-0x642470,_fun_00642470,36,
+0x642470,_PartsSetAmbientLight,36,
 0x6424a0,?ObjectsallVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x6424c0,_PartRuntimeMatrixCopyPrivate,95,
 0x642520,_fun_00642520,1,

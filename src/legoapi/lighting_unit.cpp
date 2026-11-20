@@ -162,11 +162,16 @@ extern "C" void fun_005954e0() {
 
 extern "C" {
 
+    /* The ambient colour both in the PC lighting state and in the pixel shader constants. */
+    static i32 LightingSetAmbientLight(NUVEC *ambient) {
+        PCGlobalLightingState.ambient = *ambient;
+        return NuRndrSetAmbientLightPS(ambient);
+    }
+
     void SetLights(NUVEC *colour0, NUVEC *direction0, NUVEC *colour1, NUVEC *direction1, NUVEC *colour2, NUVEC *direction2,
                    NUVEC *ambient) {
         ZeroLightSetupPrivate(direction0, colour0, direction1, colour1, direction2, colour2);
-        PCGlobalLightingState.ambient = *ambient;
-        NuRndrSetAmbientLightPS(ambient);
+        LightingSetAmbientLight(ambient);
     }
 
     void SetLights_RTLDATA(RTL_DATA *data, f32 scale) {
@@ -235,8 +240,7 @@ extern "C" {
         }
         ZeroLightSetupPrivate(&PanelLightingDirections[0], &selected_colours[0], &PanelLightingDirections[1], &selected_colours[1],
                               &PanelLightingDirections[2], &selected_colours[2]);
-        PCGlobalLightingState.ambient = *selected_ambient;
-        NuRndrSetAmbientLightPS(selected_ambient);
+        LightingSetAmbientLight(selected_ambient);
     }
 
     void ResetLights(NUVEC *position, RTL_DATA *packet, void *set) {
@@ -264,8 +268,7 @@ extern "C" {
     void SetZeroLights(void) {
         NUVEC black = {0, 0, 0};
         ZeroLightSetupPrivate(&LightingUnitDirection, &black, &LightingUnitDirection, &black, &LightingUnitDirection, &black);
-        PCGlobalLightingState.ambient = APIObjectZeroMomentumPC;
-        NuRndrSetAmbientLightPS(&APIObjectZeroMomentumPC);
+        LightingSetAmbientLight(&APIObjectZeroMomentumPC);
     }
 
     void FindAndSetLights(NUVEC *position, f32 scale, void *set) {

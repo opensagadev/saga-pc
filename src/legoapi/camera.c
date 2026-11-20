@@ -367,10 +367,25 @@ static void SetCameraEffectMatrix(void) {
     NuRndrSetFxMtx(&effect_matrix);
 }
 
+/* The specular light both in the PC lighting state and in the pixel shader constants; NULL turns a part off. */
+static void CameraSetSpecularLight(NUVEC *direction, NUVEC4 *intensity) {
+    if (direction != NULL) {
+        PCGlobalLightingState.specular_direction = *direction;
+        PCGlobalLightingState.specular_direction_missing = 0;
+    } else {
+        PCGlobalLightingState.specular_direction_missing = 1;
+    }
+    if (intensity != NULL) {
+        PCGlobalLightingState.specular_intensity = *intensity;
+        PCGlobalLightingState.specular_intensity_present = 1;
+    } else {
+        PCGlobalLightingState.specular_intensity_present = 0;
+    }
+    NuRndrSetSpecularLightPS(direction, intensity);
+}
+
 void SetCameraMatrices(void) {
-    PCGlobalLightingState.specular_direction_missing = 1;
-    PCGlobalLightingState.specular_intensity_present = 0;
-    NuRndrSetSpecularLightPS(NULL, NULL);
+    CameraSetSpecularLight(NULL, NULL);
     SetCameraEffectMatrix();
 }
 

@@ -4601,6 +4601,12 @@ static void PartRuntimeDirectionalLightsPrivate(NUVEC *direction0, NUVEC *colour
     NuRndrSetDirectionalLightsPS(direction0, colour0, direction1, colour1, direction2, colour2);
 }
 
+/* The ambient colour both in the PC lighting state and in the pixel shader constants. */
+static i32 PartsSetAmbientLight(NUVEC *ambient) {
+    PCGlobalLightingState.ambient = *ambient;
+    return NuRndrSetAmbientLightPS(ambient);
+}
+
 void DrawParts(i32 keep_offscreen) {
     PART *part = Part;
     i32 i;
@@ -4617,11 +4623,9 @@ void DrawParts(i32 keep_offscreen) {
         if ((part->active & PART_STATE_LIT) != 0) {
             PartRuntimeDirectionalLightsPrivate(&part->lighting[3], &part->lighting[0], &part->lighting[4], &part->lighting[1],
                                                 &part->lighting[5], &part->lighting[2]);
-            PCGlobalLightingState.ambient = part->lighting[6];
-            NuRndrSetAmbientLightPS(&part->lighting[6]);
+            PartsSetAmbientLight(&part->lighting[6]);
         } else if ((part->active & PART_STATE_LIGHT_SCALE) != 0) {
-            PCGlobalLightingState.ambient = part->lighting[6];
-            NuRndrSetAmbientLightPS(&part->lighting[6]);
+            PartsSetAmbientLight(&part->lighting[6]);
         }
         part->active &= ~PART_STATE_DRAWN;
         matrix = &part->transform;

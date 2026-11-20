@@ -105,6 +105,12 @@ static void Plug_SetVisibility(GIZMO *gizmo, i32 visible) {
     }
 }
 
+static void Plug_Reset(CARRY_PLUG *plug) {
+    plug->active = 1;
+    plug->visible = 1;
+    plug->plugged = 0;
+}
+
 static void Plugs_Reset(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = world_ptr;
     PLUG_PROGRESS *progress = progress_ptr;
@@ -118,9 +124,7 @@ static void Plugs_Reset(void *world_ptr, void *data, void *progress_ptr) {
         return;
     }
     for (i = 0; i < world->plug_sys->count; ++i, ++plug) {
-        plug->active = 1;
-        plug->visible = 1;
-        plug->plugged = 0;
+        Plug_Reset(plug);
         if (progress != NULL && i < 32) {
             i32 word = i / 32;
             i32 bit = 1 << (i & 31);

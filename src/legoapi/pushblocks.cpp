@@ -1107,6 +1107,17 @@ static void Push_AddGizmos(void *system, i32 type_id, void *world_ptr, void *) {
     }
 }
 
+/* Whether the block completed the snap position of an output (0: any), -1 without a block. */
+i32 PushBlock_GetOutput(PUSH_BLOCK *block, i32 output_index) {
+    if (block != NULL) {
+        if (output_index == 0) {
+            return block->completed_snap_positions != 0;
+        }
+        return ((u8)(1 << output_index) & block->completed_snap_positions) != 0;
+    }
+    return -1;
+}
+
 static char *GizPush_GetGizmoName(GIZMO *gizmo) {
     if (gizmo != NULL) {
         return gizmo->push_block->name;
