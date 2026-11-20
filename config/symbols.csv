@@ -4967,7 +4967,7 @@ address,symbol,size,ctype
 0x557430,_GizObstacles_AddLevelSfx,119,"void __cdecl (void *, void *, i32 *, i32 *, i32)"
 0x5574b0,_GizObstacles_ReserveBufferSpace,207,void * __cdecl (void *)
 0x00557580,_GizmoObstacle_Activate,119,"void __cdecl (void *, i32)"
-0x557600,_fun_00557600,42,
+0x557600,_GizObstacle_SetVisible,42,
 0x00557630,_GizmoObstacle_SetVisibility,60,"void __cdecl (void *, i32)"
 0x557670,_GizmoObstacle_GetPos,21,NUVEC * __cdecl (GIZMO *)
 0x557690,_GizObstacle_EvalAveragePosAndRadius,48,
@@ -6639,7 +6639,7 @@ address,symbol,size,ctype
 0x5ab840,_GizTurrets_ReserveBufferSpace,186,void * __cdecl(void *)
 0x5ab900,_GizmoTurret_Activate,70,"void __cdecl(GIZMO *, i32)"
 0x5ab950,_GizmoTurret_ActivateRev,97,"i32 __cdecl(GIZMO *, i32, i32)"
-0x5ab9c0,_fun_005ab9c0,45,
+0x5ab9c0,_GizTurret_SetVisible,45,
 0x5ab9f0,_GizmoTurret_SetVisibility,63,"void __cdecl(GIZMO *, i32)"
 0x5aba30,_GizmoTurret_GetPos,21,NUVEC * __cdecl(GIZMO *)
 0x5aba50,_GizTurrets_Reset,423,

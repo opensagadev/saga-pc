@@ -106,14 +106,17 @@ void GizmoObstacle_Activate(GIZMO *ptr, i32 activate) {
     }
 }
 
-void GizmoObstacle_SetVisibility(GIZMO *ptr, i32 visibility) {
-    GIZMO *gizmo = ptr;
-    GIZOBSTACLE *obstacle = gizmo ? gizmo->obstacle : NULL;
-    if (!obstacle) {
-        return;
+static void GizObstacle_SetVisible(GIZOBSTACLE *obstacle, i32 visibility) {
+    if (obstacle != NULL) {
+        GameAnimSet_SetVisibility(obstacle->anim_set, visibility);
+        obstacle->progress_bits.visible = visibility != 0;
     }
-    GameAnimSet_SetVisibility(obstacle->anim_set, visibility);
-    obstacle->progress_bits.visible = visibility != 0;
+}
+
+void GizmoObstacle_SetVisibility(GIZMO *gizmo, i32 visibility) {
+    if (gizmo != NULL) {
+        GizObstacle_SetVisible(gizmo->obstacle, visibility);
+    }
 }
 
 NUVEC *GizmoObstacle_GetPos(GIZMO *gizmo) {

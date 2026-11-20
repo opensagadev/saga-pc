@@ -291,12 +291,16 @@ extern "C" {
         return 1;
     }
 
-    void GizmoTurret_SetVisibility(GIZMO *gizmo, i32 visible) {
-        GIZTURRET_s *turret;
-        if (gizmo != NULL && gizmo->object != NULL) {
-            turret = gizmo->turret;
+    static void GizTurret_SetVisible(GIZTURRET_s *turret, i32 visible) {
+        if (turret != NULL) {
             GameAnimSet_SetVisibility(turret->anim_set, visible);
             turret->visible = visible != 0;
+        }
+    }
+
+    void GizmoTurret_SetVisibility(GIZMO *gizmo, i32 visible) {
+        if (gizmo != NULL && gizmo->object != NULL) {
+            GizTurret_SetVisible(gizmo->turret, visible);
         }
     }
 

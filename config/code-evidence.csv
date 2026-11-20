@@ -544,7 +544,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x00553760,28,_GizspinnerVuVecMake,copy,,legoapi/gizspinner.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x00557090,1,_GizobstacleNuError,copy,,legoapi/gizobstacle.c,"empty static directly before the VuVecMake copy at 0x5570a0; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x005570a0,28,_GizobstacleVuVecMake,copy,,legoapi/gizobstacle.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
-0x00557600,42,_fun_00557600,extent,,legoapi/gizobstacle.c,unreferenced,
+0x00557600,42,_GizObstacle_SetVisible,extent,,legoapi/gizobstacle.c,unreferenced,
 0x00559590,28,_GizmoVuVecMake,copy,,legoapi/gizmo.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x00559a10,3,_fun_00559a10,extent,,legoapi/gizmo.c,unreferenced,
 0x0055a390,136,_GizmoGetGizmosUsingSpecial,extent,,legoapi/gizmo.c,unreferenced,
@@ -725,7 +725,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x005ab280,1,_fun_005ab280,extent,,legoapi/aipathcnxhelper.c,unreferenced,
 0x005ab290,28,_fun_005ab290,extent,,legoapi/aipathcnxhelper.c,unreferenced,
 0x005ab2b0,28,_GizturretVuVecMake,copy,,legoapi/aipathcnxhelper.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
-0x005ab9c0,45,_fun_005ab9c0,extent,,legoapi/gizturret.c,unreferenced,
+0x005ab9c0,45,_GizTurret_SetVisible,extent,,legoapi/gizturret.c,unreferenced,
 0x005ad120,162,_GizTurret_FindNearest,sibling,,legoapi/gizturret.c,position between GizTurrets_OpponentSelection and GizTurrets_Draw in liblegoapi.a(gizturret.o); calls NuVecDistSqr,android:src/legoapi/gizmos/traps/gizturret.cpp
 0x005ad410,73,_GizTurret_FindByName,sibling,,legoapi/gizturret.c,position between GizTurrets_ClearProgress and GizTurrets_StoreProgress in liblegoapi.a(gizturret.o); calls NuStrICmp,android:src/legoapi/gizmos/traps/gizturret.cpp
 0x005ae100,1,_GizspecialNuError,copy,,legoapi/gizspecial.c,"empty static directly before the VuVecMake copy at 0x5ae110; sibling build: the empty extern ""C"" NuError heads each object's header statics",
