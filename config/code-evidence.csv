@@ -399,9 +399,9 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x00508f30,1,_fun_00508f30,extent,,gameapi/gamemenuall.cpp,unreferenced,
 0x00508f40,1,_GamemenuallNuError,copy,,gameapi/gamemenuall.cpp,"empty static directly before the VuVecMake copy at 0x508f50; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x00508f50,28,?GamemenuallVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,gameapi/gamemenuall.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
-0x00508f70,108,_fun_00508f70,extent,,gameapi/gamemenuall.cpp,unreferenced,
-0x00508fe0,15,_fun_00508fe0,extent,,gameapi/gamemenuall.cpp,unreferenced,
-0x00508ff0,28,_fun_00508ff0,extent,,gameapi/gamemenuall.cpp,unreferenced,
+0x00508f70,108,?MenusPrimSetColour@@YAXH@Z,extent,,gameapi/gamemenuall.cpp,unreferenced,
+0x00508fe0,15,?MenusPushCoordinateSystem@@YAXH@Z,extent,,gameapi/gamemenuall.cpp,unreferenced,
+0x00508ff0,28,?MenusPopCoordinateSystem@@YAXXZ,extent,,gameapi/gamemenuall.cpp,unreferenced,
 0x00509010,22,_fun_00509010,extent,,gameapi/gamemenuall.cpp,unreferenced,
 0x00509030,7,?IsBloomEnabled@PC_WINDOW_OPTIONS@@QAEEXZ,extent,,gameapi/gamemenuall.cpp,unreferenced,
 0x00509040,7,?AreShadowsEnabled@PC_WINDOW_OPTIONS@@QAEEXZ,extent,,gameapi/gamemenuall.cpp,unreferenced,
@@ -442,7 +442,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x0050b3d0,16,_Menu_IsInLoadFlow,extent,,gameapi/gamemenuall.cpp,unreferenced,
 0x0050b3e0,16,_Menu_IsInWarningFlow,extent,,gameapi/gamemenuall.cpp,unreferenced,
 0x0050b3f0,35,_Menu_CurrentId,extent,,gameapi/gamemenuall.cpp,unreferenced,
-0x0050b420,181,_fun_0050b420,extent,,gameapi/gamemenuall.cpp,unreferenced,
+0x0050b420,181,_MenuDrawMemCardFade,extent,,gameapi/gamemenuall.cpp,unreferenced,
 0x0050c040,6,_SaveloadGetStatus,extent,,gameapi/gamemenuall.cpp,unreferenced,
 0x0050d680,160,_MessageBoxInitMtl,sibling,_MessageBoxInitMtl,gameapi/gamemenuall.cpp,position between FindNearestBreak and SmartTextEx in libgameapi.a(apitext.o); calls NuMtlCreate NuMtlUpdate,android:src/legoapi/menus/screens/gamemenuall.cpp
 0x0050d720,496,_DrawMessageBox,sibling,"DrawMessageBox(int, float, float, float, float)",gameapi/gamemenuall.cpp,position between FindNearestBreak and SmartTextEx in libgameapi.a(apitext.o); calls NuRndrBeginScene NuRndrEndScene NuRndrGradRectUV2di NuRndrRect2di,android:src/legoapi/menus/screens/gamemenuall.cpp
