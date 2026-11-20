@@ -257,37 +257,33 @@ extern "C" {
                 freeplay = GAMEDEMO != 0 ? 0 : FreePlay;
                 if (WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_MINIKIT) != 0) {
                     if (HubBothTrueJediGoldBricks != 0) {
-                        // MATCH-EXCEPTION: retail branches around an explicit jump here instead of sharing the else test's exit
                         if (Game.area_save[WORLD->area_index].true_hero_complete[freeplay] == 0) {
                             goto check_target;
                         }
-                        goto buildup_finished;
-                    } else if (Game.area_save[WORLD->area_index].true_hero_complete[0] != 0 ||
-                               Game.area_save[WORLD->area_index].true_hero_complete[1] != 0) {
-                        goto buildup_finished;
-                    }
-                check_target:
-                    maximum = WORLD->area->true_hero_targets[freeplay];
-                    if (maximum > 0) {
-                        /* The BuildUp counter names are swapped relative to their use. */
-                        if (BuildUpTotal == 0) {
-                            BuildUpDone = 0;
-                            if (Player[0] != NULL && Player[0]->player.coin_packet != NULL) {
-                                BuildUpDone = Player[0]->player.coin_packet->coins;
+                    } else if (Game.area_save[WORLD->area_index].true_hero_complete[0] == 0 &&
+                               Game.area_save[WORLD->area_index].true_hero_complete[1] == 0) {
+                    check_target:
+                        maximum = WORLD->area->true_hero_targets[freeplay];
+                        if (maximum > 0) {
+                            /* The BuildUp counter names are swapped relative to their use. */
+                            if (BuildUpTotal == 0) {
+                                BuildUpDone = 0;
+                                if (Player[0] != NULL && Player[0]->player.coin_packet != NULL) {
+                                    BuildUpDone = Player[0]->player.coin_packet->coins;
+                                }
+                                if (Player[1] != NULL && Player[1]->player.coin_packet != NULL) {
+                                    BuildUpDone += Player[1]->player.coin_packet->coins;
+                                }
+                                if ((u32)BuildUpDone >= maximum) {
+                                    BuildUpScale = 2.5f;
+                                    BuildUpTotal = 1;
+                                    AddFancyMessage(TTab[dat_00880818], 0.0f, 0.0f, 1.0f, 1.0f, 1, 0);
+                                }
                             }
-                            if (Player[1] != NULL && Player[1]->player.coin_packet != NULL) {
-                                BuildUpDone += Player[1]->player.coin_packet->coins;
-                            }
-                            if ((u32)BuildUpDone >= maximum) {
-                                BuildUpScale = 2.5f;
-                                BuildUpTotal = 1;
-                                AddFancyMessage(TTab[dat_00880818], 0.0f, 0.0f, 1.0f, 1.0f, 1, 0);
-                            }
+                            BuildUpScale = SeekLinearF(BuildUpScale, 1.0f, (f32)(3.0 * (f64)FRAMETIME));
                         }
-                        BuildUpScale = SeekLinearF(BuildUpScale, 1.0f, (f32)(3.0 * (f64)FRAMETIME));
                     }
                 }
-            buildup_finished:;
             }
         }
         if (SuperStory != 0 && (WORLD->current_level->flags & LEVEL_SHOW_COIN_TOTAL) != 0) {
