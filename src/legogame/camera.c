@@ -1269,7 +1269,8 @@ mode_selected:
     GameCam_UpdateLookRot(camera);
 
     {
-        NUMTX orientation = {0};
+        NUMTX orientation;
+        memset(&orientation, 0, sizeof(orientation));
         shared_count = 0;
         for (i = 0; i < 2; i++) {
             if (Player[i] != NULL && (Player[i]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player[i]->movement_mode == 4) {
