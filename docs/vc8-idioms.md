@@ -741,6 +741,26 @@ into the clamp's store. Two separate tests (`if (a < 0) a = 0; if (a > 1)
 a = 1;`) keep the case block of its own like retail. `MiniKit_LSW_Draw`
 (99.07 -> exact); the sibling status draws did not change.
 
+### I63: the first field a loop reads sets the base of its strength-reduced pointer
+
+```
+retail                                   ours (u32 pressed = pad->buttons_pressed;)
+  mov  edi, &GamePadStorage[0].buttons_pressed   mov edi, &GamePadStorage[0].left_pressed
+  ...  [edi], [edi+8]                            ...  [edi-8], [edi]
+  cmp  edi, &GamePadStorage[2].buttons_pressed   cmp edi, &GamePadStorage[2].left_pressed
+```
+
+When a loop walks an array of records, VC8 keeps one pointer to a field of
+the current record and addresses the others relative to it. Which field it
+picks follows how the source reads them: caching one field in a local
+(`pressed = pad->buttons_pressed`) leaves the other field as the most-read
+one, so the base moves and every displacement and the loop bound change.
+Retail read the fields through the record at each test
+(`(pad->buttons_pressed & X) != 0`), or read the field it is based on first.
+Examples: `MenuUpdateMissions` (96.5 -> 97.8), `UpdateStatusScreen`
+(90.5 -> 96.4), `AITriggerSetSysProcess` (route mask read before the locator
+pointer is taken, 99.09 -> 99.30).
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated
