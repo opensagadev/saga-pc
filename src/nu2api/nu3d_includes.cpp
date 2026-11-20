@@ -149,6 +149,10 @@ static void Nu3dIncludesPushCoordinateSystem(i32 system) {
     NuPrimSetCoordinateSystem(system);
 }
 
+static void Nu3dIncludesMtxGetPerspective(NUMTX *matrix, f32 *fov, f32 *aspect, f32 *near_z, f32 *far_z) {
+    NuMtxGetPerspectiveD3D(matrix, fov, aspect, near_z, far_z);
+}
+
 static void Nu3dIncludesVecZero(NUVEC *v) {
     v->x = v->y = v->z = 0.0f;
 }
@@ -12097,7 +12101,7 @@ void NuMainFilterGen::preprocessDofMotionBlur(GRAPHICS_RENDER_TEXTURE *depth) {
         f32 aspect;
         f32 near_z;
         f32 far_z;
-        NuMtxGetPerspectiveD3D(&PcGeometryProjectionMatrix, &fov, &aspect, &near_z, &far_z);
+        Nu3dIncludesMtxGetPerspective(&PcGeometryProjectionMatrix, &fov, &aspect, &near_z, &far_z);
         f32 projection_scale = far_z / (far_z - near_z);
         f32 product = dof_strength * dof_near * dof_far;
         f32 denominator = near_z * projection_scale * (dof_far - dof_near);

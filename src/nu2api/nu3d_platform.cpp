@@ -3898,10 +3898,14 @@ extern "C" {
         }
     }
 
+    static void PcDisplaySetTint(const NUVEC4 *tint) {
+        NuDisplayHandlerTint = *tint;
+        NuShaderManagerSetfv(SHADER_UNIFORM_K_TINT, &tint->x);
+    }
+
     void NuDisplayListTint(void *arg) {
         NUVEC4 tint = {1.0f, 1.0f, 1.0f, *(f32 *)arg};
-        NuDisplayHandlerTint = tint;
-        NuShaderManagerSetfv(SHADER_UNIFORM_K_TINT, &tint.x);
+        PcDisplaySetTint(&tint);
     }
 
     void NuDisplayListFog(void *arg) {
@@ -7476,6 +7480,10 @@ u16 PC_EFFECT_SURFACE::GetHeight() {
     return height;
 }
 
+static void PcDisplaySetHandlerMaterial(NUMTL *material) {
+    NuDisplayHandlerMaterial = material;
+}
+
 static void PcShaderSetMaterial(NuShaderObject *shader, NUMTL *material) {
     PCShaderSetMaterialParameters(shader, material);
 }
@@ -7514,7 +7522,7 @@ extern "C" void NuDisplayListShadowMaterial(void *data) {
     NUMTL *material = (NUMTL *)data;
     NuShaderObject *shader = (NuShaderObject *)PCShaderRecordFromHandle((u32)(i32)material->shader.shader_handles[1]);
     if (shader != NULL) {
-        NuDisplayHandlerMaterial = material;
+        PcDisplaySetHandlerMaterial(material);
         if (!(material->shader.vertex_format & 0x300000) && material->display_list != NULL) {
             PcShaderSetMaterial(shader, material);
             NuShaderManagerBindShader(shader);

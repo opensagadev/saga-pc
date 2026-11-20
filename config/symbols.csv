@@ -7198,7 +7198,7 @@ address,symbol,size,ctype
 0x005c12f0,_PCAnimationLoadFailureNoOp,1,void __cdecl (char *)
 0x005c1300,_PCSpecialEmptyHandler,1,"void __cdecl (const char *, ...)"
 0x5c1310,_fun_005c1310,21,
-0x5c1330,_fun_005c1330,26,
+0x5c1330,?Nu3dIncludesMtxGetPerspective@@YAXPAUnumtx_s@@PAM111@Z,26,
 0x5c1350,_NuRndrIsScreenGrabbing,6,
 0x5c1360,?Nu3dIncludesFabs@@YAMM@Z,18,
 0x5c1380,?Nu3dIncludesFdiv@@YAMMM@Z,54,
@@ -8477,10 +8477,10 @@ address,symbol,size,ctype
 0x5f87a0,_NuRndrGetProjectionMatrix,6,
 0x5f87b0,_NuRndrGetViewProjectionMatrix,6,
 0x5f87c0,_NuRndrGetDistanceOrigin,6,
-0x5f87d0,_fun_005f87d0,47,
+0x5f87d0,_PcDisplaySetTint,47,
 0x5f8800,_NuDisplayGetHandlerTint,6,
 0x5f8810,_fun_005f8810,256,
-0x5f8910,_fun_005f8910,6,
+0x5f8910,?PcDisplaySetHandlerMaterial@@YAXPAUnumtl_s@@@Z,6,
 0x5f8920,_NuDisplayHandlerGetMaterial,6,
 0x005f8930,?PCDisplayHandlerSetZMode@@YAXH@Z,140,
 0x5f89c0,_fun_005f89c0,100,
