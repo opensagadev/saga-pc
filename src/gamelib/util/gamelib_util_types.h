@@ -1009,6 +1009,18 @@ class V2SessionManager { // size 0x2c0
     V2PeerList peer_list;  // 0x094
     NetStats stats;        // 0x0a0
 
+    static V2SessionManager *GetInstance() {
+        return mpSessionManager;
+    }
+
+    V2Peer *GetFirstPeer() {
+        return peer_list.head;
+    }
+
+    NetStats *GetStats() {
+        return &stats;
+    }
+
     static V2SessionManager *mpSessionManager;
 };
 #endif

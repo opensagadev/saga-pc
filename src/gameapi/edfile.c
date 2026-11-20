@@ -3281,6 +3281,14 @@ static void EduiTextPickPaste(edui_textpicker_s *picker) {
     }
 }
 
+/* Copies the text into the copy buffer when copying is allowed. */
+static void EduiTextPickCopy(edui_textpicker_s *picker) {
+    if (picker->keyboard_flag_bits & 2) {
+        NuStrNCpy(EduiTextCopyBuffer, picker->value, sizeof(EduiTextCopyBuffer));
+        picker->value[sizeof(EduiTextCopyBuffer) - 1] = '\0';
+    }
+}
+
 static void EduiTextPickInsert(edui_textpicker_s *picker, char character) {
     i32 index;
     if (NuStrLen(picker->value) >= picker->max_length) {
@@ -3437,9 +3445,8 @@ static i32 EduiTextPickPad(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_PA
     if ((pad->digital_buttons & (PAD_BUTTON_L1 | PAD_BUTTON_R1)) == 0xc) {
         EduiTextPickPaste(picker);
     }
-    if ((pad->digital_buttons & (PAD_BUTTON_L2 | PAD_BUTTON_R2)) == 3 && (picker->keyboard_flag_bits & 2)) {
-        NuStrNCpy(EduiTextCopyBuffer, picker->value, sizeof(EduiTextCopyBuffer));
-        picker->value[sizeof(EduiTextCopyBuffer) - 1] = '\0';
+    if ((pad->digital_buttons & (PAD_BUTTON_L2 | PAD_BUTTON_R2)) == 3) {
+        EduiTextPickCopy(picker);
     }
     if (pad->digital_buttons_pressed & PAD_BUTTON_L1) {
         picker->cursor = (0 > (picker->cursor - 1) ? 0 : (picker->cursor - 1));
@@ -3916,7 +3923,7 @@ i32 FS_NumFiles = 0;
 void (*FS_Callback)(char *arg0, char *arg1) = 0;
 char FS_LastFileName[64] = {0};
 
-static __inline i32 FS_PrevNameLen(char *name) {
+i32 FS_PrevNameLen(char *name) {
     char *previous;
     i32 length = 0;
     if (name == FS_FileList) {

@@ -316,7 +316,7 @@ void TTNetwork::Broadcast(NETMESSAGE message, u8 channel) {
     if (message.GetSize() > 0) {
         PCByteCopy(message.data->bytes + --message.read_offset, &channel, 1);
         RecordSent(message, channel);
-        for (V2Peer *peer = V2SessionManager::mpSessionManager->peer_list.head; peer != NULL; peer = peer->next) {
+        for (V2Peer *peer = V2SessionManager::GetInstance()->GetFirstPeer(); peer != NULL; peer = peer->next) {
             message.MakeUnique();
             peer->Send(message);
         }
@@ -328,7 +328,7 @@ void TTNetwork::BroadcastEx(NETMESSAGE message, u8 channel) {
     if (message.GetSize() > 0) {
         PCByteCopy(message.data->bytes + --message.read_offset, &channel, 1);
         RecordSent(message, channel);
-        for (V2Peer *peer = V2SessionManager::mpSessionManager->peer_list.head; peer != NULL; peer = peer->next) {
+        for (V2Peer *peer = V2SessionManager::GetInstance()->GetFirstPeer(); peer != NULL; peer = peer->next) {
             message.MakeUnique();
             peer->SendEx(message, 0, 0);
         }
@@ -394,7 +394,7 @@ void TTNetwork::Start() {
     active_transfer = -1;
     ftp.transfer_id = -1;
     nos.push_owner = -1;
-    theNetSessionManager = (NetSessionManager *)V2SessionManager::mpSessionManager;
+    theNetSessionManager = (NetSessionManager *)V2SessionManager::GetInstance();
     session_manager = theNetSessionManager;
     frame_count = 0;
     elapsed_frames = 0;
@@ -466,10 +466,10 @@ void TTNetwork::Display(ThingRenderData *data) {
     }
     i32 page = 4;
     if (display_page == 3) {
-        stats = &session_manager->stats;
+        stats = session_manager->GetStats();
     }
     if (stats == NULL) {
-        for (V2Peer *peer = session_manager->peer_list.head; peer != NULL; peer = peer->next) {
+        for (V2Peer *peer = session_manager->GetFirstPeer(); peer != NULL; peer = peer->next) {
             if (display_page == page++) {
                 stats = &peer->stats;
                 break;

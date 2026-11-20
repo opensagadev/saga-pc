@@ -342,11 +342,6 @@
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edfile.c",
-   "symbol": "_FS_PrevNameLen",
-   "kind": "function"
-  },
-  {
    "unit": "src/nu2api/shader_dictionary.cpp",
    "symbol": "??2@YAPAXIPAX@Z",
    "kind": "function"
