@@ -42,6 +42,12 @@ void *GuideLines_ReserveBufferSpace(WORLDINFO *world) {
     return world->guidelines;
 }
 
+/* A guideline starts active and visible. */
+static void GuideLine_Init(GUIDELINE_RECORD *guide) {
+    guide->active = 1;
+    guide->visible = 1;
+}
+
 void GuideLines_Reset(WORLDINFO *world, void *unused, GUIDELINE_PROGRESS *progress) {
     GUIDELINE_RECORD *guide;
     i32 index;
@@ -50,7 +56,7 @@ void GuideLines_Reset(WORLDINFO *world, void *unused, GUIDELINE_PROGRESS *progre
     }
     guide = world->guidelines;
     for (index = 0; index < world->guideline_count; ++index, ++guide) {
-        guide->flags |= 3;
+        GuideLine_Init(guide);
         if (progress != NULL && index < 32) {
             i32 word = index / 32;
             i32 bit = 1 << (index & 31);

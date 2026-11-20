@@ -5353,7 +5353,7 @@ address,symbol,size,ctype
 0x56cd90,_GuidelinesVuVecMake,28,
 0x0056cdb0,_GuideLines_Load,126,"i32 __cdecl(void *, void *)"
 0x0056ce30,_GuideLines_ReserveBufferSpace,85,void *__cdecl(WORLDINFO *)
-0x56ce90,_fun_0056ce90,5,
+0x56ce90,_GuideLine_Init,5,
 0x0056cea0,_GuideLines_Reset,136,"void __cdecl(WORLDINFO *, void *, GUIDELINE_PROGRESS *)"
 0x56cf30,_GuideLine_FindNearest,179,"GUIDELINE_RECORD *__cdecl(NUVEC *, WORLDINFO *, i32 *, f32 *)"
 0x0056cff0,_GuideLines_Draw,1,"void __cdecl(void *, void *, f32)"

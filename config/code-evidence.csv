@@ -580,7 +580,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x0056b710,28,_ClimbingVuVecMake,copy,,legoapi/climbing.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x0056cd80,1,_GuidelinesNuError,copy,,,"empty static directly before the VuVecMake copy at 0x56cd90; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x0056cd90,28,_GuidelinesVuVecMake,copy,,,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
-0x0056ce90,5,_fun_0056ce90,extent,,legoapi/guidelines.c,unreferenced,
+0x0056ce90,5,_GuideLine_Init,extent,,legoapi/guidelines.c,unreferenced,
 0x0056d2f0,1,_TubesNuError,copy,,legoapi/tubes.c,"empty static directly before the Fabs copy at 0x56d300; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x0056d320,28,_TubesVuVecMake,copy,,legoapi/tubes.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x0056dfc0,28,_CheatsVuVecMake,copy,,legoapi/cheats.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
