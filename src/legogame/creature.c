@@ -2210,11 +2210,11 @@ void TerrainPlayer(GAMEOBJECT *object) {
                     api->water_intersects = ((u8)(IntersectWater(object)));
                 }
 
-                if (api->water_intersects != 0 && (entry_underwater | entry_intersects_water) == 0) {
+                if (api->water_intersects != 0 && entry_underwater == 0 && entry_intersects_water == 0) {
                     i32 splash;
 
-                    splash = object->player.character_context == CHARACTER_CONTEXT_BIG_JUMP ||
-                             object->player.character_context == CHARACTER_CONTEXT_JUMP ||
+                    splash = object->player.character_context == CHARACTER_CONTEXT_JUMP ||
+                             object->player.character_context == CHARACTER_CONTEXT_BIG_JUMP ||
                              (U64_PAIR(&CInfo[object->player.character_context].flags) & 4) != 0 ||
                              object->player.character_context == CHARACTER_CONTEXT_LAND_SLAM ||
                              object->player.character_context == CHARACTER_CONTEXT_LAND_LUNGE;
@@ -2222,14 +2222,15 @@ void TerrainPlayer(GAMEOBJECT *object) {
                         i32 animation;
 
                         animation = CurrentAnim(&api->anim_packet);
-                        splash = animation == ACTION_FALL2 || animation == ACTION_FALL || ((u32)(animation - 0x4b)) <= 1;
+                        splash =
+                            animation == ACTION_FALL || animation == ACTION_FALL2 || animation == ACTION_FALL3 || animation == ACTION_FALL4;
                     }
                     if (splash) {
                         AddWaterSplash(object, &api->collision_position);
                     }
                 }
-                if (api->model_draw_result != 0 && object->player.character_context != CHARACTER_CONTEXT_DISORIENTATE &&
-                    object->player.character_context != CHARACTER_CONTEXT_LAUNCH) {
+                if (api->model_draw_result != 0 && object->player.character_context != CHARACTER_CONTEXT_LAUNCH &&
+                    object->player.character_context != CHARACTER_CONTEXT_DISORIENTATE) {
                     GameObjectRotation(object, 2);
                 }
 
