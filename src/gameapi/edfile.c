@@ -2300,14 +2300,22 @@ static i32 eduicbRenderExpander(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y
             f32 rect_height = expander->button_size;
             EduiDrawLineRect(rect_x, rect_y, rect_width, rect_height, 0xff000000, uimtls[EduiSelectionMaterial]);
         }
-        {
-            f32 line_x0 = (expander->button_x + 2.0f);
-            f32 line_y0 = (expander->button_y + expander->button_size * 0.5);
-            f32 line_x1 = (expander->button_x + expander->button_size - 2.0f);
-            f32 line_y1 = (expander->button_y + expander->button_size * 0.5);
-            EduiDrawLine(line_x0, line_y0, line_x1, line_y1, button_colours[expander->hover], uimtls[0]);
-        }
-        if (!expander->open) {
+        if (expander->open) {
+            {
+                f32 line_x0 = (expander->button_x + 2.0f);
+                f32 line_y0 = (expander->button_y + expander->button_size * 0.5);
+                f32 line_x1 = (expander->button_x + expander->button_size - 2.0f);
+                f32 line_y1 = (expander->button_y + expander->button_size * 0.5);
+                EduiDrawLine(line_x0, line_y0, line_x1, line_y1, button_colours[expander->hover], uimtls[0]);
+            }
+        } else {
+            {
+                f32 line_x0 = (expander->button_x + 2.0f);
+                f32 line_y0 = (expander->button_y + expander->button_size * 0.5);
+                f32 line_x1 = (expander->button_x + expander->button_size - 2.0f);
+                f32 line_y1 = (expander->button_y + expander->button_size * 0.5);
+                EduiDrawLine(line_x0, line_y0, line_x1, line_y1, button_colours[expander->hover], uimtls[0]);
+            }
             {
                 f32 line_x0 = (expander->button_x + expander->button_size * 0.5);
                 f32 line_y0 = (expander->button_y + 2.0f);
