@@ -1499,6 +1499,7 @@ extern "C" {
                 }
             }
         }
+
         if (editor_active == 0) {
             DrawMenu(paused);
         }
