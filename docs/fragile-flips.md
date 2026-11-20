@@ -114,3 +114,4 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | PC_DEVICE_BACKEND::GetAspectMode inline in d3dCore.h (menu.cpp's emitted copy) | NuRndrParticleGroup | nu2api/nu3d_platform.cpp | 95.37 % | 94.77 % |
 | ShadowLightWarp static in lighting_unit.cpp (its extern left nu3d_includes.h) | BoltTypes_Configure | legoapi/bolts.cpp | exact | 99.88 % |
 | FadeSystem's empty destructor (legoapi_types.h) | BoltTypes_Configure | legoapi/bolts.cpp | exact | 99.88 % |
+| GAMESAVE.level_save as LEVELSAVE_s[366] (bd723620, game.h includes save_values.h) | BoulderSpawn | legogame/episodeIII.c | exact | 83.28 % |
