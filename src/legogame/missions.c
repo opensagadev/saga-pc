@@ -313,7 +313,6 @@ void MenuUpdateMissions(MENU *menu) {
     }
     for (player = 0; player < 2; ++player) {
         GAMEPAD *pad;
-        u32 pressed;
         if (start != 0 || cancel != 0) {
             break;
         }
@@ -321,8 +320,7 @@ void MenuUpdateMissions(MENU *menu) {
             continue;
         }
         pad = &GamePadStorage[player];
-        pressed = pad->buttons_pressed;
-        if ((pressed & GAMEPAD_MENUSELECT) != 0) {
+        if ((pad->buttons_pressed & GAMEPAD_MENUSELECT) != 0) {
             if (MissionMenuPacket.active_player[0] == 0 || MissionMenuPacket.active_player[1] == 0) {
                 start = 1;
             } else if (MissionMenuPacket.selected[player] == 0) {
@@ -333,7 +331,7 @@ void MenuUpdateMissions(MENU *menu) {
                     GameAudio_PlaySfx(0x30, NULL, 0, 0);
                 }
             }
-        } else if ((pressed & GAMEPAD_MENUCANCEL) != 0) {
+        } else if ((pad->buttons_pressed & GAMEPAD_MENUCANCEL) != 0) {
             if (MissionMenuPacket.active_player[0] == 0 || MissionMenuPacket.active_player[1] == 0 ||
                 MissionMenuPacket.selected[player] == 0) {
                 cancel = 1;
@@ -342,9 +340,9 @@ void MenuUpdateMissions(MENU *menu) {
                 GameAudio_PlaySfx(0x31, NULL, 0, 0);
             }
         } else if (MissionMenuPacket.selected[0] == 0 && MissionMenuPacket.selected[1] == 0) {
-            if ((pad->left_pressed & GAMEPAD_DLEFT) != 0 || (pressed & GAMEPAD_DLEFT) != 0) {
+            if ((pad->left_pressed & GAMEPAD_DLEFT) != 0 || (pad->buttons_pressed & GAMEPAD_DLEFT) != 0) {
                 left = 1;
-            } else if ((pad->left_pressed & GAMEPAD_DRIGHT) != 0 || (pressed & GAMEPAD_DRIGHT) != 0) {
+            } else if ((pad->left_pressed & GAMEPAD_DRIGHT) != 0 || (pad->buttons_pressed & GAMEPAD_DRIGHT) != 0) {
                 right = 1;
             }
         }
