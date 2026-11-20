@@ -9706,7 +9706,7 @@ address,symbol,size,ctype
 0x619dd0,_EduiTextPickCopy,36,
 0x619e00,_EduiTextPickPaste,86,
 0x619e60,_EduiTextPickInsert,89,
-0x619ec0,_fun_00619ec0,28,
+0x619ec0,_EduiTextPickCursorLeft,28,
 0x619ee0,_EduiTextPickCursorRight,54,
 0x619f20,_EduiTextPickDelete,71,
 0x619f70,_EduiTextPickToggleCase,98,

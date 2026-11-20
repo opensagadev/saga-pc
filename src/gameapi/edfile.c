@@ -3277,6 +3277,10 @@ static void EduiTextPickInsert(edui_textpicker_s *picker, char character) {
     picker->value[picker->cursor++] = character;
 }
 
+static void EduiTextPickCursorLeft(edui_textpicker_s *picker) {
+    picker->cursor = MAX(0, picker->cursor - 1);
+}
+
 static void EduiTextPickCursorRight(edui_textpicker_s *picker) {
     picker->cursor = ((NuStrLen(picker->value)) < (picker->cursor + 1) ? (NuStrLen(picker->value)) : (picker->cursor + 1));
 }
@@ -3426,7 +3430,7 @@ static i32 EduiTextPickPad(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_PA
         EduiTextPickCopy(picker);
     }
     if (pad->digital_buttons_pressed & PAD_BUTTON_L1) {
-        picker->cursor = (0 > (picker->cursor - 1) ? 0 : (picker->cursor - 1));
+        EduiTextPickCursorLeft(picker);
     }
     if (pad->digital_buttons_pressed & PAD_BUTTON_R1) {
         EduiTextPickCursorRight(picker);

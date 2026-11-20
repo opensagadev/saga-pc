@@ -1651,7 +1651,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x00619520,69,_fun_00619520,extent,,gameapi/edtoolsall.cpp,unreferenced,
 0x00619db0,30,_fun_00619db0,extent,,gameapi/edtoolsall.cpp,unreferenced,
 0x00619dd0,36,_EduiTextPickCopy,extent,,gameapi/edtoolsall.cpp,unreferenced,
-0x00619ec0,28,_fun_00619ec0,extent,,gameapi/edtoolsall.cpp,unreferenced,
+0x00619ec0,28,_EduiTextPickCursorLeft,extent,,gameapi/edtoolsall.cpp,unreferenced,
 0x00619fe0,3,_fun_00619fe0,extent,,gameapi/edtoolsall.cpp,unreferenced,
 0x0061ffd0,27,_edcamSetSpeedPos,extent,,gameapi/edtoolsall.cpp,unreferenced,
 0x0061fff0,34,_EdCamSetSpeeds,extent,,gameapi/edtoolsall.cpp,unreferenced,
