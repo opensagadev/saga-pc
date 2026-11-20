@@ -5226,8 +5226,8 @@ address,symbol,size,ctype
 0x564460,?GetFadeType@FadeStill@@UBE?AW4FADETYPE_VALUE@@XZ,6,
 0x564470,??_EFadeStill@@UAEPAXI@Z,,COFF weak alias of ??_GFadeStill@@UAEPAXI@Z; no independent body
 0x564470,??_GFadeStill@@UAEPAXI@Z,31,
-0x564490,_fun_00564490,3,
-0x5644a0,_fun_005644a0,1,
+0x564490,??0FadeSystem@@QAE@XZ,3,
+0x5644a0,??1FadeSystem@@QAE@XZ,1,
 0x5644b0,_fun_005644b0,1,
 0x5644c0,_FadeLoop_SetObj,44,
 0x5644f0,_fun_005644f0,12,
@@ -16358,6 +16358,7 @@ address,symbol,size,ctype
 0x75135c,_Game_LanguageList$initializer$,4,native CRT pointer
 0x751360,_music_man$initializer$,4,void (*)(void)
 0x751364,_Text_LanguageList_Default$initializer$,4,native CRT pointer
+0x751368,_FadeSys$initializer$,4,void (*)(void)
 0x75136c,_fade$initializer$,,void (__cdecl *)(void)
 0x751370,_fadeWipe$initializer$,,void (__cdecl *)(void)
 0x751374,_fadeStillWipe$initializer$,,void (__cdecl *)(void)

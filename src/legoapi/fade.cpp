@@ -65,9 +65,6 @@ FADETYPE_VALUE Fade::GetFadeType() const {
     return FADE_TYPE_SCREEN;
 }
 
-extern "C" void fun_005644a0() {
-}
-
 extern "C" void fun_005644b0() {
 }
 
