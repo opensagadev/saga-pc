@@ -130,4 +130,3 @@ typedef struct grapple_rotation_s { // size 0x3c
     u8 unknown_00[0x30];            // 0x00
     NUVEC hook_position;            // 0x30
 } GRAPPLE_ROTATION;
-

@@ -217,7 +217,7 @@ static void NuMainDrawSplines(NUGSCN *gscn) {
         vertices[0].position = *point;
         vertices[0].colour = 0xffff0000;
         for (j = 1; j < spline->length; j++) {
-            point = (NUVEC *)((char *)point + (i16)spline->pt_size);
+            point = (NUVEC *)((char *)point + spline->pt_size);
             vertices[1].position = *point;
             phase += animate;
             vertices[1].colour = colours[phase & 7];

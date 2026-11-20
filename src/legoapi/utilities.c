@@ -1023,7 +1023,7 @@ void GetNearestSplinePos(NUVEC *origin, SPLINEPOS *result, NUGSPLINE *spline, i3
             nearest = distance;
             result->segment = (i16)index;
         }
-        point = (NUVEC *)((u8 *)point + (i16)result->spline->pt_size);
+        point = (NUVEC *)((u8 *)point + result->spline->pt_size);
         index++;
     } while (index < last_point);
 

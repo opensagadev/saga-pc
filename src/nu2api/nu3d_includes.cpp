@@ -13609,8 +13609,8 @@ extern "C" {
     void NuSplineGetRandomPoint(NUGSPLINE *spline, NUVEC *point) {
         i32 index = rand() % spline->length;
         i32 next_index = (index + 1) % spline->length;
-        NUVEC *start = &spline->pts[index * (i16)spline->pt_size];
-        NUVEC *end = &spline->pts[next_index * (i16)spline->pt_size];
+        NUVEC *start = &spline->pts[index * spline->pt_size];
+        NUVEC *end = &spline->pts[next_index * spline->pt_size];
         NuVecLerp(point, start, end, (f32)((rand() & 0x7fff) * (1.0 / 32768.0)));
     }
 } // extern "C"

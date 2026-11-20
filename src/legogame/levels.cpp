@@ -1945,8 +1945,8 @@ void WorldInfo_Load(WORLDINFO *world) {
     if (cutscene_scene == NULL || world->area == NULL || (world->area->flags & AREAFLAG_OVERRIDE_THINGS_SCENE) == 0) {
         cutscene_scene = things_scene;
     }
-    world->cutscene_sys = (CUTSYS *)CutScenes_Load(ConfigBuffer.bytes, world->current_gscn, cutscene_scene, world->page_pp,
-                                                   &world->giz_buffer, &world->buffer_end, world->area_index, world->level_idx, world);
+    world->cutscene_sys = CutScenes_Load(ConfigBuffer.bytes, world->current_gscn, cutscene_scene, world->page_pp, &world->giz_buffer,
+                                         &world->buffer_end, world->area_index, world->level_idx, world);
     if (abort_load != 0) {
         goto abort;
     }

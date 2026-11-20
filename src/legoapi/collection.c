@@ -226,7 +226,7 @@ void Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
 
     entry = (COLLECTID *)((buffer->addr + 3) & ~3u);
     buffer->void_ptr = entry;
-    CollectList = (COLLECTID *)entry;
+    CollectList = entry;
     CollectCount = 0;
     COLLECTION_COMPLETIONCOUNT = 0;
 
