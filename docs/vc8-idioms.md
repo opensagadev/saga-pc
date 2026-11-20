@@ -725,6 +725,22 @@ After `for (i = 0; i < info->len; ++i) dest[i] = ...;`, retail writes
 `dest[i] = '\0'` (the index register), not `dest[info->len] = '\0'` (a
 reload of the field). `NuFileExtGetExt` (also I3: `dest_size < info->len`).
 
+### I59: a clamp written as two `if`s, not `if`/`else if`
+
+```
+retail                                   ours (else if)
+  jmp  [table]                             jmp  [table]
+case START:                              ; case START jumps into the clamp's
+  fst  [title_alpha]                     ; `title_alpha = 0` store
+  jmp  .clamp
+```
+
+With `if (a < 0) a = 0; else if (a > 1) a = 1;` after a `switch`, VC8 sends
+a case that stores the same constant (`title_alpha = 0.0f; break;`) straight
+into the clamp's store. Two separate tests (`if (a < 0) a = 0; if (a > 1)
+a = 1;`) keep the case block of its own like retail. `MiniKit_LSW_Draw`
+(99.07 -> exact); the sibling status draws did not change.
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated
