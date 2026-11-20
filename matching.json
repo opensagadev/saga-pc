@@ -1033,7 +1033,7 @@
     "build/obj/legoapi/areas_diagnostic.obj": "920a2c5f4066ddcd8df85eff987c1974e4853daad24929bd5edb33cfb17908a8",
     "build/obj/legoapi/audio.obj": "42cec2b9422c00c78247272c7f39b59308b9fc821176bf14e1cf1d91575d72a8",
     "build/obj/legoapi/batarang.obj": "9caa1bee81e357193484ad180157d12f4691fa7f12fa3124ca23472f1634e056",
-    "build/obj/legoapi/bolts.obj": "72751e95761243e76f85988eb4d05e76255b91f786545e7463a306c3aa6e5030",
+    "build/obj/legoapi/bolts.obj": "0fbbff8fbb31e0ae70c39a13243ca962e49b78aab075a745571b95f3e3449f91",
     "build/obj/legoapi/buffers.obj": "c3adca944e52501e4cedbc11a49444fdf6e684f325dded245fb9127a5e51ebc3",
     "build/obj/legoapi/camera.obj": "1646d4620ce0908b4bdd0e77ba2799b5baeee67cde4a9e0bbd84818b79a576b5",
     "build/obj/legoapi/carrying.obj": "d2de00afe44a73c1fd8b5c46b4c2e099468808b2775b4c13651f2204e1846c07",
@@ -895223,7 +895223,7 @@
       "metadata_sha256": "a005dfb7254f87304ba5e7d1c5083ab46db1e8272ef5fdd2e11a8953a1d1d2d5",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "d20cc18035ea82abc77019dca487f110dd1a1050b6c95b6be2ee9c652357b147",
+      "geometry_object_sha256": "b9367454db5d924f54e4210080a74ea7e61acadce63a61376d9a32eb0eeb435a",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
