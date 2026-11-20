@@ -15,6 +15,9 @@
 
 #include <string.h>
 
+void MinicamcutNuError(void) {
+}
+
 /* The SDK's inline NuFdiv: a quotient that is 0 when either operand is 0. */
 static f32 MinicamcutFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {

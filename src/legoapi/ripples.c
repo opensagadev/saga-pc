@@ -13,6 +13,9 @@
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
 
+void RipplesNuError(void) {
+}
+
 void DestroyRippleMtls(WORLDINFO *world) {
     // MATCH-EXCEPTION: the cast is repeated at each use; a cast local gives the other SIB order (U1)
     i32 i;

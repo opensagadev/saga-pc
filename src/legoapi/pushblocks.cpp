@@ -38,6 +38,9 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
+
+extern "C" void PushblocksNuError(void) {
+}
 extern "C" {
     i32 PushBlockHintId = -1;
 }

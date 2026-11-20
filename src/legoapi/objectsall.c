@@ -8,6 +8,9 @@
 #include "nu2api/nucore/nuapi.h"
 #include "nu2api/nucore/nustring.h"
 
+void ObjectsallNuError(void) {
+}
+
 /* Do not split a "~~" pair, and keep a single '~' with the text after it. */
 
 i32 FindNextBreak(u8 *text, i32 index) {

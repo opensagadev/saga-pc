@@ -47,6 +47,9 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
+extern "C" void GizbuilditNuError(void) {
+}
+
 typedef struct buildit_reset_progress_s { // size 0x60
     u32 completed[2];                     // 0x00
     u32 active[2];                        // 0x08

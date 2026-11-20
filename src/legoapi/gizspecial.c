@@ -17,6 +17,9 @@
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
 
+void GizspecialNuError(void) {
+}
+
 static char gizspecial_prefix[8] = "qaz_";
 i32 gizspecial_gizmotype_id = -1;
 

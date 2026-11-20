@@ -9,6 +9,9 @@
 #include "nu2api/nu3d/nutimebar_plain.h"
 #include <string.h>
 
+extern "C" void SupportallNuError(void) {
+}
+
 /* ThingManager's unit. */
 
 /* A set flag bit switches the action off. */

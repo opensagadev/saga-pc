@@ -56,6 +56,9 @@
 #include "nu2api/numath/nuvec.h"
 #include "gameapi/ai/aisys/gameaiscript.h"
 
+void GizmopickupsNuError(void) {
+}
+
 typedef struct PICKUP_RESET_PROGRESS { // size 0x100
     u32 collected[16];                 // 0x00
     u32 enabled[16];                   // 0x40

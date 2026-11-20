@@ -40,6 +40,9 @@
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numusic/sfx.h"
 
+void GizobstacleNuError(void) {
+}
+
 void GizObstacle_JumpToStart(GIZOBSTACLE *obstacle) {
     if (obstacle && obstacle->anim_set) {
         GameAnimSet_JumpToStart(obstacle->anim_set);

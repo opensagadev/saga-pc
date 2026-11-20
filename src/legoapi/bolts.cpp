@@ -53,6 +53,9 @@
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numusic/sfx.h"
 
+extern "C" void BoltsNuError(void) {
+}
+
 /* Bolts unit: bolts.c and the bolt runtime are one translation unit, so
    private helpers inline into their callers. C entry points keep C linkage
    via extern "C". */

@@ -9,6 +9,9 @@
 #include "nu2api/nu3d/nugscn.h"
 #include "nu2api/nucore/nustring.h"
 
+void GizrandomNuError(void) {
+}
+
 i32 GizRandom_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = world_ptr;
     if (world == NULL || world->current_level == NULL) {

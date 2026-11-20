@@ -5,6 +5,9 @@
 #include "nu2api/numath/nufloat.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
+
+void ShovesysNuError(void) {
+}
 f32 ShoveMaximumSpeed = 2.0f;
 f32 ShoveMaximumPenetration = 0.1f;
 static f32 ShoveCollisionExpansion = 0.1f;

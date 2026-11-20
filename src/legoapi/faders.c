@@ -13,6 +13,9 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
+void FadersNuError(void) {
+}
+
 void Faders_Configure(WORLDINFO *world, char *config) {
     NUFPAR *parser;
     FADER_s *fader;

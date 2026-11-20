@@ -7,6 +7,9 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
+void PlugsNuError(void) {
+}
+
 CARRY_PLUG *Plug_FindNearest(CARRY_PLUG_SYS *system, NUVEC *position, f32 *distance_squared, i32 only_unplugged) {
     CARRY_PLUG *nearest = NULL;
     CARRY_PLUG *plug;

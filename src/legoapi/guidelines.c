@@ -6,6 +6,9 @@
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/nuvec.h"
 
+void GuidelinesNuError(void) {
+}
+
 typedef struct guideline_progress_s { // size 0x8
     u32 active_mask[1];               // 0x0
     u32 visible_mask[1];              // 0x4

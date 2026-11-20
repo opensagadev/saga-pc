@@ -35,6 +35,9 @@
 #include "nu2api/numath/nutrig.h"
 #include <stdio.h>
 
+void MinikitsNuError(void) {
+}
+
 #ifdef __cplusplus
 #endif
 

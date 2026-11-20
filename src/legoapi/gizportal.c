@@ -7,6 +7,9 @@
 
 #include <stdio.h>
 
+void GizportalNuError(void) {
+}
+
 const char *PortalRegistrationPrefix = "portal_";
 static char portal_output_name[64] = "Active";
 i32 portal_gizmotype_id = 0;

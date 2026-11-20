@@ -52,6 +52,9 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
+void GizmoblowupsNuError(void) {
+}
+
 typedef struct {       // size 0x100
     u32 triggered[16]; // 0x00
     u32 enabled[16];   // 0x40

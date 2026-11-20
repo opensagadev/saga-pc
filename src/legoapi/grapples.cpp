@@ -45,6 +45,9 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
+extern "C" void GrapplesNuError(void) {
+}
+
 typedef struct {
     u32 enabled[1];
     u32 visible[1];

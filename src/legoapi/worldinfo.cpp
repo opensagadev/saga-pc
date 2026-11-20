@@ -57,6 +57,9 @@
 #include <stdio.h>
 #include <string.h>
 
+extern "C" void WorldinfoNuError(void) {
+}
+
 /* World info, with GizmoSysClearLevelProgress (gizmo.c) before it and SetAreaPickupGravity
    (gizmopickups.c) after it. The PortalDoors functions stay in gizportal.c, which relies on C
    conversions. */

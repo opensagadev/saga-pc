@@ -10,6 +10,9 @@
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/nuvec.h"
 
+void GiztimersNuError(void) {
+}
+
 i32 GizTimer_GetMaxGizmos(void *world_info) {
     WORLDINFO *world = world_info;
 

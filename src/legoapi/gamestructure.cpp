@@ -33,6 +33,9 @@
 #include "nu2api/nuwin32/nu2api_windows.h"
 #include "legoapi/menus/screens/gamestatus_lsw.h"
 
+extern "C" void GamestructureNuError(void) {
+}
+
 extern "C" {
     i32 SuperStoryEpisode = -1;
     i32 pause_i_pad = -1;

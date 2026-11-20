@@ -26,6 +26,9 @@
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numath/numath_includes.h"
 
+void DoorsNuError(void) {
+}
+
 void Door_Reset(void) {
     DoorExitName[0] = '\0';
     Door_Start = 0;
