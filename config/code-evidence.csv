@@ -189,7 +189,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x00491d20,45,?DrawSortedDebris@@YAXH@Z,extent,,,unreferenced,
 0x00493c30,18,?MenuFabs@@YAMM@Z,copy,,legogame/menu.cpp,bytes equal _AttractoFabs,
 0x00493c50,28,?MenuVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,legogame/menu.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
-0x00493c70,17,_fun_00493c70,extent,,legogame/menu.cpp,unreferenced,
+0x00493c70,17,?GetAspectMode@PC_DEVICE_BACKEND@@QAEHXZ,extent,,legogame/menu.cpp,unreferenced,
 0x00493c90,22,_MenuSettingsString,extent,,legogame/menu.cpp,unreferenced,
 0x00494270,23,?OptionsMusicVolume@@YAMPAUoptionssave_s@@@Z,extent,,legogame/menu.cpp,unreferenced,
 0x00494290,48,?ApplyOptionsMusicVolume@@YAMPAUoptionssave_s@@@Z,extent,,legogame/menu.cpp,unreferenced,

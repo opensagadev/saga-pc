@@ -343,6 +343,15 @@ typedef struct PC_DEVICE_BACKEND {          // size 0x700
     u32 FindMode(u32 width, u32 height, u32 refresh);
     u32 GetMultisampleType();
 
+    /* The aspect mode in use: the option, or the device's own choice when the option is automatic. */
+    i32 GetAspectMode() {
+        i32 aspect_mode = PcWindowOptions.aspect_mode;
+        if (aspect_mode == PC_ASPECT_AUTO) {
+            aspect_mode = active_aspect_mode;
+        }
+        return aspect_mode;
+    }
+
     void CreateOrResetDevice(i32 reposition_window);
     void InitializeAdapter();
     void Present(const RECT *, const RECT *, HWND, const RGNDATA *);

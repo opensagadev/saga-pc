@@ -1804,7 +1804,7 @@ address,symbol,size,ctype
 0x00492b40,_NuMain,4332,"i32 __cdecl (i32, char **)"
 0x493c30,?MenuFabs@@YAMM@Z,18,
 0x493c50,?MenuVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
-0x493c70,_fun_00493c70,17,
+0x493c70,?GetAspectMode@PC_DEVICE_BACKEND@@QAEHXZ,17,
 0x493c90,_MenuSettingsString,22,
 0x493cb0,_MenuEnterControlSetup,17,
 0x493cd0,_MenuDrawControlSetup,5,
