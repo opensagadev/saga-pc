@@ -2328,6 +2328,14 @@ void AddVariableShotDebrisEffectTimed1(i32 effect, NUVEC *position, i32 count, f
     AddVariableShotDebrisEffectTimed3(effect, position, &APIObjectZeroMomentumPC, count, time, &orientation, particle_orientation);
 }
 
+/* a / b, 0 when either is 0. */
+static f32 PartsFdiv(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f) {
+        return 0.0f;
+    }
+    return a / b;
+}
+
 void AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 rate, f32 duration, NUMTX *orientation) {
     PARTTYPE_LOOKUP *type = &part_types[effect_index];
     f32 interval;
@@ -2350,11 +2358,7 @@ void AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 rate, f32 
         interval = 0.0f;
     }
     end_time = partglobaltime + duration;
-    if (partglobaltime == 0.0f || interval == 0.0f) {
-        emission_time = 0.0f;
-    } else {
-        emission_time = partglobaltime / interval;
-    }
+    emission_time = PartsFdiv(partglobaltime, interval);
     aligned_time = (i32)emission_time * interval;
     emission_time = aligned_time + interval;
     for (count = 0; end_time >= emission_time && ++count < 100;) {

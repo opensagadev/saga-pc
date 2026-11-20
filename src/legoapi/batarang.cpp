@@ -78,7 +78,7 @@ extern "C" {
     }
 }
 
-static i32 BatarangASin(f32 sin) {
+static i16 BatarangASin(f32 sin) {
     f32 abs;
     f32 sqrt;
     f32 magnitude;
@@ -104,6 +104,10 @@ static i32 BatarangASin(f32 sin) {
             NEG_5_OVER_112 * POW3(range_sign * value_sign * magnitude) * POW4(range_sign * value_sign * magnitude) +
             NEG_35_OVER_1152 * POW4(range_sign * value_sign * magnitude) * POW5(range_sign * value_sign * magnitude)) *
            MAX_SHORT_OVER_PI;
+}
+
+static i16 BatarangACos(f32 cos) {
+    return 0x4000 - BatarangASin(cos);
 }
 
 // noinline: the original calls BatarangContainsTarget out of line from Batarang_FindTarget; VC8 would inline it
@@ -429,7 +433,7 @@ extern "C" i32 Batarang_InitRicochet(BATARANG_NATIVE *batarang, NUVEC *normal) {
     f32 magnitudes = NuVecMag(&batarang->ricochet_normal) * NuVecMag(&reflected_velocity);
     f32 dot = NuVecDot(&batarang->ricochet_normal, &reflected_velocity);
     f32 cosine = NuFdiv(dot, magnitudes);
-    i32 angle = (i16)(0x4000 - BatarangASin(cosine));
+    i32 angle = BatarangACos(cosine);
     NuMtxSetRotationAxis(&rotation, 0x8000 - angle * 2, &axis);
     NuVecMtxRotate(&reflected_velocity, &reflected_velocity, &rotation);
     f32 speed = NuVecNorm(&original_velocity, &original_velocity);

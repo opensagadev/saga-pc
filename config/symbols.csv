@@ -61,8 +61,8 @@ address,symbol,size,ctype
 0x403c60,_Attracto_GetSuctionPos,35,"void __cdecl(GAMEOBJECT *,NUVEC *)"
 0x403c90,_BatarangFabs,18,
 0x00403cb0,_NuFdiv,54,"f32 __cdecl (f32, f32)"
-0x403cf0,?BatarangASin@@YAHM@Z,320,
-0x403e30,_BatarangACos,27,
+0x403cf0,?BatarangASin@@YAFM@Z,320,
+0x403e30,?BatarangACos@@YAFM@Z,27,
 0x403e50,_BatarangVuVecMake,28,
 0x403e70,?BatarangContainsTarget@@YAHPAUplayer_batarang_slot_s@@PAX@Z,40,
 0x403ea0,?BatarangAppendTarget@@YAHPAUplayer_batarang_slot_s@@PAXH@Z,178,
@@ -10553,7 +10553,7 @@ address,symbol,size,ctype
 0x642250,?AddMenuItem@?$EdValueControl@M@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,237,
 0x642340,_ObjectsallNuError,1,
 0x642350,?ObjectsallFabs@@YAMM@Z,18,
-0x642370,?ObjectsallFdiv@@YAMMM@Z,54,
+0x642370,_PartsFdiv,54,
 0x6423b0,_PartRuntimeDirectionalLightsPrivate,183,
 0x642470,_PartsSetAmbientLight,36,
 0x6424a0,?ObjectsallVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
