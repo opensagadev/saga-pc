@@ -470,7 +470,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x005209e0,32,_AIPathDirectionXZ,extent,,gameapi/aisysall.cpp,unreferenced,
 0x00520a00,136,_AIOrientConnection,extent,,gameapi/aisysall.cpp,unreferenced,
 0x00520a90,890,_FindAIDirectionedRandomPointOnNetwork2D,extent,,gameapi/aisysall.cpp,unreferenced,
-0x00521c20,46,_fun_00521c20,extent,,gameapi/aisysall.cpp,unreferenced,
+0x00521c20,46,_AiEditorLocatorInSet,extent,,gameapi/aisysall.cpp,unreferenced,
 0x00522b20,64,_AiEditorSetCameraPos,extent,,gameapi/aisysall.cpp,unreferenced,
 0x00524180,1,_fun_00524180,extent,,gameapi/aisysall.cpp,unreferenced,
 0x0053d130,1,_fun_0053d130,extent,,,unreferenced,

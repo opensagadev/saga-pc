@@ -7066,6 +7066,22 @@ static i32 AiEditorRemoveLocatorFromSet(EDLOCATORSET_s *set, EDLOCATOR_s *locato
     return 0;
 }
 
+/* Whether a locator is already in the set; the set ends at its first empty slot. */
+static i32 AiEditorLocatorInSet(EDLOCATORSET_s *set, EDLOCATOR_s *locator) {
+    i32 index;
+    if (set != NULL && locator != NULL) {
+        for (index = 0; index < 64; ++index) {
+            if (set->locators[index] == locator) {
+                return 1;
+            }
+            if (set->locators[index] == NULL) {
+                break;
+            }
+        }
+    }
+    return 0;
+}
+
 static i32 AiEditorAddLocatorToSet(EDLOCATORSET_s *set, EDLOCATOR_s *locator, EDLOCATOR_s *before) {
     i32 index;
     i32 move;
@@ -17200,21 +17216,9 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD *pad) {
                (pad->digital_buttons_pressed & PAD_BUTTON_CIRCLE) != 0 && aieditor->nearest_locator != NULL) {
         EDLOCATORSET_s *set = aieditor->current_locator_set;
         EDLOCATOR_s *nearest = aieditor->nearest_locator;
-        i32 in_set = 0;
+        i32 in_set = AiEditorLocatorInSet(set, nearest);
         i32 added;
-        i32 index;
         EDLOCATOR_s *current;
-        if (set != NULL && nearest != NULL) {
-            for (index = 0; index < 64; ++index) {
-                if (set->locators[index] == nearest) {
-                    in_set = 1;
-                    break;
-                }
-                if (set->locators[index] == NULL) {
-                    break;
-                }
-            }
-        }
         if (!in_set && aieditor->current_locator != NULL && aieditor->current_locator != aieditor->nearest_locator) {
             added = AiEditorAddLocatorToSet(set, nearest, aieditor->current_locator);
         } else if (in_set) {

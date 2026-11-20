@@ -4124,7 +4124,7 @@ address,symbol,size,ctype
 0x521a90,_AiEditorDestroyLocatorSet,57,
 0x521ad0,_AiEditorRemoveLocatorFromSet,87,
 0x521b30,_AiEditorAddLocatorToSet,225,
-0x521c20,_fun_00521c20,46,
+0x521c20,_AiEditorLocatorInSet,46,
 0x521c50,_locatorEditor_FindLocatorSet,85,
 0x521cb0,_locatorEditorSaveData,794,
 0x00521fd0,_locatorEditor_GetNearest,295,EDLOCATOR_s *__cdecl (i32)
