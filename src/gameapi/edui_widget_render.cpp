@@ -2165,8 +2165,14 @@ extern "C" i32 eduiGradPickRead(eduiitem_s *item, EDUI_GRADIENT_STAGE *stages, i
 
 extern "C" i32 eduicbProcessGreyPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad) {
     edui_colour_pick_s *pick = (edui_colour_pick_s *)item;
-    i32 left = pad->analog_l1 ? pad->analog_l1 : pad->analog_l2;
-    i32 right = pad->analog_r1 ? pad->analog_r1 : pad->analog_r2;
+    i32 left = pad->analog_l2;
+    i32 right = pad->analog_r2;
+    if (pad->analog_l1) {
+        left = pad->analog_l1;
+    }
+    if (pad->analog_r1) {
+        right = pad->analog_r1;
+    }
     if (left) {
         f64 value = pick->value - left / 4192.0;
         pick->value = value < 0.0 ? 0.0 : value;

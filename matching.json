@@ -591,7 +591,7 @@
     "src/debug/skin_trace_windows.cpp": "7d0a9ac065f45332fc54e49a9673d5486dafdf29e115ab3c6d7080492563da23",
     "src/editor/edlevelall.cpp": "853b68fbc0b46aae273ebb821555805b837689806a32f1415fb5f8caf5c1b801",
     "src/gameapi/edtools_outline.cpp": "8de9408ef5c3cecd47435c16b0b04cd0601bc42b4d1771820f0f207a7c423ccb",
-    "src/gameapi/edui_widget_render.cpp": "cd6d26c1853503826f00421a7b02b4473cbe6e0d7656860926ac8aea74b65bf4",
+    "src/gameapi/edui_widget_render.cpp": "100e7a4381978085b7956bdc8e69b47a7207f79795b31884ff0cc374f247dae1",
     "src/gameapi/message.cpp": "d3154208a984059579f080103af2eed2543cab2315bb1f7bc8892a9a33772682",
     "src/gameapi/saveload.cpp": "fc1a711f41a219e235d9d49a088d72df10087f0878bb71471565dee512ca9515",
     "src/gameapi/shop_persistence.cpp": "23a6fdcdaa17ebfacd60acc4fc9a7117a27785875f76c34c25435a177e1d3ae4",
@@ -721,7 +721,7 @@
     "src/gameapi/aisysall.c": "3236f25cbc4e72e33113e4d42d0126904ddf1c8502d04959414d707a878e4e04",
     "src/gameapi/apiobject.c": "f9f578fc7f3a8031201f9dfaa6e3c06ba3e45c9be85c4936aea7d2d06dcd09f3",
     "src/gameapi/apisave.c": "87e03567fae7fdffca17011c7f19bdd13d7e53a48e5f845ce170ab3ab9e7cb96",
-    "src/gameapi/edanim_load.c": "188a935756bf74b5eab4311868c847e21cb1413cdbbd2aa4ee14fdb5d1783fda",
+    "src/gameapi/edanim_load.c": "8541bc1699302f24e6c0390494ef2d1ca2f2742bfaa18a967d6baeaad9337f71",
     "src/gameapi/edanim_update.c": "d161e532e8af104e38e65cc256b3f2d37c0d1f05666f76cd95814108da06f730",
     "src/gameapi/edbits.c": "2b0b6c0e5f805ad950db1f13a7208dd947c4fd283cf115524f00eaa272faeb63",
     "src/gameapi/edbri.c": "180a39bbaaea22c123c46829c9eff4ac95d4f98622efa8a9d3d6b6ec1f943ef2",
@@ -999,7 +999,7 @@
     "build/obj/gameapi/aisysall.obj": "9e014b805190707bfea9c7b7f8865dd165b1a0953364ef6d5714662219c5d1f2",
     "build/obj/gameapi/apiobject.obj": "9c2be0e1b9117a7ddb2db0ac2e02c64a591dae70460a216858659b2b7731fae0",
     "build/obj/gameapi/apisave.obj": "64b22982e6cdd6804b8dc46d9e3dc3d45be1036e3aecac34263a6228f2a42b8f",
-    "build/obj/gameapi/edanim_load.obj": "57c643a867e2c9844e0564d1b09cf2d5be190c36a5a634c27975148876cb9c85",
+    "build/obj/gameapi/edanim_load.obj": "3a8c7141f2140c42f947b8d84b5d3f344a41fdc68479f9af35afee9f7686bde4",
     "build/obj/gameapi/edanim_update.obj": "1aeb1cf3ced7e62a1c85e01640b744a911a8602e64dae086a218634691884d9e",
     "build/obj/gameapi/edbits.obj": "b7ff6589fdf2a7c836967800864e5fc040fd7048c506094ef081b88eb00c0c75",
     "build/obj/gameapi/edbri.obj": "89387dba9fe4d65c4acbf7766e9cef18f1ae64d113ae310ed6a9bd94785137f7",
@@ -1011,7 +1011,7 @@
     "build/obj/gameapi/edpp_load.obj": "c93398e081e621b0fba490738c2e117afe14ec1108c245af33a25c9ec2f90b46",
     "build/obj/gameapi/edspline_load.obj": "751a889bcf011cd767547ca10a9c7649034e3e1e6cac052584e49bc281898d3b",
     "build/obj/gameapi/edtools_outline.obj": "836f61c74b77f0a42d5fa5bfe7d72ecc3e426841102088513180e22baba64c88",
-    "build/obj/gameapi/edui_widget_render.obj": "91e45ffa98955704fad5cb553462a27aba026872a2c9e58f867669ce4084cae4",
+    "build/obj/gameapi/edui_widget_render.obj": "034f07079feefa1b581b0e05681a7651b95ec856129d2877cb67fe1dd5142f5a",
     "build/obj/gameapi/message.obj": "46c796f49866d089592ca193960a5a5940071198e71435bf4ba962cb26bb9c0e",
     "build/obj/gameapi/rtl.obj": "457abe59a4d186c2384b1ce3cee21e1ec4422e96a12b580b6fe9c5d99dd97e1e",
     "build/obj/gameapi/saveload.obj": "24432ab2246f3a9429b367d5c2b777bc025118e3d241c284d8ceb0372c0e992c",
@@ -237124,29 +237124,21 @@
         "src/gameapi/edui_widget_render.cpp"
       ],
       "target_size": 191,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/gameapi/edui_widget_render.cpp",
-          "base_size": 183,
-          "exact_match": false,
+          "base_size": 191,
+          "exact_match": true,
           "target_sha256": "7a88a5269330c0911d0cc85702e9229837736397e0eef4c86de978f3e2c4ef48",
-          "base_sha256": "73a0845212c2a663c12e1daf781f78d046dc7329e62626b93ec9e516b13f2549",
+          "base_sha256": "7a88a5269330c0911d0cc85702e9229837736397e0eef4c86de978f3e2c4ef48",
           "relocation_count": 2,
           "comparison_unit": "0061b060-3659cd78b23a",
-          "objdiff_percent": 72.442856
+          "objdiff_percent": 100.0
         }
       ],
-      "diff_class": "structural",
-      "diff_hunks": 11,
-      "idioms": [
-        "I4",
-        "U3",
-        "U7",
-        "?"
-      ],
-      "status": "different",
-      "objdiff_percent": 72.442856
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "?EduiColourPickWithinHue@@YAHPAUedui_interact_s@@@Z",
@@ -281438,23 +281430,25 @@
       "objects": [
         {
           "unit": "src/gameapi/edanim_load.c",
-          "base_size": 1660,
+          "base_size": 1664,
           "exact_match": false,
           "target_sha256": "662b136115c7f0a04955e1c2d90e0e9d0a506c2ab6bf730c7707e16e307270b2",
-          "base_sha256": "cce9f5478e49f29dc8d0b38c595a6411275ccf0a4a3d53f52a28ce404f3fa97e",
+          "base_sha256": "1c7edaf8e32b8bf1d14b6eecc65099028692be9a832106c6cfcd84b59f5309f8",
           "relocation_count": 147,
           "comparison_unit": "006871c0-797270835bc1",
-          "objdiff_percent": 68.62619
+          "objdiff_percent": 81.11191
         }
       ],
       "diff_class": "structural",
-      "diff_hunks": 7,
+      "diff_hunks": 12,
       "idioms": [
         "I4",
-        "U7"
+        "U3",
+        "U7",
+        "?"
       ],
       "status": "different",
-      "objdiff_percent": 68.62619
+      "objdiff_percent": 81.11191
     },
     {
       "name": "edanimLoadPage",
@@ -898104,18 +898098,18 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 3348693,
-    "matched_code_bytes": 2108054,
-    "matching_percent": 60.72902928804239,
+    "matched_code_bytes": 2108245,
+    "matching_percent": 60.73453163503825,
     "padding_bytes": 114459,
-    "matched_padding_bytes": 100451,
-    "matched_code_with_padding_bytes": 2208505,
-    "matching_with_padding_percent": 63.62283168637429,
+    "matched_padding_bytes": 100452,
+    "matched_code_with_padding_bytes": 2208697,
+    "matching_with_padding_percent": 63.6283628414696,
     "fuzzy_text_data_bytes": 6896,
     "fuzzy_denominator_bytes": 3349891,
-    "fuzzy_coverage_percent": 96.0951866054301,
+    "fuzzy_coverage_percent": 96.10296361617581,
     "mapped_functions": 15914,
-    "matched_functions": 13860,
-    "objdiff_fuzzy_percent": 96.87594,
+    "matched_functions": 13861,
+    "objdiff_fuzzy_percent": 96.88378,
     "objdiff_total_code": 3328867,
     "image_bytes": 40067072,
     "mapped_bytes": 38523205,
@@ -898224,24 +898218,24 @@
   "text_coverage": {
     "original_text_bytes": 3471246,
     "mapped_reconstruction_bytes": 3348693,
-    "exact_reconstruction_bytes": 2108054,
-    "mapped_not_exact_bytes": 1240639,
+    "exact_reconstruction_bytes": 2108245,
+    "mapped_not_exact_bytes": 1240448,
     "excluded_import_glue_bytes": 1194,
     "text_data_bytes": 6896,
     "exact_text_data_bytes": 6896,
     "unclassified_text_bytes": 114463,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 60.72902928804239,
+    "strict_original_text_exact_percent": 60.73453163503825,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 60.74992536134905,
+    "reconstruction_scope_exact_percent": 60.75542960163133,
     "mapped_scope_denominator_bytes": 3348693,
-    "mapped_scope_exact_percent": 62.95154557315347,
+    "mapped_scope_exact_percent": 62.95724929099204,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image.",
     "alignment_padding_bytes": 114459,
-    "exact_alignment_padding_bytes": 100451,
+    "exact_alignment_padding_bytes": 100452,
     "unclassified_non_padding_text_bytes": 4,
-    "exact_with_padding_bytes": 2208505,
-    "exact_with_padding_percent": 63.62283168637429,
+    "exact_with_padding_bytes": 2208697,
+    "exact_with_padding_percent": 63.6283628414696,
     "padding_qualification": "Padding is int3/nop alignment fill shorter than 16 bytes between mapped extents, shorter than the alignment of the extent start it ends on; it is exact only after an exact function."
   },
   "data_members": [
@@ -899520,7 +899514,7 @@
       "metadata_sha256": "a005dfb7254f87304ba5e7d1c5083ab46db1e8272ef5fdd2e11a8953a1d1d2d5",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "c166b015e147e104e1078e63702813125c13de53964c30b722b5a63a684f70c5",
+      "geometry_object_sha256": "e6283cc7de8cf9209900909660e22fefa47dbea37879cfb27d05d4b73b790870",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
