@@ -1069,24 +1069,17 @@ extern "C" {
         space->value_one_b = 1.0f;
     }
 
-    // noinline: the original calls DogfightResetGroup out of line from DogfightResetSpace; VC8 would inline it
-    // there.
-    static __declspec(noinline) void DogfightResetGroup(DOGFIGHT_GROUP *group) {
-        group->fighters[0].fields.active = 0;
-        group->fighters[0].fields.parent = NULL;
-        group->fighters[0].fields.spline = NULL;
-        group->fighters[1].fields.active = 0;
-        group->fighters[1].fields.parent = NULL;
-        group->fighters[1].fields.spline = NULL;
-        group->fighters[2].fields.active = 0;
-        group->fighters[2].fields.parent = NULL;
-        group->fighters[2].fields.spline = NULL;
-        group->fighters[3].fields.active = 0;
-        group->fighters[3].fields.parent = NULL;
-        group->fighters[3].fields.spline = NULL;
-        group->fighters[4].fields.active = 0;
-        group->fighters[4].fields.parent = NULL;
-        group->fighters[4].fields.spline = NULL;
+    static void DogfightResetFighters(DOGFIGHT_FIGHTER *fighters, i32 count) {
+        i32 i;
+        for (i = 0; i < count; ++i) {
+            fighters[i].fields.active = 0;
+            fighters[i].fields.parent = NULL;
+            fighters[i].fields.spline = NULL;
+        }
+    }
+
+    static void DogfightResetGroup(DOGFIGHT_GROUP *group) {
+        DogfightResetFighters(group->fighters, 5);
         group->reset_colour = 0xff00;
         group->active = 0;
         group->draw_target = 0;
@@ -1718,11 +1711,7 @@ extern "C" {
         }
         DogfightResetWorldRecords(world, space);
         DogfightResetCrosses(space->crosses, 2);
-        for (i = 0; i < 96; ++i) {
-            space->queued_fighters[i].fields.active = 0;
-            space->queued_fighters[i].fields.parent = NULL;
-            space->queued_fighters[i].fields.spline = NULL;
-        }
+        DogfightResetFighters(space->queued_fighters, 96);
         DogfightResetSplineHistory(space->splines, 256);
         DogfightResetTimer = (f32)((f64)NuRandFloat() * 10.0 + 3.0);
     }

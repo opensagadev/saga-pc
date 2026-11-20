@@ -2841,6 +2841,15 @@ void ComboRotateCode(GAMEOBJECT *object, i32 action_held) {
     object->facing_angle = object->movement_facing_angle = object->movement_angle;
 }
 
+/* A bolt coming at a character that has the deflect animations. */
+static BOLT *BlockFindBolt(GAMEOBJECT *object) {
+    void **animations = object->character_model->model_data_b;
+    if (animations[0x1a] != NULL || animations[0x1b] != NULL || animations[0x1c] != NULL) {
+        return FindIncomingBolt(object, 0, 0);
+    }
+    return NULL;
+}
+
 static GAMEOBJECT *BlockFindAttack(GAMEOBJECT *object) {
     i32 i;
     GAMEOBJECT *candidate;
@@ -2965,14 +2974,9 @@ static void BlockCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 jump_presse
     GAMEOBJECT *attacker;
     f32 remaining;
     if ((object->player.weapon_flags & 1) != 0 && object->player.weapon_draw_state == 0) {
-        void **animations = object->character_model->model_data_b;
         BOLT *bolt;
         GAMEOBJECT *melee;
-        if (animations[0x1a] != NULL || animations[0x1b] != NULL || animations[0x1c] != NULL) {
-            bolt = FindIncomingBolt(object, 0, 0);
-        } else {
-            bolt = NULL;
-        }
+        bolt = BlockFindBolt(object);
         object->player.incoming_bolt = bolt;
         melee = BlockFindAttack(object);
         object->player.incoming_melee = melee;
@@ -6710,6 +6714,17 @@ static void SetDefaultCharacterAnim(GAMEOBJECT *object) {
     }
 }
 
+/* Pushed back by something: the pushed animation, else falling, else standing. */
+static void SetPushedAnim(GAMEOBJECT *object) {
+    if (object->character_model->action_animations[43] != NULL) {
+        object->anim_packet.requested_animation = ACTION_PUSHED;
+    } else if (object->character_model->action_animations[5] != NULL) {
+        object->anim_packet.requested_animation = ACTION_FALL;
+    } else {
+        object->anim_packet.requested_animation = ACTION_IDLE;
+    }
+}
+
 /* Counts how long the character has been playing a fall animation (the protocol droid has three more). */
 static void UpdateFallAnimationTimer(GAMEOBJECT *object) {
     i16 animation = object->anim_packet.requested_animation;
@@ -7114,11 +7129,7 @@ void Animate_CHARACTER(GAMEOBJECT *object) {
     if ((U64_PAIR(&CInfo[object->player.character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->player.context_animation;
     } else if (object->context_target_position != NULL) {
-        if (object->character_model->model_data_b[43] != NULL) {
-            object->anim_packet.requested_animation = ACTION_PUSHED;
-        } else {
-            object->anim_packet.requested_animation = object->character_model->model_data_b[5] != NULL ? 5 : 1;
-        }
+        SetPushedAnim(object);
     } else if (object->player.character_context == CHARACTER_CONTEXT_FORCE) {
         object->anim_packet.requested_animation = ACTION_FORCE;
     } else {
@@ -7497,13 +7508,7 @@ void Animate_ASTROMECH(GAMEOBJECT *object) {
     if ((U64_PAIR(&CInfo[object->player.character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->player.context_animation;
     } else if (object->context_target_position != NULL) {
-        if (object->character_model->action_animations[43] != NULL) {
-            object->anim_packet.requested_animation = ACTION_PUSHED;
-        } else if (object->character_model->action_animations[5] != NULL) {
-            object->anim_packet.requested_animation = ACTION_FALL;
-        } else {
-            object->anim_packet.requested_animation = ACTION_IDLE;
-        }
+        SetPushedAnim(object);
     } else {
         SetDefaultCharacterAnim(object);
         if (object->player.character_context == CHARACTER_CONTEXT_JUMP) {
@@ -7674,13 +7679,7 @@ void Animate_BATTLEDROID(GAMEOBJECT *object) {
     if ((U64_PAIR(&CInfo[object->player.character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->player.context_animation;
     } else if (object->context_target_position != NULL) {
-        if (object->character_model->action_animations[43] != NULL) {
-            object->anim_packet.requested_animation = ACTION_PUSHED;
-        } else if (object->character_model->action_animations[5] != NULL) {
-            object->anim_packet.requested_animation = ACTION_FALL;
-        } else {
-            object->anim_packet.requested_animation = ACTION_IDLE;
-        }
+        SetPushedAnim(object);
     } else {
         SetDefaultCharacterAnim(object);
         if (UseFallAnim(object)) {
@@ -7725,13 +7724,7 @@ void Animate_SUPERBATTLEDROID(GAMEOBJECT *object) {
     if ((U64_PAIR(&CInfo[object->player.character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->player.context_animation;
     } else if (object->context_target_position != NULL) {
-        if (object->character_model->action_animations[43] != NULL) {
-            object->anim_packet.requested_animation = ACTION_PUSHED;
-        } else if (object->character_model->action_animations[5] != NULL) {
-            object->anim_packet.requested_animation = ACTION_FALL;
-        } else {
-            object->anim_packet.requested_animation = ACTION_IDLE;
-        }
+        SetPushedAnim(object);
     } else {
         SetDefaultCharacterAnim(object);
         if (UseFallAnim(object)) {

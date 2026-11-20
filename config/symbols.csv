@@ -187,7 +187,7 @@ address,symbol,size,ctype
 0x40fd80,_ChrisRadialCam,534,
 0x40ffa0,_DogfightResetCrosses,175,"static void (DOGFIGHT_CROSS *, i32)"
 0x410050,_QueuedFighterSelector,44,static DOGFIGHT_FIGHTER *(DOGFIGHT_SPACE *)
-0x410080,_fun_00410080,35,
+0x410080,_DogfightResetFighters,35,
 0x4100b0,_DogfightResetSplineHistory,189,"static void (DOGFIGHT_SPLINE_HISTORY *, i32)"
 0x410170,_DogfightResetWorldRecords,196,"static void (WORLDINFO *, DOGFIGHT_SPACE *)"
 0x410240,_DogfightResetGroup,115,static void (DOGFIGHT_GROUP *)
@@ -1935,7 +1935,7 @@ address,symbol,size,ctype
 0x49dc60,_StartJetPackFall,170,"void __cdecl(GAMEOBJECT *, i32)"
 0x49dd10,_JetPackCode,697,"void __cdecl(GAMEOBJECT *, i32, i32, i32)"
 0x49dfd0,_ComboRotateCode,258,
-0x49e0e0,_fun_0049e0e0,41,
+0x49e0e0,_BlockFindBolt,41,
 0x49e110,_BlockFindAttack,114,static GAMEOBJECT *(GAMEOBJECT *)
 0x49e190,_BlockFindSpecialAttack,172,static GAMEOBJECT *(GAMEOBJECT *)
 0x49e240,_BlockFindIncomingPart,110,static PART *(GAMEOBJECT *)
@@ -2015,7 +2015,7 @@ address,symbol,size,ctype
 0x4a89f0,_DodgemCode,366,
 0x4a8b60,_Disorientate,712,"void __cdecl(GAMEOBJECT*,NUVEC*)"
 0x4a8e30,_DisorientateCode,178,"void __cdecl(GAMEOBJECT*,NUVEC*,f32)"
-0x4a8ef0,_fun_004a8ef0,42,
+0x4a8ef0,_SetPushedAnim,42,
 0x4a8f20,_Animate_CHARACTER,1024,void __cdecl (GAMEOBJECT *)
 0x4a9320,_PostAnimate_FETT,297,void __cdecl(GAMEOBJECT *)
 0x4a9450,_TractorBeamCode,733,void __cdecl(GAMEOBJECT*)
