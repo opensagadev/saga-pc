@@ -1051,6 +1051,14 @@ struct FADEINFO_s {              // size 0x2c
 
 class FadeSystem : public FADEINFO_s { // size 0x2c
   public:
+    void SetFadeStarted(i32 started) {
+        fade_started = started;
+    }
+
+    i32 GetFadeStarted() {
+        return fade_started;
+    }
+
     void Init();
     void Update();
     void Draw();

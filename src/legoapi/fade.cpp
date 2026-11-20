@@ -119,10 +119,10 @@ void FadeStillWipe::InitFade() {
         pause_rndr_on = 0;
         info->fade = 1.0f;
         info->rate = 2.0f;
-        if (FadeSys.fade_started != 0) {
+        if (FadeSys.GetFadeStarted() != 0) {
             NeedScreenGrab(1);
         } else {
-            FadeSys.fade_started = 1;
+            FadeSys.SetFadeStarted(1);
         }
         wait_till_next_frame = FRAMES_TO_WAIT;
     }

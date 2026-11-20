@@ -1430,11 +1430,8 @@ static inline void VuMtxSetScale(VuMtx &matrix, const VuVec &scale) {
 
 /* Copies the point into the translation row, then forces its w to 1. */
 static inline void VuMtxSetTranslation(VuMtx &matrix, const VuVec &translation) {
-    matrix.matrix.m30 = translation.x;
-    matrix.matrix.m31 = translation.y;
-    matrix.matrix.m32 = translation.z;
-    matrix.matrix.m33 = translation.w;
-    matrix.matrix.m33 = 1.0f;
+    VuVecCopy(matrix.rows[3], translation);
+    matrix.rows[3].w = 1.0f;
 }
 
 void VuVec::SetOrigin() {

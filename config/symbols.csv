@@ -6789,8 +6789,8 @@ address,symbol,size,ctype
 0x5b0df0,_GizMiniCut_Reset,246,
 0x5b0ef0,_MiniCut_RegisterGizmo,250,
 0x5b0ff0,?FadeVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
-0x5b1010,_fun_005b1010,10,
-0x5b1020,_fun_005b1020,4,
+0x5b1010,?SetFadeStarted@FadeSystem@@QAEXH@Z,10,
+0x5b1020,?GetFadeStarted@FadeSystem@@QAEHXZ,4,
 0x5b1030,_MiniCut_SetFramesToWait,10,
 0x5b1040,_MiniCut_PlayWipeSfx,57,
 0x005b1080,?Init@FadeSystem@@QAEXXZ,29,void __thiscall (FadeSystem *)
