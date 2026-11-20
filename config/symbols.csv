@@ -12794,7 +12794,7 @@ address,symbol,size,ctype
 0x6c14b0,?Remove@ClassObjectList@@QAEXPAUClassObjectListEntry@@@Z,63,
 0x6c14f0,?GetObjectCount@ClassObjectList@@QAEHXZ,4,
 0x6c1500,??0?$CSListLink@VPropertyMenu@@@@QAE@XZ,20,
-0x6c1520,_fun_006c1520,3,
+0x6c1520,?Next@?$CSListLink@VPropertyMenu@@@@QAEPAVPropertyMenu@@XZ,3,
 0x6c1530,_fun_006c1530,4,
 0x6c1540,??0PropertyMenuList@@QAE@XZ,13,
 0x6c1550,?First@PropertyMenuList@@QAEPAVPropertyMenu@@XZ,3,

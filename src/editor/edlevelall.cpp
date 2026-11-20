@@ -10283,7 +10283,7 @@ i32 PropertyTool::ProcessMenu(EdInputContext &input) {
     PropertyMenuList list;
     i32 order = 0;
     PropertyMenu *menu;
-    for (menu = menus.First(); menu != NULL; menu = menu->next) {
+    for (menu = menus.First(); menu != NULL; menu = menu->Next()) {
         menu->order = order++;
     }
     for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
@@ -10299,7 +10299,7 @@ i32 PropertyTool::ProcessMenu(EdInputContext &input) {
             if (menu != NULL) {
                 menu->AddObject(object);
             } else {
-                for (PropertyMenu *other = menus.First(); other != NULL; other = other->next) {
+                for (PropertyMenu *other = menus.First(); other != NULL; other = other->Next()) {
                     ediMenuStoreMetrics(other->menu);
                 }
                 menu = CreatePropertyMenu(object);
@@ -10326,7 +10326,7 @@ i32 PropertyTool::ProcessMenu(EdInputContext &input) {
         }
     }
     for (menu = menus.First(); menu != NULL;) {
-        PropertyMenu *next = menu->next;
+        PropertyMenu *next = menu->Next();
         if (menu != active) {
             RefreshMenuControls(menu);
             if (eduiMenuProcess(menu->menu, input.delta_time, input.pad) != 0) {
