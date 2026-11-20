@@ -1431,8 +1431,8 @@ void LoadAreaCharacters(void) {
                 }
             }
             if (draw_touch_prompt != 0) {
-                i32 phase = (i32)(NuFmod(touch_prompt_time, 1.0f) * 65536.0);
-                f32 wave = NuTrigTable[(((u16)phase + 0x4000) >> 1) & 0x7fff];
+                u16 phase = (u16)(NuFmod(touch_prompt_time, 1.0f) * 65536.0);
+                f32 wave = NuTrigTable[((phase + 0x4000) >> 1) & 0x7fff];
                 i32 prompt_alpha = (i32)(32.0 - wave * 32.0);
                 SetQFont2D();
                 Text3DEx(TTab[tTOUCHTOSTART], 0.0f, AreaCrawlPromptY, 1.0f, AreaCrawlPromptScale, AreaCrawlPromptScale,
