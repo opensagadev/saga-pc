@@ -69,39 +69,7 @@ extern "C" {
 
     typedef i32 (*BOLT_HIT_PART_FN)(BOLT *, PART *);
 
-    typedef struct BOLT_CONFIG {     // size 0xa4
-        char name[16];               // 0x00
-        f32 speed;                   // 0x10
-        f32 lifetime;                // 0x14
-        f32 unknown_18;              // 0x18
-        f32 radius;                  // 0x1c
-        f32 scale;                   // 0x20
-        f32 unknown_24;              // 0x24
-        i16 object_ids[3];           // 0x28
-        i16 debris_id;               // 0x2e
-        i16 moving_debris[2];        // 0x30
-        i16 moving_debris_counts[2]; // 0x34
-        i16 hit_part_debris;         // 0x38
-        i16 unknown_3a;              // 0x3a
-        u8 damage;                   // 0x3c
-        u8 unknown_3d;               // 0x3d
-        u16 unknown_3e;              // 0x3e
-        i32 spread;                  // 0x40
-        void *callbacks[7];          // 0x44
-        u32 flags_60;                // 0x60
-        i16 shoot_sfx_id;            // 0x64
-        i16 hit_sfx_id;              // 0x66
-
-        struct {                                   // size 0x3c
-            nuhspecial_s object_special;           // 0x68
-            nuhspecial_s glow_special;             // 0x74
-            nuhspecial_s reference_object_special; // 0x80
-            nuhspecial_s reference_glow_special;   // 0x8c
-            nuhspecial_s shadow_special;           // 0x98
-        } specials;                                // 0x68
-    } BOLT_CONFIG;
-
-    static BOLT_CONFIG *BT_bolttype = 0;
+    static BOLTTYPE *BT_bolttype = 0;
     i32 (*Bolt_HitPlatFn)(BOLT *bolt) = 0;
     i32 i_bolt = 0;
     i32 (*Bolt_HitCustomFn)(void *bolt, void *points) = 0;
@@ -1508,7 +1476,7 @@ extern "C" void Bolt_End(BOLT *bolt, i32 run_callback) {
 }
 
 extern "C" {
-    static void BoltTypeStoreConfigPrivate(BOLT_CONFIG *type, WORLDINFO *world) {
+    static void BoltTypeStoreConfigPrivate(BOLTTYPE *type, WORLDINFO *world) {
         i32 index;
         if (type == NULL) {
             return;
@@ -1564,35 +1532,35 @@ extern "C" {
 
     static void BT_obj(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0 && BT_scene != NULL) {
-            if (NuSpecialFind(BT_scene, &BT_bolttype->specials.object_special, parser->word_buffer_ptr, 1) != 0) {
-                BT_bolttype->specials.reference_object_special = BT_bolttype->specials.object_special;
+            if (NuSpecialFind(BT_scene, &BT_bolttype->object_special, parser->word_buffer_ptr, 1) != 0) {
+                BT_bolttype->reference_object_special = BT_bolttype->object_special;
             }
         }
     }
 
     static void BT_ref_obj(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0 && BT_scene != NULL) {
-            NuSpecialFind(BT_scene, &BT_bolttype->specials.reference_object_special, parser->word_buffer_ptr, 1);
+            NuSpecialFind(BT_scene, &BT_bolttype->reference_object_special, parser->word_buffer_ptr, 1);
         }
     }
 
     static void BT_glow_obj(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0 && BT_scene != NULL) {
-            if (NuSpecialFind(BT_scene, &BT_bolttype->specials.glow_special, parser->word_buffer_ptr, 1) != 0) {
-                BT_bolttype->specials.reference_glow_special = BT_bolttype->specials.glow_special;
+            if (NuSpecialFind(BT_scene, &BT_bolttype->glow_special, parser->word_buffer_ptr, 1) != 0) {
+                BT_bolttype->reference_glow_special = BT_bolttype->glow_special;
             }
         }
     }
 
     static void BT_ref_glow_obj(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0 && BT_scene != NULL) {
-            NuSpecialFind(BT_scene, &BT_bolttype->specials.reference_glow_special, parser->word_buffer_ptr, 1);
+            NuSpecialFind(BT_scene, &BT_bolttype->reference_glow_special, parser->word_buffer_ptr, 1);
         }
     }
 
     static void BT_shadow_obj(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0 && BT_scene != NULL) {
-            NuSpecialFind(BT_scene, &BT_bolttype->specials.shadow_special, parser->word_buffer_ptr, 1);
+            NuSpecialFind(BT_scene, &BT_bolttype->shadow_special, parser->word_buffer_ptr, 1);
         }
     }
 
@@ -1618,13 +1586,13 @@ extern "C" {
 
     static void BT_sfx_shoot(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0) {
-            BT_bolttype->shoot_sfx_id = (i16)(GetSfxId(parser->word_buffer_ptr));
+            BT_bolttype->shoot_sound_id = (i16)(GetSfxId(parser->word_buffer_ptr));
         }
     }
 
     static void BT_sfx_hit(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0) {
-            BT_bolttype->hit_sfx_id = (i16)(GetSfxId(parser->word_buffer_ptr));
+            BT_bolttype->hit_sound_id = (i16)(GetSfxId(parser->word_buffer_ptr));
         }
     }
 
@@ -1727,37 +1695,37 @@ extern "C" {
     }
 
     void BoltTypes_Init(WORLDINFO *world) {
-        BOLT_CONFIG *type = (BOLT_CONFIG *)BoltSys->types;
+        BOLTTYPE *type = BoltSys->types;
         i32 index;
         for (index = 0; index < BoltSys->count; ++index, ++type) {
             i32 reflected;
-            memset(&type->specials.object_special, 0, sizeof(nuhspecial_s));
-            memset(&type->specials.glow_special, 0, sizeof(nuhspecial_s));
-            memset(&type->specials.reference_object_special, 0, sizeof(nuhspecial_s));
-            memset(&type->specials.reference_glow_special, 0, sizeof(nuhspecial_s));
+            memset(&type->object_special, 0, sizeof(nuhspecial_s));
+            memset(&type->glow_special, 0, sizeof(nuhspecial_s));
+            memset(&type->reference_object_special, 0, sizeof(nuhspecial_s));
+            memset(&type->reference_glow_special, 0, sizeof(nuhspecial_s));
             if (type->object_ids[0] != -1) {
-                type->specials.object_special = world->level_objects[type->object_ids[0]].special;
+                type->object_special = world->level_objects[type->object_ids[0]].special;
                 if (type->object_ids[1] != -1) {
-                    type->specials.glow_special = world->level_objects[type->object_ids[1]].special;
+                    type->glow_special = world->level_objects[type->object_ids[1]].special;
                 }
                 reflected = LevelObject_GetReflection(type->object_ids[0]);
                 if (reflected != -1) {
-                    type->specials.reference_object_special = world->level_objects[reflected].special;
+                    type->reference_object_special = world->level_objects[reflected].special;
                     if (type->object_ids[1] != -1) {
                         reflected = LevelObject_GetReflection(type->object_ids[1]);
                         if (reflected != -1) {
-                            type->specials.reference_glow_special = world->level_objects[reflected].special;
+                            type->reference_glow_special = world->level_objects[reflected].special;
                         }
                     }
                 } else {
-                    type->specials.reference_object_special = type->specials.object_special;
-                    type->specials.reference_glow_special = type->specials.glow_special;
+                    type->reference_object_special = type->object_special;
+                    type->reference_glow_special = type->glow_special;
                 }
             }
             if (type->object_ids[2] != -1) {
-                type->specials.shadow_special = world->level_objects[type->object_ids[2]].special;
+                type->shadow_special = world->level_objects[type->object_ids[2]].special;
             } else {
-                memset(&type->specials.shadow_special, 0, sizeof(nuhspecial_s));
+                memset(&type->shadow_special, 0, sizeof(nuhspecial_s));
             }
         }
     }
@@ -2146,16 +2114,16 @@ extern "C" void Bolts_Draw(WORLDINFO *world) {
         }
         NuMtxTranslate(&matrix, &bolt->position);
         i32 drawn[2];
-        drawn[0] = NuSpecialExistsFn(&type->specials[0]) ? NuSpecialDrawAt(&type->specials[0], &matrix) : 0;
-        drawn[1] = NuSpecialExistsFn(&type->specials[1]) ? NuSpecialDrawAt(&type->specials[1], &matrix) : 0;
+        drawn[0] = NuSpecialExistsFn(&type->object_special) ? NuSpecialDrawAt(&type->object_special, &matrix) : 0;
+        drawn[1] = NuSpecialExistsFn(&type->glow_special) ? NuSpecialDrawAt(&type->glow_special, &matrix) : 0;
         if (static_cast<f64>(bolt->reflection_height) != 2000000.0) {
             NUMTX reflection;
             if (MatrixReflectionVU0_AXISY(&matrix, bolt->reflection_height, world->current_level->reflection_y, &reflection)) {
-                if (NuSpecialExistsFn(&type->specials[2])) {
-                    NuSpecialDrawAt(&type->specials[2], &reflection);
+                if (NuSpecialExistsFn(&type->reference_object_special)) {
+                    NuSpecialDrawAt(&type->reference_object_special, &reflection);
                 }
-                if (NuSpecialExistsFn(&type->specials[3])) {
-                    NuSpecialDrawAt(&type->specials[3], &reflection);
+                if (NuSpecialExistsFn(&type->reference_glow_special)) {
+                    NuSpecialDrawAt(&type->reference_glow_special, &reflection);
                 }
             }
         }
@@ -2167,7 +2135,7 @@ extern "C" void Bolts_Draw(WORLDINFO *world) {
             matrix.m30 = bolt->position.x;
             matrix.m31 = static_cast<f32>(static_cast<f64>(bolt->floor_height) + static_cast<f64>(0.005f));
             matrix.m32 = bolt->position.z;
-            NuSpecialDrawAt(&type->specials[4], shadow_matrix);
+            NuSpecialDrawAt(&type->shadow_special, shadow_matrix);
         }
         if (drawn[0] != 0 || drawn[1] != 0) {
             bolt->drawn = 1;
@@ -2186,7 +2154,7 @@ extern "C" {
         }
 
         NuFParPushCom(parser, BoltType_ConfigKeywords);
-        BOLT_CONFIG type;
+        BOLTTYPE type;
         i32 reading_type = 0;
         while (NuFParGetLine(parser) != 0) {
             if (NuFParGetWord(parser) == 0) {
@@ -2331,7 +2299,7 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
     BoltNoObjectMomentum = 0;
     i32 shoot_id = -1;
     BoltShootIdScratch = -1;
-    if (type == NULL || !NuSpecialExistsFn(type->specials)) {
+    if (type == NULL || !NuSpecialExistsFn(&type->object_special)) {
         return;
     }
     if (bolt->active != 0) {
@@ -2530,7 +2498,7 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
 extern "C" BOLT *Bolt_Add(GAMEOBJECT *owner, NUVEC *position, NUMTX *matrix, i32 type_id, i32 flags) {
     BOLTTYPE *type = BoltType_FindByID(type_id, WORLD);
     BOLT *bolt = NULL;
-    if (type != NULL && NuSpecialExistsFn(type->specials)) {
+    if (type != NULL && NuSpecialExistsFn(&type->object_special)) {
         bolt = Bolt_Alloc();
         if (bolt != NULL) {
             u16 owner_index = owner ? (u16)(owner - Obj) : 0xffff;
@@ -2587,7 +2555,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                 bolt->reflection_height = 2000000.0f;
                 f32 height = GameShadow(NULL, &bolt->position, 5.0f, -1);
                 if (height != 2000000.0f) {
-                    if (NuSpecialExistsFn(&type->specials[4])) {
+                    if (NuSpecialExistsFn(&type->shadow_special)) {
                         bolt->floor_height = height;
                         FindAnglesZX(&ShadNorm, &bolt->surface_x_rotation, &bolt->surface_z_rotation);
                     }

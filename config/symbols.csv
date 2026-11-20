@@ -41893,7 +41893,7 @@ address,symbol,size,ctype
 0x951cd4,_CutScenePlayer_AcceptFn,4,i32 (__cdecl *)(struct cut_player_clip_config_s *)
 0x951cd8,_BT_scene,4,NUGSCN *
 0x00951cdc,_BoltShootIdScratch,4,i32
-0x951ce0,_BT_bolttype,4,BOLT_CONFIG *
+0x951ce0,_BT_bolttype,4,BOLTTYPE *
 0x00951ce4,_Bolt_HitPlatFn,4,i32 (__cdecl *)(void *)
 0x00951ce8,_i_bolt,4,i32
 0x00951cec,_Bolt_HitCustomFn,4,"i32 (__cdecl *)(void *, void *)"

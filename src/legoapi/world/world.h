@@ -99,7 +99,11 @@ typedef struct BOLTTYPE_s { // size 0xa4
         i16 hit_sound_id;
     }; // 0x66
 
-    struct nuhspecial_s specials[5]; // 0x68
+    struct nuhspecial_s object_special;           // 0x68
+    struct nuhspecial_s glow_special;             // 0x74
+    struct nuhspecial_s reference_object_special; // 0x80
+    struct nuhspecial_s reference_glow_special;   // 0x8c
+    struct nuhspecial_s shadow_special;           // 0x98
 } BOLTTYPE;
 
 #ifdef __cplusplus
