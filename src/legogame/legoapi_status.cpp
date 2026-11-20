@@ -529,27 +529,26 @@ extern "C" {
             /* Tests the current level separately for loaded and unloaded worlds. */
             if (NewLData == STATUS_LDATA || (WORLD->loaded && WORLD->current_level == STATUS_LDATA) ||
                 (!WORLD->loaded && WORLD->current_level == STATUS_LDATA)) {
-                struct EPISODESAVE_s *save = &Game.episode_save[episode];
                 i32 gold = 0;
-                p->previous_best_time = save->superstory_time_limit;
-                p->previous_best_score = save->superstory_score_target;
+                p->previous_best_time = Game.episode_save[episode].superstory_time_limit;
+                p->previous_best_score = Game.episode_save[episode].superstory_score_target;
                 p->superstory_time = SuperStoryTimer.time_elapsed;
                 p->superstory_score = SuperStoryScore;
                 if (episode != -1) {
                     if (p->previous_best_time > p->superstory_time) {
                         p->new_best_time = p->superstory_time;
-                        save->superstory_time_limit = p->superstory_time;
+                        Game.episode_save[episode].superstory_time_limit = p->superstory_time;
                     } else {
                         p->new_best_time = 0.0f;
                     }
                     if (p->superstory_score > p->previous_best_score) {
                         p->new_best_score = p->superstory_score;
-                        save->superstory_score_target = p->superstory_score;
+                        Game.episode_save[episode].superstory_score_target = p->superstory_score;
                     } else {
                         p->new_best_score = 0;
                     }
-                    if (save->superstory_complete == 0) {
-                        save->superstory_complete = 1;
+                    if (Game.episode_save[episode].superstory_complete == 0) {
+                        Game.episode_save[episode].superstory_complete = 1;
                         AddToCompletionPoints(POINTS_PER_SUPERSTORY);
                         if (EpisodeGoldBrickForSuperStory != 0) {
                             gold = AddGoldBrickMessage(p, dat_0088073c);
@@ -779,7 +778,7 @@ extern "C" {
         StatusDrawPlayerIcons = 0;
         if (area != -1) {
             for (i = 0; i < AreaGlobals.new_minikit_count; ++i) {
-                LEVELSAVE_s *save = &((LEVELSAVE_s *)Game.level_save)[NewMiniPiece[i].level];
+                LEVELSAVE_s *save = &Game.level_save[NewMiniPiece[i].level];
                 if (Game.area_save[area].minikit_count < 10) {
                     ++Game.area_save[area].minikit_count;
                 }

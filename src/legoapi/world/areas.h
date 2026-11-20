@@ -141,7 +141,7 @@ extern "C" {
     } AREA_GLOBALS;
 
     extern AREA_GLOBALS AreaGlobals;
-    extern u8 *Game_LevelSave;
+    extern struct LEVELSAVE_s *Game_LevelSave;
     void DumpAreaData(i32 mode, i32 last_area);
     struct area_data_s *Areas_ConfigureList(char *, VARIPTR *, VARIPTR *, i32, i32 *);
     i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER *, struct WORLDINFO_s *);

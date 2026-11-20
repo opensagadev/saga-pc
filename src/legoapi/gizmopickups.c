@@ -541,10 +541,8 @@ void GizmoPickups_ResetAll(void *world_ptr, void *unused, void *progress_ptr) {
                     pickup->flags |= GIZMOPICKUP_STATE_ALTERNATE_TYPE;
                 } else {
                     i32 saved_index;
-                    for (saved_index = 0; saved_index < ((struct LEVELSAVE_s *)Game_LevelSave)[world->level_idx].minikit_count;
-                         ++saved_index) {
-                        if (NuStrICmp(pickup->name, ((struct LEVELSAVE_s *)Game_LevelSave)[world->level_idx].minikit_names[saved_index]) ==
-                            0) {
+                    for (saved_index = 0; saved_index < Game_LevelSave[world->level_idx].minikit_count; ++saved_index) {
+                        if (NuStrICmp(pickup->name, Game_LevelSave[world->level_idx].minikit_names[saved_index]) == 0) {
                             pickup->flags |= GIZMOPICKUP_STATE_ALTERNATE_TYPE;
                             break;
                         }

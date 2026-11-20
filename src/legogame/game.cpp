@@ -358,7 +358,7 @@ static i32 MakeSaveHash(void) {
 extern "C" {
     i32 DefaultMotionLedgeTerrainEnabled = 0;
     i32 ConvertOldPickups = 0;
-    u8 *Game_LevelSave = 0;
+    struct LEVELSAVE_s *Game_LevelSave = 0;
     GAMEOBJECT *CutDeadVehiclePlayer = 0;
     // Hub arrays are two-entry source views; full original capacities remain unknown.
     MISSIONSYS *MissionSys = 0;

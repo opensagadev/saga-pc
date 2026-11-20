@@ -829,7 +829,7 @@ extern "C" void DumpAreaData(i32 mode, i32) {
     Particles_DumpAreaPage();
 }
 
-extern "C" u8 *Game_LevelSave;
+extern "C" struct LEVELSAVE_s *Game_LevelSave;
 
 extern "C" i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER *counter, WORLDINFO *world) {
     AREA_SUPERCOUNTER_PICKUP *pickup = counter->pickups;
@@ -845,7 +845,7 @@ extern "C" i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER *counter, WORLDINFO *
             }
         }
         if (Game_LevelSave != NULL) {
-            save = &((LEVELSAVE_s *)Game_LevelSave)[pickup->level_index];
+            save = &Game_LevelSave[pickup->level_index];
             for (saved = 0; saved < save->minikit_count; ++saved) {
                 if (NuStrICmp(save->minikit_names[saved], pickup->name) == 0) {
                     return 1;

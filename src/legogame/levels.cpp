@@ -3421,8 +3421,7 @@ extern "C" {
             AREA_GLOBALS_PROGRESS_FLAGS = 0;
             for (index = 0; index < ADataList[area_index].level_count; ++index) {
                 i32 level = ADataList[area_index].levels[index];
-                memcpy(&Game.level_save[level * sizeof(struct LEVELSAVE_s)], &BackupGame.level_save[level * sizeof(struct LEVELSAVE_s)],
-                       sizeof(struct LEVELSAVE_s));
+                memcpy(&Game.level_save[level], &BackupGame.level_save[level], sizeof(struct LEVELSAVE_s));
             }
         }
     }
