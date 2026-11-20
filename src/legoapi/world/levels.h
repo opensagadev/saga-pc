@@ -167,13 +167,13 @@ extern "C" {
     extern i32 numtl_force_mipmode;
     extern u64 LevHSpecialExists;
     void LoadAreaCharacters(void);
-    extern i32 AreaDataLoaded;
+    extern volatile i32 AreaDataLoaded;
     extern f32 AreaCrawlSoundWaitTime;
     extern f32 AreaCrawlMaximumTime;
     extern i32 AreaCrawlMusicEnabled;
     extern f32 AreaCrawlPromptY;
     extern f32 AreaCrawlPromptScale;
-    extern i32 CharacterDataLoad;
+    extern volatile i32 CharacterDataLoad;
     extern i32 loadareadata_loadlevel;
     extern i16 tTOUCHTOSTART;
     extern i32 netnewgame;

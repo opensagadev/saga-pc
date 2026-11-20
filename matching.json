@@ -257,7 +257,7 @@
     "src/legoapi/world/levels/episodes.h": "a1fc048675a008a8d00a05fd5b56e70425ee8e664e96c5e50e502db9d6a6a448",
     "src/legoapi/world/levels/hub.h": "820325ae0db3f4a1a1d02ffdadf2b38f3877096cefd80bae731dcbe30dc91379",
     "src/legoapi/world/levels/levels.h": "0d00e9007ca99f662251d663da4fee1539eedba0125ac583fe9c61d2e9d7327c",
-    "src/legoapi/world/levels.h": "07b3906e6c84ee000a906f0d31c73e9d26d3bf01a68a2848a11cc7b3f65ceb14",
+    "src/legoapi/world/levels.h": "77c1ba0628e96414e91c322e720f82d4fb52a623a18f012b057eeddbcc454d94",
     "src/legoapi/world/mission.h": "bd4e84b8de5acca888416539a3da67d106377c7c065fb0732400e3f015739514",
     "src/legoapi/world/missions.h": "14cf4c6fd2f181ac678c434e3c9ada29d1c1f58f8136d16fcfe3600ce0b125f7",
     "src/legoapi/world/sceneprogress.h": "af425bdbda46725d886d632d156f95e1125b83a2d4d47e2e7abbf24dc46aab03",
@@ -428,7 +428,7 @@
     "src/nu2api/save_folder.h": "776a18c43805e45817ed6d5aecfdd524e6893c90e415e7a385697b42472acf1c",
     "src/nu2api/shader_parser.h": "1659929acf7d21ce69a42060e3ffbd71bd91c13a29df2bdf9f3f347c3e2077d3",
     "src/nu2api/wavreader.h": "6acb0f5ca7ccbcef5945e705cc918a66f14f3af9f07cc9b5ce7fa31e78f05043",
-    "config/budget-raises.txt": "4cf93f4754d7db52957c6a90fc0b8e57ec9611473a4e5475ba36a4f042540682",
+    "config/budget-raises.txt": "61dc303747269a2ad21ab69e7c2e53cb826315c7f19f91f5a9cb712b8ab36c0d",
     "config/candidate-only.json": "fb7e6408ec003a7401a80e789621be724336b6f3eeef841d3b982b192991fb7a",
     "config/castscan-budget.json": "1202ca860f0b8d39db4ba620eef5f759c730d3d966568728ddbbc2bc202ec8dc",
     "config/castscan-keep.csv": "bcfd25f84df27a9c57e603824516f7ddcb3177ee382141d9a9a7050afbc40c0f",
@@ -443,7 +443,7 @@
     "config/library-objects.json": "4e0e91f5abb9855a0624aa79f38e17687b47eaa447383f272352c1f024b9a872",
     "config/literalscan-budget.json": "31c786e269f1756cf35489ad41e6941a8881a76410f4579c939a0d083ea69a89",
     "config/literalscan-keep.csv": "5883b33b1eb1f87e0961c02edee55a07d9995e840dbc5a1a42107f968f83bdae",
-    "config/oddscan-budget.json": "f63a8fe246ff4dc5558269fedb989b18f2c536ac398b407348bc36c392b16cc7",
+    "config/oddscan-budget.json": "2d2f6c6b2e89126797b3d8a63a467501c402b6c1e6f402c381954735e673171d",
     "config/ogg-vorbis.json": "e94a5fc2946a282cb184876e2152524085f47ef2e761cb386d21bbd9cdfab985",
     "config/ogg-vorbis.patch": "8fbd6a3958c9e9bbb862010aec90a60592205f9850c290d1bfa02108d24871ce",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
@@ -652,7 +652,7 @@
     "src/legogame/hub.cpp": "89c9f034fee788deaa970a82437b7be67e675a00383d20e4b65bc3b2f7619249",
     "src/legogame/ledge.cpp": "30ea44149666bae64ffc552a427fc752ad0c380f1c7a1e2b85b2d4546711eade",
     "src/legogame/legoapi_status.cpp": "e7b7da7b0e3e8e722a0084b459be3708692c3a38f3d65abb68bd4018eaac5385",
-    "src/legogame/levels.cpp": "c138455dd9a3f5c306f366c80d2a88cee135530724eedb786fd87eb708401a02",
+    "src/legogame/levels.cpp": "daed44ec6d4c36dec8da690e3690cf8d1f5eb3f4d66528aa981333a100508a88",
     "src/legogame/menu.cpp": "dc53e2cf382a1f9caeebe3db894fc711425637a33902bb2d047c80e5eb1da93e",
     "src/legogame/panel.cpp": "f2291868610398d3c0364246c1b16f393bc62452cf8c105762b57d3ed6f71928",
     "src/legogame/pcbatman.cpp": "cab515d134f0c783a6cecc6491399e41022a36b6cb6c0026c35dec8e8c16f9f9",
@@ -1201,7 +1201,7 @@
     "build/obj/legogame/ledge.obj": "03c97fe1c0c188a4c79be0cfa38e15f2cb76475bb6c74c9f78c15fb67d5bc08d",
     "build/obj/legogame/legoapi_status.obj": "fa4dedc1a92abc3a9a7bf5e408f3670ff8a4d3c80dcac5714774112f625bdb9f",
     "build/obj/legogame/legoapi_tag.obj": "bf751cdd40a2dc3c87940c3473572248444a1f768aacda25ff4ed31107e10185",
-    "build/obj/legogame/levels.obj": "af36195001b6ab67dfbad83c83b847927ce4fdb8a5154573ce5eb08363791295",
+    "build/obj/legogame/levels.obj": "c61a79de7f769aaf21bd388f0607dd669caeccb74e9494fd59aabbce0c9541b5",
     "build/obj/legogame/lever.obj": "67b33768d4e421f4099dc7d86f93102d912330ddb2f8eba27100c544530992e5",
     "build/obj/legogame/menu.obj": "e15bcb5859740dc7d8e9110add2d5dbeac32dd51a7207b7b5ba2bc4322be0468",
     "build/obj/legogame/missions.obj": "2d5e83f8b9068125529b271e1d5e965c90c9562a554562c826f255a00f81db2f",
@@ -42797,14 +42797,14 @@
           "base_size": 1087,
           "exact_match": false,
           "target_sha256": "8e48eae34e2a117227b04344c7087346932dcb137f9831e14899bea989c3d26f",
-          "base_sha256": "1edf32912b4bb087364fc2460fa4db819765f456813f1f27d5c4ed3b5619c8fb",
+          "base_sha256": "75f7f3fbc588b9f8b2f20420033c9ba97ca5366b3b7988e11eba098fc1c1f356",
           "relocation_count": 99,
           "comparison_unit": "0048afe0-2acf879b4a26",
-          "objdiff_percent": 72.30769
+          "objdiff_percent": 72.976585
         }
       ],
       "diff_class": "structural",
-      "diff_hunks": 33,
+      "diff_hunks": 31,
       "idioms": [
         "I4",
         "I17",
@@ -42815,7 +42815,7 @@
         "?"
       ],
       "status": "different",
-      "objdiff_percent": 72.30769
+      "objdiff_percent": 72.976585
     },
     {
       "name": "ClearUpAreaData",
@@ -42853,17 +42853,17 @@
       "objects": [
         {
           "unit": "src/legogame/levels.cpp",
-          "base_size": 3323,
+          "base_size": 3328,
           "exact_match": false,
           "target_sha256": "48aa160bab65ca4897cfaee5e59f2f764408692691018f8e4e0ee29cb7094af5",
-          "base_sha256": "1b4f3e5d46cc76ee2f169e4d914b8646aca43b421c2d8e87e18d041076e0ee32",
+          "base_sha256": "d6ac69d78b4427c32a12f7d479d7bf850fc1f0d23d606d59d95d851d12e19365",
           "relocation_count": 263,
           "comparison_unit": "0048b540-2136919322b5",
-          "objdiff_percent": 86.74151
+          "objdiff_percent": 89.60679
         }
       ],
       "diff_class": "structural",
-      "diff_hunks": 119,
+      "diff_hunks": 101,
       "idioms": [
         "I4",
         "I8",
@@ -42873,7 +42873,7 @@
         "?"
       ],
       "status": "different",
-      "objdiff_percent": 86.74151
+      "objdiff_percent": 89.60679
     },
     {
       "name": "StoreSceneProgress",
@@ -898088,10 +898088,10 @@
     "matching_with_padding_percent": 63.63988608125152,
     "fuzzy_text_data_bytes": 6896,
     "fuzzy_denominator_bytes": 3349891,
-    "fuzzy_coverage_percent": 96.0848633664638,
+    "fuzzy_coverage_percent": 96.08796449232878,
     "mapped_functions": 15914,
     "matched_functions": 13865,
-    "objdiff_fuzzy_percent": 96.865555,
+    "objdiff_fuzzy_percent": 96.86867,
     "objdiff_total_code": 3328867,
     "image_bytes": 40067072,
     "mapped_bytes": 38523205,
@@ -899496,7 +899496,7 @@
       "metadata_sha256": "a005dfb7254f87304ba5e7d1c5083ab46db1e8272ef5fdd2e11a8953a1d1d2d5",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "962e0f515397dffc8b19f0a1d583e65ae9b2d45e2bb128e376ecd9ac91406725",
+      "geometry_object_sha256": "690135bc677c7ef3b82d2246eb89b2e936a01b33d8aad3cc5713f3afb001bea7",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
@@ -899752,7 +899752,7 @@
         "src/legoapi/world/levels/episodes.h": "a1fc048675a008a8d00a05fd5b56e70425ee8e664e96c5e50e502db9d6a6a448",
         "src/legoapi/world/levels/hub.h": "820325ae0db3f4a1a1d02ffdadf2b38f3877096cefd80bae731dcbe30dc91379",
         "src/legoapi/world/levels/levels.h": "0d00e9007ca99f662251d663da4fee1539eedba0125ac583fe9c61d2e9d7327c",
-        "src/legoapi/world/levels.h": "07b3906e6c84ee000a906f0d31c73e9d26d3bf01a68a2848a11cc7b3f65ceb14",
+        "src/legoapi/world/levels.h": "77c1ba0628e96414e91c322e720f82d4fb52a623a18f012b057eeddbcc454d94",
         "src/legoapi/world/mission.h": "bd4e84b8de5acca888416539a3da67d106377c7c065fb0732400e3f015739514",
         "src/legoapi/world/missions.h": "14cf4c6fd2f181ac678c434e3c9ada29d1c1f58f8136d16fcfe3600ce0b125f7",
         "src/legoapi/world/sceneprogress.h": "af425bdbda46725d886d632d156f95e1125b83a2d4d47e2e7abbf24dc46aab03",
