@@ -8,6 +8,7 @@
 #include <signal.h>
 #include <process.h>
 #include <string.h>
+#include <math.h>
 
 /* Empty hook that receives each runtime error report. PCNativeErrorPrint
  * still calls it, which suggests it was compiled in another unit; here the
@@ -260,4 +261,13 @@ void PC_NATIVE_DEBUG_STATE::SetDebugEnabled(u8 value) {
 }
 
 extern "C" void fun_006dffb0(void) {
+}
+
+/* Two uncalled copies of the SDK's NuFabs (nufloat.h). */
+extern "C" f32 fun_006e1800(f32 value) {
+    return fabsf(value);
+}
+
+extern "C" f32 fun_006e1810(f32 value) {
+    return fabsf(value);
 }

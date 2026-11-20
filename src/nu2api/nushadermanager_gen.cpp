@@ -144,6 +144,12 @@ extern "C" NuShaderObject *PCShaderCurrentObject(void) {
     return reinterpret_cast<ShaderManagerTemplate<NuShaderObject> *>(PCShaderSlots)->bound_slot;
 }
 
+/* Uncalled: builds a shader from precompiled vertex and pixel text. */
+extern "C" void fun_00741360(i32 flags, i32 selector, const char *vertex_text, i32 vertex_length, const char *pixel_text,
+                             i32 pixel_length) {
+    ((ShaderManagerHLSL *)PCShaderSlots)->BuildPrecompiledShader(flags, selector, vertex_text, vertex_length, pixel_text, pixel_length);
+}
+
 extern "C" void NuShaderManagerSetfv(i32 semantic, const f32 *values) {
     ((ShaderManagerHLSL *)PCShaderSlots)->SetUniformValues(semantic, values);
 }

@@ -1523,6 +1523,11 @@ void NewTerrPlatformsOff(void) {
     NuTerrPlatsOff = 1;
 }
 
+/* Uncalled: the crash data of the terrain file being read. */
+u8 *fun_0067bef0(void) {
+    return TerrainCrashData;
+}
+
 i32 ReadTerrain(unsigned char *base_path, i32 first_group, i16 **buffer, TERRSET *terrain) {
     char path[100];
     TERRAIN_FILE_CHUNK *chunk;
