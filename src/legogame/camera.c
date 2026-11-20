@@ -690,7 +690,7 @@ mode_selected:
                     NuVecAdd(&target, &target, &(*pullback_offset));
                     lateral = 0.0f;
                     if (vehicle_count > 0 && (camera->sock_position.sock_index == -1 ||
-                                          (WORLD->sock_sys->socks[camera->sock_position.sock_index].flags & SOCK_FLAG_MISC_2) == 0)) {
+                                              (WORLD->sock_sys->socks[camera->sock_position.sock_index].flags & SOCK_FLAG_MISC_2) == 0)) {
                         lateral = 1.0f - abs(0x4000 - abs(index)) * (1.0f / 16384.0f);
                         if (index < 0) {
                             lateral = -lateral;
