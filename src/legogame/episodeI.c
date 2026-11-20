@@ -154,6 +154,24 @@ static f32 EpisodeIVuVecLengthSq(const NUVEC4 *v) {
     return v->x * v->x + v->y * v->y + v->z * v->z;
 }
 
+static void EpisodeIVuVecAdd(NUVEC4 *destination, const NUVEC4 *a, const NUVEC4 *b) {
+    destination->x = a->x + b->x;
+    destination->y = a->y + b->y;
+    destination->z = a->z + b->z;
+}
+
+static void EpisodeIVuVecSub(NUVEC4 *destination, const NUVEC4 *a, const NUVEC4 *b) {
+    destination->x = a->x - b->x;
+    destination->y = a->y - b->y;
+    destination->z = a->z - b->z;
+}
+
+static void EpisodeIVuVecScale(NUVEC4 *destination, const NUVEC4 *v, f32 scale) {
+    destination->x = v->x * scale;
+    destination->y = v->y * scale;
+    destination->z = v->z * scale;
+}
+
 static void PodMatrixCopyPrivate(NUMTX *destination, const NUMTX *source) {
     destination->m00 = source->m00;
     destination->m01 = source->m01;
@@ -746,12 +764,8 @@ static i32 PodRaceUpdatePod(RACEPOD_RESOURCE *pod, WORLDINFO *world) {
         }
         length = NuFsqrt(length_sq);
         if (pod->start >= 1.0f) {
-            direction.x = pod->previous_axis.x * FRAMETIME;
-            direction.y = pod->previous_axis.y * FRAMETIME;
-            direction.z = pod->previous_axis.z * FRAMETIME;
-            pod->matrix.m30 += direction.x;
-            pod->matrix.m31 += direction.y;
-            pod->matrix.m32 += direction.z;
+            EpisodeIVuVecScale(&direction, &pod->previous_axis, FRAMETIME);
+            EpisodeIVuVecAdd(&pod->matrix.rows[3], &pod->matrix.rows[3], &direction);
             RacePodAlignPrivate(pod, &direction, (f32)(length / 5.0), 0);
             pod->previous_displacement = direction;
         } else if (length != 0.0f) {
@@ -771,15 +785,9 @@ static i32 PodRaceUpdatePod(RACEPOD_RESOURCE *pod, WORLDINFO *world) {
                 speed = (f32)(speed * 1.5 - ratio * speed);
             }
             speed = speed / length;
-            pod->previous_axis.x = direction.x * speed;
-            pod->previous_axis.y = direction.y * speed;
-            pod->previous_axis.z = direction.z * speed;
-            direction.x = pod->previous_axis.x * FRAMETIME;
-            direction.y = pod->previous_axis.y * FRAMETIME;
-            direction.z = pod->previous_axis.z * FRAMETIME;
-            pod->matrix.m30 = direction.x + pod->matrix.m30;
-            pod->matrix.m31 += direction.y;
-            pod->matrix.m32 += direction.z;
+            EpisodeIVuVecScale(&pod->previous_axis, &direction, speed);
+            EpisodeIVuVecScale(&direction, &pod->previous_axis, FRAMETIME);
+            EpisodeIVuVecAdd(&pod->matrix.rows[3], &pod->matrix.rows[3], &direction);
             RacePodAlignPrivate(pod, &direction, (f32)(length / 5.0), 0);
             pod->previous_displacement = direction;
         }
@@ -2351,9 +2359,7 @@ i32 Action_CreatePod(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, 
     CalcSplinePointFromDist(spline, &next_position, (start + PodRaceSplineIncrement) * spline->length);
     PodMatrixSetIdentity(&pod->matrix);
     *(NUVEC4 *)&pod->matrix.m30 = position;
-    direction.x = next_position.x - position.x;
-    direction.y = next_position.y - position.y;
-    direction.z = next_position.z - position.z;
+    EpisodeIVuVecSub(&direction, &next_position, &position);
     RacePodAlignPrivate(pod, &direction, 1.0f, 0);
     EpisodeIVuVecSetOrigin(&pod->previous_axis);
     pod->previous_position = position;
