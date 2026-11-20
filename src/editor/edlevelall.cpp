@@ -6134,7 +6134,7 @@ void PropertyTool::SelectAttr(i32 selected) {
 }
 
 void PropertyTool::AddPropertyMenuItems(eduimenu_s *menu, EdClass *ed_class, void *object, eduiitem_s *parent) {
-    for (EdRef *member = ed_class->members; member != NULL; member = member->next) {
+    for (EdRef *member = ed_class->members.first; member != NULL; member = member->next) {
         if (member->attributes & EDREF_ATTR_CLASS) {
             eduiitem_s *expander = eduiItemExpanderCreate(0, &EdLevelAttr, NULL, member->name);
             if (parent != NULL) {
@@ -6464,7 +6464,7 @@ void EdClass::SerialiseObject(EdStream &stream, void *object) {
     }
     if (object != NULL) {
         u8 data[256];
-        for (EdRef *member = members; member != NULL; member = member->next) {
+        for (EdRef *member = members.first; member != NULL; member = member->next) {
             i32 skip = 0;
             if (stream.flags & EDSTREAM_STATE) {
                 if (member->attributes & EDREF_ATTR_NOT_IN_STATE) {
@@ -6511,7 +6511,7 @@ i32 EdClass::SerialiseObjectHeader(EdStream &stream, void *object) {
 /* Copies every plain member from source to destination, recursing into
  * embedded objects. */
 void EdClass::CopyObject(void *destination, void *source) {
-    for (EdRef *member = members; member != NULL; member = member->next) {
+    for (EdRef *member = members.first; member != NULL; member = member->next) {
         if (member->attributes & 0x1800000) {
             continue;
         }
@@ -6528,19 +6528,43 @@ void EdClass::CopyObject(void *destination, void *source) {
     }
 }
 
+EdRef *EdRefList::First() {
+    return first;
+}
+
+/* A NULL position appends the member. */
+void EdRefList::InsertAfter(EdRef *member, EdRef *position) {
+    if (position != NULL) {
+        member->previous = position;
+        member->next = position->next;
+        if (position->next != NULL) {
+            position->next->previous = member;
+        } else {
+            last = member;
+        }
+        position->next = member;
+        count++;
+    } else {
+        member->next = NULL;
+        member->previous = last;
+        if (last != NULL) {
+            last->next = member;
+        }
+        last = member;
+        if (first == NULL) {
+            first = member;
+        }
+        count++;
+    }
+}
+
+i32 EdRefList::Count() {
+    return count;
+}
+
 /* Appends a member and folds its attribute flags into the class's. */
 void EdClass::AddType(EdRef *member) {
-    member->next = NULL;
-    member->previous = last_member;
-    if (last_member != NULL) {
-        last_member->next = member;
-    }
-    EdRef *first = members;
-    last_member = member;
-    if (first == NULL) {
-        members = member;
-    }
-    member_count++;
+    members.InsertAfter(member, NULL);
     flags |= member->attributes & EDREF_ATTR_CLASS_MEMBER;
     if (member->attributes & EDREF_ATTR_CLASS) {
         flags |= theRegistry.GetClass(member->type_id)->flags & EDREF_ATTR_CLASS_MEMBER;
@@ -6554,7 +6578,7 @@ i32 EdClass::GetStreamClasses(EdStream &stream, i32 *stream_classes, i32 &count,
         stream_classes[count] = theRegistry.GetClassId(this);
         count++;
     }
-    for (EdRef *member = members; member != NULL; member = member->next) {
+    for (EdRef *member = members.first; member != NULL; member = member->next) {
         if (!(member->attributes & EDREF_ATTR_CLASS)) {
             continue;
         }
@@ -6577,7 +6601,7 @@ i32 EdClass::GetStreamClasses(EdStream &stream, i32 *stream_classes, i32 &count,
 
 /* Kept out of line: SerialiseObject calls it. */
 EdRef *EdClass::FindTypeRef(char *member_name, i32 recursive) {
-    for (EdRef *member = members; member != NULL; member = member->next) {
+    for (EdRef *member = members.first; member != NULL; member = member->next) {
         if (member->attributes & EDREF_ATTR_CLASS) {
             if (recursive) {
                 EdRef *reference = theRegistry.GetClass(member->type_id)->FindTypeRef(member_name, 1);
@@ -6599,7 +6623,7 @@ EdRef *EdClass::FindTypeRef(char *member_name, i32 recursive) {
 /* First member carrying one of the attribute bits, searching embedded
  * classes when recursive. */
 EdRef *EdClass::FindTypeRef(i32 attributes, i32 recursive) {
-    for (EdRef *member = members; member != NULL; member = member->next) {
+    for (EdRef *member = members.first; member != NULL; member = member->next) {
         if (member->attributes & EDREF_ATTR_CLASS) {
             if (recursive) {
                 EdRef *reference = theRegistry.GetClass(member->type_id)->FindTypeRef(attributes, 1);
@@ -6618,7 +6642,7 @@ EdRef *EdClass::FindTypeRef(i32 attributes, i32 recursive) {
  * class-typed members when recursive. */
 i32 EdClass::FindMember(EdMember *result, void *object, i32 attributes, i32 recursive) {
     EdRef *member;
-    for (member = members; member != NULL; member = member->next) {
+    for (member = members.first; member != NULL; member = member->next) {
         if (member->attributes & EDREF_ATTR_CLASS) {
             if (recursive) {
                 EdClass *member_class;
@@ -9240,7 +9264,7 @@ void EdClass::Serialise(EdStream &stream, i32 *class_mapping) {
     }
     if (stream.mode == 2) {
         count = 0;
-        for (EdRef *member = members; member != NULL; member = member->next) {
+        for (EdRef *member = members.first; member != NULL; member = member->next) {
             i32 keep = 1;
             if (stream.flags & EDSTREAM_STATE) {
                 if (member->attributes & EDREF_ATTR_NOT_IN_STATE) {
@@ -9260,7 +9284,7 @@ void EdClass::Serialise(EdStream &stream, i32 *class_mapping) {
             count++;
         }
         stream.SerialiseBuffer(&count, sizeof(count), 1);
-        for (EdRef *member = members; member != NULL; member = member->next) {
+        for (EdRef *member = members.first; member != NULL; member = member->next) {
             i32 keep = 1;
             if (stream.flags & EDSTREAM_STATE) {
                 if (member->attributes & EDREF_ATTR_NOT_IN_STATE) {
@@ -9311,7 +9335,7 @@ void EdClass::SerialiseObject(EdStream &stream, void *object, EdClass *schema, E
     }
     if (object != NULL) {
         u8 data[256];
-        for (EdRef *source = schema->members; source != NULL; source = source->next) {
+        for (EdRef *source = schema->members.first; source != NULL; source = source->next) {
             EdRef *member = FindTypeRef(source->name, 0);
             if (member != NULL) {
                 if (stream.mode != 1) {

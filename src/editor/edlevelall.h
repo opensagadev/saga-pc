@@ -424,13 +424,22 @@ struct EdType {                                 // size 0xc
     void Serialise(EdStream &stream);
 };
 
+/* A class's members, in declaration order. */
+struct EdRefList { // size 0xc
+    EdRef *first;  // 0x0
+    EdRef *last;   // 0x4
+    i32 count;     // 0x8
+
+    EdRef *First();
+    void InsertAfter(EdRef *member, EdRef *position);
+    i32 Count();
+};
+
 /* A registered editor class: its member list and object interface. */
 struct EdClass {                                                                // size 0x18
     char *name;                                                                 // 0x00
     i32 flags;                                                                  // 0x04
-    EdRef *members;                                                             // 0x08
-    EdRef *last_member;                                                         // 0x0c
-    i32 member_count;                                                           // 0x10
+    EdRefList members;                                                          // 0x08
     EdClassInterface *object_interface; /* "interface" is an objbase.h macro */ // 0x14
 
     i32 FindMember(EdMember *result, void *object, i32 attributes, i32 recursive);

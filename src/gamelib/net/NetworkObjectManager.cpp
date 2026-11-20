@@ -1638,7 +1638,7 @@ i32 NetReplicator::SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass
                                    i16 *class_mapping) {
     u8 member_data[256];
     memset(member_data, 0, sizeof(member_data));
-    for (EdRef *member = object_class->members; member != NULL; member = member->next) {
+    for (EdRef *member = object_class->members.first; member != NULL; member = member->next) {
         if (member->attributes & EDREF_ATTR_CLASS) {
             EdClass *member_class = theRegistry.GetClass(member->type_id);
             void *member_object = member->GetMemberObject(object);
@@ -1699,7 +1699,7 @@ i32 NetSimpleReplicator::AllowPush(const EdClass *, const void *, ReplicatorData
 }
 
 void NetChangedReplicator::CheckSumObject(const EdClass *object_class, const void *object, u32 &checksum) const {
-    for (EdRef *member = object_class->members; member != NULL; member = member->next) {
+    for (EdRef *member = object_class->members.first; member != NULL; member = member->next) {
         if (member->attributes & EDREF_ATTR_CLASS) {
             EdClass *member_class = theRegistry.GetClass(member->type_id);
             void *member_object = member->GetMemberObject((void *)object);
@@ -1782,7 +1782,7 @@ i32 NetPredictor::SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass 
     } member_data;
 
     u8 continuity_break = (replication_group >> 3) & 1;
-    for (EdRef *member = object_class->members; member != NULL; member = member->next) {
+    for (EdRef *member = object_class->members.first; member != NULL; member = member->next) {
         if (member->attributes & EDREF_ATTR_CLASS) {
             EdClass *member_class = theRegistry.GetClass(member->type_id);
             void *member_object = member->GetMemberObject(object);
@@ -1852,7 +1852,7 @@ i32 NetPredictor::DoPrediction(const EdClass *object_class, void *object, Replic
         i8 char_value;
     } member_data;
 
-    for (EdRef *member = object_class->members; member != NULL; member = member->next) {
+    for (EdRef *member = object_class->members.first; member != NULL; member = member->next) {
         if (member->attributes & EDREF_ATTR_CLASS) {
             EdClass *member_class = theRegistry.GetClass(member->type_id);
             void *member_object = member->GetMemberObject(object);
