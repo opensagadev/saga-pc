@@ -146,6 +146,23 @@ static void Nu3dIncludesMtxFlipZ(NUMTX *matrix) {
     matrix->m32 = -matrix->m32;
 }
 
+static void Nu3dIncludesItemSetNext(NUDISPLAYLISTITEM *item, void *next) {
+    item->next = next;
+}
+
+static void Nu3dIncludesItemSetCall(NUDISPLAYLISTITEM *item) {
+    item->id = NUDLISTITEM_CALL;
+}
+
+/* Appends an item that calls the handler of `type` with `next` and returns it. */
+static NUDISPLAYLISTITEM *Nu3dIncludesAppendItem(NUDISPLAYLIST *list, u8 type, void *next) {
+    list->items->type = type;
+    Nu3dIncludesItemSetCall(list->items);
+    Nu3dIncludesItemSetNext(list->items, next);
+    list->items++;
+    return list->items - 1;
+}
+
 /* The display list item writers of nudlist (the PC build fills the texture, clut, microcode and light items with
  * skipped dummies). */
 static void Nu3dIncludesAddClut(NUDISPLAYLISTITEM *item, i32 texture_id) {
@@ -10101,17 +10118,9 @@ extern "C" {
         VARIPTR *buffer = NuDisplayListLinkItems(list, 2);
         NUDISPLAY_LIST *scene = list->scene;
         void *packet = DisplayListCreateFaceonTransformPS(buffer, matrix, scene->display_materials[list->material_id], geometry->next);
-        list->items->type = NUDLIST_FACEON_TRANSFORM;
-        list->items->id = NUDLISTITEM_CALL;
-        list->items->next = packet;
-        list->items++;
-        output[0] = list->items - 1;
+        output[0] = Nu3dIncludesAppendItem(list, NUDLIST_FACEON_TRANSFORM, packet);
         packet = NuDisplayListPrepareFaceonPS(buffer, geometry->next, matrix);
-        list->items->type = NUDLIST_FACEON;
-        list->items->id = NUDLISTITEM_CALL;
-        list->items->next = packet;
-        list->items++;
-        output[1] = list->items - 1;
+        output[1] = Nu3dIncludesAppendItem(list, NUDLIST_FACEON, packet);
         DisplayListSetAlphaPS(output[0], output[1], alpha);
     }
 

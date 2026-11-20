@@ -6218,6 +6218,23 @@ extern "C" {
         debris_InitializeD3D();
     }
 
+    static void PcItemSetNext(NUDISPLAYLISTITEM *item, void *next) {
+        item->next = next;
+    }
+
+    static void PcItemSetCall(NUDISPLAYLISTITEM *item) {
+        item->id = NUDLISTITEM_CALL;
+    }
+
+    /* Appends an item that calls the handler of `type` with `next` and returns it. */
+    static NUDISPLAYLISTITEM *PcAppendItem(NUDISPLAYLIST *list, u8 type, void *next) {
+        list->items->type = type;
+        PcItemSetCall(list->items);
+        PcItemSetNext(list->items, next);
+        list->items++;
+        return list->items - 1;
+    }
+
     void AddParticleGroupToDisplayList(NATIVE_PARTICLE_PACKET *group) {
         NUDISPLAYLIST *list = group->material->display_list;
         VARIPTR *buffer;
@@ -6234,10 +6251,7 @@ extern "C" {
         buffer->dlist_ptr->next = list->dynamic_geometry + 1;
         list->mtl_last = buffer->dlist_ptr;
         buffer->addr += sizeof(NUDISPLAYLISTITEM);
-        list->items->type = 0xa7;
-        list->items->id = NUDLISTITEM_CALL;
-        list->items->next = group;
-        list->items++;
+        PcAppendItem(list, 0xa7, group);
     }
 
     void NuPrim2DBegin(u32 primitive_type, u32 vertex_format, NUMTL *material) {
