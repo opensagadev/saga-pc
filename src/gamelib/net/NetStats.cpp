@@ -25,6 +25,16 @@ static void NetPrimPosition(f32 x, f32 y, f32 z) {
     ++NuPrimVertexCount;
 }
 
+static void NetPushCoordinateSystem(i32 system) {
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(system);
+}
+
+static void NetPopCoordinateSystem(void) {
+    --NuPrimCSPos;
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+}
+
 NetStatCounters::NetStatCounters() {
     values[0] = 0;
     values[1] = 0;
@@ -90,8 +100,7 @@ void NetStats::Update() {
 
 void NetSmallStats::Draw(f32 x, f32 y, f32 width, f32 height, eInfo) {
     f32 half_width = width * 0.5;
-    ++NuPrimCSPos;
-    NuPrimSetCoordinateSystem(1);
+    NetPushCoordinateSystem(1);
     NuPrim2DBegin(0xf, 5, NULL);
 
     NetPrimSetColour(0x80000080);
@@ -102,7 +111,7 @@ void NetSmallStats::Draw(f32 x, f32 y, f32 width, f32 height, eInfo) {
     NetPrimPosition(x + half_width, y - height, 0.0f);
 
     NuPrim2DEnd();
-    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
+    NetPopCoordinateSystem();
 
     NuQFntPushCoordinateSystem(NUQFNT_CS_640X224);
     NuQFntPushPrintMode(NUQFNT_MODE_2D);
@@ -143,8 +152,7 @@ void NetStats::Draw(f32 x, f32 y, f32 width, f32 height, eInfo info) {
     f32 byte_scale = height / byte_maximum;
     f32 packet_scale = height / (f32)MAX(visible.values[2], visible.values[3]);
 
-    ++NuPrimCSPos;
-    NuPrimSetCoordinateSystem(1);
+    NetPushCoordinateSystem(1);
     NuPrim2DBegin(0xf, 5, NULL);
     NetPrimSetColour(0x80000080);
     NetPrimPosition(x, y, 0.0f);
@@ -205,7 +213,7 @@ void NetStats::Draw(f32 x, f32 y, f32 width, f32 height, eInfo info) {
     }
     NuPrim2DEnd();
 
-    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
+    NetPopCoordinateSystem();
 
     NuQFntPushCoordinateSystem(NUQFNT_CS_640X224);
     NuQFntPushPrintMode(NUQFNT_MODE_2D);

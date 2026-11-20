@@ -447,6 +447,10 @@ static void RtlHelperCopyMtx(NUMTX *dst, const NUMTX *src) {
     dst->m33 = src->m33;
 }
 
+static void RtlHelperSetIdentity(NUMTX *matrix) {
+    RtlHelperCopyMtx(matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+}
+
 void RTLHelper::Render(void *object, i32) {
     RTL_LIGHT *light = static_cast<RTL_LIGHT *>(object);
     i32 colour = (((static_cast<i32>(light->colour.z * 255.0) & 0xff) << 16 | static_cast<i32>(0xff000000)) |
@@ -467,7 +471,7 @@ void RTLHelper::Render(void *object, i32) {
     direction.x *= scale;
     direction.y *= scale;
     direction.z *= scale;
-    RtlHelperCopyMtx(&matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+    RtlHelperSetIdentity(&matrix);
     NuMtxAlignZ(&matrix, &direction.xyz);
     EdDrawBegin(0);
     half.x = direction.x * -0.5;
@@ -634,7 +638,7 @@ void EdRefRTL::GetMemberData(void *object, i32 requested_type, void *data, i32) 
             break;
         case EDREF_LIGHT_POS_ROT: {
             NUMTX *matrix = static_cast<NUMTX *>(data);
-            RtlHelperCopyMtx(matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+            RtlHelperSetIdentity(matrix);
             matrix->translation = light->position;
             NuMtxAlignZ(matrix, &light->direction);
             break;

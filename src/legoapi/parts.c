@@ -4587,6 +4587,10 @@ static void PartRuntimeMatrixCopyPrivate(NUMTX *destination, NUMTX *source) {
     destination->m33 = source->m33;
 }
 
+static void PartRuntimeMatrixSetIdentity(NUMTX *matrix) {
+    PartRuntimeMatrixCopyPrivate(matrix, (NUMTX *)&ANI3_EVAL_IDENTITY_MATRIX);
+}
+
 void fun_00642520(void) {
 }
 
@@ -4755,7 +4759,7 @@ void UpdateParts(f32 time) {
                         }
                         if (part->effect_id_1f0 != -1) {
                             i32 key = -1;
-                            PartRuntimeMatrixCopyPrivate(&mtx, (NUMTX *)&ANI3_EVAL_IDENTITY_MATRIX);
+                            PartRuntimeMatrixSetIdentity(&mtx);
                             NuMtxAlignY(&mtx, &part->impact_normal);
                             AddScaledFiniteShotDebrisEffect(&key, part->effect_id_1f0, &part->impact_position, NULL, NULL, 1,
                                                             part->effect_scale);
@@ -4843,7 +4847,7 @@ void UpdateParts(f32 time) {
                 direction.x = -part->velocity.x;
                 direction.y = -part->velocity.y;
                 direction.z = -part->velocity.z;
-                PartRuntimeMatrixCopyPrivate(&mtx, (NUMTX *)&ANI3_EVAL_IDENTITY_MATRIX);
+                PartRuntimeMatrixSetIdentity(&mtx);
                 NuMtxLookAtZ(&mtx, &direction);
                 memmove(&part->transform, &mtx, 0x30);
             }
@@ -4866,7 +4870,7 @@ void UpdateParts(f32 time) {
         }
         if ((part->flags & 0x20000) != 0 && part->debris_handle != NULL) {
             velocity = part->velocity;
-            PartRuntimeMatrixCopyPrivate(&mtx, (NUMTX *)&ANI3_EVAL_IDENTITY_MATRIX);
+            PartRuntimeMatrixSetIdentity(&mtx);
             velocity.x = -velocity.x;
             velocity.y = -velocity.y;
             velocity.z = -velocity.z;

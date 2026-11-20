@@ -156,6 +156,16 @@ static void CutSceneSetPrimitiveColour(i32 colour) {
     NuPrimStreamBufferPointer->vertex_ptr->colour = converted;
 }
 
+static void CutScenePushCoordinateSystem(i32 system) {
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(system);
+}
+
+static void CutScenePopCoordinateSystem(void) {
+    --NuPrimCSPos;
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+}
+
 void DisplayCutSceneMemory(void) {
     CUT_CLEANUP_ENTRY *entry;
     CUT_CLEANUP_ENTRY *end;
@@ -169,8 +179,7 @@ void DisplayCutSceneMemory(void) {
     if (DefragCutSceneEndMem == NULL || DefragCutSceneListSize == 0 || DefragCutSceneBaseMem == NULL) {
         return;
     }
-    ++NuPrimCSPos;
-    NuPrimSetCoordinateSystem(0);
+    CutScenePushCoordinateSystem(0);
     NuPrim2DBegin(16, 5, NULL);
     if (DefragInstBaseMem == NULL) {
         scale = (f32)(580.0 / (f64)((u32)DefragCutSceneEndMem - (u32)DefragCutSceneBaseMem));
@@ -253,8 +262,7 @@ void DisplayCutSceneMemory(void) {
         }
     }
     NuPrim2DEnd();
-    --NuPrimCSPos;
-    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+    CutScenePopCoordinateSystem();
 }
 
 typedef struct cut_script_node_s CUT_SCRIPT_NODE;

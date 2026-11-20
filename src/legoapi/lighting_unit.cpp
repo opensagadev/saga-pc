@@ -86,6 +86,10 @@ NUVEC4 &NUVEC4::SetPoint(const NUVEC &v) {
     return *this;
 }
 
+static void LightingLookAtD3D(NUMTX *view, NUVEC *eye, NUVEC *target, NUVEC *up) {
+    NuMtxLookAtD3D(view, eye, target, up);
+}
+
 void PC_SPECIAL_SHADOW_LIGHT::LookAt(NUVEC *eye, NUVEC *target, NUVEC *up) {
     NUVEC4 *direction = &light_direction4;
     f32 direction_y = target->y - eye->y;
@@ -101,7 +105,7 @@ void PC_SPECIAL_SHADOW_LIGHT::LookAt(NUVEC *eye, NUVEC *target, NUVEC *up) {
     light_position.y = position_y;
     light_position.z = position_z;
     light_position.w = 1.0f;
-    NuMtxLookAtD3D(&view, eye, target, up);
+    LightingLookAtD3D(&view, eye, target, up);
 }
 
 void PC_SPECIAL_SHADOW_LIGHT::SetOrthoProjection(f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane) {

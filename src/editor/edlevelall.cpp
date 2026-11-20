@@ -1376,6 +1376,11 @@ static inline void VuMtxRotateZ(VuMtx &matrix, i32 angle) {
 }
 
 /* A scaling matrix with the vector's components on the diagonal. */
+/* Rotates a direction by the transpose of the matrix's 3x3 part. */
+static inline void VuMtxInvRotateVec(VuMtx &matrix, VuVec &v, VuVec &result) {
+    NuVecInvMtxRotate(&result.xyz, &v.xyz, &matrix.matrix);
+}
+
 static inline void VuMtxSetScale(VuMtx &matrix, const VuVec &scale) {
     f32 value;
     matrix.matrix.m00 = scale.x;
@@ -1397,6 +1402,15 @@ static inline void VuMtxSetScale(VuMtx &matrix, const VuVec &scale) {
     matrix.matrix.m31 = 0.0f;
     matrix.matrix.m32 = 0.0f;
     matrix.matrix.m33 = value;
+}
+
+/* Copies the point into the translation row, then forces its w to 1. */
+static inline void VuMtxSetTranslation(VuMtx &matrix, const VuVec &translation) {
+    matrix.matrix.m30 = translation.x;
+    matrix.matrix.m31 = translation.y;
+    matrix.matrix.m32 = translation.z;
+    matrix.matrix.m33 = translation.w;
+    matrix.matrix.m33 = 1.0f;
 }
 
 void VuVec::SetOrigin() {
@@ -5874,25 +5888,13 @@ void EdManipulator::DrawAxis(VuVec &origin, VuMtx *matrix) {
     EdDrawLineSphere(&points[2].xyz, ManipulatorHandleRadius * Scale, 1.0f, attribute_selected ? AxisColour[2] : 0xff808080);
     EdDrawLineSphere(&points[3].xyz, ManipulatorHandleRadius * Scale, 1.0f, attribute_selected ? AxisColour[3] : 0xff808080);
     VuMtxCopy(box, *(const VuMtx *)&ANI3_EVAL_IDENTITY_MATRIX);
-    box.matrix.m30 = points[4].x;
-    box.matrix.m31 = points[4].y;
-    box.matrix.m32 = points[4].z;
-    box.matrix.m33 = 1.0f;
+    VuMtxSetTranslation(box, points[4]);
     EdDrawLineCube(&box.matrix, ManipulatorBoxSize * Scale, attribute_selected ? AxisColour[4] : 0xff808080);
-    box.matrix.m30 = points[5].x;
-    box.matrix.m31 = points[5].y;
-    box.matrix.m32 = points[5].z;
-    box.matrix.m33 = 1.0f;
+    VuMtxSetTranslation(box, points[5]);
     EdDrawLineCube(&box.matrix, ManipulatorBoxSize * Scale, attribute_selected ? AxisColour[5] : 0xff808080);
-    box.matrix.m30 = points[6].x;
-    box.matrix.m31 = points[6].y;
-    box.matrix.m32 = points[6].z;
-    box.matrix.m33 = 1.0f;
+    VuMtxSetTranslation(box, points[6]);
     EdDrawLineCube(&box.matrix, ManipulatorBoxSize * Scale, attribute_selected ? AxisColour[6] : 0xff808080);
-    box.matrix.m30 = points[7].x;
-    box.matrix.m31 = points[7].y;
-    box.matrix.m32 = points[7].z;
-    box.matrix.m33 = 1.0f;
+    VuMtxSetTranslation(box, points[7]);
     EdDrawLineCube(&box.matrix, ManipulatorBoxSize * Scale, attribute_selected ? AxisColour[7] : 0xff808080);
     if (NewPrim != EDDRAW_PRIM_NONE) {
         if (NewPrim == EDDRAW_PRIM_LINES || NewPrim == EDDRAW_PRIM_TRIANGLES) {
@@ -8798,7 +8800,7 @@ i32 EdManScale::Process(EdInputContext &input, ClassObjectList &objects) {
                 if (movement == 0.0f) {
                     continue;
                 }
-                NuVecInvMtxRotate(&first.xyz, &first.xyz, &transform.matrix);
+                VuMtxInvRotateVec(transform, first, first);
                 VuVecNormalise(first, first);
                 f32 change = (movement + length) / length;
                 change -= 1.0f;
@@ -8821,7 +8823,7 @@ i32 EdManScale::Process(EdInputContext &input, ClassObjectList &objects) {
                 if (movement == 0.0f) {
                     continue;
                 }
-                NuVecInvMtxRotate(&first.xyz, &first.xyz, &transform.matrix);
+                VuMtxInvRotateVec(transform, first, first);
                 VuVecNormalise(first, first);
                 f32 change = (movement + length) / length;
                 change -= 1.0f;

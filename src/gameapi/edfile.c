@@ -2192,6 +2192,19 @@ i32 EduiMenuContainsCursor(eduimenu_s *menu) {
 
 /* Screen-space helpers in 640x448 units; EduiScaleX/EduiScaleY convert to
  * the 16x/8x sub-pixel coordinates of the 2D renderer. */
+static void EduiDrawLine(f32 x0, f32 y0, f32 x1, f32 y1, u32 colour, NUMTL *material) {
+    if (edui_donotdraw == 0) {
+        NuRndrLine2di((i32)(x0 * EduiScaleX), (i32)(y0 * EduiScaleY), (i32)(x1 * EduiScaleX), (i32)(y1 * EduiScaleY), colour, material);
+    }
+}
+
+static void EduiDrawLineRect(f32 x, f32 y, f32 width, f32 height, u32 colour, NUMTL *material) {
+    if (edui_donotdraw == 0) {
+        NuRndrLineRect2di((i32)(x * EduiScaleX), (i32)(y * EduiScaleY), (i32)(width * EduiScaleX), (i32)(height * EduiScaleY), colour,
+                          material);
+    }
+}
+
 static void EduiDrawRect(f32 x, f32 y, f32 width, f32 height, u32 colour, NUMTL *material) {
     if (edui_donotdraw == 0) {
         NuRndrRect2di((i32)(x * EduiScaleX), (i32)(y * EduiScaleY), (i32)(width * EduiScaleX), (i32)(height * EduiScaleY), colour,
@@ -2273,10 +2286,7 @@ static i32 eduicbRenderExpander(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y
             f32 line_y0 = item_y;
             f32 line_x1 = guide_x;
             f32 line_y1 = (item_y + row_height);
-            if (edui_donotdraw == 0) {
-                NuRndrLine2di((i32)(line_x0 * EduiScaleX), (i32)(line_y0 * EduiScaleY), (i32)(line_x1 * EduiScaleX),
-                              (i32)(line_y1 * EduiScaleY), 0xff000000, uimtls[0]);
-            }
+            EduiDrawLine(line_x0, line_y0, line_x1, line_y1, 0xff000000, uimtls[0]);
         }
     }
     expander->button_size = row_height - 2.0f;
@@ -2288,20 +2298,14 @@ static i32 eduicbRenderExpander(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y
             f32 rect_y = expander->button_y;
             f32 rect_width = expander->button_size;
             f32 rect_height = expander->button_size;
-            if (edui_donotdraw == 0) {
-                NuRndrLineRect2di((i32)(rect_x * EduiScaleX), (i32)(rect_y * EduiScaleY), (i32)(rect_width * EduiScaleX),
-                                  (i32)(rect_height * EduiScaleY), 0xff000000, uimtls[EduiSelectionMaterial]);
-            }
+            EduiDrawLineRect(rect_x, rect_y, rect_width, rect_height, 0xff000000, uimtls[EduiSelectionMaterial]);
         }
         {
             f32 line_x0 = (expander->button_x + 2.0f);
             f32 line_y0 = (expander->button_y + expander->button_size * 0.5);
             f32 line_x1 = (expander->button_x + expander->button_size - 2.0f);
             f32 line_y1 = (expander->button_y + expander->button_size * 0.5);
-            if (edui_donotdraw == 0) {
-                NuRndrLine2di((i32)(line_x0 * EduiScaleX), (i32)(line_y0 * EduiScaleY), (i32)(line_x1 * EduiScaleX),
-                              (i32)(line_y1 * EduiScaleY), button_colours[expander->hover], uimtls[0]);
-            }
+            EduiDrawLine(line_x0, line_y0, line_x1, line_y1, button_colours[expander->hover], uimtls[0]);
         }
         if (!expander->open) {
             {
@@ -2309,10 +2313,7 @@ static i32 eduicbRenderExpander(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y
                 f32 line_y0 = (expander->button_y + 2.0f);
                 f32 line_x1 = (expander->button_x + expander->button_size * 0.5);
                 f32 line_y1 = (expander->button_y + expander->button_size - 2.0f);
-                if (edui_donotdraw == 0) {
-                    NuRndrLine2di((i32)(line_x0 * EduiScaleX), (i32)(line_y0 * EduiScaleY), (i32)(line_x1 * EduiScaleX),
-                                  (i32)(line_y1 * EduiScaleY), button_colours[expander->hover], uimtls[0]);
-                }
+                EduiDrawLine(line_x0, line_y0, line_x1, line_y1, button_colours[expander->hover], uimtls[0]);
             }
         }
     }
@@ -2582,12 +2583,6 @@ static void eduicbItemDestroyProp(eduimenu_s *menu, eduiitem_s *item) {
     menu->first_visible = menu->first;
 }
 
-static void EduiDrawLine(f32 x0, f32 y0, f32 x1, f32 y1, u32 colour, NUMTL *material) {
-    if (edui_donotdraw == 0) {
-        NuRndrLine2di((i32)(x0 * EduiScaleX), (i32)(y0 * EduiScaleY), (i32)(x1 * EduiScaleX), (i32)(y1 * EduiScaleY), colour, material);
-    }
-}
-
 static i32 eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 height) {
     edui_prop_s *property = (edui_prop_s *)item;
     char prefix[256];
@@ -2650,31 +2645,19 @@ static i32 eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i3
         f32 caret_x;
         text_width = (text_width > edit_width ? text_width : edit_width);
         EduiDrawRect(draw_x, draw_y, draw_width, row_height, item->colours[2 + item->highlighted], uimtls[0]);
-        if (edui_donotdraw == 0) {
-            NuRndrRect2di((i32)((draw_x + property->label_width + 2.0) * EduiScaleX), (i32)((draw_y + 2.0) * EduiScaleY),
-                          (i32)(text_width * EduiScaleX), (i32)((row_height - 4.0) * EduiScaleY), 0xffffffff, uimtls[0]);
-        }
+        EduiDrawRect(draw_x + property->label_width + 2.0, draw_y + 2.0, text_width, row_height - 4.0, 0xffffffff, uimtls[0]);
         for (depth = 0; depth < property->depth; depth++) {
             f32 guide_x = draw_x + (depth + 0.5) * indent_width;
-            if (edui_donotdraw == 0) {
-                NuRndrLine2di((i32)(guide_x * EduiScaleX), (i32)(draw_y * EduiScaleY), (i32)(guide_x * EduiScaleX),
-                              (i32)((draw_y + row_height) * EduiScaleY), 0xff000000, uimtls[0]);
-            }
+            EduiDrawLine(guide_x, draw_y, guide_x, draw_y + row_height, 0xff000000, uimtls[0]);
         }
-        if (edui_donotdraw == 0) {
-            NuRndrLine2di((i32)((draw_x + property->label_width) * EduiScaleX), (i32)(draw_y * EduiScaleY),
-                          (i32)((draw_x + property->label_width) * EduiScaleX), (i32)((draw_y + row_height) * EduiScaleY),
-                          divider_colours[property->divider_active], uimtls[0]);
-        }
+        EduiDrawLine(draw_x + property->label_width, draw_y, draw_x + property->label_width, draw_y + row_height,
+                     divider_colours[property->divider_active], uimtls[0]);
         eduiFntPrintClipEx(edui_font, draw_x + indentation, draw_y + baseline, 16, draw_x - indentation, property->label_width, item->text);
         EduiFntPrintScaled(edui_font, draw_x + property->label_width + 2.0f, draw_y + baseline, EDUI_ALIGN_LEFT, eduiPropTextEdit);
         NuStrNCpy(prefix, eduiPropTextEdit, eduiPropTextPos + 1);
         prefix[eduiPropTextPos + 1] = '\0';
         caret_x = draw_x + property->label_width + 2.0f + NuQFntPrintLenU(edui_font, prefix) * (1.0f / EduiScaleX);
-        if (edui_donotdraw == 0) {
-            NuRndrLine2di((i32)(caret_x * EduiScaleX), (i32)(draw_y * EduiScaleY), (i32)(caret_x * EduiScaleX),
-                          (i32)((draw_y + row_height) * EduiScaleY), 0xff000000, uimtls[0]);
-        }
+        EduiDrawLine(caret_x, draw_y, caret_x, draw_y + row_height, 0xff000000, uimtls[0]);
     } else {
         property->button_size = indent_width;
         property->button_x = draw_x + draw_width - (property->button_size + 1.0f);
@@ -2686,10 +2669,7 @@ static i32 eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i3
                      divider_colours[property->divider_active], uimtls[0]);
         for (depth = 0; depth < property->depth; depth++) {
             f32 guide_x = draw_x + (depth + 0.5) * indent_width;
-            if (edui_donotdraw == 0) {
-                NuRndrLine2di((i32)(guide_x * EduiScaleX), (i32)(draw_y * EduiScaleY), (i32)(guide_x * EduiScaleX),
-                              (i32)((draw_y + row_height) * EduiScaleY), 0xff000000, uimtls[0]);
-            }
+            EduiDrawLine(guide_x, draw_y, guide_x, draw_y + row_height, 0xff000000, uimtls[0]);
         }
         eduiFntPrintClipEx(edui_font, draw_x + indentation, draw_y + baseline, 16, draw_x - indentation, property->label_width, item->text);
         value_x = property->button_x - 1.0;
@@ -2700,11 +2680,8 @@ static i32 eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i3
                           (i32)(property->button_size * EduiScaleX), (i32)(property->button_size * EduiScaleY), property->button_colour,
                           uimtls[0]);
         }
-        if (edui_donotdraw == 0) {
-            NuRndrLineRect2di((i32)(property->button_x * EduiScaleX), (i32)(property->button_y * EduiScaleY),
-                              (i32)(property->button_size * EduiScaleX), (i32)(property->button_size * EduiScaleY), 0xff000000,
-                              uimtls[EduiSelectionMaterial]);
-        }
+        EduiDrawLineRect(property->button_x, property->button_y, property->button_size, property->button_size, 0xff000000,
+                         uimtls[EduiSelectionMaterial]);
         if (property->button_type == 1) {
             points[0] = (i32)((property->button_x + property->button_size * 0.1f) * EduiScaleX);
             points[1] = (i32)((property->button_y + property->button_size * 0.1f) * EduiScaleY);

@@ -330,7 +330,7 @@ address,symbol,size,ctype
 0x4200a0,_fun_004200a0,28,
 0x4200c0,?PcControlPrimColour@@YAXI@Z,108,
 0x420130,?ControlSetupPushCoordinateSystem@@YAXH@Z,15,
-0x420140,_fun_00420140,28,
+0x420140,?ControlSetupPopCoordinateSystem@@YAXXZ,28,
 0x420160,?IsScreenActive@PC_CONTROL_SCREEN@@QAEHXZ,5,
 0x420170,?GetSavedPort@PC_CONTROL_SCREEN@@QAEHH@Z,11,
 0x420180,?SetPlaySoundFn@PC_CONTROL_SCREEN@@QAEXP6AXH@Z@Z,13,
@@ -3466,8 +3466,8 @@ address,symbol,size,ctype
 0x4fffb0,_CutMatrixAssignPrivate,95,
 0x500010,_fun_00500010,14,
 0x500020,_CutSceneSetPrimitiveColour,108,
-0x500090,_fun_00500090,15,
-0x5000a0,_fun_005000a0,28,
+0x500090,_CutScenePushCoordinateSystem,15,
+0x5000a0,_CutScenePopCoordinateSystem,28,
 0x5000c0,_CutSceneClearBackgroundInstances,11,
 0x5000d0,_NuGCutSceneSysInit,22,void __cdecl(CUT_LOCATOR_FUNCTION_ENTRY *)
 0x5000f0,_NuGCutSceneSysInitVfx,39,"void __cdecl (void *, void *, void *, void *)"
@@ -4906,7 +4906,7 @@ address,symbol,size,ctype
 0x552e90,_DrawObjectOnCharacter,1264,"void __cdecl(WORLDINFO *,GAMEOBJECT *,i32,nuhspecial_s *,i32,i32,NUMTX *,i32,u32,NUMTX *,NUVEC *,f32,f32)"
 0x553380,_CreateUsefulMaterials,107,
 0x5533f0,_IncreaseScore,242,"void __cdecl (u32 *, u64, i32)"
-0x5534f0,_fun_005534f0,10,
+0x5534f0,_UtilitiesMtxSetIdentity,10,
 0x00553500,_FindReflectionNoPlatforms,100,f32 __cdecl(NUVEC *)
 0x00553570,_InitSplinePosition,156,"void __cdecl (SPLINEPOS *position, NUGSPLINE *spline, f32 distance, i32 looping)"
 0x553610,_SetAnimFrame,238,
@@ -6249,7 +6249,7 @@ address,symbol,size,ctype
 0x594b70,_Collection_GetIDList,185,"i32 __cdecl(COLLECTION_BUILD*,u32,u32,i16*,i32*,i32*,i32)"
 0x00594c30,_Collection_Draw,1198,"void(COLLECTION_BUILD *,f32,f32,f32,APICHARACTERMODELLIST *,f32,i32)"
 0x5950e0,_fun_005950e0,1,
-0x5950f0,_fun_005950f0,21,
+0x5950f0,?LightingLookAtD3D@@YAXPAUnumtx_s@@PAUnuvec_s@@11@Z,21,
 0x595110,_ZeroLightSetupPrivate,183,
 0x5951d0,_LightingSetAmbientLight,36,
 0x595200,_fun_00595200,28,
@@ -9302,8 +9302,8 @@ address,symbol,size,ctype
 0x60f3c0,_fun_0060f3c0,1,
 0x60f3d0,?NetPrimSetColour@@YAXH@Z,108,
 0x60f440,?NetPrimPosition@@YAXMMM@Z,51,
-0x60f480,_fun_0060f480,15,
-0x60f490,_fun_0060f490,28,
+0x60f480,?NetPushCoordinateSystem@@YAXH@Z,15,
+0x60f490,?NetPopCoordinateSystem@@YAXXZ,28,
 0x60f4b0,?Clear@NetStatCounters@@QAEXXZ,14,
 0x60f4c0,??YNetStatCounters@@QAEAAU0@ABU0@@Z,31,
 0x60f4e0,??ZNetStatCounters@@QAEAAU0@ABU0@@Z,31,
@@ -9668,7 +9668,7 @@ address,symbol,size,ctype
 0x6187f0,?EduiRndrTriStrip2di@@YAXPAHPAMHHPAUnumtl_s@@@Z,35,
 0x618820,?EduiRndrLineStrip2di@@YAXPAHPAMHHPAUnumtl_s@@@Z,35,
 0x618850,?EduiRndrLineRect2di@@YAXHHHHHPAUnumtl_s@@@Z,40,
-0x618880,_fun_00618880,80,
+0x618880,_EduiDrawLineRect,80,
 0x6188d0,?EduiRndrRectUV2di@@YAXHHHHMMMMHPAUnumtl_s@@@Z,74,
 0x00618920,?EduiDrawGradientSpan@@YAXHHHHIIMM@Z,148,"ordinary private C++ colour-span renderer; native colours ECX/EAX and six stack words"
 0x6189c0,?EduiDrawGradientGrid@@YAXHHHHMMIIIIH@Z,615,ordinary private source helper; full native CFG extent
@@ -10492,7 +10492,7 @@ address,symbol,size,ctype
 0x63de50,?SetVal@?$EdValueControl@M@@QAEXPAM@Z,34,
 0x63de80,?GetSensitivity@?$EdValueControl@H@@SAMPAUeduiitem_s@@@Z,43,
 0x63deb0,?GetSensitivity@?$EdValueControl@M@@SAMPAUeduiitem_s@@@Z,59,
-0x63def0,_fun_0063def0,10,
+0x63def0,?RtlHelperSetIdentity@@YAXPAUnumtx_s@@@Z,10,
 0x63df00,_fun_0063df00,10,
 0x63df10,??0EdIntControl@@QAE@HH@Z,41,
 0x63df40,??3EdIntControl@@SAXPAX@Z,18,
@@ -10751,7 +10751,7 @@ address,symbol,size,ctype
 0x64b410,_CreateScaledPARTEffect,928,"i32 __cdecl(i32, f32)"
 0x64b7b0,_AddScaledFiniteShotPART,52,"i32 __cdecl (i32, NUVEC *, i32, f32)"
 0x64b7f0,_KillPartsByScene,83,void __cdecl (NUGSCN *)
-0x64b850,_fun_0064b850,10,
+0x64b850,_PartRuntimeMatrixSetIdentity,10,
 0x64b860,_edpartDestroy,36,
 0x64b890,_edpartCreate,19,"void __cdecl (NUVEC *, i32)"
 0x64b8b0,_edpartPtlChangeType,108,"i32 __cdecl (i32, i32)"
@@ -12343,9 +12343,9 @@ address,symbol,size,ctype
 0x6b7df0,?VuMtxCopy@@YAXAAUVuMtx@@ABU1@@Z,95,
 0x6b7e50,_fun_006b7e50,16,
 0x6b7e60,?VuMtxRotateVec@@YAXABUVuMtx@@ABUVuVec@@AAU2@@Z,91,
-0x6b7ec0,_fun_006b7ec0,16,
+0x6b7ec0,?VuMtxInvRotateVec@@YAXAAUVuMtx@@AAUVuVec@@1@Z,16,
 0x6b7ed0,?VuMtxSetScale@@YAXAAUVuMtx@@ABUVuVec@@@Z,81,
-0x6b7f30,_fun_006b7f30,29,
+0x6b7f30,?VuMtxSetTranslation@@YAXAAUVuMtx@@ABUVuVec@@@Z,29,
 0x6b7f50,?VuMtxMul@@YAXABUVuMtx@@0AAU1@@Z,444,
 0x6b8110,?VuMtxRotateX@@YAXAAUVuMtx@@H@Z,217,
 0x6b81f0,?VuMtxRotateY@@YAXAAUVuMtx@@H@Z,219,

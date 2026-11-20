@@ -1294,6 +1294,11 @@ static void ControlSetupPushCoordinateSystem(i32 system) {
     NuPrimSetCoordinateSystem(system);
 }
 
+static void ControlSetupPopCoordinateSystem(void) {
+    --NuPrimCSPos;
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+}
+
 void PC_CONTROL_SCREEN::Draw(void) {
     u32 missing_colour = 0;
     if (!active) {
@@ -1549,9 +1554,7 @@ void PC_CONTROL_SCREEN::Draw(void) {
     }
     DrawQueuedText(elapsed);
     SmartTextSetFWNMode(0);
-    i32 restore = NuPrimCoordSystemStack[NuPrimCSPos - 1];
-    --NuPrimCSPos;
-    NuPrimSetCoordinateSystem(restore);
+    ControlSetupPopCoordinateSystem();
     NuQFntPopCoordinateSystem();
     NuQFntPopPrintMode();
     TextScaleX = old_x;

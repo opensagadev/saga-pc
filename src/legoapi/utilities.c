@@ -80,6 +80,10 @@ static void ReflectionCopyMatrix(NUMTX *result, NUMTX *source) {
     result->m33 = source->m33;
 }
 
+static void UtilitiesMtxSetIdentity(NUMTX *matrix) {
+    ReflectionCopyMatrix(matrix, (NUMTX *)&ANI3_EVAL_IDENTITY_MATRIX);
+}
+
 NUVEC v001 = {0.0f, 0.0f, 1.0f};
 NUVEC GizmoBlowupUnitScale = {1.0f, 1.0f, 1.0f};
 u32 LAYER_HOVERIGNORE = 0xffffffffu;
@@ -1709,7 +1713,7 @@ void SetAnimFrame(struct nuhspecial_s *special, f32 frame) {
     if (NuSpecialExistsFn(special) == 0) {
         return;
     }
-    ReflectionCopyMatrix(&matrix, (NUMTX *)&ANI3_EVAL_IDENTITY_MATRIX);
+    UtilitiesMtxSetIdentity(&matrix);
     instance_animation = NuSpecialGetInstAnim(special);
     if (instance_animation == NULL) {
         return;
