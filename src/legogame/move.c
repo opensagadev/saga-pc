@@ -11023,7 +11023,7 @@ void GameObjectStuffAfterAnimation(void) {
                 part.deflect_fn = BobaRocket_Deflect;
                 part.time_step = FRAMETIME;
                 part.gravity = 0.0f;
-                part.fade_time = player ? (f32)(4.0 + 2.0 * ((f64)qrand() * (f64)(1.0f / 65535.0f))) : 10.0f;
+                part.fade_time = (f32)(player ? 4.0 + 2.0 * ((f64)qrand() * (f64)(1.0f / 65535.0f)) : 10.0);
                 BoltSys->shoot_direction(object, &direction);
                 range = part.fade_time * rocket_speed;
                 part.recipient = TargetGameObject(object, &object->collision_position, &direction, range, range * range, 0, 1, 0, -1);
