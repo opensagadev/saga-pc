@@ -285,7 +285,7 @@ void TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curren
     }
     NuStrCpy(text, TTab[dat_00880f9c]);
     if (HubBothTrueJediGoldBricks != 0) {
-        NuStrCat(text, " ");
+        NuStrCat(text, " - ");
         NuStrCat(text, TTab[(packet->result_flags & STATUSPACKET_FREE_PLAY) != 0 ? dat_008808a8 : dat_008808a4]);
     }
     Text3DEx(text, 0.0f, StatusCoinsTitleY, 1.0f, StatusCoinsTitleScale, StatusCoinsTitleScale, StatusCoinsTitleScale, 0, 255, 255, 255,
