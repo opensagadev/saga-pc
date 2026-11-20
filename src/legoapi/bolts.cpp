@@ -1573,7 +1573,7 @@ extern "C" {
     static void BT_debris_moving(NUFPAR *parser) {
         if (BT_gdeb_moving_count < 2 && NuFParGetWord(parser) != 0) {
             BT_bolttype->moving_debris[BT_gdeb_moving_count] = (i16)FindGameDebris(BT_worldinfo->game_debris_sys, parser->word_buffer_ptr);
-            BT_bolttype->moving_debris_counts[BT_gdeb_moving_count] = (i16)abs((i32)NuFParGetFloat(parser));
+            BT_bolttype->moving_debris_counts[BT_gdeb_moving_count] = (u16)abs((i32)NuFParGetFloat(parser));
             BT_gdeb_moving_count++;
         }
     }
