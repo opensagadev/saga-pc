@@ -10699,9 +10699,8 @@ i32 Action_AddScriptProcessor(AISYS *system, AISCRIPTPROCESS *processor, AIPACKE
                 }
             }
         }
-        world = WORLD;
-        if (script_name != NULL && world->script_processor_count < 32) {
-            created = &world->script_processors[world->script_processor_count].processor;
+        if (script_name != NULL && WORLD->script_processor_count < 32) {
+            created = &WORLD->script_processors[WORLD->script_processor_count].processor;
             AIScriptProcessorInit(system, NULL, created, NULL, script_name, NULL, 0, NULL, NULL);
             created->locator_set = locator_set;
             created->locator = locator;
