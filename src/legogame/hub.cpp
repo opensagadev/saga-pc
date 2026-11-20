@@ -114,7 +114,8 @@ typedef struct hub_area_info_s {
     const char *second_bonus_name;
     f32 panel_offset;
     f32 panel_scale;
-    i32 flags;
+    u8 flags;
+    u8 force_open;
     AREA_DATA *area;
     GIZMO *door;
     nuhspecial_s lock;
@@ -317,57 +318,57 @@ static void HubResolveAreaInfo(HUB_AREA_INFO *info, WORLDINFO *world) {
 }
 
 static HUB_AREA_INFO HubAreaInfo[51] = {
-    {AreaFixUpName_Negotiations, "de1_1", "lock_1_1_on", NULL, NULL, 0.1f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"gungan", "de1_2", "lock_1_2_on", NULL, NULL, 0.025f, 0.8f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"palacerescue", "de1_3", "lock_1_3_on", NULL, NULL, 0.0f, 0.5f, 1, NULL, NULL, {0}, NULL, NULL},
-    {AreaFixUpName_Podsprint, "de1_4", "lock_1_4_on", NULL, NULL, 0.025f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"retakepalace", "de1_5", "lock_1_5_on", NULL, NULL, 0.075f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"maul", "de1_6", "lock_1_6_on", NULL, NULL, 0.225f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"e1vehiclebonus", "de1_7", "lock_1_7_on", NULL, NULL, 0.0f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"pursuit", "de2_1", "lock_2_1_on", NULL, NULL, 0.125f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"kamino", "de2_2", "lock_2_2_on", NULL, NULL, 0.075f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"factory", "de2_3", "lock_2_3_on", NULL, NULL, 0.25f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"jedi", "de2_4", "lock_2_4_on", NULL, NULL, 0.0125f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"gunship", "de2_5", "lock_2_5_on", NULL, NULL, 0.11f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"dooku", "de2_6", "lock_2_6_on", NULL, NULL, 0.42f, 0.5f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"e2vehiclebonus", "de2_7", "lock_2_7_on", NULL, NULL, 0.0f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"dogfight", "de3_1", "lock_3_1_on", NULL, NULL, 0.275f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"cruiser", "de3_2", "lock_3_2_on", NULL, NULL, 0.02f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"grievous", "de3_3", "lock_3_3_on", NULL, NULL, 0.1375f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"kashyyyk", "de3_4", "lock_3_4_on", NULL, NULL, 0.01f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"temple", "de3_5", "lock_3_5_on", NULL, NULL, 0.025f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"vader", "de3_6", "lock_3_6_on", NULL, NULL, 0.21f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"e3vehiclebonus", "de3_7", "lock_3_7_on", NULL, NULL, 0.0f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"blockaderunner", "de4_1", "lock_4_1_on", NULL, NULL, 0.16f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {AreaFixUpName_Tatooine, "de4_2", "lock_4_2_on", NULL, NULL, 0.01f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {AreaFixUpName_Moseisley, "de4_3", "lock_4_3_on", NULL, NULL, 0.02f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"deathstarrescue", "de4_4", "lock_4_4_on", NULL, NULL, 0.17f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"deathstarescape", "de4_5", "lock_4_5_on", NULL, NULL, 0.025f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"deathstarbattle", "de4_6", "lock_4_6_on", NULL, NULL, 0.165f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"e4vehiclebonus", "de4_7", "lock_4_7_on", NULL, NULL, 0.0f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"hothbattle", "de5_1", "lock_5_1_on", NULL, NULL, 0.0f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"hothescape", "de5_2", "lock_5_2_on", NULL, NULL, 0.01f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"asteroidchase", "de5_3", "lock_5_3_on", NULL, NULL, 0.1825f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"dagobah", "de5_4", "lock_5_4_on", NULL, NULL, 0.165f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"cloudcitytrap", "de5_5", "lock_5_5_on", NULL, NULL, 0.1f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"cloudcityescape", "de5_6", "lock_5_6_on", NULL, NULL, 0.0125f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"e5vehiclebonus", "de5_7", "lock_5_7_on", NULL, NULL, 0.0f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"jabbaspalace", "de6_1", "lock_6_1_on", NULL, NULL, 0.01f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"sarlaccpit", "de6_2", "lock_6_2_on", NULL, NULL, 0.01f, 0.8f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"speederchase", "de6_3", "lock_6_3_on", NULL, NULL, 0.165f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"endorbattle", "de6_4", "lock_6_4_on", NULL, NULL, 0.01f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {AreaFixUpName_Emperorfight, "de6_5", "lock_6_5_on", NULL, NULL, 0.245f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"deathstar2battle", "de6_6", "lock_6_6_on", NULL, NULL, 0.1825f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"e6vehiclebonus", "de6_7", "lock_6_7_on", NULL, NULL, 0.0f, 1.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"podrace", "de7_1", "lock_7_1_on", "frame_1", NULL, 0.0f, 0.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"anakinsflight", "de7_2", "lock_7_2_on", "frame_2", NULL, 0.0f, 0.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"bonus_gunship", "de7_3", "lock_7_3_on", "frame_3", NULL, 0.0f, 0.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"anewhope", "de7_4", "lock_7_4_on", "frame_4", NULL, 0.0f, 0.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"bonus2", "de7_5", "lock_7_5_on", "frame_5", NULL, 0.0f, 0.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {"bonus", "de7_6", "lock_7_6_on", "frame_6", NULL, 0.0f, 0.0f, 1, NULL, NULL, {0}, NULL, NULL},
-    {AreaFixUpName_Losttemple, "de7_7", "lock_7_7_on", NULL, NULL, 0.0f, 0.0f, 257, NULL, NULL, {0}, NULL, NULL},
-    {AreaFixUpName_Senate, "network_door", NULL, NULL, NULL, 0.0f, 0.0f, 257, NULL, NULL, {0}, NULL, NULL},
-    {NULL, NULL, NULL, NULL, NULL, 0.0f, 0.0f, 0, NULL, NULL, {0}, NULL, NULL},
+    {AreaFixUpName_Negotiations, "de1_1", "lock_1_1_on", NULL, NULL, 0.1f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"gungan", "de1_2", "lock_1_2_on", NULL, NULL, 0.025f, 0.8f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"palacerescue", "de1_3", "lock_1_3_on", NULL, NULL, 0.0f, 0.5f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {AreaFixUpName_Podsprint, "de1_4", "lock_1_4_on", NULL, NULL, 0.025f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"retakepalace", "de1_5", "lock_1_5_on", NULL, NULL, 0.075f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"maul", "de1_6", "lock_1_6_on", NULL, NULL, 0.225f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"e1vehiclebonus", "de1_7", "lock_1_7_on", NULL, NULL, 0.0f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"pursuit", "de2_1", "lock_2_1_on", NULL, NULL, 0.125f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"kamino", "de2_2", "lock_2_2_on", NULL, NULL, 0.075f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"factory", "de2_3", "lock_2_3_on", NULL, NULL, 0.25f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"jedi", "de2_4", "lock_2_4_on", NULL, NULL, 0.0125f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"gunship", "de2_5", "lock_2_5_on", NULL, NULL, 0.11f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"dooku", "de2_6", "lock_2_6_on", NULL, NULL, 0.42f, 0.5f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"e2vehiclebonus", "de2_7", "lock_2_7_on", NULL, NULL, 0.0f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"dogfight", "de3_1", "lock_3_1_on", NULL, NULL, 0.275f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"cruiser", "de3_2", "lock_3_2_on", NULL, NULL, 0.02f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"grievous", "de3_3", "lock_3_3_on", NULL, NULL, 0.1375f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"kashyyyk", "de3_4", "lock_3_4_on", NULL, NULL, 0.01f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"temple", "de3_5", "lock_3_5_on", NULL, NULL, 0.025f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"vader", "de3_6", "lock_3_6_on", NULL, NULL, 0.21f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"e3vehiclebonus", "de3_7", "lock_3_7_on", NULL, NULL, 0.0f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"blockaderunner", "de4_1", "lock_4_1_on", NULL, NULL, 0.16f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {AreaFixUpName_Tatooine, "de4_2", "lock_4_2_on", NULL, NULL, 0.01f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {AreaFixUpName_Moseisley, "de4_3", "lock_4_3_on", NULL, NULL, 0.02f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"deathstarrescue", "de4_4", "lock_4_4_on", NULL, NULL, 0.17f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"deathstarescape", "de4_5", "lock_4_5_on", NULL, NULL, 0.025f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"deathstarbattle", "de4_6", "lock_4_6_on", NULL, NULL, 0.165f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"e4vehiclebonus", "de4_7", "lock_4_7_on", NULL, NULL, 0.0f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"hothbattle", "de5_1", "lock_5_1_on", NULL, NULL, 0.0f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"hothescape", "de5_2", "lock_5_2_on", NULL, NULL, 0.01f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"asteroidchase", "de5_3", "lock_5_3_on", NULL, NULL, 0.1825f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"dagobah", "de5_4", "lock_5_4_on", NULL, NULL, 0.165f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"cloudcitytrap", "de5_5", "lock_5_5_on", NULL, NULL, 0.1f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"cloudcityescape", "de5_6", "lock_5_6_on", NULL, NULL, 0.0125f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"e5vehiclebonus", "de5_7", "lock_5_7_on", NULL, NULL, 0.0f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"jabbaspalace", "de6_1", "lock_6_1_on", NULL, NULL, 0.01f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"sarlaccpit", "de6_2", "lock_6_2_on", NULL, NULL, 0.01f, 0.8f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"speederchase", "de6_3", "lock_6_3_on", NULL, NULL, 0.165f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"endorbattle", "de6_4", "lock_6_4_on", NULL, NULL, 0.01f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {AreaFixUpName_Emperorfight, "de6_5", "lock_6_5_on", NULL, NULL, 0.245f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"deathstar2battle", "de6_6", "lock_6_6_on", NULL, NULL, 0.1825f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"e6vehiclebonus", "de6_7", "lock_6_7_on", NULL, NULL, 0.0f, 1.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"podrace", "de7_1", "lock_7_1_on", "frame_1", NULL, 0.0f, 0.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"anakinsflight", "de7_2", "lock_7_2_on", "frame_2", NULL, 0.0f, 0.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"bonus_gunship", "de7_3", "lock_7_3_on", "frame_3", NULL, 0.0f, 0.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"anewhope", "de7_4", "lock_7_4_on", "frame_4", NULL, 0.0f, 0.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"bonus2", "de7_5", "lock_7_5_on", "frame_5", NULL, 0.0f, 0.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {"bonus", "de7_6", "lock_7_6_on", "frame_6", NULL, 0.0f, 0.0f, 1, 0, NULL, NULL, {0}, NULL, NULL},
+    {AreaFixUpName_Losttemple, "de7_7", "lock_7_7_on", NULL, NULL, 0.0f, 0.0f, 1, 1, NULL, NULL, {0}, NULL, NULL},
+    {AreaFixUpName_Senate, "network_door", NULL, NULL, NULL, 0.0f, 0.0f, 1, 1, NULL, NULL, {0}, NULL, NULL},
+    {NULL, NULL, NULL, NULL, NULL, 0.0f, 0.0f, 0, 0, NULL, NULL, {0}, NULL, NULL},
 };
 
 /* The entry of the area with that index, or NULL. */
@@ -3234,8 +3235,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
         i32 completed;
         Episode_IsComplete(HubEpisodeInfo[episode].data, &completed);
         if (completed == HubCompletedAreas) {
-            HubAreaInfo[(episode + 1) * HubAreasPerEpisode - 1].flags =
-                (HubAreaInfo[(episode + 1) * HubAreasPerEpisode - 1].flags & ~0xff00) | 0x100;
+            HubAreaInfo[(episode + 1) * HubAreasPerEpisode - 1].force_open = 1;
         }
     }
     i32 selected_area = -1;
@@ -3256,7 +3256,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
             if (HubAreaInfo[i].door != NULL &&
                 (Episode_CountOpenAreas(HubAreaInfo[i].area->episode_index, HubAreaInfo[i].area->index, Game_AreaSave) != 0 ||
                  (HubAreaInfo[i].bonus_gizmo != NULL && GizmoGetOutput(world->gizmo_sys, HubAreaInfo[i].bonus_gizmo, 0, 0) != 0) ||
-                 ((HubAreaInfo[i].flags >> 8) & 255) == 1)) {
+                 HubAreaInfo[i].force_open == 1)) {
                 HubAreaInfo[i].door->obstacle->runtime_flags &= ~GIZOBSTACLE_LOCKED_SHUT;
                 NuSpecialSetVisibility(&HubAreaInfo[i].lock, 1);
             }

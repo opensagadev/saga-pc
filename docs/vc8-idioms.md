@@ -725,7 +725,7 @@ After `for (i = 0; i < info->len; ++i) dest[i] = ...;`, retail writes
 `dest[i] = '\0'` (the index register), not `dest[info->len] = '\0'` (a
 reload of the field). `NuFileExtGetExt` (also I3: `dest_size < info->len`).
 
-### I59: a clamp written as two `if`s, not `if`/`else if`
+### I62: a clamp written as two `if`s, not `if`/`else if`
 
 ```
 retail                                   ours (else if)
@@ -740,6 +740,60 @@ a case that stores the same constant (`title_alpha = 0.0f; break;`) straight
 into the clamp's store. Two separate tests (`if (a < 0) a = 0; if (a > 1)
 a = 1;`) keep the case block of its own like retail. `MiniKit_LSW_Draw`
 (99.07 -> exact); the sibling status draws did not change.
+
+### I63: the first field a loop reads sets the base of its strength-reduced pointer
+
+```
+retail                                   ours (u32 pressed = pad->buttons_pressed;)
+  mov  edi, &GamePadStorage[0].buttons_pressed   mov edi, &GamePadStorage[0].left_pressed
+  ...  [edi], [edi+8]                            ...  [edi-8], [edi]
+  cmp  edi, &GamePadStorage[2].buttons_pressed   cmp edi, &GamePadStorage[2].left_pressed
+```
+
+When a loop walks an array of records, VC8 keeps one pointer to a field of
+the current record and addresses the others relative to it. Which field it
+picks follows how the source reads them: caching one field in a local
+(`pressed = pad->buttons_pressed`) leaves the other field as the most-read
+one, so the base moves and every displacement and the loop bound change.
+Retail read the fields through the record at each test
+(`(pad->buttons_pressed & X) != 0`), or read the field it is based on first.
+Examples: `MenuUpdateMissions` (96.5 -> 97.8), `UpdateStatusScreen`
+(90.5 -> 96.4), `AITriggerSetSysProcess` (route mask read before the locator
+pointer is taken, 99.09 -> 99.30).
+
+### I64: conversion targets are visible in the code
+
+- Float to `u16`/`i16` converts inline (`fnstcw`, `fistp dword`, `movzx r, word`);
+  float to `i32` calls `_ftol2_sse`. A retail inline conversion where we call
+  `_ftol2` means the original cast straight to the 16-bit type, not
+  `(u16)(i32)x` or an `i32` local truncated later (`LoadAreaCharacters` prompt
+  phase, `Minicam_Update` change-mode pitch).
+- `u32` to float adds the 2^32 correction from `__real@4f800000` (f32) when the
+  target is `f32` and from `__real@41f0000000000000` (f64) when it is `f64`.
+  Retail's f32 constant means `u * f` with an `f32` operand, not `(f64)u * f`
+  (`Coins_LSW_Update`, `DisplayCutSceneMemory`).
+- `(u32)(i32)x << 24` converts through a 64-bit `fistp qword`; retail's
+  `_ftol2` and a signed shift is `(i32)x << 24` (`LoadPerm`).
+- `tools/refscan.py` lists functions whose two sides use different conversion
+  constants.
+
+### I65: an unreferenced static copy names the helper its unit wrote out
+
+A not-implemented function nothing calls, with register arguments (`eax`,
+`ecx`, `esi` read before any stack load), is the standalone copy of a
+`static` helper whose every call was inlined (I48). Its body tells which
+helper; the unit's source usually still has that body written out at each
+use. Compare it with the mapped functions of other units (relocations
+masked): a twin such as `CreatureMtxSetRotationXY` or `DebrisMtxCopyPrivate`
+names the helper, then replace the written-out copies with calls:
+`SnakeMtxSetRotationXY` (also made `DrawSnakeBody` and `SnakeBeenHit`
+exact), `TorpedoMtxCopy`/`TorpedoMtxSetIdentity`, `VuMtxSetIdentity`,
+`AiEditorSetCameraPos` (`pathEditor_Process` 99.1 -> 99.9),
+`AiEditorLocatorInSet`, `GuideLine_Init`, `EduiTextPickCursorLeft`. The
+same holds for inline accessors (`ReplicatorList::First`,
+`V2Peer::GetStats`). When the written-out form compiles differently from
+the copy (the copy stores `z, y, x`, the sites `x, y, z`), the sites did
+not use that helper: leave it unwritten.
 
 ## Unexplained (no natural source change found)
 
@@ -812,6 +866,12 @@ as recorded differences.
   at each use instead of one cast pointer plus two temporaries
   (`DestroyRippleMtls`); a duplicated idempotent store plus parameter copies
   (`PushSeekComplete`). Patches are in `build/permute2/` of the trial.
+
+- U21 a range test `x >= 0 && x < N` on a small signed value: ours is folded
+  into one unsigned compare (`cmp al, N-1; ja`), retail keeps the two signed
+  tests (`test al, al; jl` then `cmp al, N; jge`). `> -1`, `<= N-1`, the
+  operand type and the test order did not change it. `TrafficAnimSys_Configure`
+  (room id), `PartImpact_ThermalDetonator` (surface type).
 
 ### U3 investigation (register choice)
 

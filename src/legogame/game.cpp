@@ -358,7 +358,7 @@ static i32 MakeSaveHash(void) {
 extern "C" {
     i32 DefaultMotionLedgeTerrainEnabled = 0;
     i32 ConvertOldPickups = 0;
-    u8 *Game_LevelSave = 0;
+    struct LEVELSAVE_s *Game_LevelSave = 0;
     GAMEOBJECT *CutDeadVehiclePlayer = 0;
     // Hub arrays are two-entry source views; full original capacities remain unknown.
     MISSIONSYS *MissionSys = 0;
@@ -2990,20 +2990,34 @@ extern "C" {
 
 void InitGameAfterConfig(void) {
     POINTS_PER_STORY = 6;
-    POINTS_PER_CHARACTER = 1;
-    POINTS_PER_SUPERSTORY = 3;
-    POINTS_PER_SUPERBONUSCOMPLETE = 3;
-    POINTS_PER_TIMETRIAL = 1;
-    POINTS_PER_CHALLENGE = 2;
-    POINTS_PER_MINIKIT = 2;
-    POINTS_PER_TRUEJEDI = 2;
-    POINTS_PER_REDBRICK = 1;
-    POINTS_PER_MISSION = 2;
-    POINTS_PER_CHEAT = 1;
-    POINTS_PER_HINT = 1;
-    POINTS_PER_GOLDBRICK = 1;
+    /* Each game has its own completion point table; both use the same values here. */
     if (StartupGameFlag1 != 0) {
+        POINTS_PER_CHARACTER = 1;
+        POINTS_PER_SUPERSTORY = 3;
+        POINTS_PER_SUPERBONUSCOMPLETE = 3;
+        POINTS_PER_TIMETRIAL = 1;
+        POINTS_PER_CHALLENGE = 2;
+        POINTS_PER_MINIKIT = 2;
+        POINTS_PER_TRUEJEDI = 2;
+        POINTS_PER_REDBRICK = 1;
+        POINTS_PER_MISSION = 2;
+        POINTS_PER_CHEAT = 1;
+        POINTS_PER_HINT = 1;
+        POINTS_PER_GOLDBRICK = 1;
         SHOPGOLDBRICKS = 14;
+    } else {
+        POINTS_PER_CHARACTER = 1;
+        POINTS_PER_SUPERSTORY = 3;
+        POINTS_PER_SUPERBONUSCOMPLETE = 3;
+        POINTS_PER_TIMETRIAL = 1;
+        POINTS_PER_CHALLENGE = 2;
+        POINTS_PER_MINIKIT = 2;
+        POINTS_PER_TRUEJEDI = 2;
+        POINTS_PER_REDBRICK = 1;
+        POINTS_PER_MISSION = 2;
+        POINTS_PER_CHEAT = 1;
+        POINTS_PER_HINT = 1;
+        POINTS_PER_GOLDBRICK = 1;
     }
 
     SHOPHINTCOUNT = 0;

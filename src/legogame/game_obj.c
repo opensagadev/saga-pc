@@ -535,7 +535,7 @@ static i32 Collide2Objects(APIOBJECT *first, APIOBJECT *second) {
         } else if (second_vertical_velocity < 0.0f &&
                    (first_object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) &&
                    first_object->level_object_index == -1) {
-            first->velocity.y += second_vertical_velocity * 0.5;
+            first->velocity.y = first->velocity.y + (second_vertical_velocity * 0.5);
         } else if (first_vertical_velocity < 0.0f &&
                    (second_object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) &&
                    second_object->level_object_index == -1) {
@@ -845,7 +845,7 @@ void GameObjectRotation(GAMEOBJECT *object, i32 mode) {
                    (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_SHADOW_ORIENTATION) != 0 || sliding) {
             alignment = 1;
         } else if ((object->character_data->model_flags & CHARACTER_MODEL_ORIENTATE) != 0 &&
-                   0.0f == object->character_data->game_character->hover_height &&
+                   object->character_data->game_character->hover_height == 0.0f &&
                    (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TURNING_CIRCLE) != 0 &&
                    GameObjectNearFloorNoFloorHeight != object->floor_height) {
             f32 vertical_gap = object->collision_min.y - object->floor_height;

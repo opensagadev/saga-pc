@@ -529,27 +529,26 @@ extern "C" {
             /* Tests the current level separately for loaded and unloaded worlds. */
             if (NewLData == STATUS_LDATA || (WORLD->loaded && WORLD->current_level == STATUS_LDATA) ||
                 (!WORLD->loaded && WORLD->current_level == STATUS_LDATA)) {
-                struct EPISODESAVE_s *save = &Game.episode_save[episode];
                 i32 gold = 0;
-                p->previous_best_time = save->superstory_time_limit;
-                p->previous_best_score = save->superstory_score_target;
+                p->previous_best_time = Game.episode_save[episode].superstory_time_limit;
+                p->previous_best_score = Game.episode_save[episode].superstory_score_target;
                 p->superstory_time = SuperStoryTimer.time_elapsed;
                 p->superstory_score = SuperStoryScore;
                 if (episode != -1) {
                     if (p->previous_best_time > p->superstory_time) {
                         p->new_best_time = p->superstory_time;
-                        save->superstory_time_limit = p->superstory_time;
+                        Game.episode_save[episode].superstory_time_limit = p->superstory_time;
                     } else {
                         p->new_best_time = 0.0f;
                     }
                     if (p->superstory_score > p->previous_best_score) {
                         p->new_best_score = p->superstory_score;
-                        save->superstory_score_target = p->superstory_score;
+                        Game.episode_save[episode].superstory_score_target = p->superstory_score;
                     } else {
                         p->new_best_score = 0;
                     }
-                    if (save->superstory_complete == 0) {
-                        save->superstory_complete = 1;
+                    if (Game.episode_save[episode].superstory_complete == 0) {
+                        Game.episode_save[episode].superstory_complete = 1;
                         AddToCompletionPoints(POINTS_PER_SUPERSTORY);
                         if (EpisodeGoldBrickForSuperStory != 0) {
                             gold = AddGoldBrickMessage(p, dat_0088073c);
@@ -741,7 +740,7 @@ extern "C" {
             return;
         }
         if (area != -1) {
-            if (BuildUpDone != 0) {
+            if (BuildUpTotal != 0) {
                 p->flags_word |= STATUSPACKET_TRUE_HERO_COMPLETE;
             }
             p->minikit_count = (u8)(Game.area_save[area].minikit_count + (u8)AreaGlobals.new_minikit_count);
@@ -779,7 +778,7 @@ extern "C" {
         StatusDrawPlayerIcons = 0;
         if (area != -1) {
             for (i = 0; i < AreaGlobals.new_minikit_count; ++i) {
-                LEVELSAVE_s *save = &((LEVELSAVE_s *)Game.level_save)[NewMiniPiece[i].level];
+                LEVELSAVE_s *save = &Game.level_save[NewMiniPiece[i].level];
                 if (Game.area_save[area].minikit_count < 10) {
                     ++Game.area_save[area].minikit_count;
                 }
@@ -1517,24 +1516,20 @@ extern "C" {
                 }
                 {
                     for (player = 0; player < 2; ++player) {
-                        u32 pressed;
-                        u32 directions;
                         if (select != 0 || up != 0 || down != 0) {
                             break;
                         }
                         if (StatusPacket.player_active[player] == 0) {
                             continue;
                         }
-                        pressed = GamePadStorage[player].buttons_pressed;
-                        if ((pressed & GAMEPAD_MENUSELECT) != 0) {
+                        if ((GamePadStorage[player].buttons_pressed & GAMEPAD_MENUSELECT) != 0) {
                             select = 1;
-                        } else {
-                            directions = GamePadStorage[player].left_pressed;
-                            if ((directions & GAMEPAD_DUP) != 0 || (pressed & GAMEPAD_DUP) != 0) {
-                                up = 1;
-                            } else if ((directions & GAMEPAD_DDOWN) != 0 || (pressed & GAMEPAD_DDOWN) != 0) {
-                                down = 1;
-                            }
+                        } else if ((GamePadStorage[player].left_pressed & GAMEPAD_DUP) != 0 ||
+                                   (GamePadStorage[player].buttons_pressed & GAMEPAD_DUP) != 0) {
+                            up = 1;
+                        } else if ((GamePadStorage[player].left_pressed & GAMEPAD_DDOWN) != 0 ||
+                                   (GamePadStorage[player].buttons_pressed & GAMEPAD_DDOWN) != 0) {
+                            down = 1;
                         }
                     }
                     if (select != 0) {

@@ -6617,6 +6617,20 @@ void AiEditorChangeMode(i32 mode) {
     }
 }
 
+/* Moves the editor camera to a position, keeping the cursor height unless
+ * asked to go to the exact point. */
+static void AiEditorSetCameraPos(NUVEC *position, i32 exact) {
+    NUVEC target;
+    if (exact) {
+        edcamSetPos(position);
+    } else {
+        target.x = position->x;
+        target.y = aieditor->cursor_position.y;
+        target.z = position->z;
+        edcamSetPos(&target);
+    }
+}
+
 void aieditor_Enter(AISYS *system, NUVEC *camera_position, void *context, void *owner, char *level_directory, char *level_file,
                     char *level_subdirectory) {
     i32 index;
@@ -7047,6 +7061,22 @@ static i32 AiEditorRemoveLocatorFromSet(EDLOCATORSET_s *set, EDLOCATOR_s *locato
                 }
             }
             return 1;
+        }
+    }
+    return 0;
+}
+
+/* Whether a locator is already in the set; the set ends at its first empty slot. */
+static i32 AiEditorLocatorInSet(EDLOCATORSET_s *set, EDLOCATOR_s *locator) {
+    i32 index;
+    if (set != NULL && locator != NULL) {
+        for (index = 0; index < 64; ++index) {
+            if (set->locators[index] == locator) {
+                return 1;
+            }
+            if (set->locators[index] == NULL) {
+                break;
+            }
         }
     }
     return 0;
@@ -17186,21 +17216,9 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD *pad) {
                (pad->digital_buttons_pressed & PAD_BUTTON_CIRCLE) != 0 && aieditor->nearest_locator != NULL) {
         EDLOCATORSET_s *set = aieditor->current_locator_set;
         EDLOCATOR_s *nearest = aieditor->nearest_locator;
-        i32 in_set = 0;
+        i32 in_set = AiEditorLocatorInSet(set, nearest);
         i32 added;
-        i32 index;
         EDLOCATOR_s *current;
-        if (set != NULL && nearest != NULL) {
-            for (index = 0; index < 64; ++index) {
-                if (set->locators[index] == nearest) {
-                    in_set = 1;
-                    break;
-                }
-                if (set->locators[index] == NULL) {
-                    break;
-                }
-            }
-        }
         if (!in_set && aieditor->current_locator != NULL && aieditor->current_locator != aieditor->nearest_locator) {
             added = AiEditorAddLocatorToSet(set, nearest, aieditor->current_locator);
         } else if (in_set) {
@@ -17359,10 +17377,7 @@ eduimenu_s *pathEditor_Process(FRAME_PAD *pad) {
                     aieditor->current_path->current_node = nearest;
                     node = aieditor->current_path->current_node;
                     if (node != NULL) {
-                        position.x = node->position.x;
-                        position.y = aieditor->cursor_position.y;
-                        position.z = node->position.z;
-                        edcamSetPos(&position);
+                        AiEditorSetCameraPos(&node->position, 0);
                     }
                 } else if ((node = aieditor->current_path->current_node) != NULL && nearest == node) {
                     position = node->position;
@@ -17415,10 +17430,7 @@ eduimenu_s *pathEditor_Process(FRAME_PAD *pad) {
                     } else {
                         NUVEC position;
                         pathEditor_ConnectNodes(node, nearest);
-                        position.x = nearest->position.x;
-                        position.y = aieditor->cursor_position.y;
-                        position.z = nearest->position.z;
-                        edcamSetPos(&position);
+                        AiEditorSetCameraPos(&nearest->position, 0);
                     }
                 }
             }
@@ -17637,10 +17649,7 @@ eduimenu_s *routeEditor_Process(FRAME_PAD *pad) {
         node = aieditor->current_path->current_node;
         if (node != NULL) {
             NUVEC position;
-            position.x = node->position.x;
-            position.y = aieditor->cursor_position.y;
-            position.z = node->position.z;
-            edcamSetPos(&position);
+            AiEditorSetCameraPos(&node->position, 0);
         }
     }
     if (pad->digital_buttons_pressed & PAD_BUTTON_CIRCLE) {
@@ -17652,17 +17661,11 @@ eduimenu_s *routeEditor_Process(FRAME_PAD *pad) {
             if (change == 1) {
                 aieditor->current_path->current_node = nearest;
                 pos = &aieditor->current_path->current_node->position;
-                position.x = pos->x;
-                position.y = aieditor->cursor_position.y;
-                position.z = pos->z;
-                edcamSetPos(&position);
+                AiEditorSetCameraPos(pos, 0);
             } else if (change == -1) {
                 aieditor->current_path->current_node = nearest;
                 pos = &aieditor->current_path->current_node->position;
-                position.x = pos->x;
-                position.y = aieditor->cursor_position.y;
-                position.z = pos->z;
-                edcamSetPos(&position);
+                AiEditorSetCameraPos(pos, 0);
             }
         }
     }

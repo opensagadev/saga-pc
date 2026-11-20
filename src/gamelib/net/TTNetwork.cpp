@@ -471,7 +471,7 @@ void TTNetwork::Display(ThingRenderData *data) {
     if (stats == NULL) {
         for (V2Peer *peer = session_manager->GetFirstPeer(); peer != NULL; peer = peer->next) {
             if (display_page == page++) {
-                stats = &peer->stats;
+                stats = peer->GetStats();
                 break;
             }
         }
@@ -488,7 +488,7 @@ void TTNetwork::Display(ThingRenderData *data) {
     if (stats == NULL) {
         for (NetTransportEntry *entry = (NetTransportEntry *)clients.head; entry != NULL; entry = (NetTransportEntry *)entry->next) {
             if (display_page == page++) {
-                stats = &entry->stats;
+                stats = entry->GetStats();
                 break;
             }
         }

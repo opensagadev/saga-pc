@@ -342,9 +342,9 @@ void AITriggerSetSysProcess(AITRIGGERSETSYS_s *system) {
             count = player_count;
             for (index = 0; index < set->trigger_count && set->trigger_count > count; ++index) {
                 if ((set->occupied & (1 << index)) == 0 && set->trigger_indices[index] == -1 && TriggerGizmoAvailable(set->gizmos[index])) {
+                    u16 routes = set->locators[index].path_info.connection->route_mask;
                     AILOCATOR *locator = &set->locators[index];
                     f32 best_distance = 1000000000.0f;
-                    u16 routes = locator->path_info.connection->route_mask;
                     i32 best = -1;
                     i32 object_index;
                     if (routes != 0) {

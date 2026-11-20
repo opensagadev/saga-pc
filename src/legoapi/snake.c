@@ -30,6 +30,13 @@ void InitSnakes(WORLDINFO *world) {
 }
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+static void SnakeMtxSetRotationXY(NUMTX *matrix, NUANG x, NUANG y) {
+    NUANGVEC angles;
+    angles.x = x;
+    angles.y = y;
+    NuMtxSetRotationXYVU0(matrix, &angles);
+}
+
 static f32 SnakeFabs(f32 f) {
     f32 rv;
 
@@ -143,7 +150,6 @@ void SnakeBeenHit(GAMEOBJECT *object) {
     i32 index;
     i32 special_index;
     NUMTX matrix;
-    NUANGVEC angles;
     NUVEC scale;
     NUVEC momentum;
     ADDPART params;
@@ -153,9 +159,8 @@ void SnakeBeenHit(GAMEOBJECT *object) {
     }
     for (i = 0; i < 2; ++i) {
         index = object->snake_body->segment_count - i - 1;
-        angles.y = NuAngAdd(object->snake_body->segments[index].yaw, 0x8000);
-        angles.x = object->snake_body->segments[index].pitch;
-        NuMtxSetRotationXYVU0(&matrix, &angles);
+        SnakeMtxSetRotationXY(&matrix, object->snake_body->segments[index].pitch,
+                              NuAngAdd(object->snake_body->segments[index].yaw, 0x8000));
         if (object->snake_body->scale != 1.0f) {
             scale.x = scale.y = scale.z = object->snake_body->scale;
             NuMtxPreScale(&matrix, &scale);
@@ -198,7 +203,6 @@ void BlowUpSnakeBody(GAMEOBJECT *object) {
     i32 index;
     i32 special_index;
     NUMTX matrix;
-    NUANGVEC angles;
     NUVEC scale;
     NUVEC momentum;
     ADDPART params;
@@ -207,9 +211,8 @@ void BlowUpSnakeBody(GAMEOBJECT *object) {
         return;
     }
     for (index = 0; index < object->snake_body->segment_count; ++index) {
-        angles.y = NuAngAdd(object->snake_body->segments[index].yaw, 0x8000);
-        angles.x = object->snake_body->segments[index].pitch;
-        NuMtxSetRotationXYVU0(&matrix, &angles);
+        SnakeMtxSetRotationXY(&matrix, object->snake_body->segments[index].pitch,
+                              NuAngAdd(object->snake_body->segments[index].yaw, 0x8000));
         if (object->snake_body->scale != 1.0f) {
             scale.x = scale.y = scale.z = object->snake_body->scale;
             NuMtxPreScale(&matrix, &scale);
@@ -249,15 +252,13 @@ void DrawSnakeBody(GAMEOBJECT *object) {
     i32 special_index;
     NUVEC scale;
     NUMTX matrix;
-    NUANGVEC angles;
     if (object == NULL || object->snake_body == NULL) {
         return;
     }
     for (segment_index = 0; segment_index < object->snake_body->segment_count; ++segment_index) {
         object->collision_scale = object->snake_body->scale;
-        angles.y = NuAngAdd(object->snake_body->segments[segment_index].yaw, 0x8000);
-        angles.x = object->snake_body->segments[segment_index].pitch;
-        NuMtxSetRotationXYVU0(&matrix, &angles);
+        SnakeMtxSetRotationXY(&matrix, object->snake_body->segments[segment_index].pitch,
+                              NuAngAdd(object->snake_body->segments[segment_index].yaw, 0x8000));
         if (object->snake_body->scale != 1.0f) {
             scale.z = object->snake_body->scale;
             scale.y = scale.z;

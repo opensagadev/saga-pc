@@ -396,7 +396,7 @@ void Minicam_Update(void) {
                 i32 old_roll;
                 f32 old_distance;
                 MiniCam_ChangeMode(MiniCam.commands[MiniCam.current_command].argument);
-                target_pitch = (u16)(pitch_rate == 0 ? pitch : (i32)(pitch_rate * 0.0f));
+                target_pitch = pitch_rate == 0 ? (u16)pitch : (u16)(pitch_rate * 0.0);
                 old_yaw = MiniCam.target_yaw;
                 old_roll = MiniCam.target_roll;
                 old_distance = MiniCam.target_distance;

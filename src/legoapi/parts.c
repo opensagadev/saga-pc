@@ -19,6 +19,7 @@
 #include "legoapi/core/input/timer.h"
 #include "legoapi/gizmos/fx/gizmopickups.h"
 #include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/collect/bolts.h"
 #include "legoapi/items/objects/game_obj.h"
 #include "legoapi/items/objects/objectsall.h"
 #include "legoapi/legoapi_types.h"
@@ -4853,7 +4854,7 @@ void UpdateParts(f32 time) {
                 direction.z = -part->velocity.z;
                 PartRuntimeMatrixSetIdentity(&mtx);
                 NuMtxLookAtZ(&mtx, &direction);
-                memmove(&part->transform, &mtx, 0x30);
+                PCByteCopy(&part->transform, &mtx, 0x30);
             }
         }
         if ((part->active & PART_IN_USE) != 0) {

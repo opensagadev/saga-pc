@@ -1943,12 +1943,12 @@ void eduiProcessCursorDefault(f32 delta_time, FRAME_PAD *pad) {
 }
 
 void EduiUpdateCursor(f32 delta_time, FRAME_PAD *pad) {
-    if (pad != NULL && eduiUsedAlgPad(pad) && !(pad->digital_buttons & PAD_BUTTON_CROSS)) {
-        edui_cursor_x = 320.0f;
-        edui_cursor_y = 112.0f;
-    } else {
+    if (pad == NULL || !eduiUsedAlgPad(pad) || (pad->digital_buttons & PAD_BUTTON_CROSS)) {
         edui_cursor_dx = -NuMouseReadXVel() * TerrainScanMargin10;
         edui_cursor_dy = -NuMouseReadYVel() * TerrainScanMargin10;
+    } else {
+        edui_cursor_x = 320.0f;
+        edui_cursor_y = 112.0f;
     }
     if (NuKeyboard(0x38)) {
         edui_cursor_locked = 1;
@@ -3275,6 +3275,10 @@ static void EduiTextPickInsert(edui_textpicker_s *picker, char character) {
     picker->value[picker->cursor++] = character;
 }
 
+static void EduiTextPickCursorLeft(edui_textpicker_s *picker) {
+    picker->cursor = MAX(0, picker->cursor - 1);
+}
+
 static void EduiTextPickCursorRight(edui_textpicker_s *picker) {
     picker->cursor = ((NuStrLen(picker->value)) < (picker->cursor + 1) ? (NuStrLen(picker->value)) : (picker->cursor + 1));
 }
@@ -3424,7 +3428,7 @@ static i32 EduiTextPickPad(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_PA
         EduiTextPickCopy(picker);
     }
     if (pad->digital_buttons_pressed & PAD_BUTTON_L1) {
-        picker->cursor = (0 > (picker->cursor - 1) ? 0 : (picker->cursor - 1));
+        EduiTextPickCursorLeft(picker);
     }
     if (pad->digital_buttons_pressed & PAD_BUTTON_R1) {
         EduiTextPickCursorRight(picker);

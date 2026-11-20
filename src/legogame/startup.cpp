@@ -1205,10 +1205,10 @@ extern "C" {
                         NuRndrClear(0xb00, 0, 1.0f);
                         StartupPushCoordinateSystem(2);
                         NuPrim2DBegin(0x10, 7, legal_mtl);
-                        NuPrim2DSetColor((i32)(((u32)(i32)(legal_alpha * 255.0) << 24) | 0x808080));
+                        NuPrim2DSetColor(((i32)(legal_alpha * 255.0) << 24) | 0x808080);
                         NuPrim2DSetUV(0.0f, 0.0f);
                         NuPrim2DAddXYZ(half + 0.0f, 0.0f, 0.0f);
-                        NuPrim2DSetColor((i32)(((u32)(i32)(legal_alpha * 255.0) << 24) | 0x808080));
+                        NuPrim2DSetColor(((i32)(legal_alpha * 255.0) << 24) | 0x808080);
                         NuPrim2DSetUV(1.0f, 1.0f);
                         NuPrim2DAddXYZ(1.0f - half, 1.0f, 0.0f);
                         NuPrim2DEnd();

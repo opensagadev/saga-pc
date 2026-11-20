@@ -2283,7 +2283,7 @@ i32 Action_CreatePod(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, 
     u16 model_id = 0xffff;
     f32 start = 0.0f;
     f32 end = 1.0f;
-    f32 time_factor = 1.0f;
+    f32 time_factor;
     i32 i;
     i32 spline_index;
     PODRACE_RESOURCE *race;
@@ -2294,7 +2294,11 @@ i32 Action_CreatePod(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, 
     NUVEC4 position;
     NUVEC4 next_position;
     __declspec(align(16)) NUVEC4 direction;
-    if (first_time == 0 || param_count <= 0) {
+    if (first_time == 0) {
+        return 1;
+    }
+    time_factor = 1.0f;
+    if (param_count <= 0) {
         return 1;
     }
     for (i = 0; i < param_count; ++i) {

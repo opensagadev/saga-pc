@@ -45,6 +45,13 @@
 #include "nu2api/numusic/sfx.h"
 #include "gameapi/ai/aisys/gameaiscript.h"
 
+static void GizturretMtxSetRotationXY(NUMTX *matrix, NUANG x, NUANG y) {
+    NUANGVEC angles;
+    angles.x = x;
+    angles.y = y;
+    NuMtxSetRotationXYVU0(matrix, &angles);
+}
+
 typedef struct TURRET_ANIM_DATA { // size 0x4
     u8 flags;                     // 0x0
     u8 role;                      // 0x1
@@ -66,6 +73,8 @@ extern "C" {
     i32 GizTurretAnimDataVersion = 7;
     i32 gizturret_test_ang = 3640;
     f32 gizturret_rapid_fire_rate = 0.2f;
+    /* How far off target (pitch or yaw) a nearby turret may still be before it stops to aim. */
+    u16 gizturret_aim_tolerance = 0x400;
     ADDGIZMOTYPE GizmoRegistryGizTurretsAddType = {0};
 
     static void GizTurretClear(GIZTURRET_s *turret) {
@@ -728,8 +737,10 @@ extern "C" {
                                     }
                                     // These are absolute differences of unsigned angles, not wrapped rotation
                                     // differences.
-                                    if (nearby && (abs((static_cast<u16>(desired_pitch)) - (static_cast<u16>(turret->pitch))) > 0x400 ||
-                                                   abs((static_cast<u16>(desired_yaw)) - (static_cast<u16>(turret->yaw))) > 0x400)) {
+                                    if (nearby && (abs((static_cast<u16>(desired_pitch)) - (static_cast<u16>(turret->pitch))) >
+                                                       gizturret_aim_tolerance ||
+                                                   abs((static_cast<u16>(desired_yaw)) - (static_cast<u16>(turret->yaw))) >
+                                                       gizturret_aim_tolerance)) {
                                         if (!rotation_sound_playing || IsSfxLooping(turret->rotate_sfx)) {
                                             GameAudio_PlaySfxById(turret->rotate_sfx, &reference->translation, 0, 0);
                                         }
@@ -777,10 +788,7 @@ extern "C" {
                                                 &muzzle_matrix.translation, primary_draw, &autoaim_target->collision_position,
                                                 &autoaim_target->velocity, bolt_type->speed, &direction, NULL, turret->controller != NULL);
                                             FindAnglesXY(&direction, NULL, NULL);
-                                            NUANGVEC angles;
-                                            angles.x = temp_zrot;
-                                            angles.y = temp_yrot;
-                                            NuMtxSetRotationXYVU0(&direction_matrix, &angles);
+                                            GizturretMtxSetRotationXY(&direction_matrix, temp_zrot, temp_yrot);
                                         }
                                         i32 flags = turret->controller != NULL ? 4 : 2;
                                         if (muzzle != sound_muzzle) {

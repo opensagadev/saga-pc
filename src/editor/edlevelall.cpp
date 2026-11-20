@@ -1304,6 +1304,10 @@ static inline void VuMtxCopy(VuMtx &destination, const VuMtx &source) {
     destination.matrix.m33 = source.matrix.m33;
 }
 
+static inline void VuMtxSetIdentity(VuMtx &matrix) {
+    VuMtxCopy(matrix, *(const VuMtx *)&ANI3_EVAL_IDENTITY_MATRIX);
+}
+
 /* Rotates a direction by the matrix's 3x3 part. */
 static inline void VuMtxRotateVec(const VuMtx &matrix, const VuVec &v, VuVec &result) {
     f32 x = v.x * matrix.matrix.m00 + v.y * matrix.matrix.m10 + v.z * matrix.matrix.m20;
@@ -4163,8 +4167,8 @@ SceneObject::~SceneObject() {
 SceneInstance::SceneInstance() {
     scene_id = (i16)theSceneObjectHelper.scene_id;
     editor_owned = 1;
-    VuMtxCopy(initial_transform, *(const VuMtx *)&ANI3_EVAL_IDENTITY_MATRIX);
-    VuMtxCopy(current_transform, *(const VuMtx *)&ANI3_EVAL_IDENTITY_MATRIX);
+    VuMtxSetIdentity(initial_transform);
+    VuMtxSetIdentity(current_transform);
     visibility = 1;
 }
 
@@ -5641,7 +5645,7 @@ void EdMatrixControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
     if (control->components[3] != NULL || control->components[4] != NULL || control->components[5] != NULL ||
         control->components[6] != NULL || control->components[7] != NULL || control->components[8] != NULL) {
         __declspec(align(16)) VuMtx rebuilt;
-        VuMtxCopy(rebuilt, *(const VuMtx *)&ANI3_EVAL_IDENTITY_MATRIX);
+        VuMtxSetIdentity(rebuilt);
         if (control->components[6] != NULL && control->components[7] != NULL && control->components[8] != NULL) {
             VuVec scale;
             scale.x = NuAToF(reinterpret_cast<edui_prop_s *>(control->components[6])->property_text);
@@ -5955,7 +5959,7 @@ void EdManipulator::DrawAxis(VuVec &origin, VuMtx *matrix) {
     EdDrawLineSphere(&points[1].xyz, ManipulatorHandleRadius * Scale, 1.0f, attribute_selected ? AxisColour[1] : 0xff808080);
     EdDrawLineSphere(&points[2].xyz, ManipulatorHandleRadius * Scale, 1.0f, attribute_selected ? AxisColour[2] : 0xff808080);
     EdDrawLineSphere(&points[3].xyz, ManipulatorHandleRadius * Scale, 1.0f, attribute_selected ? AxisColour[3] : 0xff808080);
-    VuMtxCopy(box, *(const VuMtx *)&ANI3_EVAL_IDENTITY_MATRIX);
+    VuMtxSetIdentity(box);
     VuMtxSetTranslation(box, points[4]);
     EdDrawLineCube(&box.matrix, ManipulatorBoxSize * Scale, attribute_selected ? AxisColour[4] : 0xff808080);
     VuMtxSetTranslation(box, points[5]);
@@ -8762,7 +8766,7 @@ i32 EdManRotate::RotateItem(EdInputContext &, ClassObjectList &objects, i32 angl
     for (; entry != NULL; entry = entry->next) {
         ClassObject *object = &static_cast<ClassObject &>(*entry);
         __declspec(align(16)) VuMtx matrix;
-        VuMtxCopy(matrix, *(const VuMtx *)&ANI3_EVAL_IDENTITY_MATRIX);
+        VuMtxSetIdentity(matrix);
         if (!object->GetAttributeData(0x10, EdType_VuMtx, &matrix, 0)) {
             continue;
         }

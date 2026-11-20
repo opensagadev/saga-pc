@@ -4,6 +4,7 @@
 
 #include "legoapi/audio/audio.h"
 #include "legoapi/characters/core/customiser.h"
+#include "legoapi/core/save_values.h"
 #include "legoapi/items/collect/shard.h"
 #include "legoapi/items/objects/game_obj.h"
 #include "legoapi/menus/screens/gamestructure.h"
@@ -58,7 +59,8 @@ typedef struct gamesave_s { // size 0x7e4c
     }; // 0x0000
 
     OPTIONSSAVE options_save;             // 0x0004
-    u8 level_save[0x781b];                // 0x0011
+    struct LEVELSAVE_s level_save[366];   // 0x0011
+    u8 level_save_pad[3];                 // 0x7829
     AREA_SAVE_PICKUP area_save[72];       // 0x782c
     struct EPISODESAVE_s episode_save[6]; // 0x7b8c
     u32 hint_purchased_bits[3];           // 0x7bd4
