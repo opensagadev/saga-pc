@@ -7709,7 +7709,7 @@ extern "C" {
         drawInitialFrustum(frustum);
         /* The room count compare is unsigned. */
         for (i = 0; i < (u32)scene->num_rooms; ++i) {
-            scene->rooms[i].flags &= (u8)~4;
+            scene->rooms[i].flags &= ~4U;
         }
         roomRecursive(scene, frustum, NuPortalCameraRoom, -1, 0);
         drawSceneSphere(scene, NuPortalDebugDraw);
