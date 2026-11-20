@@ -1510,7 +1510,7 @@ BaseEditor::~BaseEditor() {
 }
 
 EdTool *ClassEditor::GetFirstTool() {
-    return first_tool;
+    return tools.first;
 }
 
 f32 &ClassEditor::SnapDistance() {
@@ -4983,6 +4983,36 @@ PropertyMenu *PropertyMenuList::Last() {
     return last;
 }
 
+EdTool *EdToolList::First() {
+    return first;
+}
+
+/* A NULL position appends the tool. */
+void EdToolList::InsertAfter(EdTool *tool, EdTool *position) {
+    if (position != NULL) {
+        tool->previous = position;
+        tool->next = position->next;
+        if (position->next != NULL) {
+            position->next->previous = tool;
+        } else {
+            last = tool;
+        }
+        position->next = tool;
+        count++;
+    } else {
+        tool->next = NULL;
+        tool->previous = last;
+        if (last != NULL) {
+            last->next = tool;
+        }
+        last = tool;
+        if (first == NULL) {
+            first = tool;
+        }
+        count++;
+    }
+}
+
 /* A NULL position appends the menu. */
 void PropertyMenuList::InsertAfter(PropertyMenu *menu, PropertyMenu *position) {
     if (position != NULL) {
@@ -5171,15 +5201,15 @@ SplineObject::~SplineObject() {
 /* Appends the tool to the class editor's tool list. */
 void ClassEditor::RegisterTool(EdTool &tool) {
     tool.next = NULL;
-    tool.previous = last_tool;
-    if (last_tool != NULL) {
-        last_tool->next = &tool;
+    tool.previous = tools.last;
+    if (tools.last != NULL) {
+        tools.last->next = &tool;
     }
-    tool_count++;
-    if (first_tool == NULL) {
-        first_tool = &tool;
+    tools.count++;
+    if (tools.first == NULL) {
+        tools.first = &tool;
     }
-    last_tool = &tool;
+    tools.last = &tool;
 }
 
 /* Snapping onto the terrain along snap_ray: only the ray normalisation
@@ -5766,29 +5796,46 @@ void EdSfxNameControl::cbButton(eduimenu_s *menu, eduiitem_s *item, u32) {
     }
 }
 
+/* A NULL position appends the editor. */
+void BaseEditorList::InsertAfter(BaseEditor *editor, BaseEditor *position) {
+    if (position != NULL) {
+        editor->previous = position;
+        editor->next = position->next;
+        if (position->next != NULL) {
+            position->next->previous = editor;
+        } else {
+            last = editor;
+        }
+        position->next = editor;
+        count++;
+    } else {
+        editor->next = NULL;
+        editor->previous = last;
+        if (last != NULL) {
+            last->next = editor;
+        }
+        last = editor;
+        if (first == NULL) {
+            first = editor;
+        }
+        count++;
+    }
+}
+
 void LevelEditor::RegisterEditor(BaseEditor &editor) {
-    editor.next = NULL;
-    editor.previous = last_editor;
-    if (last_editor != NULL) {
-        last_editor->next = &editor;
-    }
-    last_editor = &editor;
-    if (first_editor == NULL) {
-        first_editor = &editor;
-    }
-    editor_count++;
+    editors.InsertAfter(&editor, NULL);
 }
 
 void LevelEditor::ClearLevel(i32 index) {
     scenes[index].active = 0;
     scenes[index].scene = NULL;
-    for (BaseEditor *editor = first_editor; editor != NULL; editor = editor->next) {
+    for (BaseEditor *editor = editors.first; editor != NULL; editor = editor->next) {
         editor->ClearLevel(index);
     }
 }
 
 void LevelEditor::Flush() {
-    for (BaseEditor *editor = first_editor; editor != NULL; editor = editor->next) {
+    for (BaseEditor *editor = editors.first; editor != NULL; editor = editor->next) {
         editor->Flush();
     }
     reset_pending = 0;
@@ -5802,7 +5849,7 @@ void LevelEditor::CreateEditorList(eduimenu_s *parent, eduiitem_s *item) {
     if (menu == NULL) {
         return;
     }
-    for (BaseEditor *editor = first_editor; editor != NULL; editor = editor->next) {
+    for (BaseEditor *editor = editors.first; editor != NULL; editor = editor->next) {
         eduiMenuAddItem(menu,
                         eduiItemSelCreate((u32)editor, &EdLevelAttr, 0, 0, cbEdLevelEditorSelect, const_cast<char *>(editor->GetName())));
     }
@@ -5817,7 +5864,7 @@ void LevelEditor::Enter() {
     eduiSetUsingMenuFocus(1);
     editors_entered = 1;
     active = 1;
-    for (BaseEditor *editor = first_editor; editor != NULL; editor = editor->next) {
+    for (BaseEditor *editor = editors.first; editor != NULL; editor = editor->next) {
         editor->Enter();
     }
 }
@@ -5826,7 +5873,7 @@ void LevelEditor::Exit() {
     active = 0;
     eduiSetUsingMenuFocus(0);
     if (editors_entered) {
-        for (BaseEditor *editor = first_editor; editor != NULL; editor = editor->next) {
+        for (BaseEditor *editor = editors.first; editor != NULL; editor = editor->next) {
             editor->Exit();
         }
         editors_entered = 0;
@@ -7420,7 +7467,7 @@ i32 ClassObject::SetAttributeData(i32 attribute, i32 requested_type, void *data,
     return ed_class->SetAttributeData(object, attribute, requested_type, data, data_size);
 }
 
-inline ClassEditor::ClassEditor() : first_tool(NULL), last_tool(NULL), tool_count(0) {
+inline ClassEditor::ClassEditor() {
     snap_distance = 10.0f;
     manipulator = &theDefaultManipulator;
     class_filter = -1;
@@ -7433,26 +7480,8 @@ char const *ClassEditor::GetName() {
 void ClassEditor::Initialise(variptr_u &first, variptr_u &second, i32) {
     theRegistry.Initialise(first, second, 32, 32, 10, 1);
     theRegistry.RegisterBaseTypes();
-    theCursorTool.next = NULL;
-    theCursorTool.previous = last_tool;
-    if (last_tool != NULL) {
-        last_tool->next = &theCursorTool;
-    }
-    last_tool = &theCursorTool;
-    if (first_tool == NULL) {
-        first_tool = &theCursorTool;
-    }
-    tool_count++;
-    theSplineTool.next = NULL;
-    theSplineTool.previous = last_tool;
-    if (last_tool != NULL) {
-        last_tool->next = &theSplineTool;
-    }
-    last_tool = &theSplineTool;
-    if (first_tool == NULL) {
-        first_tool = &theSplineTool;
-    }
-    tool_count++;
+    tools.InsertAfter(&theCursorTool, NULL);
+    tools.InsertAfter(&theSplineTool, NULL);
     active_tool = &theCursorTool;
 }
 
@@ -8363,7 +8392,7 @@ void EdMatrixControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target)
 }
 
 /* Labels every pad button whose bit is set in the mask. */
-LevelEditor::LevelEditor() : first_editor(NULL), last_editor(NULL), editor_count(0), active(0) {
+LevelEditor::LevelEditor() : active(0) {
     reset_pending = 0;
     camera_position[0] = 0.0f;
     camera_position[1] = 0.0f;
@@ -8416,7 +8445,7 @@ void LevelEditor::Initalise(variptr_u &buffer, variptr_u &buffer_end, i32 from_f
         editor_buffer_end = buffer;
     }
     RegisterEditor(theClassEditor);
-    for (BaseEditor *editor = first_editor; editor != NULL; editor = editor->next) {
+    for (BaseEditor *editor = editors.first; editor != NULL; editor = editor->next) {
         editor->Initialise(buffer, buffer_end, from_front);
     }
     active_editor = &theClassEditor;
@@ -8477,7 +8506,7 @@ i32 LevelEditor::ReadStream(EdFileInputStream &stream) {
         stream.SerialiseBuffer(&count, sizeof(count), 1);
         for (i32 index = 0; index < count; index++) {
             char const *name = stream.BeginBlock(NULL);
-            for (BaseEditor *editor = first_editor; editor != NULL; editor = editor->next) {
+            for (BaseEditor *editor = editors.first; editor != NULL; editor = editor->next) {
                 if (NuStrICmp(editor->GetName(), name) == 0) {
                     editor->Serialise(stream);
                     break;
@@ -8503,9 +8532,9 @@ i32 LevelEditor::WriteStream(EdFileOutputStream &stream) {
     stream.SerialiseBuffer(&settings.snap_terrain, sizeof(settings.snap_terrain), 1);
     stream.EndBlock();
     stream.BeginBlock("Editors");
-    count = editor_count;
+    count = editors.count;
     stream.SerialiseBuffer(&count, sizeof(count), 1);
-    for (editor = first_editor; editor != NULL; editor = editor->next) {
+    for (editor = editors.first; editor != NULL; editor = editor->next) {
         stream.BeginBlock(editor->GetName());
         editor->Serialise(stream);
         stream.EndBlock();

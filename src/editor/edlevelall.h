@@ -776,6 +776,20 @@ class BaseEditor : public CSListLink<BaseEditor> { // size 0x10
 };
 
 /* The class/object editor, theClassEditor. */
+/* ClassEditor's tools, in registration order. */
+class EdToolList { // size 0xc
+  public:
+    EdToolList() : first(NULL), last(NULL), count(0) {
+    }
+
+    EdTool *first; // 0x0
+    EdTool *last;  // 0x4
+    i32 count;     // 0x8
+
+    EdTool *First();
+    void InsertAfter(EdTool *tool, EdTool *position);
+};
+
 class ClassEditor : public BaseEditor { // size 0x70
   public:
     ClassEditor();
@@ -793,9 +807,7 @@ class ClassEditor : public BaseEditor { // size 0x70
     virtual void Render();
     virtual void AddMenuItems(struct eduimenu_s *);
 
-    EdTool *first_tool;               // 0x10
-    EdTool *last_tool;                // 0x14
-    i32 tool_count;                   // 0x18
+    EdToolList tools;                 // 0x10
     EdTool *active_tool;              // 0x1c
     EdManipulator *manipulator;       // 0x20
     ClassObjectList selected_objects; // 0x24
@@ -978,6 +990,19 @@ struct EdInputContext {    // size 0x260
 
 #ifdef __cplusplus
 
+/* LevelEditor's editors, in registration order. */
+class BaseEditorList { // size 0xc
+  public:
+    BaseEditorList() : first(NULL), last(NULL), count(0) {
+    }
+
+    BaseEditor *first; // 0x0
+    BaseEditor *last;  // 0x4
+    i32 count;         // 0x8
+
+    void InsertAfter(BaseEditor *editor, BaseEditor *position);
+};
+
 /* The level editor thing, theLevelEditor. */
 class LevelEditor : public BaseThing { // size 0x10b0
   public:
@@ -1053,9 +1078,7 @@ class LevelEditor : public BaseThing { // size 0x10b0
     i32 editable_scene_count;     // 0x02a4
     i32 reset_pending;            // 0x02a8
     LevelEditorScene scenes[10];  // 0x02ac
-    BaseEditor *first_editor;     // 0x093c
-    BaseEditor *last_editor;      // 0x0940
-    i32 editor_count;             // 0x0944
+    BaseEditorList editors;       // 0x093c
     BaseEditor *active_editor;    // 0x0948
     char save_filename[0x80];     // 0x094c
     char editor_filename[0x80];   // 0x09cc
