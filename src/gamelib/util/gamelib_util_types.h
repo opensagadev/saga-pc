@@ -419,6 +419,10 @@ class V2Peer { // size 0x2a0
 
     u8 IsLocalPeer() const;
     i32 ToLocalTime(i32 time) const;
+
+    NetStats *GetStats() {
+        return &stats;
+    }
 };
 #endif
 
@@ -499,6 +503,10 @@ class NetTransportEntry : public NetListLink { // size 0x250
     u8 channel;                   // 0x00c
     char name[0x21];              // 0x00d
     NetStats stats;               // 0x030
+
+    NetStats *GetStats() {
+        return &stats;
+    }
 };
 
 class NetTransportList {
