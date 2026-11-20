@@ -799,6 +799,23 @@ same holds for inline accessors (`ReplicatorList::First`,
 the copy (the copy stores `z, y, x`, the sites `x, y, z`), the sites did
 not use that helper: leave it unwritten.
 
+### I66: a flag another thread sets is volatile
+
+```
+retail                                   ours
+  mov  edx, [AreaDataLoaded]               cmp  [AreaDataLoaded], ebx
+  test edx, edx                            je   ...
+  je   ...
+```
+
+VC8 never folds a `volatile` load into a compare with a memory operand and
+reads it again for every use, even within one expression (`x ? a(x) : b`
+reads twice). A global written by a background job and polled by the main
+loop shows exactly that shape: `AreaDataLoaded`/`CharacterDataLoad`, set by
+`LoadAreaData` through `bgPostRequest` (`LoadAreaCharacters` 86.7 -> 89.6
+with the crawl alpha test reading it once). Only for such shared flags; a
+global retail also compares in memory elsewhere is not volatile.
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated
