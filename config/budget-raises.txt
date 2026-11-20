@@ -307,4 +307,3 @@ config/castscan-budget.json scalar-pun 281 nu2api helper batch: NuPostFilterRele
 config/oddscan-budget.json magic-bound 1577 game menu unit batch: MenuDrawMemCardFade (written from retail 0x50b420) ramps its overlay alpha up to 0x80
 config/oddscan-budget.json magic-mask 1048 game menu unit batch: MenusPrimSetColour is the menu unit's emitted copy of the release headers' prim colour helper (the ARGB to ABGR channel masks every unit's copy spells out)
 config/oddscan-budget.json magic-state 4282 NuMain's new_level_from_menu ternary is two branches in retail (UsePlayerList = 2 / = 1 literal stores)
-config/castscan-budget.json record-pun 350 no new cast: a clean (uncached) scan of main at 2504ba7ef already counts 350; the 348 came from a stale unit cache
