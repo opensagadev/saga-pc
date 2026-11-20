@@ -212,6 +212,7 @@ static i32 BlockadeRunnerDDrawCreature(PART *part) {
 }
 
 static void BlockadeRunnerDEjectCreature(i32 eject_index) {
+    i32 side = eject_index;
     i32 models[4];
     NUMTX matrix;
     ADDPART params;
@@ -221,16 +222,16 @@ static void BlockadeRunnerDEjectCreature(i32 eject_index) {
     models[1] = id_BEACHTROOPER;
     models[2] = id_STORMTROOPER;
     models[3] = id_IMPERIALSHUTTLEPILOT;
-    if ((u32)eject_index > 1) {
+    if ((u32)side > 1) {
         return;
     }
     for (i = 0; i < 8; i++) {
         if (LevGamePart[i] != NULL) {
             continue;
         }
-        NuMtxSetTranslation(&matrix, &BlockadeRunnerDEjectVec[eject_index]);
+        NuMtxSetTranslation(&matrix, &BlockadeRunnerDEjectVec[side]);
         model = models[qrand() / 0x4000];
-        LevGameObject[i] = AddDynamicCreature(model, &BlockadeRunnerDEjectVec[eject_index], 0, "default", NULL, NULL, 0, NULL, NULL, 0, 0);
+        LevGameObject[i] = AddDynamicCreature(model, &BlockadeRunnerDEjectVec[side], 0, "default", NULL, NULL, 0, NULL, NULL, 0, 0);
         if (LevGameObject[i] != NULL) {
             LevGameObject[i]->flags_ef4 = (LevGameObject[i]->flags_ef4 & ~APIOBJECT_NO_TIME_BASED_UPDATE) | ((test_tb & 1) << 5);
             LevGameObject[i]->flags_ef0 |= APIOBJECT_DONT_MOVE;

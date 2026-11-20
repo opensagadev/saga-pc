@@ -104,3 +104,4 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | legogame cross-unit declarations from the owners' headers, legoapi headers standalone | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | 90.96 % | exact |
 | legogame views (customise.c records, hub.cpp pad readers, PODRACE_RESOURCE countdown) | BoulderSpawn | legogame/episodeIII.c | 83.28 % | exact |
 | quick run 2: gameobject views into the records (a938eef5d; game_obj.h, apiobject.h, world.h; episodeIII.c unchanged; 64 id shifts and five source variants tried in the refix, none exact) | BoulderSpawn | legogame/episodeIII.c | exact | 83.28 % |
+| tuning pass: eject side in a local (BlockadeRunnerDEjectCreature) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | 95.18 % | exact |
