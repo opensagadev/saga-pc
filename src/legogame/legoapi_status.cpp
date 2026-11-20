@@ -741,7 +741,7 @@ extern "C" {
             return;
         }
         if (area != -1) {
-            if (BuildUpDone != 0) {
+            if (BuildUpTotal != 0) {
                 p->flags_word |= STATUSPACKET_TRUE_HERO_COMPLETE;
             }
             p->minikit_count = (u8)(Game.area_save[area].minikit_count + (u8)AreaGlobals.new_minikit_count);
