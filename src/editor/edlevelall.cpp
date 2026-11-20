@@ -7397,7 +7397,7 @@ i32 ClassObject::SetAttributeData(i32 attribute, i32 requested_type, void *data,
     return ed_class->SetAttributeData(object, attribute, requested_type, data, data_size);
 }
 
-inline ClassEditor::ClassEditor() : first_tool(NULL), last_tool(NULL), tool_count(0), selected_objects() {
+inline ClassEditor::ClassEditor() : first_tool(NULL), last_tool(NULL), tool_count(0) {
     snap_distance = 10.0f;
     manipulator = &theDefaultManipulator;
     class_filter = -1;
