@@ -70,7 +70,7 @@ typedef struct BOLTTYPE_s { // size 0xa4
     u8 damage;                                                     // 0x3c
     i8 reflect_type;                                               // 0x3d
     u16 unknown_3e;                                                // 0x3e
-    u32 spread;                                                    // 0x40
+    i32 spread;                                                    // 0x40
     void (*init_callback)(struct bolt_s *bolt);                    // 0x44
     void (*update_callback)(struct bolt_s *bolt);                  // 0x48
     void (*end_callback)(struct bolt_s *bolt);                     // 0x4c

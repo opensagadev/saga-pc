@@ -740,10 +740,10 @@ extern "C" {
                                     i32 scatter_pitch = 0;
                                     i32 scatter_yaw = 0;
                                     if (bolt_type->spread != 0) {
-                                        f32 spread = static_cast<f32>(static_cast<i32>(bolt_type->spread));
+                                        f32 spread = static_cast<f32>(bolt_type->spread);
                                         f32 random = NuRandFloat();
                                         scatter_pitch = static_cast<i32>(spread - ((random * spread) + (random * spread))) / 2;
-                                        spread = static_cast<f32>(static_cast<i32>(bolt_type->spread));
+                                        spread = static_cast<f32>(bolt_type->spread);
                                         random = NuRandFloat();
                                         scatter_yaw = static_cast<i32>(spread - ((random * spread) + (random * spread)));
                                     }

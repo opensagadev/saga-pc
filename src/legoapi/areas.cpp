@@ -941,8 +941,7 @@ extern "C" void SuperCounters_FixUpGizmos(WORLDINFO *world) {
                 if (pickup->use_special == 0) {
                     pickup->position_gizmo = GizmoFindByName(world->gizmo_sys, -1, pickup->position_name);
                 } else {
-                    NuSpecialFind(world->current_gscn, &pickup->position_special, pickup->position_name,
-                                  1);
+                    NuSpecialFind(world->current_gscn, &pickup->position_special, pickup->position_name, 1);
                 }
             }
         }
