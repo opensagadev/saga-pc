@@ -104,7 +104,7 @@ i32 StartDoorPositions(void) {
         if (door != NULL) {
             for (index = 0; index < WORLD->door_count; ++index, ++door) {
                 if (door->spline != NULL && NuStrICmp(door->name, DoorExitName) == 0) {
-                    start = (PLAYER_POSITION_RECORD *)PlayerStart;
+                    start = PlayerStart;
                     for (point = 5; point < 21; point += 2, ++start) {
                         NUANG angle;
                         if (door->spline->length > point) {

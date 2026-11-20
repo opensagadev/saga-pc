@@ -62,7 +62,7 @@ typedef union player_position_sock_u { // size 0x38
 } PLAYER_POSITION_SOCK;
 
 PLAYERPROGRESS PlayerProgress[8] = {0};
-PLAYER_START_INITIALIZER_RECORD PlayerStart[8] = {0};
+PLAYER_POSITION_RECORD PlayerStart[8] = {0};
 
 i32 RenderHubFromCutscenePlayer = 0;
 
@@ -733,7 +733,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
     i32 restore_hitpoints;
     i32 player_index;
     u16 facing;
-    PLAYER_POSITION_RECORD *starts = (PLAYER_POSITION_RECORD *)PlayerStart;
+    PLAYER_POSITION_RECORD *starts = PlayerStart;
     if (object == NULL) {
         return;
     }

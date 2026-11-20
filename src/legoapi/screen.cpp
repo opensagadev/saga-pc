@@ -7,6 +7,7 @@
 #include "legoapi/core/input/qrand.h"
 #include "legoapi/core/startup/main.h"
 #include "legoapi/cutscenes/gcutscn.h"
+#include "legoapi/cutscenes/cutscenes.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/lib/hub.h"
 #include "legoapi/lib/text.h"
@@ -60,11 +61,6 @@ extern "C" NUMTL *FadeMtl2;
 extern "C" NUMTL *ScreenFadeMtl;
 
 extern "C" f32 CutSceneCameraFocalLength;
-
-typedef struct CUT_BORDER_RECORD { // size 0x54
-    u8 unknown_00[0x50];           // 0x00
-    u32 flags;                     // 0x50
-} CUT_BORDER_RECORD;
 
 extern "C" NUMTL *FadeMtl;
 extern "C" u8 ScreenGrabNeeded;
@@ -556,9 +552,9 @@ extern "C" void DrawCutBorders(i32 widescreen) {
         return;
     }
     NuRndrBeginScene(1);
-    if ((CutStopInfo != NULL && (((CUT_BORDER_RECORD *)CutStopInfo)->flags & 0x4000) != 0) ||
+    if ((CutStopInfo != NULL && (CutStopInfo->flags & CUTINFO_SUPER_WIDESCREEN) != 0) ||
         (WORLD->cutscene_sys != NULL && WORLD->cutscene_sys->count == 1 &&
-         (((CUT_BORDER_RECORD *)WORLD->cutscene_sys->records[0])->flags & 0x4000) != 0)) {
+         (WORLD->cutscene_sys->records[0]->flags & CUTINFO_SUPER_WIDESCREEN) != 0)) {
         border_scale = 0.21276596f;
     } else {
         border_scale = 0.1f;

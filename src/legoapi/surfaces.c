@@ -21,13 +21,6 @@
 
 extern const f64 GameObjectNearFloorNoFloorHeight;
 
-typedef struct world_conveyor_s {
-    u8 unknown_00[0x128];
-    LEVELDATA *current_level;
-    u8 unknown_12c[0x5044];
-    void *conveyor;
-} WORLD_CONVEYOR;
-
 void SurfaceMaskOn(u32 *surface_mask) {
     *surface_mask = 0x20;
 }
@@ -166,8 +159,8 @@ i32 SetObjOnSurface(GAMEOBJECT *object, i32 mode) {
 }
 
 i32 Conveyor_AdjustSpeed(NUVEC *velocity) {
-    WORLD_CONVEYOR *world = (WORLD_CONVEYOR *)WorldInfo_CurrentlyActive();
-    if (world != NULL && world->conveyor != NULL) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    if (world != NULL && world->belt_active != 0) {
         velocity->x += world->current_level->conveyor_x_speed;
         velocity->z += world->current_level->conveyor_z_speed;
     }

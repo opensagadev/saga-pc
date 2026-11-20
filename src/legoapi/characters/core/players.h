@@ -120,16 +120,17 @@ extern "C" {
     void InitPlayerAI(GAMEOBJECT *);
     GAMEOBJECT *AddCreature(i32, i32);
 
-    typedef struct PLAYER_START_INITIALIZER_RECORD { // size 0x10
-        NUVEC *position;                             // 0x0
-        i32 sock_location;                           // 0x4
-        f32 sock_ratio;                              // 0x8
-        i16 angle;                                   // 0xc
-        u8 unknown_0e[2];                            // 0xe
-    } PLAYER_START_INITIALIZER_RECORD;
+    /* Where a player starts: a position, or a sock location and ratio, and a heading. */
+    typedef struct player_position_record_s { // size 0x10
+        NUVEC *position;                      // 0x0
+        i32 sock_location;                    // 0x4
+        f32 sock_ratio;                       // 0x8
+        i16 angle;                            // 0xc
+        u8 unknown_0e[2];                     // 0xe
+    } PLAYER_POSITION_RECORD;
 
     NUVEC *Player_StartPos(GAMEOBJECT *);
-    extern PLAYER_START_INITIALIZER_RECORD PlayerStart[8];
+    extern PLAYER_POSITION_RECORD PlayerStart[8];
     void Player_ToggleCharacter(GAMEOBJECT *, i32 direction, i32 sound);
     extern f32 TOGGLEREPEATTIME;
     extern i32 FULLDEBUGTOGGLE;

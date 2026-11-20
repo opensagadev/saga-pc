@@ -41614,7 +41614,7 @@ address,symbol,size,ctype
 0x0093d52c,_LastSafePosExtraFn,4,LAST_SAFE_POS_EXTRA
 0x0093d530,_PlayerProgress,128,PLAYERPROGRESS[8]
 0x0093d5b0,_PlayerList,16,i16[8]
-0x93d5c0,_PlayerStart,128,PLAYER_START_INITIALIZER_RECORD[8]
+0x93d5c0,_PlayerStart,128,PLAYER_POSITION_RECORD[8]
 0x93d640,_plr_lastpos,12,NUVEC
 0x93d650,_OldPlrSPos,448,SOCKPOSITION[8]
 0x0093d810,_Player,32,void *[8]
