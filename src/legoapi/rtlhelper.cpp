@@ -821,25 +821,25 @@ void EdRefFog::GetMemberData(void *object, i32 requested_type, void *data, i32) 
             break;
         case EDREF_FOG_FOG_COLOUR: {
             NUVEC *colour = static_cast<NUVEC *>(data);
-            u8 *bytes = reinterpret_cast<u8 *>(&fog->colour);
+            u8 *bytes = fog->colour_bytes;
             colour->x = bytes[0] * (1.0f / 255.0f);
             colour->y = bytes[1] * (1.0f / 255.0f);
             colour->z = bytes[2] * (1.0f / 255.0f);
             break;
         }
         case EDREF_FOG_FOG_ALPHA:
-            *static_cast<f32 *>(data) = reinterpret_cast<u8 *>(&fog->colour)[3] * (1.0f / 128.0f);
+            *static_cast<f32 *>(data) = fog->colour_bytes[3] * (1.0f / 128.0f);
             break;
         case EDREF_FOG_HAZE_COLOUR: {
             NUVEC *colour = static_cast<NUVEC *>(data);
-            u8 *bytes = reinterpret_cast<u8 *>(&fog->low_quality_colour);
+            u8 *bytes = fog->low_quality_colour_bytes;
             colour->x = bytes[0] * (1.0f / 255.0f);
             colour->y = bytes[1] * (1.0f / 255.0f);
             colour->z = (1.0f / 255.0f) * bytes[2];
             break;
         }
         case EDREF_FOG_HAZE_DENSITY:
-            *static_cast<f32 *>(data) = reinterpret_cast<u8 *>(&fog->low_quality_colour)[3] * (1.0f / 128.0f);
+            *static_cast<f32 *>(data) = fog->low_quality_colour_bytes[3] * (1.0f / 128.0f);
             break;
         case EDREF_FOG_BLUR_DENSITY:
             *static_cast<f32 *>(data) = fog->low_quality_density * (1.0f / 128.0f);
@@ -865,7 +865,7 @@ void EdRefFog::SetMemberData(void *object, i32 requested_type, void *data, i32, 
             break;
         }
         case EDREF_FOG_FOG_ALPHA:
-            reinterpret_cast<u8 *>(&fog->colour)[3] = 0;
+            fog->colour_bytes[3] = 0;
             fog->colour |= static_cast<u32>(*static_cast<f32 *>(data) * 128.0f) << 24;
             break;
         case EDREF_FOG_HAZE_COLOUR: {
@@ -878,7 +878,7 @@ void EdRefFog::SetMemberData(void *object, i32 requested_type, void *data, i32, 
             break;
         }
         case EDREF_FOG_HAZE_DENSITY:
-            reinterpret_cast<u8 *>(&fog->low_quality_colour)[3] = 0;
+            fog->low_quality_colour_bytes[3] = 0;
             fog->low_quality_colour |= static_cast<u32>(*static_cast<f32 *>(data) * 128.0f) << 24;
             break;
         case EDREF_FOG_BLUR_DENSITY:

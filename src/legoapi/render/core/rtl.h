@@ -99,12 +99,22 @@ extern "C" {
 #define RTL_LIGHT_FLAG_CAST_SHADOW 0x2
 #define RTL_LIGHT_FLAG_HAS_SPECULAR 0x4
 
-    typedef struct rtl_fog_migration_s {                                         // size 0x4c
-        f32 start;                                                               // 0x00
-        f32 end;                                                                 // 0x04
-        u32 colour;                                                              // 0x08
-        i32 low_quality_density;                                                 // 0x0c
-        u32 low_quality_colour;                                                  // 0x10
+    typedef struct rtl_fog_migration_s { // size 0x4c
+        f32 start;                       // 0x00
+        f32 end;                         // 0x04
+
+        union { // size 0x4
+            u32 colour;
+            u8 colour_bytes[4]; /* r, g, b and the fog alpha (against 128) */
+        }; // 0x08
+
+        i32 low_quality_density; // 0x0c
+
+        union { // size 0x4
+            u32 low_quality_colour;
+            u8 low_quality_colour_bytes[4]; /* r, g, b and the haze density (against 128) */
+        }; // 0x10
+
         i32 type;                                                                // 0x14
         u8 depth_of_field_fstop;                                                 // 0x18
         u8 unknown_19[3];                                                        // 0x19
