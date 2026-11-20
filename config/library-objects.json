@@ -378,7 +378,8 @@
     "??1type_info@@UAE@XZ",
     "??_Gtype_info@@UAEPAXI@Z",
     "?_type_info_dtor_internal_method@type_info@@QAEXXZ",
-    "??0type_info@@AAE@ABV0@@Z"
+    "??0type_info@@AAE@ABV0@@Z",
+    "??4type_info@@AAEAAV0@ABV0@@Z"
    ]
   },
   {
@@ -550,7 +551,8 @@
     "?length@charNode@@UBEHXZ",
     "?getLastChar@charNode@@UBEDXZ",
     "?length@pcharNode@@UBEHXZ",
-    "?length@DNameStatusNode@@UBEHXZ"
+    "?length@DNameStatusNode@@UBEHXZ",
+    "??0Block@HeapManager@@QAE@XZ"
    ]
   },
   {
@@ -1259,6 +1261,14 @@
    "member": "build\\intel\\mt_obj\\gs_support.obj",
    "symbols": [
     "___security_init_cookie"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 365,
+   "member": "build\\intel\\mt_obj\\initcoll.obj",
+   "symbols": [
+    "___init_collate"
    ]
   },
   {
@@ -2620,7 +2630,8 @@
     "__rtnospopde",
     "__rtzeropop",
     "__rtonenpop",
-    "__nosnan2"
+    "__nosnan2",
+    "__rtchsifneg"
    ]
   },
   {
@@ -2667,7 +2678,11 @@
     "__fprem_common",
     "__adj_fprem",
     "__fprem1_common",
-    "__adj_fprem1"
+    "__adj_fprem1",
+    "__safe_fprem",
+    "__safe_fprem1",
+    "__adj_fpatan",
+    "__adj_fptan"
    ]
   },
   {

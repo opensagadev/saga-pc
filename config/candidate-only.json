@@ -262,11 +262,6 @@
    "kind": "function"
   },
   {
-   "unit": "src/editor/edlevelall.cpp",
-   "symbol": "?Self@ClassObject@@QAEAAU1@XZ",
-   "kind": "function"
-  },
-  {
    "unit": "src/gamelib/net/NetworkObjectManager.cpp",
    "symbol": "?Write@NETMESSAGE@@QAEXPBXI@Z",
    "kind": "function"
@@ -302,21 +297,6 @@
    "kind": "function"
   },
   {
-   "unit": "src/gamelib/net/NetworkObjectManager.cpp",
-   "symbol": "??0ReplicatorList@NetworkObjectManager@@QAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/editor/edlevelall.cpp",
-   "symbol": "??0?$CSListLink@VSplineObject@@@@QAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/editor/edlevelall.cpp",
-   "symbol": "??0?$CSListLink@VSplinePointBlock@@@@QAE@XZ",
-   "kind": "function"
-  },
-  {
    "unit": "src/gameapi/aisysall.c",
    "symbol": "_AIScriptBufferAllocOrWarn",
    "kind": "function"
@@ -349,11 +329,6 @@
   {
    "unit": "src/legoapi/rtlhelper.cpp",
    "symbol": "??1?$EdValueControl@M@@UAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/gamelib/net/Ftp.cpp",
-   "symbol": "??0NETMESSAGE@@QAE@XZ",
    "kind": "function"
   },
   {

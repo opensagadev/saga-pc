@@ -37,7 +37,7 @@
 
 #include <string.h>
 
-void GamepadsNuErrorPc(void) {
+void GamepadsNuError(void) {
 }
 
 /* Empty hook; NuMainRenderWorld calls it after SetDepthOfField. */
