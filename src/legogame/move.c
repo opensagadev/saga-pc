@@ -8671,10 +8671,10 @@ void ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f32 seek_r
         object->player.character_context == CHARACTER_CONTEXT_LAUNCH) {
         return;
     }
-    character = object->character_data;
     if ((object->player.flags_e20 & APIOBJECT_UPDATE_SKIPPED) != 0 ||
-        ((character->model_flags & CHARACTER_MODEL_VEHICLE) == 0 && (object->player.character_context == CHARACTER_CONTEXT_DROP_IN ||
-                                                                     object->player.character_context == CHARACTER_CONTEXT_DROP_OUT))) {
+        (((character = object->character_data)->model_flags & CHARACTER_MODEL_VEHICLE) == 0 &&
+         (object->player.character_context == CHARACTER_CONTEXT_DROP_IN ||
+          object->player.character_context == CHARACTER_CONTEXT_DROP_OUT))) {
         object->velocity.y = 0.0f;
         return;
     }
