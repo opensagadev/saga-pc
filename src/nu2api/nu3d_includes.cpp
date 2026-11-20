@@ -16425,9 +16425,8 @@ void NuDynamicLight::resetGeometry() {
         NURNDRLIGHTRECORD &set = render_sets[i];
         set.count = 0;
         for (i32 j = 0; j < 2; ++j) {
-            NuDisplayListResetStateCache(set.shadow_lists[j].state);
-            NUDISPLAYLISTITEM *item = set.shadow_lists[j].first;
-            set.shadow_lists[j].mtl_last = item;
+            NuDisplayListResetMaterialCursor(&set.shadow_lists[j]);
+            NUDISPLAYLISTITEM *item = set.shadow_lists[j].mtl_last;
             item->type = NUDLIST_NEXT;
             item->next = NULL;
             item->id = NUDLISTITEM_JUMP;
@@ -17945,9 +17944,8 @@ PC_SPECIAL_SHADOW_LIGHT *PC_SPECIAL_SHADOW_LIGHT::Clone(VARIPTR *arena, VARIPTR)
         NURNDRLIGHTRECORD &set = render_sets[i];
         set.count = 0;
         for (i32 j = 0; j < 2; ++j) {
-            NuDisplayListResetStateCache(set.shadow_lists[j].state);
-            NUDISPLAYLISTITEM *item = set.shadow_lists[j].first;
-            set.shadow_lists[j].mtl_last = item;
+            NuDisplayListResetMaterialCursor(&set.shadow_lists[j]);
+            NUDISPLAYLISTITEM *item = set.shadow_lists[j].mtl_last;
             item->type = NUDLIST_NEXT;
             item->next = NULL;
             item->id = NUDLISTITEM_JUMP;
