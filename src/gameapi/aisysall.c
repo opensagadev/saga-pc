@@ -2085,14 +2085,10 @@ i32 Action_Idle(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet, cha
         }
         if (frames != 0) {
             processor->action_data_1 = (u8)(frames < 0 ? 0 : (frames > 255 ? 255 : frames));
-            return 0;
-        }
-        if (processor->action_timer == 0.0f && maximum > minimum) {
+        } else if (processor->action_timer == 0.0f && maximum > minimum) {
             processor->action_timer = NuRandFloat() * (maximum - minimum) + minimum;
         }
-        return 0;
-    }
-    if (processor->action_data_1 != 0) {
+    } else if (processor->action_data_1 != 0) {
         processor->action_data_1--;
         if (processor->action_data_1 == 0) {
             return 1;

@@ -38,9 +38,11 @@ void edbriBridgesReset(void) {
         edBridges[i].instance_id = -1;
         edBridges[i].connection_index = -1;
     }
-    memset(edbri_page_used, 0, sizeof(edbri_page_used));
-    memset(edbri_page_scene, 0, sizeof(edbri_page_scene));
-    memset(edbri_page_on, 0, sizeof(edbri_page_on));
+    for (i = 0; i < 8; ++i) {
+        edbri_page_used[i] = 0;
+        edbri_page_scene[i] = NULL;
+        edbri_page_on[i] = 0;
+    }
     edbri_bridges_used = 0;
 }
 
@@ -189,12 +191,14 @@ i32 edbriLoadPage(char *path, void *scene) {
     i32 index;
     i32 i;
     char name[20];
-    for (i = 0; i < 8; i++) {
+    i = 0;
+    do {
         if (!edbri_page_used[i]) {
             page = i;
             break;
         }
-    }
+        i++;
+    } while (i < 8);
     if (page == -1) {
         return -1;
     }

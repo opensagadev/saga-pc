@@ -676,6 +676,31 @@ same standalone copy, but where a caller inlines it the two forms give the
 temporaries different stack slots. `CutScene_PreUpdateFn_LSW` became exact
 with the SDK form and the call written inside the expression that uses it.
 
+### I58: which identical return tail a guard jumps to
+
+```
+retail                                   ours
+  test eax, eax                            test eax, eax
+  je   .tail_a       ; first ret block     je   .tail_b       ; a later ret block
+```
+
+When a function has several byte-identical `return` tails (same value,
+same epilogue), a guard's jump target only shows which one VC8 merged it into,
+and that follows the shape of the source around the returns:
+- a fixed-count search loop written as `i = 0; do { ... } while (i < 8);`
+  instead of `for` (`edbriLoadPage`: the open/version guards then share the
+  loop's not-found tail);
+- one `return 0` at the end of an `if (first_time) { ... } else if (...)`
+  chain instead of a `return 0` in each branch (`Action_Idle`);
+- a search written as a static helper returning the element or NULL makes
+  `FogHelper::CreateObject` exact (its `if (fog != NULL)` then jumps to the
+  final `ret`), but the helper's emitted copy is not in retail, so that unit
+  keeps its `goto`.
+
+The other way round, an early `return` placed in a branch that also falls to
+the end keeps its own tail. Only the branch target differs (diff class
+`operands`, 0 hunks).
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated
