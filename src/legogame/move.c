@@ -9964,7 +9964,7 @@ void MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
     i32 ahead;
     f32 factor;
     i32 angular_speed;
-    u16 target;
+    i32 target;
 
     pad = object->player.pad;
     operator_object = object;
