@@ -645,7 +645,7 @@ mode_selected:
                 player_yaw[player_count] = object->movement_angle;
                 player_count++;
             }
-            if (player_count != 0) {
+            if (player_count > 0) {
                 f32 separation_scale;
                 NUVEC rail_position;
                 complexsockposition_forcesock = movegamecamera_forcesock;
@@ -667,7 +667,7 @@ mode_selected:
                     (*pullback_direction).y = 0.0f;
                     NuVecNorm(&(*pullback_direction), &(*pullback_direction));
                     pullback = 0.0f;
-                    if (vehicle_count) {
+                    if (vehicle_count > 0) {
                         u16 heading;
                         if (player_count == 2 && vehicle_player[0] && vehicle_player[1]) {
                             heading = player_yaw[0] + RotDiff(player_yaw[0], player_yaw[1]) / player_count;
@@ -689,7 +689,7 @@ mode_selected:
                     NuVecAdd(&position, &position, &(*pullback_offset));
                     NuVecAdd(&target, &target, &(*pullback_offset));
                     lateral = 0.0f;
-                    if (vehicle_count && (camera->sock_position.sock_index == -1 ||
+                    if (vehicle_count > 0 && (camera->sock_position.sock_index == -1 ||
                                           (WORLD->sock_sys->socks[camera->sock_position.sock_index].flags & SOCK_FLAG_MISC_2) == 0)) {
                         lateral = 1.0f - abs(0x4000 - abs(index)) * (1.0f / 16384.0f);
                         if (index < 0) {
@@ -727,7 +727,7 @@ mode_selected:
                         (*average).y += player->collision_position.y + 1.0f;
                         (*average).z += player->collision_position.z - NU_COS_LUT(player->facing_angle) * PodCamDist;
                     }
-                    if (player_count != 1) {
+                    if (player_count > 1) {
                         NuVecScale(&(*average), &(*average), 1.0f / player_count);
                     }
                     position = (*average);
@@ -770,7 +770,7 @@ mode_selected:
                         (*average).y += player->collision_min.y + CamPodSprintHeight;
                         (*average).z += player->position.z;
                     }
-                    if (player_count != 1) {
+                    if (player_count > 1) {
                         NuVecScale(&(*average), &(*average), 1.0f / player_count);
                     }
                     target = (*average);
@@ -930,7 +930,7 @@ mode_selected:
                         ++index;
                     } while (index < player_count);
                     scale = WORLD->current_level->cam_tilt;
-                    if (player_count != 1) {
+                    if (player_count > 1) {
                         scale *= 1.0f / player_count;
                     }
                     roll_hint = ((i32)(total * scale));
