@@ -6360,7 +6360,7 @@ address,symbol,size,ctype
 0x59cb70,?CreditsVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x59cb90,?CreditsFindType@@YAPAUcredit_type_s@@PAD@Z,66,
 0x59cbe0,?CreditsReadColour@@YAXPAUnufpar_s@@PAEH@Z,173,
-0x59cc90,_fun_0059cc90,51,
+0x59cc90,?CreditsCopyString@@YAPADPADPATvariptr_u@@1@Z,51,
 0x59ccd0,?CreditsInitCredit@@YAXPAUcredit_record_s@@PADMMMEEEEEPATvariptr_u@@2@Z,113,
 0x59cd50,_Credits_Load,1196,"void __cdecl(WORLDINFO *, VARIPTR *, VARIPTR *)"
 0x59d200,_Credits_Init,51,void __cdecl(WORLDINFO *)
@@ -6418,8 +6418,8 @@ address,symbol,size,ctype
 0x0059ece0,_GizFlowConfigCondition,203,
 0x0059edb0,_GizFlowConfigConditionType,100,
 0x0059ee20,_GizFlowConfigMonitorInputs,12,
-0x59ee30,_fun_0059ee30,49,
-0x59ee70,_fun_0059ee70,55,
+0x59ee30,_GizFlowFindActionDef,49,
+0x59ee70,_GizFlowCopyString,55,
 0x0059eeb0,_GizFlowConfigAction,537,
 0x59f0d0,_RegisterGizActions,10,
 0x0059f0e0,_LoadGizFlow,443,"void *__cdecl (void *, void *, char *, VARIPTR *, VARIPTR *)"
@@ -6503,15 +6503,15 @@ address,symbol,size,ctype
 0x5a2210,_LookupRippleEffectIndex,56,i32 __cdecl(char *)
 0x5a2250,_SetupMainPoolPtrs,96,
 0x5a22b0,_ResetRippleSet,72,void __cdecl ResetRippleSet(RIPPLE_SET *)
-0x5a2300,_fun_005a2300,16,
-0x5a2310,_fun_005a2310,14,
-0x5a2320,_fun_005a2320,45,
-0x5a2350,_fun_005a2350,14,
+0x5a2300,_RippleAllocNodes,16,
+0x5a2310,_RippleAllocEraseList,14,
+0x5a2320,_RippleAllocPool,45,
+0x5a2350,_RippleAllocSet,14,
 0x5a2360,_InitRipples,145,"void __cdecl InitRipples(RIPPLE_SET **, VARIPTR *, VARIPTR *, i32)"
 0x5a2400,_RippleAlloc,107,
 0x5a2470,_RippleFreeNode,116,
 0x5a24f0,_AddRipple,203,"void __cdecl(RIPPLE_SET *, NUMTX *, f32, f32, f32, f32, u32, u32, i32, NUMTL *, NUVEC *)"
-0x5a25c0,_fun_005a25c0,27,
+0x5a25c0,_RippleErase,27,
 0x5a25e0,_UpdateRippleSet,587,void __cdecl UpdateRippleSet(RIPPLE_SET *)
 0x5a2830,_DrawRipple,351,
 0x5a2990,_DrawRippleSet,53,void __cdecl DrawRippleSet(RIPPLE_SET *)

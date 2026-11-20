@@ -89,15 +89,20 @@ static void CreditsReadColour(NUFPAR *parser, u8 *colour, i32 maximum) {
     }
 }
 
-static void CreditsInitCredit(CREDIT_RECORD *credit, char *text, f32 x, f32 y, f32 scale, u8 red, u8 green, u8 blue, u8 alpha, u8 alignment,
-                              VARIPTR *buffer, VARIPTR *end) {
+/* A copy of text in the level buffer, NULL for an empty string. */
+static char *CreditsCopyString(char *text, VARIPTR *buffer, VARIPTR *end) {
     char *copy = NULL;
     i32 length = NuStrLen(text);
     if (length != 0) {
         copy = (char *)GameBufferAlloc(buffer, end, length + 1);
         NuStrCpy(copy, text);
     }
-    credit->text = copy;
+    return copy;
+}
+
+static void CreditsInitCredit(CREDIT_RECORD *credit, char *text, f32 x, f32 y, f32 scale, u8 red, u8 green, u8 blue, u8 alpha, u8 alignment,
+                              VARIPTR *buffer, VARIPTR *end) {
+    credit->text = CreditsCopyString(text, buffer, end);
     credit->x = x;
     credit->y = y;
     credit->scale = scale;

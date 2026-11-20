@@ -268,27 +268,43 @@ static void SetupMainPoolPtrs(RIPPLE_NODE *nodes, i32 count) {
     }
 }
 
-void InitRipples(RIPPLE_SET **result, VARIPTR *buffer, VARIPTR *unused_end, i32 count) {
-    RIPPLE_SET *set;
-    RIPPLE_NODE *nodes;
-    RIPPLE_NODE **erase_list;
-    i32 node_count;
-    set = (RIPPLE_SET *)((buffer->addr + 3) & ~3u);
+/* Carving the set, its node pool and the erase list out of the level buffer. */
+static RIPPLE_SET *RippleAllocSet(VARIPTR *buffer) {
+    RIPPLE_SET *set = (RIPPLE_SET *)((buffer->addr + 3) & ~3u);
     buffer->addr = (u32)(set + 1);
-    *result = set;
+    return set;
+}
+
+static RIPPLE_NODE *RippleAllocNodes(VARIPTR *buffer, i32 count) {
+    RIPPLE_NODE *nodes = (RIPPLE_NODE *)((buffer->addr + 127) & ~127u);
+    buffer->addr = (u32)nodes + count * sizeof(*nodes);
+    return nodes;
+}
+
+static RIPPLE_NODE **RippleAllocEraseList(VARIPTR *buffer, i32 count) {
+    RIPPLE_NODE **erase_list = (RIPPLE_NODE **)((buffer->addr + 3) & ~3u);
+    buffer->addr = (u32)(erase_list + count);
+    return erase_list;
+}
+
+static RIPPLE_NODE *RippleAllocPool(VARIPTR *buffer, i32 count) {
+    RIPPLE_NODE *nodes = RippleAllocNodes(buffer, count);
+    SetupMainPoolPtrs(nodes, count);
+    eraselist = RippleAllocEraseList(buffer, count);
+    return nodes;
+}
+
+void InitRipples(RIPPLE_SET **result, VARIPTR *buffer, VARIPTR *unused_end, i32 count) {
+    RIPPLE_NODE *nodes;
+    i32 node_count;
+    *result = RippleAllocSet(buffer);
     node_count = count <= 0 ? 0 : count;
     if (node_count >= 64) {
         node_count = 64;
     }
     (*result)->capacity = (u16)node_count;
     (*result)->active_count = 0;
-    node_count = (*result)->capacity;
-    nodes = (RIPPLE_NODE *)((buffer->addr + 127) & ~127u);
-    buffer->addr = (u32)nodes + node_count * sizeof(*nodes);
-    SetupMainPoolPtrs(nodes, node_count);
-    erase_list = (RIPPLE_NODE **)((buffer->addr + 3) & ~3u);
-    buffer->addr = (u32)(erase_list + node_count);
-    eraselist = erase_list;
+    nodes = RippleAllocPool(buffer, (*result)->capacity);
     (*result)->nodes = nodes;
     (*result)->free_head = (*result)->nodes;
     (*result)->newest = NULL;
@@ -334,6 +350,16 @@ static void RippleFreeNode(RIPPLE_SET *set, RIPPLE_NODE *node) {
             set->newest = NULL;
             set->oldest = NULL;
         }
+    }
+}
+
+/* Frees an expired node, moving the oldest mark past it first. */
+static void RippleErase(RIPPLE_SET *set, RIPPLE_NODE *node) {
+    if (set != NULL && node != NULL) {
+        if (node == set->oldest) {
+            set->oldest = set->oldest->next;
+        }
+        RippleFreeNode(set, node);
     }
 }
 
@@ -392,12 +418,7 @@ void UpdateRippleSet(RIPPLE_SET *set) {
     }
     for (i = 0; i < erase_count; ++i) {
         node = erase_list[i];
-        if (node != NULL) {
-            if (node == set->oldest) {
-                set->oldest = node->next;
-            }
-            RippleFreeNode(set, node);
-        }
+        RippleErase(set, node);
         erase_list[i] = NULL;
     }
     RippleEraseCount = 0;

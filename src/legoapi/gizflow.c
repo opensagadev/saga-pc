@@ -1031,6 +1031,33 @@ static void GizFlowConfigCondition(NUFPAR *parser) {
     }
 }
 
+static GIZACTIONDEF *GizFlowFindActionDef(char *name) {
+    GIZACTIONDEF *definition = gizactiondefs;
+    if (definition == NULL) {
+        return NULL;
+    }
+    while (definition->name != NULL) {
+        if (NuStrICmp(name, definition->name) == 0) {
+            return definition;
+        }
+        ++definition;
+    }
+    return NULL;
+}
+
+/* A copy of text in the level buffer, NULL for an empty string. */
+static char *GizFlowCopyString(char *text, VARIPTR *buffer, VARIPTR *end) {
+    char *copy = NULL;
+    if (text != NULL) {
+        i32 length = NuStrLen(text);
+        if (length != 0) {
+            copy = GizmoBufferAlloc(buffer, end, length + 1);
+            NuStrCpy(copy, text);
+        }
+    }
+    return copy;
+}
+
 static void GizFlowConfigAction(NUFPAR *parser) {
     i32 i;
     FLOWBOXACTION *previous;
@@ -1038,13 +1065,7 @@ static void GizFlowConfigAction(NUFPAR *parser) {
     GIZACTIONDEF *definition;
     FLOWBOXACTION *action;
     i32 count;
-    char **destination;
-    VARIPTR *end;
-    VARIPTR *buffer;
-    i32 length;
-    char *parameter;
     char *parameter_text;
-    char *action_name;
 
     if (load_flowbox == NULL) {
         return;
@@ -1057,20 +1078,10 @@ static void GizFlowConfigAction(NUFPAR *parser) {
         if (NuStrICmp(parser->word_buffer_ptr, "}") == 0) {
             break;
         }
-        definition = gizactiondefs;
-        action_name = parser->word_buffer_ptr;
+        definition = GizFlowFindActionDef(parser->word_buffer_ptr);
         if (definition == NULL) {
             continue;
         }
-        while (definition->name != NULL) {
-            if (NuStrICmp(action_name, definition->name) == 0) {
-                goto action_found;
-            }
-            ++definition;
-        }
-        continue;
-
-    action_found:
         action = GizmoBufferAlloc(load_buff, load_endbuff, sizeof(FLOWBOXACTION));
         if (action == NULL) {
             continue;
@@ -1099,18 +1110,7 @@ static void GizFlowConfigAction(NUFPAR *parser) {
                 action->parameter_count = count;
                 parameter_text = parameters[0];
                 for (i = 0; i < count; ++i, parameter_text += sizeof(parameters[0])) {
-                    end = load_endbuff;
-                    buffer = load_buff;
-                    parameter = NULL;
-                    if (parameter_text != NULL) {
-                        length = NuStrLen(parameter_text);
-                        if (length != 0) {
-                            parameter = GizmoBufferAlloc(buffer, end, length + 1);
-                            NuStrCpy(parameter, parameter_text);
-                        }
-                    }
-                    destination = &action->parameters[i];
-                    *destination = parameter;
+                    action->parameters[i] = GizFlowCopyString(parameter_text, load_buff, load_endbuff);
                 }
             }
         }
