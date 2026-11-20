@@ -3666,6 +3666,8 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
     points[1].z = object->player.locator_matrices[joint_b].m32;
     if ((object->player.sabre_flags & SABRE_STREAK) != 0) {
         i32 colour;
+        const u8 *rgb;
+        u32 packed;
         if (object->player_index != -1 && Cheat_IsOn(25)) {
             colour = 0;
         } else if (object->player_index != -1 && Player_HasPurpleForce(object)) {
@@ -3678,9 +3680,9 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
             colour = GCDataList[(i16)object->id].blade_colour;
         }
         object->player.blade_states[blade] = colour;
+        rgb = BladeTab[object->player.blade_states[blade]].colour;
+        packed = 0xff000000u | rgb[0] | (rgb[1] << 8) | (rgb[2] << 16);
         if (0 != object->model_draw_result) {
-            const u8 *rgb = BladeTab[colour].colour;
-            const u32 packed = 0xff000000u | rgb[0] | (rgb[1] << 8) | (rgb[2] << 16);
             AddStreakPoints(points, 0.25f, packed, &object->player.sabre_streaks[streak_blade][0], 0, object);
             if (object->reflection_enabled != 0 && object->reflection_height != 2000000.0f) {
                 f32 plane = object->reflection_height;
