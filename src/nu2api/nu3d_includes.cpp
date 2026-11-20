@@ -12515,14 +12515,24 @@ extern "C" void PostBlurGaussianChain(GRAPHICS_RENDER_TEXTURE *source, i32 sourc
     }
 }
 
+/* Frees a post filter's textures and resources and clears the pointer to it. */
+template <class FILTER> static void NuPostFilterRelease(FILTER *&filter) {
+    if (filter != NULL) {
+        NuPostFilterGen *released = (NuPostFilterGen *)filter;
+        released->destroyTextureResources();
+        released->destroyResources();
+        filter = NULL;
+    }
+}
+
 /* Tears every post filter down, frees the shared targets and rewinds the filter arena. */
 extern "C" void NuPostEffectRelease(void) {
-    POST_FILTER_RELEASE(mainFilter);
-    POST_FILTER_RELEASE(motionFilter);
-    POST_FILTER_RELEASE(motionAccumFilter);
-    POST_FILTER_RELEASE(speedBlurFilter);
-    POST_FILTER_RELEASE(deferredFilter);
-    POST_FILTER_RELEASE(NuPostCopyFilter);
+    NuPostFilterRelease(mainFilter);
+    NuPostFilterRelease(motionFilter);
+    NuPostFilterRelease(motionAccumFilter);
+    NuPostFilterRelease(speedBlurFilter);
+    NuPostFilterRelease(deferredFilter);
+    NuPostFilterRelease(NuPostCopyFilter);
     PCGraphicsDestroyPostEffectTextures();
     NuPostFilterAllocator.cursor = NuPostFilterAllocator.base;
 }

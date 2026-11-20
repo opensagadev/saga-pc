@@ -55,13 +55,3 @@ extern "C" {
         }                                                                                                                                  \
         PCGraphicsBindEffectTexture(bound_texture, stage);                                                                                 \
     } while (0)
-
-#define POST_FILTER_RELEASE(filter)                                                                                                        \
-    do {                                                                                                                                   \
-        if ((filter) != NULL) {                                                                                                            \
-            NuPostFilterGen *released = (NuPostFilterGen *)(filter);                                                                       \
-            released->destroyTextureResources();                                                                                           \
-            released->destroyResources();                                                                                                  \
-            (filter) = NULL;                                                                                                               \
-        }                                                                                                                                  \
-    } while (0)
