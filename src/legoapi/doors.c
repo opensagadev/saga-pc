@@ -117,7 +117,7 @@ i32 StartDoorPositions(void) {
                             angle = NuAtan2D(direction.x, direction.z);
                         } else {
                             /* A spline too short for the first start reads start[-1], the
-                               PlayerList words before PlayerStart, as retail does. */
+                               PlayerList words before PlayerStart. */
                             start->position = start[-1].position;
                             angle = start[-1].angle;
                         }
