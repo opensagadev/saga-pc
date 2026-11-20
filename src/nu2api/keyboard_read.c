@@ -32,20 +32,6 @@ static f32 EdcamFabs(f32 f) {
 void fun_00617ca0(void) {
 }
 
-char NuKeyToAscii(u32 key, i32 shifted) {
-    NUKEYCHAR *entry;
-
-    for (entry = NuKeyChar; entry->key != 0; ++entry) {
-        if (entry->key == key) {
-            if (shifted) {
-                return entry->shifted;
-            }
-            return entry->normal;
-        }
-    }
-    return 0;
-}
-
 void cbSel(eduimenu_s *unused0, eduiitem_s *item) {
     selection_value = item->data;
 }
