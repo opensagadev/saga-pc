@@ -22,6 +22,10 @@ def write_provider(directory):
     body = production[start:end]
     if len(re.findall(r"^void ", body, re.MULTILINE)) != 1:
         raise ValueError("Primitive fixture requires exactly the complete material linker")
+    # The item writers the linker calls (static helpers of the same unit).
+    helpers_start = production.index("static void Nu3dIncludesAddClut(")
+    helpers_end = production.index("\n}\n", production.index("static void Nu3dIncludesAddLightState(")) + len("\n}\n")
+    body = production[helpers_start:helpers_end] + "\n" + body
     source = directory / "primitive_fixture.c"
     source.write_text(all_headers_source() + body +
                       (ROOT / "tools/test_primitive_fixture.c").read_text())

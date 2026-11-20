@@ -132,6 +132,52 @@ static f32 Nu3dIncludesVuVecDot(const VuVec &a, const VuVec &b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
+static void Nu3dIncludesVecZero(NUVEC *v) {
+    v->x = v->y = v->z = 0.0f;
+}
+
+/* Mirrors a matrix through the z plane on both sides (the legacy animation curves are left-handed). */
+static void Nu3dIncludesMtxFlipZ(NUMTX *matrix) {
+    matrix->m02 = -matrix->m02;
+    matrix->m12 = -matrix->m12;
+    matrix->m20 = -matrix->m20;
+    matrix->m21 = -matrix->m21;
+    matrix->m23 = -matrix->m23;
+    matrix->m32 = -matrix->m32;
+}
+
+/* The display list item writers of nudlist (the PC build fills the texture, clut, microcode and light items with
+ * skipped dummies). */
+static void Nu3dIncludesAddClut(NUDISPLAYLISTITEM *item, i32 texture_id) {
+    item->type = NUDLIST_DUMMY;
+    item->next = NULL;
+    item->id = NUDLISTITEM_SKIP;
+}
+
+static void Nu3dIncludesAddTexture(NUDISPLAYLISTITEM *item, i32 texture_id) {
+    item->type = NUDLIST_DUMMY;
+    item->next = NULL;
+    item->id = NUDLISTITEM_SKIP;
+}
+
+static void Nu3dIncludesAddMaterialState(NUDISPLAYLISTITEM *item, NUMTL *material) {
+    item->type = NUDLIST_MTL;
+    item->next = material;
+    item->id = NUDLISTITEM_CALL;
+}
+
+static void Nu3dIncludesAddMicrocode(NUDISPLAYLISTITEM *item, NUMTL *material) {
+    item->type = NUDLIST_DUMMY;
+    item->next = NULL;
+    item->id = NUDLISTITEM_SKIP;
+}
+
+static void Nu3dIncludesAddLightState(NUDISPLAYLISTITEM *item, NUMTL *material) {
+    item->type = NUDLIST_DUMMY;
+    item->next = NULL;
+    item->id = NUDLISTITEM_SKIP;
+}
+
 extern "C" {
 
     typedef struct NuAnimDataPrefixView { // size 0x18
@@ -443,12 +489,7 @@ extern "C" {
             translation.z = set->constants[2];
         }
         NuMtxTranslate(matrix, &translation);
-        matrix->m02 = -matrix->m02;
-        matrix->m12 = -matrix->m12;
-        matrix->m20 = -matrix->m20;
-        matrix->m21 = -matrix->m21;
-        matrix->m23 = -matrix->m23;
-        matrix->m32 = -matrix->m32;
+        Nu3dIncludesMtxFlipZ(matrix);
     }
 
     f32 NuAnimCurve2CalcValEx(DWA_CURVE_CELL *curve, NUANIM_TIME2 *time, u32 format) {
@@ -2831,12 +2872,7 @@ extern "C" {
             temporary.z = -pivot->z;
             NuMtxTranslate(matrix, &temporary);
         }
-        matrix->m02 = -matrix->m02;
-        matrix->m12 = -matrix->m12;
-        matrix->m20 = -matrix->m20;
-        matrix->m21 = -matrix->m21;
-        matrix->m23 = -matrix->m23;
-        matrix->m32 = -matrix->m32;
+        Nu3dIncludesMtxFlipZ(matrix);
     }
 
     /* Root translation and locator output may be NULL; curve calls always enter an empty x87 stack. */
@@ -2902,7 +2938,7 @@ extern "C" {
                 scale->y = formats[7] == 0 ? curves[7].constant : NuAnimCurve2CalcValEx(&curves[7], time, (u32)formats[7]);
                 scale->z = formats[8] == 0 ? curves[8].constant : NuAnimCurve2CalcValEx(&curves[8], time, (u32)formats[8]);
             } else {
-                scale->x = scale->y = scale->z = 0.0f;
+                Nu3dIncludesVecZero(scale);
             }
             if ((override_flags & 4) != 0) {
                 scale->x = (f32)((f64)scale->x + override->scale.x);
@@ -2960,12 +2996,7 @@ extern "C" {
                 locator_translation->z = (f32)(locator_translation->z * -1.0);
             }
         }
-        matrix->m02 = -matrix->m02;
-        matrix->m12 = -matrix->m12;
-        matrix->m20 = -matrix->m20;
-        matrix->m21 = -matrix->m21;
-        matrix->m23 = -matrix->m23;
-        matrix->m32 = -matrix->m32;
+        Nu3dIncludesMtxFlipZ(matrix);
     }
 
     /* NuAnimInit and its original inline buffer-initialization operations from
@@ -3518,12 +3549,7 @@ extern "C" {
             NuMtxPreScaleVU0(matrix, (NUVEC *)&values[6]);
         }
         NuMtxTranslate(matrix, (NUVEC *)&values[0]);
-        matrix->m02 = -matrix->m02;
-        matrix->m12 = -matrix->m12;
-        matrix->m20 = -matrix->m20;
-        matrix->m21 = -matrix->m21;
-        matrix->m23 = -matrix->m23;
-        matrix->m32 = -matrix->m32;
+        Nu3dIncludesMtxFlipZ(matrix);
     }
 
     i32 NuSpecialSetAlphaBlend(nuhspecial_s *special) {
@@ -12776,13 +12802,9 @@ void NuDisplayListLinkMtl(NUDISPLAYLIST *list, NUMTL *material) {
     if (material->texture_id > 0 && material->texture_id != list->state->tex_id) {
         command = cursor->dlist_ptr;
         cursor->void_ptr = command + 6;
-        command->type = NUDLIST_DUMMY;
-        command->next = NULL;
-        command->id = NUDLISTITEM_SKIP;
+        Nu3dIncludesAddClut(command, material->texture_id);
         command++;
-        command->type = NUDLIST_DUMMY;
-        command->next = NULL;
-        command->id = NUDLISTITEM_SKIP;
+        Nu3dIncludesAddTexture(command, material->texture_id);
         command++;
         list->state->tex_id = material->texture_id;
     } else {
@@ -12790,17 +12812,11 @@ void NuDisplayListLinkMtl(NUDISPLAYLIST *list, NUMTL *material) {
         cursor->void_ptr = command + 4;
     }
 
-    command->type = NUDLIST_MTL;
-    command->next = material;
-    command->id = NUDLISTITEM_CALL;
+    Nu3dIncludesAddMaterialState(command, material);
     command++;
-    command->type = NUDLIST_DUMMY;
-    command->next = NULL;
-    command->id = NUDLISTITEM_SKIP;
+    Nu3dIncludesAddMicrocode(command, material);
     command++;
-    command->type = NUDLIST_DUMMY;
-    command->next = NULL;
-    command->id = NUDLISTITEM_SKIP;
+    Nu3dIncludesAddLightState(command, material);
     command++;
     command->next = NULL;
     command->type = NUDLIST_NEXT;

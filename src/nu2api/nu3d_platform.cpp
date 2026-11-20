@@ -6007,10 +6007,14 @@ extern "C" {
         return 1;
     }
 
+    static void PcSetAmbientLight(const NUVEC *colour) {
+        PCGlobalLightingState.ambient = *colour;
+        NuRndrSetAmbientLightPS(colour);
+    }
+
     i32 NuRndrSetAmbientLightSpecular(const NUVEC4 *colour) {
         render_state.global_specular = colour->w;
-        PCGlobalLightingState.ambient = colour->xyz;
-        NuRndrSetAmbientLightPS(&colour->xyz);
+        PcSetAmbientLight(&colour->xyz);
         return 0;
     }
 

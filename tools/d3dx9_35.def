@@ -5,6 +5,7 @@ EXPORTS
     D3DXCreateCubeTextureFromFileInMemory@16
     D3DXCreateTextureFromFileInMemory@16
     D3DXMatrixMultiply@12
+    D3DXMatrixLookAtLH@16
     D3DXCompileShader@40
     D3DXCreateEffectCompiler@28
     D3DXCreateBuffer@8
