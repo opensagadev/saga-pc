@@ -19,6 +19,9 @@
 #include "nu2api/numath/nurand.h"
 #include "nu2api/numath/nuvec.h"
 
+/* Vehicle models a traffic system and one animation can name (TRAFFICANIMSYS_s.vehicles, TRAFFICANIM_s.vehicle_indices). */
+enum traffic_limits { TRAFFIC_MAX_VEHICLES = 16 };
+
 void TrafficNuError(void) {
 }
 
@@ -53,7 +56,7 @@ static i32 Traffic_FindVehicle(char *name) {
                 return i;
             }
         }
-        if (parse_trafficanimsys->vehicle_count >= 16) {
+        if (parse_trafficanimsys->vehicle_count >= TRAFFIC_MAX_VEHICLES) {
             return -1;
         }
         if (NuSpecialFind(parse_worldinfo->current_gscn, &parse_trafficanimsys->vehicles[parse_trafficanimsys->vehicle_count], name, 1) !=
@@ -67,7 +70,7 @@ static i32 Traffic_FindVehicle(char *name) {
 
 static void Traffic_vehicle(NUFPAR *parser) {
     i32 index;
-    if (NuFParGetWord(parser) == 0 || parse_trafficanimsys == NULL || reference_trafficanim.vehicle_count >= 16) {
+    if (NuFParGetWord(parser) == 0 || parse_trafficanimsys == NULL || reference_trafficanim.vehicle_count >= TRAFFIC_MAX_VEHICLES) {
         return;
     }
     index = Traffic_FindVehicle(parser->word_buffer_ptr);
@@ -200,7 +203,7 @@ static TRAFFICANIMINSTANCE_s *TrafficAnimSys_Spawn(TRAFFICANIMSYS_s *system, TRA
             NuLinkedListRemove(&system->free_instances, &instance->link);
             NuLinkedListAppend(&system->active_instances, &instance->link);
             instance->frame = frame;
-            if (vehicle_index < 0 || vehicle_index >= (i32)sizeof(animation->vehicle_indices)) {
+            if (vehicle_index < 0 || vehicle_index >= TRAFFIC_MAX_VEHICLES) {
                 vehicle_index = qrand() / (0xffff / animation->vehicle_count + 1);
             }
             instance->animation = animation;
