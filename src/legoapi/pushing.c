@@ -111,7 +111,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
     saved_context = object->player.character_context;
     saved_push_timer = object->player.platform_push_timer;
     if (Pushing(object, &wall_angle, &surface, &angle_difference) != 0) {
-        i8 contact_surface = (i8)object->jump_animation_state;
+        i8 contact_surface = object->floor_surface;
         pushing = 1;
         wall_angle += 0x8000;
         if (contact_surface >= 0 ? contact_surface < 32 && (TerSurface[contact_surface].flags & TERSURFACE_PUSH_SLIDE) != 0 : 0) {

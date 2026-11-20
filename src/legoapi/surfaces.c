@@ -202,7 +202,7 @@ void InitSurfaceInfo(GAMEOBJECT *object) {
     object->floor_height = GameShadow(object, &object->position, 5.0f, -1);
     if (object->floor_height != GameObjectNearFloorNoFloorHeight) {
         GetSurfaceInfo(object, 1, object->floor_height);
-        if (TerSurface[(i8)object->jump_animation_state].flags & 8) {
+        if (TerSurface[object->floor_surface].flags & 8) {
             object->player.surface_flag8_scale = 1.0f;
         } else {
             object->player.surface_flag8_scale = 0.0f;

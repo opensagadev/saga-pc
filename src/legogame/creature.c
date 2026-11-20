@@ -1579,8 +1579,8 @@ void TerrainPlayer(GAMEOBJECT *object) {
                 }
             }
             if (!(object->player.pad->input_magnitude > 0.0f) && object->player.character_context != CHARACTER_CONTEXT_SLIDE &&
-                !(api->ground_flags != 0 && (i8)api->jump_animation_state >= 0 && (i8)api->jump_animation_state < 32 &&
-                  TerSurface[(i8)api->jump_animation_state].movement_scale < 1.0f) &&
+                !(api->ground_flags != 0 && api->floor_surface >= 0 && api->floor_surface < 32 &&
+                  TerSurface[api->floor_surface].movement_scale < 1.0f) &&
                 AnimSpeed(api->character_model, CurrentAnim(&api->anim_packet)) == 0.0f &&
                 (api->character_data->model_flags & CHARACTER_MODEL_NON_STICK) == 0) {
                 movement_threshold = api->character_data->game_character->stop_speed * api->origin_scale;
@@ -2085,7 +2085,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                         } else if (api->ground_flags != 0 && (WORLD->area == NULL || WORLD->area != PODSPRINT_ADATA)) {
                             i32 surface;
 
-                            surface = ((i8)(api->jump_animation_state));
+                            surface = api->floor_surface;
                             if (((u32)(surface)) <= 31) {
                                 TerrainKillPlayer(object, surface, &object->surface_normal);
                             }
@@ -2128,8 +2128,8 @@ void TerrainPlayer(GAMEOBJECT *object) {
 
                                     saved_rescue_surface = 0;
                                     if (StartupGameFlag1 == 0 && StartupGameFlag0 == 0 && api->ground_layer == 6 &&
-                                        (i8)api->jump_animation_state >= 0 && (i8)api->jump_animation_state < 32) {
-                                        if ((TerSurface[(i8)api->jump_animation_state].flags & TERSURFACE_DEADLY) != 0) {
+                                        api->floor_surface >= 0 && api->floor_surface < 32) {
+                                        if ((TerSurface[api->floor_surface].flags & TERSURFACE_DEADLY) != 0) {
                                             saved_rescue_surface = 1;
                                         } else {
                                             if (object->vehicle_hit_timer <= 0.0f) {

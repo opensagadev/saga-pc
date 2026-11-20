@@ -6532,7 +6532,7 @@ static void JumpAnimCode(GAMEOBJECT *object) {
 }
 
 i32 CanObjSlide(GAMEOBJECT *object, i32 unused_surface) {
-    i8 surface = (i8)object->jump_animation_state;
+    i8 surface = object->floor_surface;
     if (surface < 0) {
         return 0;
     }
@@ -6558,7 +6558,7 @@ i32 StartSlide(GAMEOBJECT *object, i32 check_contact) {
         id == (u16)id_MINIATAT || id == (u16)id_MINIATTE) {
         return 0;
     }
-    can_slide = CanObjSlide(object, (i8)object->jump_animation_state);
+    can_slide = CanObjSlide(object, object->floor_surface);
     if (((check_contact == 0 || object->ground_flags != 0) && can_slide != 0) ||
         (object->contact_count != 0 && can_slide != 0 && object->collision_position.y > object->contact_position.y &&
          CanObjSlide(object, (i8)object->contact_material[0]) != 0)) {
@@ -6573,7 +6573,7 @@ i32 StartSlide(GAMEOBJECT *object, i32 check_contact) {
 
 void SlideCode(GAMEOBJECT *object) {
     if (object->player.character_context == CHARACTER_CONTEXT_SLIDE) {
-        if (object->ground_flags != 0 && CanObjSlide(object, (i8)object->jump_animation_state) != 0) {
+        if (object->ground_flags != 0 && CanObjSlide(object, object->floor_surface) != 0) {
             object->player.context_duration = 0.25f;
         } else if (object->player.context_duration > 0.0f) {
             object->player.context_duration -= FRAMETIME;
@@ -9415,8 +9415,8 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                     if (stopped) {
                         object->target_velocity.x = 0.0f;
                         object->target_velocity.z = 0.0f;
-                        if (!(object->ground_flags != 0 && (i8)object->jump_animation_state >= 0 && (i8)object->jump_animation_state < 32 &&
-                              TerSurface[(i8)object->jump_animation_state].movement_scale < 1.0f)) {
+                        if (!(object->ground_flags != 0 && object->floor_surface >= 0 && object->floor_surface < 32 &&
+                              TerSurface[object->floor_surface].movement_scale < 1.0f)) {
                             object->velocity.x = 0.0f;
                             object->velocity.z = 0.0f;
                         }
@@ -9625,9 +9625,8 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                                              object->anim_packet.blend_source_time >= stop_frame)) {
                                             object->target_velocity.x = 0.0f;
                                             object->target_velocity.z = 0.0f;
-                                            if (!(object->ground_flags != 0 && (i8)object->jump_animation_state >= 0 &&
-                                                  (i8)object->jump_animation_state < 32 &&
-                                                  TerSurface[(i8)object->jump_animation_state].movement_scale < 1.0f)) {
+                                            if (!(object->ground_flags != 0 && object->floor_surface >= 0 && object->floor_surface < 32 &&
+                                                  TerSurface[object->floor_surface].movement_scale < 1.0f)) {
                                                 object->velocity.x = 0.0f;
                                                 object->velocity.z = 0.0f;
                                             }
@@ -9783,8 +9782,8 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
         }
     }
 
-    if (object->ground_flags != 0 && (i8)(object->jump_animation_state) != -1) {
-        turn_rate = TerSurface[(i8)(object->jump_animation_state)].movement_scale;
+    if (object->ground_flags != 0 && object->floor_surface != -1) {
+        turn_rate = TerSurface[object->floor_surface].movement_scale;
         if (turn_rate != 1.0f) {
             seek_rates.x *= turn_rate;
             seek_rates.z *= turn_rate;
@@ -9818,8 +9817,8 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
             }
         }
     }
-    if ((object->player.flags_e20 & 0x10000000) == 0 && object->ground_flags != 0 && (i8)(object->jump_animation_state) != -1 &&
-        (TerSurface[(i8)(object->jump_animation_state)].flags & TERSURFACE_CONVEYOR) != 0) {
+    if ((object->player.flags_e20 & 0x10000000) == 0 && object->ground_flags != 0 && object->floor_surface != -1 &&
+        (TerSurface[object->floor_surface].flags & TERSURFACE_CONVEYOR) != 0) {
         Conveyor_AdjustSpeed(&object->target_velocity);
     }
 
