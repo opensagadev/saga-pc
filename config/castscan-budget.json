@@ -24,7 +24,7 @@
   "enum": 4,
   "bool": 5,
   "float-int": 3071,
-  "float-width": 3970,
+  "float-width": 3971,
   "truncation": 2185,
   "signedness": 1828,
   "widening": 200,
