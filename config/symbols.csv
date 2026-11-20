@@ -3,9 +3,9 @@ address,symbol,size,ctype
 0x401000,_PcbatmanNuError,1,
 0x401010,?PcbatmanVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x401030,_fun_00401030,32,
-0x401050,_fun_00401050,7,
-0x401060,_fun_00401060,7,
-0x401070,_fun_00401070,7,
+0x401050,?GetSfxVolume@PC_WINDOW_OPTIONS@@QAEHXZ,7,
+0x401060,?GetMusicVolume@PC_WINDOW_OPTIONS@@QAEHXZ,7,
+0x401070,?GetMasterVolume@PC_WINDOW_OPTIONS@@QAEHXZ,7,
 0x401080,??_H@YGXPAXIHP6EPAX0@Z@Z,50,
 0x4010c0,_fun_004010c0,49,
 0x00401100,_StartupParseArguments,59,"void __cdecl (i32, char **)"

@@ -123,9 +123,9 @@ extern "C" void InitOnce(i32 argc, char **argv) {
     app_tbplayerset = NuTimeBarCreateSet(NULL);
     app_tbaiset = NuTimeBarCreateSet(NULL);
     app_tbdrawset = NuTimeBarCreateSet(NULL);
-    Game.options_save.sound_volume = (u8)PcWindowOptions.sfxvolume;
-    Game.options_save.music_volume = (u8)PcWindowOptions.musicvolume;
-    Game.options_save.master_volume = (u8)PcWindowOptions.mastervolume;
+    Game.options_save.sound_volume = (u8)PcWindowOptions.GetSfxVolume();
+    Game.options_save.music_volume = (u8)PcWindowOptions.GetMusicVolume();
+    Game.options_save.master_volume = (u8)PcWindowOptions.GetMasterVolume();
     GameSetSoundVolume(&Game.options_save);
     GameSetMusicVolume(&Game.options_save);
     saveloadInit(&permbuffer_base, permbuffer_end, 0x7e4c, SaveProductCode, SaveIconName, SaveUnicodeName, 4);

@@ -55,6 +55,19 @@ typedef struct PC_WINDOW_OPTIONS { // size 0x460
     void SetSfxVolume(i32 value);
     void SetMusicVolume(i32 value);
     void SetMasterVolume(i32 value);
+
+    i32 GetSfxVolume() {
+        return sfxvolume;
+    }
+
+    i32 GetMusicVolume() {
+        return musicvolume;
+    }
+
+    i32 GetMasterVolume() {
+        return mastervolume;
+    }
+
     void SetMusicEnabled(u8 value);
     void SetBloomMethod(i32 value);
     void SetShadowMethod(i32 value);
