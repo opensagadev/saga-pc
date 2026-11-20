@@ -26022,6 +26022,7 @@ address,symbol,size,ctype
 0x77dfa0,libcmt#00906:POS_BIG,8,
 0x77dfa8,libcmt#00906:EMIN,8,
 0x77dfb0,libcmt#00906:QIND,16,
+0x77dfc0,__pDestructExceptionObject,4,
 0x77dfc8,??_7bad_exception@std@@6B@,8,native exactVT binding; unimplemented extent unclaimed
 0x77dfd0,??_C@_0O@DPKOEFFH@bad?5exception?$AA@,14,
 0x77e098,___lc_category,72,

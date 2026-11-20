@@ -312,7 +312,8 @@
     "___CxxUnregisterExceptionObject",
     "libcmt#00085:?CallUnexpected@@YAXPBU_s_ESTypeList@@@Z",
     "libcmt#00085:__ehhandler$?CallUnexpected@@YAXPBU_s_ESTypeList@@@Z",
-    "___CxxQueryExceptionSize"
+    "___CxxQueryExceptionSize",
+    "__pDestructExceptionObject"
    ]
   },
   {
@@ -1051,7 +1052,8 @@
    "index": 313,
    "member": "build\\intel\\mt_obj\\chandler4.obj",
    "symbols": [
-    "libcmt#00313:_ValidateLocalCookies"
+    "libcmt#00313:_ValidateLocalCookies",
+    "__except_handler4"
    ]
   },
   {
