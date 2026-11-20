@@ -4143,7 +4143,7 @@ address,symbol,size,ctype
 0x00522920,_pathEditorAllocPath,71,EDAIPATH_s *__cdecl (void)
 0x522970,_pathEditor_CreateNode,140,
 0x522a00,_pathEditor_GetNearestNode,280,
-0x522b20,_fun_00522b20,64,
+0x522b20,_AiEditorSetCameraPos,64,
 0x522b60,_pathEditor_GetNearestPathNode,202,
 0x522c30,_pathEditor_SelectNearestPath,80,
 0x522c80,_pathEditor_GetNearestRuntimeNode,151,
