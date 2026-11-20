@@ -257,13 +257,16 @@ extern "C" {
                 freeplay = GAMEDEMO != 0 ? 0 : FreePlay;
                 if (WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_MINIKIT) != 0) {
                     if (HubBothTrueJediGoldBricks != 0) {
-                        if (Game.area_save[WORLD->area_index].true_hero_complete[freeplay] != 0) {
-                            goto buildup_finished;
+                        // MATCH-EXCEPTION: retail branches around an explicit jump here instead of sharing the else test's exit
+                        if (Game.area_save[WORLD->area_index].true_hero_complete[freeplay] == 0) {
+                            goto check_target;
                         }
+                        goto buildup_finished;
                     } else if (Game.area_save[WORLD->area_index].true_hero_complete[0] != 0 ||
                                Game.area_save[WORLD->area_index].true_hero_complete[1] != 0) {
                         goto buildup_finished;
                     }
+                check_target:
                     maximum = WORLD->area->true_hero_targets[freeplay];
                     if (maximum > 0) {
                         /* The BuildUp counter names are swapped relative to their use. */
