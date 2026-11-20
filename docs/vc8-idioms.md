@@ -639,6 +639,15 @@ helper can also settle a caller's scheduling: `NuDisplayListCreateMtlDlist`
 became exact once its first and last items were written with the `Init`
 helper (type, next, op) instead of three stores.
 
+### I55: a static helper's parameter order picks its argument registers
+
+VC8 passes the arguments of a static function it calls directly in
+registers of its own choosing (U5), and the order the parameters are declared
+in decides which argument gets which register: `SockAngleDifference(u16 to,
+u16 from)` zero-extended `ax` before `cx`, retail does `cx` first; declaring
+`(u16 from, u16 to)` and swapping the six call sites made the helper exact
+with both callers unchanged.
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated
@@ -656,7 +665,8 @@ as recorded differences.
   `Arcade_CoinCollected`, `antinodeEditor_UpdateAntiNodesOnPlatforms`,
   `NuPadRecordSave`.
 - U4 store sunk past a load that may alias. `MaulF_Init`.
-- U5 register-parameter assignment of a static callee. `GetBladeJoints`.
+- U5 register-parameter assignment of a static callee. `GetBladeJoints`
+  (the parameter order can decide it: I55).
 - U6 temporary register for an outgoing argument (`GoingForwardsAlongNarrowSock`
   closed with I41).
 - U7 which temporary is packed into a dead parameter slot / stack-slot

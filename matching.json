@@ -1134,7 +1134,7 @@
     "build/obj/legoapi/render.obj": "029393f051e92ce3cb5a7344ac67e30c6a609546bd7ad3e31528c3fcac82fe62",
     "build/obj/legoapi/ripples.obj": "514b1e9cbaa431952cd690f296e78146e337320f8d95449ab3a0de718d5d446f",
     "build/obj/legoapi/rtl_empty.obj": "5687e0f084f442fa0b361f0d38188f181edfc58cadc632fa1e764bc78956f5c1",
-    "build/obj/legoapi/rtlhelper.obj": "5531f9c611816bea366502d275dddc5c828e59f5ae955964f79fba32ef1c522c",
+    "build/obj/legoapi/rtlhelper.obj": "3a5829626a0c4330cd0685ae9149f0f732e16ee7aee45313925995366f553652",
     "build/obj/legoapi/screen.obj": "d1ea1efda786948500002710c29fbcfea48e9f711a2f2ff3df9b2392ddd997cf",
     "build/obj/legoapi/sfx.obj": "e0e3aa5dbee2afc8aebcfe5bfb2ad0f05bf5f234ea5829b34ab0633c5c3f50de",
     "build/obj/legoapi/shadow.obj": "4073f393ced64c67db6aba92e4a8163266ddc171f9bb1316511d55e5dbc15502",
@@ -899178,7 +899178,7 @@
       "metadata_sha256": "a005dfb7254f87304ba5e7d1c5083ab46db1e8272ef5fdd2e11a8953a1d1d2d5",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "e1a6b8ed5bd221e08b7e7ad67ead12d92846d454091cfc0fd1e868515ea92a8e",
+      "geometry_object_sha256": "0038a9655ae3967a574a86cd94d8a971ac34736b017a18be10c29365e50c881a",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
