@@ -560,6 +560,26 @@ the cursor in a stack slot and changes the loop's register use.
 `bgPostRequestV` (84.5 -> 88.9), `NuFmvPlayV` (86.0 -> 87.1). Read a float
 argument with `va_arg(args, f32)` where retail reads 4 bytes.
 
+### I48: an unreferenced standalone copy is a helper the unit called
+
+VC8 emits an inline function (an in-class member, a template member, a
+`static inline` helper) as its own COMDAT in every unit whose source calls
+it, even when every call is inlined, and the retail link keeps the copy
+(`/opt:noref`). A function nothing references is not emitted, whether it is
+`static` or inline. So a short unreferenced `fun_` in retail is usually an
+accessor or constructor the original source called somewhere in that unit:
+`mov eax, [ecx]; ret` and `mov eax, [ecx+4]; ret` after a
+`CSListLink<T>` constructor are `T::Next()` and `T::Previous()` walking that
+list, a 13-byte `first = last = count = 0` is the list's constructor. Writing
+the walk with the accessor (`menu = menu->Next()`) emits the copy without
+changing the inlined callers. An empty `ret` heading a unit (`NuError`) or a
+named debug routine with external linkage is emitted unreferenced; a
+`static` copy (`XxxVuVecMake`, `XxxFabs`) needs a real call in the unit.
+Before writing one, check whether our build already emits it under a name
+symbols.csv lacks (the map's unmapped symbols with byte-identical retail
+twins): `??0ReplicatorList@NetworkObjectManager@@QAE@XZ` and
+`?Self@ClassObject@@QAEAAU1@XZ` only needed their row.
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated

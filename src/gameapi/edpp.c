@@ -3069,6 +3069,42 @@ void cbPtlStartVelMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
 
 extern struct eduimenu_s *edptl_torus_menu;
 
+/* Lists the placed effects of a page (-1: every page) whose debris plays collision sounds, from the skip-th one on:
+ * their positions and the first id of each of the effect's four sound sets. Returns how many there are past skip. */
+i32 edppFindAllSounds(i32 page, NUVEC *positions, i32 (*sounds)[4], i32 max, i32 skip) {
+    i32 count = 0;
+    EDPP_PARTICLE *ptl;
+    for (ptl = edpp_ptls; ptl < edpp_ptls + 512; ptl++) {
+        i32 id;
+        DEBRIS_INFO *info;
+        i32 slot;
+        if (page != -1 && ptl->page != page) {
+            continue;
+        }
+        id = ptl->instance_id;
+        if (id == -1 || id == EDPP_SHELVED || !debkeydata[id].process_collision_sound) {
+            continue;
+        }
+        info = debtab[debkeydata[id].effect_index];
+        slot = count - skip;
+        if (slot >= 0 && slot < max) {
+            if (positions != NULL) {
+                positions[slot].x = debkeydata[id].position.x;
+                positions[slot].y = debkeydata[id].position.y;
+                positions[slot].z = debkeydata[id].position.z;
+            }
+            if (sounds != NULL) {
+                sounds[slot][0] = info->sound_data[0];
+                sounds[slot][1] = info->sound_data[3];
+                sounds[slot][2] = info->sound_data[6];
+                sounds[slot][3] = info->sound_data[9];
+            }
+        }
+        count++;
+    }
+    return count - skip;
+}
+
 void edppClose(void) {
     eduiMenuDestroy(ptloptmenu);
     eduiMenuDestroy(ptlgcodemenu);

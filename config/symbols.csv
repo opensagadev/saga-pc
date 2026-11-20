@@ -12788,7 +12788,7 @@ address,symbol,size,ctype
 0x6c13e0,_fun_006c13e0,20,
 0x6c1400,??0?$CSListLink@UClassObjectListEntry@@@@QAE@XZ,20,
 0x6c1420,?Next@?$CSListLink@UClassObjectListEntry@@@@QAEPAUClassObjectListEntry@@XZ,3,
-0x6c1430,_fun_006c1430,13,
+0x6c1430,??0ClassObjectList@@QAE@XZ,13,
 0x6c1440,?GetFirst@ClassObjectList@@QAEPAUClassObjectListEntry@@XZ,3,
 0x6c1450,?InsertEntryAfter@ClassObjectList@@QAEXPAUClassObjectListEntry@@0@Z,94,
 0x6c14b0,?Remove@ClassObjectList@@QAEXPAUClassObjectListEntry@@@Z,63,

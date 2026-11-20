@@ -4402,7 +4402,7 @@ char *edui_textrow_default[4] = {"1234567890", "QWERTYUIOP", "ASDFGHJKL_", "ZXCV
 char *edui_textrow_lower[4] = {"1234567890", "qwertyuiop", "asdfghjkl_", "zxcvbnm<>?"};
 
 /* Drops a locked interaction whose owner went away. */
-static void EduiReleaseStaleInteract(void) {
+void EduiReleaseStaleInteract(void) {
     if (eduiInteractLocked && (!eduiInteractLocked->menu || !eduiInteractLocked->item) && eduiInteractLocked->needs_debounce) {
         eduiInteractLocked = NULL;
     }

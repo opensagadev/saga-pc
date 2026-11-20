@@ -673,6 +673,9 @@ struct ClassObjectList {         // size 0xc
     ClassObjectListEntry *last;  // 0x4
     i32 count;                   // 0x8
 
+    ClassObjectList() : first(NULL), last(NULL), count(0) {
+    }
+
     ClassObjectListEntry *GetFirst();
     void InsertEntryAfter(ClassObjectListEntry *entry, ClassObjectListEntry *position);
     void Remove(ClassObjectListEntry *entry);

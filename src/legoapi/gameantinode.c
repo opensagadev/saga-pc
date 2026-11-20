@@ -10,6 +10,7 @@
 #include "legoapi/world/world.h"
 #include "legoapi/world/world_shared.h"
 #include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nu3d/nurndr.h"
 #include "nu2api/nuanimation_gen.h"
 #include "nu2api/numath/nufloat.h"
 #include "nu2api/numath/numtx.h"
@@ -172,6 +173,37 @@ void GameAntinode_FindGridPosition(WORLDINFO *world, NUVEC *position, f32 radius
         if (*max_z > 63) {
             *max_z = 63;
         }
+    }
+}
+
+/* Draws the 64 by 64 antinode grid over the level at the first player's height. */
+void GameAntinode_Debug_DrawGrid(WORLDINFO *world) {
+    f32 cell_x = (world->level_max.x - world->level_min.x) * (1.0 / 64.0);
+    f32 cell_z = (world->level_max.z - world->level_min.z) * (1.0 / 64.0);
+    f32 i;
+    for (i = 0.0f; i < 64.0f; i++) {
+        f32 x = i * cell_x + world->level_min.x;
+        NUVEC start;
+        NUVEC end;
+        start.x = x;
+        start.y = Player[0]->collision_position.y;
+        start.z = world->level_min.z;
+        end.x = x;
+        end.y = Player[0]->collision_position.y;
+        end.z = world->level_max.z;
+        NuRndrLine3dDbg(start.x, start.y, start.z, end.x, end.y, end.z, 0xff0000ff);
+    }
+    for (i = 0.0f; i < 64.0f; i++) {
+        f32 z = i * cell_z + world->level_min.z;
+        NUVEC start;
+        NUVEC end;
+        start.x = world->level_min.x;
+        start.y = Player[0]->collision_position.y;
+        start.z = z;
+        end.x = world->level_max.x;
+        end.y = Player[0]->collision_position.y;
+        end.z = z;
+        NuRndrLine3dDbg(start.x, start.y, start.z, end.x, end.y, end.z, 0xff00ff00);
     }
 }
 

@@ -2025,7 +2025,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x006c13e0,20,_fun_006c13e0,extent,,editor/edlevelall.cpp,unreferenced,
 0x006c1400,20,??0?$CSListLink@UClassObjectListEntry@@@@QAE@XZ,extent,,editor/edlevelall.cpp,unreferenced,
 0x006c1420,3,?Next@?$CSListLink@UClassObjectListEntry@@@@QAEPAUClassObjectListEntry@@XZ,extent,,editor/edlevelall.cpp,unreferenced,
-0x006c1430,13,_fun_006c1430,extent,,editor/edlevelall.cpp,unreferenced,
+0x006c1430,13,??0ClassObjectList@@QAE@XZ,extent,,editor/edlevelall.cpp,unreferenced,
 0x006c1440,3,?GetFirst@ClassObjectList@@QAEPAUClassObjectListEntry@@XZ,extent,,editor/edlevelall.cpp,unreferenced,
 0x006c1450,94,?InsertEntryAfter@ClassObjectList@@QAEXPAUClassObjectListEntry@@0@Z,extent,,editor/edlevelall.cpp,unreferenced,
 0x006c14f0,4,?GetObjectCount@ClassObjectList@@QAEHXZ,extent,,editor/edlevelall.cpp,unreferenced,

@@ -123,6 +123,17 @@ void Cheat_GetOnOffBitfield(u32 *onoffs, i32 count) {
     }
 }
 
+void Cheat_SetOnOffBitfield(u32 *onoffs, i32 count) {
+    i32 i;
+    for (i = 0; i < count; i++) {
+        if (onoffs[i / 32] & (1 << (i % 32))) {
+            CheatSystemPtr->cheats[i].enabled = 1;
+        } else {
+            CheatSystemPtr->cheats[i].enabled = 0;
+        }
+    }
+}
+
 u32 Cheat_MultiplyScore(u32 score) {
     u32 flags = CheatSystemPtr->flags;
     if ((flags & CHEAT_SCORE_X2) != 0) {
