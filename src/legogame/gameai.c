@@ -2603,8 +2603,8 @@ void GameAIProcess(void) {
                     NuVecScale(&direction, &direction, scale);
                     NuVecRotateY(&forward, &v001, object->movement_facing_angle);
                     dot = NuVecDot(&direction, &forward);
-                    angle = object->ai_packet.opponent_metric < 0.5f ? 0x3aaa : object->ai_packet.opponent_metric < 1.0f ? 0x3000 : 0x2555;
-                    if (dot > NuTrigTable[angle]) {
+                    angle = object->ai_packet.opponent_metric < 0.5f ? 0x3555 : object->ai_packet.opponent_metric < 1.0f ? 0x2000 : 0xaaa;
+                    if (dot > NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff]) {
                         object->player.pad->buttons_pressed |= GAMEPAD_ACTION;
                         object->script_fire_target = object->ai_packet.opponent->owner;
                     }
