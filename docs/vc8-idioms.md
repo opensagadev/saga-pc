@@ -597,6 +597,12 @@ declared compiles the caller exact but leaves `??0D3DXMATRIX@@QAE@XZ` in the
 object. Write such a function in C, where the SDK names are plain structs
 (`struct _D3DMATRIX`, `struct _D3DVECTOR` behind `D3DXMATRIX`/`D3DXVECTOR3`
 in `externals.h`). `NuCameraLookAt` (0 -> exact, `nucamera.c`).
+### I51: `add esp, 4` after a final call returns its result
+
+After the last call of a function, VC8 drops a single pushed argument with
+`pop ecx` when the call's result is discarded and with `add esp, 4` when the
+function returns it. `LightingSetAmbientLight` and `PartsSetAmbientLight`
+(`return NuRndrSetAmbientLightPS(ambient);`, 94 -> 100).
 
 ## Unexplained (no natural source change found)
 
