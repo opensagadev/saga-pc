@@ -19,6 +19,7 @@
 #include "legoapi/items/collect/bolt.h"
 #include "legoapi/items/collect/bolts.h"
 #include "legoapi/items/objects/cable.h"
+#include "legoapi/items/objects/gameobjects.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/misc/gamemain.h"
 #include "legoapi/misc/utilities.h"
@@ -77,7 +78,6 @@ struct SPINNER_HIT_FLAGS_STACK { // size 0x4
 };
 
 extern "C" {
-    extern const f64 GameObjectNearFloorNoFloorHeight;
     nuhspecial_s thingsSceneArm = {0};
     nuhspecial_s thingsSceneBase = {0};
     static ADDGIZMOTYPE GizmoRegistrySpinnerAddType = {0};

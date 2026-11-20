@@ -973,7 +973,7 @@ f32 Condition_BuildItComplete(AISYS *system, AISCRIPTPROCESS *process, AIPACKET 
     GIZBUILDIT *buildit;
     if (gizmo != NULL) {
         buildit = gizmo->object;
-        if (buildit != NULL && buildit->build_state == 2) {
+        if (buildit != NULL && buildit->build_state == GIZBUILDIT_BUILD_BUILT) {
             return 1.0f;
         }
     }

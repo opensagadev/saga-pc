@@ -189,7 +189,7 @@ PC_SHADER_PARAMETER_LOCAL *PC_SHADER_PARAMETER_LOCAL::fun_007421b0() {
     return this;
 }
 
-extern "C" i32 NuShaderObjectPcGetHardwareVertexProcessing(void) {
+extern "C" i32 NuShaderObjectGetHardwareVertexProcessing(void) {
     return PCDeviceHardwareVertexProcessingPC;
 }
 

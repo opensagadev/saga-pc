@@ -198,7 +198,7 @@ extern "C" {
 
     i32 GizBuildIt_AtEnd(void *buildit_pointer) {
         GIZBUILDIT *buildit = (GIZBUILDIT *)buildit_pointer;
-        if (buildit != NULL && buildit->build_state == 2) {
+        if (buildit != NULL && buildit->build_state == GIZBUILDIT_BUILD_BUILT) {
             return 1;
         }
         return 0;
@@ -760,7 +760,7 @@ extern "C" {
             if (progress != NULL && index < 64) {
                 i32 word = index / 32;
                 u32 bit = 1u << (index & 31);
-                buildit->build_state = (progress->completed[word] & bit) != 0 ? 2 : 0;
+                buildit->build_state = (progress->completed[word] & bit) != 0 ? GIZBUILDIT_BUILD_BUILT : GIZBUILDIT_BUILD_IDLE;
                 buildit->availability.visible = (progress->visible[word] & bit) != 0;
                 buildit->availability.active = (progress->active[word] & bit) != 0;
                 buildit->availability.reward_released = (progress->reward_released[word] & bit) != 0;
@@ -908,7 +908,8 @@ extern "C" {
 
     i32 GizmoBuildit_GetOutput(GIZMO *gizmo, i32 output_index, i32 force_read) {
         GIZBUILDIT *buildit = gizmo->buildit;
-        if (((buildit->availability.visible && buildit->availability.active) || force_read != 0) && buildit->build_state == 2) {
+        if (((buildit->availability.visible && buildit->availability.active) || force_read != 0) &&
+            buildit->build_state == GIZBUILDIT_BUILD_BUILT) {
             return 1;
         }
         return 0;
@@ -996,7 +997,7 @@ extern "C" {
     }
 
     void GizBuildIt_Finish(GIZBUILDIT *buildit) {
-        buildit->build_state = 2;
+        buildit->build_state = GIZBUILDIT_BUILD_BUILT;
         if ((buildit->state_flags & 2) != 0) {
             if (buildit->linked_buildit == NULL) {
                 GameAnimSet_SetVisibility(buildit->anim_set, 0);

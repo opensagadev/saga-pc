@@ -1647,8 +1647,6 @@ void MatrixText(VUFNT *font, unsigned char *text, f32 x, f32 y, f32 z, f32 x_sca
     NuQFntPopPrintMode();
 }
 
-extern void GameDrawMenuEntry(MENU *menu, char *text);
-
 void MenuDrawViewTextStrings(MENU *menu) {
     char text[2048];
     i32 i;

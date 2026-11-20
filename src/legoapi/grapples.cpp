@@ -20,6 +20,7 @@
 #include "legoapi/gizmos/transport/grapples.h"
 #include "legoapi/items/base/animpacket.h"
 #include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/objects/gameobjects.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/menus/core/hint.h"
 #include "legoapi/misc/gamemain.h"
@@ -48,8 +49,6 @@ typedef struct {
     u32 enabled[1];
     u32 visible[1];
 } GRAPPLE_PROGRESS;
-
-extern "C" const f64 GameObjectNearFloorNoFloorHeight;
 
 extern "C" {
     static inline f32 GrapplesFabs(f32 value);

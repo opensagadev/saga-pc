@@ -302,14 +302,3 @@ config/castscan-budget.json other 7 quick run: ClassObjectListEntry is a ClassOb
 config/declscan-budget.json A 24 quick run: removable re-declarations of header functions left in legogame/gameaiscript.c (124, 152, 154), owned by another worker during the refix; the others went with declscan --fix
 config/oddscan-budget.json magic-flag 2488 quick run 2: views merged into the real records (a938eef5d and the legoapi batches), so flag tests that went through a cast now read a plain field and count: parts.c DebMat[0..7]->shader.vertex_format |= 0x100000 (8), gamepads.c runtime_flags/bound_pad->flags (3), cutscenes.cpp flags_88 and level_progress->flags (2), pushing.c CInfo[...].flags & 0x2000 (2), episodeV.c LevGizPanel->flags, nu3d_includes.cpp NUMTL attribs2
 config/oddscan-budget.json magic-state 4314 quick run 2: views merged into the real records, so state stores that went through a cast now count: pushing.c player.landing_followup 3 (2), parts.c DebMat[7] material_kind 0x97 and sort_priority 128 (4 new; the aisysall.c and input_runtime.cpp 0xffff/0xff placeholder stores, 2, left with their renames)
-config/castscan-budget.json redundant-identity 6 quick run, settled in the refix
-config/oddscan-budget.json pc-suffix 57 quick run, settled in the refix
-config/declscan-budget.json A 22 quick run, settled in the refix
-config/castscan-budget.json layout-compatible 56 quick run, settled in the refix
-config/castscan-budget.json record-pun 368 quick run, settled in the refix
-config/castscan-budget.json record-pun 373 quick run, settled in the refix
-config/oddscan-budget.json magic-flag 2489 quick run, settled in the refix
-config/oddscan-budget.json magic-state 4315 quick run, settled in the refix
-config/castscan-budget.json layout-compatible 57 quick run, settled in the refix
-config/castscan-budget.json redundant-identity 11 quick run, settled in the refix
-config/castscan-budget.json signedness 1866 quick run, settled in the refix

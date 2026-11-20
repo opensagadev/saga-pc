@@ -59,7 +59,6 @@
 #include "nu2api/nusound/nusound.h"
 
 extern "C" {
-    void GameDrawMenuEntry(MENU *, char *);
     extern f32 ExtrasFadeStart;
     extern f32 ExtrasFadeEnd;
 }

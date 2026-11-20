@@ -141,8 +141,6 @@ extern u8 DroidCheat32Enabled;
 extern f32 ForceDeflectSpeed;
 extern f32 ForceDeflectSeekRate;
 
-extern const f64 GameObjectNearFloorNoFloorHeight;
-
 static f32 MoveFabs(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;

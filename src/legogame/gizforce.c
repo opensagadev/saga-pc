@@ -1842,7 +1842,7 @@ ADDGIZMOTYPE *GizForce_RegisterGizmo(i32 type_id) {
     addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))GizForces_ReserveBufferSpace;
     addtype->fns.load_fn = (i32(*)(void *, void *))GizForces_Load;
     addtype->fns.post_load_fn = (void (*)(void *, void *))GizForces_PostLoad;
-    addtype->fns.add_level_sfx_fn = (void *)GizForces_AddLevelSfx;
+    addtype->fns.add_level_sfx_fn = GizForces_AddLevelSfx;
     force_gizmotype_id = type_id;
     return addtype;
 }

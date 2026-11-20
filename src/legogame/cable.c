@@ -16,6 +16,7 @@
 #include "legoapi/items/base/apiobject.h"
 #include "legoapi/items/collect/minikits.h"
 #include "legoapi/items/objects/cable.h"
+#include "legoapi/items/objects/gameobjects.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/misc/gamemain.h"
 #include "legoapi/misc/utilities.h"
@@ -34,7 +35,6 @@
 #include <string.h>
 
 // The cable code tests the character context flags as a 64-bit field.
-extern const f64 GameObjectNearFloorNoFloorHeight;
 
 // The unit carries a private copy of the safe divide used by the cable code.
 static f32 CableFdiv(f32 a, f32 b) {

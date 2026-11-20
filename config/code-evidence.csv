@@ -2451,7 +2451,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x00742190,4,?GetNext@PC_SHADER_PARAMETER_LOCAL@@QAEPAU1@XZ,extent,,nu2api/VertexDeclarations.cpp,unreferenced,
 0x007421a0,10,?SetNext@PC_SHADER_PARAMETER_LOCAL@@QAEXPAU1@@Z,extent,,nu2api/VertexDeclarations.cpp,unreferenced,
 0x007421b0,3,?fun_007421b0@PC_SHADER_PARAMETER_LOCAL@@QAEPAU1@XZ,extent,,nu2api/VertexDeclarations.cpp,unreferenced,
-0x007421c0,6,_NuShaderObjectPcGetHardwareVertexProcessing,extent,,nu2api/VertexDeclarations.cpp,unreferenced,
+0x007421c0,6,_NuShaderObjectGetHardwareVertexProcessing,extent,,nu2api/VertexDeclarations.cpp,unreferenced,
 0x00742230,5,_fun_00742230,extent,,nu2api/VertexDeclarations.cpp,unreferenced,
 0x00742390,1,_NushaderobjectNuErrorPc,copy,,nu2api/nushaderobject.cpp,"empty static directly before the VuVecMake copy at 0x7423a0; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x007423a0,28,?NushaderobjectVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,nu2api/nushaderobject.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,

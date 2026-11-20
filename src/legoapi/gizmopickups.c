@@ -19,6 +19,7 @@
 #include "legoapi/items/base/apiobject.h"
 #include "legoapi/items/collect/minikits.h"
 #include "legoapi/items/objects/game_obj.h"
+#include "legoapi/items/objects/gameobjects.h"
 #include "legoapi/items/objects/objectsall.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/lib/hub.h"
@@ -61,8 +62,6 @@ typedef struct PICKUP_RESET_PROGRESS { // size 0x100
     u32 visible[16];                   // 0x80
     u32 activated[16];                 // 0xc0
 } PICKUP_RESET_PROGRESS;
-
-extern const f64 GameObjectNearFloorNoFloorHeight;
 
 static NUMTX *PickupSetRotationX(NUMTX *matrix, i32 angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];

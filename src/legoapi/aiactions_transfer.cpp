@@ -108,6 +108,3 @@ extern "C" {
         return 1;
     }
 }
-
-extern "C" struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM *, AISYS *, AIPATH *, char *, char *, i32, char *, i32,
-                                                                   i32);

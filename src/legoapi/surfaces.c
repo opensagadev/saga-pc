@@ -5,6 +5,7 @@
 #include "legoapi/characters/motion.h"
 #include "legoapi/characters/motion/move.h"
 #include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/objects/gameobjects.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/misc/gamemain.h"
 #include "legoapi/misc/utilities.h"
@@ -18,8 +19,6 @@
 #include "legogame/game.h"
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
-
-extern const f64 GameObjectNearFloorNoFloorHeight;
 
 void SurfaceMaskOn(u32 *surface_mask) {
     *surface_mask = 0x20;

@@ -17,6 +17,7 @@
 #include "legoapi/items/collect/batarang.h"
 #include "legoapi/items/collect/detonator.h"
 #include "legoapi/items/fx/explosions.h"
+#include "legoapi/items/objects/gameobjects.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/misc/gamemain.h"
 #include "legoapi/misc/utilities.h"
@@ -32,8 +33,6 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
-
-extern "C" const f64 GameObjectNearFloorNoFloorHeight;
 
 extern "C" {
 

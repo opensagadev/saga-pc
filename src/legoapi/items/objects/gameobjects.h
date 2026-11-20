@@ -11,6 +11,7 @@ extern "C" {
 #endif
     GAMEOBJECT *FindNearestGameObject(NUVEC *, GAMEOBJECT *, u32, f32, f32, i32, i32, i32, f32 *, i32, i32 (*)(GAMEOBJECT *));
     i32 GameObjectNearFloor(GAMEOBJECT *, f32, f32 *);
+    extern const f64 GameObjectNearFloorNoFloorHeight; /* the floor height GameObjectNearFloor reports when there is no floor */
 
     extern GAMEOBJECT *CarWashHack;
     extern f32 player_tag_timer;

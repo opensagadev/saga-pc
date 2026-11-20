@@ -1586,7 +1586,7 @@ void AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM *system) {
                 active = controller->on_frames[frame / 32] & (1 << (frame % 32));
                 break;
             case AIPATHCNX_TARGET_BUILDIT:
-                if (controller->target_buildit->build_state != 2) {
+                if (controller->target_buildit->build_state != GIZBUILDIT_BUILD_BUILT) {
                     active = 0;
                 }
                 break;

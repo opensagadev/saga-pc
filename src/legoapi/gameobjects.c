@@ -29,8 +29,6 @@
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
 
-extern const f64 GameObjectNearFloorNoFloorHeight;
-
 /* A copy of the 33-DWORD script cohort (script processor plus takeover link), without extending the
    packet. Held as words so the copy is one block move and the local is not treated as a /GS buffer. */
 

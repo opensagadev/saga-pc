@@ -15,6 +15,7 @@
 #include "legoapi/gizmos/object/gizpanel.h"
 #include "legoapi/items/base/animpacket.h"
 #include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/objects/gameobjects.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/menus/core/hint.h"
 #include "legoapi/menus/screens/gamestructure.h"
@@ -49,7 +50,6 @@ typedef struct {
     u32 visible[1];
 } PANEL_PROGRESS;
 
-extern const f64 GameObjectNearFloorNoFloorHeight;
 extern const f64 PanelVariantTwoTargetY;
 extern const f64 PanelVariantTwoTargetZ;
 extern const f64 PanelVariantThreeTargetY;

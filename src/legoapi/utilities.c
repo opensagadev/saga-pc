@@ -11,6 +11,7 @@
 #include "legoapi/cutscenes/cutscenes.h"
 #include "legoapi/gizmos/transport/grapples.h"
 #include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/objects/gameobjects.h"
 #include "legoapi/items/objects/objectsall.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/misc/gamemain.h"
@@ -49,8 +50,6 @@
 
 #include <stdlib.h>
 #include "legoapi/menus/screens/gamestatus_lsw.h"
-
-extern const f64 GameObjectNearFloorNoFloorHeight;
 
 static f32 UtilitiesFabs(f32 value);
 

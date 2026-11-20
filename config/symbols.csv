@@ -15586,7 +15586,7 @@ address,symbol,size,ctype
 0x742190,?GetNext@PC_SHADER_PARAMETER_LOCAL@@QAEPAU1@XZ,4,
 0x7421a0,?SetNext@PC_SHADER_PARAMETER_LOCAL@@QAEXPAU1@@Z,10,
 0x7421b0,?fun_007421b0@PC_SHADER_PARAMETER_LOCAL@@QAEPAU1@XZ,3,
-0x7421c0,_NuShaderObjectPcGetHardwareVertexProcessing,6,
+0x7421c0,_NuShaderObjectGetHardwareVertexProcessing,6,
 0x007421d0,?PCShaderUnpackColour@@YAPAMPAMH@Z,91,
 0x742230,_fun_00742230,5,
 0x00742240,_PCShaderSamplerBiasBits,62,u32 __cdecl(f32)

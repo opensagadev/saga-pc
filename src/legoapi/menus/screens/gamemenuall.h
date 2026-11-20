@@ -42,6 +42,7 @@ extern "C" {
     extern i32 header_g;
     extern i32 header_b;
     void MenuEnterNewGame(MENU *menu);
+    void GameDrawMenuEntry(MENU *menu, char *text);
     extern const char *MenuSettingsStrings[39];
     extern i32 MenuSettingsStringsInitialized;
     extern i32 startnewgame_initiated;
