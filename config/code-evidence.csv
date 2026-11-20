@@ -624,7 +624,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x0057a850,28,?CutscenesVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,legoapi/cutscenes.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x0057f650,1,_BoltsNuError,copy,,legoapi/bolts.cpp,"empty static directly before the Fdiv copy at 0x57f660; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x0057f660,54,?BoltsFdiv@@YAMMM@Z,copy,,legoapi/bolts.cpp,bytes equal ?NuFdiv@@YAMMM@Z,
-0x0057f6a0,28,_fun_0057f6a0,extent,,legoapi/bolts.cpp,unreferenced,
+0x0057f6a0,28,?BoltsMtxSetRotationXY@@YAXPAUnumtx_s@@HH@Z,extent,,legoapi/bolts.cpp,unreferenced,
 0x0057f6c0,23,?BoltsVuVecCopy@@YAXAAUVuVec@@ABU1@@Z,copy,,legoapi/bolts.cpp,bytes equal ?VuVecCopy@@YAXAAUVuVec@@ABU1@@Z,
 0x0057f6e0,28,?BoltsVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,legoapi/bolts.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x0057fc20,12,_fun_0057fc20,extent,,legoapi/bolts.cpp,unreferenced,

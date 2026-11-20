@@ -60,6 +60,13 @@ extern "C" void BoltsNuError(void) {
    private helpers inline into their callers. C entry points keep C linkage
    via extern "C". */
 
+static void BoltsMtxSetRotationXY(NUMTX *matrix, NUANG x, NUANG y) {
+    NUANGVEC angles;
+    angles.x = x;
+    angles.y = y;
+    NuMtxSetRotationXYVU0(matrix, &angles);
+}
+
 /* The SDK's inline NuFdiv: a quotient that is 0 when either operand is 0. */
 static f32 BoltsFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
@@ -1358,7 +1365,6 @@ extern "C" void Bolt_AddDeflectedBolt(BOLT *bolt, NUVEC *incoming, NUVEC *normal
     NUVEC reflected;
     NUVEC position;
     NUMTX matrix;
-    NUANGVEC angles;
     i32 type_id;
     f64 offset;
     if (type->flags_60 & 0x100000) {
@@ -1374,9 +1380,7 @@ extern "C" void Bolt_AddDeflectedBolt(BOLT *bolt, NUVEC *incoming, NUVEC *normal
         i_temp_xrot += (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 10922.0 - 5461.0);
         temp_yrot = (u16)(temp_yrot + (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 10922.0 - 5461.0));
     }
-    angles.x = i_temp_xrot;
-    angles.y = temp_yrot;
-    NuMtxSetRotationXYVU0(&matrix, &angles);
+    BoltsMtxSetRotationXY(&matrix, i_temp_xrot, temp_yrot);
     if (type->reflect_type < 0 || type->reflect_type >= BoltSys->count) {
         type_id = bolt->type_id;
     } else {
@@ -2001,10 +2005,7 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
     reflected:
         NewBuzz(object->player.pad->bound_pad, 0.1f, 0);
         NUMTX matrix;
-        NUANGVEC angles;
-        angles.x = temp_zrot;
-        angles.y = temp_yrot;
-        NuMtxSetRotationXYVU0(&matrix, &angles);
+        BoltsMtxSetRotationXY(&matrix, temp_zrot, temp_yrot);
         BOLT *reflected_bolt = Bolt_Add(object, &points[hit], &matrix, bolt->type_id, 0);
         if (reflected_bolt != NULL) {
             reflected_bolt->flags |= BOLT_DEFLECTED;
@@ -2027,10 +2028,7 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
                 temp_yrot += static_cast<i32>((qrand() * static_cast<f64>(1.0f / 65535.0f)) * 16384.0f - 5461.0f);
                 temp_zrot = static_cast<i32>(-1820.0f - (qrand() * static_cast<f64>(1.0f / 65535.0f)) * 6371.0f);
                 NUMTX matrix;
-                NUANGVEC angles;
-                angles.x = temp_zrot;
-                angles.y = temp_yrot;
-                NuMtxSetRotationXYVU0(&matrix, &angles);
+                BoltsMtxSetRotationXY(&matrix, temp_zrot, temp_yrot);
                 BoltNoSfx = 1;
                 BOLT *reflected_bolt = Bolt_Add(object, &points[hit], &matrix, bolt->type_id, 0);
                 if (reflected_bolt != NULL) {
@@ -2858,7 +2856,6 @@ extern "C" {
             }
             if ((flags & 0x600000) != 0) {
                 u16 pitch;
-                NUANGVEC angles;
                 if ((flags & 0x80000000) != 0 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->aim_target != NULL) {
                     f32 distance = NuVecXZDist(&object->aim_target->collision_position, &object->collision_position, NULL);
                     f32 degrees;
@@ -2874,26 +2871,18 @@ extern "C" {
                 if (target_position != NULL) {
                     heading = NuAtan2D(target_position->x - shot_position->x, target_position->z - shot_position->z);
                 }
-                angles.x = pitch;
-                angles.y = heading;
-                NuMtxSetRotationXYVU0(&matrix, &angles);
+                BoltsMtxSetRotationXY(&matrix, pitch, heading);
             } else if (target_position != NULL) {
-                NUANGVEC angles;
                 if (velocity != NULL && (object->portal_flags & APIOBJECT_ENGAGE_PREDICTIVE) != 0) {
                     CalculateInterceptVector(shot_position, intercept_position, velocity, speed, &delta, NULL);
                 } else {
                     NuVecSub(&delta, target_position, shot_position);
                 }
                 FindAnglesXY(&delta, NULL, NULL);
-                angles.x = temp_zrot;
-                angles.y = temp_yrot;
-                NuMtxSetRotationXYVU0(&matrix, &angles);
+                BoltsMtxSetRotationXY(&matrix, temp_zrot, temp_yrot);
             } else if (object->movement_mode == 4) {
-                NUANGVEC angles;
                 FindAnglesXY(&direction, NULL, NULL);
-                angles.x = temp_zrot;
-                angles.y = temp_yrot;
-                NuMtxSetRotationXYVU0(&matrix, &angles);
+                BoltsMtxSetRotationXY(&matrix, temp_zrot, temp_yrot);
             } else {
                 NuMtxSetRotationYInline(&matrix, heading);
             }

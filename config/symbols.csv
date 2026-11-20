@@ -5785,7 +5785,7 @@ address,symbol,size,ctype
 0x57ef50,_CutScenes_Update,1783,"void __cdecl (WORLDINFO *, i32)"
 0x57f650,_BoltsNuError,1,
 0x57f660,?BoltsFdiv@@YAMMM@Z,54,
-0x57f6a0,_fun_0057f6a0,28,
+0x57f6a0,?BoltsMtxSetRotationXY@@YAXPAUnumtx_s@@HH@Z,28,
 0x57f6c0,?BoltsVuVecCopy@@YAXAAUVuVec@@ABU1@@Z,23,
 0x57f6e0,?BoltsVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x57f700,_NuMtxSetRotationYInline,162,"static void(NUMTX *, NUANG)"
