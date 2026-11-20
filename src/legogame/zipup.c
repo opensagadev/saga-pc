@@ -702,7 +702,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             NuVecRotateY(&end_offset, &end_offset, yaw);
             NuVecNorm(&start_offset, &start_offset);
             NuVecNorm(&end_offset, &end_offset);
-            object->player.attached_zipup->pitch_adjustment = (u16)ZipupACos(start_offset.z * end_offset.z + start_offset.y * end_offset.y);
+            object->player.attached_zipup->pitch_adjustment = ZipupACos(start_offset.z * end_offset.z + start_offset.y * end_offset.y);
             object->player.attached_zipup->rider_target_position = object->player.attached_zipup->rider_start_offset;
             NuVecAdd(&object->player.attached_zipup->rider_target_position, hook, &object->player.attached_zipup->rider_target_position);
         }
