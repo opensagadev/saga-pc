@@ -10,6 +10,7 @@
 #include "nu2api/numath/numaths.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/nuwin32/Stubs.h"
+#include <math.h>
 
 void PCAnimationLoadFailureNoOp(char *path) {
 }
@@ -180,4 +181,13 @@ void fun_004eedb0(void) {
 }
 
 void NuAllocReport(const void *message, ...) {
+}
+
+/* Two uncalled copies of the SDK's NuFabs (nufloat.h). */
+f32 PCNativeDebugFabs(f32 value) {
+    return fabs(value);
+}
+
+f32 PCNativeDebugNuFabs(f32 value) {
+    return fabs(value);
 }
