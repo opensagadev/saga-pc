@@ -581,7 +581,7 @@ extern "C" void Titles_Update(WORLDINFO *world) {
 extern "C" {
     f32 TitleScale = 0.825f;
     f32 TitlePictureY = -0.15f;
-    i32 AreaDataLoaded = 1;
+    volatile i32 AreaDataLoaded = 1;
     f32 AreaCrawlSoundWaitTime = 20.0f;
     f32 AreaCrawlMaximumTime = 45.0f;
     i32 AreaCrawlMusicEnabled = 1;
@@ -1184,7 +1184,7 @@ extern "C" {
     f32 LevTime[5] = {0};
     AIPATHCNX *LevPathCnx[16] = {0};
     LEVFLAG LevFlag = {0};
-    i32 CharacterDataLoad = 0;
+    volatile i32 CharacterDataLoad = 0;
     LEVSFXFLAG LevSfxFlag = {0};
     GIZMOBLOWUP *LevBlowUp[2] = {0};
     f32 LevAlpha = 0.0f;
@@ -1420,9 +1420,16 @@ void LoadAreaCharacters(void) {
             NuRndrGradClear(0xf00, top, bottom, 1.0f);
             f32 alpha = loadareacharacters_no_backdrop_reset == 0 && LoadTime < 0.5f ? LoadTime * 2.0f : 1.0f;
             BackDrop_Draw(alpha, 1);
-            if (AreaDataLoaded == 0 || (f64)LoadWait >= (f64)0.1f) {
-                f32 crawl_alpha = AreaDataLoaded == 0 ? 1.0f : (f32)(((f64)LoadWait - (f64)0.1f) / ((f64)LOADWAITTIME - (f64)0.1f));
-                if (AreaDataLoaded == 0 || crawl_alpha > 0.0f) {
+            {
+                f32 crawl_alpha;
+                if (AreaDataLoaded == 0) {
+                    crawl_alpha = 1.0f;
+                } else if ((f64)LoadWait >= (f64)0.1f) {
+                    crawl_alpha = (f32)(((f64)LoadWait - (f64)0.1f) / ((f64)LOADWAITTIME - (f64)0.1f));
+                } else {
+                    crawl_alpha = 0.0f;
+                }
+                if (crawl_alpha > 0.0f) {
                     TextCrawl_Draw(FRAMETIME, 0, crawl_alpha, NULL);
                     SetQFont2D();
                 }
