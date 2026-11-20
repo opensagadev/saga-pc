@@ -2052,7 +2052,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x006c1c90,3,_fun_006c1c90,extent,,editor/edlevelall.cpp,unreferenced,
 0x006c1e00,19,?SerialiseInt32@EdStream@@QAEHAAH@Z,extent,,editor/edlevelall.cpp,unreferenced,
 0x006c1e20,19,?SerialiseByte@EdStream@@QAEHAAE@Z,extent,,editor/edlevelall.cpp,unreferenced,
-0x006c1e40,10,_fun_006c1e40,extent,,editor/edlevelall.cpp,unreferenced,
+0x006c1e40,10,?VuMtxSetIdentity@@YAXAAUVuMtx@@@Z,extent,,editor/edlevelall.cpp,unreferenced,
 0x006c1f60,34,?GetAttributeValue@EdMember@@QAEHHHPAXH@Z,extent,,editor/edlevelall.cpp,unreferenced,
 0x006c1f90,34,?SetAttributeValue@EdMember@@QAEHHHPAXH@Z,extent,,editor/edlevelall.cpp,unreferenced,
 0x006c1fc0,31,?SetInput@EdInputContext@@QAEXHHM@Z,extent,,editor/edlevelall.cpp,unreferenced,

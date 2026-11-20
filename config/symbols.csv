@@ -12849,7 +12849,7 @@ address,symbol,size,ctype
 0x6c1d50,?Drag@EdMatrixControl@@SAXPAUeduiitem_s@@@Z,173,
 0x6c1e00,?SerialiseInt32@EdStream@@QAEHAAH@Z,19,
 0x6c1e20,?SerialiseByte@EdStream@@QAEHAAE@Z,19,
-0x6c1e40,_fun_006c1e40,10,
+0x6c1e40,?VuMtxSetIdentity@@YAXAAUVuMtx@@@Z,10,
 0x6c1e50,??0EdInputStream@@QAE@PAUMemoryBuffer@@0@Z,40,
 0x6c1e80,??0EdFileInputStream@@QAE@PAUMemoryBuffer@@0@Z,68,
 0x6c1ed0,??_EEdFileInputStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdFileInputStream@@UAEPAXI@Z; no independent body
