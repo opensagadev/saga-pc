@@ -296,7 +296,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x004e2cd0,28,_EpisodeIIIVuVecMake,copy,,legogame/episodeIII.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x004e4a20,28,_EpisodeIVVuVecMake,copy,,legogame/episodeIII.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x004e5eb0,1,_fun_004e5eb0,extent,,legogame/episodeIV.c,unreferenced,
-0x004e5ec0,36,_fun_004e5ec0,extent,,legogame/episodeIV.c,unreferenced,
+0x004e5ec0,36,_AsteroidMtxSetRotateXYZ,extent,,legogame/episodeIV.c,unreferenced,
 0x004e5ef0,28,_EpisodeVVuVecMake,copy,,legogame/episodeIV.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x004e8d20,29,_HothBattleMelee_Reset,extent,,legogame/episodeV.c,unreferenced,
 0x004e8fc0,57,_HothBattleMelee_IsWaveCreature,extent,,legogame/episodeV.c,unreferenced,

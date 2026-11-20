@@ -2760,7 +2760,7 @@ address,symbol,size,ctype
 0x4e5ba0,_DeathStarBattleDUpdate,762,
 0x004e5ea0,_DeathStarBattleDDraw,1,void __cdecl(WORLDINFO *)
 0x4e5eb0,_fun_004e5eb0,1,
-0x4e5ec0,_fun_004e5ec0,36,
+0x4e5ec0,_AsteroidMtxSetRotateXYZ,36,
 0x4e5ef0,_EpisodeVVuVecMake,28,
 0x4e5f10,_KilledTrooperCannon,198,
 0x4e5fe0,_InitTrooperCannons,21,void __cdecl(WORLDINFO *)

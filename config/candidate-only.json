@@ -62,11 +62,6 @@
    "kind": "function"
   },
   {
-   "unit": "src/legoapi/episodeV.c",
-   "symbol": "_AsteroidSetAngVec",
-   "kind": "function"
-  },
-  {
    "unit": "src/nu2api/nu3d_includes.cpp",
    "symbol": "__bad_alloc_Message",
    "kind": "data"

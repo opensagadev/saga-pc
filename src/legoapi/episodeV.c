@@ -83,10 +83,12 @@ static void AsteroidChaseD_SetTurretTarget(i32 index, NUVEC *position) {
     }
 }
 
-static void AsteroidSetAngVec(NUANGVEC *out, NUANG x, NUANG y, NUANG z) {
-    out->x = x;
-    out->y = y;
-    out->z = z;
+static void AsteroidMtxSetRotateXYZ(NUMTX *matrix, NUANG x, NUANG y, NUANG z) {
+    NUANGVEC angles;
+    angles.x = x;
+    angles.y = y;
+    angles.z = z;
+    NuMtxSetRotateXYZVU0(matrix, &angles);
 }
 
 TROOPERCANNON troopercannons[4] = {0};
@@ -300,7 +302,6 @@ void Asteroid_AddParts(GIZMOBLOWUP *blowup) {
     i32 index;
     i32 part_count;
     nuhspecial_s *special;
-    NUANGVEC rotation;
     NUMTX matrix;
     NUVEC velocity;
     NUVEC centre;
@@ -315,8 +316,7 @@ void Asteroid_AddParts(GIZMOBLOWUP *blowup) {
         if (NuSpecialExistsFn(special) == 0) {
             continue;
         }
-        AsteroidSetAngVec(&rotation, qrand(), qrand(), qrand());
-        NuMtxSetRotateXYZVU0(&matrix, &rotation);
+        AsteroidMtxSetRotateXYZ(&matrix, qrand(), qrand(), qrand());
         NuMtxTranslate(&matrix, &blowup->position);
         velocity.x = velocity.y = 0.0f;
         velocity.z = (f32)(qrand() * PlayerRandomScale * NuTimeBarColumnStep + 2.0);
