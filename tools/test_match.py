@@ -521,6 +521,21 @@ class ObjdiffProgressTests(unittest.TestCase):
                 match.objdiff_progress({"measures": measures}, self.functions())
 
 
+class ComparisonCacheTests(unittest.TestCase):
+    def test_full_run_stores_only_its_own_entries(self):
+        cache = {"a|t|old": {"stem": "a"}, "b|t|x": {"stem": "b"}}
+        fresh = {"a|t|new": {"stem": "a"}}
+        self.assertEqual(match.stored_comparisons(cache, fresh, partial=False), fresh)
+
+    def test_partial_run_retires_the_entries_of_the_objects_it_rewrote(self):
+        # A --function run rewrote stem a's objects with new base bytes: the entry for the old bytes must
+        # not survive, or a later run back on the old bytes would score the new objects.
+        cache = {"a|t|old": {"stem": "a"}, "b|t|x": {"stem": "b"}}
+        fresh = {"a|t|new": {"stem": "a"}}
+        self.assertEqual(match.stored_comparisons(cache, fresh, partial=True),
+                         {"b|t|x": {"stem": "b"}, "a|t|new": {"stem": "a"}})
+
+
 class ObjdiffIntegrationTests(unittest.TestCase):
     def test_instruction_gaps_render_on_either_side_without_game_files(self):
         if not (match.ROOT / "build/tools/bin/objdiff-cli").is_file():

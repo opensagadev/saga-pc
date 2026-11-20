@@ -394,6 +394,19 @@ def progress(functions, target, padding=(), data=()):
             "matched_functions": sum(r["exact_match"] for r in functions)}
 
 
+def stored_comparisons(cache, fresh, partial):
+    """The comparison cache to store after a run: `fresh` holds this run's entries (address|target|base keys).
+
+    A full run compared every function, so its entries are the whole cache. A partial run (--function)
+    rewrote the comparison objects of its functions: an older entry under the same stem names other base
+    bytes and must go, or a later run would reuse it and score those objects without rewriting them.
+    """
+    if not partial:
+        return fresh
+    stems = {hit["stem"] for hit in fresh.values()}
+    return {**{key: hit for key, hit in cache.items() if hit.get("stem") not in stems}, **fresh}
+
+
 def objdiff_percent(measures):
     # Protobuf JSON omits scalar fields at their default value, including 0%.
     value = measures.get("fuzzy_match_percent", 0.0)
@@ -739,9 +752,11 @@ def main():
     # Per-function analysis keyed by (address, target bytes, relocated base bytes): an unchanged
     # function's comparison objects are not rewritten and capstone does not run on it again, so a
     # rebuild that changes few objects is checked in seconds. The analysis is deterministic for given
-    # bytes, so the cache only depends on the pinned tool versions.
+    # bytes, so the cache only depends on the pinned tool versions. An entry also vouches for the
+    # comparison objects on disk: whoever rewrites them must store the cache (stored_comparisons); the
+    # format number retires caches written before --function runs did that.
     cache_path = OUT / "comparison-cache.json"
-    cache_key = f"{cli_pin.get('version')}|{cli_pin.get('sha256')}|{diffclass.available()}"
+    cache_key = f"2|{cli_pin.get('version')}|{cli_pin.get('sha256')}|{diffclass.available()}"
     cache = {}
     if cache_path.is_file():
         stored = json.loads(cache_path.read_text())
@@ -890,8 +905,8 @@ def main():
             scores = [r["objdiff_percent"] for r in row["objects"]]
             if scores:
                 row["objdiff_percent"] = min(scores)
-    if not args.function:
-        cache_path.write_text(json.dumps({"key": cache_key, "results": fresh}))
+    cache_path.write_text(json.dumps({"key": cache_key,
+                                      "results": stored_comparisons(cache, fresh, partial=bool(args.function))}))
     for row in functions + data:
         similarity = row.get("objdiff_percent")
         score = f"; objdiff {similarity:.2f}%" if similarity is not None else ""
