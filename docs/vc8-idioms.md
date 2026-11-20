@@ -700,6 +700,30 @@ and that follows the shape of the source around the returns:
 The other way round, an early `return` placed in a branch that also falls to
 the end keeps its own tail. Only the branch target differs (diff class
 `operands`, 0 hunks).
+### I59: a vector local keeps its own stack slots
+
+Scalar `f32` locals of disjoint scopes share stack slots; the members of a
+struct local do not. A frame that is 12 bytes larger than ours, with three
+temporaries stored to slots no other value uses, is a `NUVEC` the original
+filled field by field: `NuRainProcess` stored the camera delta in
+`NUVEC delta` (`delta.x = ...; particle->position.x += delta.x;`), not in
+`f32 dx, dy, dz` (99.95 -> exact).
+
+### I60: an inlined call of a counting helper instead of the loop written out
+
+`while (path[path_len] != '\0') ++path_len;` counts in the parameter's
+register; `path_len = NuStrLen(path);` (the unit's own `NuStrLen`, inlined)
+counts in a fresh register and copies the result back (`mov edi, eax`).
+A copy of the count after the loop means a helper was called.
+`NuFileExtGetInfoPC` (78 -> exact with a `path_end` local for `path +
+path_len` computed before the loop, I41), and with it the three callers
+`NuFileExtGetType`, `NuFileExtConvert`, `NuFileExtRemove`.
+
+### I61: the terminator at the loop index
+
+After `for (i = 0; i < info->len; ++i) dest[i] = ...;`, retail writes
+`dest[i] = '\0'` (the index register), not `dest[info->len] = '\0'` (a
+reload of the field). `NuFileExtGetExt` (also I3: `dest_size < info->len`).
 
 ## Unexplained (no natural source change found)
 
