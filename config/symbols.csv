@@ -198,7 +198,7 @@ address,symbol,size,ctype
 0x411470,_DrawStarFighter,380,static void (DOGFIGHT_FIGHTER *)
 0x4115f0,_SelectFreeFlightGroup,68,DOGFIGHT_GROUP * __cdecl (void)
 0x411640,_ProcessFlightGroup,501,"static void (DOGFIGHT_GROUP *, DOGFIGHT_QUICK_BUFFER *)"
-0x411840,_fun_00411840,51,
+0x411840,_DrawStarFighterGroup,51,
 0x411880,_SpaceAudioPoint,68,
 0x4118d0,_SpaceResetAudioPoint,171,void __cdecl (void)
 0x411980,_DogfightResetSpace,639,"static void (WORLDINFO *, DOGFIGHT_SPACE *)"
@@ -419,7 +419,7 @@ address,symbol,size,ctype
 0x00427ec0,_PlayersDropInOut,2672,i32 __cdecl (void)
 0x428930,_CutSceneFabs,18,static f32 __cdecl(f32)
 0x428950,_GameVuVecMake,28,
-0x428970,_fun_00428970,43,
+0x428970,_AdaptiveDifficultyReset,43,
 0x4289a0,_AdaptiveDifficultyChange,156,"f32 __cdecl(ADAPTIVEDIFFICULTY*,f32)"
 0x428a40,_AdaptiveDifficultyUpdate,219,f32 __cdecl(ADAPTIVEDIFFICULTY *)
 0x428b20,?InitOptionsSaveDefaults@@YAXPAUoptionssave_s@@@Z,81,
@@ -704,9 +704,9 @@ address,symbol,size,ctype
 0x441200,_Condition_EitherPlayerOnForcePlatform,253,"f32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
 0x441300,_Condition_ForceBeingUsed,32,"f32 __cdecl(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
 0x441320,_Condition_PlayerDeflectingPart,24,
-0x441340,_fun_00441340,53,
-0x441380,_fun_00441380,53,
-0x4413c0,_fun_004413c0,53,
+0x441340,_PlayerPullingLever,53,
+0x441380,_PlayerUsingHatMachine,53,
+0x4413c0,_PlayerUsingPanel,53,
 0x441400,_Condition_EitherPlayerPullingLever,111,
 0x441470,_Condition_EitherPlayerUsingHatMachine,111,
 0x4414e0,_Condition_EitherPlayerUsingPanel,111,
@@ -1476,7 +1476,7 @@ address,symbol,size,ctype
 0x474c90,_fun_00474c90,10,
 0x474ca0,_fun_00474ca0,3,
 0x474cb0,?HubResolveAreaInfo@@YAXPAUhub_area_info_s@@PAUWORLDINFO_s@@@Z,127,
-0x474d30,_fun_00474d30,31,
+0x474d30,?HubFindAreaInfo@@YAPAUhub_area_info_s@@PAU1@H@Z,31,
 0x474d50,_Hub_BonusBuildIt,46,i32 __cdecl(struct GIZBUILDIT *)
 0x474d80,?HubRestoreBuildIts@@YAXXZ,112,
 0x474df0,?HubSetBuildItPiecesVisible@@YAXPAUGIZBUILDIT@@H@Z,89,
@@ -1525,7 +1525,7 @@ address,symbol,size,ctype
 0x479710,?HubDrawMiniKitStats@@YAXHM@Z,623,
 0x479980,_Hub_UpdateKit,420,
 0x479b30,_Hub_Reset,552,void __cdecl(WORLDINFO *)
-0x479d60,_fun_00479d60,52,
+0x479d60,?HubPlayerOnPad@@YAHPAUgameobject_s@@H@Z,52,
 0x479da0,_Hub_ClearStats,21,void __cdecl(void)
 0x479dc0,_Percent_UpdateHint,179,i32 __cdecl(HINT*)
 0x479e80,_IndyUnlocked_UpdateHint,66,i32 __cdecl(HINT*)
@@ -1798,7 +1798,7 @@ address,symbol,size,ctype
 0x491ba0,_fun_00491ba0,1,
 0x491bb0,_fun_00491bb0,28,
 0x00491bd0,?NuMainDrawSplines@@YAXPAUNUGSCN_s@@@Z,327,void __cdecl(NUGSCN *)
-0x491d20,_fun_00491d20,45,
+0x491d20,?DrawSortedDebris@@YAXH@Z,45,
 0x491d50,?NuMainUpdateFrame@@YAXPAUWORLDINFO_s@@PAH@Z,2715,"void __cdecl (WORLDINFO *, i32 *)"
 0x4927f0,?NuMainRenderWorld@@YAXPAUWORLDINFO_s@@@Z,845,void __cdecl (WORLDINFO *)
 0x00492b40,_NuMain,4332,"i32 __cdecl (i32, char **)"
@@ -1816,8 +1816,8 @@ address,symbol,size,ctype
 0x493e60,_DrawGameState,794,
 0x494180,?DrawSaveSlotsImpl@@YAXPAUmenu_s@@M@Z,203,
 0x494250,_DrawSaveSlots,23,
-0x494270,_fun_00494270,23,
-0x494290,_fun_00494290,48,
+0x494270,?OptionsMusicVolume@@YAMPAUoptionssave_s@@@Z,23,
+0x494290,?ApplyOptionsMusicVolume@@YAMPAUoptionssave_s@@@Z,48,
 0x004942c0,_MenuEnterOptions,60,void __cdecl (MENU *)
 0x00494300,_MenuUpdateOptions,690,void __cdecl (MENU *)
 0x004945c0,_MenuDrawOptions,510,void __cdecl (MENU *)
@@ -2095,8 +2095,8 @@ address,symbol,size,ctype
 0x4b6bf0,_MovePlayer_NETWORK,1121,
 0x4b7060,?PanelVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x4b7080,_NuRndrPrimSetColour,108,
-0x4b70f0,_fun_004b70f0,15,
-0x4b7100,_fun_004b7100,28,
+0x4b70f0,_PanelPushCoordinateSystem,15,
+0x4b7100,_PanelPopCoordinateSystem,28,
 0x4b7120,_PowerUp_GetPanelY,108,f32 __cdecl (i32)
 0x4b7190,_DrawAutoSaveIcon,11,
 0x4b71a0,_UpdateStats,1955,
@@ -2290,8 +2290,8 @@ address,symbol,size,ctype
 0x4c9a30,_fun_004c9a30,1,
 0x004c9a40,_NuPrim2DSetColor,108,void __cdecl (i32)
 0x4c9ab0,_NuPrim2DSetUV,22,"void __cdecl (f32, f32)"
-0x4c9ad0,_fun_004c9ad0,15,
-0x4c9ae0,_fun_004c9ae0,28,
+0x4c9ad0,_StartupPushCoordinateSystem,15,
+0x4c9ae0,_StartupPopCoordinateSystem,28,
 0x4c9b00,_fun_004c9b00,20,
 0x004c9b20,_LoadPermBuildLegalTextureName,169,void (char *)
 0x004c9bd0,_LoadPermLoadLegalTexture,309,void (void)

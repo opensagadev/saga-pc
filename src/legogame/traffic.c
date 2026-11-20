@@ -200,7 +200,7 @@ static TRAFFICANIMINSTANCE_s *TrafficAnimSys_Spawn(TRAFFICANIMSYS_s *system, TRA
             NuLinkedListRemove(&system->free_instances, &instance->link);
             NuLinkedListAppend(&system->active_instances, &instance->link);
             instance->frame = frame;
-            if (vehicle_index < 0 || vehicle_index >= 16) {
+            if (vehicle_index < 0 || vehicle_index >= (i32)sizeof(animation->vehicle_indices)) {
                 vehicle_index = qrand() / (0xffff / animation->vehicle_count + 1);
             }
             instance->animation = animation;

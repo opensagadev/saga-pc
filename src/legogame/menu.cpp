@@ -244,6 +244,20 @@ extern "C" {
     i32 MenuOptionsPlayerFlag = 0;
 }
 
+/* The music volume the options give: silent when music is off. */
+static f32 OptionsMusicVolume(OPTIONSSAVE *options) {
+    if (options->music_enabled == 0) {
+        return 0.0f;
+    }
+    return GameGetMusicVolume(&TempOptions);
+}
+
+static f32 ApplyOptionsMusicVolume(OPTIONSSAVE *options) {
+    f32 volume = OptionsMusicVolume(options);
+    legoSetMusicVolume(volume);
+    return volume;
+}
+
 extern "C" void MenuUpdateOptions(MENU *menu) {
     i32 accept_row;
     i32 requested_sound;
@@ -252,8 +266,7 @@ extern "C" void MenuUpdateOptions(MENU *menu) {
 
     GameSetSoundVolume(&TempOptions);
     if (WORLD->current_level == TITLES_LDATA) {
-        title_music_volume = TempOptions.music_enabled == 0 ? 0.0f : GameGetMusicVolume(&TempOptions);
-        legoSetMusicVolume(title_music_volume);
+        title_music_volume = ApplyOptionsMusicVolume(&TempOptions);
     } else {
         GameSetMusicVolume(&TempOptions);
     }
@@ -418,7 +431,7 @@ extern "C" void MenuDrawExtras(MENU *menu) {
 }
 
 static i32 UpdateTitleSequence(MENU *menu) {
-    f32 music_volume = Game.options_save.music_enabled == 0 ? 0.0f : GameGetMusicVolume(&TempOptions);
+    f32 music_volume = OptionsMusicVolume(&Game.options_save);
     if (newgamefade != 0) {
         if (newgamefade == 1) {
             if (newgamewait > 0.0f) {
@@ -488,7 +501,7 @@ extern "C" void MenuUpdateNewGame(MENU *menu) {
         NewLData = LOADGAME_LDATA;
         UsePlayerList = 2;
         GameSetSoundVolume(&Game.options_save);
-        legoSetMusicVolume(Game.options_save.music_enabled == 0 ? 0.0f : GameGetMusicVolume(&TempOptions));
+        ApplyOptionsMusicVolume(&Game.options_save);
         Hint_LoadAllGameState();
         newgamealpha = 0.0f;
         LswForceUsedHintFlags |= 7;

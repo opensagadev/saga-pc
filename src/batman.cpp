@@ -523,6 +523,14 @@ set_stage:
     FadeSys.SetStage(2);
 }
 
+/* The debris render stack, re-sorted, then both debris passes. */
+static void DrawSortedDebris(i32 paused) {
+    UpdateDebrisRenderStackPriority();
+    SortDebrisRenderStack();
+    DebrisDraw(paused ^ editor_active, 1);
+    DebrisDraw(paused ^ editor_active, 0);
+}
+
 static void NuMainRenderWorld(WORLDINFO *world) {
     i32 paused;
 
@@ -616,10 +624,7 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     NuRndrEndScene();
     NuRndrFx(paused, &plr_lastpos);
     NuRndrBeginScene(1);
-    UpdateDebrisRenderStackPriority();
-    SortDebrisRenderStack();
-    DebrisDraw(paused ^ editor_active, 1);
-    DebrisDraw(paused ^ editor_active, 0);
+    DrawSortedDebris(paused);
     NuRndrEndSceneEx(0);
     DebrisDrawGlass();
     if (screendump == 0) {

@@ -141,6 +141,17 @@ extern "C" {
             vertex->v = v;
         }
 
+        /* The release headers' coordinate system stack push and pop; this unit keeps its own copies. */
+        static void StartupPushCoordinateSystem(i32 system) {
+            ++NuPrimCSPos;
+            NuPrimSetCoordinateSystem(system);
+        }
+
+        static void StartupPopCoordinateSystem(void) {
+            --NuPrimCSPos;
+            NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+        }
+
         static void LoadPermBuildLegalTextureName(char *name) {
             i32 pal = NuRegionGet() != 2;
             NuStrCpy(name, "legal");
@@ -1192,8 +1203,7 @@ extern "C" {
                         }
                         half = (1.0f - 1.3333334f / aspect) * 0.5f;
                         NuRndrClear(0xb00, 0, 1.0f);
-                        ++NuPrimCSPos;
-                        NuPrimSetCoordinateSystem(2);
+                        StartupPushCoordinateSystem(2);
                         NuPrim2DBegin(0x10, 7, legal_mtl);
                         NuPrim2DSetColor((i32)(((u32)(i32)(legal_alpha * 255.0) << 24) | 0x808080));
                         NuPrim2DSetUV(0.0f, 0.0f);
@@ -1202,8 +1212,7 @@ extern "C" {
                         NuPrim2DSetUV(1.0f, 1.0f);
                         NuPrim2DAddXYZ(1.0f - half, 1.0f, 0.0f);
                         NuPrim2DEnd();
-                        --NuPrimCSPos;
-                        NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+                        StartupPopCoordinateSystem();
                     }
 
                     intro_alpha = LoadPermFadeAlpha(intro_timer, 3.0f);

@@ -369,6 +369,17 @@ static HUB_AREA_INFO HubAreaInfo[51] = {
     {AreaFixUpName_Senate, "network_door", NULL, NULL, NULL, 0.0f, 0.0f, 257, NULL, NULL, {0}, NULL, NULL},
     {NULL, NULL, NULL, NULL, NULL, 0.0f, 0.0f, 0, NULL, NULL, {0}, NULL, NULL},
 };
+
+/* The entry of the area with that index, or NULL. */
+static HUB_AREA_INFO *HubFindAreaInfo(HUB_AREA_INFO *info, i32 area_index) {
+    for (; info->area_name != NULL; ++info) {
+        if (info->area != NULL && info->area->index == area_index) {
+            return info;
+        }
+    }
+    return NULL;
+}
+
 extern "C" {
     i32 PCArcadePointGoals[5] = {5, 10, 25, 50, 0};
 }
@@ -1591,13 +1602,7 @@ static i32 Hub_UpdateMiniKitBounds(i32 area_index, WORLDINFO *world) {
         return 0;
     }
     HUBMINIKIT_s *kit = &world->hub_minikits[area_index];
-    HUB_AREA_INFO *info = NULL;
-    for (HUB_AREA_INFO *entry = HubAreaInfo; entry->area_name != NULL; ++entry) {
-        if (entry->area != NULL && entry->area->index == area_index) {
-            info = entry;
-            break;
-        }
-    }
+    HUB_AREA_INFO *info = HubFindAreaInfo(HubAreaInfo, area_index);
     const CHARACTERDATA *data = &CDataList[model];
     const f32 bottom = data->bottom;
     const f32 top = data->top;
@@ -1812,13 +1817,7 @@ extern "C" void Hub_DrawMiniKits(WORLDINFO *world) {
         if (world->minikit_pieces_by_id[area] == NULL || ADataList[area].minikit_id == -1) {
             continue;
         }
-        HUB_AREA_INFO *info = NULL;
-        for (HUB_AREA_INFO *entry = HubAreaInfo; entry->area_name != NULL; ++entry) {
-            if (entry->area != NULL && area == entry->area->index) {
-                info = entry;
-                break;
-            }
-        }
+        HUB_AREA_INFO *info = HubFindAreaInfo(HubAreaInfo, area);
         f32 offset;
         if (area == areas[(selected + (count - 2)) % count]) {
             offset = -HubMiniKitViewerStep * 2.0;
@@ -2168,6 +2167,16 @@ extern "C" void Hub_Reset(WORLDINFO *world) {
     HubHologramTargetAlpha = 0.0f;
     HubBuildItsReset = 0;
     HubPreventDropOutTime = 0.0f;
+}
+
+/* The player stands, free to act, on the hub pad with that number (any pad for -1). */
+static i32 HubPlayerOnPad(GAMEOBJECT *player, i32 pad) {
+    if (player->ground_flags != 0 &&
+        (player->player.character_context == -1 || player->player.character_context == 0x31 || player->player.character_context == 0x32) &&
+        (pad == -1 || (i8)player->jump_animation_state == pad)) {
+        return 1;
+    }
+    return 0;
 }
 
 extern "C" void Hub_ClearStats(void) {
@@ -3113,16 +3122,10 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     if (SHOPACTIVE != 0) {
         DrawCoinTotalTime = 1;
     } else if (GetMenuID() != MENU_CUSTOMISER) {
-        if (((Player[0]) != NULL && (Player[0]->flags_1fc & 0x80) != 0 && Player[0]->ground_flags != 0 &&
-             (Player[0]->player.character_context == -1 || Player[0]->player.character_context == 0x31 ||
-              Player[0]->player.character_context == 0x32) &&
-             Player[0]->jump_animation_state == 14)) {
+        if (Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0 && HubPlayerOnPad(Player[0], 14)) {
             available = 1;
         }
-        if (((Player[1]) != NULL && (Player[1]->flags_1fc & 0x80) != 0 && Player[1]->ground_flags != 0 &&
-             (Player[1]->player.character_context == -1 || Player[1]->player.character_context == 0x31 ||
-              Player[1]->player.character_context == 0x32) &&
-             Player[1]->jump_animation_state == 14)) {
+        if (Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0 && HubPlayerOnPad(Player[1], 14)) {
             available = 1;
         }
     }
@@ -3147,16 +3150,10 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     }
     available = 0;
     if (Customiser_MenuAvailable(CharacterCustomiser) != 0) {
-        if (((Player[0]) != NULL && (Player[0]->flags_1fc & 0x80) != 0 && Player[0]->ground_flags != 0 &&
-             (Player[0]->player.character_context == -1 || Player[0]->player.character_context == 0x31 ||
-              Player[0]->player.character_context == 0x32) &&
-             Player[0]->jump_animation_state == 15)) {
+        if (Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0 && HubPlayerOnPad(Player[0], 15)) {
             available = 1;
         }
-        if (((Player[1]) != NULL && (Player[1]->flags_1fc & 0x80) != 0 && Player[1]->ground_flags != 0 &&
-             (Player[1]->player.character_context == -1 || Player[1]->player.character_context == 0x31 ||
-              Player[1]->player.character_context == 0x32) &&
-             Player[1]->jump_animation_state == 15)) {
+        if (Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0 && HubPlayerOnPad(Player[1], 15)) {
             available = 1;
         }
     }
@@ -3180,16 +3177,10 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     Customiser_Update(CharacterCustomiser, world);
     available = 0;
     if (Missions_PartyAvailable(NULL) != 0) {
-        if (((Player[0]) != NULL && (Player[0]->flags_1fc & 0x80) != 0 && Player[0]->ground_flags != 0 &&
-             (Player[0]->player.character_context == -1 || Player[0]->player.character_context == 0x31 ||
-              Player[0]->player.character_context == 0x32) &&
-             Player[0]->jump_animation_state == 20)) {
+        if (Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0 && HubPlayerOnPad(Player[0], 20)) {
             available = 1;
         }
-        if (((Player[1]) != NULL && (Player[1]->flags_1fc & 0x80) != 0 && Player[1]->ground_flags != 0 &&
-             (Player[1]->player.character_context == -1 || Player[1]->player.character_context == 0x31 ||
-              Player[1]->player.character_context == 0x32) &&
-             Player[1]->jump_animation_state == 20)) {
+        if (Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0 && HubPlayerOnPad(Player[1], 20)) {
             available = 1;
         }
     }

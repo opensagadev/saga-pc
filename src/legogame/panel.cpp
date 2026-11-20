@@ -142,6 +142,19 @@ static void NuRndrPrimSetColour(i32 colour) {
 }
 
 extern "C" {
+    /* The release headers' coordinate system stack push and pop; this unit keeps its own copies. */
+    static void PanelPushCoordinateSystem(i32 system) {
+        ++NuPrimCSPos;
+        NuPrimSetCoordinateSystem(system);
+    }
+
+    static void PanelPopCoordinateSystem(void) {
+        --NuPrimCSPos;
+        NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+    }
+}
+
+extern "C" {
 
     f32 PowerUp_GetPanelY(i32 player_index) {
         if (player_index == -1) {
@@ -1532,8 +1545,7 @@ extern "C" void PanelRender(WORLDINFO *world) {
     if (WORLD != NULL && WORLD->current_level == TITLES_LDATA) {
         colour = (i32)((1.0f - newgamealpha) * 255.0);
         NuRndrBeginScene(1);
-        ++NuPrimCSPos;
-        NuPrimSetCoordinateSystem(2);
+        PanelPushCoordinateSystem(2);
         NuPrim2DBegin(0x10, 5, FadeMtl2);
         colour <<= 24;
         NuRndrPrimSetColour(colour);
@@ -1541,8 +1553,7 @@ extern "C" void PanelRender(WORLDINFO *world) {
         NuRndrPrimSetColour(colour);
         NuPrim2DAddXYZ(1.0f, 1.0f, 0.0f);
         NuPrim2DEnd();
-        --NuPrimCSPos;
-        NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+        PanelPopCoordinateSystem();
         NuRndrEndScene();
     }
 }

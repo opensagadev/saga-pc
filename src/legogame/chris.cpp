@@ -1816,6 +1816,17 @@ extern "C" {
         DogfightDebrisKeys[3] = -1;
     }
 
+    static void DrawStarFighterGroup(DOGFIGHT_GROUP *group) {
+        i32 i;
+        if (group->active != 0) {
+            for (i = 0; i < 5; ++i) {
+                if (group->fighters[i].fields.active != 0) {
+                    DrawStarFighter(&group->fighters[i]);
+                }
+            }
+        }
+    }
+
     static void DrawSpaceLevel(DOGFIGHT_SPACE *space) {
         GAMEOBJECT *player;
         NUMTX matrix;
@@ -1828,13 +1839,7 @@ extern "C" {
                 }
             }
             for (i = 0; i < 8; ++i) {
-                if (space->groups[i].active != 0) {
-                    for (j = 0; j < 5; ++j) {
-                        if (space->groups[i].fighters[j].fields.active != 0) {
-                            DrawStarFighter(&space->groups[i].fighters[j]);
-                        }
-                    }
-                }
+                DrawStarFighterGroup(&space->groups[i]);
             }
             for (i = 0; i < 96; ++i) {
                 if (space->queued_fighters[i].fields.active != 0) {

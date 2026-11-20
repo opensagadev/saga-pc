@@ -902,40 +902,61 @@ f32 Condition_PlayerDeflectingPart(AISYS *system, AISCRIPTPROCESS *process, AIPA
     return 0.0f;
 }
 
-f32 Condition_EitherPlayerPullingLever(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
+/* The player is in the pull lever context on a target of that name (any name when NULL). */
+static i32 PlayerPullingLever(GAMEOBJECT *object, char *name) {
     GIZMO_LEVER *target;
-    if (player != NULL && player->player.character_context == CHARACTER_CONTEXT_PULL_LEVER && (target = player->player.grapple) != NULL &&
+    if (object != NULL && object->player.character_context == CHARACTER_CONTEXT_PULL_LEVER && (target = object->player.grapple) != NULL &&
         (name == NULL || NuStrICmp(target->name, name) == 0)) {
+        return 1;
+    }
+    return 0;
+}
+
+f32 Condition_EitherPlayerPullingLever(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
+    if (PlayerPullingLever(player, name)) {
         return 1.0f;
     }
-    if (player2 != NULL && player2->player.character_context == CHARACTER_CONTEXT_PULL_LEVER &&
-        (target = player2->player.grapple) != NULL && (name == NULL || NuStrICmp(target->name, name) == 0)) {
+    if (PlayerPullingLever(player2, name)) {
         return 1.0f;
     }
     return 0.0f;
+}
+
+/* The player is in the hat machine context on a target of that name (any name when NULL). */
+static i32 PlayerUsingHatMachine(GAMEOBJECT *object, char *name) {
+    HATMACHINE *target;
+    if (object != NULL && object->player.character_context == CHARACTER_CONTEXT_HAT_MACHINE && (target = object->player.grapple) != NULL &&
+        (name == NULL || NuStrICmp(target->name, name) == 0)) {
+        return 1;
+    }
+    return 0;
 }
 
 f32 Condition_EitherPlayerUsingHatMachine(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    HATMACHINE *target;
-    if (player != NULL && player->player.character_context == CHARACTER_CONTEXT_HAT_MACHINE && (target = player->player.grapple) != NULL &&
-        (name == NULL || NuStrICmp(target->name, name) == 0)) {
+    if (PlayerUsingHatMachine(player, name)) {
         return 1.0f;
     }
-    if (player2 != NULL && player2->player.character_context == CHARACTER_CONTEXT_HAT_MACHINE &&
-        (target = player2->player.grapple) != NULL && (name == NULL || NuStrICmp(target->name, name) == 0)) {
+    if (PlayerUsingHatMachine(player2, name)) {
         return 1.0f;
     }
     return 0.0f;
 }
 
-f32 Condition_EitherPlayerUsingPanel(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
+/* The player is in the interface context on a target of that name (any name when NULL). */
+static i32 PlayerUsingPanel(GAMEOBJECT *object, char *name) {
     GIZPANEL_s *target;
-    if (player != NULL && player->player.character_context == CHARACTER_CONTEXT_INTERFACE && (target = player->player.grapple) != NULL &&
+    if (object != NULL && object->player.character_context == CHARACTER_CONTEXT_INTERFACE && (target = object->player.grapple) != NULL &&
         (name == NULL || NuStrICmp(target->name, name) == 0)) {
+        return 1;
+    }
+    return 0;
+}
+
+f32 Condition_EitherPlayerUsingPanel(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
+    if (PlayerUsingPanel(player, name)) {
         return 1.0f;
     }
-    if (player2 != NULL && player2->player.character_context == CHARACTER_CONTEXT_INTERFACE && (target = player2->player.grapple) != NULL &&
-        (name == NULL || NuStrICmp(target->name, name) == 0)) {
+    if (PlayerUsingPanel(player2, name)) {
         return 1.0f;
     }
     return 0.0f;

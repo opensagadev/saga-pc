@@ -268,6 +268,14 @@ extern "C" {
         return *(f32 *)&bits;
     }
 
+    /* A new game starts on the first difficulty level with the accumulator half way. */
+    static void AdaptiveDifficultyReset(void) {
+        memset(&adaptivedifficulty, 0, sizeof(adaptivedifficulty));
+        adaptivedifficulty.level = 0;
+        adaptivedifficulty.accumulator = 0.5f;
+        adaptivedifficulty.time_elapsed = 0.0f;
+    }
+
     f32 AdaptiveDifficultyChange(ADAPTIVEDIFFICULTY *difficulty, f32 amount) {
         if (difficulty != NULL && Cheat_IsOn(44) && !BonusArea && !GAMEDEMO) {
             f32 sum = amount + difficulty->accumulator;
@@ -1585,10 +1593,7 @@ void NewGame(void) {
     TempOptions = saved_options;
     memset(&Game, 0, sizeof(Game));
     Game.options_save = saved_options;
-    memset(&adaptivedifficulty, 0, sizeof(adaptivedifficulty));
-    adaptivedifficulty.level = 0;
-    adaptivedifficulty.accumulator = 0.5f;
-    adaptivedifficulty.time_elapsed = 0.0f;
+    AdaptiveDifficultyReset();
     Game.save_version = 5;
     if (EDataList != NULL) {
         Game.area_save[EDataList[0].area_ids[0]].complete = 1;
