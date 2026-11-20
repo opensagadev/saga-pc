@@ -1084,7 +1084,7 @@ extern "C" {
                     break;
                 case AIJUMP_TAKE_OFF:
                     if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x26) != 0) {
-                        if (0.0f >= owner->player.jump_reentry_timer) {
+                        if (owner->player.jump_reentry_timer <= 0.0f) {
                             packet->path_connection_state = AIJUMP_JUMP;
                             owner->portal_flags |= APIOBJECT_AI_DOUBLE_JUMP;
                         }
