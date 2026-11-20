@@ -60,7 +60,7 @@ typedef struct numemblk_s {  // size 0x10
     u32 stride;              // 0x4
     i32 capacity;            // 0x8
     i16 flags;               // 0xc
-    u16 free_count;          // 0xe
+    i16 free_count;          // 0xe
 } NUMEMBLK;
 
 i32 decode_buffer_left = 0;
