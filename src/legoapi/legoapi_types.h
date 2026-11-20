@@ -1002,7 +1002,7 @@ struct TRAFFICANIM_s {           // size 0x140
     f32 room_frame_interval;     // 0x020
     f32 y_offset;                // 0x024
     i8 vehicle_indices[16];      // 0x028
-    u8 rooms[256];               // 0x038
+    i8 rooms[256];               // 0x038
     i8 vehicle_count;            // 0x138
     u8 disabled;                 // 0x139
     /* the pursuit's travel direction test, 1 or -1 (0 unknown) */
