@@ -45,6 +45,9 @@ struct D3DXMATRIX { // size 0x40
     FLOAT m43;      // 0x38
     FLOAT m44;      // 0x3c
 
+    D3DXMATRIX() {
+    }
+
     D3DXMATRIX(FLOAT f11, FLOAT f12, FLOAT f13, FLOAT f14, FLOAT f21, FLOAT f22, FLOAT f23, FLOAT f24, FLOAT f31, FLOAT f32, FLOAT f33,
                FLOAT f34, FLOAT f41, FLOAT f42, FLOAT f43, FLOAT f44) {
         m11 = f11;
@@ -64,6 +67,13 @@ struct D3DXMATRIX { // size 0x40
         m43 = f43;
         m44 = f44;
     }
+};
+
+/* The D3DX vector type (only the parts used here). */
+struct D3DXVECTOR3 { // size 0xc
+    FLOAT x;         // 0x0
+    FLOAT y;         // 0x4
+    FLOAT z;         // 0x8
 };
 
 extern "C" void fun_006df010(void) {
@@ -541,4 +551,30 @@ extern "C" void PcCaptureScreenshot(u32 width, u32 height) {
 }
 
 extern "C" void fun_006dff30(void) {
+}
+
+/* Uncalled: turns a camera matrix to look at a target, keeping its position. */
+extern "C" void NuCameraLookAt(NUMTX *camera, NUVEC *target) {
+    D3DXVECTOR3 up = {0.0f, 1.0f, 0.0f};
+    if (camera != NULL) {
+        NUVEC position;
+        NUMTX positioned;
+        D3DXVECTOR3 at;
+        D3DXVECTOR3 eye;
+        D3DXMATRIX view;
+        NUMTX result;
+
+        NuMtxGetTranslation(camera, &position);
+        NuMtxSetTranslation(&positioned, &position);
+        at.x = target->x;
+        at.y = target->y;
+        at.z = target->z;
+        eye.x = position.x;
+        eye.y = position.y;
+        eye.z = position.z;
+        D3DXMatrixLookAtLH(&view, &eye, &at, &up);
+        memcpy(&result, &view, sizeof(result));
+        NuMtxInv(&result, &result);
+        *camera = result;
+    }
 }

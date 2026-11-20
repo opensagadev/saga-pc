@@ -1352,6 +1352,7 @@ struct PC_SPECIAL_SHADOW_LIGHT {      // size 0x828
     void LookAt(NUVEC *, NUVEC *, NUVEC *);
     void SetupCustomCameraFrustum(NUCAMERA *, const f32 *, i32);
     void RenderSceneShadow(NUGSCN *scene);
+    i32 TestSphere(const NUVEC *centre, f32 radius, i32 set);
     void ComputeShadowMatrix(NURNDRLIGHTRECORD *);
     void SetupShadow(NURNDRLIGHTRECORD *);
     void RenderShadow(i32, PC_FRAMEBUFFER *);

@@ -13430,6 +13430,12 @@ static i32 ShadowSegmentClip(const NUVEC *point, const NUVEC *end, const NUVEC *
     return difference_squared > distance ? 1 : 2;
 }
 
+/* Uncalled: how a sphere meets the shadow segment of one render set (0 outside, 1 inside, 2 touching). */
+i32 PC_SPECIAL_SHADOW_LIGHT::TestSphere(const NUVEC *centre, f32 radius, i32 set) {
+    return ShadowSegmentClip(centre, &render_sets[set].endpoint1.xyz, &render_sets[set].endpoint0.xyz, render_sets[set].shadow_radius,
+                             radius);
+}
+
 NUDISPLAYLIST *PC_SPECIAL_SHADOW_LIGHT::GetShadowList(i32 set, NUMTL *material) {
     if (material->shader.shadow_set > 0) {
         return &render_sets[set].shadow_lists[1];

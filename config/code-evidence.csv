@@ -994,7 +994,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x005c6d70,25,_fun_005c6d70,extent,,nu2api/nu3d_includes.cpp,unreferenced,
 0x005c6d90,39,?SetPostShadowMatrices@PC_SPECIAL_SHADOW_LIGHT@@QAEXPAUnumtx_s@@0@Z,extent,,nu2api/nu3d_includes.cpp,unreferenced,
 0x005c8260,91,_fun_005c8260,extent,,nu2api/nu3d_includes.cpp,unreferenced,
-0x005c89c0,56,?fun_005c89c0@PC_SPECIAL_SHADOW_LIGHT@@QAEHPBUnuvec_s@@MH@Z,extent,,nu2api/nu3d_includes.cpp,unreferenced,
+0x005c89c0,56,?TestSphere@PC_SPECIAL_SHADOW_LIGHT@@QAEHPBUnuvec_s@@MH@Z,extent,,nu2api/nu3d_includes.cpp,unreferenced,
 0x005c8a00,1144,??4nurndrlightrecord_s@@QAEAAU0@ABU0@@Z,extent,,nu2api/nu3d_includes.cpp,1138 of 1144 bytes decoded; unreferenced,
 0x005c9120,3,_fun_005c9120,extent,,nu2api/nu3d_includes.cpp,unreferenced,
 0x005c9fe0,3,_fun_005c9fe0,extent,,nu2api/nu3d_includes.cpp,unreferenced,
@@ -1452,7 +1452,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x00603940,1,_fun_00603940,extent,,nu2api/nu3d_pc_includes.cpp,unreferenced,
 0x00603950,1,_fun_00603950,extent,,nu2api/nu3d_pc_includes.cpp,unreferenced,
 0x006039c0,6,_fun_006039c0,extent,,nu2api/nu3d_pc_includes.cpp,unreferenced,
-0x00603bf0,205,_fun_00603bf0,sibling,_NuCameraLookAt,nu2api/nu3d_pc_includes.cpp,position between DisplayListSetShadowCasterFlagPS and NuCameraSet in libnu2api.a(nu3d_pc_includes.o); calls D3DXMatrixLookAtLH NuMtxGetTranslation NuMtxInv NuMtxSetTranslation,
+0x00603bf0,205,_NuCameraLookAt,sibling,_NuCameraLookAt,nu2api/nu3d_pc_includes.cpp,position between DisplayListSetShadowCasterFlagPS and NuCameraSet in libnu2api.a(nu3d_pc_includes.o); calls D3DXMatrixLookAtLH NuMtxGetTranslation NuMtxInv NuMtxSetTranslation,
 0x00603d20,170,_NuCameraSetGlobalParameters,extent,,nu2api/nu3d_pc_includes.cpp,unreferenced,
 0x00603dd0,81,_NuCameraGetGlobalParameters,extent,,nu2api/nu3d_pc_includes.cpp,unreferenced,
 0x00603e30,11,_NuCameraStackReset,extent,,nu2api/nu3d_pc_includes.cpp,unreferenced,
@@ -1465,7 +1465,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x00604a70,6,_NuCameraGetScreenMatrix,extent,,nu2api/nu3d_pc_includes.cpp,unreferenced,
 0x00604b50,33,_NuCameraClipTestExtentsDefault,sibling,_NuCameraClipTestExtentsVU0,nu2api/nu3d_pc_includes.cpp,position between NuCameraClipTestExtents and NuHGobjRndr in libnu2api.a(nu3d_pc_includes.o); calls NuCameraClipTestExtents NuCameraGetClippingMtx,
 0x00604b80,23,_fun_00604b80,sibling,_NuHGobjRead,nu2api/nu3d_pc_includes.cpp,position between NuCameraClipTestExtents and NuHGobjRndr in libnu2api.a(nu3d_pc_includes.o); calls NuGHGRead,android:src/nu2api/nu3d/android/nuhgo_android.c
-0x00604ba0,71,_fun_00604ba0,sibling,_NuHGobjPOILocalMtxFromIX,nu2api/nu3d_pc_includes.cpp,position between NuCameraClipTestExtents and NuHGobjRndr in libnu2api.a(nu3d_pc_includes.o); calls NuMtxMulVU0,android:src/nu2api/nu3d/android/nuhgo_android.c
+0x00604ba0,71,_NuHGobjPOILocalMtxFromIX,sibling,_NuHGobjPOILocalMtxFromIX,nu2api/nu3d_pc_includes.cpp,position between NuCameraClipTestExtents and NuHGobjRndr in libnu2api.a(nu3d_pc_includes.o); calls NuMtxMulVU0,android:src/nu2api/nu3d/android/nuhgo_android.c
 0x00604bf0,1,_fun_00604bf0,extent,,nu2api/nu3d_pc_includes.cpp,unreferenced,
 0x00604c90,6,_fun_00604c90,extent,,nu2api/nu3d_pc_includes.cpp,unreferenced,
 0x00604ca0,15,_fun_00604ca0,extent,,nu2api/nu3d_pc_includes.cpp,unreferenced,

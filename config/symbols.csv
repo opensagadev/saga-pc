@@ -7512,7 +7512,7 @@ address,symbol,size,ctype
 0x5c82c0,_PostShadowComputePlanes,626,"i32 __cdecl(const NUVEC4 *,const NUVEC4 *,NUVEC4 *)"
 0x5c8540,_PostShadowComputeCapsule,713,"void __cdecl(const NUVEC4 *,const NUVEC4 *,NUVEC4 *,NUVEC4 *,f32 *)"
 0x5c8810,?ShadowSegmentClip@@YAHPBUnuvec_s@@00MM@Z,417,
-0x5c89c0,?fun_005c89c0@PC_SPECIAL_SHADOW_LIGHT@@QAEHPBUnuvec_s@@MH@Z,56,
+0x5c89c0,?TestSphere@PC_SPECIAL_SHADOW_LIGHT@@QAEHPBUnuvec_s@@MH@Z,56,
 0x5c8a00,??4nurndrlightrecord_s@@QAEAAU0@ABU0@@Z,1144,
 0x5c8e80,??0NuDeferredFilterGen@@QAE@XZ,78,native ctor fullvptr/field proof
 0x5c8ed0,?isEnabled@NuDeferredFilterGen@@UAE_NXZ,30,native exactVT binding; unimplemented extent unclaimed
@@ -8892,7 +8892,7 @@ address,symbol,size,ctype
 0x603ad0,_DisplayListSetAlphaPS,63,"void __cdecl(NUDISPLAYLISTITEM *,NUDISPLAYLISTITEM *,f32)"
 0x603b10,_DisplayListSetShadowCasterFlagPS,15,"void __cdecl(NUDISPLAYLISTITEM *,NUDISPLAYLISTITEM *,i32)"
 0x603b20,_NuDisplayListCamera,206,void __cdecl(void*)
-0x603bf0,_fun_00603bf0,205,
+0x603bf0,_NuCameraLookAt,205,
 0x00603cc0,_NuCameraSet,91,void (NUCAMERA *)
 0x603d20,_NuCameraSetGlobalParameters,170,
 0x603dd0,_NuCameraGetGlobalParameters,81,
@@ -8910,7 +8910,7 @@ address,symbol,size,ctype
 0x00604a80,_NuCameraSetProjectionMtx,200,"void __cdecl (NUMTX *, f32, f32, f32, f32)"
 0x604b50,_NuCameraClipTestExtentsDefault,33,
 0x604b80,_fun_00604b80,23,
-0x604ba0,_fun_00604ba0,71,
+0x604ba0,_NuHGobjPOILocalMtxFromIX,71,
 0x604bf0,_fun_00604bf0,1,
 0x604c00,_NuHGobjRndr,70,
 0x604c50,_NuHGobjGetPOI,49,"NUHGOBJ_POI *__cdecl(NUHGOBJ_EVAL *, u8)"
