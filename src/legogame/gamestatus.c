@@ -549,7 +549,8 @@ void MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current
         }
         if (title_alpha < 0.0f) {
             title_alpha = 0.0f;
-        } else if (title_alpha > 1.0f) {
+        }
+        if (title_alpha > 1.0f) {
             title_alpha = 1.0f;
         }
         Text3DEx(TTab[dat_008808d0], 0.0f, StatusCoinsTitleY, 1.0f, StatusCoinsTitleScale, StatusCoinsTitleScale, StatusCoinsTitleScale, 0,
