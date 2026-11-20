@@ -2498,14 +2498,14 @@ static i32 NuFileMatchExtensionPC(char *extension, char *path_end, i32 path_len)
 
 static PC_FILEEXTINFO *NuFileExtGetInfoPC(char *path, i32 path_len) {
     PC_FILEEXTINFO *info;
+    char *path_end;
     if (path_len == 0) {
-        while (path[path_len] != '\0') {
-            ++path_len;
-        }
+        path_len = NuStrLen(path);
     }
+    path_end = path + path_len;
     info = extensions;
     while (info->extension[0] != '\0') {
-        if (NuFileMatchExtensionPC(info->extension, path + path_len, path_len) != 0) {
+        if (NuFileMatchExtensionPC(info->extension, path_end, path_len) != 0) {
             return info;
         }
         ++info;
@@ -2564,14 +2564,14 @@ i32 NuFileExtGetExt(char *dest, i32 dest_size, i32 type) {
         if (info->platform == NUFILEEXT_PLATFORM_WINDOWS && info->type == type) {
             i32 i;
             const char *source;
-            if (info->len > dest_size) {
+            if (dest_size < info->len) {
                 return 0;
             }
             source = info->extension + info->len;
             for (i = 0; i < info->len; ++i) {
                 dest[i] = *--source;
             }
-            dest[info->len] = '\0';
+            dest[i] = '\0';
             return 1;
         }
     }

@@ -7116,7 +7116,10 @@ extern "C" {
     }
 
     u16 NuPortalGetRoomCount(NUGSCN *scene) {
-        return scene != NULL ? scene->num_rooms : 0;
+        if (scene != NULL) {
+            return scene->num_rooms;
+        }
+        return 0;
     }
 
     i32 clipTestSphere(NUPORTALSPHERE *sphere, NUPORTAL_FRUSTUM *frustum) {
@@ -7621,7 +7624,7 @@ extern "C" {
         } else {
             PortalClipRoom(scene, room, frustum);
         }
-        room->flags |= 4;
+        room->flags |= NUGSCNROOM_VISITED;
         if (depth >= scene->portal_depth) {
             return;
         }
@@ -7709,7 +7712,7 @@ extern "C" {
         drawInitialFrustum(frustum);
         /* The room count compare is unsigned. */
         for (i = 0; i < (u32)scene->num_rooms; ++i) {
-            scene->rooms[i].flags &= (u8)~4;
+            scene->rooms[i].flags &= ~NUGSCNROOM_VISITED;
         }
         roomRecursive(scene, frustum, NuPortalCameraRoom, -1, 0);
         drawSceneSphere(scene, NuPortalDebugDraw);

@@ -51,15 +51,17 @@ typedef struct NUGSCNROOM_s { // size 0x18
     u8 plane_count;           // 0x0e
     u8 portal_count;          // 0x0f
 
-    union { // size 0x1
+    union { // size 0x4
         u8 visibility_flags;
-        u8 flags;
+        u32 flags; // NUGSCNROOM_VISITED
     }; // 0x10
 
-    u8 unknown_11[3]; // 0x11
     u8 priority;      // 0x14
     u8 unknown_15[3]; // 0x15
 } NUGSCNROOM;
+
+/* NUGSCNROOM.flags: set while the portal walk has reached the room this frame. */
+#define NUGSCNROOM_VISITED 0x4
 
 typedef struct pc_display_clip_object_s { // size 0xc
     i32 material_count;                   // 0x0

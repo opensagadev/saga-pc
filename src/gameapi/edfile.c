@@ -2792,13 +2792,11 @@ static void eduicbItemDestroyFilter(eduimenu_s *menu, eduiitem_s *item) {
     edui_filter_s *filter = (edui_filter_s *)item;
     eduiitem_s *child;
     eduiitem_s *next;
-    if (filter->first_child != NULL) {
-        do {
-            child = filter->first_child;
-            next = child->next;
-            child->destroy(menu, child);
-            filter->first_child = next;
-        } while (next != NULL);
+    while (filter->first_child != NULL) {
+        child = filter->first_child;
+        next = child->next;
+        child->destroy(menu, child);
+        filter->first_child = next;
     }
     eduicbItemDestroyProp(menu, item);
 }

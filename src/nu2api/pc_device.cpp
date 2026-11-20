@@ -1417,7 +1417,7 @@ i32 PC_DEVICE_BACKEND::GetMultisampleIndex() {
     return multisample_index;
 }
 
-u8 PC_DEVICE_BACKEND::SupportsMultisample(i32 index) {
+bool PC_DEVICE_BACKEND::SupportsMultisample(i32 index) {
     return multisample_tested != 0 && quality[index] != -1;
 }
 
@@ -1452,7 +1452,7 @@ void PC_DEVICE_BACKEND::ApplyAspectMode(i32 mode) {
     }
 }
 
-u8 PC_DEVICE_BACKEND::HasRequestedModeChanged() {
+bool PC_DEVICE_BACKEND::HasRequestedModeChanged() {
     return requested_windowed != (parameters.windowed == 1) || requested_mode != active_mode || requested_feature != active_feature ||
            requested_multisample != multisample_index || requested_target_count != target_count;
 }

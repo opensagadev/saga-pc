@@ -75,14 +75,15 @@ void NuRainProcess(i32 paused) {
             if (NuRainFabs(global_camera.mtx.m30 - NuRainOldCameraMtx.m30) > 1.0f ||
                 NuRainFabs(global_camera.mtx.m31 - NuRainOldCameraMtx.m31) > 1.0f ||
                 NuRainFabs(global_camera.mtx.m32 - NuRainOldCameraMtx.m32) > 1.0f) {
-                f32 dx = global_camera.mtx.m30 + global_camera.mtx.m20 * 3.5 - NuRainOldCameraMtx.m30 - NuRainOldCameraMtx.m20 * 3.5;
-                f32 dy = global_camera.mtx.m31 + global_camera.mtx.m21 * 3.5 - NuRainOldCameraMtx.m31 - NuRainOldCameraMtx.m21 * 3.5;
-                f32 dz = global_camera.mtx.m32 + global_camera.mtx.m22 * 3.5 - NuRainOldCameraMtx.m32 - NuRainOldCameraMtx.m22 * 3.5;
+                NUVEC delta;
+                delta.x = global_camera.mtx.m30 + global_camera.mtx.m20 * 3.5 - NuRainOldCameraMtx.m30 - NuRainOldCameraMtx.m20 * 3.5;
+                delta.y = global_camera.mtx.m31 + global_camera.mtx.m21 * 3.5 - NuRainOldCameraMtx.m31 - NuRainOldCameraMtx.m21 * 3.5;
+                delta.z = global_camera.mtx.m32 + global_camera.mtx.m22 * 3.5 - NuRainOldCameraMtx.m32 - NuRainOldCameraMtx.m22 * 3.5;
                 for (i = 0; i < debkeydata[NuRainKey].allocated_chunk_count * 32; i++) {
                     DEBRISPARTICLE *particle = &debkeydata[NuRainKey].particle_chunks[i / 32]->particles[i % 32];
-                    particle->position.x += dx;
-                    particle->position.y += dy;
-                    particle->position.z += dz;
+                    particle->position.x += delta.x;
+                    particle->position.y += delta.y;
+                    particle->position.z += delta.z;
                 }
                 NuRainOldCameraMtx.m30 = global_camera.mtx.m30;
                 NuRainOldCameraMtx.m31 = global_camera.mtx.m31;
