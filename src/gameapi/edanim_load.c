@@ -699,9 +699,7 @@ void edanimDoInput(FRAME_PAD *pad) {
             }
         }
         if (edanim_particle_mode) {
-            if (edanim_nearest_particle == -1) {
-                edanimDetermineNearestParticle(-1.0f);
-            } else {
+            if (edanim_nearest_particle != -1) {
                 if (pad->digital_buttons_pressed & PAD_BUTTON_R1) {
                     if (++edanim_nearest_particle == AnimParams[edanim_nearest_param_id].effect_count) {
                         edanim_nearest_particle = 0;
@@ -712,6 +710,8 @@ void edanimDoInput(FRAME_PAD *pad) {
                         edanim_nearest_particle = AnimParams[edanim_nearest_param_id].effect_count - 1;
                     }
                 }
+            } else {
+                edanimDetermineNearestParticle(-1.0f);
             }
             if (edanim_nearest_particle != -1) {
                 NuGScnGetSpecial(&special, edbits_base_scene, edanim_nearest);

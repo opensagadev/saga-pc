@@ -591,7 +591,7 @@
     "src/debug/skin_trace_windows.cpp": "7d0a9ac065f45332fc54e49a9673d5486dafdf29e115ab3c6d7080492563da23",
     "src/editor/edlevelall.cpp": "853b68fbc0b46aae273ebb821555805b837689806a32f1415fb5f8caf5c1b801",
     "src/gameapi/edtools_outline.cpp": "8de9408ef5c3cecd47435c16b0b04cd0601bc42b4d1771820f0f207a7c423ccb",
-    "src/gameapi/edui_widget_render.cpp": "cd6d26c1853503826f00421a7b02b4473cbe6e0d7656860926ac8aea74b65bf4",
+    "src/gameapi/edui_widget_render.cpp": "100e7a4381978085b7956bdc8e69b47a7207f79795b31884ff0cc374f247dae1",
     "src/gameapi/message.cpp": "d3154208a984059579f080103af2eed2543cab2315bb1f7bc8892a9a33772682",
     "src/gameapi/saveload.cpp": "fc1a711f41a219e235d9d49a088d72df10087f0878bb71471565dee512ca9515",
     "src/gameapi/shop_persistence.cpp": "23a6fdcdaa17ebfacd60acc4fc9a7117a27785875f76c34c25435a177e1d3ae4",
@@ -719,9 +719,9 @@
     "src/editor/edtoolsall.c": "e2d7b1c9273d3a0ff82609fa5cf5adfd3893974726e70719183881e7c770fc9f",
     "src/float_constants.c": "600f34d3710851640bc9b36d8f2a5382663aa420fe1e411c96865ed7d00a9eda",
     "src/gameapi/aisysall.c": "3236f25cbc4e72e33113e4d42d0126904ddf1c8502d04959414d707a878e4e04",
-    "src/gameapi/apiobject.c": "6f5d4b38d1959f652676572991accdc3abf8e18de205dc02558ae3e38e587d53",
+    "src/gameapi/apiobject.c": "f9f578fc7f3a8031201f9dfaa6e3c06ba3e45c9be85c4936aea7d2d06dcd09f3",
     "src/gameapi/apisave.c": "87e03567fae7fdffca17011c7f19bdd13d7e53a48e5f845ce170ab3ab9e7cb96",
-    "src/gameapi/edanim_load.c": "188a935756bf74b5eab4311868c847e21cb1413cdbbd2aa4ee14fdb5d1783fda",
+    "src/gameapi/edanim_load.c": "8541bc1699302f24e6c0390494ef2d1ca2f2742bfaa18a967d6baeaad9337f71",
     "src/gameapi/edanim_update.c": "d161e532e8af104e38e65cc256b3f2d37c0d1f05666f76cd95814108da06f730",
     "src/gameapi/edbits.c": "2b0b6c0e5f805ad950db1f13a7208dd947c4fd283cf115524f00eaa272faeb63",
     "src/gameapi/edbri.c": "180a39bbaaea22c123c46829c9eff4ac95d4f98622efa8a9d3d6b6ec1f943ef2",
@@ -997,9 +997,9 @@
     "build/obj/editor/edtoolsall.obj": "ef8a2d268819b10e347d13c44dfea5db1d3e4a2e173ffd7532d9b206d692e12f",
     "build/obj/float_constants.obj": "54b8bbc9485cc5eecaa95a713f0ba880c380cf72044f4100ff6d95077583212f",
     "build/obj/gameapi/aisysall.obj": "11fe37d8508a46e4a774a74c32f6948edd161d9411ed03107a63de09db9abdeb",
-    "build/obj/gameapi/apiobject.obj": "9c42325e7d40669a7d9a11f2b750ca76c79780a3eed644d3c7ee3bdf5dbfcf65",
+    "build/obj/gameapi/apiobject.obj": "86e4af80e1a05a18ed34794494e45cfc9c03f40cef811207e5716380b28e217b",
     "build/obj/gameapi/apisave.obj": "667d5dbf933715aeba2e529640b150e52538ee3c10bf06e81195123383787788",
-    "build/obj/gameapi/edanim_load.obj": "17901139e8e4763566e82a00616f9d1d47f2c6dd4844339769b61ff958a5faff",
+    "build/obj/gameapi/edanim_load.obj": "4685c6c748616162b604ddf37ef5986de8d543cb22c9c71944e491fa02552d82",
     "build/obj/gameapi/edanim_update.obj": "ea8193a19655cd66fb51e2b585470a62cfbe5fdb1eb7b0396d50536d7aff5d54",
     "build/obj/gameapi/edbits.obj": "41ef9572daf11256b6ffb5e6bbb93f92573d53ed377605fe6d2081fccbece56b",
     "build/obj/gameapi/edbri.obj": "d38f4faefb60f613bcff87673257533810a2a1a5dd1e736e1e6baebd1265dfa2",
@@ -1011,7 +1011,7 @@
     "build/obj/gameapi/edpp_load.obj": "463d94299cc617baa3695b17dcb487b4de04b0ea014e476b291f236e96c50aeb",
     "build/obj/gameapi/edspline_load.obj": "d017b36d9e790fac9453f327d0719290c9eef65694387cc2582062572996e8a4",
     "build/obj/gameapi/edtools_outline.obj": "4b8e40b402dbeef4b1c8aa00461e81f3221ac42805bdbc53b8dc4c6df982de00",
-    "build/obj/gameapi/edui_widget_render.obj": "312f76333cafafecc4713a4884b9b25b1882edcaf08d4a2093c6e5777d90e3e5",
+    "build/obj/gameapi/edui_widget_render.obj": "991f4d19054a3610196b650b93343017b3f98e9c00bad9d20d5fe1cb39337799",
     "build/obj/gameapi/message.obj": "91b23870900930c9a9a418bdb8c53cb718f293fbdeb8eceb5107c62944e7ce0c",
     "build/obj/gameapi/rtl.obj": "a6639b9571420ee54490289764f5078eca94f2818930ab7d4ec075ffe601e0c9",
     "build/obj/gameapi/saveload.obj": "9df3647c71a7f7cf4334ea9104fc42c367722949d466704ad0a541c3dc800a65",
@@ -237118,29 +237118,21 @@
         "src/gameapi/edui_widget_render.cpp"
       ],
       "target_size": 191,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/gameapi/edui_widget_render.cpp",
-          "base_size": 183,
-          "exact_match": false,
+          "base_size": 191,
+          "exact_match": true,
           "target_sha256": "7a88a5269330c0911d0cc85702e9229837736397e0eef4c86de978f3e2c4ef48",
-          "base_sha256": "73a0845212c2a663c12e1daf781f78d046dc7329e62626b93ec9e516b13f2549",
+          "base_sha256": "7a88a5269330c0911d0cc85702e9229837736397e0eef4c86de978f3e2c4ef48",
           "relocation_count": 2,
           "comparison_unit": "0061b060-3659cd78b23a",
-          "objdiff_percent": 72.442856
+          "objdiff_percent": 100.0
         }
       ],
-      "diff_class": "structural",
-      "diff_hunks": 11,
-      "idioms": [
-        "I4",
-        "U3",
-        "U7",
-        "?"
-      ],
-      "status": "different",
-      "objdiff_percent": 72.442856
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "?EduiColourPickWithinHue@@YAHPAUedui_interact_s@@@Z",
@@ -246229,27 +246221,23 @@
       "objects": [
         {
           "unit": "src/gameapi/apiobject.c",
-          "base_size": 894,
+          "base_size": 1006,
           "exact_match": false,
           "target_sha256": "922b8429ae191baa57ff95637f36202455c29be191c714e50b9288af0b9f5ce2",
-          "base_sha256": "e2c8e0662baae8250fbc7dfc4339ed2fda32f4ed801e19e756f74359a2e91dcf",
+          "base_sha256": "b6c8dbd7ca657263f2c4b3dcbb452bfd981a01068b17627fbea16407c61ab947",
           "relocation_count": 9,
           "comparison_unit": "0062f520-7ae237d39bac",
-          "objdiff_percent": 77.47742
+          "objdiff_percent": 99.80322
         }
       ],
-      "diff_class": "structural",
-      "diff_hunks": 51,
+      "diff_class": "operand-shape",
+      "diff_hunks": 1,
       "idioms": [
-        "C",
-        "I4",
-        "U3",
         "U7",
-        "U8",
         "?"
       ],
       "status": "different",
-      "objdiff_percent": 77.47742
+      "objdiff_percent": 99.80322
     },
     {
       "name": "NuHGobjRestrictEvaluation",
@@ -281413,23 +281401,25 @@
       "objects": [
         {
           "unit": "src/gameapi/edanim_load.c",
-          "base_size": 1660,
+          "base_size": 1664,
           "exact_match": false,
           "target_sha256": "662b136115c7f0a04955e1c2d90e0e9d0a506c2ab6bf730c7707e16e307270b2",
-          "base_sha256": "cce9f5478e49f29dc8d0b38c595a6411275ccf0a4a3d53f52a28ce404f3fa97e",
+          "base_sha256": "1c7edaf8e32b8bf1d14b6eecc65099028692be9a832106c6cfcd84b59f5309f8",
           "relocation_count": 147,
           "comparison_unit": "006871c0-797270835bc1",
-          "objdiff_percent": 68.62619
+          "objdiff_percent": 81.11191
         }
       ],
       "diff_class": "structural",
-      "diff_hunks": 7,
+      "diff_hunks": 12,
       "idioms": [
         "I4",
-        "U7"
+        "U3",
+        "U7",
+        "?"
       ],
       "status": "different",
-      "objdiff_percent": 68.62619
+      "objdiff_percent": 81.11191
     },
     {
       "name": "edanimLoadPage",
@@ -898079,18 +898069,18 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 3348693,
-    "matched_code_bytes": 2108613,
-    "matching_percent": 60.74513301563761,
+    "matched_code_bytes": 2108804,
+    "matching_percent": 60.750635362633474,
     "padding_bytes": 114459,
-    "matched_padding_bytes": 100484,
-    "matched_code_with_padding_bytes": 2209097,
-    "matching_with_padding_percent": 63.63988608125152,
+    "matched_padding_bytes": 100485,
+    "matched_code_with_padding_bytes": 2209289,
+    "matching_with_padding_percent": 63.64541723634683,
     "fuzzy_text_data_bytes": 6896,
     "fuzzy_denominator_bytes": 3349891,
-    "fuzzy_coverage_percent": 96.08913466215938,
+    "fuzzy_coverage_percent": 96.10361629547343,
     "mapped_functions": 15914,
-    "matched_functions": 13865,
-    "objdiff_fuzzy_percent": 96.86984,
+    "matched_functions": 13866,
+    "objdiff_fuzzy_percent": 96.88443,
     "objdiff_total_code": 3328867,
     "image_bytes": 40067072,
     "mapped_bytes": 38523205,
@@ -898199,24 +898189,24 @@
   "text_coverage": {
     "original_text_bytes": 3471246,
     "mapped_reconstruction_bytes": 3348693,
-    "exact_reconstruction_bytes": 2108613,
-    "mapped_not_exact_bytes": 1240080,
+    "exact_reconstruction_bytes": 2108804,
+    "mapped_not_exact_bytes": 1239889,
     "excluded_import_glue_bytes": 1194,
     "text_data_bytes": 6896,
     "exact_text_data_bytes": 6896,
     "unclassified_text_bytes": 114463,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 60.74513301563761,
+    "strict_original_text_exact_percent": 60.750635362633474,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 60.7660346300286,
+    "reconstruction_scope_exact_percent": 60.77153887031088,
     "mapped_scope_denominator_bytes": 3348693,
-    "mapped_scope_exact_percent": 62.96823865311033,
+    "mapped_scope_exact_percent": 62.973942370948905,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image.",
     "alignment_padding_bytes": 114459,
-    "exact_alignment_padding_bytes": 100484,
+    "exact_alignment_padding_bytes": 100485,
     "unclassified_non_padding_text_bytes": 4,
-    "exact_with_padding_bytes": 2209097,
-    "exact_with_padding_percent": 63.63988608125152,
+    "exact_with_padding_bytes": 2209289,
+    "exact_with_padding_percent": 63.64541723634683,
     "padding_qualification": "Padding is int3/nop alignment fill shorter than 16 bytes between mapped extents, shorter than the alignment of the extent start it ends on; it is exact only after an exact function."
   },
   "data_members": [
@@ -899495,7 +899485,7 @@
       "metadata_sha256": "a005dfb7254f87304ba5e7d1c5083ab46db1e8272ef5fdd2e11a8953a1d1d2d5",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "fb35d9de2e9e440c9168b2037ef37a645f0b66e2a1fc9b17c91e64b3b2ba0897",
+      "geometry_object_sha256": "f21e5fca9d6ca64219c27afa2d1b9a8736f719bdefe0fcc2c95417171657d1e7",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
