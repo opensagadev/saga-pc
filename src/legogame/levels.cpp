@@ -868,7 +868,6 @@ void LoadPerm1(void) {
     u8 shadow_random[0x800];
     i32 index;
     i32 texture_id;
-    NUMTL *material;
     NUGSCN *terrain_scene;
     VARIPTR native_end_address;
     rtlInitDynamic(&permbuffer_ptr, superbuffer_end, 0x40);
@@ -879,19 +878,18 @@ void LoadPerm1(void) {
         edgraSetup(&permbuffer_ptr, permbuffer_end, 0x200, 0x20, 0x40);
     }
     PermanentEffectsMaterial = NuMtlCreateEx(1, 10);
-    material = PermanentEffectsMaterial;
-    material->diffuse_b = 1.0f;
-    material->diffuse_g = 1.0f;
-    material->diffuse_r = 1.0f;
-    material->attribs.word = (material->attribs.word & ~0x1000u) | 0x2000u;
-    material->attribs.word = (material->attribs.word & ~0x8000u) | 0x4000u;
-    material->attribs.word = (material->attribs.word & ~0x20u) | 0x10u;
-    material->opacity = 0.999f;
-    material->attribs.word = (material->attribs.word & ~0xdu) | 2u;
-    material->attribs.word = (material->attribs.word & ~0x200u) | 0x100u;
-    material->attribs.word = (material->attribs.word & ~0x800u) | 0x400u;
-    material->texture_id = DebMat[5]->texture_id;
-    material->attribs2 = (material->attribs2 & ~2u) | 1u;
+    PermanentEffectsMaterial->diffuse_b = 1.0f;
+    PermanentEffectsMaterial->diffuse_g = 1.0f;
+    PermanentEffectsMaterial->diffuse_r = 1.0f;
+    PermanentEffectsMaterial->attribs.word = (PermanentEffectsMaterial->attribs.word & ~0x1000u) | 0x2000u;
+    PermanentEffectsMaterial->attribs.word = (PermanentEffectsMaterial->attribs.word & ~0x8000u) | 0x4000u;
+    PermanentEffectsMaterial->attribs.word = (PermanentEffectsMaterial->attribs.word & ~0x20u) | 0x10u;
+    PermanentEffectsMaterial->opacity = 0.999f;
+    PermanentEffectsMaterial->attribs.word = (PermanentEffectsMaterial->attribs.word & ~0xdu) | 2u;
+    PermanentEffectsMaterial->attribs.word = (PermanentEffectsMaterial->attribs.word & ~0x200u) | 0x100u;
+    PermanentEffectsMaterial->attribs.word = (PermanentEffectsMaterial->attribs.word & ~0x800u) | 0x400u;
+    PermanentEffectsMaterial->texture_id = DebMat[5]->texture_id;
+    PermanentEffectsMaterial->attribs2 = (PermanentEffectsMaterial->attribs2 & ~2u) | 1u;
     NuMtlUpdate(PermanentEffectsMaterial);
     NuLgtSetArcMat(PermanentEffectsMaterial, 0.0f, 0.50390625f, 0.25f, 0.5625f);
     PermanentGraphicsResourceSetup();
@@ -915,17 +913,16 @@ void LoadPerm1(void) {
     InitRipples(&RippleSet, &permbuffer_ptr, &permbuffer_end, 0x40);
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 0xff) & ~0xffu;
     PermanentShadowMaterial = NuMtlCreate3D(1);
-    material = PermanentShadowMaterial;
-    material->diffuse_r = 1.0f;
-    material->diffuse_g = 1.0f;
-    material->diffuse_b = 1.0f;
-    material->attribs.word = (material->attribs.word & ~0x1000u) | 0x2000u;
-    material->attribs.word = (material->attribs.word & ~0x8000u) | 0x4000u;
-    material->opacity = 0.999f;
-    material->attribs.word = (material->attribs.word & ~0xeu) | 1u;
-    material->attribs.word = (material->attribs.word & ~0x600000u) | 0x100000u;
-    material->sort_priority = 0xff;
-    material->attribs.word = (material->attribs.word & ~0x10000u) | 0x20000u;
+    PermanentShadowMaterial->diffuse_r = 1.0f;
+    PermanentShadowMaterial->diffuse_g = 1.0f;
+    PermanentShadowMaterial->diffuse_b = 1.0f;
+    PermanentShadowMaterial->attribs.word = (PermanentShadowMaterial->attribs.word & ~0x1000u) | 0x2000u;
+    PermanentShadowMaterial->attribs.word = (PermanentShadowMaterial->attribs.word & ~0x8000u) | 0x4000u;
+    PermanentShadowMaterial->opacity = 0.999f;
+    PermanentShadowMaterial->attribs.word = (PermanentShadowMaterial->attribs.word & ~0xeu) | 1u;
+    PermanentShadowMaterial->attribs.word = (PermanentShadowMaterial->attribs.word & ~0x600000u) | 0x100000u;
+    PermanentShadowMaterial->sort_priority = 0xff;
+    PermanentShadowMaterial->attribs.word = (PermanentShadowMaterial->attribs.word & ~0x10000u) | 0x20000u;
     texture_id = NuTexRead("stuff\\gradient", &permbuffer_ptr, permbuffer_end);
     PermanentShadowMaterial->texture_id = (i16)texture_id;
     NuMtlUpdate(PermanentShadowMaterial);
@@ -2239,12 +2236,12 @@ extern "C" {
     LEVELDATA *dat_0087b2dc = NULL;
     i32 loadareacharacters_no_backdrop_reset = 0;
     i32 FreePlayModelCount = 0;
-    static LEVELDATA *dat_0087b0d4 = NULL;
+    LEVELDATA *ANAKINSFLIGHTB_LDATA = NULL;
     LEVELDATA *MAULA_LDATA = 0;
-    static LEVELDATA *dat_0087b0d0 = NULL;
+    LEVELDATA *RETAKEG_LDATA = NULL;
     static LEVELDATA *dat_0087b0dc = NULL;
     LEVELDATA *MAULD_LDATA = 0;
-    static LEVELDATA *dat_0087b0e4 = NULL;
+    LEVELDATA *MAULE_LDATA = NULL;
     LEVELDATA *MAULF_LDATA = 0;
     LEVELDATA *JEDI_B_LDATA = NULL;
     LEVELDATA *dat_0087b0f0 = NULL;
@@ -2253,9 +2250,9 @@ extern "C" {
     LEVELDATA *BONUS_GUNSHIPA_LDATA = 0;
     LEVELDATA *BONUS_GUNSHIPB_LDATA = 0;
     LEVELDATA *CollisionVehicleExcludedLevel = NULL;
-    static LEVELDATA *dat_0087b108 = NULL;
-    static LEVELDATA *dat_0087b10c = NULL;
-    static LEVELDATA *dat_0087b110 = NULL;
+    LEVELDATA *BOUNTYHUNTERPURSUITB_LDATA = NULL;
+    LEVELDATA *BOUNTYHUNTERPURSUITC_LDATA = NULL;
+    LEVELDATA *BOUNTYHUNTERPURSUITD_LDATA = NULL;
     LEVELDATA *BOUNTYHUNTERPURSUITE_LDATA = 0;
     LEVELDATA *DOGFIGHTA_LDATA = 0;
     LEVELDATA *FACTORYB_LDATA = 0;
@@ -2268,13 +2265,13 @@ extern "C" {
     LEVELDATA *dat_0087b138 = NULL;
     LEVELDATA *DOOKUC_LDATA = 0;
     LEVELDATA *dat_0087b140 = NULL;
-    static LEVELDATA *dat_0087b144 = NULL;
+    LEVELDATA *GRIEVOUSA_LDATA = NULL;
     LEVELDATA *dat_0087b148 = NULL;
-    static LEVELDATA *dat_0087b14c = NULL;
+    LEVELDATA *TEMPLEC_LDATA = NULL;
     LEVELDATA *dat_0087b150 = NULL;
     LEVELDATA *dat_0087b154 = NULL;
-    static LEVELDATA *dat_0087b158 = NULL;
-    static LEVELDATA *dat_0087b15c = NULL;
+    LEVELDATA *KASHYYYKB_LDATA = NULL;
+    LEVELDATA *KASHYYYKC_LDATA = NULL;
     LEVELDATA *KASHYYYKD_LDATA = 0;
     LEVELDATA *dat_0087b164 = NULL;
     LEVELDATA *CRUISERC_LDATA = 0;
@@ -2287,7 +2284,7 @@ extern "C" {
     LEVELDATA *WorldArchiveThreeLevels[4] = {NULL};
     LEVELDATA *dat_0087b194 = NULL;
     LEVELDATA *ObstacleReturnLevel = 0;
-    static LEVELDATA *dat_0087b19c = NULL;
+    LEVELDATA *BLOCKADERUNNERD_LDATA = NULL;
     LEVELDATA *TATOOINEA_LDATA = 0;
     LEVELDATA *TATOOINEB_LDATA = 0;
     LEVELDATA *dat_0087b1a8 = NULL;
@@ -2311,7 +2308,7 @@ extern "C" {
     LEVELDATA *dat_0087b200 = NULL;
     LEVELDATA *dat_0087b204 = NULL;
     LEVELDATA *dat_0087b208 = NULL;
-    static LEVELDATA *dat_0087b20c = NULL;
+    LEVELDATA *HOTHBATTLEE_LDATA = NULL;
     LEVELDATA *dat_0087b210 = NULL;
     LEVELDATA *HOTHESCAPEA_LDATA = 0;
     LEVELDATA *dat_0087b218 = NULL;
@@ -2323,7 +2320,7 @@ extern "C" {
     LEVELDATA *ASTEROIDCHASED_LDATA = 0;
     LEVELDATA *ASTEROIDCHASEMITRO_LDATA = NULL;
     LEVELDATA *CLOUDCITYESCAPEA_LDATA = 0;
-    static LEVELDATA *dat_0087b25c = NULL;
+    LEVELDATA *DAGOBAHB_LDATA = NULL;
     LEVELDATA *DAGOBAHC_LDATA = 0;
     LEVELDATA *dat_0087b264 = NULL;
     LEVELDATA *dat_0087b268 = NULL;
@@ -2338,7 +2335,7 @@ extern "C" {
     LEVELDATA *SARLACCPITA_LDATA = 0;
     LEVELDATA *SARLACCPITB_LDATA = 0;
     LEVELDATA *SARLACCPITC_LDATA = 0;
-    static LEVELDATA *dat_0087b24c = NULL;
+    LEVELDATA *CLOUDCITYTRAPC_LDATA = NULL;
     LEVELDATA *dat_0087b250 = NULL;
     LEVELDATA *SPEEDERCHASEA_LDATA = 0;
     LEVELDATA *dat_0087b258 = NULL;
@@ -2346,8 +2343,8 @@ extern "C" {
     LEVELDATA *CLOUDCITYESCAPEC_LDATA = 0;
     LEVELDATA *CLOUDCITYTRAPA_LDATA = 0;
     LEVELDATA *CLOUDCITYTRAPB_LDATA = 0;
-    static LEVELDATA *dat_0087b298 = NULL;
-    static LEVELDATA *dat_0087b29c = NULL;
+    LEVELDATA *LEGOCITY_LDATA = NULL;
+    LEVELDATA *NEWTOWN_LDATA = NULL;
     LEVELDATA *JABBASPALACEA_LDATA = 0;
     LEVELDATA *JABBASPALACEB_LDATA = 0;
     LEVELDATA *JABBASPALACED_LDATA = 0;
@@ -2361,7 +2358,7 @@ extern "C" {
     LEVELDATA *UpdateSockets_LDATA = 0;
     static LEVELDATA *dat_0087af58 = NULL;
     static LEVELDATA *dat_0087af5c = NULL;
-    static LEVELDATA *dat_0087af60 = NULL;
+    LEVELDATA *FAIRGROUNDBADA_LDATA = NULL;
     AREA_DATA *VADER_ADATA = 0;
     extern char AreaFixUpName_NbKamino[12] = "nb_kamino";
     extern char AreaFixUpName_NbDagobah[12] = "nb_dagobah";
@@ -2626,6 +2623,8 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
                 PODRACEB_LDATA->init = PodRaceBInit;
                 PODRACEB_LDATA->reset = PodRaceBReset;
                 PODRACEB_LDATA->update = PodRaceBUpdate;
+                PODRACEB_LDATA->always_update = fun_004daa50;
+                PODRACEB_LDATA->draw_panel = PodRacePanel;
             }
             level = Level_FindByName("podrace_a", NULL);
             PODRACEA_LDATA = level;
@@ -2635,6 +2634,7 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
                 PODRACEA_LDATA->update = PodRaceA_Update;
                 PODRACEA_LDATA->always_update = PodRaceA_AlwaysUpdate;
                 PODRACEA_LDATA->draw = PodRaceA_Draw;
+                PODRACEA_LDATA->draw_panel = PodRacePanel;
             }
             level = Level_FindByName("podrace_c", NULL);
             dat_0087b0b4 = level;
@@ -2642,6 +2642,8 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
                 dat_0087b0b4->init = PodRaceCInit;
                 dat_0087b0b4->reset = PodRaceCReset;
                 dat_0087b0b4->update = PodRaceCUpdate;
+                dat_0087b0b4->always_update = fun_004daa50;
+                dat_0087b0b4->draw_panel = PodRacePanel;
             }
             level = Level_FindByName("PodRace_Outro1", NULL);
             dat_0087b0b8 = level;
@@ -2656,11 +2658,11 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
                 PODSPRINTA_LDATA->draw_panel = PodSprintA_Panel;
             }
             level = Level_FindByName("AnakinsFlight_B", NULL);
-            dat_0087b0d4 = level;
+            ANAKINSFLIGHTB_LDATA = level;
             if (level != NULL) {
-                dat_0087b0d4->init = AnakinsFlightB_Init;
-                dat_0087b0d4->update = AnakinsFlightB_Update;
-                dat_0087b0d4->draw = AnakinsFlightB_Draw;
+                ANAKINSFLIGHTB_LDATA->init = AnakinsFlightB_Init;
+                ANAKINSFLIGHTB_LDATA->update = AnakinsFlightB_Update;
+                ANAKINSFLIGHTB_LDATA->draw = AnakinsFlightB_Draw;
             }
             level = Level_FindByName("retake_b", NULL);
             RETAKEB_LDATA = level;
@@ -2669,12 +2671,12 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             level = Level_FindByName("retake_e", NULL);
             RETAKEE_LDATA = level;
             level = Level_FindByName("retake_g", NULL);
-            dat_0087b0d0 = level;
+            RETAKEG_LDATA = level;
             if (level != NULL) {
-                dat_0087b0d0->init = RetakeG_Init;
-                dat_0087b0d0->reset = RetakeG_Reset;
-                dat_0087b0d0->update = RetakeG_Update;
-                dat_0087b0d0->draw_panel = RetakeG_Panel;
+                RETAKEG_LDATA->init = RetakeG_Init;
+                RETAKEG_LDATA->reset = RetakeG_Reset;
+                RETAKEG_LDATA->update = RetakeG_Update;
+                RETAKEG_LDATA->draw_panel = RetakeG_Panel;
             }
             level = Level_FindByName("Maul_A", NULL);
             MAULA_LDATA = level;
@@ -2693,10 +2695,10 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
                 MAULD_LDATA->update = MaulD_Update;
             }
             level = Level_FindByName("Maul_E", NULL);
-            dat_0087b0e4 = level;
+            MAULE_LDATA = level;
             if (level != NULL) {
-                dat_0087b0e4->init = MaulE_Init;
-                dat_0087b0e4->update = MaulE_Update;
+                MAULE_LDATA->init = MaulE_Init;
+                MAULE_LDATA->update = MaulE_Update;
             }
             level = Level_FindByName("Maul_F", NULL);
             MAULF_LDATA = level;
@@ -2750,25 +2752,25 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
                 CollisionVehicleExcludedLevel->update = BountyHunterPursuitA_Update;
             }
             level = Level_FindByName("pursuit_b", NULL);
-            dat_0087b108 = level;
+            BOUNTYHUNTERPURSUITB_LDATA = level;
             if (level != NULL) {
-                dat_0087b108->init = BountyHunterPursuitB_Init;
-                dat_0087b108->reset = BountyHunterPursuitB_Reset;
-                dat_0087b108->update = BountyHunterPursuitB_Update;
+                BOUNTYHUNTERPURSUITB_LDATA->init = BountyHunterPursuitB_Init;
+                BOUNTYHUNTERPURSUITB_LDATA->reset = BountyHunterPursuitB_Reset;
+                BOUNTYHUNTERPURSUITB_LDATA->update = BountyHunterPursuitB_Update;
             }
             level = Level_FindByName("pursuit_c", NULL);
-            dat_0087b10c = level;
+            BOUNTYHUNTERPURSUITC_LDATA = level;
             if (level != NULL) {
-                dat_0087b10c->init = BountyHunterPursuitC_Init;
-                dat_0087b10c->reset = BountyHunterPursuitC_Reset;
-                dat_0087b10c->update = BountyHunterPursuitC_Update;
+                BOUNTYHUNTERPURSUITC_LDATA->init = BountyHunterPursuitC_Init;
+                BOUNTYHUNTERPURSUITC_LDATA->reset = BountyHunterPursuitC_Reset;
+                BOUNTYHUNTERPURSUITC_LDATA->update = BountyHunterPursuitC_Update;
             }
             level = Level_FindByName("pursuit_d", NULL);
-            dat_0087b110 = level;
+            BOUNTYHUNTERPURSUITD_LDATA = level;
             if (level != NULL) {
-                dat_0087b110->init = BountyHunterPursuitD_Init;
-                dat_0087b110->reset = BountyHunterPursuitD_Reset;
-                dat_0087b110->update = BountyHunterPursuitD_Update;
+                BOUNTYHUNTERPURSUITD_LDATA->init = BountyHunterPursuitD_Init;
+                BOUNTYHUNTERPURSUITD_LDATA->reset = BountyHunterPursuitD_Reset;
+                BOUNTYHUNTERPURSUITD_LDATA->update = BountyHunterPursuitD_Update;
             }
             level = Level_FindByName("pursuit_e", NULL);
             BOUNTYHUNTERPURSUITE_LDATA = level;
@@ -2864,18 +2866,18 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             level = Level_FindByName("cruiser_g", NULL);
             CRUISERG_LDATA = level;
             level = Level_FindByName("Grievous_A", NULL);
-            dat_0087b144 = level;
+            GRIEVOUSA_LDATA = level;
             if (level != NULL) {
-                dat_0087b144->init = GrievousA_Init;
-                dat_0087b144->reset = GrievousA_Reset;
-                dat_0087b144->update = GrievousA_Update;
+                GRIEVOUSA_LDATA->init = GrievousA_Init;
+                GRIEVOUSA_LDATA->reset = GrievousA_Reset;
+                GRIEVOUSA_LDATA->update = GrievousA_Update;
             }
             level = Level_FindByName("temple_b", NULL);
             dat_0087b148 = level;
             level = Level_FindByName("temple_c", NULL);
-            dat_0087b14c = level;
+            TEMPLEC_LDATA = level;
             if (level != NULL) {
-                dat_0087b14c->always_update = TempleC_AlwaysUpdate;
+                TEMPLEC_LDATA->always_update = TempleC_AlwaysUpdate;
             }
             level = Level_FindByName("temple_status", NULL);
             dat_0087b150 = level;
@@ -2888,17 +2890,17 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
                 dat_0087b154->draw_panel = KashyyykA_Panel;
             }
             level = Level_FindByName("Kashyyyk_B", NULL);
-            dat_0087b158 = level;
+            KASHYYYKB_LDATA = level;
             if (level != NULL) {
-                dat_0087b158->init = KashyyykB_Init;
-                dat_0087b158->reset = KashyyykB_Reset;
-                dat_0087b158->update = KashyyykB_Update;
+                KASHYYYKB_LDATA->init = KashyyykB_Init;
+                KASHYYYKB_LDATA->reset = KashyyykB_Reset;
+                KASHYYYKB_LDATA->update = KashyyykB_Update;
             }
             level = Level_FindByName("Kashyyyk_C", NULL);
-            dat_0087b15c = level;
+            KASHYYYKC_LDATA = level;
             if (level != NULL) {
-                dat_0087b15c->init = KashyyykC_Init;
-                dat_0087b15c->update = KashyyykC_Update;
+                KASHYYYKC_LDATA->init = KashyyykC_Init;
+                KASHYYYKC_LDATA->update = KashyyykC_Update;
             }
             level = Level_FindByName("Kashyyyk_D", NULL);
             KASHYYYKD_LDATA = level;
@@ -2943,10 +2945,10 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
                 ObstacleReturnLevel->init = BlockadeRunnerC_Init;
             }
             level = Level_FindByName("BlockadeRunner_D", NULL);
-            dat_0087b19c = level;
+            BLOCKADERUNNERD_LDATA = level;
             if (level != NULL) {
-                dat_0087b19c->reset = BlockadeRunnerD_Reset;
-                dat_0087b19c->update = BlockadeRunnerD_Update;
+                BLOCKADERUNNERD_LDATA->reset = BlockadeRunnerD_Reset;
+                BLOCKADERUNNERD_LDATA->update = BlockadeRunnerD_Update;
             }
             level = Level_FindByName("moseisley_a", NULL);
             MOSEISLEYA_LDATA = level;
@@ -3058,12 +3060,12 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             level = Level_FindByName("hothbattle_d", NULL);
             dat_0087b208 = level;
             level = Level_FindByName("hothbattle_e", NULL);
-            dat_0087b20c = level;
+            HOTHBATTLEE_LDATA = level;
             if (level != NULL) {
-                dat_0087b20c->init = HothBattleE_Init;
-                dat_0087b20c->update = HothBattleE_Update;
-                dat_0087b20c->draw = HothBattleE_Draw;
-                dat_0087b20c->draw_panel = HothBattleE_Panel;
+                HOTHBATTLEE_LDATA->init = HothBattleE_Init;
+                HOTHBATTLEE_LDATA->update = HothBattleE_Update;
+                HOTHBATTLEE_LDATA->draw = HothBattleE_Draw;
+                HOTHBATTLEE_LDATA->draw_panel = HothBattleE_Panel;
             }
             level = Level_FindByName("HothBattle_Outro", NULL);
             dat_0087b210 = level;
@@ -3138,10 +3140,10 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
                 dat_0087b268->init = DagobahE_Init;
             }
             level = Level_FindByName("dagobah_b", NULL);
-            dat_0087b25c = level;
+            DAGOBAHB_LDATA = level;
             if (level != NULL) {
-                dat_0087b25c->init = DagobahB_Init;
-                dat_0087b25c->reset = DagobahB_Reset;
+                DAGOBAHB_LDATA->init = DagobahB_Init;
+                DAGOBAHB_LDATA->reset = DagobahB_Reset;
             }
             level = Level_FindByName("dagobah_c", NULL);
             DAGOBAHC_LDATA = level;
@@ -3163,11 +3165,11 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
                 CLOUDCITYTRAPB_LDATA->update = CloudCityTrapB_Update;
             }
             level = Level_FindByName("CloudCityTrap_C", NULL);
-            dat_0087b24c = level;
+            CLOUDCITYTRAPC_LDATA = level;
             if (level != NULL) {
-                dat_0087b24c->reset = CloudCityTrapC_Reset;
-                dat_0087b24c->update = CloudCityTrapC_Update;
-                dat_0087b24c->draw_panel = CloudCityTrapC_Panel;
+                CLOUDCITYTRAPC_LDATA->reset = CloudCityTrapC_Reset;
+                CLOUDCITYTRAPC_LDATA->update = CloudCityTrapC_Update;
+                CLOUDCITYTRAPC_LDATA->draw_panel = CloudCityTrapC_Panel;
             }
             level = Level_FindByName("CloudCityTrap_Outro", NULL);
             dat_0087b250 = level;
@@ -3244,16 +3246,22 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             DEATHSTAR2BATTLEE_LDATA = level;
             if (level != NULL) {
                 DEATHSTAR2BATTLEE_LDATA->init = DeathStar2BattleFire_Init;
+                DEATHSTAR2BATTLEE_LDATA->update = DeathStar2BattleFire_Update;
+                DEATHSTAR2BATTLEE_LDATA->draw = DeathStar2BattleFire_Draw;
             }
             level = Level_FindByName("DeathStar2Battle_F", NULL);
             DEATHSTAR2BATTLEF_LDATA = level;
             if (level != NULL) {
                 DEATHSTAR2BATTLEF_LDATA->init = DeathStar2BattleFire_Init;
+                DEATHSTAR2BATTLEF_LDATA->update = DeathStar2BattleFire_Update;
+                DEATHSTAR2BATTLEF_LDATA->draw = DeathStar2BattleFire_Draw;
             }
             level = Level_FindByName("DeathStar2Battle_G", NULL);
             DEATHSTAR2BATTLEG_LDATA = level;
             if (level != NULL) {
                 DEATHSTAR2BATTLEG_LDATA->init = DeathStar2BattleFire_Init;
+                DEATHSTAR2BATTLEG_LDATA->update = DeathStar2BattleFire_Update;
+                DEATHSTAR2BATTLEG_LDATA->draw = DeathStar2BattleFire_Draw;
             }
             level = Level_FindByName("DeathStar2Battle_Midtro", NULL);
             dat_0087b284 = level;
@@ -3286,17 +3294,17 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
                 SARLACCPITC_LDATA->update = SarlaccPitC_Update;
             }
             level = Level_FindByName("lego_city", NULL);
-            dat_0087b298 = level;
+            LEGOCITY_LDATA = level;
             if (level != NULL) {
-                dat_0087b298->reset = LegoCity_Reset;
-                dat_0087b298->update = LegoCity_Update;
+                LEGOCITY_LDATA->reset = LegoCity_Reset;
+                LEGOCITY_LDATA->update = LegoCity_Update;
             }
             level = Level_FindByName("new_town", NULL);
-            dat_0087b29c = level;
+            NEWTOWN_LDATA = level;
             if (level != NULL) {
-                dat_0087b29c->init = NewTown_Init;
-                dat_0087b29c->reset = NewTown_Reset;
-                dat_0087b29c->update = NewTown_Update;
+                NEWTOWN_LDATA->init = NewTown_Init;
+                NEWTOWN_LDATA->reset = NewTown_Reset;
+                NEWTOWN_LDATA->update = NewTown_Update;
             }
         } else {
             level = Level_FindByName("batcave_a", NULL);
@@ -3305,11 +3313,11 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             level = Level_FindByName("rooftops_a", NULL);
             dat_0087af5c = level;
             level = Level_FindByName("fairgroundbad_a", NULL);
-            dat_0087af60 = level;
+            FAIRGROUNDBADA_LDATA = level;
             if (level != NULL) {
-                dat_0087af60->init = FairgroundbadA_Init;
-                dat_0087af60->update = FairgroundbadA_Update;
-                dat_0087af60->draw = FairgroundbadA_Draw;
+                FAIRGROUNDBADA_LDATA->init = FairgroundbadA_Init;
+                FAIRGROUNDBADA_LDATA->update = FairgroundbadA_Update;
+                FAIRGROUNDBADA_LDATA->draw = FairgroundbadA_Draw;
             }
         }
     }

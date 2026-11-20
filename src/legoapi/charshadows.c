@@ -42,7 +42,7 @@ void CharShadows_Update(void) {
         if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
             object->dead != 0 || (object->character_data->model_flags & CHARACTER_MODEL_COMPLEX_SHADOW) != 0 ||
             object->use_model_origin == 0 || object->character_data->game_character->shadow_locators == 0 ||
-            object->model_draw_result == 0 || (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x20000) != 0 ||
+            object->model_draw_result == 0 || (CInfo[object->player.character_context].flags & 0x20000) != 0 ||
             object->shadow_opacity <= 0.0f) {
             continue;
         }
@@ -121,12 +121,12 @@ void CharShadows_Draw(void) {
             object->dead != 0) {
             continue;
         }
-        if ((object->player.flags_e20 & 0x20) != 0 && (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x40000) == 0) {
+        if ((object->player.flags_e20 & 0x20) != 0 && (CInfo[object->player.character_context].flags & 0x40000) == 0) {
             continue;
         }
         if ((object->character_data->model_flags & CHARACTER_MODEL_COMPLEX_SHADOW) != 0 || !(object->shadow_opacity > 0.0f) ||
             object->model_draw_result == 0 || object->shadow_joint_mask == 0 || (object->flags_ef0 & 0x4000000) != 0 ||
-            (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x20000) != 0) {
+            (CInfo[object->player.character_context].flags & 0x20000) != 0) {
             continue;
         }
         if (object->character_data->game_character->blob_shadow_alpha < 255) {

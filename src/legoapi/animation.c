@@ -483,7 +483,7 @@ static void HeadMovementOrdinary(GAMEOBJECT *object) {
 }
 
 void HeadMovement(GAMEOBJECT *object) {
-    if ((U64_PAIR(&CInfo[object->player.character_context].flags) & 0x200000) != 0) {
+    if ((CInfo[object->player.character_context].flags & 0x200000) != 0) {
         return;
     }
     if ((object->character_data->game_character->flags_094 & CHARACTER_OPTION_ATATHEADMOVEMENT) != 0) {

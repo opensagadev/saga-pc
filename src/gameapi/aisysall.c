@@ -11587,13 +11587,7 @@ static AICONDITION *AIScriptProcessStateConditions(AISYS *system, NULISTHDR *con
                         break;
                 }
             }
-            if (comparison_passed) {
-                if ((condition->flags & AICONDITION_AND) == 0) {
-                    AIScriptFillRemainingComplexOperands(conditions, packet, processor, condition, stack_index);
-                    processor->param_stack[stack_index].is_first_time_state = 0;
-                    return condition;
-                }
-            } else {
+            if (!comparison_passed) {
                 while ((condition->flags & AICONDITION_AND) != 0) {
                     condition = (AICONDITION *)NuLinkedListGetNext(conditions, &condition->link);
                     if (condition == NULL) {
@@ -11605,6 +11599,10 @@ static AICONDITION *AIScriptProcessStateConditions(AISYS *system, NULISTHDR *con
                         condition->param_value = processor->param_stack[stack_index].complex_params[condition->param_index];
                     }
                 }
+            } else if ((condition->flags & AICONDITION_AND) == 0) {
+                AIScriptFillRemainingComplexOperands(conditions, packet, processor, condition, stack_index);
+                processor->param_stack[stack_index].is_first_time_state = 0;
+                return condition;
             }
             if (condition != NULL) {
                 condition = (AICONDITION *)NuLinkedListGetNext(conditions, &condition->link);
@@ -14108,10 +14106,8 @@ AIPATHSYS *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch_cu
                             AIPATHNODE *node = &path->nodes[node_index];
                             AISysGetPathPosEx(aieditor->ai_system, &node->position, &info, first_path, 0xff, 0, NULL);
                             if ((info.flags & AIPATHINFO_FLAG_ON_PATH)) {
-                                f64 half = 0.5f;
-                                f64 path_distance = info.distance;
                                 node->path_flags = info.connection - path->connections;
-                                if (path_distance > half || (info.direction != 0 && path_distance < half)) {
+                                if (info.distance > 0.5f || (info.direction != 0 && info.distance < 0.5f)) {
                                     node->runtime_flags |= 4;
                                 }
                                 node->runtime_flags |= 1;

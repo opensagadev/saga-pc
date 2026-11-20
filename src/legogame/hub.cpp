@@ -1352,25 +1352,18 @@ extern "C" void Hub_UpdateFreePlaySelect(void) {
                 if (freeplay_selected[player] >= 2) {
                     ++confirmed;
                 }
-                if (select) {
-                    switch (freeplay_selected[player]) {
-                        case 1:
-                            if (freeplay_time[player] <= 0) {
-                                freeplay_selected[player] = 2;
-                                GameAudio_PlaySfx(0x30, NULL, 0, 0);
-                            }
-                            break;
-                        case 0:
-                            if (freeplay_time[player] <= 0) {
-                                if (Collection_Got(collection->list[freeplay_i[player]].id) == 0) {
-                                    GameAudio_PlaySfx(0x32, NULL, 0, 0);
-                                } else {
-                                    freeplay_selected[player] = 1;
-                                    freeplay_time[player] = HubFreePlaySelectionWait;
-                                    GameAudio_PlaySfx(0x30, NULL, 0, 0);
-                                }
-                            }
-                            break;
+                if (select && freeplay_time[player] <= 0) {
+                    if (freeplay_selected[player] == 0) {
+                        if (Collection_Got(collection->list[freeplay_i[player]].id) == 0) {
+                            GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                        } else {
+                            freeplay_selected[player] = 1;
+                            freeplay_time[player] = HubFreePlaySelectionWait;
+                            GameAudio_PlaySfx(0x30, NULL, 0, 0);
+                        }
+                    } else if (freeplay_selected[player] == 1) {
+                        freeplay_selected[player] = 2;
+                        GameAudio_PlaySfx(0x30, NULL, 0, 0);
                     }
                 }
                 if (cancel) {

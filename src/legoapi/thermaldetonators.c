@@ -47,7 +47,6 @@
 
 void PartImpact_ThermalDetonator(PART *part) {
     i32 stuck = 0;
-    i8 surface;
     u32 shadow;
     i32 layer;
     f32 water;
@@ -61,8 +60,7 @@ void PartImpact_ThermalDetonator(PART *part) {
         KillPart(part, 0);
         return;
     }
-    surface = (i8)part->surface_type;
-    if (surface >= 0 && surface < 32 && (TerSurface[surface].flags & TERSURFACE_BOLT_DEFLECT) != 0) {
+    if (part->surface_type >= 0 && part->surface_type < 32 && (TerSurface[part->surface_type].flags & TERSURFACE_BOLT_DEFLECT) != 0) {
         PlaySfx("imp_thermalDet_attach", &part->position);
         stuck = 2;
     } else {
@@ -385,8 +383,7 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
         return 0;
     }
     if (object->player.character_context != CHARACTER_CONTEXT_NONE && object->player.character_context != CHARACTER_CONTEXT_WEAPON_IN &&
-        object->player.character_context != CHARACTER_CONTEXT_WEAPON_OUT &&
-        (U64_PAIR(&CInfo[object->player.character_context].flags) & 4) == 0) {
+        object->player.character_context != CHARACTER_CONTEXT_WEAPON_OUT && (CInfo[object->player.character_context].flags & 4) == 0) {
         return 0;
     }
     part = FindPart(NULL, 0, object);

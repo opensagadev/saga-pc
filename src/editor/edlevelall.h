@@ -463,6 +463,8 @@ struct EdDefunctList { // size 0xc
     }
 
     void ReviveAll(i32 flags);
+    void InsertAfter(EdDefunctListEntry *entry, EdDefunctListEntry *position);
+    void Remove(EdDefunctListEntry *entry);
     EdDefunctListEntry *first; // 0x0
     EdDefunctListEntry *last;  // 0x4
     i32 count;                 // 0x8

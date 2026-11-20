@@ -621,7 +621,7 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
             }
             if (((obstacle->config_flags & GIZOBSTACLE_CONFIG_ACTIVE_PLAYERS_ONLY) &&
                  !(object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) ||
-                (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x8000) ||
+                (CInfo[object->player.character_context].flags & 0x8000) ||
                 ((obstacle->config_flags & GIZOBSTACLE_CONFIG_RIDERS_ONLY) && !object->player.rider) ||
                 ((obstacle->config_flags & GIZOBSTACLE_CONFIG_BADDIES_ONLY) &&
                  !(object->character_data->model_flags & CHARACTER_MODEL_BADDIE)) ||

@@ -1278,7 +1278,7 @@ f32 Condition_Blocking(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet
     if (packet != NULL && packet->owner != NULL) {
         object = packet->owner->objptr;
         if (object != NULL) {
-            flags = U64_PAIR(&CInfo[object->player.character_context].flags);
+            flags = CInfo[object->player.character_context].flags;
             if ((flags & 0x04000000u) != 0 ||
                 ((flags & 0x08000000u) != 0 && (object->player.context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE) != 0)) {
                 return 1.0f;

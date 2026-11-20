@@ -2339,7 +2339,7 @@ extern "C" {
                 continue;
             }
             context = object->player.character_context;
-            if ((U64_PAIR(&CInfo[context].flags) & 0x8000) != 0 || (object->player.flags_e20 & 0x20) != 0) {
+            if ((CInfo[context].flags & 0x8000) != 0 || (object->player.flags_e20 & 0x20) != 0) {
                 continue;
             }
             if (part->player_mask == 0) {
@@ -2389,7 +2389,7 @@ extern "C" {
                 if ((part->flags & PART_FLAG_DAMAGE_CHARACTERS) != 0 &&
                     !((part->flags & 0x1000000) != 0 && (part->active & PART_STATE_STOPPED) != 0) &&
                     ((api->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || (part->flags & 0x800000) == 0)) {
-                    flags = U64_PAIR(&CInfo[(object->player.character_context)].flags);
+                    flags = CInfo[(object->player.character_context)].flags;
                     if ((flags & 0x4000000) != 0 ||
                         ((flags & 0x8000000) != 0 && (object->player.context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE) != 0)) {
                         if (object->id == (u16)id_BOB) {

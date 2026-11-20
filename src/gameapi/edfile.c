@@ -1710,7 +1710,7 @@ void eduiItemSliderSetGranularity(edui_slider_s *item, f32 granularity) {
 i32 eduicbInteractSlider(edui_interact_s *interact) {
     edui_slider_s *slider = (edui_slider_s *)interact->item;
     f32 value = (edui_cursor_x - interact->x) / interact->width;
-    value = value > 0.0f ? (value < 1.0f ? value : 1.0f) : 0.0f;
+    value = MIN(MAX(value, 0.0f), 1.0f);
     eduiItemSliderSetVal(slider, value * slider->range);
     return (edui_cursor_buttons >> 6) & 1;
 }
@@ -2300,14 +2300,22 @@ static i32 eduicbRenderExpander(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y
             f32 rect_height = expander->button_size;
             EduiDrawLineRect(rect_x, rect_y, rect_width, rect_height, 0xff000000, uimtls[EduiSelectionMaterial]);
         }
-        {
-            f32 line_x0 = (expander->button_x + 2.0f);
-            f32 line_y0 = (expander->button_y + expander->button_size * 0.5);
-            f32 line_x1 = (expander->button_x + expander->button_size - 2.0f);
-            f32 line_y1 = (expander->button_y + expander->button_size * 0.5);
-            EduiDrawLine(line_x0, line_y0, line_x1, line_y1, button_colours[expander->hover], uimtls[0]);
-        }
-        if (!expander->open) {
+        if (expander->open) {
+            {
+                f32 line_x0 = (expander->button_x + 2.0f);
+                f32 line_y0 = (expander->button_y + expander->button_size * 0.5);
+                f32 line_x1 = (expander->button_x + expander->button_size - 2.0f);
+                f32 line_y1 = (expander->button_y + expander->button_size * 0.5);
+                EduiDrawLine(line_x0, line_y0, line_x1, line_y1, button_colours[expander->hover], uimtls[0]);
+            }
+        } else {
+            {
+                f32 line_x0 = (expander->button_x + 2.0f);
+                f32 line_y0 = (expander->button_y + expander->button_size * 0.5);
+                f32 line_x1 = (expander->button_x + expander->button_size - 2.0f);
+                f32 line_y1 = (expander->button_y + expander->button_size * 0.5);
+                EduiDrawLine(line_x0, line_y0, line_x1, line_y1, button_colours[expander->hover], uimtls[0]);
+            }
             {
                 f32 line_x0 = (expander->button_x + expander->button_size * 0.5);
                 f32 line_y0 = (expander->button_y + 2.0f);
@@ -3269,8 +3277,10 @@ static void EduiTextPickInsert(edui_textpicker_s *picker, char character) {
     if (NuStrLen(picker->value) >= picker->max_length) {
         return;
     }
-    for (index = sizeof(picker->value); index > picker->cursor; index--) {
-        picker->value[index - 1] = picker->value[index - 2];
+    index = sizeof(picker->value);
+    while (index > picker->cursor) {
+        --index;
+        picker->value[index] = picker->value[index - 1];
     }
     picker->value[picker->cursor++] = character;
 }

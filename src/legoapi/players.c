@@ -381,7 +381,7 @@ void PushAway(NUVEC *position, f32 radius, NUVEC *minimum, NUVEC *maximum, GAMEO
         if ((flags & 2) && !object->ground_flags) {
             continue;
         }
-        if (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x40000000) {
+        if (CInfo[object->player.character_context].flags & 0x40000000) {
             continue;
         }
         if (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) {
@@ -486,8 +486,7 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
     u32 right_mask;
     FULLDEBUGTOGGLE = 0;
     if ((HUB_ADATA != NULL && world->area == HUB_ADATA) || FadeSys.fade != 0.0f ||
-        (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x100) != 0 || object->player.takeover_source != NULL ||
-        FreePlay == 0) {
+        (CInfo[object->player.character_context].flags & 0x100) != 0 || object->player.takeover_source != NULL || FreePlay == 0) {
         return;
     }
     if ((MiniCutCam != 0 && object->player_controlled && (object->flags_1fc_word & 0x100) == 0) || object->dead != 0 ||

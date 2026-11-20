@@ -227,7 +227,7 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
         object->player.character_context != CHARACTER_CONTEXT_PLACE_DETONATOR) {
         if (WORLD->level_objects[0xec].active == 0 || (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
             (object->ground_flags == 0 && object->player.jump_variant_state != 1) ||
-            (ObjLandReady(object) == 0 && (*(u64 *)&CInfo[object->player.character_context].flags & 0x2000) == 0)) {
+            (ObjLandReady(object) == 0 && (CInfo[object->player.character_context].flags & 0x2000) == 0)) {
             object->player.flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
             object->player.detonator_hold_time = 0.0f;
             return;

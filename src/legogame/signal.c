@@ -492,8 +492,7 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     }
     if (object->ground_flags != 0 || object->player.character_context == CHARACTER_CONTEXT_BIG_JUMP ||
         object->player.character_context == CHARACTER_CONTEXT_DOOMED || object->player.character_context == CHARACTER_CONTEXT_FLOAT ||
-        (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
-        (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x800) != 0) {
+        (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || (CInfo[object->player.character_context].flags & 0x800) != 0) {
         return;
     }
     {

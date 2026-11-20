@@ -62,7 +62,7 @@ i32 Tag_FindGameObject_CYCLICAL(GAMEOBJECT *object) {
         if (candidate != NULL && candidate != object && (candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
             (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && candidate->dead == 0 && candidate->player_index != -1 &&
             (candidate->player.tag_flags & APIOBJECT_TAG_DISABLED) == 0 && (candidate->flags_ef4 & APIOBJECT_CAN_BE_CARRIED) == 0 &&
-            (U64_PAIR(&CInfo[candidate->player.character_context].flags) & 0x800) == 0) {
+            (CInfo[candidate->player.character_context].flags & 0x800) == 0) {
             return candidate->player_index;
         }
     }
@@ -85,7 +85,7 @@ static GAMEOBJECT *Tag_FindGameObject_TRANSFER(GAMEOBJECT *object) {
         }
         if (candidate->player.character_context == CHARACTER_CONTEXT_DEACTIVATED ||
             candidate->player.character_context == CHARACTER_CONTEXT_FLATTEN ||
-            (U64_PAIR(&CInfo[candidate->player.character_context].flags) & 0x8000) != 0 ||
+            (CInfo[candidate->player.character_context].flags & 0x8000) != 0 ||
             ((candidate->flags_ef4 & APIOBJECT_CAN_BE_CARRIED) != 0 && object->id != (u16)id_LUKESKYWALKERDAGOBAH)) {
             continue;
         }
@@ -486,7 +486,7 @@ void Tag_Check(GAMEOBJECT *object) {
         flags = object->flags_1fc_word;
         if ((flags & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->dead == 0) {
             i8 context = object->player.character_context;
-            u64 context_flags = U64_PAIR(&CInfo[context].flags);
+            u64 context_flags = CInfo[context].flags;
             if ((context_flags & 0x800) == 0 && (flags & 0x100) == 0 && object->player.tag_cooldown <= 0.0f) {
                 if (VehicleArea != 0) {
                     if ((object->player.pad->buttons_pressed & GAMEPAD_TAG) != 0) {
@@ -854,8 +854,8 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
         candidate = Obj;
         for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
             if ((candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
-                candidate->dead != 0 || candidate->player_index != -1 ||
-                (U64_PAIR(&CInfo[candidate->player.character_context].flags) & 0x8000) != 0 || candidate->player.rider != NULL ||
+                candidate->dead != 0 || candidate->player_index != -1 || (CInfo[candidate->player.character_context].flags & 0x8000) != 0 ||
+                candidate->player.rider != NULL ||
                 (candidate->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) == 0 ||
                 ((candidate->character_data->model_flags & CHARACTER_MODEL_BEAST) != 0 &&
                  (candidate->player.character_context == CHARACTER_CONTEXT_DEACTIVATED ||

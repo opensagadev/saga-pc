@@ -4589,21 +4589,20 @@ void BezierLineEval(VuVec &result, VuVec &start, VuVec &first_control, VuVec &en
  * its distance from the camera. */
 void DrawBezierLine(VuVec &start, VuVec &start_control, VuVec &end, VuVec &end_control, NUMTL *material, i32 colour) {
     VuVec camera;
-    camera.x = global_camera.mtx.m30;
-    camera.y = global_camera.mtx.m31;
-    camera.z = global_camera.mtx.m32;
+    camera.xyz = global_camera.mtx.translation;
     VuVec offset = start - camera;
     f32 distance = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
     offset = end - camera;
     f32 end_distance = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
-    if (distance > end_distance) {
+    if (end_distance < distance) {
         distance = end_distance;
     }
-    if (5.5f > distance) {
+    if (distance < 5.5f) {
         distance = 5.5f;
     }
     VuVec chord = end - start;
-    if (BezierDrawTolerance * distance < chord.x * chord.x + chord.y * chord.y + chord.z * chord.z && bezierdraw_depth < 16) {
+    f32 length = chord.x * chord.x + chord.y * chord.y + chord.z * chord.z;
+    if (BezierDrawTolerance * distance < length && bezierdraw_depth < 16) {
         bezierdraw_depth++;
         __declspec(align(16)) VuVec points[6];
         VuVecCopy(points[0], (start_control + end_control) * 0.5);
@@ -6436,21 +6435,51 @@ void EdDefunctList::ReviveAll(i32 flags) {
         if (!(flags & 2)) {
             theRegistry.NotifyReviveObject(entry->object, entry->object_class, flags);
         }
-        if (entry->next != NULL) {
-            entry->next->previous = entry->previous;
-        } else {
-            last = entry->previous;
-        }
-        if (entry->previous != NULL) {
-            entry->previous->next = entry->next;
-        } else {
-            first = entry->next;
-        }
-        entry->next = NULL;
-        entry->previous = NULL;
-        count--;
+        Remove(entry);
         delete entry;
     }
+}
+
+/* A NULL position appends the entry. */
+void EdDefunctList::InsertAfter(EdDefunctListEntry *entry, EdDefunctListEntry *position) {
+    if (position != NULL) {
+        entry->previous = position;
+        entry->next = position->next;
+        if (position->next != NULL) {
+            position->next->previous = entry;
+        } else {
+            last = entry;
+        }
+        position->next = entry;
+        count++;
+    } else {
+        entry->next = NULL;
+        entry->previous = last;
+        if (last != NULL) {
+            last->next = entry;
+        }
+        last = entry;
+        if (first == NULL) {
+            first = entry;
+        }
+        count++;
+    }
+}
+
+void EdDefunctList::Remove(EdDefunctListEntry *entry) {
+    if (entry->next != NULL) {
+        entry->next->previous = entry->previous;
+    } else {
+        last = entry->previous;
+    }
+    if (entry->previous != NULL) {
+        entry->previous->next = entry->next;
+    } else {
+        first = entry->next;
+    }
+    entry->next = NULL;
+    entry->previous = NULL;
+    count--;
 }
 
 void EdType::Serialise(EdStream &stream) {
@@ -8920,7 +8949,7 @@ i32 EdManScale::Process(EdInputContext &input, ClassObjectList &objects) {
                 if (movement == 0.0f) {
                     continue;
                 }
-                movement = movement * 0.005;
+                movement = movement * (f64)0.005f;
                 f32 factor = movement + 1.0;
                 VuVecCopy(scale, unit * factor);
                 VuMtxSetScale(scaling, scale);
@@ -9241,16 +9270,7 @@ void EdRegistry::DefunctObject(EdClassInterface *object_interface, void *object,
         EdDefunctListEntry *entry = new EdDefunctListEntry;
         entry->object_class = object_interface->object_class;
         entry->object = object;
-        entry->next = NULL;
-        entry->previous = defunct_objects.last;
-        if (defunct_objects.last != NULL) {
-            defunct_objects.last->next = entry;
-        }
-        defunct_objects.last = entry;
-        if (defunct_objects.first == NULL) {
-            defunct_objects.first = entry;
-        }
-        defunct_objects.count++;
+        defunct_objects.InsertAfter(entry, NULL);
     }
 }
 
@@ -9483,13 +9503,13 @@ void SplineKnot::Smooth() {
     centre.x = position.x;
     centre.y = position.y;
     centre.z = position.z;
-    if (previous != NULL && next != NULL) {
+    if (Previous() != NULL && next != NULL) {
         before.x = next->position.x;
         before.y = next->position.y;
         before.z = next->position.z;
-        after.x = previous->position.x;
-        after.y = previous->position.y;
-        after.z = previous->position.z;
+        after.x = Previous()->position.x;
+        after.y = Previous()->position.y;
+        after.z = Previous()->position.z;
     } else {
         if (next != NULL) {
             before.x = next->position.x;
@@ -9499,13 +9519,13 @@ void SplineKnot::Smooth() {
             after.y = position.y;
             after.z = position.z;
         }
-        if (previous != NULL) {
+        if (Previous() != NULL) {
             before.x = position.x;
             before.y = position.y;
             before.z = position.z;
-            after.x = previous->position.x;
-            after.y = previous->position.y;
-            after.z = previous->position.z;
+            after.x = Previous()->position.x;
+            after.y = Previous()->position.y;
+            after.z = Previous()->position.z;
         }
     }
     delta.x = before.x - after.x;

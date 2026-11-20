@@ -388,8 +388,8 @@ i32 NewBlockAction(GAMEOBJECT *object) {
 void BlockSfx(GAMEOBJECT *object) {
     GAMEOBJECT *target = object->player.force_target;
     if (target != NULL) {
-        if ((U64_PAIR(&CInfo[target->player.character_context].flags) & 0x4000000) != 0 ||
-            ((U64_PAIR(&CInfo[target->player.character_context].flags) & 0x8000000) != 0 &&
+        if ((CInfo[target->player.character_context].flags & 0x4000000) != 0 ||
+            ((CInfo[target->player.character_context].flags & 0x8000000) != 0 &&
              (target->player.context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE) != 0)) {
             GameAudio_PlaySfx(0x3f, &object->collision_position, GameAudio_GetPlrSfxBits(target), 0);
         }
@@ -398,7 +398,7 @@ void BlockSfx(GAMEOBJECT *object) {
 
 i32 CanStepBack(GAMEOBJECT *object) {
     i8 context = object->player.character_context;
-    if ((U64_PAIR(&CInfo[context].flags) & 0x10000) != 0) {
+    if ((CInfo[context].flags & 0x10000) != 0) {
         return 1;
     }
     if (LEGOCONTEXT_JUMP != -1 && context == LEGOCONTEXT_JUMP && object->player.action_movement_state == JUMP_KIND_LUNGE) {
@@ -567,14 +567,14 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
             if (damage != -1 && Cheats_CheckFlags(CHEAT_DOUBLE_PUNCH_DAMAGE)) {
                 damage *= 2;
             }
-            flags = U64_PAIR(&CInfo[target->player.character_context].flags);
+            flags = CInfo[target->player.character_context].flags;
             if (!(flags & 0x80)) {
                 if ((flags & 0x04000000) ||
                     ((flags & 0x08000000) && (target->player.context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE)) ||
                     CannotKill(target)) {
                     NewRumble(attacker->player.pad->bound_pad, 0.5f, 0);
                     NewRumble(target->player.pad->bound_pad, 0.5f, 0);
-                    if (!(U64_PAIR(&CInfo[target->player.character_context].flags) & 0x80000000)) {
+                    if (!(CInfo[target->player.character_context].flags & 0x80000000)) {
                         target->movement_facing_angle = NuAtan2D(attacker->collision_position.x - target->collision_position.x,
                                                                  attacker->collision_position.z - target->collision_position.z);
                     }

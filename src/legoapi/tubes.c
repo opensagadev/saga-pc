@@ -95,7 +95,7 @@ void Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
         }
         return;
     }
-    if ((U64_PAIR(&CInfo[object->player.character_context].flags) & 0x400000) != 0 || world->tubes == NULL) {
+    if ((CInfo[object->player.character_context].flags & 0x400000) != 0 || world->tubes == NULL) {
         return;
     }
     tube = world->tubes;

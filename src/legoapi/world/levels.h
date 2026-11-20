@@ -364,6 +364,23 @@ extern "C" {
     extern struct level_data_s *WorldArchiveOneLevels[11];
     extern struct level_data_s *WorldArchiveThreeLevels[4];
 
+    extern struct level_data_s *ANAKINSFLIGHTB_LDATA;
+    extern struct level_data_s *RETAKEG_LDATA;
+    extern struct level_data_s *MAULE_LDATA;
+    extern struct level_data_s *BOUNTYHUNTERPURSUITB_LDATA;
+    extern struct level_data_s *BOUNTYHUNTERPURSUITC_LDATA;
+    extern struct level_data_s *BOUNTYHUNTERPURSUITD_LDATA;
+    extern struct level_data_s *GRIEVOUSA_LDATA;
+    extern struct level_data_s *TEMPLEC_LDATA;
+    extern struct level_data_s *KASHYYYKB_LDATA;
+    extern struct level_data_s *KASHYYYKC_LDATA;
+    extern struct level_data_s *BLOCKADERUNNERD_LDATA;
+    extern struct level_data_s *HOTHBATTLEE_LDATA;
+    extern struct level_data_s *DAGOBAHB_LDATA;
+    extern struct level_data_s *CLOUDCITYTRAPC_LDATA;
+    extern struct level_data_s *LEGOCITY_LDATA;
+    extern struct level_data_s *NEWTOWN_LDATA;
+    extern struct level_data_s *FAIRGROUNDBADA_LDATA;
     extern struct level_data_s *dat_0087b0b4;
     extern struct level_data_s *dat_0087b0b8;
     extern struct level_data_s *dat_0087b0bc;
