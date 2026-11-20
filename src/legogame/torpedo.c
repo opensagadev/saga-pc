@@ -102,6 +102,25 @@ static void TorpedoMtxSetRotationXY(NUMTX *matrix, NUANG x, NUANG y) {
     NuMtxSetRotationXYVU0(matrix, &angles);
 }
 
+static void TorpedoMtxCopy(NUMTX *destination, const NUMTX *source) {
+    destination->m00 = source->m00;
+    destination->m01 = source->m01;
+    destination->m02 = source->m02;
+    destination->m03 = source->m03;
+    destination->m10 = source->m10;
+    destination->m11 = source->m11;
+    destination->m12 = source->m12;
+    destination->m13 = source->m13;
+    destination->m20 = source->m20;
+    destination->m21 = source->m21;
+    destination->m22 = source->m22;
+    destination->m23 = source->m23;
+    destination->m30 = source->m30;
+    destination->m31 = source->m31;
+    destination->m32 = source->m32;
+    destination->m33 = source->m33;
+}
+
 static void TorpedoSetRotationY(NUMTX *matrix, NUANG angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
@@ -651,6 +670,10 @@ i32 PartDraw_Torp(PART *part) {
     return draw;
 }
 
+static void TorpedoMtxSetIdentity(NUMTX *matrix) {
+    TorpedoMtxCopy(matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+}
+
 void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
     TORPEDOPACKET *packet = object->player.torpedo;
     GIZTORPMACHINE_s *machine;
@@ -828,22 +851,7 @@ void DrawTorpedos(GAMEOBJECT *object) {
             pitch = (u16)(i32)((f64)RotDiff(0, pitch) *
                                NuTrigTable[(((i32)((f64)object->player.torpedo->pickup_timer / (f64)0.8f * 16384.0)) >> 1) & 0x7fff]);
         }
-        matrix.m00 = ANI3_EVAL_IDENTITY_MATRIX.m00;
-        matrix.m01 = ANI3_EVAL_IDENTITY_MATRIX.m01;
-        matrix.m02 = ANI3_EVAL_IDENTITY_MATRIX.m02;
-        matrix.m03 = ANI3_EVAL_IDENTITY_MATRIX.m03;
-        matrix.m10 = ANI3_EVAL_IDENTITY_MATRIX.m10;
-        matrix.m11 = ANI3_EVAL_IDENTITY_MATRIX.m11;
-        matrix.m12 = ANI3_EVAL_IDENTITY_MATRIX.m12;
-        matrix.m13 = ANI3_EVAL_IDENTITY_MATRIX.m13;
-        matrix.m20 = ANI3_EVAL_IDENTITY_MATRIX.m20;
-        matrix.m21 = ANI3_EVAL_IDENTITY_MATRIX.m21;
-        matrix.m22 = ANI3_EVAL_IDENTITY_MATRIX.m22;
-        matrix.m23 = ANI3_EVAL_IDENTITY_MATRIX.m23;
-        matrix.m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
-        matrix.m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
-        matrix.m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
-        matrix.m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
+        TorpedoMtxSetIdentity(&matrix);
         NuMtxPreRotateX(&matrix, pitch);
         TorpedoRotateY(&matrix, object->player.torpedo->pickup_data[index]);
         NuMtxTranslate(&matrix, &object->player.torpedo->pickup_positions[index]);

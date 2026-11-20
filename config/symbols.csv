@@ -2447,7 +2447,7 @@ address,symbol,size,ctype
 0x4d2040,_TorpedoMtxSetRotationXY,28,
 0x4d2060,_TorpedoVuVecCopy,23,
 0x4d2080,_TorpedoVuVecMake,28,
-0x4d20a0,_fun_004d20a0,95,
+0x4d20a0,_TorpedoMtxCopy,95,
 0x4d2100,_TorpedoSetRotationY,162,"static void(NUMTX *, NUANG)"
 0x4d21b0,_TorpedoRotateY,219,"static void(NUMTX *, NUANG)"
 0x4d2290,_fun_004d2290,21,
@@ -2471,7 +2471,7 @@ address,symbol,size,ctype
 0x4d3620,_Torpedo_EndBolt,102,void __cdecl(BOLT*)
 0x4d3690,_Torpedo_Shoot,196,void __cdecl(GAMEOBJECT *)
 0x4d3760,_PartDraw_Torp,133,i32 __cdecl (PART *)
-0x4d37f0,_fun_004d37f0,10,
+0x4d37f0,_TorpedoMtxSetIdentity,10,
 0x4d3800,_TorpedoCode,1820,"void __cdecl(GAMEOBJECT*,i32,f32)"
 0x4d3f20,_DrawTorpedos,663,void __cdecl (GAMEOBJECT *)
 0x4d41c0,_TrafficNuError,1,
