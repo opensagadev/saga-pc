@@ -7319,7 +7319,7 @@ extern "C" {
     /* Uncalled: a point of interest's matrix, through its joint's matrix when it has one. */
     void NuHGobjPOILocalMtxFromIX(NUHGOBJ_EVAL *object, u8 index, NUMTX *joints, NUMTX *result) {
         NUHGOBJ_POI *poi = &object->points[index];
-        if (poi->joint_index == 0xff) {
+        if (poi->joint_index == NUHGOBJ_POI_NO_JOINT) {
             *result = poi->matrix;
         } else {
             NuMtxMulVU0(result, &poi->matrix, &joints[poi->joint_index]);

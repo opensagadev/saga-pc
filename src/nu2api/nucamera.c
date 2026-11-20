@@ -13,6 +13,7 @@
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numath/nuvec4.h"
 #include "nu2api/nustencilshadows_PC.h"
+#include "externals.h"
 
 #include <string.h>
 #include <math.h>
@@ -881,4 +882,41 @@ void NuCameraCalcRay(f32 screen_x, f32 screen_y, NUVEC *ray_start, NUVEC *ray_en
 
     NuVecMtxTransform(ray_start, &near_point, &camera->mtx);
     NuVecMtxTransform(ray_end, &far_point, &camera->mtx);
+}
+
+/* The SDK's vector and matrix types behind D3DXVECTOR3 and D3DXMATRIX (d3d9types.h). */
+struct _D3DVECTOR { // size 0xc
+    float x;        // 0x0
+    float y;        // 0x4
+    float z;        // 0x8
+};
+
+struct _D3DMATRIX { // size 0x40
+    float m[4][4];  // 0x00
+};
+
+/* Uncalled: turns a camera matrix to look at a target, keeping its position. */
+void NuCameraLookAt(NUMTX *camera, NUVEC *target) {
+    D3DXVECTOR3 up = {0.0f, 1.0f, 0.0f};
+    if (camera != NULL) {
+        NUVEC position;
+        NUMTX positioned;
+        D3DXVECTOR3 at;
+        D3DXVECTOR3 eye;
+        D3DXMATRIX view;
+        NUMTX result;
+
+        NuMtxGetTranslation(camera, &position);
+        NuMtxSetTranslation(&positioned, &position);
+        at.x = target->x;
+        at.y = target->y;
+        at.z = target->z;
+        eye.x = position.x;
+        eye.y = position.y;
+        eye.z = position.z;
+        D3DXMatrixLookAtLH(&view, &eye, &at, &up);
+        memcpy(&result, &view, sizeof(result));
+        NuMtxInv(&result, &result);
+        *camera = result;
+    }
 }

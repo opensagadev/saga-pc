@@ -739,6 +739,9 @@ typedef struct NUHGOBJ_POI { // size 0x50
     u8 unknown_45[11];       // 0x45
 } NUHGOBJ_POI;
 
+/* NUHGOBJ_POI.joint_index of a point fixed in model space. */
+#define NUHGOBJ_POI_NO_JOINT 0xff
+
 typedef struct nuqfnt_render_data_s { // size 0x58
     u32 colour;                       // 0x00
     f32 x;                            // 0x04
