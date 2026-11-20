@@ -201,7 +201,7 @@ typedef struct PART { // size 0x220
     i8 player_mask;               // 0x206
     u8 hostility_group;           // 0x207
     u8 first_frame;               // 0x208
-    u8 surface_type;              // 0x209
+    i8 surface_type;              // 0x209
     u8 flicker_flags;             // 0x20a
     i8 effect_slot;               // 0x20b
 
