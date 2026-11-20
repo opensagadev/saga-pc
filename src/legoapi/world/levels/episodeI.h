@@ -106,6 +106,8 @@ extern "C" {
     void PodRaceAInit(WORLDINFO *);
     void PodRaceAReset(WORLDINFO *);
     void PodRaceA_AlwaysUpdate(WORLDINFO *);
+    void PodRacePanel(WORLDINFO *);
+    void fun_004daa50(WORLDINFO *);
     void PodRaceA_Draw(WORLDINFO *);
     void PodRaceA_Update(WORLDINFO *);
     void PodRaceBInit(WORLDINFO *);

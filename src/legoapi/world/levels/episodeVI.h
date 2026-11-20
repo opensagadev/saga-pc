@@ -86,7 +86,9 @@ extern "C" {
     void DeathStar2BattleA_AlwaysUpdate(WORLDINFO *);
     void DeathStar2BattleD_Init(WORLDINFO *);
     void DeathStar2BattleD_Update(WORLDINFO *);
+    void DeathStar2BattleFire_Draw(WORLDINFO *);
     void DeathStar2BattleFire_Init(WORLDINFO *);
+    void DeathStar2BattleFire_Update(WORLDINFO *);
     void EmperorFightA_Panel(WORLDINFO *);
     void EndorBattleA_Init(WORLDINFO *);
     void EndorBattleA_Update(WORLDINFO *);

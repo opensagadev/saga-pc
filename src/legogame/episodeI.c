@@ -1098,7 +1098,7 @@ void UpdatePacemakerDisplay(WORLDINFO *world) {
     }
 }
 
-void fun_004daa50(void) {
+void fun_004daa50(WORLDINFO *world) {
     UpdatePodRaceLapDisplay(FRAMETIME);
 }
 

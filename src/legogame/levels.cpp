@@ -2239,12 +2239,12 @@ extern "C" {
     LEVELDATA *dat_0087b2dc = NULL;
     i32 loadareacharacters_no_backdrop_reset = 0;
     i32 FreePlayModelCount = 0;
-    static LEVELDATA *dat_0087b0d4 = NULL;
+    LEVELDATA *dat_0087b0d4 = NULL;
     LEVELDATA *MAULA_LDATA = 0;
-    static LEVELDATA *dat_0087b0d0 = NULL;
+    LEVELDATA *dat_0087b0d0 = NULL;
     static LEVELDATA *dat_0087b0dc = NULL;
     LEVELDATA *MAULD_LDATA = 0;
-    static LEVELDATA *dat_0087b0e4 = NULL;
+    LEVELDATA *dat_0087b0e4 = NULL;
     LEVELDATA *MAULF_LDATA = 0;
     LEVELDATA *JEDI_B_LDATA = NULL;
     LEVELDATA *dat_0087b0f0 = NULL;
@@ -2253,9 +2253,9 @@ extern "C" {
     LEVELDATA *BONUS_GUNSHIPA_LDATA = 0;
     LEVELDATA *BONUS_GUNSHIPB_LDATA = 0;
     LEVELDATA *CollisionVehicleExcludedLevel = NULL;
-    static LEVELDATA *dat_0087b108 = NULL;
-    static LEVELDATA *dat_0087b10c = NULL;
-    static LEVELDATA *dat_0087b110 = NULL;
+    LEVELDATA *dat_0087b108 = NULL;
+    LEVELDATA *dat_0087b10c = NULL;
+    LEVELDATA *dat_0087b110 = NULL;
     LEVELDATA *BOUNTYHUNTERPURSUITE_LDATA = 0;
     LEVELDATA *DOGFIGHTA_LDATA = 0;
     LEVELDATA *FACTORYB_LDATA = 0;
@@ -2268,13 +2268,13 @@ extern "C" {
     LEVELDATA *dat_0087b138 = NULL;
     LEVELDATA *DOOKUC_LDATA = 0;
     LEVELDATA *dat_0087b140 = NULL;
-    static LEVELDATA *dat_0087b144 = NULL;
+    LEVELDATA *dat_0087b144 = NULL;
     LEVELDATA *dat_0087b148 = NULL;
-    static LEVELDATA *dat_0087b14c = NULL;
+    LEVELDATA *dat_0087b14c = NULL;
     LEVELDATA *dat_0087b150 = NULL;
     LEVELDATA *dat_0087b154 = NULL;
-    static LEVELDATA *dat_0087b158 = NULL;
-    static LEVELDATA *dat_0087b15c = NULL;
+    LEVELDATA *dat_0087b158 = NULL;
+    LEVELDATA *dat_0087b15c = NULL;
     LEVELDATA *KASHYYYKD_LDATA = 0;
     LEVELDATA *dat_0087b164 = NULL;
     LEVELDATA *CRUISERC_LDATA = 0;
@@ -2287,7 +2287,7 @@ extern "C" {
     LEVELDATA *WorldArchiveThreeLevels[4] = {NULL};
     LEVELDATA *dat_0087b194 = NULL;
     LEVELDATA *ObstacleReturnLevel = 0;
-    static LEVELDATA *dat_0087b19c = NULL;
+    LEVELDATA *dat_0087b19c = NULL;
     LEVELDATA *TATOOINEA_LDATA = 0;
     LEVELDATA *TATOOINEB_LDATA = 0;
     LEVELDATA *dat_0087b1a8 = NULL;
@@ -2311,7 +2311,7 @@ extern "C" {
     LEVELDATA *dat_0087b200 = NULL;
     LEVELDATA *dat_0087b204 = NULL;
     LEVELDATA *dat_0087b208 = NULL;
-    static LEVELDATA *dat_0087b20c = NULL;
+    LEVELDATA *dat_0087b20c = NULL;
     LEVELDATA *dat_0087b210 = NULL;
     LEVELDATA *HOTHESCAPEA_LDATA = 0;
     LEVELDATA *dat_0087b218 = NULL;
@@ -2323,7 +2323,7 @@ extern "C" {
     LEVELDATA *ASTEROIDCHASED_LDATA = 0;
     LEVELDATA *ASTEROIDCHASEMITRO_LDATA = NULL;
     LEVELDATA *CLOUDCITYESCAPEA_LDATA = 0;
-    static LEVELDATA *dat_0087b25c = NULL;
+    LEVELDATA *dat_0087b25c = NULL;
     LEVELDATA *DAGOBAHC_LDATA = 0;
     LEVELDATA *dat_0087b264 = NULL;
     LEVELDATA *dat_0087b268 = NULL;
@@ -2338,7 +2338,7 @@ extern "C" {
     LEVELDATA *SARLACCPITA_LDATA = 0;
     LEVELDATA *SARLACCPITB_LDATA = 0;
     LEVELDATA *SARLACCPITC_LDATA = 0;
-    static LEVELDATA *dat_0087b24c = NULL;
+    LEVELDATA *dat_0087b24c = NULL;
     LEVELDATA *dat_0087b250 = NULL;
     LEVELDATA *SPEEDERCHASEA_LDATA = 0;
     LEVELDATA *dat_0087b258 = NULL;
@@ -2346,8 +2346,8 @@ extern "C" {
     LEVELDATA *CLOUDCITYESCAPEC_LDATA = 0;
     LEVELDATA *CLOUDCITYTRAPA_LDATA = 0;
     LEVELDATA *CLOUDCITYTRAPB_LDATA = 0;
-    static LEVELDATA *dat_0087b298 = NULL;
-    static LEVELDATA *dat_0087b29c = NULL;
+    LEVELDATA *dat_0087b298 = NULL;
+    LEVELDATA *dat_0087b29c = NULL;
     LEVELDATA *JABBASPALACEA_LDATA = 0;
     LEVELDATA *JABBASPALACEB_LDATA = 0;
     LEVELDATA *JABBASPALACED_LDATA = 0;
@@ -2361,7 +2361,7 @@ extern "C" {
     LEVELDATA *UpdateSockets_LDATA = 0;
     static LEVELDATA *dat_0087af58 = NULL;
     static LEVELDATA *dat_0087af5c = NULL;
-    static LEVELDATA *dat_0087af60 = NULL;
+    LEVELDATA *dat_0087af60 = NULL;
     AREA_DATA *VADER_ADATA = 0;
     extern char AreaFixUpName_NbKamino[12] = "nb_kamino";
     extern char AreaFixUpName_NbDagobah[12] = "nb_dagobah";
@@ -2626,6 +2626,8 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
                 PODRACEB_LDATA->init = PodRaceBInit;
                 PODRACEB_LDATA->reset = PodRaceBReset;
                 PODRACEB_LDATA->update = PodRaceBUpdate;
+                PODRACEB_LDATA->always_update = fun_004daa50;
+                PODRACEB_LDATA->draw_panel = PodRacePanel;
             }
             level = Level_FindByName("podrace_a", NULL);
             PODRACEA_LDATA = level;
@@ -2635,6 +2637,7 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
                 PODRACEA_LDATA->update = PodRaceA_Update;
                 PODRACEA_LDATA->always_update = PodRaceA_AlwaysUpdate;
                 PODRACEA_LDATA->draw = PodRaceA_Draw;
+                PODRACEA_LDATA->draw_panel = PodRacePanel;
             }
             level = Level_FindByName("podrace_c", NULL);
             dat_0087b0b4 = level;
@@ -2642,6 +2645,8 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
                 dat_0087b0b4->init = PodRaceCInit;
                 dat_0087b0b4->reset = PodRaceCReset;
                 dat_0087b0b4->update = PodRaceCUpdate;
+                dat_0087b0b4->always_update = fun_004daa50;
+                dat_0087b0b4->draw_panel = PodRacePanel;
             }
             level = Level_FindByName("PodRace_Outro1", NULL);
             dat_0087b0b8 = level;
@@ -3244,16 +3249,22 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             DEATHSTAR2BATTLEE_LDATA = level;
             if (level != NULL) {
                 DEATHSTAR2BATTLEE_LDATA->init = DeathStar2BattleFire_Init;
+                DEATHSTAR2BATTLEE_LDATA->update = DeathStar2BattleFire_Update;
+                DEATHSTAR2BATTLEE_LDATA->draw = DeathStar2BattleFire_Draw;
             }
             level = Level_FindByName("DeathStar2Battle_F", NULL);
             DEATHSTAR2BATTLEF_LDATA = level;
             if (level != NULL) {
                 DEATHSTAR2BATTLEF_LDATA->init = DeathStar2BattleFire_Init;
+                DEATHSTAR2BATTLEF_LDATA->update = DeathStar2BattleFire_Update;
+                DEATHSTAR2BATTLEF_LDATA->draw = DeathStar2BattleFire_Draw;
             }
             level = Level_FindByName("DeathStar2Battle_G", NULL);
             DEATHSTAR2BATTLEG_LDATA = level;
             if (level != NULL) {
                 DEATHSTAR2BATTLEG_LDATA->init = DeathStar2BattleFire_Init;
+                DEATHSTAR2BATTLEG_LDATA->update = DeathStar2BattleFire_Update;
+                DEATHSTAR2BATTLEG_LDATA->draw = DeathStar2BattleFire_Draw;
             }
             level = Level_FindByName("DeathStar2Battle_Midtro", NULL);
             dat_0087b284 = level;

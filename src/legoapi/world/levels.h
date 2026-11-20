@@ -364,6 +364,23 @@ extern "C" {
     extern struct level_data_s *WorldArchiveOneLevels[11];
     extern struct level_data_s *WorldArchiveThreeLevels[4];
 
+    extern struct level_data_s *dat_0087b0d4;
+    extern struct level_data_s *dat_0087b0d0;
+    extern struct level_data_s *dat_0087b0e4;
+    extern struct level_data_s *dat_0087b108;
+    extern struct level_data_s *dat_0087b10c;
+    extern struct level_data_s *dat_0087b110;
+    extern struct level_data_s *dat_0087b144;
+    extern struct level_data_s *dat_0087b14c;
+    extern struct level_data_s *dat_0087b158;
+    extern struct level_data_s *dat_0087b15c;
+    extern struct level_data_s *dat_0087b19c;
+    extern struct level_data_s *dat_0087b20c;
+    extern struct level_data_s *dat_0087b25c;
+    extern struct level_data_s *dat_0087b24c;
+    extern struct level_data_s *dat_0087b298;
+    extern struct level_data_s *dat_0087b29c;
+    extern struct level_data_s *dat_0087af60;
     extern struct level_data_s *dat_0087b0b4;
     extern struct level_data_s *dat_0087b0b8;
     extern struct level_data_s *dat_0087b0bc;
