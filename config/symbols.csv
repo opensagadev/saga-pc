@@ -6436,7 +6436,7 @@ address,symbol,size,ctype
 0x59f990,_RegisterTakeOverObject,225,void __cdecl (GAMEOBJECT *)
 0x0059fa80,_StoreStatusTakeOverObjectSys,342,void __cdecl (void)
 0x59fbe0,_ReStoreStatusTakeOverObjectSys,483,
-0x59fdd0,_fun_0059fdd0,53,
+0x59fdd0,_TagGetPoint,53,
 0x59fe10,_Tag_ResetTransfers,19,void(void)
 0x59fe30,_Tag_NewTransfer,330,"void(GAMEOBJECT *, GAMEOBJECT *)"
 0x59ff80,_Tag_UpdateTransfers,609,"void(i32, i32, i32)"

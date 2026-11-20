@@ -176,10 +176,18 @@ void Tag_ResetTransfers(void) {
 
 i32 Tag_DoneAny = 0;
 
+/* A point on the object's collision column: its centre, the given fraction up its height. */
+static void TagGetPoint(GAMEOBJECT *object, NUVEC *point, f32 height) {
+    f32 lower;
+    point->x = object->collision_position.x;
+    point->z = object->collision_position.z;
+    lower = object->collision_min.y;
+    point->y = lower + (object->collision_max.y - lower) * height;
+}
+
 void Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target) {
     i32 particle;
     f32 height;
-    f32 lower;
     NUVEC *previous;
     if (target->player_slot == 0 || target->player_slot == 1) {
         TagTransfers[target->player_index].source = source;
@@ -188,10 +196,7 @@ void Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target) {
             height = TagTransfers[target->player_index].height_fraction[particle] =
                 (f32)((f64)qrand() * PlayerRandomScale * (f64)0.4f + (f64)0.4f);
             previous = &TagTransfers[target->player_index].previous[particle];
-            previous->x = source->collision_position.x;
-            previous->z = source->collision_position.z;
-            lower = source->collision_min.y;
-            previous->y = (f32)((f64)lower + ((f64)source->collision_max.y - lower) * height);
+            TagGetPoint(source, previous, height);
         }
     }
     if ((target->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
