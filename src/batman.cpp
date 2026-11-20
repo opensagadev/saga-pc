@@ -100,6 +100,7 @@
 #include "nu2api/nucore/nuapi.h"
 #include "nu2api/nucore/nuhgobj.h"
 #include "nu2api/nucore/nuvideo.h"
+#include "nu2api/pc_fmv_native.h"
 #include "nu2api/nufile/nufile.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
@@ -892,6 +893,7 @@ extern "C" int NuMain(int argc, char **argv) {
             while (((NewMode == 0 && NewLData == NULL) || FadeSys.fade < 1.0f || pFadeInfo->busy != 0 ||
                     (((waiting_for_level != -1 && (reset_load != 0 || abort_load != 0)) || waiting_for_character != -1) && NewMode == 0)) &&
                    (CutScenes_BGLoadManager(), NuWindowsProcessMessages() != 0)) {
+                FmvPlatformUpdate();
                 NuVideoGetSwapMode();
                 NuTimeBarSlotReset(0, 0xf);
                 _NuTimeBarSlotBegin(0, 0xf, "frmtmr");
@@ -1058,8 +1060,13 @@ extern "C" int NuMain(int argc, char **argv) {
             }
             UsePlayerList = 2;
         } else if (Area != -1 && Area == last_area) {
-            MakePlayerList(8);
-            UsePlayerList = new_level_from_menu != 0 ? 2 : 1;
+            if (new_level_from_menu != 0) {
+                MakePlayerList(8);
+                UsePlayerList = 2;
+            } else {
+                MakePlayerList(8);
+                UsePlayerList = 1;
+            }
         } else {
             if (PLAYERCOUNT > 0) {
                 UsePlayerList = 2;
