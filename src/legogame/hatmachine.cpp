@@ -310,6 +310,15 @@ extern "C" {
         return 1;
     }
 
+    /* The special model index from the machine's model letter. */
+    static void HatMachineSetModelSpecial(HATMACHINE *machine) {
+        if (machine->model_letter == 'r') {
+            machine->model_special_index = 0x22;
+        } else {
+            machine->model_special_index = 0x20 + (machine->model_letter == 'o');
+        }
+    }
+
     static i32 HatMachine_Load(void *world_ptr, void *) {
         WORLDINFO *world = (WORLDINFO *)world_ptr;
         if (world == NULL || world->hat_machine_sys == NULL) {
@@ -450,11 +459,7 @@ extern "C" {
         machine->hat_delay = 0.0f;
         machine->state_duration = 0.0f;
         machine->animation_time = 0.0f;
-        if (machine->model_letter == 'r') {
-            machine->model_special_index = 0x22;
-        } else {
-            machine->model_special_index = 0x20 + (machine->model_letter == 'o');
-        }
+        HatMachineSetModelSpecial(machine);
         if (machine->configured_hat != 0) {
             machine->displayed_hat = machine->configured_hat;
         } else {

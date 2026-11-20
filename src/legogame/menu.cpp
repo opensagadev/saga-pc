@@ -82,6 +82,14 @@ extern "C" {
 
 extern "C" {
 
+    /* A settings string, building the table on first use. */
+    static const char *MenuSettingsString(i32 index) {
+        if (!MenuSettingsStringsInitialized) {
+            MenuSettingsStringsInit();
+        }
+        return MenuSettingsStrings[index];
+    }
+
     void MenuEnterControlSetup(MENU *) {
         PcControlInitialize(2, -1, -1, 0);
     }
@@ -601,18 +609,9 @@ extern "C" void MenuDrawNewGame(MENU *menu) {
     DrawMenuEntryEx(menu, TTab[dat_008808fc], alpha);
     DrawMenuEntryEx(menu, TTab[dat_00880850], alpha);
     DrawMenuEntryEx(menu, TTab[dat_00880bc4], alpha);
-    if (!MenuSettingsStringsInitialized) {
-        MenuSettingsStringsInit();
-    }
-    DrawMenuEntryEx(menu, (char *)MenuSettingsStrings[18], alpha);
-    if (!MenuSettingsStringsInitialized) {
-        MenuSettingsStringsInit();
-    }
-    DrawMenuEntryEx(menu, (char *)MenuSettingsStrings[29], alpha);
-    if (!MenuSettingsStringsInitialized) {
-        MenuSettingsStringsInit();
-    }
-    DrawMenuEntryEx(menu, (char *)MenuSettingsStrings[1], alpha);
+    DrawMenuEntryEx(menu, (char *)MenuSettingsString(18), alpha);
+    DrawMenuEntryEx(menu, (char *)MenuSettingsString(29), alpha);
+    DrawMenuEntryEx(menu, (char *)MenuSettingsString(1), alpha);
 }
 
 extern "C" {
@@ -918,14 +917,8 @@ extern "C" void MenuDrawPauseMain(MENU *menu) {
     GameDrawMenuEntry(menu, TTab[dat_00880838]);
     GameDrawMenuEntry(menu, TTab[dat_00880850]);
     GameDrawMenuEntry(menu, TTab[dat_00880bc4]);
-    if (!MenuSettingsStringsInitialized) {
-        MenuSettingsStringsInit();
-    }
-    GameDrawMenuEntry(menu, (char *)MenuSettingsStrings[18]);
-    if (!MenuSettingsStringsInitialized) {
-        MenuSettingsStringsInit();
-    }
-    GameDrawMenuEntry(menu, (char *)MenuSettingsStrings[29]);
+    GameDrawMenuEntry(menu, (char *)MenuSettingsString(18));
+    GameDrawMenuEntry(menu, (char *)MenuSettingsString(29));
     if (!SuperStory && !ChallengeMode && !Mission_Active(NULL)) {
         GameDrawMenuEntry(menu, TTab[dat_0088090c]);
     } else {

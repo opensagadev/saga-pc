@@ -339,6 +339,16 @@ static f32 CustomiseNameBoardMul[2] = {0};
 static f32 CustomiseNameLetterBlipScale[2] = {0};
 
 /* 00424040 / 775 */
+/* A piece animation at rest, holding for a random short while. */
+static void CustomisePieceAnimReset(CUSTOM_PIECE_ANIM *anim) {
+    anim->current_angle = 0;
+    anim->hold_time = (f64)qrand() * (f64)(1.0f / 65535.0f) * 0.5 * 0.5;
+    anim->start_angle = 0;
+    anim->target_angle = 0;
+    anim->elapsed = 0.0f;
+    anim->duration = 0.0f;
+}
+
 void Customiser_Init(CUSTOMISER_CONFIG *customiser) {
     i32 side;
     i32 category;
@@ -358,24 +368,9 @@ void Customiser_Init(CUSTOMISER_CONFIG *customiser) {
             CustomisePos[side] = WORLD->camera_splines[18]->pts[side * 2];
             next = &WORLD->camera_splines[18]->pts[side * 2 + 1];
             CustomiseYRot[side] = NuAtan2D(next->x - CustomisePos[side].x, next->z - CustomisePos[side].z);
-            CustomiseHeadAnim[side].current_angle = 0;
-            CustomiseHeadAnim[side].hold_time = (f64)qrand() * (f64)(1.0f / 65535.0f) * 0.5 * 0.5;
-            CustomiseHeadAnim[side].start_angle = 0;
-            CustomiseHeadAnim[side].target_angle = 0;
-            CustomiseHeadAnim[side].elapsed = 0.0f;
-            CustomiseHeadAnim[side].duration = 0.0f;
-            CustomiseArmsAnim[side].current_angle = 0;
-            CustomiseArmsAnim[side].hold_time = (f64)qrand() * (f64)(1.0f / 65535.0f) * 0.5 * 0.5;
-            CustomiseArmsAnim[side].start_angle = 0;
-            CustomiseArmsAnim[side].target_angle = 0;
-            CustomiseArmsAnim[side].elapsed = 0.0f;
-            CustomiseArmsAnim[side].duration = 0.0f;
-            CustomiseLegsAnim[side].current_angle = 0;
-            CustomiseLegsAnim[side].hold_time = (f64)qrand() * (f64)(1.0f / 65535.0f) * 0.5 * 0.5;
-            CustomiseLegsAnim[side].start_angle = 0;
-            CustomiseLegsAnim[side].target_angle = 0;
-            CustomiseLegsAnim[side].elapsed = 0.0f;
-            CustomiseLegsAnim[side].duration = 0.0f;
+            CustomisePieceAnimReset(&CustomiseHeadAnim[side]);
+            CustomisePieceAnimReset(&CustomiseArmsAnim[side]);
+            CustomisePieceAnimReset(&CustomiseLegsAnim[side]);
         }
         CustomiseRotY[0] = qrand();
         CustomiseRotY[1] = CustomiseRotY[0] + 0x4000;
@@ -523,6 +518,15 @@ i32 Customiser_MenuAvailable(CUSTOMISER_CONFIG *customiser) {
            customiser->animation_packets[1].packet.requested_animation == 99;
 }
 
+/* The side's next customiser mode, skipping mode 0. */
+static i32 CustomiseNextMode(i32 side) {
+    i32 mode = CustomiseMode[side];
+    do {
+        mode = (mode + 1) % 3;
+    } while (mode == 0);
+    return mode;
+}
+
 i32 Customise_GetToggleString(i32 index) {
     i32 mode = CustomiseMode[index];
     if (mode == 1) {
@@ -618,17 +622,11 @@ i32 CustomiserMenu_Update(void) {
             } else if ((pressed & GAMEPAD_TAG) != 0) {
                 new_mode = 1;
             } else if ((pressed & GAMEPAD_SPECIAL) != 0) {
-                new_mode = old_mode;
-                do {
-                    new_mode = (new_mode + 1) % 3;
-                } while (new_mode == 0);
+                new_mode = CustomiseNextMode(side);
                 cancel_name = 1;
                 GameAudio_PlaySfx(0x30, NULL, 0, 0);
             } else if (select[player] != 0 && (CustomiseMode[0] == 1 || CustomiseMode[1] == 1)) {
-                new_mode = old_mode;
-                do {
-                    new_mode = (new_mode + 1) % 3;
-                } while (new_mode == 0);
+                new_mode = CustomiseNextMode(side);
                 GameAudio_PlaySfx(0x30, NULL, 0, 0);
             } else {
                 f32 repeat_delay = old_mode == 1 ? 0.1f : 0.25f;

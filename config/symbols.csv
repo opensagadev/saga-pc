@@ -375,7 +375,7 @@ address,symbol,size,ctype
 0x004237f0,_CustomiserMtxRotateY,219,code
 0x004238d0,_Customise_FindLetter,40,i32 __cdecl(char)
 0x423900,_FinishWeirdoNames,146,void __cdecl(i32)
-0x4239a0,_fun_004239a0,58,
+0x4239a0,_CustomisePieceAnimReset,58,
 0x4239e0,_UpdateCustomPieceAnim,389,
 0x423b70,_PermanentCustomPieceConfig,72,"void __cdecl(CUSTOMPIECE_LAYERS *,NUFPAR *)"
 0x423bc0,_Customiser_InitNames,99,void __cdecl (CUSTOMISER_LAYERS *)
@@ -388,7 +388,7 @@ address,symbol,size,ctype
 0x424500,_Customiser_SetUpCharacterData,491,void __cdecl (CUSTOMISER_LAYERS *)
 0x4246f0,_Customiser_GetActiveWeirdoIndex,90,"void __cdecl (i32 *, i32 *)"
 0x424750,_Customiser_MenuAvailable,92,
-0x4247b0,_fun_004247b0,25,
+0x4247b0,_CustomiseNextMode,25,
 0x004247d0,_Customise_GetToggleString,55,code
 0x00424810,_CustomiserMenu_Update,2732,i32 __cdecl(void)
 0x4252c0,_CustomiserMenu_End,136,
@@ -1441,7 +1441,7 @@ address,symbol,size,ctype
 0x4727a0,?NuFdiv@@YAMMM@Z,54,
 0x4727e0,_HatmachineVuVecMake,28,
 0x472800,_Hat_GetAbsTargetPos,111,"void __cdecl(HATMACHINE *, NUVEC *)"
-0x472870,_fun_00472870,23,
+0x472870,_HatMachineSetModelSpecial,23,
 0x472890,_HatMachine_Load,308,
 0x4729d0,_HatMachines_InitTerrain,113,void __cdecl(WORLDINFO *)
 0x472a50,_HatMachines_ReserveBufferSpace,174,
@@ -1805,7 +1805,7 @@ address,symbol,size,ctype
 0x493c30,?MenuFabs@@YAMM@Z,18,
 0x493c50,?MenuVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x493c70,_fun_00493c70,17,
-0x493c90,_fun_00493c90,22,
+0x493c90,_MenuSettingsString,22,
 0x493cb0,_MenuEnterControlSetup,17,
 0x493cd0,_MenuDrawControlSetup,5,
 0x493ce0,_MenuUpdateControlSetup,120,
