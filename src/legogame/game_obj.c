@@ -535,7 +535,7 @@ static i32 Collide2Objects(APIOBJECT *first, APIOBJECT *second) {
         } else if (second_vertical_velocity < 0.0f &&
                    (first_object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) &&
                    first_object->level_object_index == -1) {
-            first->velocity.y += second_vertical_velocity * 0.5;
+            first->velocity.y = first->velocity.y + (second_vertical_velocity * 0.5);
         } else if (first_vertical_velocity < 0.0f &&
                    (second_object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) &&
                    second_object->level_object_index == -1) {

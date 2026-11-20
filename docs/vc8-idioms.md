@@ -725,7 +725,7 @@ After `for (i = 0; i < info->len; ++i) dest[i] = ...;`, retail writes
 `dest[i] = '\0'` (the index register), not `dest[info->len] = '\0'` (a
 reload of the field). `NuFileExtGetExt` (also I3: `dest_size < info->len`).
 
-### I59: a clamp written as two `if`s, not `if`/`else if`
+### I62: a clamp written as two `if`s, not `if`/`else if`
 
 ```
 retail                                   ours (else if)

@@ -439,24 +439,21 @@ extern "C" {
 
     void CoinTotal_Draw(i32 total, f32 y, f32 scale, i32 remember_positions, f32 icon_phase, i32 red, i32 green, i32 blue) {
         char text[32];
-        f32 score_scale;
-        f32 icon_scale;
+        f32 size;
         f32 x;
         i32 angle;
         i32 object;
         Text_MakeScore((u32)total, text);
-        score_scale = CoinTotalScoreSize * scale;
-        Text3DEx(text, 0.0f, y + HudCoinAdjustY, 1.0f, score_scale, score_scale, score_scale, 0, red, green, blue,
-                 (u8)(i32)((f64)icon_phase * 128.0));
+        size = CoinTotalScoreSize * scale;
+        Text3DEx(text, 0.0f, y + HudCoinAdjustY, 1.0f, size, size, size, 0, red, green, blue, (u8)(i32)((f64)icon_phase * 128.0));
         angle = (i32)((f64)icon_phase * 16384.0);
-        icon_scale = COINTOTAL_COINSIZE * scale * NuTrigTable[(angle >> 1) & 0x7fff];
+        size = COINTOTAL_COINSIZE * scale * NuTrigTable[(angle >> 1) & 0x7fff];
         if (WORLD->level_objects[cointotal_i_obj[0]].active != 0) {
             x = (f32)(-((f64)text3d_width * 0.5) - (f64)(CoinTotalCoinOffset * scale));
             if (remember_positions != 0) {
                 cointotal_x[0] = x;
             }
-            DrawPanel3DObject(x, y, 1.0f, icon_scale, icon_scale, icon_scale, 0, 0, 0, &WORLD->level_objects[cointotal_i_obj[0]].special, 0,
-                              1.0f);
+            DrawPanel3DObject(x, y, 1.0f, size, size, size, 0, 0, 0, &WORLD->level_objects[cointotal_i_obj[0]].special, 0, 1.0f);
         }
         object = cointotal_i_obj[1];
         if (WORLD->level_objects[object].active != 0) {
@@ -466,7 +463,7 @@ extern "C" {
             } else {
                 object = 187;
             }
-            DrawPanel3DObject(x, y, 1.0f, icon_scale, icon_scale, icon_scale, 0, 0, 0, &WORLD->level_objects[object].special, 0, 1.0f);
+            DrawPanel3DObject(x, y, 1.0f, size, size, size, 0, 0, 0, &WORLD->level_objects[object].special, 0, 1.0f);
         }
     }
 
