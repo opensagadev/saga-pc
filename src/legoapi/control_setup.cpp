@@ -1289,6 +1289,11 @@ void PC_CONTROL_SCREEN::DrawBarMeter(f32 x, f32 y, f32 z, f32 width, f32 height,
     }
 }
 
+static void ControlSetupPushCoordinateSystem(i32 system) {
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(system);
+}
+
 void PC_CONTROL_SCREEN::Draw(void) {
     u32 missing_colour = 0;
     if (!active) {
@@ -1319,8 +1324,7 @@ void PC_CONTROL_SCREEN::Draw(void) {
     }
     NuQFntPushPrintMode(NUQFNT_MODE_2D);
     NuQFntPushCoordinateSystem(NUQFNT_CS_640X224);
-    ++NuPrimCSPos;
-    NuPrimSetCoordinateSystem(1);
+    ControlSetupPushCoordinateSystem(1);
     i32 port0 = ports[0];
     i32 port1 = ports[1];
     if (player_count == 1) {

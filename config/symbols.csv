@@ -70,7 +70,7 @@ address,symbol,size,ctype
 0x404620,_Batarang_Release,560,
 0x404850,_Batarang_GetTargetPos,201,
 0x404920,_Batarang_StartThrowQuick,78,
-0x404970,_fun_00404970,24,
+0x404970,?BatarangSlotReset@@YAXPAUplayer_batarang_slot_s@@@Z,24,
 0x404990,_Batarangs_Reset,184,void __cdecl(void)
 0x404a50,_Batarang_InitRicochet,569,
 0x404c90,?Batarang_Ricochet@@YAXPAUplayer_batarang_slot_s@@@Z,109,
@@ -329,7 +329,7 @@ address,symbol,size,ctype
 0x41fe90,_InitAICreatures,526,void __cdecl(AISYS *)
 0x4200a0,_fun_004200a0,28,
 0x4200c0,?PcControlPrimColour@@YAXI@Z,108,
-0x420130,_fun_00420130,15,
+0x420130,?ControlSetupPushCoordinateSystem@@YAXH@Z,15,
 0x420140,_fun_00420140,28,
 0x420160,?IsScreenActive@PC_CONTROL_SCREEN@@QAEHXZ,5,
 0x420170,?GetSavedPort@PC_CONTROL_SCREEN@@QAEHH@Z,11,
@@ -3864,7 +3864,7 @@ address,symbol,size,ctype
 0x5128e0,_AiAngDiff,22,"static i32 (i32, i32) [private EAX]"
 0x00512900,_PCPathArcSine,320,i16 __cdecl (f32)
 0x512a40,_PCPathArcCos,27,"static i16 (f32)"
-0x512a60,_fun_00512a60,11,
+0x512a60,_AisysallVecZero,11,
 0x512a70,?AisysallVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x512a90,_AiVecSub,29,"static void (NUVEC *, NUVEC *, NUVEC *) [private ECX/EAX]"
 0x512ab0,_AiVecMagSqr,33,"static f32 (NUVEC *) [private EAX]"
@@ -9632,7 +9632,7 @@ address,symbol,size,ctype
 0x617c90,_fun_00617c90,16,
 0x617ca0,_fun_00617ca0,1,
 0x00617cb0,_EduiPrimSetColour,108,void (i32)
-0x617d20,_fun_00617d20,15,
+0x617d20,_EduiPushCoordinateSystem,15,
 0x617d30,_EduiPopCoordinateSystem,28,
 0x617d50,_edmainSetReturn,10,
 0x617d60,_edmainCurrent,21,

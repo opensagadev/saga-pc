@@ -389,14 +389,19 @@ extern "C" {
     PLAYER_BATARANG_SLOT BatarangPackets[8] = {0};
 }
 
+/* An idle slot: nothing in flight, no owner, the throw cooldown restarted. */
+static void BatarangSlotReset(PLAYER_BATARANG_SLOT *slot) {
+    slot->flight_state.in_flight = 0;
+    slot->active = 0;
+    slot->owner = NULL;
+    slot->cooldown = 50;
+}
+
 void Batarangs_Reset(void) {
     i32 i;
     for (i = 0; i < 8; ++i) {
         PLAYER_BATARANG_SLOT *slot = &BatarangPackets[i];
-        slot->flight_state.in_flight = 0;
-        slot->active = 0;
-        slot->owner = NULL;
-        slot->cooldown = 50;
+        BatarangSlotReset(slot);
     }
 }
 
@@ -493,20 +498,14 @@ void Batarangs_CheckLostData(void *data) {
     i32 k;
     for (i = 0; i < 8; ++i, ++batarang) {
         if (batarang->owner == data) {
-            batarang->flight_state.in_flight = 0;
-            batarang->active = 0;
-            batarang->owner = NULL;
-            batarang->cooldown = 0x32;
+            BatarangSlotReset(batarang);
         } else if (batarang->active > 0) {
             for (j = 0; j < batarang->active; ++j) {
                 if (batarang->targets[j].object != data) {
                     continue;
                 }
                 if (data == batarang->owner) {
-                    batarang->flight_state.in_flight = 0;
-                    batarang->active = 0;
-                    batarang->owner = NULL;
-                    batarang->cooldown = 0x32;
+                    BatarangSlotReset(batarang);
                 } else if (batarang->flight_state.in_flight != 0) {
                     batarang->targets[j].lost = 1;
                 } else {
@@ -843,10 +842,7 @@ extern "C" void Batarangs_Update(void) {
                 batarang->owner->player.context_timer =
                     AnimDuration((i16)batarang->owner->id, batarang->owner->player.context_animation, 0, 0, 1);
             }
-            batarang->flight_state.in_flight = 0;
-            batarang->active = 0;
-            batarang->owner = NULL;
-            batarang->cooldown = 50;
+            BatarangSlotReset(batarang);
             continue;
         }
         BATARANG_TARGET_s target = batarang->targets[batarang->flight_state.current_target];

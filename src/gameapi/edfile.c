@@ -455,6 +455,11 @@ static void EduiPrimSetColour(i32 colour) {
     NuPrimStreamBufferPointer->vertex_ptr->colour = converted;
 }
 
+static void EduiPushCoordinateSystem(i32 system) {
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(system);
+}
+
 void EduiPopCoordinateSystem(void) {
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
 }
@@ -1729,8 +1734,7 @@ void eduiRenderInteracts(void) {
     }
 
     hovered = NULL;
-    ++NuPrimCSPos;
-    NuPrimSetCoordinateSystem(0);
+    EduiPushCoordinateSystem(0);
     NuPrim2DBegin(14, 5, uimtls[0]);
     interact = eduiInteractLocked;
     if (interact != NULL) {

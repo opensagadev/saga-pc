@@ -4887,6 +4887,10 @@ static u32 CalculateIntersection(AISYS *system, AIPACKET *packet, APIOBJECT *obj
     return ((packet->flags & AIPACKET_RIGHT_DIVERSION) != 0) | ((packet->flags & AIPACKET_LEFT_DIVERSION) != 0);
 }
 
+static void AisysallVecZero(NUVEC *v) {
+    v->x = v->y = v->z = 0.0f;
+}
+
 static i32 RowMoveWander(AIGROUP *group, AIROW *row, AIROW *previous, APIOBJECT *leader) {
     i32 i;
     NUVEC offset;
@@ -5049,7 +5053,7 @@ static i32 RowMoveWander(AIGROUP *group, AIROW *row, AIROW *previous, APIOBJECT 
             difference = -step;
         }
         row->rotation = NuAngAdd(difference, row->rotation);
-        rotated.x = rotated.y = rotated.z = 0.0f;
+        AisysallVecZero(&rotated);
         if (GetCharacterGoalSpeedFn != NULL) {
             rotated.z = GetCharacterGoalSpeedFn(leader);
         }
@@ -11693,7 +11697,7 @@ void AIScriptProcess(AISYS *system, APIOBJECT *object, AIPACKET *packet, AISCRIP
                     processor->action_data_5 = 0.0f;
                     processor->action_data_7 = 0;
                     processor->action_timer = 0.0f;
-                    processor->action_pos.x = processor->action_pos.y = processor->action_pos.z = 0.0f;
+                    AisysallVecZero(&processor->action_pos);
                     memset(&processor->path_info, 0, sizeof(processor->path_info));
                     if (packet != NULL) {
                         packet->goal_path_node = NULL;
