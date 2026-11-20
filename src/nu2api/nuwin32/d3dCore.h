@@ -380,8 +380,8 @@ typedef struct PC_DEVICE_BACKEND {          // size 0x700
 
     GRAPHICS_DISPLAY_MODE *GetDisplayMode(i32 index);
     i32 GetMultisampleIndex();
-    u8 SupportsMultisample(i32);
-    u8 HasRequestedModeChanged();
+    bool SupportsMultisample(i32);
+    bool HasRequestedModeChanged();
     void RestoreSavedMode();
 
     u8 SupportsAnyMultisample();
