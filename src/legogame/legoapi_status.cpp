@@ -1517,24 +1517,20 @@ extern "C" {
                 }
                 {
                     for (player = 0; player < 2; ++player) {
-                        u32 pressed;
-                        u32 directions;
                         if (select != 0 || up != 0 || down != 0) {
                             break;
                         }
                         if (StatusPacket.player_active[player] == 0) {
                             continue;
                         }
-                        pressed = GamePadStorage[player].buttons_pressed;
-                        if ((pressed & GAMEPAD_MENUSELECT) != 0) {
+                        if ((GamePadStorage[player].buttons_pressed & GAMEPAD_MENUSELECT) != 0) {
                             select = 1;
-                        } else {
-                            directions = GamePadStorage[player].left_pressed;
-                            if ((directions & GAMEPAD_DUP) != 0 || (pressed & GAMEPAD_DUP) != 0) {
-                                up = 1;
-                            } else if ((directions & GAMEPAD_DDOWN) != 0 || (pressed & GAMEPAD_DDOWN) != 0) {
-                                down = 1;
-                            }
+                        } else if ((GamePadStorage[player].left_pressed & GAMEPAD_DUP) != 0 ||
+                                   (GamePadStorage[player].buttons_pressed & GAMEPAD_DUP) != 0) {
+                            up = 1;
+                        } else if ((GamePadStorage[player].left_pressed & GAMEPAD_DDOWN) != 0 ||
+                                   (GamePadStorage[player].buttons_pressed & GAMEPAD_DDOWN) != 0) {
+                            down = 1;
                         }
                     }
                     if (select != 0) {
