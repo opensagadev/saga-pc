@@ -496,6 +496,15 @@ void Door_SetCutCam(DOOR_s *door) {
 // Startup and main-loop state; defaults follow the PC executable.
 i32 ChallengeMode = 0;
 
+/* The door's cut scene while it has not played yet; a played one also cancels the snap. */
+static void *Door_UnplayedCutScene(DOOR_s *door) {
+    if (door->cutscene != NULL && CutScene_HasPlayed(door->cutscene) == 0) {
+        return door->cutscene;
+    }
+    door_cutscenesnap = 0;
+    return NULL;
+}
+
 void Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
     void *cutscene;
     i32 destination;
@@ -510,12 +519,7 @@ void Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
     }
     if (door->level != -1) {
         NuStrCpy(DoorExitName, door->name);
-        if (door->cutscene == NULL || CutScene_HasPlayed(door->cutscene) != 0) {
-            door_cutscenesnap = 0;
-            cutscene = NULL;
-        } else {
-            cutscene = door->cutscene;
-        }
+        cutscene = Door_UnplayedCutScene(door);
         if (cutscene != NULL) {
             if (door_cutscenesnap != 0) {
                 NewCutScene(cutscene, WorldInfo_CurrentlyActive()->cutscene_sys, NULL, 0);

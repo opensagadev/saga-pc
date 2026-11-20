@@ -5549,7 +5549,7 @@ address,symbol,size,ctype
 0x575470,_Doors_Init,590,void __cdecl (WORLDINFO *)
 0x5756c0,_Door_FindByName,77,"void* __cdecl(WORLDINFO*,char*)"
 0x575710,_Door_SetCutCam,222,
-0x5757f0,_fun_005757f0,43,
+0x5757f0,_Door_UnplayedCutScene,43,
 0x575820,_StartDoorPositions,251,i32 __cdecl(void)
 0x575920,_Door_FindByIndex,236,"void* __cdecl(WORLDINFO*,i32,i32,NUVEC*)"
 0x575a10,_Door_GetMaxGizmos,25,

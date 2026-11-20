@@ -601,7 +601,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x00574e90,1,_DoorsNuError,copy,,legoapi/doors.c,"empty static directly before the Fabs copy at 0x574ea0; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x00574ea0,18,_DoorsFabs,copy,,legoapi/doors.c,bytes equal _AttractoFabs,
 0x00574ec0,28,_DoorsVuVecMake,copy,,legoapi/doors.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
-0x005757f0,43,_fun_005757f0,extent,,legoapi/doors.c,unreferenced,
+0x005757f0,43,_Door_UnplayedCutScene,extent,,legoapi/doors.c,unreferenced,
 0x00576320,28,_HintVuVecMake,copy,,legoapi/hint.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x00576550,26,_HintSys_Dismiss,extent,,legoapi/hint.c,unreferenced,
 0x005766a0,59,_Hint_SaveBits,extent,,legoapi/hint.c,unreferenced,
