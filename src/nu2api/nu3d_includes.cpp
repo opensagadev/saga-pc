@@ -13500,12 +13500,42 @@ void OccluderSet::Clear() {
 }
 
 extern "C" void PostFilterInitSharedResources(void) {
-    PostPortOutFramebuffer.Connect("postEffect.outFramebuffer", NULL, &PostResourceManager);
-    PostPortColorBuffer.Connect("postEffect.colorBuffer", NULL, &PostResourceManager);
-    PostPortNormalBuffer.Connect("postEffect.normalBuffer", NULL, &PostResourceManager);
-    PostPortVelocityBuffer.Connect("postEffect.velocityBuffer", NULL, &PostResourceManager);
-    PostPortDepthRTBuffer.Connect("postEffect.depthRTBuffer", NULL, &PostResourceManager);
-    PostPortDepthBuffer.Connect("postEffect.depthBuffer", NULL, &PostResourceManager);
+    if (PostPortOutFramebuffer.index >= 0) {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostPortOutFramebuffer.manager->entries[PostPortOutFramebuffer.index];
+        --entry->references;
+    }
+    PostPortOutFramebuffer.manager = &PostResourceManager;
+    PostPortOutFramebuffer.index = PostResourceManager.Register("postEffect.outFramebuffer", NULL);
+    if (PostPortColorBuffer.index >= 0) {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostPortColorBuffer.manager->entries[PostPortColorBuffer.index];
+        --entry->references;
+    }
+    PostPortColorBuffer.manager = &PostResourceManager;
+    PostPortColorBuffer.index = PostResourceManager.Register("postEffect.colorBuffer", NULL);
+    if (PostPortNormalBuffer.index >= 0) {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostPortNormalBuffer.manager->entries[PostPortNormalBuffer.index];
+        --entry->references;
+    }
+    PostPortNormalBuffer.manager = &PostResourceManager;
+    PostPortNormalBuffer.index = PostResourceManager.Register("postEffect.normalBuffer", NULL);
+    if (PostPortVelocityBuffer.index >= 0) {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostPortVelocityBuffer.manager->entries[PostPortVelocityBuffer.index];
+        --entry->references;
+    }
+    PostPortVelocityBuffer.manager = &PostResourceManager;
+    PostPortVelocityBuffer.index = PostResourceManager.Register("postEffect.velocityBuffer", NULL);
+    if (PostPortDepthRTBuffer.index >= 0) {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostPortDepthRTBuffer.manager->entries[PostPortDepthRTBuffer.index];
+        --entry->references;
+    }
+    PostPortDepthRTBuffer.manager = &PostResourceManager;
+    PostPortDepthRTBuffer.index = PostResourceManager.Register("postEffect.depthRTBuffer", NULL);
+    if (PostPortDepthBuffer.index >= 0) {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostPortDepthBuffer.manager->entries[PostPortDepthBuffer.index];
+        --entry->references;
+    }
+    PostPortDepthBuffer.manager = &PostResourceManager;
+    PostPortDepthBuffer.index = PostResourceManager.Register("postEffect.depthBuffer", NULL);
     PostBlurFramebuffer = PCGraphicsCreateFramebuffer();
     PostCopyFramebuffer = PCGraphicsCreateFramebuffer();
 }

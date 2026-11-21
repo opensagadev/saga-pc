@@ -8309,8 +8309,8 @@ address,symbol,size,ctype
 0x005f1dd0,_NuMtlInitEx,375,"void __cdecl NuMtlInitEx(VARIPTR *buffer, i32 material_count)"
 0x5f1f50,_NuTexDestroyId,102,
 0x5f1fc0,??1PC_POST_DATA_PORT@@QAE@XZ,21,
-0x5f1fe0,?Connect@PC_POST_DATA_PORT@@QAEXPBDPAXPAUPC_POST_DATA_PORT_MANAGER@@@Z,51,"void __thiscall PC_POST_DATA_PORT::Connect(const char *,void *,PC_POST_DATA_PORT_MANAGER *)"
-0x5f2020,?Release@PC_POST_DATA_PORT@@QAEXXZ,21,void __thiscall PC_POST_DATA_PORT::Release(void)
+0x5f1fe0,_fun_005f1fe0,51,
+0x5f2020,_fun_005f2020,21,
 0x5f2040,_fun_005f2040,51,
 0x5f2080,?Free@?$LightObjectPool@UPC_SPECIAL_SHADOW_LIGHT@@@@QAEXPAUPC_SPECIAL_SHADOW_LIGHT@@@Z,63,
 0x5f20c0,?allocate@?$LightObjectPool@UPC_SPECIAL_SHADOW_LIGHT@@@@QAEPAUPC_SPECIAL_SHADOW_LIGHT@@XZ,156,struct PC_SPECIAL_SHADOW_LIGHT *__thiscall LightObjectPool<PC_SPECIAL_SHADOW_LIGHT>::allocate(void)
