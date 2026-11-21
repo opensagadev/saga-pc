@@ -7309,8 +7309,8 @@ address,symbol,size,ctype
 0x5c24c0,_PcGeometryGetViewMatrix,6,
 0x5c24d0,_PcGeometryGetProjectionMatrix,6,
 0x5c24e0,?Nu3dIncludesSetTint@@YAXPBUNUVEC4@@@Z,47,
-0x5c2510,_fun_005c2510,256,
-0x5c2610,_fun_005c2610,140,
+0x5c2510,?PostFilterSetDepthMode@@YAXH@Z,256,void __cdecl(i32)
+0x5c2610,?Nu3dIncludesSetZMode@@YAXH@Z,140,void __cdecl(i32)
 0x5c26a0,?PCPerfBeginEvent@@YAXH@Z,100,void __cdecl(i32)
 0x5c2710,_PCPerfEndEvent,5,
 0x5c2720,_fun_005c2720,28,
