@@ -338,3 +338,5 @@ config/oddscan-budget.json address-name 4633 impl/engine batch 4: fun_00602d90/f
 config/oddscan-budget.json placeholder-field 1074 impl/engine batch 4: fun_00601630 saves and restores the material's unknown_002/unknown_034 bytes around the copy
 config/castscan-budget.json raw-offset 353 impl/engine batch 4: fun_00602e20 offsets the locked vertex bytes by base_vertex vertices
 config/castscan-budget.json void-pointer-cpp 557 impl/engine batch 4: fun_00602d90 takes NuGobjAllocBlock2's block as the geometry
+config/oddscan-budget.json dense-function 1177 impl/engine: NuFmvTextureOpen sets up the movie texture and its material in one block as retail does
+config/oddscan-budget.json magic-bound 1580 impl/engine: NuFmvTextureOpen replaces the last three characters of the path with "bik"
