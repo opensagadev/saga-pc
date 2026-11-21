@@ -1553,7 +1553,7 @@ extern "C" {
         i32 count = 0;
         TERRAIN_GROUP *group = &CurrentTerrain->groups[old_query->terrain_group_index];
         TERRAIN_SKIN_STREAM *batch = group->data;
-        if (1.0f == query->object_scale) {
+        if (query->object_scale == 1.0f) {
             if (CurrentTerrain->platforms[platform_index].flags & TERRAIN_PLATFORM_FLAG_ROTATING) {
                 while (batch->header.kind >= 0) {
                     TERRAIN_POLYGON_INFO *source = batch->polygons;
@@ -1816,7 +1816,7 @@ extern "C" {
         if (!(new_query->start_position.y >= 2000000.0)) {
             const f32 delta = new_query->start_position.y - new_query->position.y;
             if (!(delta < -0.008f)) {
-                if (0.01f > delta) {
+                if (delta < 0.01f) {
                     new_query->position.y = delta + new_query->position.y;
                     flags[0] = 1;
                 } else if (new_query->movement.x * new_query->movement.x + new_query->movement.z * new_query->movement.z >
