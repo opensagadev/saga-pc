@@ -518,6 +518,19 @@ struct PC_POST_DATA_PORT {              // size 0x8
             --entry->references;
         }
     }
+
+    void Connect(const char *name, void *data, PC_POST_DATA_PORT_MANAGER *port_manager) {
+        Release();
+        manager = port_manager;
+        index = port_manager->Register(name, data);
+    }
+
+    void Release() {
+        if (index >= 0) {
+            PC_POST_DATA_PORT_ENTRY *entry = &manager->entries[index];
+            --entry->references;
+        }
+    }
 };
 
 extern "C" PC_POST_DATA_PORT PostPortOutFramebuffer;
