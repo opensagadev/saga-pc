@@ -1,9 +1,0 @@
-old,new,evidence
-fun_0060dee0,Nu3dPlatformNuError,empty static before the VuVecMake copy at 0x60def0: the per-object NuError header static
-fun_0060e650,TtNetworkNuError,empty static before the VuVecMake copy at 0x60e660: the per-object NuError header static
-fun_006104b0,V2SessionManagerNuError,empty static before the VuVecMake copy at 0x6104c0: the per-object NuError header static
-fun_006118a0,NetworkObjectManagerNuError,empty static before the VuAngleDifference copy at 0x6118b0: the per-object NuError header static
-fun_00698ff0,NuStreamNuError,empty static before the VuVecMake copy at 0x699000: the per-object NuError header static
-fun_006d3090,EdLevelAllNuError,empty static before the VuVecMake copy at 0x6d30a0: the per-object NuError header static
-fun_00743de0,NushaderobjectbaseNuError,empty static before the VuVecMake copy at 0x743df0: the per-object NuError header static
-fun_0074bae0,ShaderParserNuError,empty static before the VuVecMake copy at 0x74baf0: the per-object NuError header static
