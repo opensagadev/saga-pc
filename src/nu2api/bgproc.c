@@ -247,7 +247,7 @@ void bgProcInit(void) {
     }
 }
 
-void fun_004fefa0(void) {
+void bgProcCancelPending(void) {
     BGPROCINFO *info = (BGPROCINFO *)NuLstGetNext(bgproc_procinfo_pool, (NULNKHDR *)bgproc_active);
     while (info != NULL) {
         BGPROCINFO *next = (BGPROCINFO *)NuLstGetNext(bgproc_procinfo_pool, (NULNKHDR *)info);

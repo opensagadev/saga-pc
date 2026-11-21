@@ -1484,66 +1484,22 @@ extern "C" void PcInputEndFrame(void) {
 
 /* Clears the pad direction bits that the first four bindings map to joystick buttons 0x80-0x83. */
 u32 PC_INPUT_RUNTIME::fun_006d4a80(i32 port, u32 buttons) {
-    PC_INPUT_BINDING *bindings = devices[port].bindings;
-    i32 button;
-    if (bindings[0].kind == PC_BINDING_JOYSTICK_BUTTON) {
-        button = bindings[0].value;
-        if (button == 0x80) {
-            buttons &= ~0x1000;
-        }
-        if (button == 0x82) {
-            buttons &= ~0x4000;
-        }
-        if (button == 0x83) {
-            buttons &= ~0x8000;
-        }
-        if (button == 0x81) {
-            buttons &= ~0x2000;
-        }
-    }
-    if (bindings[1].kind == PC_BINDING_JOYSTICK_BUTTON) {
-        button = bindings[1].value;
-        if (button == 0x80) {
-            buttons &= ~0x1000;
-        }
-        if (button == 0x82) {
-            buttons &= ~0x4000;
-        }
-        if (button == 0x83) {
-            buttons &= ~0x8000;
-        }
-        if (button == 0x81) {
-            buttons &= ~0x2000;
-        }
-    }
-    if (bindings[2].kind == PC_BINDING_JOYSTICK_BUTTON) {
-        button = bindings[2].value;
-        if (button == 0x80) {
-            buttons &= ~0x1000;
-        }
-        if (button == 0x82) {
-            buttons &= ~0x4000;
-        }
-        if (button == 0x83) {
-            buttons &= ~0x8000;
-        }
-        if (button == 0x81) {
-            buttons &= ~0x2000;
-        }
-    }
-    if (bindings[3].kind == PC_BINDING_JOYSTICK_BUTTON) {
-        button = bindings[3].value;
-        if (button == 0x80) {
-            buttons &= ~0x1000;
-        }
-        if (button == 0x82) {
-            buttons &= ~0x4000;
-        }
-        if (button == 0x83) {
-            buttons &= ~0x8000;
-        }
-        if (button == 0x81) {
-            buttons &= ~0x2000;
+    for (i32 i = 0; i < 4; ++i) {
+        PC_INPUT_BINDING *binding = &devices[port].bindings[i];
+        if (binding->kind == PC_BINDING_JOYSTICK_BUTTON) {
+            i32 button = binding->value;
+            if (button == 0x80) {
+                buttons &= ~0x1000;
+            }
+            if (button == 0x82) {
+                buttons &= ~0x4000;
+            }
+            if (button == 0x83) {
+                buttons &= ~0x8000;
+            }
+            if (button == 0x81) {
+                buttons &= ~0x2000;
+            }
         }
     }
     return buttons;

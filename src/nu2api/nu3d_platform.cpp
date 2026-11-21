@@ -4131,7 +4131,7 @@ extern "C" {
         vport_inval = 1;
     }
 
-    void fun_005ff100(f32 min_x, f32 min_y, f32 max_x, f32 max_y) {
+    void NuVpSetClipRect(f32 min_x, f32 min_y, f32 max_x, f32 max_y) {
         f32 left = (f32)vpCurrent.x;
         f32 right;
         f32 top;
@@ -7586,24 +7586,24 @@ extern "C" void NuDisplayListShadowMaterial(void *data) {
 }
 
 extern "C" {
-    f32 dat_02854d7c = 0;
-    f32 dat_02854d80 = 0;
-    u32 dat_02854d84 = 0;
+    f32 NuRndrFogNear = 0;
+    f32 NuRndrFogFar = 0;
+    u32 NuRndrFogColour = 0;
     u32 dat_02854d88 = 0;
     u32 dat_02854dac = 0;
-    f32 dat_0080e6a8 = 0.015f;
+    f32 NuRndrFogDensity = 0.015f;
 
-    void fun_00608460(f32 near_distance, f32 far_distance, u32 colour, u32 alpha, i32 mode) {
-        dat_02854d7c = near_distance;
-        dat_02854d80 = far_distance;
+    void NuRndrSetFog(f32 near_distance, f32 far_distance, u32 colour, u32 alpha, i32 mode) {
+        NuRndrFogNear = near_distance;
+        NuRndrFogFar = far_distance;
         dat_02854d88 = alpha << 24;
         dat_02854dac = (mode >> 24) & 0xff;
-        dat_02854d84 = ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000) + (colour & 0xff00);
+        NuRndrFogColour = ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000) + (colour & 0xff00);
         if (near_distance != far_distance && (colour & 0xff000000) > 0x2000000) {
             PCFogSetMode(1, 1);
-            PCFogSetColour(dat_02854d84);
-            PCFogSetRange(*(u32 *)&dat_02854d7c, *(u32 *)&dat_02854d80);
-            PCFogSetDensity(*(u32 *)&dat_0080e6a8);
+            PCFogSetColour(NuRndrFogColour);
+            PCFogSetRange(*(u32 *)&NuRndrFogNear, *(u32 *)&NuRndrFogFar);
+            PCFogSetDensity(*(u32 *)&NuRndrFogDensity);
         } else {
             PCFogSetMode(0, 0);
         }

@@ -314,3 +314,8 @@ config/oddscan-budget.json volatile-other 44 AreaDataLoaded/CharacterDataLoad ar
 config/oddscan-budget.json volatile-other 48 PermDataLoaded/LoadPerm_StringsLoaded are set by LoadPermData on the background thread (LoadPerm_LanguageSelect beside them already is volatile); retail loads them into a register per test (I66)
 config/oddscan-budget.json volatile-other 50 level_already_loaded is set by WorldInfo_StreamLevel on the background thread; NuMain reads it twice in one test in retail (I66)
 config/declscan-budget.json D 30 match3 gameapi: AIScriptMissingConditionDiagnostic moved to aisys_empty.c so VC8 keeps the calls retail keeps; aisysall.c's own declaration of it went from class C to D (same construct, C lowered)
+config/oddscan-budget.json address-name 4618 impl/engine: previously not-implemented nu2api functions written from retail; their unnamed globals and functions keep dat_/fun_ names (AGENTS.md) where the role is unclear
+config/oddscan-budget.json magic-bound 1578 impl/engine: previously not-implemented nu2api functions written from retail; NuTexReadSlot checks its 8-slot bound
+config/oddscan-budget.json magic-flag 2573 impl/engine: previously not-implemented nu2api functions written from retail; PC_INPUT_RUNTIME::fun_006d4a80 clears the four pad direction bits (no define exists)
+config/oddscan-budget.json magic-mask 1060 impl/engine: previously not-implemented nu2api functions written from retail; NuRndrSetFog swaps the fog colour channels, PCGraphicsCreateColourTargetSize sets the target flags like its siblings
+config/oddscan-budget.json magic-state 4285 impl/engine: previously not-implemented nu2api functions written from retail; PC_INPUT_RUNTIME::fun_006d4a80 compares joystick button values 0x80-0x83

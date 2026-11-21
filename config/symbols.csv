@@ -3413,7 +3413,7 @@ address,symbol,size,ctype
 0x004fecf0,_bgPostRequest,151,"BGPROCINFO * __cdecl (void (__cdecl *)(BGPROCINFO *), void (__cdecl *)(BGPROCINFO *), void *, i32)"
 0x004fed90,_bgProcWorker@4,348,DWORD __stdcall (void *)
 0x004feef0,_bgProcInit,162,void __cdecl(void)
-0x4fefa0,_fun_004fefa0,113,void __cdecl(void)
+0x4fefa0,_bgProcCancelPending,113,void __cdecl(void)
 0x004ff020,_bgprocFreeze,36,void __cdecl(void)
 0x004ff050,_bgprocUnFreeze,23,void __cdecl(void)
 0x004ff070,_bgprocIsFrozen,12,i32 __cdecl(void)
@@ -8747,7 +8747,7 @@ address,symbol,size,ctype
 0x5ff060,_NuRndrScreenGrabTileBegin,11,"void __cdecl(void **)"
 0x5ff070,_NuRndrScreenGrabTileEnd,1,"void __cdecl(void **)"
 0x5ff080,_NuVpRestore,115,
-0x5ff100,_fun_005ff100,445,"void __cdecl(f32,f32,f32,f32)"
+0x5ff100,_NuVpSetClipRect,445,"void __cdecl(f32,f32,f32,f32)"
 0x5ff2c0,_NuVpInitIdentityMatrix,12,
 0x5ff2d0,_NuVpBuildScalingTemplate,189,
 0x5ff390,_NuVpUpdate,715,
@@ -9032,7 +9032,7 @@ address,symbol,size,ctype
 0x00607ec0,_NuPrim3DBegin,319,"void __cdecl (u32, u32, NUMTL *, NUMTX *)"
 0x00608000,_NuDisplayListMaterial,961,void __cdecl(void *)
 0x6083d0,_NuDisplayListShadowMaterial,130,cdecl void pointer
-0x608460,_fun_00608460,296,"void __cdecl(f32,f32,u32,u32,i32)"
+0x608460,_NuRndrSetFog,296,"void __cdecl(f32,f32,u32,u32,i32)"
 0x00608590,_NuLgtLaserDraw,2766,void __cdecl(i32)
 0x609060,_NuLgtInitializeState,206,void __cdecl(void)
 0x00609130,_NuLgtSetArcMat,50,"void __cdecl(NUMTL *, f32, f32, f32, f32)"
@@ -13427,7 +13427,7 @@ address,symbol,size,ctype
 0x6d6c40,_NuKeyboard_db,53,i32 __cdecl(i32)
 0x6d6c80,_NuKeyboardGetPreviousKeyIndex,6,
 0x6d6c90,_NuKeyboardGetKeyIndex,6,
-0x6d6ca0,_fun_006d6ca0,196,
+0x6d6ca0,_PcKeyboardReadKey,196,
 0x6d6d70,_PcKeyUp,12,void __cdecl(i32)
 0x6d6d80,_PcInput_GetKeyNameTable,6,char **__cdecl(void)
 0x6d6d90,_PcInput_SetIsUsedCallBack,10,
@@ -38680,7 +38680,7 @@ address,symbol,size,ctype
 0x80e69c,_NuCameraScissorWidth,4,i32
 0x80e6a0,_NuCameraScissorHeight,4,i32
 0x80e6a4,_dat_0080e6a4,4,i32
-0x80e6a8,_dat_0080e6a8,4,f32
+0x80e6a8,_NuRndrFogDensity,4,f32
 0x80e6b4,_NuLgtStateCapacity,4,i32
 0x80e6b8,_NuLgtStateActiveCount,4,i32
 0x80e6bc,_NuLgtStateFreeHead,4,i32
@@ -42517,9 +42517,9 @@ address,symbol,size,ctype
 0x2854d68,_NuDisplayMaterialDistortTexture,4,i32
 0x02854d6c,_numtl_force_mipmode,4,i32
 0x2854d70,_NuDisplayHandlerReflection,4,i32
-0x2854d7c,_dat_02854d7c,4,f32
-0x2854d80,_dat_02854d80,4,f32
-0x2854d84,_dat_02854d84,4,u32
+0x2854d7c,_NuRndrFogNear,4,f32
+0x2854d80,_NuRndrFogFar,4,f32
+0x2854d84,_NuRndrFogColour,4,u32
 0x2854d88,_dat_02854d88,4,u32
 0x2854d90,_NuLgtStateEnabled,4,i32
 0x2854d94,_NuLgtStateUnknown,4,i32
@@ -43492,9 +43492,9 @@ address,symbol,size,ctype
 0x2975918,_PcMouseSampleIndex,1,i8
 0x2975919,_TextInputLastDeviceIndex,1,i8
 0x297591c,_PcMouseInterpolation,4,f32
-0x2975920,_dat_02975920,4,i32
-0x2975924,_dat_02975924,4,i32
-0x2975928,_dat_02975928,4,i32
+0x2975920,_PcKeyboardPressedKey,4,i32
+0x2975924,_PcKeyboardPreviousKey,4,i32
+0x2975928,_PcKeyboardHeldKey,4,i32
 0x297592c,?PcInputAxisRemap@@3PAEA,16,
 0x297593c,?PcInputAxisRemapInitialized@@3IA,4,
 0x2975940,?PcKeyboardCapabilities@@3UPC_DI_CAPS@@A,44,PC_DI_CAPS
