@@ -7217,11 +7217,11 @@ address,symbol,size,ctype
 0x5c1710,?Nu3dIncludesVecNeg@@YAXPAUnuvec_s@@PBU1@@Z,23,"void __cdecl(NUVEC *,const NUVEC *)"
 0x5c1730,?Nu3dIncludesVuVecNormalise@@YAXAAUVuVec@@0@Z,18,
 0x5c1750,?OccluderCross@@YAXPAUnuvec_s@@ABU1@1@Z,16,"void private (NUVEC *dst stack, const NUVEC &a ECX, const NUVEC &b EAX); out-of-line copy of the inline cross-product helper, no callers"
-0x5c1760,_fun_005c1760,25,
-0x5c1780,_fun_005c1780,53,
-0x5c17c0,_fun_005c17c0,71,
-0x5c1810,_fun_005c1810,40,
-0x5c1840,_fun_005c1840,51,
+0x5c1760,?AnimQuatNegate@@YAXPAM@Z,25,void __cdecl(f32 *)
+0x5c1780,?AnimQuatDot@@YAMPBM0@Z,53,"f32 __cdecl(const f32 *,const f32 *)"
+0x5c17c0,?AnimQuatAlign@@YAXPAMPBM@Z,71,"void __cdecl(f32 *,const f32 *)"
+0x5c1810,?AnimQuatLerp@@YAXPAMPBM1M@Z,40,"void __cdecl(f32 *,const f32 *,const f32 *,f32)"
+0x5c1840,?AnimQuatNormalise@@YAXPAMPBM@Z,51,"void __cdecl(f32 *,const f32 *)"
 0x5c1880,@NuQuatMulAligned@12,118,"void private (const NUQUAT *parent ECX, const NUQUAT *rotation EDX, NUQUAT *out stack; caller cleanup)"
 0x5c1900,?Nu3dIncludesVuVecDot@@YAMABUVuVec@@0@Z,29,
 0x5c1920,?Nu3dIncludesVuVecLengthSq@@YAMABUVuVec@@@Z,33,

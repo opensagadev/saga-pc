@@ -135,6 +135,38 @@ static void Nu3dIncludesVecNeg(NUVEC *destination, const NUVEC *source) {
     destination->z = -source->z;
 }
 
+/* SSE quaternion helpers of the joint players (16-byte aligned f32[4]). */
+static void AnimQuatNegate(f32 *quat) {
+    _mm_store_ps(quat, _mm_sub_ps(_mm_setzero_ps(), _mm_load_ps(quat)));
+}
+
+static f32 AnimQuatDot(const f32 *a, const f32 *b) {
+    __m128 products = _mm_mul_ps(_mm_load_ps(b), _mm_load_ps(a));
+    f32 dot;
+    products = _mm_add_ps(_mm_shuffle_ps(products, products, 0x4e), products);
+    _mm_store_ss(&dot, _mm_add_ss(_mm_shuffle_ps(products, products, 0xb1), products));
+    return dot;
+}
+
+/* Flips quat onto the hemisphere of reference, so the blend takes the short way. */
+static void AnimQuatAlign(f32 *quat, const f32 *reference) {
+    if (AnimQuatDot(reference, quat) < 0.0f) {
+        AnimQuatNegate(quat);
+    }
+}
+
+static void AnimQuatLerp(f32 *out, const f32 *a, const f32 *b, f32 fraction) {
+    _mm_store_ps(out, _mm_add_ps(_mm_mul_ps(_mm_sub_ps(_mm_load_ps(b), _mm_load_ps(a)), _mm_set1_ps(fraction)), _mm_load_ps(a)));
+}
+
+static void AnimQuatNormalise(f32 *out, const f32 *quat) {
+    __m128 value = _mm_load_ps(quat);
+    __m128 products = _mm_mul_ps(value, value);
+    products = _mm_add_ps(_mm_shuffle_ps(products, products, 0x4e), products);
+    products = _mm_add_ps(_mm_shuffle_ps(products, products, 0xb1), products);
+    _mm_store_ps(out, _mm_mul_ps(_mm_rsqrt_ps(products), value));
+}
+
 /* Unit-length copy of a direction, as a point (w = 1). */
 static void Nu3dIncludesVuVecNormalise(VuVec &destination, VuVec &source) {
     NuVecNorm(&destination.xyz, &source.xyz);
@@ -1370,9 +1402,6 @@ extern "C" {
                 } else if (group == 1) {
                     f32 first[4];
                     f32 second[4];
-                    __m128 products;
-                    __m128 result;
-                    f32 dot;
                     for (i = 0; i < 3; ++i) {
                         u16 type = *curve_types++;
                         switch (type) {
@@ -1420,18 +1449,9 @@ extern "C" {
                     }
                     first[3] = NuFsqrt(1.0f - (first[0] * first[0] + first[1] * first[1] + first[2] * first[2]));
                     second[3] = NuFsqrt(1.0f - (second[0] * second[0] + second[1] * second[1] + second[2] * second[2]));
-                    products = _mm_mul_ps(_mm_load_ps(second), _mm_load_ps(first));
-                    products = _mm_add_ps(_mm_shuffle_ps(products, products, 0x4e), products);
-                    _mm_store_ss(&dot, _mm_add_ss(_mm_shuffle_ps(products, products, 0xb1), products));
-                    if (dot < 0.0f) {
-                        _mm_store_ps(second, _mm_sub_ps(_mm_setzero_ps(), _mm_load_ps(second)));
-                    }
-                    result = _mm_add_ps(_mm_mul_ps(_mm_sub_ps(_mm_load_ps(second), _mm_load_ps(first)), _mm_set1_ps(fraction)),
-                                        _mm_load_ps(first));
-                    products = _mm_mul_ps(result, result);
-                    products = _mm_add_ps(_mm_shuffle_ps(products, products, 0x4e), products);
-                    products = _mm_add_ps(_mm_shuffle_ps(products, products, 0xb1), products);
-                    _mm_store_ps(out, _mm_mul_ps(_mm_rsqrt_ps(products), result));
+                    AnimQuatAlign(second, first);
+                    AnimQuatLerp(out, first, second, fraction);
+                    AnimQuatNormalise(out, out);
                     out += 4;
                 } else {
                     for (i = 3; i != 0; --i) {
