@@ -584,7 +584,7 @@
     "tools/dinput8.def": "0650c8a82ce920cd1f07c5f585b6f64129b09c5969bb5074b871c8921dc32a3c",
     "tools/dsound.def": "10147b85f8f09f4a3fefe82c0756818c64d9a6f2d81bb3f120757ea5b08941da",
     "tools/xinput1_3.def": "f2b829c89adb5c7fc9fbd7dfdbc49f8eb5412d4700bf1123935f71a29fa84b50",
-    "src/batman.cpp": "6839cc81c8a08eefc5482d697cf301bd7aeefbf0383c60b6438da46415f0bc2f",
+    "src/batman.cpp": "f5c4f45d8a42cf39c60ef36373de01183345eca614393ea8db39933a2a54d4fe",
     "src/data.cpp": "fab6985cd8017cc418396e7f2d5988c1bf7235eb7d0bd755d54712e9acb51974",
     "src/debug/crash_diagnostics.cpp": "1b60194207f0f734c9036b7f6c9f2f0e2258427c257e36d384df8d971b37b7e0",
     "src/debug/skin_trace.cpp": "abb725cba9c7b82a503b462611ebe556501d61da9c554d9d2360c77018f449ba",
@@ -615,7 +615,7 @@
     "src/legoapi/collection_render.cpp": "7171e84b0a9a1610226a5074404dddb9236f6c742abdc139670d2096d1340bdd",
     "src/legoapi/control_setup.cpp": "b4e8767b21f4d8544c7c2fe199875c0c8e5860f8e599fc81737604580b1d086c",
     "src/legoapi/credits.cpp": "bf6f5efc40b4eaee7c753edba1dceda015fcff9a313cde8ff133f6f122186950",
-    "src/legoapi/cutscenes.cpp": "014c851a39ba9f120e266f7332c5207e492f415e7243978c3b0da2d39653988e",
+    "src/legoapi/cutscenes.cpp": "ce7f1d3ba34a4db43986dfd1f49a44f19679168f4e6b56ebb3e386d09376638a",
     "src/legoapi/debris_generators.cpp": "ba4c136f8ee440f92f3be53c67ab1ca1bed19a8a04d5dd46d6a7757947b182b8",
     "src/legoapi/episodes.cpp": "97ce86f75cd7ac37adea45f8fa8792a2cd87268e5efc2eee3cc066fa4629454f",
     "src/legoapi/fade.cpp": "c5cf6df56fd546c4728297ca5d008ec1913f04d18d0333078f91e6e9cf0aa07e",
@@ -652,7 +652,7 @@
     "src/legogame/hub.cpp": "89c9f034fee788deaa970a82437b7be67e675a00383d20e4b65bc3b2f7619249",
     "src/legogame/ledge.cpp": "30ea44149666bae64ffc552a427fc752ad0c380f1c7a1e2b85b2d4546711eade",
     "src/legogame/legoapi_status.cpp": "e7b7da7b0e3e8e722a0084b459be3708692c3a38f3d65abb68bd4018eaac5385",
-    "src/legogame/levels.cpp": "daed44ec6d4c36dec8da690e3690cf8d1f5eb3f4d66528aa981333a100508a88",
+    "src/legogame/levels.cpp": "641655bafa5e4b94208cd609803faea3110e66342636037aca93efe91b381298",
     "src/legogame/menu.cpp": "dc53e2cf382a1f9caeebe3db894fc711425637a33902bb2d047c80e5eb1da93e",
     "src/legogame/panel.cpp": "f2291868610398d3c0364246c1b16f393bc62452cf8c105762b57d3ed6f71928",
     "src/legogame/pcbatman.cpp": "cab515d134f0c783a6cecc6491399e41022a36b6cb6c0026c35dec8e8c16f9f9",
@@ -707,7 +707,7 @@
     "src/nu2api/shader_dictionary.cpp": "13baac0bae11be9605cdbbf6b59e5250df205aa2843842f112877dd513d325f2",
     "src/nu2api/shader_lexical.cpp": "f608b42a24f2bc836c08d6dd2e09019b408ff213926f131e51ad71af89655fd4",
     "src/nu2api/shader_parser.cpp": "9ffe89db4890d08059b1ade0a8d1526488e2b35813d31373341f16dbe3aa25e9",
-    "src/nu2api/terrain_collision.cpp": "2207d11a24d384c659483a3f24aa490cf4ae869777f32cd516757b1de0968ab2",
+    "src/nu2api/terrain_collision.cpp": "8305246da68af38e2e33bc64c3dcce3a9320fbf8aacdbc8655c5a42904b88144",
     "src/nu2api/terrain_query.cpp": "4bb137e912c228cc9d45d8cce2468a290892fc2f605289ef95de20b7d5d82e10",
     "src/nu2api/terrain_scan.cpp": "29ff25ba7a3358b95dc73248ee16ace572886d29931e8e3dab4d908dc57fef84",
     "src/nu2api/unref.cpp": "20d6c8ffb9de2d91a6ed7e2406f8a6f8a85d261dd90cdf0fb96dd7f9ec09fbfa",
@@ -992,7 +992,7 @@
     "build/obj/vendored/vorbis/vorbisfile.obj": "fb1bd9e5c446d8879beb6d71cac4b87c883fb1aee9a7afe127c5906eaa516425",
     "build/obj/vendored/vorbis/window.obj": "04796e1c0dbe79d833e2714d7f0ddd7899399214633f9c99b77e826d5b0303b5",
     "build/obj/vendored/vorbis_smallft.obj": "8d63e87251bdb6feb3c29e37e63849e4abe8e75e9ef2a6895ce1d7572d7d1b6e",
-    "build/obj/batman.obj": "a431391da50c185b66ea4f83abb4d3d1cbc818e336dbd56e06d409d7a462c110",
+    "build/obj/batman.obj": "2e54dfef5814bbb2597908781586a79e5d120743c3693bd6e40225b798ba4e0a",
     "build/obj/data.obj": "ea89a177bbb8c27debfb8feb4884576dccc72546761409ccbc8dc9146cf60d75",
     "build/obj/editor/edlevelall.obj": "1ed7b5765bbd49750caaa4fe756e99dcd5ab6cd7dc7434492a1e07617b0ca377",
     "build/obj/editor/edtoolsall.obj": "b154a138454ae13ec1cfe0edbe48193ecd943e37bdeb8f45216337a94440c491",
@@ -1056,7 +1056,7 @@
     "build/obj/legoapi/customiser.obj": "809e40e19fba1f5d2059b25ccc2744b1566ac441669611e7b6dd642e6cb923a6",
     "build/obj/legoapi/cutscene_hooks.obj": "1f933a7b4b4aeeb374c6d5db8b9b60c5295e50953a397f690a99bf99fbea851e",
     "build/obj/legoapi/cutscene_lifecycle.obj": "526f0429071c688bdc345f117c5a4b24ceb79766b51b9d101cdc2a4bbccaa50c",
-    "build/obj/legoapi/cutscenes.obj": "719372d97d02557c9edd5c5ce20acd9ebcb33a788375d3c2a20fd7d021a44da4",
+    "build/obj/legoapi/cutscenes.obj": "45bcb0d79d593ad2a1ef8fdfd5237828947c97e5a757fdaed514a928c3f098db",
     "build/obj/legoapi/debris_callbacks.obj": "f4e333561a9ad07067c96af4412b866b8287b2f3955ba1e742adb8b1f8ac2d33",
     "build/obj/legoapi/debris_engine.obj": "6283fc7ac53f642e10e7b2f818f99ba0a2053e635be1d0feefde7720dfb1544b",
     "build/obj/legoapi/debris_generators.obj": "d6245ede9217aaabf6caa2aa2b626ea44fd52344cdf1f92f5524ee6085937416",
@@ -1203,7 +1203,7 @@
     "build/obj/legogame/ledge.obj": "a0f10a098f9b26eae124a893aa14d83a883edf61954a8361029622d192d617b9",
     "build/obj/legogame/legoapi_status.obj": "cf151dc3979d151089089605a82b95619ff53c89c36b3c80cd5f2522cf5bd981",
     "build/obj/legogame/legoapi_tag.obj": "02e5c1949d1a2f64df60842749740b5123ae2a81882180103f66bbadbbbf709b",
-    "build/obj/legogame/levels.obj": "a4f8eac9367dabf883a324f39c14d145d9fae4b1852b85b3672a17a04b8cee6f",
+    "build/obj/legogame/levels.obj": "cb90bf3fa954819bd1530985b113a0eb05603f2ed8813aab50f9ef74892de18c",
     "build/obj/legogame/lever.obj": "4c4a8556a7fbe0e3471693c9e6c20a36c5f06c9a74ed321fd602fa31164216c5",
     "build/obj/legogame/menu.obj": "57d8aa7d04ef42408b4c2611d3d8de8a4e1ef7d6cd78775851b72a3d9d4e1b13",
     "build/obj/legogame/missions.obj": "d72d3edef1ffa3b334378f40d958a7ebeddcec0c60307cb35e1a38363a0a522e",
@@ -1315,7 +1315,7 @@
     "build/obj/nu2api/shader_dictionary.obj": "d3193607eadb4d99c23202aa52bb2241371ebc0fb4dcb8f9b70c68bb6306e7dd",
     "build/obj/nu2api/shader_lexical.obj": "97ca6296c92b5358da47ac499cb2bc687b56320ae98552d6ac4077fc1d24dd15",
     "build/obj/nu2api/shader_parser.obj": "82e5253e867349d5e0e71dd4e67eba9f24455296a027bde52b4a9281eceb39e3",
-    "build/obj/nu2api/terrain_collision.obj": "be3f5e1198003060d2b25550248e352447c9421698a7aa52883cfafd20995a92",
+    "build/obj/nu2api/terrain_collision.obj": "a3fb67153f237f9c7fb731afb6f2b035df1cb7ca7b453722bf2fcdca1e2f8067",
     "build/obj/nu2api/terrain_diagnostic.obj": "6e1e46655b884be762c4c0b78b449fd26c87d0628af9cc3758d3f6c59a788055",
     "build/obj/nu2api/terrain_query.obj": "8ed4efb4ab42a860b0e865024b6cdb8a5f9dd4f3dede448b740d2272f3cf5690",
     "build/obj/nu2api/terrain_scan.obj": "90ce7d3cffa99f2b9ff010cb5facc71fb4dc38f72662932860bc4d87506924c2",
@@ -42852,13 +42852,13 @@
       "objects": [
         {
           "unit": "src/legogame/levels.cpp",
-          "base_size": 3328,
+          "base_size": 3326,
           "exact_match": false,
           "target_sha256": "48aa160bab65ca4897cfaee5e59f2f764408692691018f8e4e0ee29cb7094af5",
-          "base_sha256": "d6ac69d78b4427c32a12f7d479d7bf850fc1f0d23d606d59d95d851d12e19365",
-          "relocation_count": 263,
+          "base_sha256": "e984a8719496c6dace46763b06cca7df7d7ce1e0d8fa5d25b3262201448969aa",
+          "relocation_count": 262,
           "comparison_unit": "0048b540-2136919322b5",
-          "objdiff_percent": 89.60679
+          "objdiff_percent": 89.79737
         }
       ],
       "diff_class": "structural",
@@ -42867,12 +42867,13 @@
         "I4",
         "I8",
         "I23",
+        "I24",
         "U3",
         "U7",
         "?"
       ],
       "status": "different",
-      "objdiff_percent": 89.60679
+      "objdiff_percent": 89.79737
     },
     {
       "name": "StoreSceneProgress",
@@ -45608,14 +45609,14 @@
           "base_size": 4340,
           "exact_match": false,
           "target_sha256": "b21a1c5cc4d55da5db8c00161fc107d1695175b7fc48c3e62805ddf7ae85cda2",
-          "base_sha256": "6762387f47cb2ebdeb2b3514c9bdafe841a318b7b760ffae00ebc2091c8f6852",
-          "relocation_count": 513,
+          "base_sha256": "c4de5228747a0369a3a29162da6385727c89094819455525377bf591fbfd1d94",
+          "relocation_count": 512,
           "comparison_unit": "00492b40-dd208425f9ad",
-          "objdiff_percent": 82.98645
+          "objdiff_percent": 83.028
         }
       ],
       "diff_class": "structural",
-      "diff_hunks": 69,
+      "diff_hunks": 67,
       "idioms": [
         "I3",
         "I4",
@@ -45626,7 +45627,7 @@
         "?"
       ],
       "status": "different",
-      "objdiff_percent": 82.98645
+      "objdiff_percent": 83.028
     },
     {
       "name": "?MenuFabs@@YAMM@Z",
@@ -141649,23 +141650,22 @@
       "objects": [
         {
           "unit": "src/legoapi/cutscenes.cpp",
-          "base_size": 107,
+          "base_size": 105,
           "exact_match": false,
           "target_sha256": "3814804c373e8221ae41b5e1a6dca5f77971ed567c876fc9b96eb1cc7b613c67",
-          "base_sha256": "b46b354a6c28fc0139607f294549f61db30dbeb06edef3fb075f3d09791762fe",
-          "relocation_count": 7,
+          "base_sha256": "bbb6a09b8ca838a3548cdea6d74ab0c902ce6c426ca91355eb36845d46c27d0a",
+          "relocation_count": 6,
           "comparison_unit": "0057b340-c107d409016d",
-          "objdiff_percent": 84.16129
+          "objdiff_percent": 83.22581
         }
       ],
       "diff_class": "structural",
-      "diff_hunks": 3,
+      "diff_hunks": 2,
       "idioms": [
-        "I24",
         "?"
       ],
       "status": "different",
-      "objdiff_percent": 84.16129
+      "objdiff_percent": 83.22581
     },
     {
       "name": "CS_fadefog",
@@ -277339,13 +277339,13 @@
       "objects": [
         {
           "unit": "src/nu2api/terrain_collision.cpp",
-          "base_size": 2202,
+          "base_size": 2198,
           "exact_match": false,
           "target_sha256": "b4be7e049f0668a9a6a52ba9f156bfcff57e620a9be3fb5d95171c67a7fd5d1d",
-          "base_sha256": "c706f52c2f261079dcfd96894505dd73f722ebff2803b3bc9544fe530af50564",
-          "relocation_count": 28,
+          "base_sha256": "bbcf3282221aaa2343c9984f440dce7df4a5ad383f8dd3cd99b5b78482fb47ef",
+          "relocation_count": 27,
           "comparison_unit": "00673850-8d41981218cd",
-          "objdiff_percent": 91.52224
+          "objdiff_percent": 91.60115
         }
       ],
       "diff_class": "structural",
@@ -277362,7 +277362,7 @@
         "?"
       ],
       "status": "different",
-      "objdiff_percent": 91.52224
+      "objdiff_percent": 91.60115
     },
     {
       "name": "CheckSphere",
@@ -404846,7 +404846,6 @@
         "lib/ogg-vorbis/vorbis/lsp.c",
         "lib/ogg-vorbis/vorbis/psy.c",
         "lib/ogg-vorbis/vorbis/vorbisfile.c",
-        "src/batman.cpp",
         "src/editor/edlevelall.cpp",
         "src/gameapi/aisysall.c",
         "src/gameapi/apiobject.c",
@@ -404944,14 +404943,6 @@
         },
         {
           "unit": "lib/ogg-vorbis/vorbis/vorbisfile.c",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc",
-          "base_sha256": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc"
-        },
-        {
-          "unit": "src/batman.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -898004,10 +897995,10 @@
     "matching_with_padding_percent": 63.64587816593811,
     "fuzzy_text_data_bytes": 6896,
     "fuzzy_denominator_bytes": 3349891,
-    "fuzzy_coverage_percent": 96.13882754623741,
+    "fuzzy_coverage_percent": 96.1390964414313,
     "mapped_functions": 15914,
     "matched_functions": 13871,
-    "objdiff_fuzzy_percent": 96.91987,
+    "objdiff_fuzzy_percent": 96.920135,
     "objdiff_total_code": 3328867,
     "image_bytes": 40067072,
     "mapped_bytes": 38523205,
@@ -899412,7 +899403,7 @@
       "metadata_sha256": "a005dfb7254f87304ba5e7d1c5083ab46db1e8272ef5fdd2e11a8953a1d1d2d5",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "242d99b7f7f989b609b2457a6b61c8360ffa0b5a224214d5873adda9ab23129b",
+      "geometry_object_sha256": "66d477ab01676702be49aa9bfcc375cb878e50ca376c50615f4ce81a28b8ec5b",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
