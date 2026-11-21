@@ -1383,6 +1383,7 @@ struct PC_SPECIAL_SHADOW_LIGHT {      // size 0x828
     i32 IsEnabled() {
         return enabled != 0;
     }
+
     void BeginCapture(i32 render_set);
 
     void SetParameterf(i32 parameter, f32 value);
