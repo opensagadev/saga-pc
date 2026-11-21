@@ -11787,7 +11787,7 @@ address,symbol,size,ctype
 0x696bd0,_NuSound3SetListener,10,
 0x00696be0,_NuSound3GetListener,15,NUMTX *__cdecl (void)
 0x696bf0,??_GSoundQueue@@QAEPAXI@Z,30,
-0x696c10,_fun_00696c10,51,
+0x696c10,?PCSoundVoiceFrequency@@YAHHH@Z,51,"i32 __cdecl(i32,i32)"
 0x696c50,??0SoundVoiceManagerPC@@QAE@XZ,53,SoundVoiceManagerPC *__thiscall(SoundVoiceManagerPC *)
 0x696c90,?UnloadSample@SoundVoiceManagerPC@@QAEXH@Z,109,"void __thiscall(SoundVoiceManagerPC *,i32)"
 0x696d00,?Init@SoundVoiceManagerPC@@QAEXHEE@Z,514,"void __thiscall SoundVoiceManagerPC::Init(i32 unused, u8 option5, u8 option6)"

@@ -378,6 +378,11 @@ extern "C" {
     i32 SoundVoiceVolumeOffset = -300;
 }
 
+/* A voice's playback frequency: the pitch parameter is 4.12 fixed point, scaled from the sample rate to 48 kHz. */
+static i32 PCSoundVoiceFrequency(i32 parameter, i32 sample_frequency) {
+    return abs(parameter) * sample_frequency / 4096 * 48 / (sample_frequency / 1000);
+}
+
 void SoundVoiceManagerPC::SetVoice(i32 voice_id, i32 spatial, f32 volume, i32 parameter) {
     IDirectSoundBuffer *voice = voices[voice_id].voice;
     i32 volume_level;
@@ -407,7 +412,7 @@ void SoundVoiceManagerPC::SetVoice(i32 voice_id, i32 spatial, f32 volume, i32 pa
 
     voices[voice_id].parameter = parameter;
     sample_frequency = samples[voices[voice_id].sample_id].frequency;
-    frequency = abs(parameter) * sample_frequency / 4096 * 48 / (sample_frequency / 1000);
+    frequency = PCSoundVoiceFrequency(parameter, sample_frequency);
     voices[voice_id].voice->vtable->set_frequency(voices[voice_id].voice, (DWORD)frequency);
 
     voices[voice_id].voice->vtable->get_status(voices[voice_id].voice, (DWORD *)&status);
@@ -460,7 +465,7 @@ void SoundVoiceManagerPC::SetFrequencyParameter(i32 voice_id, i32 parameter) {
 
     voices[voice_id].parameter = parameter;
     sample_frequency = samples[voices[voice_id].sample_id].frequency;
-    frequency = abs(parameter) * sample_frequency / 4096 * 48 / (sample_frequency / 1000);
+    frequency = PCSoundVoiceFrequency(parameter, sample_frequency);
     voices[voice_id].voice->vtable->set_frequency(voices[voice_id].voice, (DWORD)frequency);
 }
 
