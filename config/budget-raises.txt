@@ -341,3 +341,5 @@ config/castscan-budget.json void-pointer-cpp 557 impl/engine batch 4: fun_00602d
 config/oddscan-budget.json dense-function 1177 impl/engine: NuFmvTextureOpen sets up the movie texture and its material in one block as retail does
 config/oddscan-budget.json magic-bound 1580 impl/engine: NuFmvTextureOpen replaces the last three characters of the path with "bik"
 config/oddscan-budget.json placeholder-field 1076 impl/engine: NUGRIDINFO keeps its two unread words as unknown_
+config/castscan-budget.json float-width 3973 impl/engine: fun_005e56b0 subtracts (f64)0.001f, the double of the float literal retail uses (__real@3f50624de0000000)
+config/castscan-budget.json truncation 2189 impl/engine: NuFmvTextureOpen stores the movie texture id in the material's i16 texture_id
