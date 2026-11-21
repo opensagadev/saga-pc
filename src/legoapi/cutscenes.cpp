@@ -433,7 +433,7 @@ extern "C" {
             if (index != -1) {
                 CUT_LOAD_TEXANIM *animation = &CS_CutInfo->texture_animations[CS_texanimcount];
                 animation->frame = static_cast<f32>(NuFParGetInt(fp));
-                if (1.0f <= animation->frame) {
+                if (animation->frame >= 1.0f) {
                     ++CS_texanimcount;
                 }
             }

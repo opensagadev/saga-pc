@@ -1317,7 +1317,7 @@ void LoadAreaCharacters(void) {
             }
         } else if (icon_stage == 1) {
             icon_time += FRAMETIME;
-            if (0.6f < icon_time && 2 != CharacterDataLoad) {
+            if (icon_time > 0.6f && 2 != CharacterDataLoad) {
                 icon_time = 0.6f;
             }
             if ((f64)icon_time >= (f64)3.9499998f) {

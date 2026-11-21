@@ -490,6 +490,7 @@ extern "C" {
 #endif
     void LetGoOfBalloon(struct gameobject_s *);
     void PopBalloon(struct gameobject_s *);
+    i32 LightSabre_ColourFromObj(i32 model, i32 *glow_model);
     void LightSabreDebris(struct gameobject_s *);
     /* Shared declarations must have existing extern C linkage; no newsharedfield needed. */
 

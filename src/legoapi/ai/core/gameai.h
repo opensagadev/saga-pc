@@ -111,6 +111,8 @@ extern "C" {
 
     void GameCreatureOpponentSelection(struct AISYS *, i32, struct APIOBJECT **, i32, struct APIOBJECT **, i32, struct APIOBJECT **, u64,
                                        f32);
+    void AISysGetPathPos2(struct AISYS *system, NUVEC *position, struct AIPATHINFO *path_info, NUVEC *path_position, struct AIPATH *path,
+                          i32 flags);
     void GameAISysReset(struct AISYS *);
     void GameAISysStartFrame(struct AISYS *);
 #ifdef __cplusplus

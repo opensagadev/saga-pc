@@ -219,6 +219,7 @@ extern "C" {
     extern f32 IndyGrappleReleaseRadius;
     extern f32 IndyGrappleTimeout;
     extern f32 IndyJumpDistance[2];
+    u32 AIPathParseIndyFlag(char *name);
     i32 Indy_MidSpecialMove_Default(struct AISYS *system, struct AIPACKET *packet, struct APIOBJECT *object);
     i32 Indy_MidSpecialMove_StartJump(struct AISYS *system, struct AIPACKET *packet, struct APIOBJECT *object);
     i32 Indy_MidSpecialMove_BigJump(struct AISYS *system, struct AIPACKET *packet, struct APIOBJECT *object);

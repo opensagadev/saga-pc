@@ -4780,7 +4780,6 @@ variable:NuTimeBarColumnStep,variable,NuTimeBarColumnStep,12794,12794,1,legoapi/
 variable:NuTimeBarSlotWidth,variable,NuTimeBarSlotWidth,12795,12795,1,nu2api/nu3d/nu3d_includes.h,rule,used most in nu2api/nu3d_includes.cpp (3) android-path
 variable:NuTimeBarHorizontalTop,variable,NuTimeBarHorizontalTop,12796,12796,1,nu2api/nu3d/nu3d_includes.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:NuTimeBarValueFormat,variable,NuTimeBarValueFormat,12797,12797,1,nu2api/nu3d/nu3d_includes.h,users,NuTimeBarValueFormat: only nu2api/nu3d_includes.cpp android-path
-variable:NuTimeBarFontScale,variable,NuTimeBarFontScale,12798,12798,1,nu2api/nu3d/nu3d_includes.h,users,NuTimeBarFontScale: only nu2api/nu3d_includes.cpp android-path
 variable:NuTimeBarVerticalScale,variable,NuTimeBarVerticalScale,12799,12799,1,nu2api/nu3d/nu3d_includes.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:NuTimeBarNegativeSlotWidth,variable,NuTimeBarNegativeSlotWidth,12800,12800,1,nu2api/nu3d/nu3d_includes.h,data-nearest,"only data.cpp mentions it; retail 0x765670, nearest 0x765060"
 variable:NuTimeBarRight,variable,NuTimeBarRight,12801,12801,1,nu2api/nu3d/nu3d_includes.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
@@ -10388,9 +10387,7 @@ assert:-#4040,assert,,20408,20408,1,legoapi/actions/character/streaks.h,follow-t
 assert:-#4041,assert,,20409,20409,1,legoapi/actions/character/streaks.h,follow-type,STREAK_HEADER
 variable:StreakNodes,variable,StreakNodes,20410,20410,1,legoapi/actions/character/streaks.h,users,StreakNodes: only legoapi/streaks.c android-path
 variable:StreakHeaders,variable,StreakHeaders,20411,20411,1,legoapi/actions/character/streaks.h,users,StreakHeaders: only legoapi/streaks.c android-path
-variable:streaks_free,variable,streaks_free,20412,20412,1,legoapi/actions/character/streaks.h,users,streaks_free: only legoapi/streaks.c android-path
 variable:StreakNodesUsed,variable,StreakNodesUsed,20413,20413,1,legoapi/actions/character/streaks.h,users,StreakNodesUsed: only legoapi/streaks.c android-path
-variable:streakhdrs_free,variable,streakhdrs_free,20414,20414,1,legoapi/actions/character/streaks.h,users,streakhdrs_free: only legoapi/streaks.c android-path
 variable:streakmtl,variable,streakmtl,20415,20415,1,legoapi/actions/character/streaks.h,users,streakmtl: only legoapi/streaks.c android-path
 variable:streakmtl_ref,variable,streakmtl_ref,20416,20416,1,legoapi/actions/character/streaks.h,users,streakmtl_ref: only legoapi/streaks.c android-path
 variable:StreakTextureName,variable,StreakTextureName,20417,20417,1,legoapi/actions/character/streaks.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour

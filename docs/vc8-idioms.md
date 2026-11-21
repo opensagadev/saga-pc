@@ -816,6 +816,32 @@ loop shows exactly that shape: `AreaDataLoaded`/`CharacterDataLoad`, set by
 with the crawl alpha test reading it once). Only for such shared flags; a
 global retail also compares in memory elsewhere is not volatile.
 
+### I67: a helper inlined in retail but called in ours lives in another unit here
+
+A retail function with no calls where ours calls a small helper many times
+means the helper was visible in the original unit. When the helper's retail
+address sits among functions of a different unit of ours (the port split one
+original unit in two), move the caller next to it rather than copying the
+helper. `NewCast` (0x6729e0, then in `nuterrain.c`) inlines all 16
+`InsideLineF` tests (0x66ffa0, `terrain_collision.cpp`); moved into
+`terrain_collision.cpp` it went from 45.9 to 56.2 %. Moving `InsideLineF` the
+other way broke `InsidePolLines`, which calls it but relies on knowing its
+register use (I35). The Android port of the same engine then showed the hit
+record written once per shape kind (triangle, quad); duplicating it gave
+66.7 %.
+
+### I68: an implicit declaration in a C unit converts as `int`
+
+A C unit that calls a function without a prototype treats its result as `int`.
+Retail's `test eax, eax; jge; fadd [2^32]` after `fild` is the unsigned
+conversion of a `u32` result; ours had a plain `fild`. `NuFrameEnd` called
+`PcGetRefreshRate`, whose prototype sat in the C++-only part of
+`d3dApiCalls.h` (94.0 -> 98.5 %). Compiling the C units with `/w14013` lists
+every undeclared call (37 at the time); only callees whose return or
+parameters are narrower than `int` or floating point change code. The
+nu2api and gameapi ones all return `int` or `void` with `int`-sized
+parameters.
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated

@@ -16,6 +16,7 @@ extern "C" {
     i32 StarWars_PrepareTakeOverJump(AIPACKET *, APIOBJECT *, i32);
     i32 StarWars_PrepareObstacle(AIPACKET *, APIOBJECT *, i32);
     i32 StarWars_PrepareJump(AIPACKET *, APIOBJECT *, i32);
+    u32 AIPathParseStarWarsFlag(char *name);
     void StarWars_GameAISysInit(void);
     i32 StarWars_MidSpecialMove(struct AISYS *, struct AIPACKET *, struct APIOBJECT *);
     i32 StarWars_PreparingForSpecialMove(struct AIPACKET *, struct APIOBJECT *, i32);

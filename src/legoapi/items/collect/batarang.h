@@ -15,6 +15,8 @@ extern "C" {
     i32 Batarang_StartTargetting(GAMEOBJECT *);
     i32 BatarangGetObjectFromCharId(i32 character);
     void Batarangs_CheckLostData(void *);
+    void Batman_GameAISysInit(void);
+    u32 AIPathParseBatmanFlag(char *name);
     void Batarangs_Reset(void);
 
     i32 Batarang_FindTarget(WORLDINFO *, GAMEOBJECT *, i32);

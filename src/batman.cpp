@@ -132,7 +132,6 @@ struct FADEINFO_s;
 extern "C" {
     extern FADEINFO *pFadeInfo;
     void Movie_Play(char *name, VARIPTR *buffer, VARIPTR *end, f32 frame_time, void *callback, f32 volume);
-    i32 CutScene_PlayingOrRequested(void *cutscene);
     TIMER BonusTimer = {0};
 
     void WorldInfo_DrawScene(WORLDINFO *world);
@@ -924,7 +923,7 @@ extern "C" int NuMain(int argc, char **argv) {
                 NuFrameBegin();
                 if (SoundVoiceEnabledGate != 0) {
                     if (pause_rndr_on == 0 || FadeSys.pending_type == FADE_TYPE_WIPE) {
-                        if (0.0f < MainRenderTime) {
+                        if (MainRenderTime > 0.0f) {
                             LOG_INFO_IF(GameTimer.update_count < 2, "NuMain before render: world=%p", WORLD);
                             SAGA_SOUND_CHECK("before world render");
                             NuMainRenderWorld(WORLD);

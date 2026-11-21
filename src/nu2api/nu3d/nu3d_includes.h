@@ -277,7 +277,6 @@ extern "C" {
     extern const f32 NuTimeBarQFontScale;
     extern const f64 NuTimeBarSlotWidth;
     extern const f64 NuTimeBarHorizontalTop;
-    extern const f32 NuTimeBarFontScale;
     extern const f64 NuTimeBarVerticalScale;
     extern const f64 NuTimeBarNegativeSlotWidth;
     extern const f64 NuTimeBarRight;
@@ -1384,6 +1383,7 @@ struct PC_SPECIAL_SHADOW_LIGHT {      // size 0x828
     i32 IsEnabled() {
         return enabled != 0;
     }
+    void BeginCapture(i32 render_set);
 
     void SetParameterf(i32 parameter, f32 value);
     i32 GetUsedOnSpecials();

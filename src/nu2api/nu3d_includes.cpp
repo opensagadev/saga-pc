@@ -4876,7 +4876,7 @@ extern "C" {
             if ((NuQFntMode & 4) != 0) {
                 *font->y_scale = y_scale;
             } else {
-                *font->y_scale = (f32)(y_scale * NuQFntHalfScale);
+                *font->y_scale = (f32)(y_scale * 0.5);
             }
         }
     }
@@ -4924,7 +4924,7 @@ extern "C" {
             *font->y_scale = y_scale;
             return;
         }
-        *font->y_scale = (f32)(y_scale * NuQFntHalfScale);
+        *font->y_scale = (f32)(y_scale * 0.5);
     }
 
     void NuQFntSetColourRS(void *stream, VUFNT *font, u32 colour) {
@@ -5325,7 +5325,7 @@ extern "C" {
             line[length] = 0;
             if (*text == 0) {
                 scale = width / ((f32)(words - 1 + punctuation_spaces) * printed_space_width + words_width);
-                if (1.0f < scale) {
+                if (scale > 1.0f) {
                     scale = 1.0f;
                 }
             } else if (words == 1) {
@@ -9126,7 +9126,7 @@ extern "C" {
         NuQFntPushCoordinateSystem(NUQFNT_CS_SIXTEENTHS);
         NuQFntSet(system_qfont);
         NuQFntSetColour(system_qfont, 0xe0e0e0e0);
-        NuQFntSetScale(system_qfont, NuTimeBarFontScale, NuTimeBarFontScale);
+        NuQFntSetScale(system_qfont, 0.85f, 0.85f);
         vertical_scale = (f32)(120.0 / PS2_VREZ_H);
         timebar = NuTimeBar_SetList[set + 1];
         for (slot = 0; slot < timebar->slot_count; ++slot) {
@@ -9137,12 +9137,8 @@ extern "C" {
                 }
             }
         }
-        if (NuQFntModeStackIndex > 0) {
-            NuQFntMode = NuQFntModeStack[--NuQFntModeStackIndex];
-        }
-        if (NuQFntCSModeStackIndex > 0) {
-            NuQFntSetCoordinateSystem(NuQFntCSModeStack[--NuQFntCSModeStackIndex]);
-        }
+        NuQFntPopPrintMode();
+        NuQFntPopCoordinateSystem();
         name_width /= (f32)(PS2_VREZ_W << 4);
 
         for (slot = 0; slot < timebar->slot_count; ++slot) {
@@ -9173,29 +9169,11 @@ extern "C" {
                 i32 text_y;
 
                 NuRndrRect2di(x, y, width, height, timebar->colours[slot], NULL);
-                if (NuQFntModeStackIndex < 16) {
-                    NuQFntModeStack[NuQFntModeStackIndex++] = NuQFntMode;
-                }
-                NuQFntMode = 2;
-                if (NuQFntCSModeStackIndex < 16) {
-                    NuQFntCSModeStack[NuQFntCSModeStackIndex++] = nuqfnt_cs_mode;
-                }
-                nuqfnt_cs_mode = 1;
-                qfnt_rezscale_w = NuTimeBarQFontScale;
-                qfnt_rezscale_h = NuTimeBarQFontScale;
-                qfnt_offscale_x = 0.0f;
-                qfnt_offscale_y = 0.0f;
-                qfnt_len_scale = NuTimeBarQFontSize;
-                qfnt_height_scale = NuTimeBarQFontSize;
-                if (system_qfont != NULL) {
-                    system_qfont->mode = 1;
-                    nuqfnt_space_width = system_qfont->space_width;
-                }
-                if (system_qfont != NULL) {
-                    system_qfont->platform_data->colour = 0xe0e0e0e0;
-                    *system_qfont->x_scale = NuTimeBarFontScale;
-                    *system_qfont->y_scale = (NuQFntMode & 4) != 0 ? NuTimeBarFontScale : 0.425f;
-                }
+                NuQFntPushPrintMode(NUQFNT_MODE_2D);
+                NuQFntPushCoordinateSystem(NUQFNT_CS_SIXTEENTHS);
+                NuQFntSet(system_qfont);
+                NuQFntSetColour(system_qfont, 0xe0e0e0e0);
+                NuQFntSetScale(system_qfont, 0.85f, 0.85f);
                 text_y = y + height - (i32)(NuQFntHeight(system_qfont) * 0.25);
                 if (timebar->slot_names[slot] != NULL) {
                     NuQFntPrintEx(system_qfont, (i32)(NuTimeBarSlotWidth * (PS2_VREZ_W << 4)), text_y, 0x10, timebar->slot_names[slot]);
@@ -9208,12 +9186,8 @@ extern "C" {
                     f32 lines = NuTimeBarMicrosecondsToLines(timebar->peak_times[slot]);
                     NuQFntPrintEx(system_qfont, (i32)(0.974999999627471 * (PS2_VREZ_W << 4)), text_y, 0x20, "%i", (i32)lines);
                 }
-                if (NuQFntModeStackIndex > 0) {
-                    NuQFntMode = NuQFntModeStack[--NuQFntModeStackIndex];
-                }
-                if (NuQFntCSModeStackIndex > 0) {
-                    NuQFntSetCoordinateSystem(NuQFntCSModeStack[--NuQFntCSModeStackIndex]);
-                }
+                NuQFntPopPrintMode();
+                NuQFntPopCoordinateSystem();
             }
             if (timebar->visible != 0) {
                 NuTimeBarSlotReset(set, slot);
@@ -16691,9 +16665,8 @@ void NuDynamicLight::resetGeometry() {
         NURNDRLIGHTRECORD &set = render_sets[i];
         set.count = 0;
         for (i32 j = 0; j < 2; ++j) {
-            NuDisplayListResetStateCache(set.shadow_lists[j].state);
-            NUDISPLAYLISTITEM *item = set.shadow_lists[j].first;
-            set.shadow_lists[j].mtl_last = item;
+            NuDisplayListResetMaterialCursor(&set.shadow_lists[j]);
+            NUDISPLAYLISTITEM *item = set.shadow_lists[j].mtl_last;
             item->type = NUDLIST_NEXT;
             item->next = NULL;
             item->id = NUDLISTITEM_JUMP;
@@ -18188,9 +18161,8 @@ PC_SPECIAL_SHADOW_LIGHT *PC_SPECIAL_SHADOW_LIGHT::Clone(VARIPTR *arena, VARIPTR)
         NURNDRLIGHTRECORD &set = render_sets[i];
         set.count = 0;
         for (i32 j = 0; j < 2; ++j) {
-            NuDisplayListResetStateCache(set.shadow_lists[j].state);
-            NUDISPLAYLISTITEM *item = set.shadow_lists[j].first;
-            set.shadow_lists[j].mtl_last = item;
+            NuDisplayListResetMaterialCursor(&set.shadow_lists[j]);
+            NUDISPLAYLISTITEM *item = set.shadow_lists[j].mtl_last;
             item->type = NUDLIST_NEXT;
             item->next = NULL;
             item->id = NUDLISTITEM_JUMP;

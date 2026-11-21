@@ -53,6 +53,7 @@ extern "C" {
 extern "C" {
 #endif
     void Tube_MoveCode(struct gameobject_s *, struct WORLDINFO_s *);
+    i32 Tube_InCylinder(struct gameobject_s *object, TUBE *tube, f32 *horizontal_distance_squared, i32 ignore_height);
     TUBE *Tube_InAnyCylinder(struct WORLDINFO_s *, struct gameobject_s *, i32);
 #ifdef __cplusplus
 }
