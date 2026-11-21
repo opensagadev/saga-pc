@@ -12665,7 +12665,7 @@ address,symbol,size,ctype
 0x6be380,?SetAttributeData@EdRef@@QAEHPAXHH0H@Z,201,
 0x6be450,?Initialise@EdRegistry@@QAEXAATvariptr_u@@0HHHH@Z,270,
 0x6be560,?Flush@EdRegistry@@QAEXXZ,12,
-0x6be570,_fun_006be570,32,
+0x6be570,?EdStreamIncludesClass@@YAHAAVEdStream@@PAUEdClass@@@Z,32,"i32 __cdecl(EdStream &,EdClass *)"
 0x6be590,?RegisterType@EdRegistry@@QAEHPADHP6AXAAVEdStream@@PAXH@Z@Z,41,
 0x6be5c0,?RegisterClass@EdRegistry@@QAEPAUEdClass@@PADPAVEdClassInterface@@H@Z,48,
 0x6be5f0,?AddMapping@EdRegistry@@QAEHPAD0@Z,36,
@@ -12686,7 +12686,7 @@ address,symbol,size,ctype
 0x6be960,?NotifyDestroyObject@EdRegistry@@QAEXPAXPAUEdClass@@HH@Z,61,
 0x6be9a0,?NotifyDefunctObject@EdRegistry@@QAEXPAXPAUEdClass@@H@Z,56,
 0x6be9e0,?NotifyReviveObject@EdRegistry@@QAEXPAXPAUEdClass@@H@Z,56,
-0x6bea20,_fun_006bea20,56,
+0x6bea20,?EdStreamIncludesMember@@YAHAAVEdStream@@PAVEdRef@@PAH@Z,56,"i32 __cdecl(EdStream &,EdRef *,i32 *)"
 0x6bea60,??0EditorSettings@@QAE@XZ,21,
 0x6bea80,?AddMenuItems@EditorSettings@@QAEXPAUeduimenu_s@@@Z,130,
 0x6beb10,?Exists@SpecialObject@@UBEHXZ,13,
