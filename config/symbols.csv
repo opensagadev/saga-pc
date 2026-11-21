@@ -4476,7 +4476,7 @@ address,symbol,size,ctype
 0x53db30,_AINetReplicateAction,26,"void __cdecl (AIACTION *, AIPACKET *)"
 0x53db50,_SockSysMissingSockEndDiagnostic,1,void __cdecl(char *)
 0x53db60,_SockSysMissingCameraDiagnostic,1,void __cdecl(char *)
-0x53db70,?SocksysallFabs@@YAMM@Z,18,
+0x53db70,_SockFabs,18,f32 __cdecl(f32)
 0x53db90,_SockFdiv,54,"f32 __cdecl (f32, f32)"
 0x53dbd0,_SockAngleDifference,34,
 0x53dc00,_AdjustMinMaxBox,119,"void __cdecl (NUVEC *, NUVEC *, NUVEC *)"
