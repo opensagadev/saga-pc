@@ -355,3 +355,9 @@ config/oddscan-budget.json placeholder-field 1079 impl/engine batch: render-stre
 config/oddscan-budget.json stdcall 263 impl/engine batch: render-stream setup, water waves, texture-name read; PC_EFFECT_METHODS::set_vector_array is the ID3DXEffect COM slot 36
 config/castscan-budget.json float-int 3078 impl/engine batch: render-stream setup, water waves, texture-name read; the wave angles and cell coordinates truncate to integers as retail does
 config/castscan-budget.json scalar-pun 288 impl/engine batch: render-stream setup, water waves, texture-name read; fun_005f9740 locks its vertex buffers through void **
+config/oddscan-budget.json address-name 4709 impl/engine: fun_005fffd0 (particle launch set); keeps its fun_ name
+config/oddscan-budget.json dense-function 1179 impl/engine: fun_005fffd0 (particle launch set); places and blends in one loop as retail does
+config/oddscan-budget.json magic-bound 1581 impl/engine: fun_005fffd0 (particle launch set); checks the 63-key bound
+config/oddscan-budget.json magic-state 4316 impl/engine: fun_005fffd0 (particle launch set); tests the repeat particle types 6 and 7
+config/oddscan-budget.json placeholder-field 1083 impl/engine: fun_005fffd0 (particle launch set); its shape and key records keep unread spans as unknown_
+config/castscan-budget.json float-int 3079 impl/engine: fun_005fffd0 (particle launch set); truncates the key time to the key index
