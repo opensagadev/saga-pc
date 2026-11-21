@@ -361,3 +361,8 @@ config/oddscan-budget.json magic-bound 1581 impl/engine: fun_005fffd0 (particle 
 config/oddscan-budget.json magic-state 4316 impl/engine: fun_005fffd0 (particle launch set); tests the repeat particle types 6 and 7
 config/oddscan-budget.json placeholder-field 1083 impl/engine: fun_005fffd0 (particle launch set); its shape and key records keep unread spans as unknown_
 config/castscan-budget.json float-int 3079 impl/engine: fun_005fffd0 (particle launch set); truncates the key time to the key index
+config/oddscan-budget.json define-in-unit 21 impl/engine: nusound.cpp renames vorbisfile.h's static _ov_header_fseek_wrap around its include, as nustream.cpp and oggreader.cpp do, so its retail copy NusoundOvHeaderFseekWrap (0x696ae0) is emitted
+config/oddscan-budget.json dup-macro 22 impl/engine: nusound.cpp renames vorbisfile.h's static _ov_header_fseek_wrap around its include, as nustream.cpp and oggreader.cpp do, so its retail copy NusoundOvHeaderFseekWrap (0x696ae0) is emitted
+config/oddscan-budget.json dup-macro-conflict 7 impl/engine: nusound.cpp renames vorbisfile.h's static _ov_header_fseek_wrap around its include, as nustream.cpp and oggreader.cpp do, so its retail copy NusoundOvHeaderFseekWrap (0x696ae0) is emitted
+config/oddscan-budget.json nolint 64 impl/engine: nusound.cpp renames vorbisfile.h's static _ov_header_fseek_wrap around its include, as nustream.cpp and oggreader.cpp do, so its retail copy NusoundOvHeaderFseekWrap (0x696ae0) is emitted
+config/oddscan-budget.json undef-in-unit 15 impl/engine: nusound.cpp renames vorbisfile.h's static _ov_header_fseek_wrap around its include, as nustream.cpp and oggreader.cpp do, so its retail copy NusoundOvHeaderFseekWrap (0x696ae0) is emitted

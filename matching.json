@@ -428,7 +428,7 @@
     "src/nu2api/save_folder.h": "776a18c43805e45817ed6d5aecfdd524e6893c90e415e7a385697b42472acf1c",
     "src/nu2api/shader_parser.h": "e192219dd005bfa8c46c46ec47e32593905d0ef38c101aac79e77fa4a49b6a12",
     "src/nu2api/wavreader.h": "6acb0f5ca7ccbcef5945e705cc918a66f14f3af9f07cc9b5ce7fa31e78f05043",
-    "config/budget-raises.txt": "0905248a38877e34fc180430744819c109b8bb39d0059c0e3374adf416df6253",
+    "config/budget-raises.txt": "d1e70d25a15000fadf741a3a4c65a516eae53b4ff42b74978476d3c5229c4df3",
     "config/candidate-only.json": "1eb3de3e140842995ed51ce3a926103f69127954004621f3be04b822c65223b9",
     "config/castscan-budget.json": "7846a536e635c79ece95472fd868108b502461a99a75de1dcd4bd4e428265aeb",
     "config/castscan-keep.csv": "bcfd25f84df27a9c57e603824516f7ddcb3177ee382141d9a9a7050afbc40c0f",
@@ -443,13 +443,13 @@
     "config/library-objects.json": "4e0e91f5abb9855a0624aa79f38e17687b47eaa447383f272352c1f024b9a872",
     "config/literalscan-budget.json": "31c786e269f1756cf35489ad41e6941a8881a76410f4579c939a0d083ea69a89",
     "config/literalscan-keep.csv": "5883b33b1eb1f87e0961c02edee55a07d9995e840dbc5a1a42107f968f83bdae",
-    "config/oddscan-budget.json": "8472305eb54ba64e44b4d9d3b15d83d8cab4a157edcf6be800fb1ff2c8867148",
+    "config/oddscan-budget.json": "d3a5c7b833804b7e9eff3ead9941a9f2cb56b7babbd9bc371b28f419154e7d05",
     "config/ogg-vorbis.json": "e94a5fc2946a282cb184876e2152524085f47ef2e761cb386d21bbd9cdfab985",
     "config/ogg-vorbis.patch": "8fbd6a3958c9e9bbb862010aec90a60592205f9850c290d1bfa02108d24871ce",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
     "config/sibling-names.csv": "0412f6238a62d5d75181cb275bbaeea889f8b7e7021810b9b5261dbbe9852810",
     "config/standalone-budget.json": "7f7c580012d4dfaecc55c9c35cf3461c9c45615ddc805efb95d7aae11b86330f",
-    "config/symbols.csv": "12802887d5a89220bb6ad8e2f4d020d61c937a3e2802195ab49a1a1659e7b8c0",
+    "config/symbols.csv": "cf247a093845100f841c5268be548417f4ef61569a80112d034139ef69bd276f",
     "config/symbols.md": "3d018cc044b5a14025b0fc457df71a0c9a193cea32ceb3081e6a86bcdd4b242b",
     "config/toolchain.json": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
     "config/tools.json": "8e9a5f8077abc1bd9cce37004a47ea493e67a75ba964d8df3f13223958e6f4c8",
@@ -682,7 +682,7 @@
     "src/nu2api/nushadermanager_gen.cpp": "a3b2a5dc1f4c050507e4e31aaccc5623ee6ee3aec3fae253bb3a1fc67e57846b",
     "src/nu2api/nushaderobject_pc.cpp": "c54d28b258776461d0679538cfcd32ba1981fdeaa2d953fc78e6ebcbab6b53f6",
     "src/nu2api/nushaderobjectbase.cpp": "63ebaf01b3e89189f6f127ca667107443fb0b7e927f3d09f2735b527a3129101",
-    "src/nu2api/nusound3/pc/nusound.cpp": "ce4666289d11f4327c68a819f3c8f6bdf533d8be943d69ad6a27e20b443c2ae8",
+    "src/nu2api/nusound3/pc/nusound.cpp": "f9122e6b9f73a6bbb0e4ac89cefb2754957d8a9504365f003b8dd9ed158eb7aa",
     "src/nu2api/nusound_music.cpp": "5d074ea871ed4401a38a60c7f52a48c96969cf873716d70b0407ddff636a9852",
     "src/nu2api/nustream.cpp": "bac072bf17c909a68bfc7dc2fd0d52f8fa863fbc62aa7ba1418b473281e8cffe",
     "src/nu2api/nuwin32/d3dApiCalls.cpp": "eb330e7d13508b9f26c76fd27df3db1aebfd40028ee9824a97b9956b8097f8db",
@@ -1280,7 +1280,7 @@
     "build/obj/nu2api/nushaderobject_pc.obj": "c0873198f3dc851023b14a7ee3119f37ee1feea74b5840f19e53f205e35c824c",
     "build/obj/nu2api/nushaderobjectbase.obj": "339a6f8182bf34a147e747ef2d806691c4f01c7a501697b90966b8e9d6695679",
     "build/obj/nu2api/nusound.obj": "0215d46a6058ccf04278ddeb15fc690ca3f881b9ed4bf2a9defdb156e8a1a897",
-    "build/obj/nu2api/nusound3/pc/nusound.obj": "50cd0a3a6b4c621a782fbbccf31278d2bd8b07ad5995eec705c549aa31771ace",
+    "build/obj/nu2api/nusound3/pc/nusound.obj": "a6a9e352f67953cef7b1a7489ae8a3b1362d988c597a7535e2dc492e7f7d0e8b",
     "build/obj/nu2api/nusound_music.obj": "1eaffeba9e91889333e958e5ec6053e7857bc8db6a7991e80a0177aa999053af",
     "build/obj/nu2api/nustateanim.obj": "a7d28ac2e8b2f59770afefc1ca0825c503a03d93638a27b8b887034e6aa542e4",
     "build/obj/nu2api/nustream.obj": "ffca1f1900254db7bf13168bcc509725bbf9ba1abefa36febddd4221205b48d4",
@@ -288578,11 +288578,25 @@
       "name": "NusoundOvHeaderFseekWrap",
       "symbol": "_NusoundOvHeaderFseekWrap",
       "address": "0x00696ae0",
-      "units": [],
+      "units": [
+        "src/nu2api/nusound3/pc/nusound.cpp"
+      ],
       "target_size": 32,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
+          "base_size": 32,
+          "exact_match": true,
+          "target_sha256": "9a76b554f9ab9e2e34e0802608137267bf26282a5a5a7e423edaad5e14cab414",
+          "base_sha256": "9a76b554f9ab9e2e34e0802608137267bf26282a5a5a7e423edaad5e14cab414",
+          "relocation_count": 1,
+          "comparison_unit": "00696ae0-8e943fa771e9",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuSound3ResumeAfterFocus",
@@ -288812,14 +288826,28 @@
       "objdiff_percent": 100.0
     },
     {
-      "name": "fun_00696c10",
-      "symbol": "_fun_00696c10",
+      "name": "?PCSoundVoiceFrequency@@YAHHH@Z",
+      "symbol": "?PCSoundVoiceFrequency@@YAHHH@Z",
       "address": "0x00696c10",
-      "units": [],
+      "units": [
+        "src/nu2api/nusound3/pc/nusound.cpp"
+      ],
       "target_size": 51,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
+          "base_size": 51,
+          "exact_match": true,
+          "target_sha256": "23d1a3ee32127798c8284706ba761ec552bab099303112c614022dc7312d7aa7",
+          "base_sha256": "23d1a3ee32127798c8284706ba761ec552bab099303112c614022dc7312d7aa7",
+          "relocation_count": 0,
+          "comparison_unit": "00696c10-8a9a0659b337",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "??0SoundVoiceManagerPC@@QAE@XZ",
@@ -795805,6 +795833,7 @@
       "address": "0x00811018",
       "units": [
         "lib/ogg-vorbis/vorbis/vorbisfile.c",
+        "src/nu2api/nusound3/pc/nusound.cpp",
         "src/nu2api/nustream.cpp",
         "src/nu2api/oggreader.cpp"
       ],
@@ -795819,6 +795848,7 @@
       "address": "0x00811028",
       "units": [
         "lib/ogg-vorbis/vorbis/vorbisfile.c",
+        "src/nu2api/nusound3/pc/nusound.cpp",
         "src/nu2api/nustream.cpp",
         "src/nu2api/oggreader.cpp"
       ],
@@ -795833,6 +795863,7 @@
       "address": "0x00811038",
       "units": [
         "lib/ogg-vorbis/vorbis/vorbisfile.c",
+        "src/nu2api/nusound3/pc/nusound.cpp",
         "src/nu2api/nustream.cpp",
         "src/nu2api/oggreader.cpp"
       ],
@@ -795847,6 +795878,7 @@
       "address": "0x00811048",
       "units": [
         "lib/ogg-vorbis/vorbis/vorbisfile.c",
+        "src/nu2api/nusound3/pc/nusound.cpp",
         "src/nu2api/nustream.cpp",
         "src/nu2api/oggreader.cpp"
       ],
@@ -900091,19 +900123,19 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 3348693,
-    "matched_code_bytes": 2114199,
-    "matching_percent": 60.906055059192,
+    "matched_code_bytes": 2114282,
+    "matching_percent": 60.90844613144675,
     "padding_bytes": 114459,
-    "matched_padding_bytes": 100882,
-    "matched_code_with_padding_bytes": 2215081,
-    "matching_with_padding_percent": 63.812273748388904,
+    "matched_padding_bytes": 100895,
+    "matched_code_with_padding_bytes": 2215177,
+    "matching_with_padding_percent": 63.81503932593657,
     "fuzzy_text_data_bytes": 6896,
     "fuzzy_denominator_bytes": 3349891,
-    "fuzzy_coverage_percent": 96.33211650318076,
+    "fuzzy_coverage_percent": 96.33459419573852,
     "mapped_functions": 15914,
-    "matched_functions": 13919,
-    "objdiff_fuzzy_percent": 96.85531,
-    "objdiff_total_code": 3337769,
+    "matched_functions": 13921,
+    "objdiff_fuzzy_percent": 96.85539,
+    "objdiff_total_code": 3337852,
     "image_bytes": 40067072,
     "mapped_bytes": 38533364,
     "mapping_percent": 96.17214854132591,
@@ -900165,11 +900197,11 @@
     "mapping_file_backed_data_with_padding_percent": 95.72442271816097,
     "mapping_zero_fill_data_with_padding_bytes": 34181704,
     "mapping_zero_fill_data_with_padding_percent": 97.78939468807482,
-    "mapping_code_named_bytes": 3340111,
-    "mapping_code_named_percent": 96.2222498779977,
-    "mapping_code_address_named_bytes": 16672,
-    "mapping_code_address_named_percent": 0.4802886341100573,
-    "mapping_code_address_named_functions": 843,
+    "mapping_code_named_bytes": 3340162,
+    "mapping_code_named_percent": 96.2237190910699,
+    "mapping_code_address_named_bytes": 16621,
+    "mapping_code_address_named_percent": 0.4788194210378636,
+    "mapping_code_address_named_functions": 842,
     "reproduced_file_backed_data_exact_bytes": 537627,
     "reproduced_file_backed_data_library_bytes": 452841,
     "reproduced_file_backed_data_different_padding_bytes": 0,
@@ -900211,24 +900243,24 @@
   "text_coverage": {
     "original_text_bytes": 3471246,
     "mapped_reconstruction_bytes": 3348693,
-    "exact_reconstruction_bytes": 2114199,
-    "mapped_not_exact_bytes": 1234494,
+    "exact_reconstruction_bytes": 2114282,
+    "mapped_not_exact_bytes": 1234411,
     "excluded_import_glue_bytes": 1194,
     "text_data_bytes": 6896,
     "exact_text_data_bytes": 6896,
     "unclassified_text_bytes": 114463,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 60.906055059192,
+    "strict_original_text_exact_percent": 60.90844613144675,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 60.927012044776276,
+    "reconstruction_scope_exact_percent": 60.92940393976805,
     "mapped_scope_denominator_bytes": 3348693,
-    "mapped_scope_exact_percent": 63.13505000309076,
+    "mapped_scope_exact_percent": 63.137528582046784,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image.",
     "alignment_padding_bytes": 114459,
-    "exact_alignment_padding_bytes": 100882,
+    "exact_alignment_padding_bytes": 100895,
     "unclassified_non_padding_text_bytes": 4,
-    "exact_with_padding_bytes": 2215081,
-    "exact_with_padding_percent": 63.812273748388904,
+    "exact_with_padding_bytes": 2215177,
+    "exact_with_padding_percent": 63.81503932593657,
     "padding_qualification": "Padding is int3/nop alignment fill shorter than 16 bytes between mapped extents, shorter than the alignment of the extent start it ends on; it is exact only after an exact function."
   },
   "data_members": [
@@ -901507,7 +901539,7 @@
       "metadata_sha256": "a005dfb7254f87304ba5e7d1c5083ab46db1e8272ef5fdd2e11a8953a1d1d2d5",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "e363b49c2cabe9f7c234f4836683a0a26fda89a1779bff0faab3f1858fa2df90",
+      "geometry_object_sha256": "585c5d5d994af83e70ded5f2753ec2d24aa925ee1f5d3c1d632e57ce2d528f5b",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
