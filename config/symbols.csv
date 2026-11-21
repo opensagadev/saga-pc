@@ -7914,7 +7914,7 @@ address,symbol,size,ctype
 0x005d9030,_NuPortalInit,34,void __cdecl (void)
 0x5d9060,_NuPortalSetActive,85,
 0x5d90c0,_NuPortalSetActiveDirect,28,"void __cdecl (NUPORTAL *, i32)"
-0x5d90e0,_fun_005d90e0,70,
+0x5d90e0,_fun_005d90e0,70,void __cdecl(NUGSCN *)
 0x5d9130,_NuPortalMaxDepth,15,"void __cdecl(NUGSCN *,i32)"
 0x5d9140,_allocateFrustrum,104,
 0x5d91b0,_copyFrustrum,109,

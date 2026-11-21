@@ -7187,6 +7187,18 @@ extern "C" {
         return -1;
     }
 
+    void fun_005d90e0(NUGSCN *scene) {
+        u32 index;
+        for (index = 0; index < (u32)scene->max_portals; ++index) {
+            scene->portals[index].flags |= 2;
+            if (scene->portals[index].flags != 0) {
+                scene->portals[index].flags |= NUPORTAL_FLAG_ACTIVE;
+            } else {
+                scene->portals[index].flags = 0;
+            }
+        }
+    }
+
     void NuPortalMaxDepth(NUGSCN *scene, i32 depth) {
         scene->portal_depth = depth;
     }
