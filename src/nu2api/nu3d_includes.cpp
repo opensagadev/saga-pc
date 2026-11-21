@@ -7247,6 +7247,23 @@ extern "C" {
         return 0;
     }
 
+    /* Marks the rooms the camera can see: its own room and the room of every portal frustum. */
+    void fun_005da330(NUGSCN *scene, u8 *visible) {
+        if (scene == NULL || scene->max_portals == 0) {
+            return;
+        }
+        for (i32 room = 0; room < scene->num_rooms; ++room) {
+            visible[room] = 0;
+        }
+        visible[scene->camera_room] = 1;
+        for (i32 i = 0; i < scene->num_portal_frusta; ++i) {
+            i32 room_id = scene->portal_frusta[i]->room_id;
+            if (room_id >= 0) {
+                visible[room_id] = 1;
+            }
+        }
+    }
+
     i32 NuPortalClipTest(NUGSCN *scene, NUVEC *position, f32 radius, i16 room_id) {
         i32 i;
         if (scene->max_portals == 0) {
@@ -9600,6 +9617,17 @@ extern "C" {
                     DisplayListSetAlphaPS(item - 1, item, scene->alpha_values[object]);
                 }
             }
+        }
+    }
+
+    /* Clears the material ids of the scene's lists and marks every clip object used this frame. */
+    void fun_005e0b60(NUDISPLAY_LIST *scene) {
+        i32 i;
+        for (i = 0; i < (i32)scene->material_count; ++i) {
+            scene->material_lists[i]->mtl_item->id = 0;
+        }
+        for (i = 0; i < scene->clip_count; ++i) {
+            scene->clip_used[(scene->render_flags >> 15) & 1][i >> 2] |= (u8)(1 << (i % 4 * 2));
         }
     }
 

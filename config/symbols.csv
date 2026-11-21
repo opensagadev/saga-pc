@@ -7931,7 +7931,7 @@ address,symbol,size,ctype
 0x5da040,_intersectPortalExtents,191,
 0x5da100,_buildPortalFrustrum,458,
 0x5da2d0,_NuPortalRoomVisible,88,
-0x5da330,_fun_005da330,114,
+0x5da330,_fun_005da330,114,"void __cdecl(NUGSCN *,u8 *)"
 0x5da3b0,_NuPortalClipTest,150,"i32 __cdecl(NUGSCN *,NUVEC *,f32,i16)"
 0x5da450,_NuPortalSetDebugEnabled,10,
 0x5da460,_NuPortalSetOverrideCamera,10,
@@ -8060,7 +8060,7 @@ address,symbol,size,ctype
 0x5e0aa0,_NuDisplayListHtmlItems,34,
 0x5e0ad0,_NuDisplaySortHtmlHeading,99,
 0x5e0b40,_NuDisplayListResetMaterialCursor,25,
-0x5e0b60,_fun_005e0b60,103,
+0x5e0b60,_fun_005e0b60,103,void __cdecl(NUDISPLAY_LIST *)
 0x5e0bd0,_UpdateMaterialClipBitsPC,299,void __cdecl(NUDISPLAY_LIST *)
 0x5e0d00,_DisplayProcessMaterialRenderStatesPC,586,void __cdecl(void)
 0x5e0f50,_NuDisplaySceneResetClipRanges,60,
