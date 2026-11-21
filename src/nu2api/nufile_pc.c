@@ -22,6 +22,16 @@ i32 NuFileUseHiresPC(void) {
 void NuPSFileInitDevices(i32 device_id, i32 reboot_iop, i32 eject) {
 }
 
+char dat_0091f0c8[256] = {0};
+
+void fun_004ff4b0(const char *path) {
+    strcpy(dat_0091f0c8, path);
+}
+
+void fun_004ff4d0(char *path) {
+    strcpy(path, dat_0091f0c8);
+}
+
 char *FileDirectoryPathSlots[16] = {0};
 i32 bgproc_initialized = 0;
 HANDLE FileDirectoryHostHandles[16] = {0};

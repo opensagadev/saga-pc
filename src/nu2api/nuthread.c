@@ -11,7 +11,7 @@
 extern i32 PCThreadCriticalSectionCount;
 
 i64 NuTime_PerformanceFrequency = 0;
-CRITICAL_SECTION PCThreadCriticalSections[13] = {0};
+CRITICAL_SECTION PCThreadCriticalSections[12] = {0};
 
 i32 PCThreadCriticalSectionCreate_candidate(void) {
     if (PCThreadCriticalSectionCount <= 12) {
