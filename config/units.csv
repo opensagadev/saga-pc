@@ -7,7 +7,7 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x405d50,0x407e3c,src/legogame/batman_gameai.c,,legogame,marker+review,low,,24,8311,8255,5922,258,0,legoapi/batarang.cpp:8255
 0x407e40,0x40879b,src/legogame/bolt.c,,legogame,batman,medium,,8,2354,2300,983,28,0,legogame/bolt.c:2300
 0x4087a0,0x40a4a5,src/legogame/cable.c,,legogame,review,medium,,10,7361,7284,1233,190,0,legogame/cable.c:7284
-0x40a4b0,0x40e6fa,src/legogame/camera.c,,legogame,batman+marker,high,fabs 22 28,19,16790,16708,268,2138,0,legogame/camera.c:16707 legoapi/camera.c:1
+0x40a4b0,0x40e6fa,src/legogame/camera.cpp,,legogame,batman+marker,high,fabs 22 28,19,16790,16708,268,2138,0,legogame/camera.cpp:16707 legoapi/camera.c:1
 0x40e700,0x413b50,src/legogame/chris.cpp,,legogame,code+marker+review,medium,ret fabs 28,98,20783,19457,6604,1297,0,legogame/chris.cpp:19456 legoapi/flightspline_diagnostic.c:1
 0x413b50,0x413efe,src/legogame/config.c,,legogame,batman+marker,high,,2,938,910,910,0,0,legogame/config.c:910
 0x413f00,0x42009e,src/legogame/creature.c,,legogame,batman+marker,high,fabs,83,48963,48588,18823,1602,49,legogame/creature.c:46670 legoapi/players.c:1900 legoapi/pushing.c:18
@@ -16,7 +16,7 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x426b30,0x4277cc,src/legogame/detonator.c,,legogame,batman,medium,,10,3143,3115,3115,0,0,legogame/detonator.cpp:3115
 0x4277d0,0x428930,src/legogame/dropinout.c,,legogame,batman,medium,,9,4398,4398,1434,106,0,legogame/dropinout.c:4398
 0x428930,0x42f461,src/legogame/game.c,,legogame,batman+marker,high,fabs 28,97,26688,26617,19758,878,0,legogame/game.cpp:26616 legoapi/cutscene_hooks.c:1
-0x42f470,0x430117,src/legogame/game_deb.c,,legogame,batman+marker,high,,10,3205,3165,2102,185,0,legogame/game_deb.c:3165
+0x42f470,0x430117,src/legogame/game_deb.cpp,,legogame,batman+marker,high,,10,3205,3165,2102,185,0,legogame/game_deb.cpp:3165
 0x430120,0x4398b4,src/legogame/game_obj.c,,legogame,batman+marker,high,ret fabs 54 28,47,38492,38304,9071,2294,0,legogame/game_obj.c:38304
 0x4398c0,0x43ff91,src/legogame/gameai.c,,legogame,batman+marker,high,ret 28,69,25770,25683,12200,2340,0,legogame/gameai.c:25683
 0x43ffa0,0x457e93,src/legogame/gameaiscript.c,,legogame,batman+marker,high,ret fabs 54 28,450,94553,94194,59954,1501,0,legogame/gameaiscript.c:93968 legoapi/ai_sys.c:226

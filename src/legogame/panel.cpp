@@ -320,6 +320,13 @@ extern "C" {
     }
 }
 
+/* The flashing colour of a hub prompt. */
+static void GetHubPromptColour(i32 *red, i32 *green, i32 *blue) {
+    *red = menu_flash != 0 ? HubPromptOnColour[0] : HubPromptOffColour[0];
+    *green = menu_flash != 0 ? HubPromptOnColour[1] : HubPromptOffColour[1];
+    *blue = menu_flash != 0 ? HubPromptOnColour[2] : HubPromptOffColour[2];
+}
+
 extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 other0, i32 back0, i32 alternate0, i32 selecting0,
                                       i32 active1, i32 select1, f32 alpha1, i32 other1, i32 back1, i32 alternate1, i32 selecting1) {
     if (((FADEINFO *)&FadeSys)->fade != 0.0f) {
@@ -393,15 +400,7 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
             i32 red;
             i32 green;
             i32 blue;
-            if (menu_flash != 0) {
-                red = HubPromptOnColour[0];
-                green = HubPromptOnColour[1];
-                blue = HubPromptOnColour[2];
-            } else {
-                red = HubPromptOffColour[0];
-                green = HubPromptOffColour[1];
-                blue = HubPromptOffColour[2];
-            }
+            GetHubPromptColour(&red, &green, &blue);
             Text_ExpandButtonString((char *)(alternate[player] == dat_00880780 ? "[T]" : "[O]"), text);
             SmartText(text, x, y, 1.0f, .275f, .275f, .275f, align, 255, 255, 255, .6f, 2);
             y = (f32)(y - (HubPromptLabelOffset - .01));

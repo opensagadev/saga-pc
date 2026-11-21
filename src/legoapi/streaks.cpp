@@ -10,9 +10,9 @@ extern "C" {
     STREAK_NODE StreakNodes[128] = {0};
     NUMTL *streakmtl_ref = 0;
     STREAK_NODE *StreakNodesUsed = 0;
-    STREAK_NODE *streaks_free = 0;
-    STREAK_HEADER *streakhdrs_free = 0;
 }
+static STREAK_NODE *streaks_free = 0;
+static STREAK_HEADER *streakhdrs_free = 0;
 static STREAK_HEADER *streakhdrs_used = 0;
 extern "C" {
     NUMTL *streakmtl = 0;
@@ -21,6 +21,20 @@ extern "C" {
 
 extern "C" {
     f32 StreakAlphaScale = 2.0f;
+}
+
+/* Unlinks a header from the used list onto the free list. */
+static void StreakHeaderFree(STREAK_HEADER *header) {
+    if (header->prev != NULL) {
+        header->prev->next = header->next;
+    } else {
+        streakhdrs_used = header->next;
+    }
+    if (header->next != NULL) {
+        header->next->prev = header->prev;
+    }
+    header->next = streakhdrs_free;
+    streakhdrs_free = header;
 }
 
 /* Moves a header from the free list to the front of the used list. */
@@ -279,41 +293,12 @@ extern "C" void DrawStreaks(void) {
 }
 
 extern "C" void ResetStreaks(void) {
-    STREAK_HEADER *header = streakhdrs_used;
-    if (header == NULL) {
-        return;
+    while (streakhdrs_used != NULL) {
+        while (streakhdrs_used->nodes != NULL) {
+            StreakNodeFree(streakhdrs_used->nodes, streakhdrs_used);
+        }
+        StreakHeaderFree(streakhdrs_used);
     }
-    STREAK_HEADER *free_headers = streakhdrs_free;
-    STREAK_NODE *free_nodes = streaks_free;
-    do {
-        while (header->nodes != NULL) {
-            STREAK_NODE *node = header->nodes;
-            if (node->prev != NULL) {
-                node->prev->next = node->next;
-            } else {
-                header->nodes = node->next;
-            }
-            if (node->next != NULL) {
-                node->next->prev = node->prev;
-            }
-            node->next = free_nodes;
-            free_nodes = node;
-        }
-        STREAK_HEADER *old_header = header;
-        if (old_header->prev != NULL) {
-            old_header->prev->next = old_header->next;
-        } else {
-            header = old_header->next;
-        }
-        if (old_header->next != NULL) {
-            old_header->next->prev = old_header->prev;
-        }
-        old_header->next = free_headers;
-        free_headers = old_header;
-    } while (header != NULL);
-    streaks_free = free_nodes;
-    streakhdrs_free = free_headers;
-    streakhdrs_used = NULL;
 }
 
 extern "C" void InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {

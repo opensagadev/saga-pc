@@ -38,9 +38,7 @@ extern "C" {
 
     extern STREAK_NODE StreakNodes[128];
     extern STREAK_HEADER StreakHeaders[32];
-    extern STREAK_NODE *streaks_free;
     extern STREAK_NODE *StreakNodesUsed;
-    extern STREAK_HEADER *streakhdrs_free;
     extern NUMTL *streakmtl;
     extern NUMTL *streakmtl_ref;
     extern const char StreakTextureName[17];

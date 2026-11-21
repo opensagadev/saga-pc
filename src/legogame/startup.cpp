@@ -294,7 +294,7 @@ extern "C" {
             allocated_bytes = 0;
             size = *end_anchor - *start_anchor;
             last_end = 0;
-            memset(free_lists, 0, sizeof(free_lists));
+            ClearFreeLists();
         }
 
         i16 ID_DEFAULTCHARACTER_LSW_A = -1;

@@ -13,6 +13,11 @@ extern "C" {
     extern void (*memcard_drawasiconfn)(void);
     extern i32 saveload_autosave;
     void saveloadInit(VARIPTR *buffer, VARIPTR end, i32 size, const char *product, const char *icon, const char *title, i32 flags);
+    i32 saveloadCheckCardPresent(void);
+    i32 saveloadCheckCardFormatted(void);
+    i32 saveloadFormatCard(void);
+    i32 saveloadUnFormatCard(void);
+    i32 saveloadWriteKeyCode(char *id, u8 *code);
     extern i32 saveload_status;
 
     void PCOptionsBuildFolder(char *);

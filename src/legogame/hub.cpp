@@ -210,25 +210,32 @@ static f32 HubFabs(f32 value) {
     return *(f32 *)&bits;
 }
 
+static void HubVuVecCopy(NUVEC4 &destination, const NUVEC4 &source) {
+    destination.x = source.x;
+    destination.y = source.y;
+    destination.z = source.z;
+    destination.w = source.w;
+}
+
+static NUVEC4 HubVuVecMake(f32 x, f32 y, f32 z, f32 w) {
+    NUVEC4 v;
+    v.x = x;
+    v.y = y;
+    v.z = z;
+    v.w = w;
+    return v;
+}
+
 static void MiniKitSetRotationX(NUMTX *m, NUANG a) {
     const f32 cosine = NuTrigTable[((a + 0x4000) >> 1) & 0x7fff];
     const f32 sine = NuTrigTable[(a >> 1) & 0x7fff];
-    m->m00 = ANI3_EVAL_IDENTITY_MATRIX.m00;
-    m->m01 = ANI3_EVAL_IDENTITY_MATRIX.m01;
-    m->m02 = ANI3_EVAL_IDENTITY_MATRIX.m02;
-    m->m03 = ANI3_EVAL_IDENTITY_MATRIX.m03;
-    m->m10 = 0.0f;
-    m->m11 = cosine;
-    m->m12 = sine;
-    m->m13 = 0.0f;
+    HubVuVecCopy(m->rows[0], ANI3_EVAL_IDENTITY_MATRIX.rows[0]);
+    HubVuVecCopy(m->rows[1], HubVuVecMake(0.0f, cosine, sine, 0.0f));
     m->m20 = 0.0f;
     m->m21 = -sine;
     m->m22 = cosine;
     m->m23 = 0.0f;
-    m->m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
-    m->m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
-    m->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
-    m->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
+    HubVuVecCopy(m->rows[3], ANI3_EVAL_IDENTITY_MATRIX.rows[3]);
 }
 
 static NUMTX *HubStatsTextMatrix(NUMTX *matrix, i32 angle) {
@@ -238,18 +245,9 @@ static NUMTX *HubStatsTextMatrix(NUMTX *matrix, i32 angle) {
     matrix->m01 = 0;
     matrix->m02 = -sine;
     matrix->m03 = 0;
-    matrix->m10 = ANI3_EVAL_IDENTITY_MATRIX.m10;
-    matrix->m11 = ANI3_EVAL_IDENTITY_MATRIX.m11;
-    matrix->m12 = ANI3_EVAL_IDENTITY_MATRIX.m12;
-    matrix->m13 = ANI3_EVAL_IDENTITY_MATRIX.m13;
-    matrix->m20 = sine;
-    matrix->m21 = 0;
-    matrix->m22 = cosine;
-    matrix->m23 = 0;
-    matrix->m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
-    matrix->m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
-    matrix->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
-    matrix->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
+    HubVuVecCopy(matrix->rows[1], ANI3_EVAL_IDENTITY_MATRIX.rows[1]);
+    HubVuVecCopy(matrix->rows[2], HubVuVecMake(sine, 0.0f, cosine, 0.0f));
+    HubVuVecCopy(matrix->rows[3], ANI3_EVAL_IDENTITY_MATRIX.rows[3]);
     return matrix;
 }
 

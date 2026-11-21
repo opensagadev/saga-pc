@@ -3,6 +3,7 @@
 #include "gameapi/edptl.h"
 #include "globals.h"
 #include "legoapi/ai/core/gameai.h"
+#include "legoapi/audio/audio.h"
 #include "legoapi/characters/core/character.h"
 #include "legoapi/characters/core/players.h"
 #include "legoapi/characters/motion.h"

@@ -139,6 +139,7 @@ extern "C" {
 
     void AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVEC *position, NUVEC *direction, f32 unused, i32 player_index,
                     f32 speed, f32 lifetime, struct gameobject_s *owner, i32 random_types, i32 panel);
+    void AddMiscPickups(NUVEC *position, i32 player_id, i32 coins, i32 torpedoes);
     void AddCoinsAsParts(i32 coins, NUVEC *position, NUVEC *direction, f32 speed, f32 lifetime);
     void AddHeartAsPart(struct gameobject_s *owner, NUVEC *position, NUVEC *direction, f32 speed, f32 lifetime);
     void AddTorpedoAsPart(NUVEC *position, NUVEC *direction, f32 speed, f32 lifetime);

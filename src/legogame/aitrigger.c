@@ -2,6 +2,7 @@
 #include "gameapi/ai/aisys/aisys.h"
 #include "gameapi/edtools/edfile.h"
 #include "globals.h"
+#include "legoapi/ai/core/gameai.h"
 #include "legoapi/ai/game/aitrigger.h"
 #include "legoapi/characters/core/charconfig.h"
 #include "legoapi/characters/core/players.h"

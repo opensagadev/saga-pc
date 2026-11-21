@@ -660,7 +660,7 @@ void GameCameraMakeMiniCut3(u32 flags, float distance, i32 pitch, i32 yaw, i32 r
         } else if (flags & MINICUT_HOLD_TIME) {
             remaining_duration = end_time - hold_time;
         }
-        Minicam_AddCommand(MINICAM_COMMAND_END_TIME, MAX(0.0f, remaining_duration), 0, NULL, command_origin);
+        Minicam_AddCommand(MINICAM_COMMAND_END_TIME, MAX(remaining_duration, 0.0f), 0, NULL, command_origin);
         ObstacleCamBlendOutTime = blend_out_time;
     }
     if (borders != 0) {

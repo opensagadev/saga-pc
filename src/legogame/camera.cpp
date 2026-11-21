@@ -61,30 +61,32 @@
 
 /* Retail unit 0x40a4b0-0x40e6fa: definitions in retail address order. */
 
-extern NUMTX CutCamMtx;
-extern f32 CamStopBlend;
-extern NUVEC GunshipAOffset;
-extern f32 PodCamDist;
-extern i32 netcamera;
-extern f32 testmovef;
-extern f32 CamTitlesSplineEnd;
-extern f32 CamTitlesBonusTime;
-extern f32 CamShopBlendTime;
-extern f32 CamNewGameDuration;
-extern f32 CamPodSprintStartDist;
-extern f32 CamPodSprintEndDist;
-extern f32 CamPodSprintHeight;
-extern f32 CamPodSprintRollScale;
-extern f32 CamPodSprintAngleSeek;
-extern f32 CamPodShakeScale;
-extern f32 CamWalkerRadius;
-extern f32 CamWalkerLift;
-extern f32 CamDewbackRadius;
-extern f32 CamDewbackLift;
-i32 SockSysCamera(SOCKSYS *sock_sys, struct nuvec_s *fallback_camera_position, i32 socket_changed, struct nuvec_s *player_camera_positions,
-                  struct nuvec_s *player_positions, i32 player_count, struct sockposition_s *camera_socket_position,
-                  struct nuvec_s *camera_position, struct nuvec_s *camera_target, f32 *overlap_blend, f32 *position_seek, f32 *angle_seek,
-                  f32 *camera_shake, f32 *separation_scale);
+extern "C" {
+    extern NUMTX CutCamMtx;
+    extern f32 CamStopBlend;
+    extern NUVEC GunshipAOffset;
+    extern f32 PodCamDist;
+    extern i32 netcamera;
+    extern f32 testmovef;
+    extern f32 CamTitlesSplineEnd;
+    extern f32 CamTitlesBonusTime;
+    extern f32 CamShopBlendTime;
+    extern f32 CamNewGameDuration;
+    extern f32 CamPodSprintStartDist;
+    extern f32 CamPodSprintEndDist;
+    extern f32 CamPodSprintHeight;
+    extern f32 CamPodSprintRollScale;
+    extern f32 CamPodSprintAngleSeek;
+    extern f32 CamPodShakeScale;
+    extern f32 CamWalkerRadius;
+    extern f32 CamWalkerLift;
+    extern f32 CamDewbackRadius;
+    extern f32 CamDewbackLift;
+    i32 SockSysCamera(SOCKSYS *sock_sys, struct nuvec_s *fallback_camera_position, i32 socket_changed,
+                      struct nuvec_s *player_camera_positions, struct nuvec_s *player_positions, i32 player_count,
+                      struct sockposition_s *camera_socket_position, struct nuvec_s *camera_position, struct nuvec_s *camera_target,
+                      f32 *overlap_blend, f32 *position_seek, f32 *angle_seek, f32 *camera_shake, f32 *separation_scale);
+}
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 CameraFabs(f32 f) {
@@ -101,21 +103,6 @@ static i32 CameraVuAngleDifference(i32 from, i32 to) {
         difference -= 0x10000;
     }
     return difference;
-}
-
-f32 __fastcall PCDeviceBackend_GetActiveAspect(PC_DEVICE_BACKEND *backend) {
-    switch (PcWindowOptions.aspect_mode) {
-        case PC_ASPECT_16_9:
-            return 1.7777778f;
-        case PC_ASPECT_16_10:
-            return 1.6f;
-        case PC_ASPECT_AUTO:
-            return backend->active_aspect;
-        case PC_ASPECT_4_3:
-            return 1.3333334f;
-        default:
-            return 1.3333334f;
-    }
 }
 
 static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) {
@@ -411,7 +398,7 @@ void MoveGameCamera(GAMECAMERA *camera) {
             pNuCam->mtx = camera->render_mtx;
             if (CutSceneCameraFocalLength > 0.0f) {
                 pNuCam->fov = NuCameraFocalLenToFOV(CutSceneCameraFocalLength);
-                pNuCam->fov *= (1.0f / PCDeviceBackend_GetActiveAspect(&PCDeviceBackend)) / 0.75f;
+                pNuCam->fov *= (1.0f / PCDeviceBackend.GetActiveAspect()) / 0.75f;
             }
             NuCameraSet(pNuCam);
             CutCamMtx = camera->render_mtx;

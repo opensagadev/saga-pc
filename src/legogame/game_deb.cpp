@@ -234,7 +234,7 @@ void BurnoutApply(i32 view) {
     if (parameters.intensity > 0.0f) {
         NuRndrSetBurnoutParameters(view, &parameters);
     }
-    if ((Players_AveragePos(&average, NULL) != 0 || netclient != 0) && PCShadowCurrentLight->enabled != 0) {
+    if ((Players_AveragePos(&average, NULL) != 0 || netclient != 0) && PCShadowCurrentLight->IsEnabled()) {
         NuRndrSetShadowCoefficient(0, WORLD->shadow_editor->coefficient_0);
         NuRndrSetShadowCoefficient(1, WORLD->shadow_editor->coefficient_1);
         NuRndrSetShadowCoefficient(2, WORLD->shadow_editor->coefficient_2);

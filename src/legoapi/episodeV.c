@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "gameapi/ai/aisys/aipath.h"
 #include "gameapi/ai/aisys/aisys.h"
+#include "legoapi/gizmo/object/gizmopickup.h"
 #include "legoapi/gizmos/object/gizpanel.h"
 #include "gameapi/ai/aisys/gameaiscript.h"
 #include "gameapi/edptl.h"

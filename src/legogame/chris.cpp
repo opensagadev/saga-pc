@@ -70,17 +70,46 @@ static f32 ChrisFabs(f32 f) {
     return rv;
 }
 
+static void ChrisVuVecSetOrigin(NUVEC4 &v) {
+    v.x = 0.0f;
+    v.y = 0.0f;
+    v.z = 0.0f;
+    v.w = 1.0f;
+}
+
+static void ChrisVuVecAdd(NUVEC4 &destination, const NUVEC4 &a, const NUVEC4 &b) {
+    destination.x = a.x + b.x;
+    destination.y = a.y + b.y;
+    destination.z = a.z + b.z;
+}
+
+static void ChrisVuVecSub(NUVEC4 &destination, const NUVEC4 &a, const NUVEC4 &b) {
+    destination.x = a.x - b.x;
+    destination.y = a.y - b.y;
+    destination.z = a.z - b.z;
+}
+
+static void ChrisVuVecScale(NUVEC4 &destination, const NUVEC4 &v, f32 scale) {
+    destination.x = v.x * scale;
+    destination.y = v.y * scale;
+    destination.z = v.z * scale;
+}
+
 /* Unit-length copy of a direction, as a point (w = 1). */
-static void ChrisVuVecNormalise(VuVec &destination, VuVec &source) {
+static void ChrisVuVecNormalise(NUVEC4 &destination, NUVEC4 &source) {
     NuVecNorm(&destination.xyz, &source.xyz);
     destination.w = 1.0f;
 }
 
-static f32 ChrisVuVecDot(const VuVec &a, const VuVec &b) {
+static void ChrisVuVecCross(NUVEC4 &destination, NUVEC4 &a, NUVEC4 &b) {
+    NuVecCross(&destination.xyz, &a.xyz, &b.xyz);
+}
+
+static f32 ChrisVuVecDot(const NUVEC4 &a, const NUVEC4 &b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
-static f32 ChrisVuVecLengthSq(const VuVec &v) {
+static f32 ChrisVuVecLengthSq(const NUVEC4 &v) {
     return v.x * v.x + v.y * v.y + v.z * v.z;
 }
 
@@ -92,7 +121,7 @@ static void ChrisVuVecMtxTransform(NUVEC4 *destination, NUVEC4 *v, NUMTX *matrix
     NuVecMtxTransform(&destination->xyz, &v->xyz, matrix);
 }
 
-static f32 ChrisVuVecLength(const VuVec &v) {
+static f32 ChrisVuVecLength(const NUVEC4 &v) {
     f32 length_squared = ChrisVuVecLengthSq(v);
     return NuFsqrt(length_squared);
 }
@@ -452,6 +481,11 @@ extern "C" {
         NuMtxPreRotateY(matrix, 0x8000);
     }
 
+    static void InitResetBuffer(DOGFIGHT_RESET_BUFFER *buffer, DOGFIGHT_RESET_RECORD *records, u32 capacity) {
+        buffer->records = records;
+        buffer->capacity = capacity;
+    }
+
     static void ClearResetBuffer(DOGFIGHT_RESET_BUFFER *buffer) {
         if (buffer != NULL && buffer->capacity != 0) {
             memset(buffer->records, 0, buffer->capacity * sizeof(*buffer->records));
@@ -624,7 +658,7 @@ extern "C" {
             direction.y = spline->points[0].y - spline->points[1].y;
             direction.z = spline->points[0].z - spline->points[1].z;
             index = 0;
-            ChrisVuVecNormalise(*(VuVec *)&direction, *(VuVec *)&direction);
+            ChrisVuVecNormalise(direction, direction);
             direction.x *= 10.0;
             direction.y *= 10.0;
             direction.z *= 10.0;
@@ -776,7 +810,7 @@ extern "C" {
                 difference.x = current.x - previous.x;
                 difference.y = current.y - previous.y;
                 difference.z = current.z - previous.z;
-                squared = ChrisVuVecLengthSq(*(VuVec *)&difference);
+                squared = ChrisVuVecLengthSq(difference);
                 distance = (f32)((f64)NuFsqrt(squared) + distance);
             } while (along > 0.0f);
         }
@@ -1144,14 +1178,14 @@ extern "C" {
 
     /* Return 0: prepared shot; 1: lost target; 2: target retained without a shot. */
     static i32 StarFighterFire(starfighter_s *fighter, NUVEC4 *velocity, NUMTX *aim_matrix, f32 shot_speed) {
-        __declspec(align(16)) NUVEC offset;
-        __declspec(align(16)) NUVEC local;
+        __declspec(align(16)) NUVEC4 offset;
+        __declspec(align(16)) NUVEC4 local;
         NUVEC *target_position;
         NUVEC *target_velocity;
-        NUVEC *axis;
-        NUVEC *front;
-        NUVEC *right;
-        NUVEC *up;
+        NUVEC4 *axis;
+        NUVEC4 *front;
+        NUVEC4 *right;
+        NUVEC4 *up;
         GAMEOBJECT *player;
         f32 forward;
         f32 square;
@@ -1195,7 +1229,7 @@ extern "C" {
             target_position = &fighter->target->matrix.translation;
             target_velocity = &fighter->velocity.xyz;
         }
-        front = (NUVEC *)&fighter->matrix.m20;
+        front = &fighter->matrix.rows[2];
         offset.x = target_position->x - fighter->matrix.m30;
         offset.y = target_position->y - fighter->matrix.m31;
         offset.z = target_position->z - fighter->matrix.m32;
@@ -1217,17 +1251,15 @@ extern "C" {
         local.x = (f64)target_velocity->x * travel_time;
         local.y = (f64)target_velocity->y * travel_time;
         local.z = (f64)target_velocity->z * travel_time;
-        offset.x = offset.x + local.x;
-        offset.y = offset.y + local.y;
-        offset.z = offset.z + local.z;
+        ChrisVuVecAdd(offset, offset, local);
         if (fighter->fired == 0) {
-            right = (NUVEC *)&fighter->matrix.m00;
-            up = (NUVEC *)&fighter->matrix.m10;
+            right = &fighter->matrix.rows[0];
+            up = &fighter->matrix.rows[1];
             least = ChrisFabs((f64)right->y * offset.y + (f64)right->x * offset.x + (f64)right->z * offset.z);
             absolute.value = (f64)up->y * offset.y + (f64)up->x * offset.x + (f64)up->z * offset.z;
             absolute.bits &= 0x7fffffff;
             up_dot = absolute.value;
-            absolute.value = ChrisVuVecDot(*(VuVec *)front, *(VuVec *)&offset);
+            absolute.value = ChrisVuVecDot(*front, offset);
             absolute.bits &= 0x7fffffff;
             front_dot = absolute.value;
             axis = front;
@@ -1238,23 +1270,18 @@ extern "C" {
             } else if (front_dot > up_dot) {
                 axis = up;
             }
-            NuVecCross(&fighter->aim_direction.xyz, &offset, axis);
-            NuVecNorm(&fighter->aim_direction.xyz, &fighter->aim_direction.xyz);
-            fighter->aim_direction.w = 1.0f;
+            ChrisVuVecCross(fighter->aim_direction, offset, *axis);
+            ChrisVuVecNormalise(fighter->aim_direction, fighter->aim_direction);
         }
         if (fighter->aim_bias != 0.0f) {
             bias = fighter->aim_bias;
-            local.x = (f64)fighter->aim_direction.x * bias;
-            local.y = (f64)fighter->aim_direction.y * bias;
-            local.z = (f64)fighter->aim_direction.z * bias;
-            offset.x = offset.x + local.x;
-            offset.y = offset.y + local.y;
-            offset.z = offset.z + local.z;
+            ChrisVuVecScale(local, fighter->aim_direction, bias);
+            ChrisVuVecAdd(offset, offset, local);
         }
         *aim_matrix = fighter->matrix;
-        NuVecInvMtxRotate(&local, &offset, aim_matrix);
+        NuVecInvMtxRotate(&local.xyz, &offset.xyz, aim_matrix);
         yaw = (i16)NuAtan2D(local.x, local.z);
-        NuVecRotateY(&local, &local, -yaw);
+        NuVecRotateY(&local.xyz, &local.xyz, -yaw);
         pitch = (i16)NuAtan2D(local.y, local.z);
         NuMtxPreRotateY(aim_matrix, yaw);
         NuMtxPreRotateX(aim_matrix, -pitch);
@@ -1942,10 +1969,7 @@ extern "C" {
 
     void ChrisAnakinBInit() {
         nuhspecial_s centre;
-        RadialMoveCentre.x = 0.0f;
-        RadialMoveCentre.y = 0.0f;
-        RadialMoveCentre.z = 0.0f;
-        RadialMoveCentre.w = 1.0f;
+        ChrisVuVecSetOrigin(RadialMoveCentre);
         MaxRadialCamY = 8.36f;
         NuSpecialList(WORLD->current_gscn);
 
@@ -2004,8 +2028,7 @@ extern "C" {
             DOGFIGHT_SPACE *space;
             world->level_specific_data = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(DOGFIGHT_SPACE));
             space = world->dogfight_space;
-            space->reset_buffer.records = space->reset_records;
-            space->reset_buffer.capacity = 256;
+            InitResetBuffer(&space->reset_buffer, space->reset_records, 256);
             world->dogfight_space->normalized_speed = 1.0f;
             if (world->current_level == DOGFIGHTA_LDATA && world->sock_sys->socks[0].current_speed != 0.0f) {
                 world->dogfight_space->normalized_speed = (f32)((f64)world->sock_sys->socks[0].current_speed / 11.0);
@@ -2198,7 +2221,7 @@ extern "C" {
         difference.x -= d.x;
         difference.y -= d.y;
         difference.z -= d.z;
-        ChrisVuVecLength(*(VuVec *)&difference);
+        ChrisVuVecLength(*(NUVEC4 *)&difference);
         difference.x = (f64)b.x + a.x;
         difference.y = (f64)b.y + a.y;
         difference.z = (f64)b.z + a.z;
@@ -2311,10 +2334,7 @@ extern "C" {
         direction.y = spline->points[1].y - (f64)spline->points[0].y;
         direction.z = spline->points[1].z - (f64)spline->points[0].z;
         StarFighterAlign(fighter, &direction, 1.0f, 0);
-        fighter->velocity.x = 0.0f;
-        fighter->velocity.y = 0.0f;
-        fighter->velocity.z = 0.0f;
-        fighter->velocity.w = 1.0f;
+        ChrisVuVecSetOrigin(fighter->velocity);
         fighter->target_position = spline->points[0];
         fighter->spline_progress = 0.0f;
         fighter->initial_delay = 0.0f;
@@ -2412,15 +2432,10 @@ extern "C" {
             group->speed = DogfightPassingSpeed;
         }
         velocity = &group->velocity;
-        velocity->x = target->x - start->x;
-        velocity->y = target->y - start->y;
-        velocity->z = target->z - start->z;
-        (void)NuVecNorm(&velocity->xyz, &velocity->xyz);
-        velocity->w = 1.0f;
+        ChrisVuVecSub(*velocity, *target, *start);
+        ChrisVuVecNormalise(*velocity, *velocity);
         speed = group->speed;
-        velocity->x *= speed;
-        velocity->y *= speed;
-        velocity->z *= speed;
+        ChrisVuVecScale(*velocity, *velocity, speed);
         group->duration = duration;
         offset.x = -5.0f;
         offset.y = 0.0f;

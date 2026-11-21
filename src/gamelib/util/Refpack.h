@@ -2,6 +2,8 @@
 
 #include "nu2api/nucore/common.h"
 
+#include <string.h>
+
 typedef struct memorymanager_s { // size 0x248
     u32 buffer_start;            // 0x000
     u32 buffer_end;              // 0x004
@@ -16,6 +18,10 @@ typedef struct memorymanager_s { // size 0x248
     void FreePool(void *memory, u32 size);
     void *AllocLinear(u32 bytes, u32 alignment, i32 clear);
     void Init(VARIPTR *buffer, VARIPTR *end, u32 bytes);
+
+    void ClearFreeLists() {
+        memset(free_lists, 0, sizeof(free_lists));
+    }
 #endif
 } MEMORYMANAGER;
 

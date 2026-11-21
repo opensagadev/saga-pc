@@ -29,7 +29,6 @@ const f64 NuTime_RefreshRate = 60.0;
 const f32 ForcePushApproachOuterSquare = 0.040000003f;
 const f32 ForcePushApproachInnerSquare = 0.010000001f;
 const f64 PCAtan2RadianScale = 9.58738019107841e-05;
-const f32 NuTimeBarFontScale = 0.85f;
 const f64 NuTime_MicroScale = 1000000.0;
 const f64 NuVpFixed16Scale = 1.0 / 65536.0;
 const f64 LightingSurfaceFadeSlope = -0.33399999141693115;

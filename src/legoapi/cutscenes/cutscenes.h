@@ -39,6 +39,7 @@ extern "C" {
     extern CUT_DRAW_SETTINGS CutSceneDrawSettings;
     extern CUT_DRAW_SETTINGS *CutSceneSys;
     void CutScenes_InitSystem(CUT_DRAW_SETTINGS *);
+    i32 CutScene_PlayingOrRequested(struct cutinfo_s *cut);
     struct cutinfo_s *CutScene_Find(struct cutsys_s *system, char *name);
     extern struct cutinfo_s *NewCutInfo[8];
     extern i32 NewCutInfoCount;

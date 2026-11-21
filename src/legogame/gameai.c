@@ -34,6 +34,7 @@
 #include "legoapi/gizmos/traps/gizturret.h"
 #include "legoapi/gizmos/trigger/ai.h"
 #include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/collect/batarang.h"
 #include "legoapi/items/collect/bolts.h"
 #include "legoapi/items/objects/gameobjects.h"
 #include "legoapi/items/objects/gameobjects_types.h"

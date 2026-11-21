@@ -109,6 +109,7 @@ extern "C" {
     void GizPanels_Reset(void *world_ptr, void *arg1, void *progress_ptr);
     void GizPanels_StoreProgress(void *world_ptr, void *arg1, void *progress_ptr);
 
+    i32 GizPanel_CanUsePanel(GAMEOBJECT *object, PANEL_MOVEMENT *panel);
     void GizPanel_MoveCode(WORLDINFO *, GAMEOBJECT *, i32);
     void GizPanel_Reset(void *panel);
     ADDGIZMOTYPE *GizPanel_RegisterGizmo(i32);
