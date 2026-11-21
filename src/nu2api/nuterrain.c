@@ -1445,7 +1445,6 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
     i16 group_count;
     f32 kBoundsMinimum;
     f32 kBoundsMaximum;
-    f32 kSteepNormalY;
     TERRAIN_GROUP *group;
     f32 min_x;
     f32 min_y;
@@ -1572,7 +1571,6 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
 
     kBoundsMinimum = -200000000.0f;
     kBoundsMaximum = 200000000.0f;
-    kSteepNormalY = 0.707f;
 
     terrain->minimum_height = INT_MAX;
 
@@ -1624,10 +1622,10 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
 
                 if (terrain->file_version == 0) {
                     shape->normal_flags &= ((u8)(~(TERRAIN_SHAPE_NORMAL_FLAG_FIRST_STEEP | TERRAIN_SHAPE_NORMAL_FLAG_SECOND_STEEP)));
-                    if (kSteepNormalY >= shape->normals[0].y) {
+                    if (shape->normals[0].y <= 0.707f) {
                         shape->normal_flags |= TERRAIN_SHAPE_NORMAL_FLAG_FIRST_STEEP;
                     }
-                    if (kSteepNormalY >= shape->normals[1].y) {
+                    if (shape->normals[1].y <= 0.707f) {
                         shape->normal_flags |= TERRAIN_SHAPE_NORMAL_FLAG_SECOND_STEEP;
                     }
                 }
