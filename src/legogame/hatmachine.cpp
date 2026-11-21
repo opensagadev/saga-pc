@@ -583,7 +583,7 @@ extern "C" {
     i16 id_PRINCESSLEIABOUSHH = -1;
     i32 hatmachine_gizmotype_id = -1;
 }
-static const NUVEC HatMachine_HatOffset = {0.0f, 0.3f, 0.0f};
+static NUVEC HatMachine_HatOffset = {0.0f, 0.3f, 0.0f};
 static const i32 HatMachineDrawSpecialIndices[4] = {288, 285, 289, 284};
 
 static inline f32 NuFdiv(f32 a, f32 b) {

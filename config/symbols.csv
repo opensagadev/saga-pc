@@ -37269,7 +37269,7 @@ address,symbol,size,ctype
 0x7f9144,_TorpedoGrabRangeSquared,4,f32
 0x7f91b4,_GrabConfigData,76,
 0x7f926c,_hatmachine_gizmotype_id,4,i32
-0x7f9270,_HatMachine_HatOffset,12,const NUVEC
+0x7f9270,_HatMachine_HatOffset,12,NUVEC
 0x007f92e4,_HubEpisodeTitleY,4,f32
 0x007f92e8,_HubEpisodeTitleSize,4,f32
 0x007f92ec,_HubEpisodeSubtitleY,4,f32
