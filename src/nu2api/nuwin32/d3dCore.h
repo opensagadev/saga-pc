@@ -352,6 +352,22 @@ typedef struct PC_DEVICE_BACKEND {          // size 0x700
         return aspect_mode;
     }
 
+    /* The width-to-height ratio of the aspect mode the options ask for. */
+    f32 GetActiveAspect() {
+        switch (PcWindowOptions.GetAspectMode()) {
+            case PC_ASPECT_16_9:
+                return 1.7777778f;
+            case PC_ASPECT_16_10:
+                return 1.6f;
+            case PC_ASPECT_AUTO:
+                return active_aspect;
+            case PC_ASPECT_4_3:
+                return 1.3333334f;
+            default:
+                return 1.3333334f;
+        }
+    }
+
     void CreateOrResetDevice(i32 reposition_window);
     void InitializeAdapter();
     void Present(const RECT *, const RECT *, HWND, const RGNDATA *);

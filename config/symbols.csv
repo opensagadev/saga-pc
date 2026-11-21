@@ -125,24 +125,24 @@ address,symbol,size,ctype
 0x408af0,_UpdateCables,3725,void __cdecl(void)
 0x409980,_DrawCables,2326,void __cdecl(void)
 0x40a2a0,_CableTargetGameObject,517,"GAMEOBJECT *__cdecl(GAMEOBJECT*,NUVEC*,f32)"
-0x40a4b0,_CameraFabs,18,
-0x40a4d0,_CameraVuAngleDifference,22,
+0x40a4b0,?CameraFabs@@YAMM@Z,18,
+0x40a4d0,?CameraVuAngleDifference@@YAHHH@Z,22,
 0x40a4f0,_CameraVuVecMake,28,
-0x40a510,_fun_0040a510,7,
-0x40a520,@PCDeviceBackend_GetActiveAspect@4,64,f32 __fastcall (PC_DEVICE_BACKEND *)
+0x40a510,?GetAspectMode@PC_WINDOW_OPTIONS@@QAEHXZ,7,i32 __thiscall(void)
+0x40a520,?GetActiveAspect@PC_DEVICE_BACKEND@@QAEMXZ,64,f32 __thiscall(void)
 0x40a560,_fun_0040a560,4,
-0x40a570,_PlayerCamPos,1162,"void __cdecl (GAMEOBJECT *, NUVEC *, NUVEC *)"
+0x40a570,?PlayerCamPos@@YAXPAUgameobject_s@@PAUnuvec_s@@1@Z,1162,"void __cdecl (GAMEOBJECT *, NUVEC *, NUVEC *)"
 0x40aa00,_ViewCamSetActive,79,"void __cdecl (i32, GAMEPAD *)"
 0x40aa50,_ViewCamGetMode,6,i32 __cdecl (void)
 0x0040aa60,_ViewCamGetGamePad,6,GAMEPAD *__cdecl (void)
 0x40aa70,_ViewCamGetTgt,6,NUVEC *__cdecl (void)
 0x0040aa80,_ViewCamDraw,1,void __cdecl(void)
-0x40aa90,_PlayersCamLookPos,133,"void __cdecl (NUVEC *, NUVEC *)"
-0x40ab20,_UpdatePlayerCameraOcclusion,693,void __cdecl (void)
+0x40aa90,?PlayersCamLookPos@@YAXPAUnuvec_s@@0@Z,133,"void __cdecl (NUVEC *, NUVEC *)"
+0x40ab20,?UpdatePlayerCameraOcclusion@@YAXXZ,693,void __cdecl (void)
 0x40ade0,_MoveGameCamera,14452,
-0x40e660,_fun_0040e660,1,
-0x40e670,_fun_0040e670,1,
-0x40e680,_fun_0040e680,1,
+0x40e660,?fun_0040e660@@YAXXZ,1,
+0x40e670,?fun_0040e670@@YAXXZ,1,
+0x40e680,?fun_0040e680@@YAXXZ,1,
 0x40e690,_GoingForwardsAlongNarrowSock,106,i32 __cdecl (GAMEOBJECT *)
 0x40e700,_FlightSplineCapacityDiagnostic,1,void __cdecl (char *)
 0x40e710,?ChrisFabs@@YAMM@Z,18,
@@ -515,7 +515,7 @@ address,symbol,size,ctype
 0x0042e160,_InitGameAfterConfig,4659,void __cdecl(void)
 0x42f3a0,_EndChallenge,193,"void __cdecl (i32,i32)"
 0x42f470,_GameDebVuVecMake,28,
-0x42f490,_fun_0042f490,12,
+0x42f490,?IsEnabled@PC_SPECIAL_SHADOW_LIGHT@@QAEHXZ,12,"i32 __thiscall(void)"
 0x0042f4a0,_DebrisKillPlayers,319,void __cdecl(void)
 0x42f5e0,_AddSurfaceDebris,869,void __cdecl(GAMEOBJECT *)
 0x42f950,_AddWaterSplash,122,"void __cdecl (GAMEOBJECT *, NUVEC *)"
@@ -2292,7 +2292,7 @@ address,symbol,size,ctype
 0x4c9ab0,_NuPrim2DSetUV,22,"void __cdecl (f32, f32)"
 0x4c9ad0,_StartupPushCoordinateSystem,15,
 0x4c9ae0,_StartupPopCoordinateSystem,28,
-0x4c9b00,_fun_004c9b00,20,
+0x4c9b00,?ClearFreeLists@memorymanager_s@@QAEXXZ,20,"void __thiscall(void)"
 0x004c9b20,_LoadPermBuildLegalTextureName,169,void (char *)
 0x004c9bd0,_LoadPermLoadLegalTexture,309,void (void)
 0x004c9d10,_LoadPermCreateLegalMtl,97,"i32 __cdecl (NUMTL **, i32)"

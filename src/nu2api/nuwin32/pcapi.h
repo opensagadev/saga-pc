@@ -3,7 +3,7 @@
 #include "nu2api/nucore/common.h"
 
 /* PC_WINDOW_OPTIONS.aspect_mode (the "Widescreen" option), PC_DEVICE_BACKEND.active_aspect_mode: the aspect
- * ratio PcInputAspectRatio and PCDeviceBackend_GetActiveAspect return for each. */
+ * ratio PcInputAspectRatio and PC_DEVICE_BACKEND::GetActiveAspect return for each. */
 #define PC_ASPECT_4_3 0
 #define PC_ASPECT_16_9 1
 #define PC_ASPECT_16_10 2
@@ -66,6 +66,10 @@ typedef struct PC_WINDOW_OPTIONS { // size 0x460
 
     i32 GetMasterVolume() {
         return mastervolume;
+    }
+
+    i32 GetAspectMode() {
+        return aspect_mode;
     }
 
     void SetMusicEnabled(u8 value);
