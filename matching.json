@@ -428,9 +428,9 @@
     "src/nu2api/save_folder.h": "776a18c43805e45817ed6d5aecfdd524e6893c90e415e7a385697b42472acf1c",
     "src/nu2api/shader_parser.h": "e192219dd005bfa8c46c46ec47e32593905d0ef38c101aac79e77fa4a49b6a12",
     "src/nu2api/wavreader.h": "6acb0f5ca7ccbcef5945e705cc918a66f14f3af9f07cc9b5ce7fa31e78f05043",
-    "config/budget-raises.txt": "8a2de83358eca091d08e7d7ecb0e54a83508b07d7bb1bd27e1d22f1200b85b08",
-    "config/candidate-only.json": "fb7e6408ec003a7401a80e789621be724336b6f3eeef841d3b982b192991fb7a",
-    "config/castscan-budget.json": "232b860a8ab98a2133517d4e29f73e9406f04da2303e36b61bcd614b6c06707a",
+    "config/budget-raises.txt": "f4489495e1616cd108d0de8131a839e42fb4adeeb379df93a3369eafd43f73d6",
+    "config/candidate-only.json": "1eb3de3e140842995ed51ce3a926103f69127954004621f3be04b822c65223b9",
+    "config/castscan-budget.json": "2e9f16cc2a8d674fa63ca32dc2193212d48f2991a03cbd80b91fd9bda451822b",
     "config/castscan-keep.csv": "bcfd25f84df27a9c57e603824516f7ddcb3177ee382141d9a9a7050afbc40c0f",
     "config/clang-format-vendored": "726e4d44212725e1d294bd517c38a52eca9d7f41b505d7246c433e30a749f683",
     "config/code-evidence.csv": "0d378cdbef7597babc5bbbe10e4b5ac3b954b5cb552fea1bbd7692a5a53c7cec",
@@ -449,7 +449,7 @@
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
     "config/sibling-names.csv": "0412f6238a62d5d75181cb275bbaeea889f8b7e7021810b9b5261dbbe9852810",
     "config/standalone-budget.json": "7f7c580012d4dfaecc55c9c35cf3461c9c45615ddc805efb95d7aae11b86330f",
-    "config/symbols.csv": "2c630ba08e4f3fcf81a48836301daad9f0b66f8cce3d2f5263db7bb7358892a2",
+    "config/symbols.csv": "a4dffbf92de60dbdcc690a25362f61aad874892dfb4b17fe452d267fd13e4f9d",
     "config/symbols.md": "3d018cc044b5a14025b0fc457df71a0c9a193cea32ceb3081e6a86bcdd4b242b",
     "config/toolchain.json": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
     "config/tools.json": "8e9a5f8077abc1bd9cce37004a47ea493e67a75ba964d8df3f13223958e6f4c8",
@@ -719,7 +719,7 @@
     "src/editor/edtoolsall.c": "e2d7b1c9273d3a0ff82609fa5cf5adfd3893974726e70719183881e7c770fc9f",
     "src/float_constants.c": "600f34d3710851640bc9b36d8f2a5382663aa420fe1e411c96865ed7d00a9eda",
     "src/gameapi/aisys_empty.c": "cdc3c4c34e851f27734937a302108a3129692b3e7141d290c560396a160a251b",
-    "src/gameapi/aisysall.c": "bb957d2af261733b905fcfbac507d602baa6fe0cfe7212c6971d60cce4475032",
+    "src/gameapi/aisysall.c": "d6b27a27e229a47883699e4bbe6ba7178925646ce2f32da6ba12c3ddf5e8d4e7",
     "src/gameapi/apiobject.c": "f9f578fc7f3a8031201f9dfaa6e3c06ba3e45c9be85c4936aea7d2d06dcd09f3",
     "src/gameapi/apisave.c": "a75d9c05d989c1773ddc687c06539682ca75cbbbe75621b8e3ce5a35413a1482",
     "src/gameapi/edanim_load.c": "8541bc1699302f24e6c0390494ef2d1ca2f2742bfaa18a967d6baeaad9337f71",
@@ -883,7 +883,7 @@
     "src/nu2api/bgproc.c": "39e86a149a5f3336d57a693b918fbd0d552ca127616c156870c6b77d56af8112",
     "src/nu2api/glutils.c": "4b227b6eb384cec954d180e11511d83fb6353c2d995004ea1de4a051c176769c",
     "src/nu2api/keyboard_init.c": "57cc88f058b4bc012c04875a749256275bd61633fe89ffea10cdedda9efb7a80",
-    "src/nu2api/keyboard_read.c": "fe3cdb1d5233242b5923617fadcbfc54a8237fed34d811bfba30e2cb96f3e981",
+    "src/nu2api/keyboard_read.c": "5a5a24c0bdfd0a496daab72946fa019f6c7cdfd96e4320503c2e16d5799f0692",
     "src/nu2api/listman.c": "09c49898e01f4834f9acb507e9a1399430d63826dfa63bbd826816031fdf663a",
     "src/nu2api/nualloc.c": "0ded85a012fb23f549d4d561ec1aa13f218f3456c2b8354ee484ce0d0a65af96",
     "src/nu2api/nuapi.c": "a779629a26e8b64e82ba79820e633529abbe5607b8148eb53af8e99898ffbae9",
@@ -998,7 +998,7 @@
     "build/obj/editor/edtoolsall.obj": "2604bc787b498c2c24f26733584a7945e10639fe0d05dde32fcc9cdd3f9fd786",
     "build/obj/float_constants.obj": "5a1a89e39dae3f4d574b3df8a1be6f0f86afc5d533f4e2df9d228b8f38b9e99b",
     "build/obj/gameapi/aisys_empty.obj": "ba4ca29f5a8f875b96a6457a5fb2d044cd7fb23c3edbcdeab8fb04edc6762be0",
-    "build/obj/gameapi/aisysall.obj": "f45e8b88f17ad0cee219c3d0cebf9dd6fc9a4cb4557e33d67843ab534555c353",
+    "build/obj/gameapi/aisysall.obj": "5ece538ca936744081ad38f342a0c7aa7d6f423454e3fe0755ca9b193f577ef6",
     "build/obj/gameapi/apiobject.obj": "766b2752526cac3fad8fb892683a7e226a253bff203cff083af3d2b93d443bb0",
     "build/obj/gameapi/apisave.obj": "6becb6d21802d2b1b488d06345dd2bb67b3cefc2be218d8a89232f2af179948c",
     "build/obj/gameapi/edanim_load.obj": "12eb07f75fe9802f223a5abf84fcaeda3bef69bae6e2eef83b47c321a8034063",
@@ -1241,7 +1241,7 @@
     "build/obj/nu2api/input_runtime.obj": "7b4d82c7b50d5a93aac324bd56e24040b4f0f55e6768eaaba727924ad9345078",
     "build/obj/nu2api/key_events.obj": "9e1521f3f25e0870c30d4d9a447d8270faac59c40a392f1c0b1815823e824de8",
     "build/obj/nu2api/keyboard_init.obj": "352f7062bb0d9e2b74bef205216ab43f0d12c894a48c97e48a731744bd16c8ac",
-    "build/obj/nu2api/keyboard_read.obj": "ee5128a50705f0b35de4e42666319b2754ce07f10b57d9db18e75c92b4e81aa8",
+    "build/obj/nu2api/keyboard_read.obj": "e44cf0e2cb45c21b349b33c983ebb8745fca1fd983764816b83122a773a7b127",
     "build/obj/nu2api/listman.obj": "06c8f83393d70996aca3d40d30d40b1c5327b3d6616aef424362da3c1df95bc5",
     "build/obj/nu2api/nu3d_includes.obj": "acf446e09301c2c48bfa434b1fb91152869a54f8a727ca0431368eefaf4ae0ac",
     "build/obj/nu2api/nu3d_platform.obj": "23c5a90343ab5743e6fbd34d6cdabad061058b633f793f4855b5045ff363d7c4",
@@ -96049,14 +96049,28 @@
       "objdiff_percent": 100.0
     },
     {
-      "name": "?AisysallFabs@@YAMM@Z",
-      "symbol": "?AisysallFabs@@YAMM@Z",
+      "name": "AIPathFabs",
+      "symbol": "_AIPathFabs",
       "address": "0x00512880",
-      "units": [],
+      "units": [
+        "src/gameapi/aisysall.c"
+      ],
       "target_size": 18,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/gameapi/aisysall.c",
+          "base_size": 18,
+          "exact_match": true,
+          "target_sha256": "f04452784f2c37f441a0b891da5218c27511fcf7de54e00e75908e1099beb02a",
+          "base_sha256": "f04452784f2c37f441a0b891da5218c27511fcf7de54e00e75908e1099beb02a",
+          "relocation_count": 0,
+          "comparison_unit": "00512880-54382f59f278",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "AIPathSafeDivide",
@@ -101141,27 +101155,28 @@
       "objects": [
         {
           "unit": "src/gameapi/aisysall.c",
-          "base_size": 4356,
+          "base_size": 4318,
           "exact_match": false,
           "target_sha256": "2b8f5250fa8dab7440ae13969e531be6944b072cc7b98b18297da9157c9d0476",
-          "base_sha256": "64f1df7c9a6f15abc50d9b7d49149d5be0c5c0b97f8dc66a4d6997b9bd9d16aa",
+          "base_sha256": "1924962c5fe80cb63b4bd6cd1009092f9931980f7897be5b21d8eb8d20e351c5",
           "relocation_count": 56,
           "comparison_unit": "0051d7b0-f60bc80260a7",
-          "objdiff_percent": 99.27205
+          "objdiff_percent": 98.63232
         }
       ],
       "diff_class": "structural",
-      "diff_hunks": 12,
+      "diff_hunks": 14,
       "idioms": [
         "C",
         "I4",
         "I8",
+        "I17",
         "U3",
         "U7",
         "?"
       ],
       "status": "different",
-      "objdiff_percent": 99.27205
+      "objdiff_percent": 98.63232
     },
     {
       "name": "AIMoveToDestinationAvoidingCamera",
@@ -235006,14 +235021,28 @@
       "objdiff_percent": 100.0
     },
     {
-      "name": "fun_00617c60",
-      "symbol": "_fun_00617c60",
+      "name": "EdcamVecZero",
+      "symbol": "_EdcamVecZero",
       "address": "0x00617c60",
-      "units": [],
+      "units": [
+        "src/nu2api/keyboard_read.c"
+      ],
       "target_size": 11,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/keyboard_read.c",
+          "base_size": 11,
+          "exact_match": true,
+          "target_sha256": "bae6b18df3728245db44d1bfe3eef9b02b11f9adf4fcc75949cbcd90e941202c",
+          "base_sha256": "bae6b18df3728245db44d1bfe3eef9b02b11f9adf4fcc75949cbcd90e941202c",
+          "relocation_count": 0,
+          "comparison_unit": "00617c60-c698d3d336b2",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "?EdtoolsallVuVecMake@@YA?AUVuVec@@MMMM@Z",
@@ -240302,26 +240331,21 @@
         "src/nu2api/keyboard_read.c"
       ],
       "target_size": 37,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/keyboard_read.c",
           "base_size": 37,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "258c310999caaf4f65c5c7206e910b71094763dd82e27d81c5466d9f816bbe6c",
-          "base_sha256": "57fcd2838fe26bc52e5416c0d16d4f2bb6ac49fd317ffb89a31bfe16daf751b2",
+          "base_sha256": "258c310999caaf4f65c5c7206e910b71094763dd82e27d81c5466d9f816bbe6c",
           "relocation_count": 1,
           "comparison_unit": "00620f10-c5500ff034bc",
-          "objdiff_percent": 84.61539
+          "objdiff_percent": 100.0
         }
       ],
-      "diff_class": "reordered",
-      "diff_hunks": 2,
-      "idioms": [
-        "I4"
-      ],
-      "status": "different",
-      "objdiff_percent": 84.61539
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "edcamSetAng",
@@ -240355,26 +240379,21 @@
         "src/nu2api/keyboard_read.c"
       ],
       "target_size": 51,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/keyboard_read.c",
           "base_size": 51,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "7e141ce212bea1b7ba4443983decaddb4bde73e1f4620925229562f7afaaa882",
-          "base_sha256": "6d4850735e53b45fec7aff79cf4fc384ac38de765696567ac8247c83ffd3db65",
+          "base_sha256": "7e141ce212bea1b7ba4443983decaddb4bde73e1f4620925229562f7afaaa882",
           "relocation_count": 1,
           "comparison_unit": "00620f60-0655b9d1c7d4",
-          "objdiff_percent": 41.17647
+          "objdiff_percent": 100.0
         }
       ],
-      "diff_class": "reordered",
-      "diff_hunks": 4,
-      "idioms": [
-        "I4"
-      ],
-      "status": "different",
-      "objdiff_percent": 41.17647
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "edcamGetPosAng",
@@ -898633,11 +898652,6 @@
       "kind": "function"
     },
     {
-      "unit": "src/gameapi/aisysall.c",
-      "symbol": "_AIPathFabs",
-      "kind": "function"
-    },
-    {
       "unit": "src/gameapi/edanim_update.c",
       "symbol": "_EdAnimFabs",
       "kind": "function"
@@ -899052,19 +899066,19 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 3348693,
-    "matched_code_bytes": 2112775,
-    "matching_percent": 60.8650323255684,
+    "matched_code_bytes": 2112892,
+    "matching_percent": 60.86840287320461,
     "padding_bytes": 114459,
-    "matched_padding_bytes": 100690,
-    "matched_code_with_padding_bytes": 2213465,
-    "matching_with_padding_percent": 63.765719859669986,
+    "matched_padding_bytes": 100733,
+    "matched_code_with_padding_bytes": 2213625,
+    "matching_with_padding_percent": 63.77032915558275,
     "fuzzy_text_data_bytes": 6896,
     "fuzzy_denominator_bytes": 3349891,
-    "fuzzy_coverage_percent": 96.21520938032214,
+    "fuzzy_coverage_percent": 96.21630888070887,
     "mapped_functions": 15914,
-    "matched_functions": 13894,
-    "objdiff_fuzzy_percent": 96.8656,
-    "objdiff_total_code": 3333372,
+    "matched_functions": 13898,
+    "objdiff_fuzzy_percent": 96.865875,
+    "objdiff_total_code": 3333401,
     "image_bytes": 40067072,
     "mapped_bytes": 38523562,
     "mapping_percent": 96.14768456252555,
@@ -899126,11 +899140,11 @@
     "mapping_file_backed_data_with_padding_percent": 95.72235613277999,
     "mapping_zero_fill_data_with_padding_bytes": 34171924,
     "mapping_zero_fill_data_with_padding_percent": 97.76141538429144,
-    "mapping_code_named_bytes": 3338533,
-    "mapping_code_named_percent": 96.17679069705805,
-    "mapping_code_address_named_bytes": 18250,
-    "mapping_code_address_named_percent": 0.5257478150496968,
-    "mapping_code_address_named_functions": 863,
+    "mapping_code_named_bytes": 3338544,
+    "mapping_code_named_percent": 96.17710758615206,
+    "mapping_code_address_named_bytes": 18239,
+    "mapping_code_address_named_percent": 0.5254309259556943,
+    "mapping_code_address_named_functions": 862,
     "reproduced_file_backed_data_exact_bytes": 537605,
     "reproduced_file_backed_data_library_bytes": 452841,
     "reproduced_file_backed_data_different_padding_bytes": 0,
@@ -899172,24 +899186,24 @@
   "text_coverage": {
     "original_text_bytes": 3471246,
     "mapped_reconstruction_bytes": 3348693,
-    "exact_reconstruction_bytes": 2112775,
-    "mapped_not_exact_bytes": 1235918,
+    "exact_reconstruction_bytes": 2112892,
+    "mapped_not_exact_bytes": 1235801,
     "excluded_import_glue_bytes": 1194,
     "text_data_bytes": 6896,
     "exact_text_data_bytes": 6896,
     "unclassified_text_bytes": 114463,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 60.8650323255684,
+    "strict_original_text_exact_percent": 60.86840287320461,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 60.88597519576076,
+    "reconstruction_scope_exact_percent": 60.8893469031588,
     "mapped_scope_denominator_bytes": 3348693,
-    "mapped_scope_exact_percent": 63.092525949676485,
+    "mapped_scope_exact_percent": 63.09601985013257,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image.",
     "alignment_padding_bytes": 114459,
-    "exact_alignment_padding_bytes": 100690,
+    "exact_alignment_padding_bytes": 100733,
     "unclassified_non_padding_text_bytes": 4,
-    "exact_with_padding_bytes": 2213465,
-    "exact_with_padding_percent": 63.765719859669986,
+    "exact_with_padding_bytes": 2213625,
+    "exact_with_padding_percent": 63.77032915558275,
     "padding_qualification": "Padding is int3/nop alignment fill shorter than 16 bytes between mapped extents, shorter than the alignment of the extent start it ends on; it is exact only after an exact function."
   },
   "data_members": [
@@ -900468,7 +900482,7 @@
       "metadata_sha256": "a005dfb7254f87304ba5e7d1c5083ab46db1e8272ef5fdd2e11a8953a1d1d2d5",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "5f975f267c8449b5cf5a968116487bbafd659b8c12e1f66927a489b2ad89c054",
+      "geometry_object_sha256": "b4c718959224d957c32ca49048070d6033afa04b2075786567f0ee9120dc75c8",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {

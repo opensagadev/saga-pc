@@ -333,3 +333,4 @@ config/castscan-budget.json declaration-type 732 impl/engine batch 2; fun_005deb
 config/castscan-budget.json int-pointer 805 impl/engine batch 2; the same slot tables (u32 addresses) read as u8/NUSORTPRI/NUDISPLAYLISTITEM arrays
 config/castscan-budget.json truncation 2188 impl/engine batch 2; fun_00602ed0 stores the index count in the u16 count fields
 config/castscan-budget.json void-pointer-cpp 556 impl/engine batch 2; fun_00602a10/fun_00602ed0 cast NuAlloc results like NuGobjRegistryAlloc
+config/castscan-budget.json scalar-pun 286 impl/engine: AIPathFabs takes the SDK NuFabs form (masked float bits through i32 views) that retail compiles at 0x512880, as the exact AttractoFabs/Nu3dIncludesFabs copies do
