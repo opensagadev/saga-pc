@@ -10387,9 +10387,7 @@ assert:-#4040,assert,,20408,20408,1,legoapi/actions/character/streaks.h,follow-t
 assert:-#4041,assert,,20409,20409,1,legoapi/actions/character/streaks.h,follow-type,STREAK_HEADER
 variable:StreakNodes,variable,StreakNodes,20410,20410,1,legoapi/actions/character/streaks.h,users,StreakNodes: only legoapi/streaks.c android-path
 variable:StreakHeaders,variable,StreakHeaders,20411,20411,1,legoapi/actions/character/streaks.h,users,StreakHeaders: only legoapi/streaks.c android-path
-variable:streaks_free,variable,streaks_free,20412,20412,1,legoapi/actions/character/streaks.h,users,streaks_free: only legoapi/streaks.c android-path
 variable:StreakNodesUsed,variable,StreakNodesUsed,20413,20413,1,legoapi/actions/character/streaks.h,users,StreakNodesUsed: only legoapi/streaks.c android-path
-variable:streakhdrs_free,variable,streakhdrs_free,20414,20414,1,legoapi/actions/character/streaks.h,users,streakhdrs_free: only legoapi/streaks.c android-path
 variable:streakmtl,variable,streakmtl,20415,20415,1,legoapi/actions/character/streaks.h,users,streakmtl: only legoapi/streaks.c android-path
 variable:streakmtl_ref,variable,streakmtl_ref,20416,20416,1,legoapi/actions/character/streaks.h,users,streakmtl_ref: only legoapi/streaks.c android-path
 variable:StreakTextureName,variable,StreakTextureName,20417,20417,1,legoapi/actions/character/streaks.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour

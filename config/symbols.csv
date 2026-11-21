@@ -6526,7 +6526,7 @@ address,symbol,size,ctype
 0x5a34f0,_fun_005a34f0,28,
 0x5a3510,?StreakNodeFree@@YAXPAUSTREAK_NODE@@PAUSTREAK_HEADER@@@Z,62,
 0x5a3550,?StreakNodeAlloc@@YAPAUSTREAK_NODE@@PAUSTREAK_HEADER@@@Z,40,
-0x5a3580,_fun_005a3580,61,
+0x5a3580,?StreakHeaderFree@@YAXPAUSTREAK_HEADER@@@Z,61,
 0x5a35c0,_StreakHeaderAlloc,46,
 0x5a35f0,_StreakBezierPointPrivate,310,"void(NUVEC *,NUVEC *,NUVEC *,NUVEC *,NUVEC *,i32,i32,f32) [private native EDI start; ESI end; six stack arguments]"
 0x5a3730,_AddStreakPoints,1181,"void __cdecl(NUVEC *,f32,u32,void **,i32,GAMEOBJECT *)"
