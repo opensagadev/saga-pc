@@ -14043,9 +14043,9 @@ extern "C" {
     }
 
     /* A record that names a texture file 16 bytes in; only the name is read. */
-    struct NUTEXNAMERECORD {  // size 0x30
-        u8 unknown_00[0x10];  // 0x00
-        char name[0x20];      // 0x10 a file name; its full length is not known
+    struct NUTEXNAMERECORD { // size 0x30
+        u8 unknown_00[0x10]; // 0x00
+        char name[0x20];     // 0x10 a file name; its full length is not known
     };
 
     i32 dat_0096dd00 = 0;
