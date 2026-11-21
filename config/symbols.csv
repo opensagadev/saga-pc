@@ -3055,7 +3055,7 @@ address,symbol,size,ctype
 0x004f1d00,_NuQTCreate,142,"i32 __cdecl (i32, i32, i32, i32, i32, f32, f32, f32, f32, VARIPTR *, VARIPTR *)"
 0x004f1d90,_NuQTUnfixAddress,50,void (NUQTHDR *)
 0x004f1dd0,_NuQTFixAddress,43,void (NUQTHDR *)
-0x4f1e00,_fun_004f1e00,21,
+0x4f1e00,_NuRDPFIsNumberChar,21,i32 __cdecl(char)
 0x4f1e20,_NuStrCpyWC,89,"i32 __cdecl (char *, const char *, const char *)"
 0x004f1e80,_NuStrCat,51,"void __cdecl (char *, const char *)"
 0x004f1ec0,_NuStrNCat,73,"i32 __cdecl (char *, const char *, i32)"

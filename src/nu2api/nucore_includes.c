@@ -3792,6 +3792,13 @@ void NuRDPFNumberError(void) {
 void NuRDPFVariableError(char *name) {
 }
 
+static i32 NuRDPFIsNumberChar(char c) {
+    if ((c >= '0' && c <= '9') || c == '.') {
+        return 1;
+    }
+    return 0;
+}
+
 static void NuRDPFGetToken(NURDPFCTX *context) {
     char variable[256];
     i32 length;
@@ -3856,8 +3863,7 @@ static void NuRDPFGetToken(NURDPFCTX *context) {
             context->token = RDPF_NUMBER;
             context->value = 0.0f;
             multiplier = 0.0f;
-            while ((context->input[context->position] >= '0' && context->input[context->position] <= '9') ||
-                   context->input[context->position] == '.') {
+            while (NuRDPFIsNumberChar(context->input[context->position])) {
                 if (context->input[context->position] == '.') {
                     if (multiplier != 0.0f) {
                         NuRDPFNumberError();
