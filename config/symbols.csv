@@ -11359,7 +11359,7 @@ address,symbol,size,ctype
 0x66fea0,_DeRotatePoint,254,void __cdecl(NUVEC *)
 0x66ffa0,_InsideLineF,68,"i16 __cdecl(f32,f32,f32,f32,f32,f32)"
 0x66fff0,_InsidePolLines,1320,"i16 __cdecl(f32,f32,f32,f32,f32,f32,f32,f32,f32,NUVEC *)"
-0x670520,_ScanTerrId,51,
+0x670520,_ScanTerrId,51,TERRAIN_TRACK_SLOT *__cdecl(void *)
 0x00670560,_ScanTerrIDRemovePlat,57,void __cdecl (i32)
 0x6705a0,_AllocTerrId,45,TERRAIN_TRACK_SLOT *__cdecl(void)
 0x6705d0,_TerrainFreeId,60,
@@ -11418,7 +11418,7 @@ address,symbol,size,ctype
 0x67ac40,_TerrShapeSideStep,701,"i32 __cdecl(NUVEC *,NUVEC *,u8 *)"
 0x67af00,_CubeImpact,405,"void __cdecl(NUMTX *,NUMTX *,NUVEC *,f32,NUVEC *)"
 0x67b0a0,_TerrainWallSideSlide,270,"void __cdecl(NUVEC *,void *,f32,f32,NUANG)"
-0x67b1b0,_NewTerrainOnAPlatform,65,
+0x67b1b0,_NewTerrainOnAPlatform,65,i32 __cdecl(void *)
 0x67b200,_NewRayCastGetTOFI,12,f32 __cdecl (void)
 0x67b210,_NewRayCastGetImpactTerrainType,23,i32 __cdecl (void)
 0x67b230,_NewRayCastGetImpactNormal,40,void __cdecl(NUVEC *)

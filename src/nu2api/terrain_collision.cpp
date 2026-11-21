@@ -2514,3 +2514,27 @@ extern "C" void FullReflect(NUVEC *normal, NUVEC *movement, NUVEC *result) {
 extern "C" void TerrainSetWallOver(f32 value) {
     wallover = value;
 }
+
+extern "C" TERRAIN_TRACK_SLOT *ScanTerrId(void *id) {
+    i32 slot_index;
+    if (CurrentTerrain == NULL) {
+        return NULL;
+    }
+    for (slot_index = 0; slot_index < TERRAIN_TRACK_SLOT_COUNT; ++slot_index) {
+        if (CurrentTerrain->track_slots[slot_index].id == id) {
+            return &CurrentTerrain->track_slots[slot_index];
+        }
+    }
+    return NULL;
+}
+
+extern "C" i32 NewTerrainOnAPlatform(void *id) {
+    if (CurrentTerrain == NULL) {
+        return 0;
+    }
+    CurTrackInfo = ScanTerrId(id);
+    if (CurTrackInfo == NULL) {
+        return 0;
+    }
+    return CurTrackInfo->platform_contact_state;
+}
