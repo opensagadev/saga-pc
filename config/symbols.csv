@@ -8119,7 +8119,7 @@ address,symbol,size,ctype
 0x5e5680,_NuTexGetScratchBlock,6,
 0x5e5690,_NuTexReserveScratchBlock,32,
 0x5e56b0,_fun_005e56b0,262,"void __cdecl(NUVEC *,NUVEC *,i32 *,i32 *,NUVEC *,NUGRIDINFO *)"
-0x5e57c0,_fun_005e57c0,26,
+0x5e57c0,_fun_005e57c0,26,void __cdecl(NUTEXNAMERECORD *)
 0x5e57e0,_fun_005e57e0,11,
 0x5e57f0,_NuTexCreateFramebufferCopy,72,"i32 __cdecl(VARIPTR *, VARIPTR)"
 0x5e5840,_fun_005e5840,16,
@@ -42146,6 +42146,7 @@ address,symbol,size,ctype
 0x96d9e4,_NuRndrDebBase,12,NUVEC
 0x96d9f0,_PCSpecialShadowLights,16,struct PC_SPECIAL_SHADOW_LIGHT *[4]
 0x0096da00,_TextureAnimationListBuffer,768,PC_TEXTURE_ANIM_LIST[64]
+0x96dd00,_dat_0096dd00,4,i32
 0x96dd04,_zys,4,f32
 0x96dd08,_NuPostFilterMemory,2048,native BSS
 0x0096e508,_AnimQuatSaved,4,

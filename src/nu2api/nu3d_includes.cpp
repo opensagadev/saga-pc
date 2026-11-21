@@ -14042,6 +14042,20 @@ extern "C" {
         fraction->z = cell->z - fraction->z;
     }
 
+    /* A record that names a texture file 16 bytes in; only the name is read. */
+    struct NUTEXNAMERECORD {  // size 0x30
+        u8 unknown_00[0x10];  // 0x00
+        char name[0x20];      // 0x10 a file name; its full length is not known
+    };
+
+    i32 dat_0096dd00 = 0;
+
+    void fun_005e57c0(NUTEXNAMERECORD *record) {
+        VARIPTR end;
+        end.addr = 0;
+        dat_0096dd00 = NuTexRead(record->name, NULL, end);
+    }
+
     void fun_005e57e0(void) {
         dat_0097401c = 2;
     }
