@@ -10114,7 +10114,7 @@ address,symbol,size,ctype
 0x630d70,_FmvDrawOverlay,45,
 0x630da0,_fun_00630da0,3,
 0x630db0,_fun_00630db0,6,
-0x630dc0,_fun_00630dc0,30,
+0x630dc0,?FmvPollCallback@@YAHP6AHXZ@Z,30,"i32 __cdecl(i32 (__cdecl *)(void))"
 0x630de0,_fun_00630de0,20,
 0x630e00,_NuFmvPlayV,612,
 0x631070,_NuFmvPlay,70,
