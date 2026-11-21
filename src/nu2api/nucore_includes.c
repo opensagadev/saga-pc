@@ -38,6 +38,7 @@
 #include "nu2api/numath/nufloat.h"
 #include "nu2api/nuonline_gen.h"
 #include "nu2api/nusound/nusound.h"
+#include "nu2api/nuwin32/d3dApiCalls.h"
 #include "nu2api/nuwin32/nu2api_windows.h"
 #include <stdarg.h>
 #include <stdio.h>
