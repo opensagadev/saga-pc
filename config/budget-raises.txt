@@ -345,3 +345,6 @@ config/castscan-budget.json float-width 3973 impl/engine: fun_005e56b0 subtracts
 config/castscan-budget.json truncation 2189 impl/engine: NuFmvTextureOpen stores the movie texture id in the material's i16 texture_id
 config/castscan-budget.json float-int 3073 impl/engine: fun_005e56b0 truncates the floored cell coordinates to the integer cell indices
 config/oddscan-budget.json magic-state 4311 impl/engine: PostFilterSetDepthMode switches on the post filter depth mode numbers retail uses (0, 1, 2, 4)
+config/oddscan-budget.json magic-flag 2574 impl/engine: fun_005d90e0 sets portal flag 2 (unnamed) before the active refresh
+config/castscan-budget.json signedness 1824 impl/engine: fun_005d90e0 walks the portals with an unsigned index against max_portals, fun_005e0b60 compares with the u32 material_count, as retail does
+config/castscan-budget.json truncation 2190 impl/engine: fun_005e0b60 ors the 2-bit clip mask into the u8 clip_used bytes
