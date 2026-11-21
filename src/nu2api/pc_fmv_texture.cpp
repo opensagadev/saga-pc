@@ -1,6 +1,8 @@
 #include "externals/bink.h"
 #include "nu2api/nu3d/numtl.h"
 #include "nu2api/nu3d/nutex.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufile.h"
 #include "pc_fmv_native.h"
 
 /* A Bink movie played into a material texture. PC never opens one in the shipped game,
@@ -40,6 +42,48 @@ extern "C" i32 NuFmvTextureUpdate(NU_FMV_TEXTURE *texture) {
     Sleep(1);
     FmvFrame(&texture->movie);
     return texture->movie.playing == 0;
+}
+
+/* Opens the Bink movie beside the named texture (same name, .bik) and makes a material that shows it. */
+extern "C" NU_FMV_TEXTURE *NuFmvTextureOpen(char *name, VARIPTR *buffer) {
+    VARIPTR saved = *buffer;
+    char path[512];
+    i32 length;
+    NuFileGetCurrentDirectory(path);
+    strcat(path, name);
+    length = NuStrLen(path);
+    if (length >= 3) {
+        path[length - 3] = 'b';
+        path[length - 2] = 'i';
+        path[length - 1] = 'k';
+    }
+    memset(&NuFmvTexture, 0, sizeof(NU_FMV_TEXTURE));
+    if (FmvOpen(&NuFmvTexture.movie, path, 1, 0.0f, 0) == 1) {
+        NuFmvTexture.v0 = 0.0f;
+        NuFmvTextureActive = 1;
+        NuFmvTexture.u0 = 0.0f;
+        NuFmvTexture.open = 1;
+        NuFmvTexture.v1 = 1.0f;
+        NuFmvTexture.u1 = 1.0f;
+        NuFmvTexture.material = NuMtlCreate(1);
+        if (NuFmvTexture.material != NULL) {
+            NuFmvTexture.material->texture_id = (i16)NuFmvTexture.movie.texture_id;
+            NuFmvTexture.material->attribs.z_mode = 0;
+            NuFmvTexture.material->attribs.alpha_mode = 0;
+            NuFmvTexture.material->attribs.lighting = 2;
+            NuFmvTexture.material->attribs.filter_mode = 0;
+            NuMtlUpdate(NuFmvTexture.material);
+        }
+        if (NuFmvTexture.material == NULL) {
+            NuFmvTextureClose(&NuFmvTexture);
+            *buffer = saved;
+            return NULL;
+        }
+        return &NuFmvTexture;
+    }
+    NuFmvTexture.open = 0;
+    NuFmvTextureClose(&NuFmvTexture);
+    return NULL;
 }
 
 extern "C" void NuFmvTextureRelease(void) {

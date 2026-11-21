@@ -16004,7 +16004,7 @@ address,symbol,size,ctype
 0x74ead0,_NuFmvTextureClose,63,
 0x74eb10,_NuFmvTextureRestart,28,
 0x74eb30,_NuFmvTextureUpdate,35,
-0x74eb60,_fun_0074eb60,467,
+0x74eb60,_NuFmvTextureOpen,467,"NU_FMV_TEXTURE *__cdecl(char *,VARIPTR *)"
 0x74ed40,_NuFmvTextureRelease,21,void __cdecl(void)
 0x74ed60,_NuFmvTextureRestore,21,void __cdecl(void)
 0x74ed75,__vsnwprintf_l,210,
