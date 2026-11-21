@@ -6261,7 +6261,7 @@ address,symbol,size,ctype
 0x5952c0,?LookAt@PC_SPECIAL_SHADOW_LIGHT@@QAEXPAUnuvec_s@@00@Z,148,three stack vector pointers thiscallRET12
 0x595360,?SetOrthoProjection@PC_SPECIAL_SHADOW_LIGHT@@QAEXMMMMMM@Z,78,
 0x5953b0,?SetParameterf@PC_SPECIAL_SHADOW_LIGHT@@QAEXHM@Z,257,"void __thiscall PC_SPECIAL_SHADOW_LIGHT::SetParameterf(i32,f32)"
-0x5954c0,_fun_005954c0,28,
+0x5954c0,?BeginCapture@PC_SPECIAL_SHADOW_LIGHT@@QAEXH@Z,28,
 0x5954e0,_fun_005954e0,1,
 0x5954f0,_SetLights,75,"void __cdecl(NUVEC *,NUVEC *,NUVEC *,NUVEC *,NUVEC *,NUVEC *,NUVEC *)"
 0x595540,_SetLights_RTLDATA,283,"void __cdecl(RTL_DATA *,f32)"

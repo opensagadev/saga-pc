@@ -551,6 +551,12 @@ extern "C" {
     }
 }
 
+inline void PC_SPECIAL_SHADOW_LIGHT::BeginCapture(i32 render_set) {
+    currentScene.dyn_light_count = 1;
+    currentScene.dyn_light_ptr = this;
+    currentScene.light_render_set = render_set;
+}
+
 extern "C" void RenderShadowLights(i32 paused) {
     if (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod == 2 && PCShadowCurrentLight != NULL &&
         PCShadowCurrentLight->enabled != 0) {
@@ -559,9 +565,7 @@ extern "C" void RenderShadowLights(i32 paused) {
         ShadowMapEnable(PCShadowCurrentLight);
         NuSpecialClearShadowClipTestResults();
         NuRndrBeginScene(1);
-        currentScene.dyn_light_count = 1;
-        currentScene.dyn_light_ptr = PCShadowCurrentLight;
-        currentScene.light_render_set = 0;
+        PCShadowCurrentLight->BeginCapture(0);
         if (WORLD->current_gscn != NULL) {
             PCShadowCurrentLight->RenderSceneShadow(WORLD->current_gscn);
         }

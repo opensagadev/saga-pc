@@ -1367,6 +1367,9 @@ struct PC_SPECIAL_SHADOW_LIGHT {      // size 0x828
     void RenderShadow(i32, PC_FRAMEBUFFER *);
     void RenderConstants(void *);
     void SetEnabled(i32 enabled);
+
+    void BeginCapture(i32 render_set);
+
     void SetParameterf(i32 parameter, f32 value);
     i32 GetUsedOnSpecials();
     void SetUsedOnSpecials(i32 used);
