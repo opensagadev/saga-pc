@@ -57,6 +57,7 @@ extern "C" {
     void AddLevelSfxFromId(i32, i32 *, i32 *, i32);
     void GameAudio_AddSfx(i32, i32 *, i32 *, i32);
     void PlaySabreSfx(char *, struct gameobject_s *, NUVEC *, i32);
+    void LevChatterSfx(char *name, NUVEC *position);
     void PlayGruntSfx(struct gameobject_s *);
     void PlayHurtSfx(struct gameobject_s *object);
     extern void (*ExtraHurtSfxFn)(struct gameobject_s *object);

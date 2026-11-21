@@ -4,6 +4,7 @@
 #include "gameapi/edptl.h"
 #include "globals.h"
 #include "legoapi/actions/combat/hits.h"
+#include "legoapi/ai/core/gameai.h"
 #include "legoapi/audio/audio.h"
 #include "legoapi/audio/radio.h"
 #include "legoapi/characters/core/character.h"

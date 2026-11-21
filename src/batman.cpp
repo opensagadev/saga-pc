@@ -132,7 +132,6 @@ struct FADEINFO_s;
 extern "C" {
     extern FADEINFO *pFadeInfo;
     void Movie_Play(char *name, VARIPTR *buffer, VARIPTR *end, f32 frame_time, void *callback, f32 volume);
-    i32 CutScene_PlayingOrRequested(void *cutscene);
     TIMER BonusTimer = {0};
 
     void WorldInfo_DrawScene(WORLDINFO *world);
