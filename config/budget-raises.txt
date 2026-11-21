@@ -348,3 +348,10 @@ config/oddscan-budget.json magic-state 4311 impl/engine: PostFilterSetDepthMode 
 config/oddscan-budget.json magic-flag 2574 impl/engine: fun_005d90e0 sets portal flag 2 (unnamed) before the active refresh
 config/castscan-budget.json signedness 1824 impl/engine: fun_005d90e0 walks the portals with an unsigned index against max_portals, fun_005e0b60 compares with the u32 material_count, as retail does
 config/castscan-budget.json truncation 2190 impl/engine: fun_005e0b60 ors the 2-bit clip mask into the u8 clip_used bytes
+config/oddscan-budget.json address-name 4708 impl/engine batch: render-stream setup, water waves, texture-name read; their unmapped globals are dat_<address> (the render-stream pointers and buffers, the water wave table and state)
+config/oddscan-budget.json dense-function 1178 impl/engine batch: render-stream setup, water waves, texture-name read; fun_005f9550 builds the wave table in one loop as retail does
+config/oddscan-budget.json magic-state 4314 impl/engine batch: render-stream setup, water waves, texture-name read; fun_005f9740 tests the stream formats 0x400/0x480 retail compares
+config/oddscan-budget.json placeholder-field 1079 impl/engine batch: render-stream setup, water waves, texture-name read; the geometry and aux records gain stream_format/first_vertex, splitting their unknown_ spans; NUTEXNAMERECORD keeps its unread head
+config/oddscan-budget.json stdcall 263 impl/engine batch: render-stream setup, water waves, texture-name read; PC_EFFECT_METHODS::set_vector_array is the ID3DXEffect COM slot 36
+config/castscan-budget.json float-int 3078 impl/engine batch: render-stream setup, water waves, texture-name read; the wave angles and cell coordinates truncate to integers as retail does
+config/castscan-budget.json scalar-pun 288 impl/engine batch: render-stream setup, water waves, texture-name read; fun_005f9740 locks its vertex buffers through void **

@@ -2339,11 +2339,11 @@ extern "C" {
             NUVEC point;
             NUVEC transformed;
             f32 angle;
-            f32 speed = (f32)((NuRandFloatSeeded(&seed) * 0.4f + 0.8f) * dat_0080e174);
+            f32 speed = (NuRandFloatSeeded(&seed) * 0.4f + 0.8f) * dat_0080e174;
             angle = NuRandFloatSeeded(&seed) * 6.2831855f + speed;
             point.x = NuTrigTable[((i32)(angle * AIPathAngularScale) >> 1) & 0x7fff] * radius;
             point.y = 0.0f;
-            speed = (f32)((NuRandFloatSeeded(&seed) * 0.4f + 0.7f) * dat_0080e174);
+            speed = (NuRandFloatSeeded(&seed) * 0.4f + 0.7f) * dat_0080e174;
             angle = NuRandFloatSeeded(&seed) * 6.2831855f + speed;
             point.z = NuTrigTable[((i32)(angle * AIPathAngularScale) >> 1) & 0x7fff] * radius;
             NuVecMtxTransformH(&transformed, &point, &matrix);
@@ -2355,18 +2355,18 @@ extern "C" {
     }
 
     void fun_005f9740(i32 unused, PC_GOBJ_REGISTRY_CHILD *child, PC_EFFECT *effect) {
-        u8 *source;
+        NURND_VERTEX3D *vertices;
         f32 *indices;
         i32 i;
         effect->methods->set_vector_array(effect, "mtxWaterTable", dat_028358c8, 32);
         if (NuWaterVertexBuffer == NULL) {
             PCDeviceCreateVertexBuffer(0x17700, 0x208, 0, 0, &NuWaterVertexBuffer);
         }
-        PCDeviceLockVertexBuffer(child->auxiliary->first_vertex * 0x24, child->vertex_count * 0x24, (void **)&source, 0,
+        PCDeviceLockVertexBuffer(child->auxiliary->first_vertex * 0x24, child->vertex_count * 0x24, (void **)&vertices, 0,
                                  child->vertex_buffer);
         PCDeviceLockVertexBuffer(0, 0, (void **)&indices, 0x2000, NuWaterVertexBuffer);
         for (i = 0; i < child->vertex_count; ++i) {
-            NUVEC *position = (NUVEC *)(source + i * 0x24);
+            NUVEC *position = &vertices[i].position;
             f32 x = position->x;
             f32 z = position->z;
             i32 cell_x = (i32)x;
@@ -8511,7 +8511,7 @@ extern "C" {
     }
 
     /* The render stream an owner opens: two item buffers and a packet buffer, or buffers the caller hands in.
-     * The buffer sizes are the gaps to the next retail data; the code itself only takes their addresses. */
+     * The buffer sizes are the gaps to the data that follows them; the code itself only takes their addresses. */
     void *dat_02854cf0 = NULL;
     i32 dat_02854cf4 = 0;
     i32 dat_0097c158 = 0;
