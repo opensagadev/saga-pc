@@ -8770,7 +8770,7 @@ address,symbol,size,ctype
 0x005ffe80,_CreateDmaPartEffectList,21,"DEBRIS_PART_HEADER *__cdecl (void *, i32 *)"
 0x005ffea0,_LinkDmaParticalSets,53,"void __cdecl (DEBRIS_PARTICLE_CHUNK **, i32)"
 0x5ffee0,_NuRndrParticleSetRepeat,231,void __cdecl (NUVEC *)
-0x5fffd0,_fun_005fffd0,645,
+0x5fffd0,_fun_005fffd0,645,"void __cdecl(i32,PC_PARTICLE_SHAPE *,PC_PARTICLE_LAUNCH *,f32,NUMTX *,i32,f32,i32)"
 0x600260,_GenericDebinfoDmaTypeUpdate,1855,void __cdecl(DEBRIS_INFO *)
 0x006009a0,_NuPrim2DEnd,24,void __cdecl (void)
 0x006009c0,_NuPrim3DEnd,24,void __cdecl (void)

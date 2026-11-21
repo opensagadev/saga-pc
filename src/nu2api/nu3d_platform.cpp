@@ -4581,6 +4581,71 @@ extern "C" {
         position->z = NuRndrDebBase.z + repeat.z * NuRndrDebRange.z;
     }
 
+    /* A launched particle: start position, launch time, velocity and the time scale of its shape keys. */
+    struct PC_PARTICLE_LAUNCH { // size 0x20
+        NUVEC position;         // 0x00
+        f32 start_time;         // 0x0c
+        NUVEC velocity;         // 0x10
+        f32 key_rate;           // 0x1c
+    };
+
+    /* One shape key of a particle set: three points blended between neighbouring keys. */
+    struct PC_PARTICLE_SHAPE_KEY { // size 0x28
+        NUVEC points[3];           // 0x00
+        u8 unknown_24[4];          // 0x24
+    };
+
+    struct PC_PARTICLE_SHAPE {            // size 0x6a4
+        u8 unknown_00[0x10];              // 0x00
+        f32 gravity;                      // 0x10
+        u8 unknown_14[0x38];              // 0x14
+        PC_PARTICLE_SHAPE_KEY keys[0x40]; // 0x4c
+        u8 unknown_a4c[0x18];             // 0xa4c
+    };
+
+    /* Places the 32 particles of a launch set at time and blends their shape keys; the PC build no longer draws the
+     * blended points. */
+    void fun_005fffd0(i32 unused0, PC_PARTICLE_SHAPE *shape, PC_PARTICLE_LAUNCH *launches, f32 time, NUMTX *matrix, i32 unused1,
+                      f32 plane_limit, i32 type) {
+        PC_PARTICLE_LAUNCH *launch = &launches[1];
+        for (i32 i = 0x20; i != 0; --i, ++launch) {
+            f32 age = time - launch->start_time;
+            f32 key_time = age * launch->key_rate;
+            u32 key = (u32)key_time;
+            if (key < 0x3f) {
+                f32 blend = key_time - key;
+                PC_PARTICLE_SHAPE_KEY *first = &shape->keys[key];
+                NUVEC position;
+                NUVEC rotated;
+                position.x = launch->velocity.x * age + launch->position.x;
+                position.y = launch->velocity.y * age + launch->position.y + shape->gravity * age * age * 0.945f;
+                position.z = launch->velocity.z * age + launch->position.z;
+                rotated.x = matrix->m00 * position.x + matrix->m10 * position.y + matrix->m20 * position.z;
+                rotated.y = matrix->m01 * position.x + matrix->m11 * position.y + matrix->m21 * position.z;
+                rotated.z = matrix->m02 * position.x + matrix->m12 * position.y + matrix->m22 * position.z;
+                NuRndr_DebrisMtx.m30 = matrix->m30 + rotated.x;
+                NuRndr_DebrisMtx.m31 = matrix->m31 + rotated.y;
+                NuRndr_DebrisMtx.m32 = matrix->m32 + rotated.z;
+                if (type == 6 || type == 7) {
+                    NuRndrParticleSetRepeat(&NuRndr_DebrisMtx.translation);
+                }
+                if (NuRndr_DebrisPlane.y * NuRndr_DebrisMtx.m31 + NuRndr_DebrisPlane.x * NuRndr_DebrisMtx.m30 +
+                        NuRndr_DebrisPlane.z * NuRndr_DebrisMtx.m32 + NuRndr_DebrisPlane.w >=
+                    plane_limit) {
+                    NUVEC points[3];
+                    for (i32 point = 0; point < 3; ++point) {
+                        points[point].x = first[1].points[point].x * blend + first->points[point].x * (1.0f - blend);
+                        points[point].y = first[1].points[point].y * blend + first->points[point].y * (1.0f - blend);
+                        points[point].z = first[1].points[point].z * blend + first->points[point].z * (1.0f - blend);
+                    }
+                    NuVecMtxTransform(&points[0], &points[0], &NuRndr_DebrisMtx);
+                    NuVecMtxTransform(&points[1], &points[1], &NuRndr_DebrisMtx);
+                    NuVecMtxTransform(&points[2], &points[2], &NuRndr_DebrisMtx);
+                }
+            }
+        }
+    }
+
     void GenericDebinfoDmaTypeUpdate(DEBRIS_INFO *effect) {
         if (effect->native_data == NULL) {
             if (freeDmaDebType >= EDPP_MAX_DMADEBTYPES) {
