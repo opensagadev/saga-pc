@@ -4132,7 +4132,7 @@ extern "C" {
     }
 
     void NuVpSetClipRect(f32 min_x, f32 min_y, f32 max_x, f32 max_y) {
-        f32 left = (f32)vpCurrent.x;
+        f32 left = vpCurrent.x;
         f32 right;
         f32 top;
         f32 bottom;
@@ -4144,7 +4144,7 @@ extern "C" {
             min_x = right;
         }
         vpCurrent.clip_min_x = min_x;
-        top = (f32)vpCurrent.y;
+        top = vpCurrent.y;
         if (min_y < top) {
             min_y = top;
         }
