@@ -243,7 +243,7 @@ extern "C" {
             const f32 edge_parameter = -query->transformed_vertices[first_vertex].x * edge_direction.x +
                                        -query->transformed_vertices[first_vertex].y * edge_direction.y +
                                        (hit_distance - query->transformed_vertices[first_vertex].z) * edge_direction.z;
-            if (0.0f < edge_parameter && edge_parameter <= edge_length) {
+            if (edge_parameter > 0.0f && edge_parameter <= edge_length) {
                 if (TerrainDivideNonzeroPC(hit_distance, query->movement_length) < query->hit_time) {
                     query->hit_type = TERRAIN_HIT_TYPE_CYLINDER;
                     query->hit_time = TerrainDivideNonzeroPC(hit_distance, query->movement_length);
