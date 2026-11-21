@@ -344,3 +344,4 @@ config/oddscan-budget.json placeholder-field 1076 impl/engine: NUGRIDINFO keeps 
 config/castscan-budget.json float-width 3973 impl/engine: fun_005e56b0 subtracts (f64)0.001f, the double of the float literal retail uses (__real@3f50624de0000000)
 config/castscan-budget.json truncation 2189 impl/engine: NuFmvTextureOpen stores the movie texture id in the material's i16 texture_id
 config/castscan-budget.json float-int 3073 impl/engine: fun_005e56b0 truncates the floored cell coordinates to the integer cell indices
+config/oddscan-budget.json magic-state 4311 impl/engine: PostFilterSetDepthMode switches on the post filter depth mode numbers retail uses (0, 1, 2, 4)
