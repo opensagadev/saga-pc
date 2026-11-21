@@ -114,6 +114,13 @@
 #include "legoapi/world/levels/episodeIII.h"
 #include "nu2api/nu3d/nurndr.h"
 
+f32 GameaiscriptFdiv(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f) {
+        return 0.0f;
+    }
+    return a / b;
+}
+
 void GameaiscriptNuError(void) {
 }
 
@@ -11322,8 +11329,8 @@ i32 Action_RaceOpponent(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *pac
     opponent = (GAMEOBJECT *)packet->opponent;
     if (opponent != NULL && opponent->ai != NULL) {
         actor_distance = MidDistanceFromSockStart(WORLD->sock_sys, &actor->sock_position);
-        distance_delta = (f32)(actor_distance - MidDistanceFromSockStart(WORLD->sock_sys, &opponent->sock_position));
-        distance_delta = distance_delta - processor->action_data_4;
+        distance_delta =
+            (f32)(actor_distance - MidDistanceFromSockStart(WORLD->sock_sys, &opponent->sock_position)) - processor->action_data_4;
         if ((f64)distance_delta > (f64)processor->action_data_4 * 0.5) {
             actor->movement_speed_scale = 0.9f;
         } else if ((f64)distance_delta < -((f64)processor->action_data_4 * 0.5)) {
@@ -11338,7 +11345,7 @@ i32 Action_RaceOpponent(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *pac
         NuVecRotateY(&actor_offset, &actor_offset, -actor->sock_position.heading);
         destination.z = 0.0f;
         destination.y = 0.0f;
-        destination.x = (f32)((f64)opponent_offset.x * 0.5 + (f64)actor_offset.x * 0.5);
+        destination.x = (f32)((f64)actor_offset.x * 0.5 + (f64)opponent_offset.x * 0.5);
         NuVecAdd(&destination, &destination, &projected_position.midpoint);
     } else {
         actor->movement_speed_scale = 1.0f;

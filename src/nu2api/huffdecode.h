@@ -52,7 +52,7 @@ typedef struct pc_nudatfileinfo_s { // size 0x30
     i32 file_length;                // 0x18
     i32 decompressed_length;        // 0x1c
     i32 open_file_index;            // 0x20
-    i32 is_used;                    // 0x24
+    volatile i32 is_used;           // 0x24
     i32 compression_mode;           // 0x28
     u32 unknown_002c;               // 0x2c
 } PC_NUDATFILEINFO;

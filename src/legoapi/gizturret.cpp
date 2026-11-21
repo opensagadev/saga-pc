@@ -225,9 +225,9 @@ extern "C" {
         }
         turret = system->turrets;
         for (i = 0; i < system->count; ++i, ++turret) {
-            if (turret->flags & TURRET_FLAG_BLOWUP_PENDING) {
+            if (turret->blowup_pending) {
                 i32 type_id = GizmoBlowupGetTypeFromNameTableId(world, turret->blowup_type);
-                turret->flags &= ~TURRET_FLAG_BLOWUP_PENDING;
+                turret->blowup_pending = 0;
                 turret->blowup_type = (i16)type_id;
             }
         }

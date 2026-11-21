@@ -72,10 +72,10 @@ PC_NUFILE_READBLOCK nufile_blkinfo[1024] = {0};
 static i32 decode_buffer_pos = 0;
 static u8 decode_buffer[262144] = {0};
 static u8 read_buffer[0x40000] = {0};
-i32 read_buffer_size = 0;
+volatile i32 read_buffer_size = 0;
 NUDATOPENFILEINFO *unpack_file_odi = 0;
 i32 NuApiTextLine = 0;
-static i32 read_buffer_decoded_size = 0;
+static volatile i32 read_buffer_decoded_size = 0;
 NUFPAR NuFParRecords[4] = {0};
 
 struct NUPPHEADER {    // size 0xc
@@ -7006,10 +7006,16 @@ u16 *NuStringTableGetById(i32 id) {
         bank = (u32)id >> 24;
         id &= 0xffffff;
     }
-    if (bank < 3 && id >= 0 && id < StringBank[bank].string_count) {
-        return StringBank[bank].strings[id].str_utf16;
+    if (bank >= 3) {
+        return NULL;
     }
-    return NULL;
+    if (id < 0) {
+        return NULL;
+    }
+    if (id >= StringBank[bank].string_count) {
+        return NULL;
+    }
+    return StringBank[bank].strings[id].str_utf16;
 }
 
 /* The menus load their tables in format 0, so the strings they look up by name are UTF-8. */

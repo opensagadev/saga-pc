@@ -642,7 +642,7 @@ address,symbol,size,ctype
 0x43ff30,_AIPathCnxControlSysCreate,97,"void * __cdecl (VARIPTR *, VARIPTR *, i32)"
 0x43ffa0,_GameaiscriptNuError,1,
 0x43ffb0,_GameaiscriptFabs,18,
-0x43ffd0,_GameaiscriptFdiv,54,
+0x43ffd0,_GameaiscriptFdiv,54,"f32 __cdecl (f32, f32)"
 0x440010,_GameaiscriptVuVecMake,28,
 0x440030,_GetGenericGoon,226,
 0x00440120,_GetNamedGameObject,34,"GAMEOBJECT *__cdecl (void *, char *)"
@@ -41051,10 +41051,10 @@ address,symbol,size,ctype
 0x00916ff8,_implode_freq,4,u16 *
 0x00916ffc,_implode_len_cnt,34,u16[17]
 0x917020,_g_nupadScannedPads,2112,FRAME_SCANNED_PAD[16]
-0x00917860,_read_buffer_size,4,i32
+0x00917860,_read_buffer_size,4,volatile i32
 0x00917864,_unpack_file_odi,4,NUDATOPENFILEINFO *
 0x00917868,_NuApiTextLine,4,i32
-0x0091786c,_read_buffer_decoded_size,4,i32
+0x0091786c,_read_buffer_decoded_size,4,volatile i32
 0x00917870,_NuFParRecords,5648,NUFPAR[4]
 0x00918e80,_nufile_wblkinfo,16384,NUFILE_WRITEBLOCK[1024]
 0x0091ce80,_unpack_file_info,4,PC_NUDATFILEINFO *
