@@ -329,3 +329,7 @@ config/oddscan-budget.json dense-function 1176 impl/engine batch 2: nugobj, disp
 config/oddscan-budget.json magic-bound 1579 impl/engine batch 2: nugobj, display-list sort slots, PC perf events, sound sample loader, screen quad; fun_005debb0 compares the slot index with -1
 config/oddscan-budget.json magic-state 4307 impl/engine batch 2: nugobj, display-list sort slots, PC perf events, sound sample loader, screen quad; fun_00602f50 maps the vertex types to strides, PCPerfBeginEvent switches on the render stage
 config/oddscan-budget.json placeholder-field 1060 impl/engine batch 2: nugobj, display-list sort slots, PC perf events, sound sample loader, screen quad; PC_GOBJ_REGISTRY_CHILD/AUX grow to their retail 0x98/0x50 sizes with the unread fields as unknown_
+config/castscan-budget.json declaration-type 732 impl/engine batch 2; fun_005debb0/fun_005dec60/fun_005deca0 index the display-list slot tables through the u32 nudlist_alloc_* addresses as NuDisplayListStreamAlloc does
+config/castscan-budget.json int-pointer 805 impl/engine batch 2; the same slot tables (u32 addresses) read as u8/NUSORTPRI/NUDISPLAYLISTITEM arrays
+config/castscan-budget.json truncation 2188 impl/engine batch 2; fun_00602ed0 stores the index count in the u16 count fields
+config/castscan-budget.json void-pointer-cpp 556 impl/engine batch 2; fun_00602a10/fun_00602ed0 cast NuAlloc results like NuGobjRegistryAlloc
