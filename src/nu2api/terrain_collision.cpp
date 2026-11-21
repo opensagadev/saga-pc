@@ -2089,6 +2089,267 @@ extern "C" {
         return 1;
     }
 
+    f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
+        TERRAIN_SCAN_WORD *scan;
+        TERRAIN_POLYGON_INFO *floor_poly = NULL;
+        TERRAIN_POLYGON_INFO *roof_poly = NULL;
+        TERRAIN_POLYGON_INFO *efloor_poly = NULL;
+        TERRAIN_POLYGON_INFO *eroof_poly = NULL;
+        f32 roof_y = 2000000.0f;
+        f32 floor_y = -2000000.0f;
+        f32 eroof_y = 2000000.0f;
+        f32 efloor_y = -2000000.0f;
+        i16 roof_group = -1;
+        i16 eroof_group = -1;
+        NUVEC floor_normal;
+        NUVEC efloor_normal;
+        NUVEC roof_normal;
+        NUVEC eroof_normal;
+        TERRAIN_GROUP *groups;
+
+        castnum = -1;
+        TerrainShadowFloorIndex = -1;
+        scan = TerI->scan_words;
+        /* MATCH-EXCEPTION: the original loads the group table once, after the
+         * loop's entry test (it hoisted CurrentTerrain->groups itself); the
+         * guarded load reproduces that placement. */
+        if (scan->header.shape_count > 0) {
+            groups = CurrentTerrain->groups;
+        }
+        while (scan->header.shape_count > 0) {
+            i32 group_index = scan->header.terrain_group;
+            f32 x = position->x - groups[group_index].origin.x;
+            f32 z = position->z - groups[group_index].origin.z;
+            TERRAIN_SCAN_WORD *entry = scan + 1;
+            i32 i;
+            for (i = scan->header.shape_count; i > 0; --i, ++entry) {
+                TERRAIN_POLYGON_INFO *surface = entry->shape;
+                i32 facing;
+                i32 side;
+                i32 plane;
+                i32 corner;
+                f32 quotient;
+                f32 y;
+                if (surface->normals[1].y > 65535.0) {
+                    /* Triangle: a single plane. */
+                    if (surface->normals[0].y > 0.0f) {
+                        if (!InsideLineF(x, z, surface->vertices[1].x, surface->vertices[1].z, surface->vertices[0].x,
+                                         surface->vertices[0].z) ||
+                            !InsideLineF(x, z, surface->vertices[0].x, surface->vertices[0].z, surface->vertices[2].x,
+                                         surface->vertices[2].z) ||
+                            !InsideLineF(x, z, surface->vertices[2].x, surface->vertices[2].z, surface->vertices[1].x,
+                                         surface->vertices[1].z)) {
+                            continue;
+                        }
+                        facing = 1;
+                    } else if (surface->normals[0].y < 0.0f) {
+                        if (!InsideLineF(x, z, surface->vertices[0].x, surface->vertices[0].z, surface->vertices[1].x,
+                                         surface->vertices[1].z) ||
+                            !InsideLineF(x, z, surface->vertices[2].x, surface->vertices[2].z, surface->vertices[0].x,
+                                         surface->vertices[0].z) ||
+                            !InsideLineF(x, z, surface->vertices[1].x, surface->vertices[1].z, surface->vertices[2].x,
+                                         surface->vertices[2].z)) {
+                            continue;
+                        }
+                        facing = 2;
+                    } else {
+                        continue;
+                    }
+                    /* The height of the chosen plane under the point; keep the nearest floor below and roof above. */
+                    quotient =
+                        ((z - surface->vertices[0].z) * surface->normals[0].z + (x - surface->vertices[0].x) * surface->normals[0].x) /
+                        -surface->normals[0].y;
+                    y = groups[group_index].origin.y + surface->vertices[0].y + quotient;
+                    if (surface->material[1] != 0) {
+                        if (y <= position->y && y > efloor_y && facing == 1) {
+                            efloor_normal = surface->normals[0];
+                            efloor_poly = surface;
+                            efloor_y = y;
+                            TerrainShadowFloorIndex = group_index;
+                        } else if (position->y < y && eroof_y >= y && (y != eroof_y || surface->normals[0].y < eroof_normal.y)) {
+                            eroof_normal = surface->normals[0];
+                            eroof_poly = surface;
+                            eroof_y = y;
+                            eroof_group = group_index;
+                        }
+                    } else {
+                        if (y <= position->y && y > floor_y && facing == 1) {
+                            floor_normal = surface->normals[0];
+                            floor_poly = surface;
+                            floor_y = y;
+                            castnum = group_index;
+                        } else if (position->y < y && roof_y >= y && (y != roof_y || surface->normals[0].y < roof_normal.y)) {
+                            roof_normal = surface->normals[0];
+                            roof_poly = surface;
+                            roof_y = y;
+                            roof_group = group_index;
+                        }
+                    }
+                } else {
+                    /* Quad: two planes sharing the 1-2 edge. */
+                    if (surface->normals[0].y > 0.0f) {
+                        side = InsideLineF(x, z, surface->vertices[2].x, surface->vertices[2].z, surface->vertices[1].x,
+                                           surface->vertices[1].z);
+                        if (side != 0) {
+                            if (!InsideLineF(x, z, surface->vertices[1].x, surface->vertices[1].z, surface->vertices[0].x,
+                                             surface->vertices[0].z) ||
+                                !InsideLineF(x, z, surface->vertices[0].x, surface->vertices[0].z, surface->vertices[2].x,
+                                             surface->vertices[2].z)) {
+                                continue;
+                            }
+                        } else if (!InsideLineF(x, z, surface->vertices[3].x, surface->vertices[3].z, surface->vertices[1].x,
+                                                surface->vertices[1].z) ||
+                                   !InsideLineF(x, z, surface->vertices[2].x, surface->vertices[2].z, surface->vertices[3].x,
+                                                surface->vertices[3].z)) {
+                            continue;
+                        }
+                        facing = 1;
+                    } else if (surface->normals[0].y < 0.0f) {
+                        side = InsideLineF(x, z, surface->vertices[1].x, surface->vertices[1].z, surface->vertices[2].x,
+                                           surface->vertices[2].z);
+                        if (side != 0) {
+                            if (!InsideLineF(x, z, surface->vertices[0].x, surface->vertices[0].z, surface->vertices[1].x,
+                                             surface->vertices[1].z) ||
+                                !InsideLineF(x, z, surface->vertices[2].x, surface->vertices[2].z, surface->vertices[0].x,
+                                             surface->vertices[0].z)) {
+                                continue;
+                            }
+                        } else if (!InsideLineF(x, z, surface->vertices[1].x, surface->vertices[1].z, surface->vertices[3].x,
+                                                surface->vertices[3].z) ||
+                                   !InsideLineF(x, z, surface->vertices[3].x, surface->vertices[3].z, surface->vertices[2].x,
+                                                surface->vertices[2].z)) {
+                            continue;
+                        }
+                        facing = 2;
+                    } else {
+                        continue;
+                    }
+                    if (side == 0 && surface->normals[1].y != 0.0f) {
+                        plane = 1;
+                        corner = 3;
+                    } else {
+                        plane = 0;
+                        corner = 0;
+                    }
+                    /* The height of the chosen plane under the point; keep the nearest floor below and roof above. */
+                    quotient = ((z - surface->vertices[corner].z) * surface->normals[plane].z +
+                                (x - surface->vertices[corner].x) * surface->normals[plane].x) /
+                               -surface->normals[plane].y;
+                    y = groups[group_index].origin.y + surface->vertices[corner].y + quotient;
+                    if (surface->material[1] != 0) {
+                        if (y <= position->y && y > efloor_y && facing == 1) {
+                            efloor_normal = surface->normals[plane];
+                            efloor_poly = surface;
+                            efloor_y = y;
+                            TerrainShadowFloorIndex = group_index;
+                        } else if (position->y < y && eroof_y >= y && (y != eroof_y || surface->normals[plane].y < eroof_normal.y)) {
+                            eroof_normal = surface->normals[plane];
+                            eroof_poly = surface;
+                            eroof_y = y;
+                            eroof_group = group_index;
+                        }
+                    } else {
+                        if (y <= position->y && y > floor_y && facing == 1) {
+                            floor_normal = surface->normals[plane];
+                            floor_poly = surface;
+                            floor_y = y;
+                            castnum = group_index;
+                        } else if (position->y < y && roof_y >= y && (y != roof_y || surface->normals[plane].y < roof_normal.y)) {
+                            roof_normal = surface->normals[plane];
+                            roof_poly = surface;
+                            roof_y = y;
+                            roof_group = group_index;
+                        }
+                    }
+                }
+            }
+            scan = entry;
+        }
+
+        if (eroof_y < 2000000.0 && eroof_normal.y < 0.0f && position->y + roof_range > eroof_y) {
+            if (roof_y < 2000000.0 && roof_normal.y < 0.0f && position->y + roof_range > roof_y && roof_y < eroof_y) {
+                TerrainCastAuxPolygon = NULL;
+                TerrainShadowHeight = 2000000.0f;
+            } else {
+                TerrainCastAuxValid = 1;
+                TerrainShadowHeight = eroof_y;
+                TerrainCastAuxPolygon = eroof_poly;
+                TerrainCastAuxIndex = eroof_group;
+                TerrainCastAuxNormal.x = eroof_normal.x;
+                TerrainCastAuxNormal.y = eroof_normal.y;
+                TerrainCastAuxNormal.z = eroof_normal.z;
+            }
+        } else {
+            TerrainCastAuxPolygon = NULL;
+            TerrainShadowHeight = 2000000.0f;
+        }
+
+        if (eroof_y < 2000000.0 && eroof_normal.y > 0.0f && position->y + roof_range > eroof_y) {
+            if (roof_y < 2000000.0 && roof_normal.y < 0.0f && position->y + roof_range > roof_y && eroof_y > roof_y) {
+                TerrainWaterCastIndex = 3;
+                EShadPoly = NULL;
+                EShadY = 2000000.0f;
+                GetSurfaceInfoWaterNormal.y = 1.0f;
+            } else {
+                TerrainWaterCastIndex = 1;
+                EShadY = eroof_y;
+                EShadPoly = eroof_poly;
+                TerrainShadowFloorIndex = eroof_group;
+                GetSurfaceInfoWaterNormal.x = eroof_normal.x;
+                GetSurfaceInfoWaterNormal.y = eroof_normal.y;
+                GetSurfaceInfoWaterNormal.z = eroof_normal.z;
+            }
+        } else if (!(efloor_y > -2000000.0) || (floor_y > -2000000.0 && floor_y > efloor_y)) {
+            TerrainWaterCastIndex = 3;
+            EShadPoly = NULL;
+            EShadY = 2000000.0f;
+            GetSurfaceInfoWaterNormal.y = 1.0f;
+        } else {
+            EShadY = efloor_y;
+            TerrainWaterCastIndex = 2;
+            GetSurfaceInfoWaterNormal.x = efloor_normal.x;
+            EShadPoly = efloor_poly;
+            GetSurfaceInfoWaterNormal.y = efloor_normal.y;
+            GetSurfaceInfoWaterNormal.z = efloor_normal.z;
+        }
+
+        if (roof_y < 2000000.0 && roof_normal.y < 0.0f && position->y + roof_range > roof_y) {
+            TerrainRoofValid = 1;
+            GetSurfaceInfoRoofHeight = roof_y;
+            ShadRoofPoly = roof_poly;
+            TerrainRoofIndex = roof_group;
+            TerrainRoofNormal.x = roof_normal.x;
+            TerrainRoofNormal.y = roof_normal.y;
+            TerrainRoofNormal.z = roof_normal.z;
+        } else {
+            ShadRoofPoly = NULL;
+            GetSurfaceInfoRoofHeight = 2000000.0f;
+        }
+
+        if (roof_y < 2000000.0 && roof_normal.y > 0.0f && position->y + height_above > roof_y) {
+            ShadPoly = roof_poly;
+            position->y = roof_y;
+            castnum = roof_group;
+            ShadNorm.x = roof_normal.x;
+            TerrainSurfaceClass = 1;
+            ShadNorm.y = roof_normal.y;
+            ShadNorm.z = roof_normal.z;
+        } else if (floor_y > -2000000.0) {
+            ShadNorm.x = floor_normal.x;
+            ShadNorm.y = floor_normal.y;
+            TerrainSurfaceClass = 2;
+            ShadPoly = floor_poly;
+            ShadNorm.z = floor_normal.z;
+            position->y = floor_y;
+        } else {
+            position->y = 2000000.0f;
+            TerrainSurfaceClass = 3;
+            ShadNorm.y = 1.0f;
+            ShadPoly = NULL;
+        }
+        return 0.0f;
+    }
+
     TERRAIN_TRACK_SLOT *AllocTerrId() {
         TERRSET *terrain = CurrentTerrain;
         if (terrain == NULL) {
