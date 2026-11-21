@@ -9010,7 +9010,7 @@ extern "C" {
             if (timebar->frame_peak_times[slot] != 0) {
                 f32 left = (f32)(name_width + 0.044999999925494194);
                 f32 top = (f32)((slot + 1) * NuTimeBarSlotWidth * 2.0 + 0.15000000596046448);
-                f32 elapsed_frames = (f32)((f64)timebar->frame_peak_times[slot] * NuTime_RefreshRate / NuTime_MicroScale);
+                f32 elapsed_frames = (f32)((f32)timebar->frame_peak_times[slot] * NuTime_RefreshRate / NuTime_MicroScale);
                 f32 right = left + elapsed_frames * vertical_scale;
                 f32 bottom = (f32)(top + NuTimeBarSlotWidth);
                 f32 screen_width = (f32)(PS2_VREZ_W << 4);
@@ -9050,11 +9050,11 @@ extern "C" {
                     NuQFntPrintEx(system_qfont, (i32)(NuTimeBarSlotWidth * (PS2_VREZ_W << 4)), text_y, 0x10, timebar->slot_names[slot]);
                 }
                 if (timebar->frame_peak_times[slot] != 0) {
-                    f32 lines = (f32)((f64)timebar->frame_peak_times[slot] * NuTimeBarLinesPerSecond / NuTime_MicroScale);
+                    f32 lines = (f32)((f32)timebar->frame_peak_times[slot] * NuTimeBarLinesPerSecond / NuTime_MicroScale);
                     NuQFntPrintEx(system_qfont, x, text_y, 0x10, "%i", (i32)lines);
                 }
                 if (timebar->peak_times[slot] != 0) {
-                    f32 lines = (f32)((f64)timebar->peak_times[slot] * NuTimeBarLinesPerSecond / NuTime_MicroScale);
+                    f32 lines = (f32)((f32)timebar->peak_times[slot] * NuTimeBarLinesPerSecond / NuTime_MicroScale);
                     NuQFntPrintEx(system_qfont, (i32)(0.974999999627471 * (PS2_VREZ_W << 4)), text_y, 0x20, "%i", (i32)lines);
                 }
                 if (NuQFntModeStackIndex > 0) {
