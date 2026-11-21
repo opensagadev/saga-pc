@@ -2329,6 +2329,13 @@ void AddVariableShotDebrisEffectTimed1(i32 effect, NUVEC *position, i32 count, f
     AddVariableShotDebrisEffectTimed3(effect, position, &APIObjectZeroMomentumPC, count, time, &orientation, particle_orientation);
 }
 
+/* The SDK NuFabs; the editor half of this unit keeps its own copy. */
+static f32 PartsFabs(f32 f) {
+    f32 rv;
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
 /* a / b, 0 when either is 0. */
 static f32 PartsFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
@@ -3350,15 +3357,7 @@ void edpartMultipleCopyCopy(void) {
     i32 index;
     NUVEC delta;
 
-    union {
-        f32 value;
-        u32 bits;
-    } temp;
-
-    union {
-        f32 value[3];
-        u32 bits[3];
-    } abs_delta;
+    f32 abs_delta[3];
 
     edpart_copy_source_count = 0;
     for (index = 0; index < 512; ++index) {
@@ -3366,19 +3365,16 @@ void edpartMultipleCopyCopy(void) {
             continue;
         }
         NuVecSub(&delta, &PartEditorCameraPos, &part_emits[index].position);
-        temp.value = delta.x;
-        abs_delta.bits[0] = temp.bits & 0x7fffffff;
-        if (!(abs_delta.value[0] <= edpart_copy_size)) {
+        abs_delta[0] = PartsFabs(delta.x);
+        if (!(abs_delta[0] <= edpart_copy_size)) {
             continue;
         }
-        temp.value = delta.y;
-        abs_delta.bits[1] = temp.bits & 0x7fffffff;
-        if (!(abs_delta.value[1] <= edpart_copy_size)) {
+        abs_delta[1] = PartsFabs(delta.y);
+        if (!(abs_delta[1] <= edpart_copy_size)) {
             continue;
         }
-        temp.value = delta.z;
-        abs_delta.bits[2] = temp.bits & 0x7fffffff;
-        if (!(abs_delta.value[2] <= edpart_copy_size)) {
+        abs_delta[2] = PartsFabs(delta.z);
+        if (!(abs_delta[2] <= edpart_copy_size)) {
             continue;
         }
         edpart_copy_source[edpart_copy_source_count++] = index;

@@ -11,6 +11,20 @@
 typedef i32 (*FMV_INPUT_CALLBACK)(void);
 typedef void (*FMV_DRAW_CALLBACK)(void);
 
+/* Polls the movie's input callback: 1 stops the movie, 2 skips to the next one. */
+static i32 FmvPollCallback(FMV_INPUT_CALLBACK callback) {
+    if (callback != NULL) {
+        switch (callback()) {
+            case 1:
+                return 1;
+            case 2:
+                FmvSkip();
+                break;
+        }
+    }
+    return 0;
+}
+
 extern "C" i32 NuFmvPlayV(i32 option, ...) {
     va_list args;
     i32 count = 0;
@@ -83,14 +97,8 @@ extern "C" i32 NuFmvPlayV(i32 option, ...) {
             NuWindowsProcessMessages();
             FmvPlatformUpdate();
             while (FmvStep() != 0) {
-                if (callback != NULL) {
-                    i32 callback_result = callback();
-                    if (callback_result == 1) {
-                        break;
-                    }
-                    if (callback_result == 2) {
-                        FmvSkip();
-                    }
+                if (FmvPollCallback(callback)) {
+                    break;
                 }
                 PcInputEndFrame();
                 NuPadUpdatePads();

@@ -29,6 +29,18 @@ static f32 EdcamFabs(f32 f) {
     return rv;
 }
 
+static i32 EdtoolsallVuAngleDifference(i32 from, i32 to) {
+    i32 difference = (from - to) & 0xffff;
+    if (difference >= 0x8000) {
+        difference -= 0x10000;
+    }
+    return difference;
+}
+
+static void EdcamVecZero(NUVEC *v) {
+    v->x = v->y = v->z = 0.0f;
+}
+
 void fun_00617ca0(void) {
 }
 
@@ -116,9 +128,7 @@ void do_mouse_flymode_camera(edcam_s *camera, f32 delta_time) {
         camera->distance = MIN(-camera->minimum_distance, camera->distance);
     }
 
-    offset.z = 0.0f;
-    offset.y = 0.0f;
-    offset.x = 0.0f;
+    EdcamVecZero(&offset);
     rotation = NuMtxSetIdentityTemplate;
     NuMtxRotateX(&rotation, camera->pitch);
     NuMtxRotateY(&rotation, camera->yaw);
@@ -147,9 +157,7 @@ void do_mouse_flymode_camera(edcam_s *camera, f32 delta_time) {
     NuVecAdd(&camera->position, &camera->position, &new_opposite);
     NuVecSub(&camera->position, &camera->position, &old_opposite);
 
-    offset.z = 0.0f;
-    offset.y = 0.0f;
-    offset.x = 0.0f;
+    EdcamVecZero(&offset);
     if (buttons == 1) {
         offset.z = -delta_time * camera->distance;
     } else if (buttons == 2) {
@@ -218,9 +226,7 @@ void edcamMove(FRAME_PAD *pad) {
 void edcamSetPos(NUVEC *position) {
     edcam_s *camera = gp_cam;
     camera->position = *position;
-    camera->offset.z = 0.0f;
-    camera->offset.y = 0.0f;
-    camera->offset.x = 0.0f;
+    EdcamVecZero(&camera->offset);
 }
 
 void edcamSetAng(i32 pitch, i32 yaw) {
@@ -234,9 +240,7 @@ void edcamSetPosAng(NUVEC *position, i32 pitch, i32 yaw) {
     camera->position = *position;
     camera->pitch = pitch;
     camera->yaw = yaw;
-    camera->offset.z = 0.0f;
-    camera->offset.y = 0.0f;
-    camera->offset.x = 0.0f;
+    EdcamVecZero(&camera->offset);
 }
 
 void edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw) {
@@ -333,6 +337,36 @@ i32 NuKeyboardGetKeyIndex(void) {
     return nu_keyboard_key_index;
 }
 
+i32 PcKeyboardPressedKey = 0;
+i32 PcKeyboardPreviousKey = 0;
+i32 PcKeyboardHeldKey = 0;
+
+void PcKeyboardReadKey(i32 *key, i32 *pressed, i32 *shift, i32 *repeat) {
+    i32 page = nu_keyboard_page_index << 8;
+    i32 i;
+    PcKeyboardPreviousKey = PcKeyboardHeldKey;
+    if (nu_keyboard_pages[page + PcKeyboardHeldKey] == 0) {
+        PcKeyboardHeldKey = 0;
+    }
+    for (i = 0; i < nu_keyboard_owner.key_count; ++i) {
+        if (i != 0x2a && i != 0x36 && nu_keyboard_pages[page + i] != 0 && i != PcKeyboardPreviousKey) {
+            PcKeyboardHeldKey = i;
+            break;
+        }
+    }
+    PcKeyboardPressedKey = PcKeyboardPreviousKey != PcKeyboardHeldKey ? PcKeyboardHeldKey : 0;
+    if (shift != NULL) {
+        *shift = nu_keyboard_pages[page + 0x2a] != 0 || nu_keyboard_pages[page + 0x36] != 0;
+    }
+    if (key != NULL) {
+        *key = PcKeyboardHeldKey;
+    }
+    if (pressed != NULL) {
+        *pressed = PcKeyboardPressedKey;
+    }
+    *repeat = PcKeyboardKeyAutoRepeat(PcKeyboardHeldKey) ? PcKeyboardHeldKey : 0;
+}
+
 /* Private Source proposal; append in keyboard_read.c after old source. */
 void do_Pad_flymode_camera(edcam_s *camera, f32 delta_time, FRAME_PAD *pad) {
     f32 frame_scale = (f32)(delta_time / (f64)(1.0f / 60.0f));
@@ -355,9 +389,7 @@ void do_Pad_flymode_camera(edcam_s *camera, f32 delta_time, FRAME_PAD *pad) {
     } else {
         zoom_speed = 1.0f;
     }
-    offset.z = 0.0f;
-    offset.y = 0.0f;
-    offset.x = 0.0f;
+    EdcamVecZero(&offset);
     rotation = NuMtxSetIdentityTemplate;
     NuMtxRotateX(&rotation, camera->pitch);
     NuMtxRotateY(&rotation, camera->yaw);
@@ -390,9 +422,7 @@ void do_Pad_flymode_camera(edcam_s *camera, f32 delta_time, FRAME_PAD *pad) {
     NuVecAdd(&camera->position, &camera->position, &new_opposite);
     NuVecSub(&camera->position, &camera->position, &old_opposite);
 
-    offset.z = 0.0f;
-    offset.y = 0.0f;
-    offset.x = 0.0f;
+    EdcamVecZero(&offset);
     offset.x -= (f32)NuPs2ApplyDeadZone(pad->analog_left_x, 32) * delta_time * camera->distance * (f64)0.01f;
     offset.z += (f32)NuPs2ApplyDeadZone(pad->analog_left_y, 32) * delta_time * camera->distance * (f64)0.01f;
     offset.y += (f32)pad->analog_l1 * camera->position_speed.y * move_speed * frame_scale * 0.5;
@@ -423,9 +453,7 @@ void do_Pad_Standard_camera(edcam_s *camera, f32 delta_time, FRAME_PAD *pad) {
     i32 pad_pitch_axis;
     NUVEC snap_delta;
 
-    movement.z = 0.0f;
-    movement.y = 0.0f;
-    movement.x = 0.0f;
+    EdcamVecZero(&movement);
     if (!pad->is_valid) {
         return;
     }
@@ -510,9 +538,7 @@ void do_maya_mouse_camera(edcam_s *camera) {
     f32 minimum;
     NUMTX rotation;
 
-    movement.z = 0.0f;
-    movement.y = 0.0f;
-    movement.x = 0.0f;
+    EdcamVecZero(&movement);
     if (NuKeyboard(0x38) == 0) {
         return;
     }
@@ -527,10 +553,7 @@ void do_maya_mouse_camera(edcam_s *camera) {
             if (mouse_x != 0.0f || mouse_y != 0.0f) {
                 RawTargetAng.parts.angle = (u16)NuAtan2D(-mouse_x, -mouse_y);
             }
-            difference = (RawTargetAng.word - TargetAng.word) & 0xffff;
-            if (difference >= 0x8000) {
-                difference -= 0x10000;
-            }
+            difference = EdtoolsallVuAngleDifference(RawTargetAng.word, TargetAng.word);
             if (abs(difference) > 20000) {
                 TargetAng.parts.angle = RawTargetAng.parts.angle;
             } else {
@@ -590,6 +613,10 @@ f32 edcamGetDist(void) {
 
 edcam_s *edcamGetEdCam(void) {
     return gp_cam;
+}
+
+void edcamSetOffset(NUVEC *offset) {
+    gp_cam->offset = *offset;
 }
 
 void edcamGetOffset(NUVEC *offset) {

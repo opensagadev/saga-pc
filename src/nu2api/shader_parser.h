@@ -97,6 +97,7 @@ class ShaderCompilerParser { // size 0x45c
     ~ShaderCompilerParser();
     void SetIncludeDirectories(const char *);
     bool NextIncludeDirectory(const char *, i32 *, char *);
+    bool ReadLine(const ShaderCompilerBufferAllocator *text, i32 *position, ShaderCompilerBufferAllocator *line);
     void ClearIncludes();
     ShaderCompilerBufferAllocator *LoadInclude(const char *);
     void ProcessDirective(ShaderCompilerBufferAllocator *, i32 *);

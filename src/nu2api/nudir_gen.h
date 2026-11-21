@@ -8,7 +8,7 @@ extern "C" {
     extern i64 NuTime_TickBase;
     extern i64 NuTime_PerformanceFrequency;
     extern i32 PCThreadCriticalSectionCount;
-    extern CRITICAL_SECTION PCThreadCriticalSections[13];
+    extern CRITICAL_SECTION PCThreadCriticalSections[12];
     i32 PCThreadCriticalSectionCreate_candidate(void);
     i64 PCThreadMilliseconds(void);
     void PCThreadCriticalSectionDeleteNoOp(i32);

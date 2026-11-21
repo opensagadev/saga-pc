@@ -151,9 +151,9 @@ typedef struct numtl_s { // size 0x2c4
 
         struct {                // size 0x2
             i16 in_use : 1;     // 0x000:0 pool slot taken
-            i16 : 1;            // 0x000:1
+            i16 flag_02 : 1;    // 0x000:1
             i16 flag_04 : 1;    // 0x000:2
-            i16 : 1;            // 0x000:3
+            i16 flag_08 : 1;    // 0x000:3
             i16 sort_layer : 8; // 0x000:4 major display sort key
         };
     }; // 0x000

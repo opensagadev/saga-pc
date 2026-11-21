@@ -21,7 +21,7 @@ extern "C" {
     u8 PcCapsConfigured = 0;
     const char *PcKeyboardLayoutNames[256] = {0};
     TEXT_INPUT_LABELS *TextInputAlternateLabels = 0;
-    u8 PcMouseAxisModes[3] = {0};
+    u8 PcMouseAxisModes[8] = {0};
     PC_INPUT_RUNTIME *nu_input_state = 0;
     i8 PcInputActionOrder[20] = {0};
     TEXT_INPUT_LABELS *TextInputDefaultLabels = 0;
@@ -861,6 +861,12 @@ i32 PC_INPUT_RUNTIME::UpdateMouse() {
     return 0;
 }
 
+static void PcMouseUpdateInterpolation(void) {
+    f32 elapsed = NuTimeGetFrameTime();
+    f32 exponent = (f32)(elapsed * 4.0);
+    PcMouseInterpolation = 1.0f - 1.0f / NuPow(2.0f, exponent);
+}
+
 void PC_INPUT_RUNTIME::ApplyMouseAxis(PC_INPUT_SAMPLE *sample) {
     (void)NuTimeGetFrameTime();
     PC_INPUT_RUNTIME *runtime = nu_input_state;
@@ -877,9 +883,7 @@ void PC_INPUT_RUNTIME::ApplyMouseAxis(PC_INPUT_SAMPLE *sample) {
             PcMouseCurrentAngle -= 65536;
         }
     }
-    f32 elapsed = NuTimeGetFrameTime();
-    f32 exponent = (f32)(elapsed * 4.0);
-    PcMouseInterpolation = 1.0f - 1.0f / NuPow(2.0f, exponent);
+    PcMouseUpdateInterpolation();
     i32 difference = PcMouseTargetAngle - PcMouseCurrentAngle;
     f32 movement = PcMouseInterpolation * (f32)difference;
     f32 angle = movement + (f32)PcMouseCurrentAngle;
@@ -914,7 +918,7 @@ void PC_INPUT_RUNTIME::ApplyMouseAxis(PC_INPUT_SAMPLE *sample) {
 }
 
 // Uncompiled PC control-flow reconstruction. All indexed records require native initialized domains.
-extern u8 PcMouseAxisModes[3];
+extern u8 PcMouseAxisModes[8];
 
 i32 PC_INPUT_RUNTIME::TranslateBindings(i32 port, PC_INPUT_SAMPLE *out, i32 valid, PC_INPUT_RAW_SAMPLE *raw, PC_INPUT_MOUSE_RUNTIME *motion,
                                         u8 **keys) {
@@ -1477,6 +1481,29 @@ extern "C" void PcInputEndFrame(void) {
 }
 
 // Append to input_runtime.cpp; declarations/mappings in B-contract.json.
+
+/* Clears the pad direction bits that the first four bindings map to joystick buttons 0x80-0x83. */
+u32 PC_INPUT_RUNTIME::fun_006d4a80(i32 port, u32 buttons) {
+    for (i32 i = 0; i < 4; ++i) {
+        PC_INPUT_BINDING *binding = &devices[port].bindings[i];
+        if (binding->kind == PC_BINDING_JOYSTICK_BUTTON) {
+            i32 button = binding->value;
+            if (button == 0x80) {
+                buttons &= ~0x1000;
+            }
+            if (button == 0x82) {
+                buttons &= ~0x4000;
+            }
+            if (button == 0x83) {
+                buttons &= ~0x8000;
+            }
+            if (button == 0x81) {
+                buttons &= ~0x2000;
+            }
+        }
+    }
+    return buttons;
+}
 
 void PC_INPUT_RUNTIME::CopyBindings(i32 port, i32 to_auxiliary, i32 bank) {
     if (port < 0) {

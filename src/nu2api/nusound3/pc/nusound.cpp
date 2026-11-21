@@ -15,6 +15,12 @@
 #include "nu2api/nusound/nusound.h"
 #include "nu2api/nuwin32/d3dCore.h"
 #include "nu2api/wavreader.h"
+/* vorbisfile.h's static seek callback (the OV_CALLBACKS tables use it): each unit including the header carries
+ * its own copy; this one is named apart from the other units' copies. */
+// NOLINTNEXTLINE(readability-identifier-naming): vorbisfile.h names the static
+#define _ov_header_fseek_wrap NusoundOvHeaderFseekWrap
+#include "vorbis/vorbisfile.h"
+#undef _ov_header_fseek_wrap
 #include <stdio.h>
 #include <math.h>
 #include <float.h>
@@ -378,6 +384,11 @@ extern "C" {
     i32 SoundVoiceVolumeOffset = -300;
 }
 
+/* A voice's playback frequency: the pitch parameter is 4.12 fixed point, scaled from the sample rate to 48 kHz. */
+static i32 PCSoundVoiceFrequency(i32 parameter, i32 sample_frequency) {
+    return abs(parameter) * sample_frequency / 4096 * 48 / (sample_frequency / 1000);
+}
+
 void SoundVoiceManagerPC::SetVoice(i32 voice_id, i32 spatial, f32 volume, i32 parameter) {
     IDirectSoundBuffer *voice = voices[voice_id].voice;
     i32 volume_level;
@@ -407,7 +418,7 @@ void SoundVoiceManagerPC::SetVoice(i32 voice_id, i32 spatial, f32 volume, i32 pa
 
     voices[voice_id].parameter = parameter;
     sample_frequency = samples[voices[voice_id].sample_id].frequency;
-    frequency = abs(parameter) * sample_frequency / 4096 * 48 / (sample_frequency / 1000);
+    frequency = PCSoundVoiceFrequency(parameter, sample_frequency);
     voices[voice_id].voice->vtable->set_frequency(voices[voice_id].voice, (DWORD)frequency);
 
     voices[voice_id].voice->vtable->get_status(voices[voice_id].voice, (DWORD *)&status);
@@ -460,7 +471,7 @@ void SoundVoiceManagerPC::SetFrequencyParameter(i32 voice_id, i32 parameter) {
 
     voices[voice_id].parameter = parameter;
     sample_frequency = samples[voices[voice_id].sample_id].frequency;
-    frequency = abs(parameter) * sample_frequency / 4096 * 48 / (sample_frequency / 1000);
+    frequency = PCSoundVoiceFrequency(parameter, sample_frequency);
     voices[voice_id].voice->vtable->set_frequency(voices[voice_id].voice, (DWORD)frequency);
 }
 
@@ -970,6 +981,14 @@ void NuSound3SetRequestTable(u16 *request_bits, i32 short_count) {
     SAGA_SOUND_SETTER_END(request_bits, short_count, PCSoundMixDestination);
 }
 
+void SoundVoiceManagerPC::LoadSample(const char *name, i32 index) {
+    if (NuStrICmp(".wav", PCSampleFilenameExtension) == 0) {
+        LoadWavSample(name, index);
+    } else {
+        PCSoundAlreadyPlayingHook(PCSampleFilenameExtension);
+    }
+}
+
 extern "C" void fun_00698780(void) {
 }
 
@@ -1009,11 +1028,7 @@ extern "C" {
                             continue;
                         }
                         name = PCStereoSampleMetadata[i].filename;
-                        if (NuStrICmp(".wav", PCSampleFilenameExtension) == 0) {
-                            SoundVoiceManager.LoadWavSample(name, i);
-                        } else {
-                            PCSoundAlreadyPlayingHook(PCSampleFilenameExtension);
-                        }
+                        SoundVoiceManager.LoadSample(name, i);
                         if (SoundVoiceManager.samples != NULL && SoundVoiceManager.samples[i].failed_byte != 0) {
                             PCSoundFailure(i);
                         }
