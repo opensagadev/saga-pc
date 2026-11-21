@@ -6848,6 +6848,15 @@ extern "C" void PostShadowComputeFrustumCube(const NUCAMERA *camera, NUVEC4 *cor
     PostShadowMakePlanePrivate(plane, &corners[4], &corners[5], &corners[6]);
 }
 
+/* Same-unit register helper: ESI plane, EAX normal, EDI origin. */
+static void PostShadowMakePlaneFromNormal(NUVEC4 *plane, const NUVEC *normal, const NUVEC4 *origin) {
+    OccluderVertexSet(plane, normal->x, normal->y, normal->z, 0.0f);
+    NuVecNorm(&plane->xyz, &plane->xyz);
+    plane->w = 1.0f;
+    f32 dot = (origin->y * plane->y + origin->x * plane->x) + origin->z * plane->z;
+    plane->w = -dot;
+}
+
 extern "C" i32 PostShadowComputePlanes(const NUVEC4 *direction, const NUVEC4 *corners, NUVEC4 *planes) {
     f32 extrusion = -PostShadowPlaneExtrusion;
     __declspec(align(16)) NUVEC offset = {direction->x * extrusion, direction->y * extrusion, direction->z * extrusion};
@@ -6872,15 +6881,8 @@ extern "C" i32 PostShadowComputePlanes(const NUVEC4 *direction, const NUVEC4 *co
         positive[face] = dot >= 0.0f;
         if (positive[face] == 0) {
             NUVEC inward = {-normal.x, -normal.y, -normal.z};
-            output->x = inward.x;
-            output->y = inward.y;
-            output->z = inward.z;
-            output->w = 0.0f;
-            NuVecNorm(&output->xyz, &output->xyz);
+            PostShadowMakePlaneFromNormal(output, &inward, origin);
             ++count;
-            output->w = 1.0f;
-            f32 plane_dot = (output->y * origin->y + output->x * origin->x) + output->z * origin->z;
-            output->w = -plane_dot;
             ++output;
         }
     }

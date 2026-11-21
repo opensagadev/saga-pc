@@ -7508,7 +7508,7 @@ address,symbol,size,ctype
 0x5c79f0,_PostShadowComputeClippingPlanes,1451,"void __cdecl(const NUMTX *,bool,NUVEC4 *,NUVEC4 *,NUVEC4 *,NUVEC4 *,NUVEC4 *,NUVEC4 *)"
 0x5c7fa0,?PostShadowMakePlanePrivate@@YAXPAUNUVEC4@@PBU1@11@Z,135,
 0x5c8030,_PostShadowComputeFrustumCube,558,"void __cdecl(const NUCAMERA *,NUVEC4 *,NUVEC4 *)"
-0x5c8260,_fun_005c8260,91,
+0x5c8260,?PostShadowMakePlaneFromNormal@@YAXPAUNUVEC4@@PBUnuvec_s@@PBU1@@Z,91,"void __cdecl(NUVEC4 *,const NUVEC *,const NUVEC4 *)"
 0x5c82c0,_PostShadowComputePlanes,626,"i32 __cdecl(const NUVEC4 *,const NUVEC4 *,NUVEC4 *)"
 0x5c8540,_PostShadowComputeCapsule,713,"void __cdecl(const NUVEC4 *,const NUVEC4 *,NUVEC4 *,NUVEC4 *,f32 *)"
 0x5c8810,?ShadowSegmentClip@@YAHPBUnuvec_s@@00MM@Z,417,
