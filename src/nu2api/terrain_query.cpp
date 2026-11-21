@@ -1032,25 +1032,6 @@ extern "C" i32 TerrainPlatId(void) {
     return plathitid;
 }
 
-extern "C" i32 NewTerrainOnAPlatform(void *id) {
-    TERRAIN_SET *terrain = CurrentTerrain;
-    if (terrain == NULL) {
-        return 0;
-    }
-    TERRAIN_TRACK_SLOT *track = NULL;
-    for (i32 index = 0; index < 64; ++index) {
-        if (terrain->track_slots[index].id == id) {
-            track = &terrain->track_slots[index];
-            break;
-        }
-    }
-    CurTrackInfo = track;
-    if (track == NULL) {
-        return 0;
-    }
-    return track->platform_contact_state;
-}
-
 extern "C" f32 NewRayCastGetTOFI(void) {
     return TerI->hit_time;
 }

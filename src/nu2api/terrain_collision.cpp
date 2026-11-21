@@ -2089,21 +2089,6 @@ extern "C" {
         return 1;
     }
 
-    TERRAIN_TRACK_SLOT *ScanTerrId(void *id) {
-        TERRAIN_SET *terrain = CurrentTerrain;
-        if (terrain == NULL) {
-            return NULL;
-        }
-
-        for (i32 slot_index = 0; slot_index < 64; ++slot_index) {
-            if (terrain->track_slots[slot_index].id == id) {
-                return &terrain->track_slots[slot_index];
-            }
-        }
-
-        return NULL;
-    }
-
     TERRAIN_TRACK_SLOT *AllocTerrId() {
         TERRSET *terrain = CurrentTerrain;
         if (terrain == NULL) {
