@@ -37,6 +37,10 @@ static i32 EdtoolsallVuAngleDifference(i32 from, i32 to) {
     return difference;
 }
 
+static void EdcamVecZero(NUVEC *v) {
+    v->x = v->y = v->z = 0.0f;
+}
+
 void fun_00617ca0(void) {
 }
 
@@ -124,9 +128,7 @@ void do_mouse_flymode_camera(edcam_s *camera, f32 delta_time) {
         camera->distance = MIN(-camera->minimum_distance, camera->distance);
     }
 
-    offset.z = 0.0f;
-    offset.y = 0.0f;
-    offset.x = 0.0f;
+    EdcamVecZero(&offset);
     rotation = NuMtxSetIdentityTemplate;
     NuMtxRotateX(&rotation, camera->pitch);
     NuMtxRotateY(&rotation, camera->yaw);
@@ -155,9 +157,7 @@ void do_mouse_flymode_camera(edcam_s *camera, f32 delta_time) {
     NuVecAdd(&camera->position, &camera->position, &new_opposite);
     NuVecSub(&camera->position, &camera->position, &old_opposite);
 
-    offset.z = 0.0f;
-    offset.y = 0.0f;
-    offset.x = 0.0f;
+    EdcamVecZero(&offset);
     if (buttons == 1) {
         offset.z = -delta_time * camera->distance;
     } else if (buttons == 2) {
@@ -226,9 +226,7 @@ void edcamMove(FRAME_PAD *pad) {
 void edcamSetPos(NUVEC *position) {
     edcam_s *camera = gp_cam;
     camera->position = *position;
-    camera->offset.z = 0.0f;
-    camera->offset.y = 0.0f;
-    camera->offset.x = 0.0f;
+    EdcamVecZero(&camera->offset);
 }
 
 void edcamSetAng(i32 pitch, i32 yaw) {
@@ -242,9 +240,7 @@ void edcamSetPosAng(NUVEC *position, i32 pitch, i32 yaw) {
     camera->position = *position;
     camera->pitch = pitch;
     camera->yaw = yaw;
-    camera->offset.z = 0.0f;
-    camera->offset.y = 0.0f;
-    camera->offset.x = 0.0f;
+    EdcamVecZero(&camera->offset);
 }
 
 void edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw) {
@@ -393,9 +389,7 @@ void do_Pad_flymode_camera(edcam_s *camera, f32 delta_time, FRAME_PAD *pad) {
     } else {
         zoom_speed = 1.0f;
     }
-    offset.z = 0.0f;
-    offset.y = 0.0f;
-    offset.x = 0.0f;
+    EdcamVecZero(&offset);
     rotation = NuMtxSetIdentityTemplate;
     NuMtxRotateX(&rotation, camera->pitch);
     NuMtxRotateY(&rotation, camera->yaw);
@@ -428,9 +422,7 @@ void do_Pad_flymode_camera(edcam_s *camera, f32 delta_time, FRAME_PAD *pad) {
     NuVecAdd(&camera->position, &camera->position, &new_opposite);
     NuVecSub(&camera->position, &camera->position, &old_opposite);
 
-    offset.z = 0.0f;
-    offset.y = 0.0f;
-    offset.x = 0.0f;
+    EdcamVecZero(&offset);
     offset.x -= (f32)NuPs2ApplyDeadZone(pad->analog_left_x, 32) * delta_time * camera->distance * (f64)0.01f;
     offset.z += (f32)NuPs2ApplyDeadZone(pad->analog_left_y, 32) * delta_time * camera->distance * (f64)0.01f;
     offset.y += (f32)pad->analog_l1 * camera->position_speed.y * move_speed * frame_scale * 0.5;
@@ -461,9 +453,7 @@ void do_Pad_Standard_camera(edcam_s *camera, f32 delta_time, FRAME_PAD *pad) {
     i32 pad_pitch_axis;
     NUVEC snap_delta;
 
-    movement.z = 0.0f;
-    movement.y = 0.0f;
-    movement.x = 0.0f;
+    EdcamVecZero(&movement);
     if (!pad->is_valid) {
         return;
     }
@@ -548,9 +538,7 @@ void do_maya_mouse_camera(edcam_s *camera) {
     f32 minimum;
     NUMTX rotation;
 
-    movement.z = 0.0f;
-    movement.y = 0.0f;
-    movement.x = 0.0f;
+    EdcamVecZero(&movement);
     if (NuKeyboard(0x38) == 0) {
         return;
     }

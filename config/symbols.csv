@@ -9627,7 +9627,7 @@ address,symbol,size,ctype
 0x617c10,_EdtoolsallNuError,1,
 0x617c20,_EdcamFabs,18,static f32 __cdecl(f32)
 0x617c40,_EdtoolsallVuAngleDifference,22,"i32 __cdecl(i32,i32)"
-0x617c60,_fun_00617c60,11,
+0x617c60,_EdcamVecZero,11,void __cdecl(NUVEC *)
 0x617c70,?EdtoolsallVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x617c90,_fun_00617c90,16,
 0x617ca0,_fun_00617ca0,1,
