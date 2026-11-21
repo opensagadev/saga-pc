@@ -114,13 +114,6 @@
 #include "legoapi/world/levels/episodeIII.h"
 #include "nu2api/nu3d/nurndr.h"
 
-f32 GameaiscriptFdiv(f32 a, f32 b) {
-    if (a == 0.0f || b == 0.0f) {
-        return 0.0f;
-    }
-    return a / b;
-}
-
 void GameaiscriptNuError(void) {
 }
 

@@ -120,3 +120,4 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | call prototypes for legoapi and legogame | DebrisSetup2 | legoapi/parts.c | exact | 99.95 % |
 | call prototypes for legoapi and legogame | BoltTypes_Configure | legoapi/bolts.cpp | 99.88 % | exact |
 | match/nu2api rebased onto main 836c77eb7 (prototype headers) | BoulderSpawn | legogame/episodeIII.c | exact | 83.28 % |
+| decoder, turret, hub, glass and terrain batch (PR #9) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | 90.96 % |

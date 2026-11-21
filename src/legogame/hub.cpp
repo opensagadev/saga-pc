@@ -2122,11 +2122,12 @@ extern "C" void Hub_Reset(WORLDINFO *world) {
         HubResetAIFn(world);
     }
     for (i32 i = 0; i < 32; i++) {
+        nuhspecial_s *special = &LevHSpecial[i + 52];
         if ((LevHSpecialExists & ((u64)1 << (i + 20))) != 0) {
-            NuSpecialSetVisibility(&LevHSpecial[i + 20], 1);
+            NuSpecialSetVisibility(special - 32, 1);
         }
         if ((LevHSpecialExists & ((u64)1 << (i + 52))) != 0) {
-            NuSpecialSetVisibility(&LevHSpecial[i + 52], 0);
+            NuSpecialSetVisibility(special, 0);
         }
     }
     if (NuSpecialExistsFn(&LevHSpecial[84]) != 0) {
