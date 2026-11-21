@@ -8118,7 +8118,7 @@ address,symbol,size,ctype
 0x5e5630,_NuTexDestroy,66,void __cdecl(i32)
 0x5e5680,_NuTexGetScratchBlock,6,
 0x5e5690,_NuTexReserveScratchBlock,32,
-0x5e56b0,_fun_005e56b0,262,
+0x5e56b0,_fun_005e56b0,262,"void __cdecl(NUVEC *,NUVEC *,i32 *,i32 *,NUVEC *,NUGRIDINFO *)"
 0x5e57c0,_fun_005e57c0,26,
 0x5e57e0,_fun_005e57e0,11,
 0x5e57f0,_NuTexCreateFramebufferCopy,72,"i32 __cdecl(VARIPTR *, VARIPTR)"

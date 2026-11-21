@@ -13895,6 +13895,35 @@ extern "C" {
         buffer->addr = ((buffer->addr + 15) & ~15) + 0x40;
     }
 
+    /* The grid cell under a position: the cell coordinates, their whole and fractional parts. */
+    void fun_005e56b0(NUVEC *cell, NUVEC *fraction, i32 *cell_x, i32 *cell_z, NUVEC *position, NUGRIDINFO *grid) {
+        f32 limit;
+        cell->x = (position->x - grid->min_x + grid->cell_x * NuQFntHalfScale) * (grid->count_x / grid->cell_x);
+        cell->y = 0.0f;
+        cell->z = (position->z - grid->min_z + grid->cell_z * NuQFntHalfScale) * (grid->count_z / grid->cell_z);
+        if (cell->x < 0.0f) {
+            cell->x = 0.0f;
+        }
+        if (cell->z < 0.0f) {
+            cell->z = 0.0f;
+        }
+        limit = grid->count_x;
+        if (cell->x >= limit) {
+            cell->x = limit - (f64)0.001f;
+        }
+        limit = grid->count_z;
+        if (cell->z >= limit) {
+            cell->z = limit - (f64)0.001f;
+        }
+        fraction->x = NuFloor(cell->x);
+        fraction->y = 0.0f;
+        fraction->z = NuFloor(cell->z);
+        *cell_x = (i32)fraction->x;
+        *cell_z = (i32)fraction->z;
+        fraction->x = cell->x - fraction->x;
+        fraction->z = cell->z - fraction->z;
+    }
+
     void fun_005e57e0(void) {
         dat_0097401c = 2;
     }
