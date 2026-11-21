@@ -12340,7 +12340,7 @@ address,symbol,size,ctype
 0x6b7d90,?VuVecLengthSq@@YAMABUVuVec@@@Z,33,
 0x6b7dc0,?VuVecLength@@YAMABUVuVec@@@Z,46,
 0x6b7df0,?VuMtxCopy@@YAXAAUVuMtx@@ABU1@@Z,95,
-0x6b7e50,_fun_006b7e50,16,
+0x6b7e50,?VuVecMtxTransform@@YAXAAUVuVec@@0PAUnumtx_s@@@Z,16,"void __cdecl(VuVec &,VuVec &,NUMTX *)"
 0x6b7e60,?VuMtxRotateVec@@YAXABUVuMtx@@ABUVuVec@@AAU2@@Z,91,
 0x6b7ec0,?VuMtxInvRotateVec@@YAXAAUVuMtx@@AAUVuVec@@1@Z,16,
 0x6b7ed0,?VuMtxSetScale@@YAXAAUVuMtx@@ABUVuVec@@@Z,81,

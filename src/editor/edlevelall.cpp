@@ -1308,6 +1308,10 @@ static inline void VuMtxSetIdentity(VuMtx &matrix) {
     VuMtxCopy(matrix, *(const VuMtx *)&ANI3_EVAL_IDENTITY_MATRIX);
 }
 
+static inline void VuVecMtxTransform(VuVec &result, VuVec &v, NUMTX *matrix) {
+    NuVecMtxTransform(&result.xyz, &v.xyz, matrix);
+}
+
 /* Rotates a direction by the matrix's 3x3 part. */
 static inline void VuMtxRotateVec(const VuMtx &matrix, const VuVec &v, VuVec &result) {
     f32 x = v.x * matrix.matrix.m00 + v.y * matrix.matrix.m10 + v.z * matrix.matrix.m20;
@@ -2484,7 +2488,7 @@ void EdDrawLineArrow(NUMTX *transform, f32 size, i32 colour) {
     point.w = 0.0f;
     VuVecCopy(points[3], point);
     for (i = 0; i < 4; i++) {
-        NuVecMtxTransform(&points[i].xyz, &points[i].xyz, transform);
+        VuVecMtxTransform(points[i], points[i], transform);
     }
     EdDrawLineSegment(&points[0].xyz, &points[1].xyz, colour);
     EdDrawLineSegment(&points[1].xyz, &points[2].xyz, colour);
@@ -2542,7 +2546,7 @@ void EdDrawLineCube(NUMTX *transform, f32 size, i32 colour) {
     point.w = 0.0f;
     VuVecCopy(points[8], point);
     for (i = 0; i < 9; i++) {
-        NuVecMtxTransform(&points[i].xyz, &points[i].xyz, transform);
+        VuVecMtxTransform(points[i], points[i], transform);
     }
     EdDrawLineSegment(&points[0].xyz, &points[1].xyz, colour);
     EdDrawLineSegment(&points[1].xyz, &points[2].xyz, colour);

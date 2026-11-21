@@ -449,7 +449,7 @@
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
     "config/sibling-names.csv": "0412f6238a62d5d75181cb275bbaeea889f8b7e7021810b9b5261dbbe9852810",
     "config/standalone-budget.json": "7f7c580012d4dfaecc55c9c35cf3461c9c45615ddc805efb95d7aae11b86330f",
-    "config/symbols.csv": "d4a36b54daa6a1fd5d3ef520586bc3f7e27e41d144652e6d3f0aac79de55cac4",
+    "config/symbols.csv": "12802887d5a89220bb6ad8e2f4d020d61c937a3e2802195ab49a1a1659e7b8c0",
     "config/symbols.md": "3d018cc044b5a14025b0fc457df71a0c9a193cea32ceb3081e6a86bcdd4b242b",
     "config/toolchain.json": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
     "config/tools.json": "8e9a5f8077abc1bd9cce37004a47ea493e67a75ba964d8df3f13223958e6f4c8",
@@ -589,7 +589,7 @@
     "src/debug/crash_diagnostics.cpp": "1b60194207f0f734c9036b7f6c9f2f0e2258427c257e36d384df8d971b37b7e0",
     "src/debug/skin_trace.cpp": "abb725cba9c7b82a503b462611ebe556501d61da9c554d9d2360c77018f449ba",
     "src/debug/skin_trace_windows.cpp": "7d0a9ac065f45332fc54e49a9673d5486dafdf29e115ab3c6d7080492563da23",
-    "src/editor/edlevelall.cpp": "853b68fbc0b46aae273ebb821555805b837689806a32f1415fb5f8caf5c1b801",
+    "src/editor/edlevelall.cpp": "1f0ff5921554c0d5409a4d87b938689969bc6c0f580c87537b32a69bde58cb81",
     "src/gameapi/edtools_outline.cpp": "8de9408ef5c3cecd47435c16b0b04cd0601bc42b4d1771820f0f207a7c423ccb",
     "src/gameapi/edui_widget_render.cpp": "100e7a4381978085b7956bdc8e69b47a7207f79795b31884ff0cc374f247dae1",
     "src/gameapi/message.cpp": "d3154208a984059579f080103af2eed2543cab2315bb1f7bc8892a9a33772682",
@@ -994,7 +994,7 @@
     "build/obj/vendored/vorbis_smallft.obj": "53283c0df7d9bd0a9293f791d0e493c4fb7b5db4cd6b64087b4d8e8f38d2d796",
     "build/obj/batman.obj": "230bec09b56f645cf0ab3ad39d4878b7a615fc1aa3437c7f216dcbef853f946b",
     "build/obj/data.obj": "c9f541e1f4d8654af91c30cb5b63395ab29ff76c27a01ce99f922329b3b0db7f",
-    "build/obj/editor/edlevelall.obj": "de44ed1f77f7d8f9b1b73b4f4a8ba2e47889fe0381d48e4211b4a2ce7c73886e",
+    "build/obj/editor/edlevelall.obj": "c63733e77649d08a1cd94b206e34e6bce174a5275d12fa52064f8614623feec8",
     "build/obj/editor/edtoolsall.obj": "2604bc787b498c2c24f26733584a7945e10639fe0d05dde32fcc9cdd3f9fd786",
     "build/obj/float_constants.obj": "5a1a89e39dae3f4d574b3df8a1be6f0f86afc5d533f4e2df9d228b8f38b9e99b",
     "build/obj/gameapi/aisys_empty.obj": "ba4ca29f5a8f875b96a6457a5fb2d044cd7fb23c3edbcdeab8fb04edc6762be0",
@@ -302162,14 +302162,28 @@
       "objdiff_percent": 100.0
     },
     {
-      "name": "fun_006b7e50",
-      "symbol": "_fun_006b7e50",
+      "name": "?VuVecMtxTransform@@YAXAAUVuVec@@0PAUnumtx_s@@@Z",
+      "symbol": "?VuVecMtxTransform@@YAXAAUVuVec@@0PAUnumtx_s@@@Z",
       "address": "0x006b7e50",
-      "units": [],
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
       "target_size": 16,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edlevelall.cpp",
+          "base_size": 16,
+          "exact_match": true,
+          "target_sha256": "3d828d358959aa2e37d6fc9631f9ee967413813399a492cd6c9da9724056acc8",
+          "base_sha256": "3d828d358959aa2e37d6fc9631f9ee967413813399a492cd6c9da9724056acc8",
+          "relocation_count": 1,
+          "comparison_unit": "006b7e50-858f2237edb0",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "?VuMtxRotateVec@@YAXABUVuMtx@@ABUVuVec@@AAU2@@Z",
@@ -309881,14 +309895,28 @@
       "objdiff_percent": 100.0
     },
     {
-      "name": "fun_006be570",
-      "symbol": "_fun_006be570",
+      "name": "?EdStreamIncludesClass@@YAHAAVEdStream@@PAUEdClass@@@Z",
+      "symbol": "?EdStreamIncludesClass@@YAHAAVEdStream@@PAUEdClass@@@Z",
       "address": "0x006be570",
-      "units": [],
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
       "target_size": 32,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edlevelall.cpp",
+          "base_size": 32,
+          "exact_match": true,
+          "target_sha256": "aec49bb78dc52cf75299943e6d3e67f23c741dfb47fdd29429879d97597aa742",
+          "base_sha256": "aec49bb78dc52cf75299943e6d3e67f23c741dfb47fdd29429879d97597aa742",
+          "relocation_count": 0,
+          "comparison_unit": "006be570-c39c14f43438",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "?RegisterType@EdRegistry@@QAEHPADHP6AXAAVEdStream@@PAXH@Z@Z",
@@ -310371,14 +310399,28 @@
       "objdiff_percent": 100.0
     },
     {
-      "name": "fun_006bea20",
-      "symbol": "_fun_006bea20",
+      "name": "?EdStreamIncludesMember@@YAHAAVEdStream@@PAVEdRef@@PAH@Z",
+      "symbol": "?EdStreamIncludesMember@@YAHAAVEdStream@@PAVEdRef@@PAH@Z",
       "address": "0x006bea20",
-      "units": [],
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
       "target_size": 56,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edlevelall.cpp",
+          "base_size": 56,
+          "exact_match": true,
+          "target_sha256": "3bab9c470d9ffb52a81b01d9e05e3465f429c9515eeda699f2f1b52d24619bf7",
+          "base_sha256": "3bab9c470d9ffb52a81b01d9e05e3465f429c9515eeda699f2f1b52d24619bf7",
+          "relocation_count": 0,
+          "comparison_unit": "006bea20-1359af8af4dc",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "??0EditorSettings@@QAE@XZ",
@@ -900049,19 +900091,19 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 3348693,
-    "matched_code_bytes": 2114095,
-    "matching_percent": 60.90305901684871,
+    "matched_code_bytes": 2114199,
+    "matching_percent": 60.906055059192,
     "padding_bytes": 114459,
-    "matched_padding_bytes": 100874,
-    "matched_code_with_padding_bytes": 2214969,
-    "matching_with_padding_percent": 63.80904724124997,
+    "matched_padding_bytes": 100882,
+    "matched_code_with_padding_bytes": 2215081,
+    "matching_with_padding_percent": 63.812273748388904,
     "fuzzy_text_data_bytes": 6896,
     "fuzzy_denominator_bytes": 3349891,
-    "fuzzy_coverage_percent": 96.32901192455418,
+    "fuzzy_coverage_percent": 96.33211650318076,
     "mapped_functions": 15914,
-    "matched_functions": 13916,
-    "objdiff_fuzzy_percent": 96.85522,
-    "objdiff_total_code": 3337665,
+    "matched_functions": 13919,
+    "objdiff_fuzzy_percent": 96.85531,
+    "objdiff_total_code": 3337769,
     "image_bytes": 40067072,
     "mapped_bytes": 38533364,
     "mapping_percent": 96.17214854132591,
@@ -900123,11 +900165,11 @@
     "mapping_file_backed_data_with_padding_percent": 95.72442271816097,
     "mapping_zero_fill_data_with_padding_bytes": 34181704,
     "mapping_zero_fill_data_with_padding_percent": 97.78939468807482,
-    "mapping_code_named_bytes": 3340007,
-    "mapping_code_named_percent": 96.2192538356544,
-    "mapping_code_address_named_bytes": 16776,
-    "mapping_code_address_named_percent": 0.4832846764533542,
-    "mapping_code_address_named_functions": 846,
+    "mapping_code_named_bytes": 3340111,
+    "mapping_code_named_percent": 96.2222498779977,
+    "mapping_code_address_named_bytes": 16672,
+    "mapping_code_address_named_percent": 0.4802886341100573,
+    "mapping_code_address_named_functions": 843,
     "reproduced_file_backed_data_exact_bytes": 537627,
     "reproduced_file_backed_data_library_bytes": 452841,
     "reproduced_file_backed_data_different_padding_bytes": 0,
@@ -900169,24 +900211,24 @@
   "text_coverage": {
     "original_text_bytes": 3471246,
     "mapped_reconstruction_bytes": 3348693,
-    "exact_reconstruction_bytes": 2114095,
-    "mapped_not_exact_bytes": 1234598,
+    "exact_reconstruction_bytes": 2114199,
+    "mapped_not_exact_bytes": 1234494,
     "excluded_import_glue_bytes": 1194,
     "text_data_bytes": 6896,
     "exact_text_data_bytes": 6896,
     "unclassified_text_bytes": 114463,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 60.90305901684871,
+    "strict_original_text_exact_percent": 60.906055059192,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 60.924014971533566,
+    "reconstruction_scope_exact_percent": 60.927012044776276,
     "mapped_scope_denominator_bytes": 3348693,
-    "mapped_scope_exact_percent": 63.13194431379646,
+    "mapped_scope_exact_percent": 63.13505000309076,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image.",
     "alignment_padding_bytes": 114459,
-    "exact_alignment_padding_bytes": 100874,
+    "exact_alignment_padding_bytes": 100882,
     "unclassified_non_padding_text_bytes": 4,
-    "exact_with_padding_bytes": 2214969,
-    "exact_with_padding_percent": 63.80904724124997,
+    "exact_with_padding_bytes": 2215081,
+    "exact_with_padding_percent": 63.812273748388904,
     "padding_qualification": "Padding is int3/nop alignment fill shorter than 16 bytes between mapped extents, shorter than the alignment of the extent start it ends on; it is exact only after an exact function."
   },
   "data_members": [
@@ -901465,7 +901507,7 @@
       "metadata_sha256": "a005dfb7254f87304ba5e7d1c5083ab46db1e8272ef5fdd2e11a8953a1d1d2d5",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "d978ed73de5818a03939d36ffb82eb67883a7bc0eb87e3ce4b2bcd6f2d560586",
+      "geometry_object_sha256": "e363b49c2cabe9f7c234f4836683a0a26fda89a1779bff0faab3f1858fa2df90",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
