@@ -340,3 +340,4 @@ config/castscan-budget.json raw-offset 353 impl/engine batch 4: fun_00602e20 off
 config/castscan-budget.json void-pointer-cpp 557 impl/engine batch 4: fun_00602d90 takes NuGobjAllocBlock2's block as the geometry
 config/oddscan-budget.json dense-function 1177 impl/engine: NuFmvTextureOpen sets up the movie texture and its material in one block as retail does
 config/oddscan-budget.json magic-bound 1580 impl/engine: NuFmvTextureOpen replaces the last three characters of the path with "bik"
+config/oddscan-budget.json placeholder-field 1076 impl/engine: NUGRIDINFO keeps its two unread words as unknown_
