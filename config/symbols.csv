@@ -7214,7 +7214,7 @@ address,symbol,size,ctype
 0x5c16b0,?Nu3dIncludesVuVecAdd@@YA?AUVuVec@@ABU1@0@Z,29,
 0x5c16d0,?Nu3dIncludesVuVecSub@@YA?AUVuVec@@ABU1@0@Z,29,
 0x5c16f0,?Nu3dIncludesVuVecScale@@YA?AUVuVec@@ABU1@M@Z,29,
-0x5c1710,_fun_005c1710,23,
+0x5c1710,?Nu3dIncludesVecNeg@@YAXPAUnuvec_s@@PBU1@@Z,23,"void __cdecl(NUVEC *,const NUVEC *)"
 0x5c1730,?Nu3dIncludesVuVecNormalise@@YAXAAUVuVec@@0@Z,18,
 0x5c1750,?OccluderCross@@YAXPAUnuvec_s@@ABU1@1@Z,16,"void private (NUVEC *dst stack, const NUVEC &a ECX, const NUVEC &b EAX); out-of-line copy of the inline cross-product helper, no callers"
 0x5c1760,_fun_005c1760,25,

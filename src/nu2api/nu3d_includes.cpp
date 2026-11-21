@@ -129,6 +129,12 @@ static void Nu3dIncludesVuVecCopy(VuVec &destination, const VuVec &source) {
     destination.w = source.w;
 }
 
+static void Nu3dIncludesVecNeg(NUVEC *destination, const NUVEC *source) {
+    destination->x = -source->x;
+    destination->y = -source->y;
+    destination->z = -source->z;
+}
+
 /* Unit-length copy of a direction, as a point (w = 1). */
 static void Nu3dIncludesVuVecNormalise(VuVec &destination, VuVec &source) {
     NuVecNorm(&destination.xyz, &source.xyz);
@@ -7564,9 +7570,7 @@ extern "C" {
             NuVecCross(&normal, &first, &second);
             NuVecNorm(&normal, &normal);
             if (!(camera_side < 0.0f)) {
-                normal.x = -normal.x;
-                normal.y = -normal.y;
-                normal.z = -normal.z;
+                Nu3dIncludesVecNeg(&normal, &normal);
             }
             frustum->planes[i].normal = normal;
             frustum->planes[i].d = -(normal.x * camera_position.x + normal.y * camera_position.y + normal.z * camera_position.z);
@@ -18055,9 +18059,7 @@ void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrix(NURNDRLIGHTRECORD *set) {
     shift.x = transformed_position.x;
     shift.y = (minimum.y + maximum.y) * 0.5;
     shift.z = minimum.z - distance;
-    offset.x = -shift.x;
-    offset.y = -shift.y;
-    offset.z = -shift.z;
+    Nu3dIncludesVecNeg(&offset, &shift);
     f32 xmin;
     f32 xmax;
     f32 ymin;
