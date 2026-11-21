@@ -334,3 +334,7 @@ config/castscan-budget.json int-pointer 805 impl/engine batch 2; the same slot t
 config/castscan-budget.json truncation 2188 impl/engine batch 2; fun_00602ed0 stores the index count in the u16 count fields
 config/castscan-budget.json void-pointer-cpp 556 impl/engine batch 2; fun_00602a10/fun_00602ed0 cast NuAlloc results like NuGobjRegistryAlloc
 config/castscan-budget.json scalar-pun 286 impl/engine: AIPathFabs takes the SDK NuFabs form (masked float bits through i32 views) that retail compiles at 0x512880, as the exact AttractoFabs/Nu3dIncludesFabs copies do
+config/oddscan-budget.json address-name 4633 impl/engine batch 4: fun_00602d90/fun_00602e20/fun_00601630 keep fun_ names (role unclear)
+config/oddscan-budget.json placeholder-field 1074 impl/engine batch 4: fun_00601630 saves and restores the material's unknown_002/unknown_034 bytes around the copy
+config/castscan-budget.json raw-offset 353 impl/engine batch 4: fun_00602e20 offsets the locked vertex bytes by base_vertex vertices
+config/castscan-budget.json void-pointer-cpp 557 impl/engine batch 4: fun_00602d90 takes NuGobjAllocBlock2's block as the geometry
