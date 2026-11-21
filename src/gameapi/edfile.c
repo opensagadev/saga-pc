@@ -1724,7 +1724,7 @@ void eduiItemSliderSetGranularity(edui_slider_s *item, f32 granularity) {
 i32 eduicbInteractSlider(edui_interact_s *interact) {
     edui_slider_s *slider = (edui_slider_s *)interact->item;
     f32 value = (edui_cursor_x - interact->x) / interact->width;
-    value = value > 0.0f ? (value < 1.0f ? value : 1.0f) : 0.0f;
+    value = MIN(MAX(value, 0.0f), 1.0f);
     eduiItemSliderSetVal(slider, value * slider->range);
     return (edui_cursor_buttons >> 6) & 1;
 }
@@ -1957,12 +1957,12 @@ void eduiProcessCursorDefault(f32 delta_time, FRAME_PAD *pad) {
 }
 
 void EduiUpdateCursor(f32 delta_time, FRAME_PAD *pad) {
-    if (pad != NULL && eduiUsedAlgPad(pad) && !(pad->digital_buttons & PAD_BUTTON_CROSS)) {
-        edui_cursor_x = 320.0f;
-        edui_cursor_y = 112.0f;
-    } else {
+    if (pad == NULL || !eduiUsedAlgPad(pad) || (pad->digital_buttons & PAD_BUTTON_CROSS)) {
         edui_cursor_dx = -NuMouseReadXVel() * TerrainScanMargin10;
         edui_cursor_dy = -NuMouseReadYVel() * TerrainScanMargin10;
+    } else {
+        edui_cursor_x = 320.0f;
+        edui_cursor_y = 112.0f;
     }
     if (NuKeyboard(0x38)) {
         edui_cursor_locked = 1;
@@ -2173,7 +2173,7 @@ static eduimenu_s *EduiDeepestChild(eduimenu_s *menu) {
         if (child == NULL) {
             return menu;
         }
-        return EduiDeepestChild(child);
+        return EduiDeepestChild(menu->child);
     }
     return NULL;
 }
@@ -2814,13 +2814,11 @@ static void eduicbItemDestroyFilter(eduimenu_s *menu, eduiitem_s *item) {
     edui_filter_s *filter = (edui_filter_s *)item;
     eduiitem_s *child;
     eduiitem_s *next;
-    if (filter->first_child != NULL) {
-        do {
-            child = filter->first_child;
-            next = child->next;
-            child->destroy(menu, child);
-            filter->first_child = next;
-        } while (next != NULL);
+    while (filter->first_child != NULL) {
+        child = filter->first_child;
+        next = child->next;
+        child->destroy(menu, child);
+        filter->first_child = next;
     }
     eduicbItemDestroyProp(menu, item);
 }
@@ -3293,8 +3291,10 @@ static void EduiTextPickInsert(edui_textpicker_s *picker, char character) {
     if (NuStrLen(picker->value) >= picker->max_length) {
         return;
     }
-    for (index = sizeof(picker->value); index > picker->cursor; index--) {
-        picker->value[index - 1] = picker->value[index - 2];
+    index = sizeof(picker->value);
+    while (index > picker->cursor) {
+        --index;
+        picker->value[index] = picker->value[index - 1];
     }
     picker->value[picker->cursor++] = character;
 }
