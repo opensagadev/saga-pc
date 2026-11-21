@@ -70,7 +70,7 @@ static VARIPTR *aiscript_load_end_buffer = 0;
 AISCRIPT *aiscript_load_script = 0;
 AISTATE *aiscript_load_state = 0;
 
-/* Script diagnostics, defined variadic at the end of this unit (no header declares them). */
+/* Script diagnostics, defined variadic at the end of this unit and in aisys_empty.c (no header declares them). */
 void AIScriptMissingStateDiagnostic(const char *format, ...);
 void AIScriptMissingStateDiagnosticAlternate(const char *format, ...);
 void AIScriptMissingConditionDiagnostic(const char *format, ...);
@@ -286,7 +286,7 @@ static char *load_path = 0;
 
 static AISCRIPT_CONST_RECORD AIScriptConstantRecords[8] = {0};
 f32 AiRndrCullDistance = 0;
-VARIPTR *aiscript_load_buffer = 0;
+static VARIPTR *aiscript_load_buffer = 0;
 
 static i32 AIScriptConstCursor = 0;
 i32 AIActionDiagnosticMode = 0;
@@ -17765,9 +17765,6 @@ void AIScriptMissingStateDiagnostic(const char *format, ...) {
 }
 
 void AIScriptMissingStateDiagnosticAlternate(const char *format, ...) {
-}
-
-void AIScriptMissingConditionDiagnostic(const char *format, ...) {
 }
 
 AIACTIONDEF api_aiactiondefs[55] = {

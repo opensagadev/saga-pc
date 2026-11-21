@@ -313,3 +313,4 @@ config/castscan-budget.json float-width 3971 match3 gameapi: EdManScale::Process
 config/oddscan-budget.json volatile-other 44 AreaDataLoaded/CharacterDataLoad are set by the background loader; retail loads them into a register before every test and re-reads per use (I66)
 config/oddscan-budget.json volatile-other 48 PermDataLoaded/LoadPerm_StringsLoaded are set by LoadPermData on the background thread (LoadPerm_LanguageSelect beside them already is volatile); retail loads them into a register per test (I66)
 config/oddscan-budget.json volatile-other 50 level_already_loaded is set by WorldInfo_StreamLevel on the background thread; NuMain reads it twice in one test in retail (I66)
+config/declscan-budget.json D 30 match3 gameapi: AIScriptMissingConditionDiagnostic moved to aisys_empty.c so VC8 keeps the calls retail keeps; aisysall.c's own declaration of it went from class C to D (same construct, C lowered)
