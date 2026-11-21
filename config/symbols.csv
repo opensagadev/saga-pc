@@ -43196,7 +43196,7 @@ address,symbol,size,ctype
 0x29620dc,_debris_sort_this_stack,4,i32
 0x29620e0,_debris_update_this_stack,4,i32
 0x29620e4,_g_renderingDebris,4,i32
-0x029620e8,_DebrisGlassCopyMaterial,4,void *
+0x029620e8,_DebrisGlassCopyMaterial,4,NUMTL *
 0x029620ec,_DebrisGlassInitialized,4,i32
 0x29620f0,_edanim_active_menu,4,struct eduimenu_s *
 0x29620f4,_edanim_options_menu,4,struct eduimenu_s *

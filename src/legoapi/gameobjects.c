@@ -337,7 +337,7 @@ void GameObjectOrigin(GAMEOBJECT *object) {
         }
         object->collision_position.x += object->previous_velocity.x * FRAMETIME;
         object->collision_position.y += object->previous_velocity.y * FRAMETIME;
-        object->collision_position.z += object->previous_velocity.z * FRAMETIME;
+        object->collision_position.z = object->collision_position.z + (object->previous_velocity.z * FRAMETIME);
     } else if (object->use_model_origin > 0 && object->player.shield_scale == 1.0f &&
                object->character_data->game_character->collision_origin_joint != -1 &&
                object->character_model->points_of_interest[object->character_data->game_character->collision_origin_joint] != NULL &&
