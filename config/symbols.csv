@@ -147,12 +147,12 @@ address,symbol,size,ctype
 0x40e700,_FlightSplineCapacityDiagnostic,1,void __cdecl (char *)
 0x40e710,?ChrisFabs@@YAMM@Z,18,
 0x40e730,?ChrisVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
-0x40e750,?ChrisVuVecSetOrigin@@YAXAAUVuVec@@@Z,16,
-0x40e760,?ChrisVuVecAdd@@YA?AUVuVec@@ABU1@0@Z,29,
-0x40e780,?ChrisVuVecSub@@YA?AUVuVec@@ABU1@0@Z,29,
-0x40e7a0,?ChrisVuVecScale@@YA?AUVuVec@@ABU1@M@Z,29,
+0x40e750,?ChrisVuVecSetOrigin@@YAXAAUNUVEC4@@@Z,16,"void __cdecl (NUVEC4 &)"
+0x40e760,?ChrisVuVecAdd@@YAXAAUNUVEC4@@ABU1@1@Z,29,"void __cdecl (NUVEC4 &, const NUVEC4 &, const NUVEC4 &)"
+0x40e780,?ChrisVuVecSub@@YAXAAUNUVEC4@@ABU1@1@Z,29,"void __cdecl (NUVEC4 &, const NUVEC4 &, const NUVEC4 &)"
+0x40e7a0,?ChrisVuVecScale@@YAXAAUNUVEC4@@ABU1@M@Z,29,"void __cdecl (NUVEC4 &, const NUVEC4 &, f32)"
 0x40e7c0,?ChrisVuVecNormalise@@YAXAAUVuVec@@0@Z,18,
-0x40e7e0,_fun_0040e7e0,16,
+0x40e7e0,?ChrisVuVecCross@@YAXAAUNUVEC4@@00@Z,16,"void __cdecl (NUVEC4 &, NUVEC4 &, NUVEC4 &)"
 0x40e7f0,?ChrisVuVecDot@@YAMABUVuVec@@0@Z,29,
 0x40e810,?ChrisVuVecLengthSq@@YAMABUVuVec@@@Z,33,
 0x40e840,?ChrisVuVecLength@@YAMABUVuVec@@@Z,46,
@@ -169,7 +169,7 @@ address,symbol,size,ctype
 0x40ea30,_ChrisAnakinCUpdate,319,
 0x40eb70,_fun_0040eb70,3,
 0x40eb80,_fun_0040eb80,44,
-0x40ebb0,_fun_0040ebb0,10,
+0x40ebb0,_InitResetBuffer,10,"void __cdecl (DOGFIGHT_RESET_BUFFER *, DOGFIGHT_RESET_RECORD *, u32)"
 0x40ebc0,_ClearResetBuffer,39,
 0x40ebf0,_ProcessQuickBolts,513,static void (DOGFIGHT_QUICK_BUFFER *)
 0x40ee00,_DrawQuickBolts,105,static void (DOGFIGHT_QUICK_BUFFER *)
@@ -1466,8 +1466,8 @@ address,symbol,size,ctype
 0x474710,_HatMachine_RegisterGizmo,282,ADD_GIZMO_CONFIG_TYPE_PC * __cdecl (i32)
 0x474830,_HubNuError,1,
 0x474840,?HubFabs@@YAMM@Z,18,
-0x474860,?HubVuVecCopy@@YAXAAUVuVec@@ABU1@@Z,23,
-0x474880,?HubVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
+0x474860,?HubVuVecCopy@@YAXAAUNUVEC4@@ABU1@@Z,23,"void __cdecl (NUVEC4 &, const NUVEC4 &)"
+0x474880,?HubVuVecMake@@YA?AUNUVEC4@@MMMM@Z,28,"NUVEC4 __cdecl (f32, f32, f32, f32)"
 0x4748a0,?MiniKitSetRotationX@@YAXPAUnumtx_s@@H@Z,160,
 0x474940,?HubStatsTextMatrix@@YAPAUnumtx_s@@PAU1@H@Z,162,
 0x4749f0,?MiniKitRotateX@@YAXPAUnumtx_s@@H@Z,217,
@@ -2100,7 +2100,7 @@ address,symbol,size,ctype
 0x4b7120,_PowerUp_GetPanelY,108,f32 __cdecl (i32)
 0x4b7190,_DrawAutoSaveIcon,11,
 0x4b71a0,_UpdateStats,1955,
-0x4b7950,_fun_004b7950,68,
+0x4b7950,?GetHubPromptColour@@YAXPAH00@Z,68,"void __cdecl (i32 *, i32 *, i32 *)"
 0x004b79a0,_DrawPlayerIconPrompts,1846,"void(i32,i32,f32,i32,i32,i32,i32,i32,i32,f32,i32,i32,i32,i32)"
 0x4b80e0,_CoinTotal_Draw,562,"void __cdecl (i32,f32,f32,i32,f32,i32,i32,i32)"
 0x4b8320,_DrawSuperStoryTime,432,"void (f32,f32,f32,i32,i32)"
