@@ -1445,7 +1445,7 @@ extern "C" {
             } else {
                 TerrPoly = query->surface;
                 current->position = current->platform_position;
-                if (0.0f > movement->y) {
+                if (movement->y < 0.0f) {
                     FullDeflect(&ShadNorm, &current->movement, &current->movement);
                     FullDeflect(&ShadNorm, movement, movement);
                 } else {

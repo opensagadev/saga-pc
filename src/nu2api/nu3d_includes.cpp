@@ -5211,7 +5211,7 @@ extern "C" {
             line[length] = 0;
             if (*text == 0) {
                 scale = width / ((f32)(words - 1 + punctuation_spaces) * printed_space_width + words_width);
-                if (1.0f < scale) {
+                if (scale > 1.0f) {
                     scale = 1.0f;
                 }
             } else if (words == 1) {
