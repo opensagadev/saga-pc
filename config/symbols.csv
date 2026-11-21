@@ -8839,10 +8839,10 @@ address,symbol,size,ctype
 0x602a10,_fun_00602a10,126,
 0x602a90,_fun_00602a90,712,
 0x602d60,_NuGobjAllocBlock2,43,
-0x602d90,_fun_00602d90,69,
+0x602d90,_fun_00602d90,69,"PC_GOBJ_REGISTRY_CHILD *__cdecl(PC_GOBJ_REGISTRY_CHILD *)"
 0x602de0,_fun_00602de0,1,
 0x602df0,_NuGobjFreeChildBuffer,40,
-0x602e20,_fun_00602e20,67,
+0x602e20,_fun_00602e20,67,"void *__cdecl(PC_GOBJ_REGISTRY_CHILD *,i32,u32)"
 0x602e70,_PCGobjRegistryAuxPayload,8,
 0x602e80,_fun_00602e80,5,
 0x602e90,_fun_00602e90,1,

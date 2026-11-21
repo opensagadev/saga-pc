@@ -7885,6 +7885,15 @@ extern "C" {
         return block;
     }
 
+    PC_GOBJ_REGISTRY_CHILD *fun_00602d90(PC_GOBJ_REGISTRY_CHILD *source) {
+        PC_GOBJ_REGISTRY_CHILD *child = (PC_GOBJ_REGISTRY_CHILD *)NuGobjAllocBlock2();
+        PC_GOBJ_REGISTRY_CHILD *next = child->next;
+        memcpy(child, source, 0x1c);
+        child->next = next;
+        PCGraphicsRenderTextureAllocationError();
+        return child;
+    }
+
     void fun_00602de0(void) {
     }
 
@@ -7893,6 +7902,18 @@ extern "C" {
             NuFree(child->owned_buffer, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nugobj.c", 605);
             child->owned_buffer = NULL;
         }
+    }
+
+    void *fun_00602e20(PC_GOBJ_REGISTRY_CHILD *child, i32 use_copy, u32 flags) {
+        void *data;
+        if (use_copy != 0 && child->owned_buffer != NULL) {
+            return child->owned_buffer;
+        }
+        if (child->vertex_buffer != NULL) {
+            PCDeviceLockVertexBuffer(0, 0, &data, flags, child->vertex_buffer);
+        }
+        child->locked_vertices = (u8 *)data + child->base_vertex * 0x24;
+        return child->locked_vertices;
     }
 
     void *PCGobjRegistryAuxPayload(PC_GOBJ_REGISTRY_AUX *aux) {
