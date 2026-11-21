@@ -1750,7 +1750,7 @@ i32 DebrisGlassParticlesActive(void) {
 i32 debris_rt = 0;
 i32 debris_render_group = 0;
 i32 forced_debris_thinning = 0;
-void *DebrisGlassCopyMaterial = 0;
+static NUMTL *DebrisGlassCopyMaterial = 0;
 i32 DebrisGlassInitialized = 0;
 
 void DebrisGlassClose(void) {
@@ -1794,7 +1794,7 @@ void DebrisGlassInit(void) {
         material->diffuse_g = 1.0f;
         material->diffuse_b = 1.0f;
         material->opacity = 0.999f;
-        material->texture_id = 1;
+        DebrisGlassCopyMaterial = material;
         material->attribs.u_address = NUMTL_ADDRESS_CLAMP;
         material->attribs.v_address = NUMTL_ADDRESS_CLAMP;
         material->attribs.cull_mode = NUMTL_CULL_NONE;
@@ -1803,7 +1803,7 @@ void DebrisGlassInit(void) {
         material->attribs.filter_mode = 0;
         material->attribs.lighting = NUMTL_LIGHTING_NONE;
         material->attribs.vertex_colour = 1;
-        DebrisGlassCopyMaterial = material;
+        material->texture_id = 1;
         NuMtlUpdate(material);
     }
     DebrisGlassInitialized = 1;
