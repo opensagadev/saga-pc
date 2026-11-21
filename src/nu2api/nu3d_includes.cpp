@@ -12731,7 +12731,7 @@ extern "C" void PostBlurGaussianChain(GRAPHICS_RENDER_TEXTURE *source, i32 sourc
             }
             PCGraphicsEffectTextureSetLowNibbles(input, input_lod, input_lod);
             POST_FILTER_BIND_TEXTURE(0, input);
-            PostSetVertexShaderFloats(0xa0, &taps[0].x, sizeof(taps) / sizeof(f32));
+            PostSetVertexShaderFloats(0xa0, &taps[0].x, 13 * 4);
             PCDeviceSetVertexShaderConstantsF(0xad, bias, 1);
             PCGraphicsDrawPostEffectQuad();
             PCGraphicsFramebufferBarrier(0, 1);
