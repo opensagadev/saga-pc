@@ -3859,7 +3859,7 @@ address,symbol,size,ctype
 0x512850,_AIScriptMissingStateDiagnostic,1,void __cdecl ()
 0x512860,_AIScriptMissingStateDiagnosticAlternate,1,void __cdecl ()
 0x00512870,_AIScriptMissingConditionDiagnostic,1,void __cdecl ()
-0x512880,?AisysallFabs@@YAMM@Z,18,
+0x512880,_AIPathFabs,18,f32 __cdecl(f32)
 0x005128a0,_AIPathSafeDivide,54,"f32 __cdecl (f32, f32)"
 0x5128e0,_AiAngDiff,22,"static i32 (i32, i32) [private EAX]"
 0x00512900,_PCPathArcSine,320,i16 __cdecl (f32)

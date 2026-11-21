@@ -217,11 +217,6 @@
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/aisysall.c",
-   "symbol": "_AIPathFabs",
-   "kind": "function"
-  },
-  {
    "unit": "src/gameapi/edanim_update.c",
    "symbol": "_EdAnimFabs",
    "kind": "function"
