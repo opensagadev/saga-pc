@@ -7311,7 +7311,7 @@ address,symbol,size,ctype
 0x5c24e0,?Nu3dIncludesSetTint@@YAXPBUNUVEC4@@@Z,47,
 0x5c2510,_fun_005c2510,256,
 0x5c2610,_fun_005c2610,140,
-0x5c26a0,_fun_005c26a0,100,
+0x5c26a0,?PCPerfBeginEvent@@YAXH@Z,100,void __cdecl(i32)
 0x5c2710,_PCPerfEndEvent,5,
 0x5c2720,_fun_005c2720,28,
 0x5c2740,_fun_005c2740,28,
@@ -8020,7 +8020,7 @@ address,symbol,size,ctype
 0x5ddd10,_ResetSceneBeforeFramePC,238,"void __cdecl(NUDISPLAY_LIST *,i32)"
 0x5dde00,_NuDisplayListCreate,602,"void __cdecl(NUDISPLAY_LIST *,VARIPTR *,VARIPTR,i32,i32,i32,i32,i32,i32,i32)"
 0x5de060,_DisplayInsertSortPC,87,void __cdecl(NUSORTPRI *)
-0x5de0c0,_fun_005de0c0,59,
+0x5de0c0,_DisplayRemoveSortPC,59,void __cdecl(NUSORTPRI *)
 0x5de100,_NuDisplayListCreateMtlDlist,148,"NUDISPLAYLISTITEM *__cdecl(NUDISPLAYLISTITEM *,NUMTL *,VARIPTR *,VARIPTR)"
 0x5de1a0,_PCDisplayListCriticalSectionEnter,13,void __cdecl(void)
 0x5de1b0,_PCDisplayListCriticalSectionLeave,13,void __cdecl(void)
@@ -8711,11 +8711,11 @@ address,symbol,size,ctype
 0x5fe9a0,_fun_005fe9a0,5,
 0x5fe9b0,_fun_005fe9b0,6,
 0x5fe9c0,_fun_005fe9c0,3,
-0x5fe9d0,_fun_005fe9d0,219,
+0x5fe9d0,_NuRndrCross3d,219,"void __cdecl(NUVEC *,f32)"
 0x005feab0,_NuRndrGradClear,27,"void (i32, i32, i32, f32)"
 0x5fead0,_fun_005fead0,10,
 0x5feae0,_fun_005feae0,10,
-0x5feaf0,_fun_005feaf0,392,
+0x5feaf0,_NuRndrRect2dUV,392,"void __cdecl(f32,f32,f32,f32,f32,f32,f32,f32,f32,u32)"
 0x5fec80,_fun_005fec80,1,
 0x5fec90,_fun_005fec90,8,
 0x5feca0,_fun_005feca0,5,
@@ -9626,7 +9626,7 @@ address,symbol,size,ctype
 0x617a60,?unref@@YAHPAE0@Z,426,"i32 __cdecl(u8 *,u8 *)"
 0x617c10,_EdtoolsallNuError,1,
 0x617c20,_EdcamFabs,18,static f32 __cdecl(f32)
-0x617c40,?EdtoolsallVuAngleDifference@@YAHHH@Z,22,
+0x617c40,_EdtoolsallVuAngleDifference,22,"i32 __cdecl(i32,i32)"
 0x617c60,_fun_00617c60,11,
 0x617c70,?EdtoolsallVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x617c90,_fun_00617c90,16,
@@ -11793,7 +11793,7 @@ address,symbol,size,ctype
 0x696d00,?Init@SoundVoiceManagerPC@@QAEXHEE@Z,514,"void __thiscall SoundVoiceManagerPC::Init(i32 unused, u8 option5, u8 option6)"
 0x00696f10,?SetSampleName@SoundVoiceManagerPC@@QAEXPBDH@Z,141,"void __thiscall (SoundVoiceManagerPC *, const char *, i32)"
 0x696fa0,?LoadWavSample@SoundVoiceManagerPC@@QAEHPBDH@Z,805,"i32 __thiscall SoundVoiceManagerPC::LoadWavSample(const char *name, i32 index)"
-0x6972d0,_fun_006972d0,65,
+0x6972d0,?LoadSample@SoundVoiceManagerPC@@QAEXPBDH@Z,65,"void __thiscall SoundVoiceManagerPC::LoadSample(const char *,i32)"
 0x697320,?PlaySample@SoundVoiceManagerPC@@QAEXHE@Z,51,
 0x697360,?IsSampleValid@SoundVoiceManagerPC@@QAEEH@Z,35,
 0x697390,?IsSampleFailed@SoundVoiceManagerPC@@QAEEH@Z,35,

@@ -5648,13 +5648,13 @@ extern "C" {
     void DisplayListSwapBuffersPS(void) {
     }
 
-    void fun_00603930(void) {
+    void fun_00603930(NUDISPLAYLISTITEM *item, i32 value) {
     }
 
-    void fun_00603940(void) {
+    void fun_00603940(NUDISPLAYLISTITEM *item) {
     }
 
-    void fun_00603950(void) {
+    void fun_00603950(NUDISPLAYLISTITEM *item, i32 value, f32 scale, i32 flags) {
     }
 
     void DisplayGenerateTransformsNoOp(NUDISPLAY_LIST *scene) {
@@ -7613,6 +7613,33 @@ extern "C" {
 /* nurndr's platform members, in nurndr order. */
 extern "C" {
 
+    void NuRndrCross3d(NUVEC *position, f32 size) {
+        NURND_VERTEX3D line[2];
+        line[0].colour = 0xffffffff;
+        line[1].colour = 0xffffffff;
+        line[0].position.x = position->x - size;
+        line[0].position.y = position->y;
+        line[0].position.z = position->z;
+        line[1].position.x = position->x + size;
+        line[1].position.y = position->y;
+        line[1].position.z = position->z;
+        NuRndrLine3d(line, NULL, NULL);
+        line[0].position.x = position->x;
+        line[0].position.y = position->y - size;
+        line[0].position.z = position->z;
+        line[1].position.x = position->x;
+        line[1].position.y = position->y + size;
+        line[1].position.z = position->z;
+        NuRndrLine3d(line, NULL, NULL);
+        line[0].position.x = position->x;
+        line[0].position.y = position->y;
+        line[0].position.z = position->z - size;
+        line[1].position.x = position->x;
+        line[1].position.y = position->y;
+        line[1].position.z = position->z + size;
+        NuRndrLine3d(line, NULL, NULL);
+    }
+
     void NuRndrGradClear(i32 clear_flags, i32 top_colour, i32 bottom_colour, f32 alpha) {
         NuRndrClear(clear_flags, bottom_colour, alpha);
     }
@@ -7623,6 +7650,58 @@ extern "C" {
 
     void fun_005feae0(i32 value) {
         dat_02854c90 = value;
+    }
+
+    void NuRndrRect2dUV(f32 x, f32 y, f32 z, f32 width, f32 height, f32 u0, f32 v0, f32 u1, f32 v1, u32 colour) {
+        NURND_VERTEX2D vertices[6];
+        f32 right;
+        f32 bottom;
+        vertices[0].x = x;
+        vertices[0].y = y;
+        vertices[0].z = z;
+        vertices[0].rhw = 1.0f;
+        vertices[0].colour = colour;
+        vertices[0].uv[0] = u0;
+        vertices[0].uv[1] = v0;
+        right = x + width;
+        vertices[1].x = right;
+        vertices[1].y = y;
+        vertices[1].z = z;
+        vertices[1].rhw = 1.0f;
+        vertices[1].colour = colour;
+        vertices[1].uv[0] = u1;
+        vertices[1].uv[1] = v0;
+        bottom = y + height;
+        vertices[2].x = x;
+        vertices[2].y = bottom;
+        vertices[2].z = z;
+        vertices[2].rhw = 1.0f;
+        vertices[2].colour = colour;
+        vertices[2].uv[0] = u0;
+        vertices[2].uv[1] = v1;
+        vertices[3].x = right;
+        vertices[3].y = y;
+        vertices[3].z = z;
+        vertices[3].rhw = 1.0f;
+        vertices[3].colour = colour;
+        vertices[3].uv[0] = u1;
+        vertices[3].uv[1] = v0;
+        vertices[4].x = right;
+        vertices[4].y = bottom;
+        vertices[4].z = z;
+        vertices[4].rhw = 1.0f;
+        vertices[4].colour = colour;
+        vertices[4].uv[0] = u1;
+        vertices[4].uv[1] = v1;
+        vertices[5].x = x;
+        vertices[5].y = bottom;
+        vertices[5].z = z;
+        vertices[5].rhw = 1.0f;
+        vertices[5].colour = colour;
+        vertices[5].uv[0] = u0;
+        vertices[5].uv[1] = v1;
+        PCDeviceSetVertexDeclaration(PCDeviceBackend.screen_colour_uv_declaration);
+        PCDeviceDrawPrimitiveUPPc(4, 2, vertices, sizeof(NURND_VERTEX2D));
     }
 
     void fun_005fec80(void) {
@@ -7831,6 +7910,113 @@ extern "C" {
         if (aux != NULL && aux->payload != NULL) {
             aux->payload = NULL;
         }
+    }
+
+    PC_GOBJ_REGISTRY_AUX *fun_00602a10(PC_GOBJ_REGISTRY_AUX *source, void *context) {
+        PC_GOBJ_REGISTRY_AUX *copy =
+            (PC_GOBJ_REGISTRY_AUX *)NuAlloc(sizeof(PC_GOBJ_REGISTRY_AUX), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nugobj.c", 180);
+        *copy = *source;
+        if (copy->next != NULL) {
+            copy->next = fun_00602a10(source->next, context);
+        }
+        if (copy->payload != NULL) {
+            copy->payload = NuAlloc(copy->index_capacity * 2, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nugobj.c", 190);
+            memcpy(copy->payload, source->payload, copy->index_capacity * 2);
+        }
+        source->payload = NULL;
+        return copy;
+    }
+
+    void fun_00602ea0(PC_GOBJ_REGISTRY_CHILD *child, PC_GOBJ_REGISTRY_AUX *aux) {
+        PC_GOBJ_REGISTRY_AUX *last = NULL;
+        for (PC_GOBJ_REGISTRY_AUX *link = child->auxiliary; link != NULL; link = link->next) {
+            last = link;
+        }
+        if (last != NULL) {
+            last->next = aux;
+        } else {
+            child->auxiliary = aux;
+        }
+    }
+
+    PC_GOBJ_REGISTRY_AUX *fun_00602ed0(i32 count, i32 type) {
+        PC_GOBJ_REGISTRY_AUX *aux =
+            (PC_GOBJ_REGISTRY_AUX *)NuAlloc(sizeof(PC_GOBJ_REGISTRY_AUX), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nugobj.c", 756);
+        memset(aux, 0, sizeof(PC_GOBJ_REGISTRY_AUX));
+        aux->type = type;
+        aux->index_count = (u16)count;
+        aux->index_capacity = (u16)count;
+        aux->unknown_14 = 0xff;
+        if (type > 2) {
+            aux->payload = NuAlloc(count * 2, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nugobj.c", 779);
+        }
+        return aux;
+    }
+
+    i32 fun_00602f50(i32 vertex_type) {
+        switch (vertex_type) {
+            case 0x4b:
+            case 0x59:
+                return 0x24;
+            case 0xd9:
+                return 0x2c;
+            case 0x5d:
+                return 0x38;
+            case 0xdd:
+                return 0x40;
+            case 0x53:
+                return 0x1c;
+            case 0x51:
+                return 0x18;
+            case 0x11:
+                return 0x10;
+            case 1:
+                return 0xc;
+            case 3:
+                return 0xa0;
+            case 0x40:
+                return 8;
+            case 0x1000:
+                return 4;
+            case -1:
+            case 0:
+                break;
+            default:
+                PCGraphicsRenderTextureAllocationError();
+                break;
+        }
+        return 0;
+    }
+
+    void *fun_00609bf0(PC_GOBJ_REGISTRY_CHILD *child, i32 use_copy) {
+        void *data;
+        if (use_copy != 0 && child->owned_buffer != NULL) {
+            return child->owned_buffer;
+        }
+        PC_BUFFER_RESOURCE *vertex_buffer = child->vertex_buffer;
+        if (vertex_buffer == NULL) {
+            return NULL;
+        }
+        i32 stride = fun_00602f50(child->vertex_type);
+        PCDeviceLockVertexBuffer(child->base_vertex * stride, child->vertex_count * stride, &data, 0, vertex_buffer);
+        child->locked_vertices = data;
+        return data;
+    }
+
+    void fun_00609c40(PC_GOBJ_REGISTRY_CHILD *child, i32 use_copy) {
+        if (use_copy != 0 && child->owned_buffer != NULL) {
+            if (child->locked_vertices == NULL) {
+                PCDeviceLockVertexBuffer(0, 0, &child->locked_vertices, 0, child->vertex_buffer);
+                if (child->locked_vertices == NULL) {
+                    PCGraphicsRenderTextureAllocationError();
+                }
+            }
+            memcpy(child->locked_vertices, child->owned_buffer, fun_00602f50(child->vertex_type) * child->vertex_count);
+        }
+        if (child->locked_vertices != NULL) {
+            PCDeviceUnlockVertexBuffer(child->vertex_buffer);
+        }
+        child->locked_vertices = NULL;
     }
 
     void NuGobjVisitGeoms(NUGOBJ *gobj) {

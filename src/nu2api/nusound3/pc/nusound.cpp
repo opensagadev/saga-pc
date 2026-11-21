@@ -970,6 +970,14 @@ void NuSound3SetRequestTable(u16 *request_bits, i32 short_count) {
     SAGA_SOUND_SETTER_END(request_bits, short_count, PCSoundMixDestination);
 }
 
+void SoundVoiceManagerPC::LoadSample(const char *name, i32 index) {
+    if (NuStrICmp(".wav", PCSampleFilenameExtension) == 0) {
+        LoadWavSample(name, index);
+    } else {
+        PCSoundAlreadyPlayingHook(PCSampleFilenameExtension);
+    }
+}
+
 extern "C" void fun_00698780(void) {
 }
 
@@ -1009,11 +1017,7 @@ extern "C" {
                             continue;
                         }
                         name = PCStereoSampleMetadata[i].filename;
-                        if (NuStrICmp(".wav", PCSampleFilenameExtension) == 0) {
-                            SoundVoiceManager.LoadWavSample(name, i);
-                        } else {
-                            PCSoundAlreadyPlayingHook(PCSampleFilenameExtension);
-                        }
+                        SoundVoiceManager.LoadSample(name, i);
                         if (SoundVoiceManager.samples != NULL && SoundVoiceManager.samples[i].failed_byte != 0) {
                             PCSoundFailure(i);
                         }

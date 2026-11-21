@@ -9348,6 +9348,21 @@ extern "C" {
         ++nused_sort_pris;
     }
 
+    static void DisplayRemoveSortPC(NUSORTPRI *sort) {
+        NUSORTPRI *previous = NULL;
+        NUSORTPRI *current = sort_list;
+        while (current != sort) {
+            previous = current;
+            current = current->sys_next;
+        }
+        if (previous == NULL) {
+            sort_list = current->sys_next;
+        } else {
+            previous->sys_next = current->sys_next;
+        }
+        --nused_sort_pris;
+    }
+
     void NuDisplaySceneAdd(NUDISPLAY_LIST *scene) {
         i32 i;
         NuThreadCriticalSectionBegin(nudlist_field_fc4);
@@ -10839,6 +10854,41 @@ extern "C" void fun_005dfe70(i32 value) {
     dat_0080bab8 = value;
 }
 
+extern "C" i32 fun_005debb0(i32 value, i32 sort_pri, i32 plane) {
+    i32 key = (plane << 17) + sort_pri;
+    i32 index = -1;
+    for (i32 i = 0; i < nudlist_alloc_count; ++i) {
+        if (((u8 *)nudlist_alloc_base)[i] == 0) {
+            index = i;
+            break;
+        }
+    }
+    if (index == -1) {
+        return 0;
+    }
+    NUDISPLAYLISTITEM *item = (NUDISPLAYLISTITEM *)(nudlist_item_base + index * 0x20);
+    ((u8 *)nudlist_alloc_base)[index] = 1;
+    ((NUSORTPRI *)nudlist_alloc_end)[index].display_scene = NULL;
+    ((NUSORTPRI *)nudlist_alloc_end)[index].sort_pri = key;
+    ((NUSORTPRI *)nudlist_alloc_end)[index].items = item;
+    ((NUSORTPRI *)nudlist_alloc_end)[index].sort_flags = 0;
+    ((NUSORTPRI *)nudlist_alloc_end)[index].nmtls = 0;
+    DisplayInsertSortPC(&((NUSORTPRI *)nudlist_alloc_end)[index]);
+    fun_00603930(item, value);
+    return index + 1;
+}
+
+extern "C" void fun_005dec60(i32 handle) {
+    --handle;
+    ((u8 *)nudlist_alloc_base)[handle] = 0;
+    DisplayRemoveSortPC(&((NUSORTPRI *)nudlist_alloc_end)[handle]);
+    fun_00603940((NUDISPLAYLISTITEM *)(nudlist_item_base + handle * 0x20));
+}
+
+extern "C" void fun_005deca0(i32 handle, i32 value, f32 scale, i32 flags) {
+    fun_00603950((NUDISPLAYLISTITEM *)(nudlist_item_base + (handle - 1) * 0x20), value, scale, flags);
+}
+
 extern "C" void NuDisplayListCaptureBegin(void) {
     if (nudlist_field_9d0 != 0) {
         nudlist_frame_active = (i32)(nudlist_field_9d0 - 1U);
@@ -11699,6 +11749,26 @@ extern "C" NUMTX *PcGeometryGetProjectionMatrix(void) {
     return &PcGeometryProjectionMatrix;
 }
 
+static void PCPerfBeginEvent(i32 stage) {
+    switch (stage) {
+        case 2:
+            D3DPERF_BeginEvent(0xffffffff, L"3D render");
+            break;
+        case 3:
+            D3DPERF_BeginEvent(0xffffffff, PostEffectRenderLabel);
+            break;
+        case 4:
+            D3DPERF_BeginEvent(0xffffffff, PostShadowRenderLabel);
+            break;
+        case 5:
+            D3DPERF_BeginEvent(0xffffffff, PostDeferredLabel);
+            break;
+        case 6:
+            D3DPERF_BeginEvent(0xffffffff, L"bloom/dof");
+            break;
+    }
+}
+
 extern "C" void PCPerfEndEvent(void) {
     D3DPERF_EndEvent();
 }
@@ -12307,7 +12377,7 @@ void NuSpeedBlurFilterGen::setParameters(const NU_POST_SPEED_PARAMETERS *paramet
 }
 
 void NuMainFilterGen::render() {
-    D3DPERF_BeginEvent((D3DCOLOR)-1, L"bloom/dof");
+    PCPerfBeginEvent(6);
     PC_FRAMEBUFFER *output = (PC_FRAMEBUFFER *)PostPortOutFramebuffer.manager->entries[PostPortOutFramebuffer.index].data;
     PC_POST_BUFFER_PROXY *color = (PC_POST_BUFFER_PROXY *)PostPortColorBuffer.manager->entries[PostPortColorBuffer.index].data;
     PC_POST_BUFFER_PROXY *normal = (PC_POST_BUFFER_PROXY *)PostPortNormalBuffer.manager->entries[PostPortNormalBuffer.index].data;
@@ -13394,7 +13464,7 @@ extern "C" void NuPostEffectRender(PC_FRAMEBUFFER *output) {
     PostPortVelocityBuffer.manager->entries[PostPortVelocityBuffer.index].data = &PostProxyBuffers[2];
     PostPortDepthRTBuffer.manager->entries[PostPortDepthRTBuffer.index].data = &PostProxyBuffers[3];
     PostPortDepthBuffer.manager->entries[PostPortDepthBuffer.index].data = &PostProxyBuffers[4];
-    D3DPERF_BeginEvent(0xffffffff, PostEffectRenderLabel);
+    PCPerfBeginEvent(3);
     NuPostFilterGen *filters[10];
     i32 count = 0;
     filters[0] = NULL;
@@ -18122,7 +18192,7 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderConstants(void *) {
 }
 
 void NuDeferredFilterGen::render() {
-    D3DPERF_BeginEvent(0xffffffff, PostDeferredLabel);
+    PCPerfBeginEvent(5);
     PC_FRAMEBUFFER *output = (PC_FRAMEBUFFER *)PostPortOutFramebuffer.manager->entries[PostPortOutFramebuffer.index].data;
     PC_POST_BUFFER_PROXY *color = (PC_POST_BUFFER_PROXY *)PostPortColorBuffer.manager->entries[PostPortColorBuffer.index].data;
     PC_POST_BUFFER_PROXY *normal = (PC_POST_BUFFER_PROXY *)PostPortNormalBuffer.manager->entries[PostPortNormalBuffer.index].data;
@@ -18162,7 +18232,7 @@ void NuDeferredFilterGen::render() {
         PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 1);
         PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
         PCDeviceSetRenderState(D3DRS_ZFUNC, 4);
-        D3DPERF_BeginEvent(0xffffffff, PostShadowRenderLabel);
+        PCPerfBeginEvent(4);
         for (i32 shadow = 0; shadow < light->active_render_set_count; ++shadow) {
             PCGraphicsAttachFramebuffer(shadow_fbos[shadow], 0, textures[4 + shadow], 0);
             PCGraphicsAttachFramebuffer(shadow_fbos[shadow], 4, textures[2], 0);

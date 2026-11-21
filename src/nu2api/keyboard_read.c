@@ -29,6 +29,14 @@ static f32 EdcamFabs(f32 f) {
     return rv;
 }
 
+static i32 EdtoolsallVuAngleDifference(i32 from, i32 to) {
+    i32 difference = (from - to) & 0xffff;
+    if (difference >= 0x8000) {
+        difference -= 0x10000;
+    }
+    return difference;
+}
+
 void fun_00617ca0(void) {
 }
 
@@ -557,10 +565,7 @@ void do_maya_mouse_camera(edcam_s *camera) {
             if (mouse_x != 0.0f || mouse_y != 0.0f) {
                 RawTargetAng.parts.angle = (u16)NuAtan2D(-mouse_x, -mouse_y);
             }
-            difference = (RawTargetAng.word - TargetAng.word) & 0xffff;
-            if (difference >= 0x8000) {
-                difference -= 0x10000;
-            }
+            difference = EdtoolsallVuAngleDifference(RawTargetAng.word, TargetAng.word);
             if (abs(difference) > 20000) {
                 TargetAng.parts.angle = RawTargetAng.parts.angle;
             } else {

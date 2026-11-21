@@ -115,3 +115,4 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | ShadowLightWarp static in lighting_unit.cpp (its extern left nu3d_includes.h) | BoltTypes_Configure | legoapi/bolts.cpp | exact | 99.88 % |
 | FadeSystem's empty destructor (legoapi_types.h) | BoltTypes_Configure | legoapi/bolts.cpp | exact | 99.88 % |
 | GAMESAVE.level_save as LEVELSAVE_s[366] (bd723620, game.h includes save_values.h) | BoulderSpawn | legogame/episodeIII.c | exact | 83.28 % |
+| impl/engine nu2api functions (fog setup, PC input and keyboard helpers; no change to episodeIII.c or its headers) | BoulderSpawn | legogame/episodeIII.c | exact | different |
