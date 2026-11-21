@@ -1,9 +1,0 @@
-old,new,evidence
-dat_0297ad4c,PcHandlersRunning,set while a handler list runs
-dat_0297ad58,PcFrameHandlers,handler list BgProcRunHandlers walks
-dat_0297ad5c,PcFrameHandlersEnabled,gates the frame handler tick
-dat_0297ad60,PcVBlankHandlersEnabled,gates the vblank handler list
-dat_0297ad68,PcVBlankHandlers,handler list run with each vblank count
-fun_006de800,PcRunVBlankHandlers,bumps nuvideo_global_vbcnt and runs the vblank handlers
-fun_006de880,PcVBlankTick,runs the vblank handlers when enabled
-fun_006de890,PcFrameTick,runs the frame handlers when enabled

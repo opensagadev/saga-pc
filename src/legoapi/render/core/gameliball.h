@@ -957,6 +957,8 @@ extern "C" {
     extern const f32 TerrainSkinBoundsMin;
     extern f32 TerrainShadowHeight;
     extern i16 TerrainCastAuxIndex;
+    extern u16 TerrainCastAuxValid;
+    extern NUVEC TerrainCastAuxNormal;
     extern i16 TerrainRoofIndex;
     extern i16 TerrainShadowFloorIndex;
     extern i32 PlatSkinCnt;

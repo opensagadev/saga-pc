@@ -3,7 +3,7 @@
 This is the PC game, so a name says "PC" only where the thing is specific to the PC platform. A `Pc`,
 `_PC` or `_pc` added to tell a PC record or function from its Android twin (`GIZMO_PC`, `ApplyPc`,
 `texture_pc`) carries no meaning here: the twin either was the same thing (one record now) or is a
-different thing (a descriptive name now). The renames are in `renames/16-*.csv` and `renames/17-*.csv`.
+different thing (a descriptive name now). The names come from the pc marker renames (applied with tools/rename.py; the lists are in git history).
 
 oddscan's `pc-suffix` class counts the markers left in code identifiers (strings and comments are not
 counted) and lists them with `python3 tools/oddscan.py --list --class pc-suffix`. Its budget only goes down;

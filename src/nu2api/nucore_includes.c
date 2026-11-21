@@ -38,6 +38,7 @@
 #include "nu2api/numath/nufloat.h"
 #include "nu2api/nuonline_gen.h"
 #include "nu2api/nusound/nusound.h"
+#include "nu2api/nuwin32/d3dApiCalls.h"
 #include "nu2api/nuwin32/nu2api_windows.h"
 #include <stdarg.h>
 #include <stdio.h>
@@ -9070,7 +9071,7 @@ i32 ExplodeBufferNoHeader(char *in_buf, char *out_buf, i32 compressed_size, i32 
 
     total_read = 0;
     while (implode_origsize != 0) {
-        read_size = implode_origsize < 0x2000 ? implode_origsize : 0x2000;
+        read_size = implode_origsize > 0x2000 ? 0x2000 : implode_origsize;
 
         decode(read_size, ImplodeRingBuffer);
 
