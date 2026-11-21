@@ -142,8 +142,8 @@ void GizMiniCut_Activate(GIZMO *gizmo, i32 active) {
 
 /* Unreferenced: the minicut's id, or -1 without a minicut. */
 i32 fun_005b0dd0(GIZMO *gizmo) {
-    if (gizmo != NULL && gizmo->object != NULL) {
-        return ((MINICUT *)gizmo->object)->id;
+    if (gizmo != NULL && gizmo->minicut != NULL) {
+        return gizmo->minicut->id;
     }
     return -1;
 }

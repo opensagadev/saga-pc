@@ -46,6 +46,7 @@ typedef struct gizmo_s { // size 0x8
         struct pushblock_s *push_block;
         struct NUPORTAL *portal;
         struct TELEPORT_CONFIG *teleport;
+        struct minicut_s *minicut;
     }; // 0x0
 
     i16 user_index; // 0x4
