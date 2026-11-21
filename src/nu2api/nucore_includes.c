@@ -151,7 +151,7 @@ static FRAME_PAD_RAMP FramePadRampValues[5] = {{0.0f, 0.0f}, {0.5f, 0.1f}, {0.75
 i32 FramePadProfilePort = -1;
 i32 MaxGamePads = 2;
 i16 PlayerLastPort[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
-u32 PCImplodeWordMask = 0xffffffff;
+u32 ImplodeMask[5] = {0, 0xff, 0xffff, 0xffffff, 0xffffffff};
 i32 gExplodeInitialised = 1;
 static i32 FramePadDirectMapping = 0;
 static i32 FramePadActivated = 0;
@@ -8949,6 +8949,11 @@ void ImplodeError(char *msg, ...) {
     NuFileError();
 }
 
+u32 ImplodeGetI(void *buf, i32 size) {
+    unsigned char *cursor = buf;
+    return ((((((u32)cursor[3] << 8) | cursor[2]) << 8) | cursor[1]) << 8 | cursor[0]) & ImplodeMask[size];
+}
+
 void *ImplodePutI(void *buf, u32 value, i32 size) {
     unsigned char *cursor = buf;
     while (size != 0) {
@@ -8968,9 +8973,7 @@ i32 ExplodeBuffer(char *in_buf, char *out_buf) {
     }
     original_size = ExplodeBufferSize(in_buf);
     if (original_size != 0) {
-        compressed_size =
-            (i32)(((u32)(u8)in_buf[8] | ((u32)(u8)in_buf[9] << 8) | ((u32)(u8)in_buf[10] << 16) | ((u32)(u8)in_buf[11] << 24)) &
-                  PCImplodeWordMask);
+        compressed_size = ImplodeGetI(in_buf + 8, 4);
         return ExplodeBufferNoHeader(in_buf + 12, out_buf, compressed_size, original_size);
     }
     return 0;
@@ -9269,8 +9272,7 @@ i32 ExplodeBufferSize(char *header) {
             return 0;
         }
     }
-    return (i32)(((u32)(u8)header[0] | ((u32)(u8)header[1] << 8) | ((u32)(u8)header[2] << 16) | ((u32)(u8)header[3] << 24)) &
-                 PCImplodeWordMask);
+    return ImplodeGetI(header, 4);
 }
 
 i32 ExplodeCompressedSize(char *header) {
@@ -9283,7 +9285,7 @@ i32 ExplodeCompressedSize(char *header) {
             return 0;
         }
     }
-    size = ((u32)(u8)header[4] | ((u32)(u8)header[5] << 8) | ((u32)(u8)header[6] << 16) | ((u32)(u8)header[7] << 24)) & PCImplodeWordMask;
+    size = ImplodeGetI(header + 4, 4);
     if (size != 0) {
         size += 12;
     }

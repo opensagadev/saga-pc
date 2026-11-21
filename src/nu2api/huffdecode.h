@@ -186,7 +186,7 @@ extern "C" {
     extern u32 nustring_format;
     extern u16 bad_equiv[8][2];
     i32 NuWindowsProcessMessages(void);
-    extern u32 PCImplodeWordMask;
+    extern u32 ImplodeMask[5];
     extern i32 SoundVoiceEnabledGate;
     extern i32 nufile_lsn_allowed;
     extern const char NuFileExt_gcm[5];

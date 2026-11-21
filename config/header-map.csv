@@ -8236,7 +8236,7 @@ function:PlaySfxAndSetPitch,function,PlaySfxAndSetPitch,16876,16876,1,legoapi/re
 function:PlaySfxById,function,PlaySfxById,16877,16877,1,legoapi/render/core/gameliball.h,android,PlaySfxById
 function:PlaySfxByIdAndSetVolume,function,PlaySfxByIdAndSetVolume,16878,16878,1,legoapi/render/core/gameliball.h,android,PlaySfxByIdAndSetVolume
 function:PlaySfx,function,PlaySfx,16879,16879,1,gameapi/edptl.h,symbol,gameapi/gameliball.cpp[edptl.c] pc-path
-variable:PCImplodeWordMask,variable,PCImplodeWordMask,16880,16880,1,nu2api/huffdecode.h,users,PCImplodeWordMask: only nu2api/nucore_includes.cpp[huffdecode.c] pc-path
+variable:ImplodeMask,variable,ImplodeMask,16880,16880,1,nu2api/huffdecode.h,users,ImplodeMask: only nu2api/nucore_includes.cpp[huffdecode.c] pc-path
 function:ExplodeBufferSize,function,ExplodeBufferSize,16881,16881,1,nu2api/nucore/implode.h,android,ExplodeBufferSize
 function:ExplodeCompressedSize,function,ExplodeCompressedSize,16882,16882,1,nu2api/nucore/implode.h,android,ExplodeCompressedSize
 function:NuDatFileDecodeNext,function,NuDatFileDecodeNext,16883,16883,1,nu2api/nucore/nucore_includes.h,symbol,nu2api/nucore_includes.cpp android-path
