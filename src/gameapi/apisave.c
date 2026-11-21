@@ -1478,11 +1478,11 @@ MENUFNINFO MenuInfo[100] = {
     {MENU_HEADER_SAVE, MenuEnterHeaderSave, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
     {MENU_START_NEW_GAME, MenuEnterStartNewGame, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
     {MENU_DELETE_CONFIRM, NULL, MenuDrawDeleteConfirm, MenuUpdateDeleteConfirm, NULL, -1, -1, 0, 1, 1, 0},
-    {1024, fun_00509470, fun_00509480, fun_00509490, fun_005094a0, -1, -1, 0, 0, 0, 0},
+    {1024, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
     {MENU_VIDEO, MenuEnterVideo, MenuDrawVideo, MenuUpdateVideo, MenuExitVideo, -1, -1, 0, 0, 0, 0},
     {MENU_EFFECTS, MenuEnterEffects, MenuDrawEffects, MenuUpdateEffects, MenuExitEffects, -1, -1, 0, 0, 0, 0},
     {MENU_VIDEO_CONFIRM, MenuEnterVideoConfirm, MenuDrawVideoConfirm, MenuUpdateVideoConfirm, MenuExitVideoConfirm, -1, -1, 0, 0, 0, 0},
     {MENU_HIRES_NOTICE, MenuEnterHiresNotice, MenuDrawHiresNotice, MenuUpdateHiresNotice, MenuExitHiresNotice, -1, -1, 0, 0, 0, 0},
     {MENU_QUIT, MenuEnterQuit, MenuDrawQuit, MenuUpdateQuit, MenuExitQuit, -1, -1, 0, 0, 0, 0},
-    {1030, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+    {1030, fun_00509470, fun_00509480, fun_00509490, fun_005094a0, -1, -1, 0, 0, 0, 0},
 };
