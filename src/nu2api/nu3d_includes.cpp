@@ -12767,6 +12767,23 @@ extern "C" {
         }
     }
 
+    i32 NuTexReadSlot(i32 *texture_ids, u32 index, char *name, VARIPTR *buffer, VARIPTR end) {
+        if (texture_ids == NULL) {
+            return -1;
+        }
+        if (index >= 8) {
+            return -1;
+        }
+        if (texture_ids[index] >= 0) {
+            NuTexDestroy(texture_ids[index]);
+        }
+        texture_ids[index] = NuTexRead(name, buffer, end);
+        if (texture_ids[index] == 0) {
+            texture_ids[index] = -1;
+        }
+        return texture_ids[index];
+    }
+
     void NuVpSetSize2(f32 width, f32 height) {
         width *= RenderPostViewportPrefix.width_scale;
         height *= RenderPostViewportPrefix.height_scale;

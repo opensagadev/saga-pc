@@ -91,6 +91,10 @@ extern "C" {
     extern u32 PCFogColour;
     extern i32 PCFogColourSuppressed;
     extern i32 PCFogEnabled;
+    void PCFogSetColour(u32 colour);
+    void PCFogSetDensity(u32 density);
+    void PCFogSetRange(u32 start, u32 end);
+    void PCFogSetMode(i32 enable, i32 mode);
     extern i32 dat_0080e21c;
     extern i32 dat_02854c90;
     extern i32 dat_02854c94;

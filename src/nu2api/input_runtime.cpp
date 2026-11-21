@@ -861,6 +861,12 @@ i32 PC_INPUT_RUNTIME::UpdateMouse() {
     return 0;
 }
 
+static void PcMouseUpdateInterpolation(void) {
+    f32 elapsed = NuTimeGetFrameTime();
+    f32 exponent = (f32)(elapsed * 4.0);
+    PcMouseInterpolation = 1.0f - 1.0f / NuPow(2.0f, exponent);
+}
+
 void PC_INPUT_RUNTIME::ApplyMouseAxis(PC_INPUT_SAMPLE *sample) {
     (void)NuTimeGetFrameTime();
     PC_INPUT_RUNTIME *runtime = nu_input_state;
@@ -877,9 +883,7 @@ void PC_INPUT_RUNTIME::ApplyMouseAxis(PC_INPUT_SAMPLE *sample) {
             PcMouseCurrentAngle -= 65536;
         }
     }
-    f32 elapsed = NuTimeGetFrameTime();
-    f32 exponent = (f32)(elapsed * 4.0);
-    PcMouseInterpolation = 1.0f - 1.0f / NuPow(2.0f, exponent);
+    PcMouseUpdateInterpolation();
     i32 difference = PcMouseTargetAngle - PcMouseCurrentAngle;
     f32 movement = PcMouseInterpolation * (f32)difference;
     f32 angle = movement + (f32)PcMouseCurrentAngle;
@@ -1477,6 +1481,73 @@ extern "C" void PcInputEndFrame(void) {
 }
 
 // Append to input_runtime.cpp; declarations/mappings in B-contract.json.
+
+/* Clears the pad direction bits that the first four bindings map to joystick buttons 0x80-0x83. */
+u32 PC_INPUT_RUNTIME::fun_006d4a80(i32 port, u32 buttons) {
+    PC_INPUT_BINDING *bindings = devices[port].bindings;
+    i32 button;
+    if (bindings[0].kind == PC_BINDING_JOYSTICK_BUTTON) {
+        button = bindings[0].value;
+        if (button == 0x80) {
+            buttons &= ~0x1000;
+        }
+        if (button == 0x82) {
+            buttons &= ~0x4000;
+        }
+        if (button == 0x83) {
+            buttons &= ~0x8000;
+        }
+        if (button == 0x81) {
+            buttons &= ~0x2000;
+        }
+    }
+    if (bindings[1].kind == PC_BINDING_JOYSTICK_BUTTON) {
+        button = bindings[1].value;
+        if (button == 0x80) {
+            buttons &= ~0x1000;
+        }
+        if (button == 0x82) {
+            buttons &= ~0x4000;
+        }
+        if (button == 0x83) {
+            buttons &= ~0x8000;
+        }
+        if (button == 0x81) {
+            buttons &= ~0x2000;
+        }
+    }
+    if (bindings[2].kind == PC_BINDING_JOYSTICK_BUTTON) {
+        button = bindings[2].value;
+        if (button == 0x80) {
+            buttons &= ~0x1000;
+        }
+        if (button == 0x82) {
+            buttons &= ~0x4000;
+        }
+        if (button == 0x83) {
+            buttons &= ~0x8000;
+        }
+        if (button == 0x81) {
+            buttons &= ~0x2000;
+        }
+    }
+    if (bindings[3].kind == PC_BINDING_JOYSTICK_BUTTON) {
+        button = bindings[3].value;
+        if (button == 0x80) {
+            buttons &= ~0x1000;
+        }
+        if (button == 0x82) {
+            buttons &= ~0x4000;
+        }
+        if (button == 0x83) {
+            buttons &= ~0x8000;
+        }
+        if (button == 0x81) {
+            buttons &= ~0x2000;
+        }
+    }
+    return buttons;
+}
 
 void PC_INPUT_RUNTIME::CopyBindings(i32 port, i32 to_auxiliary, i32 bank) {
     if (port < 0) {

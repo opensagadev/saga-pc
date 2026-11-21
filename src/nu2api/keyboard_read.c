@@ -333,6 +333,36 @@ i32 NuKeyboardGetKeyIndex(void) {
     return nu_keyboard_key_index;
 }
 
+i32 dat_02975920 = 0;
+i32 dat_02975924 = 0;
+i32 dat_02975928 = 0;
+
+void fun_006d6ca0(i32 *key, i32 *pressed, i32 *shift, i32 *repeat) {
+    i32 page = nu_keyboard_page_index << 8;
+    i32 i;
+    dat_02975924 = dat_02975928;
+    if (nu_keyboard_pages[page + dat_02975928] == 0) {
+        dat_02975928 = 0;
+    }
+    for (i = 0; i < nu_keyboard_owner.key_count; ++i) {
+        if (i != 0x2a && i != 0x36 && nu_keyboard_pages[page + i] != 0 && i != dat_02975924) {
+            dat_02975928 = i;
+            break;
+        }
+    }
+    dat_02975920 = dat_02975924 != dat_02975928 ? dat_02975928 : 0;
+    if (shift != NULL) {
+        *shift = nu_keyboard_pages[page + 0x2a] != 0 || nu_keyboard_pages[page + 0x36] != 0;
+    }
+    if (key != NULL) {
+        *key = dat_02975928;
+    }
+    if (pressed != NULL) {
+        *pressed = dat_02975920;
+    }
+    *repeat = PcKeyboardKeyAutoRepeat(dat_02975928) ? dat_02975928 : 0;
+}
+
 /* Private Source proposal; append in keyboard_read.c after old source. */
 void do_Pad_flymode_camera(edcam_s *camera, f32 delta_time, FRAME_PAD *pad) {
     f32 frame_scale = (f32)(delta_time / (f64)(1.0f / 60.0f));

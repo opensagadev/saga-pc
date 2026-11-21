@@ -163,6 +163,7 @@ extern "C" {
     extern i32 nu_keyboard_device_flags;
     extern i32 nu_keyboard_key_index;
     extern i32 nu_keyboard_repeat_countdown;
+    i32 PcKeyboardKeyAutoRepeat(i32 key);
     void PcInput_EnableKeyboards(const i16 *keys, i32 count);
 /* PCDeviceHardwareVertexProcessingPC: the shader model class PcConfigureInputGraphicsCaps picks from the device's
  * vertex and pixel shader versions (0 when they are below 1.1). */
@@ -556,6 +557,7 @@ struct PC_INPUT_RUNTIME {          // size 0x68b4
     void PromotePrimaryConfig(PC_INPUT_CONFIG *config);
     void fun_006d3980(i32);
     void fun_006d3b10(i32);
+    u32 fun_006d4a80(i32 port, u32 buttons);
     i32 FindButtonCommand(i32 button);
     i32 FindAxisCommand(i32 axis, i32 active);
     void SetKeyboardUiOverride(i32 value);

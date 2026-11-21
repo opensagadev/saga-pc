@@ -4131,6 +4131,45 @@ extern "C" {
         vport_inval = 1;
     }
 
+    void fun_005ff100(f32 min_x, f32 min_y, f32 max_x, f32 max_y) {
+        f32 left = (f32)vpCurrent.x;
+        f32 right;
+        f32 top;
+        f32 bottom;
+        if (min_x < left) {
+            min_x = left;
+        }
+        right = left + vpCurrent.width * 0.0625;
+        if (min_x > right) {
+            min_x = right;
+        }
+        vpCurrent.clip_min_x = min_x;
+        top = (f32)vpCurrent.y;
+        if (min_y < top) {
+            min_y = top;
+        }
+        bottom = top + vpCurrent.height * 0.0625;
+        if (min_y > bottom) {
+            min_y = bottom;
+        }
+        vpCurrent.clip_min_y = min_y;
+        if (max_x < left) {
+            max_x = left;
+        }
+        if (max_x > right) {
+            max_x = right;
+        }
+        vpCurrent.clip_max_x = max_x;
+        if (max_y < top) {
+            max_y = top;
+        }
+        if (max_y > bottom) {
+            max_y = bottom;
+        }
+        vport_inval = 1;
+        vpCurrent.clip_max_y = max_y;
+    }
+
     void NuVpInitIdentityMatrix(void) {
         NuMtxSetIdentity(&NuVpIdentityMatrix);
     }
@@ -5793,6 +5832,14 @@ extern "C" {
     GRAPHICS_RENDER_TEXTURE *PCGraphicsCreateColourTargetFormat(i32 divider, i32 levels, i32 format) {
         u32 height = PCDeviceBackend.parameters.height / (u32)divider;
         u32 width = PCDeviceBackend.parameters.width / (u32)divider;
+        GRAPHICS_RENDER_TEXTURE *texture = PCGraphicsAllocRenderTexture();
+        PCGraphicsInitRenderTexture(texture, width, height, levels, 1, 0, format);
+        texture->flags = (texture->flags & 0xffffdbffu) | 0x1b00;
+        return texture;
+    }
+
+    GRAPHICS_RENDER_TEXTURE *PCGraphicsCreateColourTargetSize(i32 width, i32 height, i32 levels) {
+        i32 format = PCGraphicsFormatFromD3d(PCDeviceBackend.parameters.format);
         GRAPHICS_RENDER_TEXTURE *texture = PCGraphicsAllocRenderTexture();
         PCGraphicsInitRenderTexture(texture, width, height, levels, 1, 0, format);
         texture->flags = (texture->flags & 0xffffdbffu) | 0x1b00;
@@ -7538,6 +7585,31 @@ extern "C" void NuDisplayListShadowMaterial(void *data) {
     }
 }
 
+extern "C" {
+    f32 dat_02854d7c = 0;
+    f32 dat_02854d80 = 0;
+    u32 dat_02854d84 = 0;
+    u32 dat_02854d88 = 0;
+    u32 dat_02854dac = 0;
+    f32 dat_0080e6a8 = 0.015f;
+
+    void fun_00608460(f32 near_distance, f32 far_distance, u32 colour, u32 alpha, i32 mode) {
+        dat_02854d7c = near_distance;
+        dat_02854d80 = far_distance;
+        dat_02854d88 = alpha << 24;
+        dat_02854dac = (mode >> 24) & 0xff;
+        dat_02854d84 = ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000) + (colour & 0xff00);
+        if (near_distance != far_distance && (colour & 0xff000000) > 0x2000000) {
+            PCFogSetMode(1, 1);
+            PCFogSetColour(dat_02854d84);
+            PCFogSetRange(*(u32 *)&dat_02854d7c, *(u32 *)&dat_02854d80);
+            PCFogSetDensity(*(u32 *)&dat_0080e6a8);
+        } else {
+            PCFogSetMode(0, 0);
+        }
+    }
+}
+
 /* nurndr's platform members, in nurndr order. */
 extern "C" {
 
@@ -8776,6 +8848,12 @@ extern "C" {
 
     i32 NuCameraClipTestExtentsDefault(NUVEC *min, NUVEC *max) {
         return NuCameraClipTestExtents(min, max, NuCameraGetClippingMtx(), 0.0f, 0);
+    }
+
+    NUHGOBJ_EVAL *fun_00604b80(VARIPTR *buffer, char *name) {
+        VARIPTR end;
+        end.addr = 0xffffffff;
+        return NuGHGRead(name, buffer, end);
     }
 
     void fun_00604bf0(void) {
