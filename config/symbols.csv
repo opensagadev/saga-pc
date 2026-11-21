@@ -8792,7 +8792,7 @@ address,symbol,size,ctype
 0x601330,_NuMtlAnimate,44,void __cdecl(f32)
 0x00601360,_NuMtlSetRenderStatesPS,634,void __cdecl(NUMTL *)
 0x6015e0,_NuDisplayListReflection,74,void __cdecl(void*)
-0x601630,_fun_00601630,305,
+0x601630,_fun_00601630,305,"void __cdecl(NUMTL *,NUMTL *)"
 0x601770,_fun_00601770,1,
 0x601780,_fun_00601780,1,
 0x601790,_fun_00601790,1,

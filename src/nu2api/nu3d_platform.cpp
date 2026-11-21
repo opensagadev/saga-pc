@@ -4898,6 +4898,39 @@ extern "C" {
         }
     }
 
+    /* Copies a material over another in place, keeping the target's pool bits, sort layer, print stream and
+     * list links. */
+    void fun_00601630(NUMTL *material, NUMTL *source) {
+        i32 in_use = material->in_use;
+        i32 flag_02 = material->flag_02;
+        i32 flag_04 = material->flag_04;
+        i32 flag_08 = material->flag_08;
+        i32 sort_layer = material->sort_layer;
+        u8 unknown_002[2];
+        u8 print_stream[0x24];
+        u32 retained_28 = material->retained_28;
+        u32 retained_2c = material->retained_2c;
+        NUMTL *next = material->next;
+        u8 unknown_034[8];
+        struct nudisplaylist_s *display_list = material->display_list;
+        memcpy(unknown_002, material->unknown_002, sizeof(unknown_002));
+        memcpy(print_stream, material->print_stream, sizeof(print_stream));
+        memcpy(unknown_034, material->unknown_034, sizeof(unknown_034));
+        *material = *source;
+        material->in_use = in_use;
+        material->flag_02 = flag_02;
+        material->flag_04 = flag_04;
+        material->flag_08 = flag_08;
+        material->sort_layer = sort_layer;
+        memcpy(material->unknown_002, unknown_002, sizeof(unknown_002));
+        memcpy(material->print_stream, print_stream, sizeof(print_stream));
+        material->retained_28 = retained_28;
+        material->retained_2c = retained_2c;
+        material->next = next;
+        memcpy(material->unknown_034, unknown_034, sizeof(unknown_034));
+        material->display_list = display_list;
+    }
+
     void fun_00601770(void) {
     }
 
