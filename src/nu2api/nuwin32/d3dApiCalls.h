@@ -34,9 +34,9 @@ extern "C" {
     i32 PCFramePresentNative(i32, i32);
     void PCDeviceResetSamplerDefaults(void);
     f32 PcInputAspectRatio(void);
+    extern u32 PcGetRefreshRate(void);
 #ifdef __cplusplus
     void PCDevicePostEffectBarrier(void);
-    extern u32 PcGetRefreshRate(void);
     i32 PCFrameBeginScene(i32 begin);
     void PCDeviceSetWorldIdentity(void);
     void PCFrameConfigureTargets(void);
