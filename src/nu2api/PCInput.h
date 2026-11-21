@@ -578,6 +578,7 @@ struct PC_INPUT_RUNTIME {          // size 0x68b4
     i32 GetCapturedPort();
     void ResetShutdownState();
     void SetThresholds(f32 threshold, i32 motion, f32 ramp);
+    void SetMouseAxisModes(u8 x_mode, u8 y_mode, u8 wheel_mode);
     void ClearResetPairs();
     void GetDeviceCounts(i32 port, i32 *buttons, i32 *axes, i32 *povs);
     i32 FindConfigRecord(PC_INPUT_CONFIG *records, i32 count, PC_INPUT_CONFIG *config);
@@ -727,7 +728,7 @@ extern "C" {
     i32 NuPadReadOutputs(i32 port, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u32 *, u8 *, i32 *);
     void PcInputEndFrame(void);
     extern const u8 PcInputPovBits[8];
-    extern u8 PcMouseAxisModes[3];
+    extern u8 PcMouseAxisModes[8];
     extern u32 mbuttons;
     extern f32 PcMouseAxisIdle[3];
     extern i32 PcMouseCurrentAngle;

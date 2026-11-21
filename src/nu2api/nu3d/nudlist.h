@@ -73,6 +73,7 @@ extern "C" {
     extern const char PCDynamicDisplaySceneNameText[31];
     void NuDisplayListCaptureBegin(void);
     void NuDisplayListDrawRenderScene(i32);
+    void NuDisplayListDrawRenderScenes(void);
     void NuDisplayListDrawItems(NUDISPLAYLISTITEM *);
     i32 DisplayListDebugPS(struct nudisplaylistitem_s *item, char *text);
     void DisplayListPrintItemPS(struct nudisplaylistitem_s *item, i32 file_handle);

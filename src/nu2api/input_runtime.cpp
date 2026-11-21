@@ -21,7 +21,7 @@ extern "C" {
     u8 PcCapsConfigured = 0;
     const char *PcKeyboardLayoutNames[256] = {0};
     TEXT_INPUT_LABELS *TextInputAlternateLabels = 0;
-    u8 PcMouseAxisModes[3] = {0};
+    u8 PcMouseAxisModes[8] = {0};
     PC_INPUT_RUNTIME *nu_input_state = 0;
     i8 PcInputActionOrder[20] = {0};
     TEXT_INPUT_LABELS *TextInputDefaultLabels = 0;
@@ -914,7 +914,7 @@ void PC_INPUT_RUNTIME::ApplyMouseAxis(PC_INPUT_SAMPLE *sample) {
 }
 
 // Uncompiled PC control-flow reconstruction. All indexed records require native initialized domains.
-extern u8 PcMouseAxisModes[3];
+extern u8 PcMouseAxisModes[8];
 
 i32 PC_INPUT_RUNTIME::TranslateBindings(i32 port, PC_INPUT_SAMPLE *out, i32 valid, PC_INPUT_RAW_SAMPLE *raw, PC_INPUT_MOUSE_RUNTIME *motion,
                                         u8 **keys) {

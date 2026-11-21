@@ -10886,6 +10886,17 @@ extern "C" void NuDisplayListDrawRenderScene(i32 scene_id) {
     NuThreadCriticalSectionEnd(nudlist_field_fc4);
 }
 
+extern "C" void NuDisplayListDrawRenderScenes(void) {
+    NuDisplayListCaptureBegin();
+    if (render_scene_index == 0) {
+        NuDisplayListAddRenderScene();
+    }
+    for (i32 i = 0; i < render_scene_index; ++i) {
+        NuDisplayListDrawRenderScene(i);
+    }
+    NuDisplayListHtmlEnd();
+}
+
 extern "C" void DisplaySceneRndrSpecials(NUDISPLAY_LIST *scene, i32 unused0, i32 unused1) {
     NUGSCN temporary_scene;
     NUVISIBILITYRESULT *visibility = NuVisiEvaluate(scene->gscene, &unused1);

@@ -592,6 +592,10 @@ edcam_s *edcamGetEdCam(void) {
     return gp_cam;
 }
 
+void edcamSetOffset(NUVEC *offset) {
+    gp_cam->offset = *offset;
+}
+
 void edcamGetOffset(NUVEC *offset) {
     edcam_s *camera = gp_cam;
     *offset = camera->offset;
