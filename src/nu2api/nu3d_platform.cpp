@@ -8423,6 +8423,53 @@ extern "C" {
         }
     }
 
+    /* The render stream an owner opens: two item buffers and a packet buffer, or buffers the caller hands in.
+     * The buffer sizes are the gaps to the next retail data; the code itself only takes their addresses. */
+    void *dat_02854cf0 = NULL;
+    i32 dat_02854cf4 = 0;
+    i32 dat_0097c158 = 0;
+    void *dat_0280d824 = NULL;
+    void *dat_0097fa5c = NULL;
+    void *dat_0097c1c0 = NULL;
+    void *dat_0097c1c8 = NULL;
+    void *dat_02854bcc = NULL;
+    void *dat_02849100 = NULL;
+    u8 dat_0097fa60[0x200] = {0};
+    u8 dat_0097fc60[0x2000] = {0};
+    u8 dat_02849110[0x200] = {0};
+
+    i32 fun_005fe8b0(void *owner, i32 value) {
+        if (dat_02854cf0 != NULL) {
+            PCGraphicsRenderTextureAllocationError();
+        }
+        dat_02854cf0 = owner;
+        dat_0280d824 = dat_0097fc60;
+        dat_0097fa5c = dat_0097fc60;
+        dat_0097c1c0 = dat_02849110;
+        dat_0097c1c8 = dat_02849110;
+        dat_02854cf4 = value;
+        dat_0097c158 = 0;
+        dat_02854bcc = dat_0097fa60;
+        return 1;
+    }
+
+    i32 fun_005fe910(void *owner, i32 value, void *items, void *packets) {
+        if (dat_02854cf0 != NULL) {
+            PCGraphicsRenderTextureAllocationError();
+        }
+        dat_02854cf0 = owner;
+        dat_02854cf4 = value;
+        dat_0097c158 = 0;
+        dat_0280d824 = items;
+        dat_0097fa5c = items;
+        dat_0097c1c0 = NULL;
+        dat_0097c1c8 = NULL;
+        PCGraphicsRenderTextureAllocationError();
+        dat_02854bcc = packets;
+        dat_02849100 = packets;
+        return 1;
+    }
+
     /* Direct object rendering is not supported on PC: it is reported and nothing is drawn. */
     i32 NuRndrGobj(void *object, NUMTX *matrix) {
         PCClipScreenUnsupported();
