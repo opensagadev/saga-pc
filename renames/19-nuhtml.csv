@@ -1,4 +1,0 @@
-old,new,evidence
-NuHtmlFlush,NuHtmlEnd,"0x5d73e0 writes out what is buffered, then clears the file handle: the NuHtmlEnd of the Android source, with NuHtmlFlush(1) inlined"
-fun_005d71d0,NuHtmlFlush,"0x5d71d0 writes the buffer when it passed the flush mark or force is set: the Android NuHtmlFlush(i32 force)"
-fun_005d7210,NuHtmlBegin,"0x5d7210 stores the file handle and resets the buffer cursor and flush mark: the Android NuHtmlBegin"

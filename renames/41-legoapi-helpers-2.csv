@@ -1,3 +1,0 @@
-old,new,evidence
-fun_0055c8f0,Game_AllGoldBricksComplete,"true once SAVE_REWARD_ALL_GOLD_BRICKS is set, next to Game_100PercentComplete"
-fun_00500420,instNuGCutSceneSetRepeatCount,"stores the count, clamped to 31, in the repeat_count bits 13..17 of flags_88"
