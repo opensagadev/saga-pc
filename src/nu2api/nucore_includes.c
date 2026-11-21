@@ -4078,6 +4078,10 @@ static NUFPAR *NuAllocFPar(void) {
     return NULL;
 }
 
+static void NuFParReleaseBuffer(NUFPAR *parser) {
+    parser->file_buffer = NULL;
+}
+
 void NuFreeFPar(NUFPAR *parser) {
     parser->file_buffer = NULL;
 }
@@ -6741,7 +6745,7 @@ i32 NuStringTableLoadCSV(char *filepath, VARIPTR *buf, VARIPTR buf_end, char *la
             while (NuFParGetLine(parser) != 0) {
                 ++max_strings;
             }
-            parser->file_buffer = NULL;
+            NuFParReleaseBuffer(parser);
         }
         NuFileClose(mem_file);
     }
@@ -6827,7 +6831,7 @@ i32 NuStringTableLoadCSV(char *filepath, VARIPTR *buf, VARIPTR buf_end, char *la
                     }
                 }
             }
-            parser->file_buffer = NULL;
+            NuFParReleaseBuffer(parser);
             bank->strings = strings;
             bank->string_count = i;
             bank->max_strings = max_strings;
@@ -6884,7 +6888,7 @@ i32 NuStringTableLoadTXT(char *filepath, VARIPTR *buf, VARIPTR buf_end) {
             while (NuFParGetLine(parser) != 0) {
                 ++max_strings;
             }
-            parser->file_buffer = NULL;
+            NuFParReleaseBuffer(parser);
         }
         NuFileClose(mem_file);
     }
@@ -6942,7 +6946,7 @@ i32 NuStringTableLoadTXT(char *filepath, VARIPTR *buf, VARIPTR buf_end) {
                 }
                 ++i;
             }
-            parser->file_buffer = NULL;
+            NuFParReleaseBuffer(parser);
             bank->strings = strings;
             bank->string_count = i;
             bank->max_strings = max_strings;
@@ -7221,7 +7225,7 @@ void NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
                     ++count;
                 }
             } while (NuFParGetLine(parser) != 0);
-            parser->file_buffer = NULL;
+            NuFParReleaseBuffer(parser);
         }
         NuFileClose(file);
     }
@@ -7268,7 +7272,7 @@ void NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
                     ++i;
                 }
             } while (NuFParGetLine(parser) != 0 && i < count);
-            parser->file_buffer = NULL;
+            NuFParReleaseBuffer(parser);
         }
         NuFileClose(file);
     }

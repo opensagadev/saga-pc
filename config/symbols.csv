@@ -3024,7 +3024,7 @@ address,symbol,size,ctype
 0x004f1200,_NuFParSetInterpreterErrorHandler,16,NUFPCOMFN __cdecl (NUFPCOMFN)
 0x004f1210,_NuFParInit,41,"void __cdecl (i32, i32)"
 0x004f1240,_NuAllocFPar,134,NUFPAR *__cdecl (void)
-0x4f12d0,_fun_004f12d0,7,
+0x4f12d0,_NuFParReleaseBuffer,7,void __cdecl(NUFPAR *)
 0x004f12e0,_NuFreeFPar,11,void __cdecl (NUFPAR *)
 0x4f12f0,_NuLinkedListCheck,26,i32 __cdecl (NULISTHDR *)
 0x004f1310,_NuLinkedListAppend,40,"void __cdecl (NULISTHDR *, NULISTLNK *)"
