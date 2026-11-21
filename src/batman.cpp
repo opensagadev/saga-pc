@@ -923,7 +923,7 @@ extern "C" int NuMain(int argc, char **argv) {
                 NuFrameBegin();
                 if (SoundVoiceEnabledGate != 0) {
                     if (pause_rndr_on == 0 || FadeSys.pending_type == FADE_TYPE_WIPE) {
-                        if (0.0f < MainRenderTime) {
+                        if (MainRenderTime > 0.0f) {
                             LOG_INFO_IF(GameTimer.update_count < 2, "NuMain before render: world=%p", WORLD);
                             SAGA_SOUND_CHECK("before world render");
                             NuMainRenderWorld(WORLD);
