@@ -4780,7 +4780,6 @@ variable:NuTimeBarColumnStep,variable,NuTimeBarColumnStep,12794,12794,1,legoapi/
 variable:NuTimeBarSlotWidth,variable,NuTimeBarSlotWidth,12795,12795,1,nu2api/nu3d/nu3d_includes.h,rule,used most in nu2api/nu3d_includes.cpp (3) android-path
 variable:NuTimeBarHorizontalTop,variable,NuTimeBarHorizontalTop,12796,12796,1,nu2api/nu3d/nu3d_includes.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:NuTimeBarValueFormat,variable,NuTimeBarValueFormat,12797,12797,1,nu2api/nu3d/nu3d_includes.h,users,NuTimeBarValueFormat: only nu2api/nu3d_includes.cpp android-path
-variable:NuTimeBarFontScale,variable,NuTimeBarFontScale,12798,12798,1,nu2api/nu3d/nu3d_includes.h,users,NuTimeBarFontScale: only nu2api/nu3d_includes.cpp android-path
 variable:NuTimeBarVerticalScale,variable,NuTimeBarVerticalScale,12799,12799,1,nu2api/nu3d/nu3d_includes.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:NuTimeBarNegativeSlotWidth,variable,NuTimeBarNegativeSlotWidth,12800,12800,1,nu2api/nu3d/nu3d_includes.h,data-nearest,"only data.cpp mentions it; retail 0x765670, nearest 0x765060"
 variable:NuTimeBarRight,variable,NuTimeBarRight,12801,12801,1,nu2api/nu3d/nu3d_includes.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour

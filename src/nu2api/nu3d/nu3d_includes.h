@@ -277,7 +277,6 @@ extern "C" {
     extern const f32 NuTimeBarQFontScale;
     extern const f64 NuTimeBarSlotWidth;
     extern const f64 NuTimeBarHorizontalTop;
-    extern const f32 NuTimeBarFontScale;
     extern const f64 NuTimeBarVerticalScale;
     extern const f64 NuTimeBarNegativeSlotWidth;
     extern const f64 NuTimeBarRight;
