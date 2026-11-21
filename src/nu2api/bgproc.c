@@ -247,6 +247,22 @@ void bgProcInit(void) {
     }
 }
 
+void bgProcCancelPending(void) {
+    BGPROCINFO *info = (BGPROCINFO *)NuLstGetNext(bgproc_procinfo_pool, (NULNKHDR *)bgproc_active);
+    while (info != NULL) {
+        BGPROCINFO *next = (BGPROCINFO *)NuLstGetNext(bgproc_procinfo_pool, (NULNKHDR *)info);
+        info->work_finished = 1;
+        if (info->ack_fn != NULL) {
+            info->ack_fn(info);
+        }
+        NuLstFree((NULNKHDR *)info);
+        info = next;
+    }
+    if (bgproc_active != NULL) {
+        bgproc_active->work_finished = 1;
+    }
+}
+
 void bgprocFreeze(void) {
     bgproc_freeze = 1;
     ResetEvent(bgproc_resume_event);

@@ -1308,6 +1308,10 @@ static inline void VuMtxSetIdentity(VuMtx &matrix) {
     VuMtxCopy(matrix, *(const VuMtx *)&ANI3_EVAL_IDENTITY_MATRIX);
 }
 
+static inline void VuVecMtxTransform(VuVec &result, VuVec &v, NUMTX *matrix) {
+    NuVecMtxTransform(&result.xyz, &v.xyz, matrix);
+}
+
 /* Rotates a direction by the matrix's 3x3 part. */
 static inline void VuMtxRotateVec(const VuMtx &matrix, const VuVec &v, VuVec &result) {
     f32 x = v.x * matrix.matrix.m00 + v.y * matrix.matrix.m10 + v.z * matrix.matrix.m20;
@@ -2484,7 +2488,7 @@ void EdDrawLineArrow(NUMTX *transform, f32 size, i32 colour) {
     point.w = 0.0f;
     VuVecCopy(points[3], point);
     for (i = 0; i < 4; i++) {
-        NuVecMtxTransform(&points[i].xyz, &points[i].xyz, transform);
+        VuVecMtxTransform(points[i], points[i], transform);
     }
     EdDrawLineSegment(&points[0].xyz, &points[1].xyz, colour);
     EdDrawLineSegment(&points[1].xyz, &points[2].xyz, colour);
@@ -2542,7 +2546,7 @@ void EdDrawLineCube(NUMTX *transform, f32 size, i32 colour) {
     point.w = 0.0f;
     VuVecCopy(points[8], point);
     for (i = 0; i < 9; i++) {
-        NuVecMtxTransform(&points[i].xyz, &points[i].xyz, transform);
+        VuVecMtxTransform(points[i], points[i], transform);
     }
     EdDrawLineSegment(&points[0].xyz, &points[1].xyz, colour);
     EdDrawLineSegment(&points[1].xyz, &points[2].xyz, colour);
@@ -6491,6 +6495,38 @@ void EdType::Serialise(EdStream &stream) {
 }
 
 /* Serialises one object's members as described by its own class. */
+/* Whether a class belongs in the stream: state streams leave out NOT_IN_STATE classes, file streams NOT_IN_FILE
+ * ones. */
+static i32 EdStreamIncludesClass(EdStream &stream, EdClass *object_class) {
+    i32 result = 1;
+    if (stream.flags & EDSTREAM_STATE) {
+        if (object_class->flags & EDREF_ATTR_NOT_IN_STATE) {
+            result = 0;
+        }
+    } else if (object_class->flags & EDREF_ATTR_NOT_IN_FILE) {
+        result = 0;
+    }
+    return result;
+}
+
+/* The same for a member; a file stream also leaves out class members whose class the mapping drops. */
+static i32 EdStreamIncludesMember(EdStream &stream, EdRef *member, i32 *class_mapping) {
+    i32 result = 1;
+    if (stream.flags & EDSTREAM_STATE) {
+        if (member->attributes & EDREF_ATTR_NOT_IN_STATE) {
+            result = 0;
+        }
+    } else {
+        if (member->attributes & EDREF_ATTR_NOT_IN_FILE) {
+            result = 0;
+        }
+        if ((member->attributes & EDREF_ATTR_CLASS) && class_mapping != NULL && class_mapping[member->type_id] == -1) {
+            result = 0;
+        }
+    }
+    return result;
+}
+
 void EdClass::SerialiseObject(EdStream &stream, void *object) {
     if (stream.BeginBlock("Object") == NULL) {
         return;
@@ -6498,15 +6534,7 @@ void EdClass::SerialiseObject(EdStream &stream, void *object) {
     if (object != NULL) {
         u8 data[256];
         for (EdRef *member = members.first; member != NULL; member = member->next) {
-            i32 skip = 0;
-            if (stream.flags & EDSTREAM_STATE) {
-                if (member->attributes & EDREF_ATTR_NOT_IN_STATE) {
-                    skip = 1;
-                }
-            } else if (member->attributes & EDREF_ATTR_NOT_IN_FILE) {
-                skip = 1;
-            }
-            if (skip) {
+            if (!EdStreamIncludesMember(stream, member, NULL)) {
                 continue;
             }
             if (member->attributes & EDREF_ATTR_CLASS) {
@@ -6615,15 +6643,7 @@ i32 EdClass::GetStreamClasses(EdStream &stream, i32 *stream_classes, i32 &count,
         if (!(member->attributes & EDREF_ATTR_CLASS)) {
             continue;
         }
-        i32 skip = 0;
-        if (stream.flags & EDSTREAM_STATE) {
-            if (member->attributes & EDREF_ATTR_NOT_IN_STATE) {
-                skip = 1;
-            }
-        } else if (member->attributes & EDREF_ATTR_NOT_IN_FILE) {
-            skip = 1;
-        }
-        if (skip) {
+        if (!EdStreamIncludesMember(stream, member, NULL)) {
             continue;
         }
         theRegistry.GetClass(member->type_id)->GetStreamClasses(stream, stream_classes, count, capacity);
@@ -9211,15 +9231,7 @@ void EdRegistry::GetStreamClassMapping(EdStream &stream, i32 *mapping, i32 &coun
     memset(used_classes, 0, sizeof(used_classes));
     for (i32 index = 0; index < class_count; index++) {
         EdClass *object_class = &classes[index];
-        i32 skip = 0;
-        if (stream.flags & EDSTREAM_STATE) {
-            if (object_class->flags & EDREF_ATTR_NOT_IN_STATE) {
-                skip = 1;
-            }
-        } else if (object_class->flags & EDREF_ATTR_NOT_IN_FILE) {
-            skip = 1;
-        }
-        if (skip) {
+        if (!EdStreamIncludesClass(stream, object_class)) {
             continue;
         }
         i32 stream_classes[64];
@@ -9289,40 +9301,14 @@ void EdClass::Serialise(EdStream &stream, i32 *class_mapping) {
     if (stream.mode == 2) {
         count = 0;
         for (EdRef *member = members.first; member != NULL; member = member->next) {
-            i32 keep = 1;
-            if (stream.flags & EDSTREAM_STATE) {
-                if (member->attributes & EDREF_ATTR_NOT_IN_STATE) {
-                    keep = 0;
-                }
-            } else {
-                if (member->attributes & EDREF_ATTR_NOT_IN_FILE) {
-                    keep = 0;
-                }
-                if ((member->attributes & EDREF_ATTR_CLASS) && class_mapping != NULL && class_mapping[member->type_id] == -1) {
-                    keep = 0;
-                }
-            }
-            if (!keep) {
+            if (!EdStreamIncludesMember(stream, member, class_mapping)) {
                 continue;
             }
             count++;
         }
         stream.SerialiseBuffer(&count, sizeof(count), 1);
         for (EdRef *member = members.first; member != NULL; member = member->next) {
-            i32 keep = 1;
-            if (stream.flags & EDSTREAM_STATE) {
-                if (member->attributes & EDREF_ATTR_NOT_IN_STATE) {
-                    keep = 0;
-                }
-            } else {
-                if (member->attributes & EDREF_ATTR_NOT_IN_FILE) {
-                    keep = 0;
-                }
-                if ((member->attributes & EDREF_ATTR_CLASS) && class_mapping != NULL && class_mapping[member->type_id] == -1) {
-                    keep = 0;
-                }
-            }
-            if (!keep) {
+            if (!EdStreamIncludesMember(stream, member, class_mapping)) {
                 continue;
             }
             member->Serialise(stream, class_mapping);

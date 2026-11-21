@@ -1,6 +1,7 @@
 #include "nu2api/PCInput.h"
 #include <WbemIdl.h>
 #include <stdio.h>
+#include <string.h>
 #include <wchar.h>
 
 extern "C" void fun_006d3560(void) {
@@ -36,6 +37,13 @@ void PC_INPUT_RUNTIME::SetThresholds(f32 threshold, i32 motion, f32 ramp) {
     if (ramp >= 0.0f) {
         ramp_seconds = ramp;
     }
+}
+
+void PC_INPUT_RUNTIME::SetMouseAxisModes(u8 x_mode, u8 y_mode, u8 wheel_mode) {
+    memset(PcMouseAxisModes, 0, sizeof(PcMouseAxisModes));
+    PcMouseAxisModes[0] = x_mode;
+    PcMouseAxisModes[1] = y_mode;
+    PcMouseAxisModes[2] = wheel_mode;
 }
 
 extern "C" PC_INPUT_RUNTIME *PcInputGetRuntime(void) {

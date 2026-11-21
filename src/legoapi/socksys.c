@@ -15,6 +15,14 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+static f32 SockFabs(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
 // The SDK's NuFdiv: 0 when either operand is 0.
 static f32 SockFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
@@ -110,25 +118,11 @@ static void SockParCamLockRatioY(NUFPAR *parser, void *context) {
 }
 
 static void SockParCamPosSeek(NUFPAR *parser, void *context) {
-    union {
-        f32 value;
-        u32 bits;
-    } result, absolute;
-
-    result.value = NuFParGetFloat(parser);
-    absolute.bits = result.bits & 0x7fffffffu;
-    sockpar_sock->camera_position_seek = absolute.value;
+    sockpar_sock->camera_position_seek = SockFabs(NuFParGetFloat(parser));
 }
 
 static void SockParCamAngSeek(NUFPAR *parser, void *context) {
-    union {
-        f32 value;
-        u32 bits;
-    } result, absolute;
-
-    result.value = NuFParGetFloat(parser);
-    absolute.bits = result.bits & 0x7fffffffu;
-    sockpar_sock->camera_angle_seek = absolute.value;
+    sockpar_sock->camera_angle_seek = SockFabs(NuFParGetFloat(parser));
 }
 
 static void SockParCamSegAhead(NUFPAR *parser, void *context) {

@@ -315,6 +315,15 @@ void UpdatePlatinst(i32 index, void *object) {
 void fun_0067cab0(void) {
 }
 
+void PlatImpactInfo(NUVEC *normal, i32 *material0, i32 *material1) {
+    if (PlatImpactId != -1) {
+        *normal = PlatImpactNorm;
+        *material0 = PlatImpactTer.material[0];
+        *material1 = PlatImpactTer.material[1];
+    }
+    PlatImpactId = -1;
+}
+
 i32 PlatformCrush(void) {
     return PlatCrush;
 }
@@ -1633,6 +1642,25 @@ i32 ReadTerrain(unsigned char *base_path, i32 first_group, i16 **buffer, TERRSET
 
 void TerrFlush(void) {
     TerrShapeAdjCnt = 0;
+}
+
+void TerrTempMemory(VARIPTR *buffer) {
+    if (ScaleTerrainT1 == NULL) {
+        ScaleTerrainT1 = buffer->void_ptr;
+    }
+    buffer->char_ptr += 0xc800;
+    if (ScaleTerrainT2 == NULL) {
+        ScaleTerrainT2 = buffer->void_ptr;
+    }
+    buffer->char_ptr += 0xc800;
+    if (TempScanStack == NULL) {
+        TempScanStack = buffer->void_ptr;
+    }
+    buffer->char_ptr += 0x2000;
+    if (WallSplList == NULL) {
+        WallSplList = buffer->void_ptr;
+    }
+    buffer->char_ptr += 0x600;
 }
 
 /* Normals exported as NaN are replaced by straight up. */

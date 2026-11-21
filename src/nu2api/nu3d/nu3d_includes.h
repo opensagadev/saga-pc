@@ -581,6 +581,18 @@ extern "C" {
 }
 #endif
 
+/* A grid laid over the x/z plane: its corner, cell size and cell counts (fun_005e56b0). */
+typedef struct NUGRIDINFO { // size 0x20
+    f32 min_x;              // 0x00
+    u8 unknown_04[4];       // 0x04
+    f32 min_z;              // 0x08
+    u8 unknown_0c[4];       // 0x0c
+    f32 cell_x;             // 0x10
+    f32 cell_z;             // 0x14
+    i32 count_x;            // 0x18
+    i32 count_z;            // 0x1c
+} NUGRIDINFO;
+
 typedef struct nuvpcurrent_s { // size 0x40
 
     union { // size 0x18

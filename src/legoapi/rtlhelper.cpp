@@ -451,6 +451,11 @@ static void RtlHelperSetIdentity(NUMTX *matrix) {
     RtlHelperCopyMtx(matrix, &ANI3_EVAL_IDENTITY_MATRIX);
 }
 
+/* The light editor reference's own copy of the identity helper. */
+static void RtlLightSetIdentity(NUMTX *matrix) {
+    RtlHelperCopyMtx(matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+}
+
 void RTLHelper::Render(void *object, i32) {
     RTL_LIGHT *light = static_cast<RTL_LIGHT *>(object);
     i32 colour = (((static_cast<i32>(light->colour.z * 255.0) & 0xff) << 16 | static_cast<i32>(0xff000000)) |
@@ -638,7 +643,7 @@ void EdRefRTL::GetMemberData(void *object, i32 requested_type, void *data, i32) 
             break;
         case EDREF_LIGHT_POS_ROT: {
             NUMTX *matrix = static_cast<NUMTX *>(data);
-            RtlHelperSetIdentity(matrix);
+            RtlLightSetIdentity(matrix);
             matrix->translation = light->position;
             NuMtxAlignZ(matrix, &light->direction);
             break;

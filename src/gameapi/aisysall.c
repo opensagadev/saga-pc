@@ -103,19 +103,12 @@ static f32 NuFdiv(f32 a, f32 b) {
     return a / b;
 }
 
-/* Float fabs by clearing the sign bit. */
-static f32 AIPathFabs(f32 value) {
-    union {
-        f32 value;
-        u32 bits;
-    } storage;
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+static f32 AIPathFabs(f32 f) {
+    f32 rv;
 
-    u32 bits;
-    storage.value = value;
-    bits = storage.bits;
-    bits &= 0x7fffffff;
-    storage.bits = bits;
-    return storage.value;
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
 }
 
 /* Script message pool (AISYS message system). Records are 0x2c bytes; a

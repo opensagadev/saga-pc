@@ -658,6 +658,24 @@ void ShaderCompilerParser::SetIncludeDirectories(const char *paths) {
     strcpy(include_directories, paths);
 }
 
+bool ShaderCompilerParser::ReadLine(const ShaderCompilerBufferAllocator *text, i32 *position, ShaderCompilerBufferAllocator *line) {
+    if (*position >= text->length) {
+        return false;
+    }
+    const char *start = text->data + *position;
+    const char *end = text->data + text->length;
+    i32 count = 0;
+    for (const char *c = start; c < end; ++c) {
+        ++count;
+        if (*c == '\n') {
+            break;
+        }
+    }
+    line->AppendBytes(start, count);
+    *position += count;
+    return true;
+}
+
 extern "C" bool ShaderLineIsDirective(ShaderCompilerBufferAllocator *line, i32 *position) {
     for (i32 i = 0; i < line->length; ++i) {
         u8 c = line->data[i];

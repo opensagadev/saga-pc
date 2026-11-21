@@ -314,3 +314,56 @@ config/oddscan-budget.json volatile-other 44 AreaDataLoaded/CharacterDataLoad ar
 config/oddscan-budget.json volatile-other 48 PermDataLoaded/LoadPerm_StringsLoaded are set by LoadPermData on the background thread (LoadPerm_LanguageSelect beside them already is volatile); retail loads them into a register per test (I66)
 config/oddscan-budget.json volatile-other 50 level_already_loaded is set by WorldInfo_StreamLevel on the background thread; NuMain reads it twice in one test in retail (I66)
 config/declscan-budget.json D 30 match3 gameapi: AIScriptMissingConditionDiagnostic moved to aisys_empty.c so VC8 keeps the calls retail keeps; aisysall.c's own declaration of it went from class C to D (same construct, C lowered)
+config/oddscan-budget.json address-name 4618 impl/engine: previously not-implemented nu2api functions written from retail; their unnamed globals and functions keep dat_/fun_ names (AGENTS.md) where the role is unclear
+config/oddscan-budget.json magic-bound 1578 impl/engine: previously not-implemented nu2api functions written from retail; NuTexReadSlot checks its 8-slot bound
+config/oddscan-budget.json magic-flag 2573 impl/engine: previously not-implemented nu2api functions written from retail; PC_INPUT_RUNTIME::fun_006d4a80 clears the four pad direction bits (no define exists)
+config/oddscan-budget.json magic-mask 1060 impl/engine: previously not-implemented nu2api functions written from retail; NuRndrSetFog swaps the fog colour channels, PCGraphicsCreateColourTargetSize sets the target flags like its siblings
+config/oddscan-budget.json magic-state 4285 impl/engine: previously not-implemented nu2api functions written from retail; PC_INPUT_RUNTIME::fun_006d4a80 compares joystick button values 0x80-0x83
+config/castscan-budget.json raw-offset 352 impl/engine: previously not-implemented nu2api functions written from retail; fun_006dea90 measures the PS2 packet in bytes from its start
+config/castscan-budget.json record-pun 353 impl/engine: previously not-implemented nu2api functions written from retail; bgProcCancelPending walks the NuLst request pool through NULNKHDR like bgProcWorker
+config/castscan-budget.json scalar-pun 284 impl/engine: previously not-implemented nu2api functions written from retail; NuRndrSetFog passes the fog range and density floats as D3D render-state DWORDs, fun_006dea90 writes the packet tag count
+config/castscan-budget.json truncation 2186 impl/engine: previously not-implemented nu2api functions written from retail; fun_006dea90 stores the packet quadword count in the 16-bit tag field
+config/castscan-budget.json view-type 52 impl/engine: previously not-implemented nu2api functions written from retail; NuShaderManagerBuildPrecompiledShader forwards through PCShaderSlots as ShaderManagerHLSL like NuShaderManagerSetfv
+config/oddscan-budget.json address-name 4631 impl/engine batch 2: nugobj, display-list sort slots, PC perf events, sound sample loader, screen quad; the nugobj geometry helpers and the display-list slot hooks keep fun_ names (role unclear)
+config/oddscan-budget.json dense-function 1176 impl/engine batch 2: nugobj, display-list sort slots, PC perf events, sound sample loader, screen quad; NuRndrRect2dUV fills its six screen vertices field by field as retail does
+config/oddscan-budget.json magic-bound 1579 impl/engine batch 2: nugobj, display-list sort slots, PC perf events, sound sample loader, screen quad; fun_005debb0 compares the slot index with -1
+config/oddscan-budget.json magic-state 4307 impl/engine batch 2: nugobj, display-list sort slots, PC perf events, sound sample loader, screen quad; fun_00602f50 maps the vertex types to strides, PCPerfBeginEvent switches on the render stage
+config/oddscan-budget.json placeholder-field 1060 impl/engine batch 2: nugobj, display-list sort slots, PC perf events, sound sample loader, screen quad; PC_GOBJ_REGISTRY_CHILD/AUX grow to their retail 0x98/0x50 sizes with the unread fields as unknown_
+config/castscan-budget.json declaration-type 732 impl/engine batch 2; fun_005debb0/fun_005dec60/fun_005deca0 index the display-list slot tables through the u32 nudlist_alloc_* addresses as NuDisplayListStreamAlloc does
+config/castscan-budget.json int-pointer 805 impl/engine batch 2; the same slot tables (u32 addresses) read as u8/NUSORTPRI/NUDISPLAYLISTITEM arrays
+config/castscan-budget.json truncation 2188 impl/engine batch 2; fun_00602ed0 stores the index count in the u16 count fields
+config/castscan-budget.json void-pointer-cpp 556 impl/engine batch 2; fun_00602a10/fun_00602ed0 cast NuAlloc results like NuGobjRegistryAlloc
+config/castscan-budget.json scalar-pun 286 impl/engine: AIPathFabs takes the SDK NuFabs form (masked float bits through i32 views) that retail compiles at 0x512880, as the exact AttractoFabs/Nu3dIncludesFabs copies do
+config/oddscan-budget.json address-name 4633 impl/engine batch 4: fun_00602d90/fun_00602e20/fun_00601630 keep fun_ names (role unclear)
+config/oddscan-budget.json placeholder-field 1074 impl/engine batch 4: fun_00601630 saves and restores the material's unknown_002/unknown_034 bytes around the copy
+config/castscan-budget.json raw-offset 353 impl/engine batch 4: fun_00602e20 offsets the locked vertex bytes by base_vertex vertices
+config/castscan-budget.json void-pointer-cpp 557 impl/engine batch 4: fun_00602d90 takes NuGobjAllocBlock2's block as the geometry
+config/oddscan-budget.json dense-function 1177 impl/engine: NuFmvTextureOpen sets up the movie texture and its material in one block as retail does
+config/oddscan-budget.json magic-bound 1580 impl/engine: NuFmvTextureOpen replaces the last three characters of the path with "bik"
+config/oddscan-budget.json placeholder-field 1076 impl/engine: NUGRIDINFO keeps its two unread words as unknown_
+config/castscan-budget.json float-width 3973 impl/engine: fun_005e56b0 subtracts (f64)0.001f, the double of the float literal retail uses (__real@3f50624de0000000)
+config/castscan-budget.json truncation 2189 impl/engine: NuFmvTextureOpen stores the movie texture id in the material's i16 texture_id
+config/castscan-budget.json float-int 3073 impl/engine: fun_005e56b0 truncates the floored cell coordinates to the integer cell indices
+config/oddscan-budget.json magic-state 4311 impl/engine: PostFilterSetDepthMode switches on the post filter depth mode numbers retail uses (0, 1, 2, 4)
+config/oddscan-budget.json magic-flag 2574 impl/engine: fun_005d90e0 sets portal flag 2 (unnamed) before the active refresh
+config/castscan-budget.json signedness 1824 impl/engine: fun_005d90e0 walks the portals with an unsigned index against max_portals, fun_005e0b60 compares with the u32 material_count, as retail does
+config/castscan-budget.json truncation 2190 impl/engine: fun_005e0b60 ors the 2-bit clip mask into the u8 clip_used bytes
+config/oddscan-budget.json address-name 4708 impl/engine batch: render-stream setup, water waves, texture-name read; their unmapped globals are dat_<address> (the render-stream pointers and buffers, the water wave table and state)
+config/oddscan-budget.json dense-function 1178 impl/engine batch: render-stream setup, water waves, texture-name read; fun_005f9550 builds the wave table in one loop as retail does
+config/oddscan-budget.json magic-state 4314 impl/engine batch: render-stream setup, water waves, texture-name read; fun_005f9740 tests the stream formats 0x400/0x480 retail compares
+config/oddscan-budget.json placeholder-field 1079 impl/engine batch: render-stream setup, water waves, texture-name read; the geometry and aux records gain stream_format/first_vertex, splitting their unknown_ spans; NUTEXNAMERECORD keeps its unread head
+config/oddscan-budget.json stdcall 263 impl/engine batch: render-stream setup, water waves, texture-name read; PC_EFFECT_METHODS::set_vector_array is the ID3DXEffect COM slot 36
+config/castscan-budget.json float-int 3078 impl/engine batch: render-stream setup, water waves, texture-name read; the wave angles and cell coordinates truncate to integers as retail does
+config/castscan-budget.json scalar-pun 288 impl/engine batch: render-stream setup, water waves, texture-name read; fun_005f9740 locks its vertex buffers through void **
+config/oddscan-budget.json address-name 4709 impl/engine: fun_005fffd0 (particle launch set); keeps its fun_ name
+config/oddscan-budget.json dense-function 1179 impl/engine: fun_005fffd0 (particle launch set); places and blends in one loop as retail does
+config/oddscan-budget.json magic-bound 1581 impl/engine: fun_005fffd0 (particle launch set); checks the 63-key bound
+config/oddscan-budget.json magic-state 4316 impl/engine: fun_005fffd0 (particle launch set); tests the repeat particle types 6 and 7
+config/oddscan-budget.json placeholder-field 1083 impl/engine: fun_005fffd0 (particle launch set); its shape and key records keep unread spans as unknown_
+config/castscan-budget.json float-int 3079 impl/engine: fun_005fffd0 (particle launch set); truncates the key time to the key index
+config/oddscan-budget.json define-in-unit 21 impl/engine: nusound.cpp renames vorbisfile.h's static _ov_header_fseek_wrap around its include, as nustream.cpp and oggreader.cpp do, so its retail copy NusoundOvHeaderFseekWrap (0x696ae0) is emitted
+config/oddscan-budget.json dup-macro 22 impl/engine: nusound.cpp renames vorbisfile.h's static _ov_header_fseek_wrap around its include, as nustream.cpp and oggreader.cpp do, so its retail copy NusoundOvHeaderFseekWrap (0x696ae0) is emitted
+config/oddscan-budget.json dup-macro-conflict 7 impl/engine: nusound.cpp renames vorbisfile.h's static _ov_header_fseek_wrap around its include, as nustream.cpp and oggreader.cpp do, so its retail copy NusoundOvHeaderFseekWrap (0x696ae0) is emitted
+config/oddscan-budget.json nolint 64 impl/engine: nusound.cpp renames vorbisfile.h's static _ov_header_fseek_wrap around its include, as nustream.cpp and oggreader.cpp do, so its retail copy NusoundOvHeaderFseekWrap (0x696ae0) is emitted
+config/oddscan-budget.json undef-in-unit 15 impl/engine: nusound.cpp renames vorbisfile.h's static _ov_header_fseek_wrap around its include, as nustream.cpp and oggreader.cpp do, so its retail copy NusoundOvHeaderFseekWrap (0x696ae0) is emitted
+config/castscan-budget.json scalar-pun 292 impl/engine: SockFabs and PartsFabs take the SDK NuFabs form of their exact siblings (masked float bits), replacing the written-out unions their callers had

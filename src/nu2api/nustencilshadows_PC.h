@@ -91,6 +91,10 @@ extern "C" {
     extern u32 PCFogColour;
     extern i32 PCFogColourSuppressed;
     extern i32 PCFogEnabled;
+    void PCFogSetColour(u32 colour);
+    void PCFogSetDensity(u32 density);
+    void PCFogSetRange(u32 start, u32 end);
+    void PCFogSetMode(i32 enable, i32 mode);
     extern i32 dat_0080e21c;
     extern i32 dat_02854c90;
     extern i32 dat_02854c94;
@@ -245,10 +249,17 @@ extern "C" {
     extern i32 NuLgtStateEnabled;
     extern i32 NuLgtStateUnknown;
 
-    typedef struct PC_GOBJ_REGISTRY_AUX {  // size 0x10
-        struct PC_GOBJ_REGISTRY_AUX *next; // 0x0
-        u8 unknown_04[8];                  // 0x4
-        void *payload;                     // 0xc
+    typedef struct PC_GOBJ_REGISTRY_AUX {  // size 0x50
+        struct PC_GOBJ_REGISTRY_AUX *next; // 0x00
+        i32 type;                          // 0x04
+        u16 index_count;                   // 0x08
+        u16 index_capacity;                // 0x0a
+        void *payload;                     // 0x0c
+        u8 unknown_10[4];                  // 0x10
+        u8 unknown_14;                     // 0x14
+        u8 unknown_15[0x27];               // 0x15
+        i32 first_vertex;                  // 0x3c
+        u8 unknown_40[0x10];               // 0x40
     } PC_GOBJ_REGISTRY_AUX;
 
     extern i32 NuGobjRegistryInitialized;
@@ -322,14 +333,24 @@ extern "C" {
         struct PC_TEXTURE_RESOURCE *resource; // 0x10
     } PC_GOBJ_NATIVE_RESOURCE;
 
-    typedef struct PC_GOBJ_REGISTRY_CHILD {       // size 0x3c
+    typedef struct PC_GOBJ_REGISTRY_CHILD {       // size 0x98
         struct PC_GOBJ_REGISTRY_CHILD *next;      // 0x00
-        u8 unknown_04[0x1c];                      // 0x04
+        u8 unknown_04[0xc];                       // 0x04
+        i32 vertex_count;                         // 0x10
+        u8 unknown_14[4];                         // 0x14
+        i32 base_vertex;                          // 0x18
+        void *locked_vertices;                    // 0x1c
         void *owned_buffer;                       // 0x20
         u8 unknown_24[8];                         // 0x24
         PC_GOBJ_REGISTRY_AUX *auxiliary;          // 0x2c
         u8 unknown_30[8];                         // 0x30
         PC_GOBJ_NATIVE_RESOURCE *native_resource; // 0x38
+        u8 unknown_3c[0xc];                       // 0x3c
+        struct PC_BUFFER_RESOURCE *vertex_buffer; // 0x48
+        u8 unknown_4c[0x1c];                      // 0x4c
+        i32 vertex_type;                          // 0x68
+        u32 stream_format;                        // 0x6c
+        u8 unknown_70[0x28];                      // 0x70
     } PC_GOBJ_REGISTRY_CHILD;
 
     typedef struct PC_GOBJ_REGISTRY_ENTRY {      // size 0x14
@@ -341,6 +362,9 @@ extern "C" {
     } PC_GOBJ_REGISTRY_ENTRY;
 
     extern PC_GOBJ_REGISTRY_ENTRY *NuGobjRegistryFirst;
+    void fun_00603930(NUDISPLAYLISTITEM *item, i32 value);
+    void fun_00603940(NUDISPLAYLISTITEM *item);
+    void fun_00603950(NUDISPLAYLISTITEM *item, i32 value, f32 scale, i32 flags);
 #ifdef __cplusplus
 }
 #endif

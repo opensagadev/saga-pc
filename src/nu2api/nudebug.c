@@ -106,6 +106,26 @@ void fun_006dea70(void) {
 void fun_006dea80(void) {
 }
 
+u32 dat_008277f0[4] = {0x60000000, 0, 0, 0};
+u32 *dat_0297ad00 = 0;
+
+u32 *fun_006dea90(u32 *end) {
+    *(u16 *)dat_0297ad00 = (u16)((u32)((u8 *)end - (u8 *)dat_0297ad00) / 16 - 1);
+    dat_0297ad00 = NULL;
+    return end;
+}
+
+u32 *fun_006deac0(u32 *packet, u32 word2, u32 word3) {
+    dat_0297ad00 = packet;
+    packet[0] = dat_008277f0[0];
+    packet[1] = dat_008277f0[1];
+    packet[2] = word2;
+    packet[3] = word3;
+    dat_008277f0[2] = word2;
+    dat_008277f0[3] = word3;
+    return packet + 4;
+}
+
 void fun_006deb00(void) {
 }
 
@@ -126,6 +146,14 @@ i32 dat_0297ad84 = 0;
 
 void fun_006deb40(void) {
     dat_0297ad84 = 1;
+}
+
+NUMTX dat_0297ad08 = {0};
+
+void fun_006deb50(NUVEC *out, NUVEC *in) {
+    out->x = in->x * dat_0297ad08.m00 + in->y * dat_0297ad08.m10 + in->z * dat_0297ad08.m20 + dat_0297ad08.m30;
+    out->y = in->x * dat_0297ad08.m01 + in->y * dat_0297ad08.m11 + in->z * dat_0297ad08.m21 + dat_0297ad08.m31;
+    out->z = in->x * dat_0297ad08.m02 + in->y * dat_0297ad08.m12 + in->z * dat_0297ad08.m22 + dat_0297ad08.m32;
 }
 
 i32 fun_006debd0(void) {
