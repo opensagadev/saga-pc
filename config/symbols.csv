@@ -2923,9 +2923,9 @@ address,symbol,size,ctype
 0x004ef7b0,_NuFileRetry,1,void __cdecl (void)
 0x004ef7b0,_NuDatFileMissing,1,void __cdecl (char *)
 0x4ef7c0,_fun_004ef7c0,1,
-0x4ef7d0,_fun_004ef7d0,21,
+0x4ef7d0,_NuAllocManagerSetUsed,21,"void __cdecl(NUALLOC_MANAGER_BLOCK *,i32)"
 0x4ef7f0,_NuAllocManagerIsUsed,6,
-0x4ef800,_fun_004ef800,15,
+0x4ef800,_NuAllocManagerSetSize,15,"void __cdecl(NUALLOC_MANAGER_BLOCK *,u32)"
 0x4ef810,_NuAllocManagerGetSize,8,
 0x4ef820,_NuAllocManagerSetNext,4,
 0x4ef830,_NuAllocManagerGetNext,4,
@@ -2936,7 +2936,7 @@ address,symbol,size,ctype
 0x4ef890,_NuAllocManagerCheck,1,
 0x004ef8a0,_NuAllocManagerSplit,177,
 0x4ef960,_NuAllocManagerNextBlock,13,
-0x4ef970,_fun_004ef970,4,
+0x4ef970,_NuAllocManagerPreviousBlock,4,NUALLOC_MANAGER_BLOCK *__cdecl(NUALLOC_MANAGER_BLOCK *)
 0x4ef980,_NuAllocManagerCreate,148,
 0x4efa20,_NuAllocManagerDestroy,1,
 0x4efa30,_NuAllocManagerDump,1,
@@ -2994,7 +2994,7 @@ address,symbol,size,ctype
 0x004f0a80,_NuDatCalcPos,38,"i64 __cdecl (NUDATHDR *, i32)"
 0x4f0ab0,_NuDatFilePos,33,
 0x004f0ae0,_NuDatFileSeek,130,"i64 __cdecl (NUFILE, i64, i32)"
-0x4f0b70,_fun_004f0b70,39,
+0x4f0b70,_NuDatFileHash,39,u32 __cdecl(char *)
 0x004f0ba0,_NuDatFileClose,47,void __cdecl (NUFILE)
 0x004f0bd0,_NuDatFileGetFreeInfo,107,i32 __cdecl (void)
 0x004f0c40,_NuDatFileGetFreeHandleIX,101,"i32 __cdecl (NUDATHDR *, i32)"
