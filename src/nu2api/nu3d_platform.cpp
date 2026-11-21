@@ -4595,12 +4595,11 @@ extern "C" {
         u8 unknown_24[4];          // 0x24
     };
 
-    struct PC_PARTICLE_SHAPE {            // size 0x6a4
-        u8 unknown_00[0x10];              // 0x00
-        f32 gravity;                      // 0x10
-        u8 unknown_14[0x38];              // 0x14
-        PC_PARTICLE_SHAPE_KEY keys[0x40]; // 0x4c
-        u8 unknown_a4c[0x18];             // 0xa4c
+    struct PC_PARTICLE_SHAPE {            // size 0xa4c
+        u8 unknown_00[0x10];              // 0x000
+        f32 gravity;                      // 0x010
+        u8 unknown_14[0x38];              // 0x014
+        PC_PARTICLE_SHAPE_KEY keys[0x40]; // 0x04c
     };
 
     /* Places the 32 particles of a launch set at time and blends their shape keys; the PC build no longer draws the
