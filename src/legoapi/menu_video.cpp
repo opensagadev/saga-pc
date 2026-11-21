@@ -578,7 +578,7 @@ extern "C" void MenuEnterQuit(MENU *menu) {
 extern "C" void MenuExitQuit(MENU *) {
 }
 
-/* Menu 1024 has empty enter, draw, update and exit steps on PC. */
+/* Menu 1030 has empty enter, draw, update and exit steps on PC. */
 extern "C" void fun_00509470(MENU *) {
 }
 
