@@ -11911,6 +11911,15 @@ extern "C" NUMTX *PcGeometryGetProjectionMatrix(void) {
     return &PcGeometryProjectionMatrix;
 }
 
+/* Uploads count floats as whole vec4 shader constants. */
+static void PostSetVertexShaderFloats(i32 reg, const f32 *values, i32 count) {
+    PCDeviceSetVertexShaderConstantsF(reg, values, (count + 3) / 4);
+}
+
+static void PostSetPixelShaderFloats(i32 reg, const f32 *values, i32 count) {
+    PCDeviceSetPixelShaderConstantsF(reg, values, (count + 3) / 4);
+}
+
 static void PCPerfBeginEvent(i32 stage) {
     switch (stage) {
         case 2:
@@ -12063,7 +12072,7 @@ void NuMotionFilterGen::render() {
     params[1] = NuMotionFilterCentre;
     params[3] = params[2] = 0.0f;
     PCDeviceSetPixelShaderConstantsF(0x8a, params, 1);
-    PCDeviceSetPixelShaderConstantsF(0x8b, &weights[0][0], 7);
+    PostSetPixelShaderFloats(0x8b, &weights[0][0], sizeof(weights) / sizeof(f32));
     PCGraphicsEffectTextureSetFilterFields(color_texture, 2, 2, 2);
     PCGraphicsEffectTextureSetWrapFields(color_texture, 2, 2);
     POST_FILTER_BIND_TEXTURE(0, color_texture);
@@ -12722,7 +12731,7 @@ extern "C" void PostBlurGaussianChain(GRAPHICS_RENDER_TEXTURE *source, i32 sourc
             }
             PCGraphicsEffectTextureSetLowNibbles(input, input_lod, input_lod);
             POST_FILTER_BIND_TEXTURE(0, input);
-            PCDeviceSetVertexShaderConstantsF(0xa0, &taps[0].x, 13);
+            PostSetVertexShaderFloats(0xa0, &taps[0].x, sizeof(taps) / sizeof(f32));
             PCDeviceSetVertexShaderConstantsF(0xad, bias, 1);
             PCGraphicsDrawPostEffectQuad();
             PCGraphicsFramebufferBarrier(0, 1);
