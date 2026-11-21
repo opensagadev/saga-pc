@@ -122,6 +122,13 @@ static f32 Nu3dIncludesFabs(f32 f) {
     return rv;
 }
 
+static void Nu3dIncludesVuVecCopy(VuVec &destination, const VuVec &source) {
+    destination.x = source.x;
+    destination.y = source.y;
+    destination.z = source.z;
+    destination.w = source.w;
+}
+
 /* Unit-length copy of a direction, as a point (w = 1). */
 static void Nu3dIncludesVuVecNormalise(VuVec &destination, VuVec &source) {
     NuVecNorm(&destination.xyz, &source.xyz);
@@ -17722,14 +17729,8 @@ NUVEC *PC_POST_SHADOW_VECTOR::Normalize(NUVEC *out) const {
 extern "C" i32 NuDynamicLightTestShadowExtrusions(PCFrustumClipSet *light, const VuVec *first, const VuVec *second) {
     VuVec second_copy;
     __declspec(align(16)) VuVec first_copy;
-    second_copy.x = second->x;
-    second_copy.y = second->y;
-    second_copy.z = second->z;
-    second_copy.w = second->w;
-    first_copy.x = first->x;
-    first_copy.y = first->y;
-    first_copy.z = first->z;
-    first_copy.w = first->w;
+    Nu3dIncludesVuVecCopy(second_copy, *second);
+    Nu3dIncludesVuVecCopy(first_copy, *first);
     return light->TestBoxes(&first_copy.xyz, &second_copy.xyz);
 }
 
