@@ -102,44 +102,41 @@ static void TorpedoMtxSetRotationXY(NUMTX *matrix, NUANG x, NUANG y) {
     NuMtxSetRotationXYVU0(matrix, &angles);
 }
 
+static void TorpedoVuVecCopy(NUVEC4 *destination, const NUVEC4 *source) {
+    destination->x = source->x;
+    destination->y = source->y;
+    destination->z = source->z;
+    destination->w = source->w;
+}
+
+static NUVEC4 TorpedoVuVecMake(f32 x, f32 y, f32 z, f32 w) {
+    NUVEC4 v;
+    v.x = x;
+    v.y = y;
+    v.z = z;
+    v.w = w;
+    return v;
+}
+
 static void TorpedoMtxCopy(NUMTX *destination, const NUMTX *source) {
-    destination->m00 = source->m00;
-    destination->m01 = source->m01;
-    destination->m02 = source->m02;
-    destination->m03 = source->m03;
-    destination->m10 = source->m10;
-    destination->m11 = source->m11;
-    destination->m12 = source->m12;
-    destination->m13 = source->m13;
-    destination->m20 = source->m20;
-    destination->m21 = source->m21;
-    destination->m22 = source->m22;
-    destination->m23 = source->m23;
-    destination->m30 = source->m30;
-    destination->m31 = source->m31;
-    destination->m32 = source->m32;
-    destination->m33 = source->m33;
+    TorpedoVuVecCopy(&destination->rows[0], &source->rows[0]);
+    TorpedoVuVecCopy(&destination->rows[1], &source->rows[1]);
+    TorpedoVuVecCopy(&destination->rows[2], &source->rows[2]);
+    TorpedoVuVecCopy(&destination->rows[3], &source->rows[3]);
 }
 
 static void TorpedoSetRotationY(NUMTX *matrix, NUANG angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
+    NUVEC4 row;
     matrix->m00 = cosine;
     matrix->m01 = 0.0f;
     matrix->m02 = -sine;
     matrix->m03 = 0.0f;
-    matrix->m10 = ANI3_EVAL_IDENTITY_MATRIX.m10;
-    matrix->m11 = ANI3_EVAL_IDENTITY_MATRIX.m11;
-    matrix->m12 = ANI3_EVAL_IDENTITY_MATRIX.m12;
-    matrix->m13 = ANI3_EVAL_IDENTITY_MATRIX.m13;
-    matrix->m20 = sine;
-    matrix->m21 = 0.0f;
-    matrix->m22 = cosine;
-    matrix->m23 = 0.0f;
-    matrix->m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
-    matrix->m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
-    matrix->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
-    matrix->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
+    TorpedoVuVecCopy(&matrix->rows[1], &ANI3_EVAL_IDENTITY_MATRIX.rows[1]);
+    row = TorpedoVuVecMake(sine, 0.0f, cosine, 0.0f);
+    TorpedoVuVecCopy(&matrix->rows[2], &row);
+    TorpedoVuVecCopy(&matrix->rows[3], &ANI3_EVAL_IDENTITY_MATRIX.rows[3]);
 }
 
 static void TorpedoRotateY(NUMTX *m, NUANG angle) {

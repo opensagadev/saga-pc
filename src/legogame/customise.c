@@ -75,25 +75,34 @@ typedef struct custom_piece_anim_s {
 
 /* Native customiser menu drawing and private matrix helpers; append to customise.c. */
 
+static void CustomiseVuVecCopy(NUVEC4 *destination, const NUVEC4 *source) {
+    destination->x = source->x;
+    destination->y = source->y;
+    destination->z = source->z;
+    destination->w = source->w;
+}
+
+static NUVEC4 CustomiseVuVecMake(f32 x, f32 y, f32 z, f32 w) {
+    NUVEC4 v;
+    v.x = x;
+    v.y = y;
+    v.z = z;
+    v.w = w;
+    return v;
+}
+
 static void CustomiserMtxSetRotateZ(NUMTX *matrix, i32 angle) {
     const f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     const f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
-    matrix->m00 = cosine;
-    matrix->m01 = sine;
-    matrix->m02 = 0.0f;
-    matrix->m03 = 0.0f;
+    NUVEC4 row;
+    row = CustomiseVuVecMake(cosine, sine, 0.0f, 0.0f);
+    CustomiseVuVecCopy(&matrix->rows[0], &row);
     matrix->m10 = -sine;
     matrix->m11 = cosine;
     matrix->m12 = 0.0f;
     matrix->m13 = 0.0f;
-    matrix->m20 = ANI3_EVAL_IDENTITY_MATRIX.m20;
-    matrix->m21 = ANI3_EVAL_IDENTITY_MATRIX.m21;
-    matrix->m22 = ANI3_EVAL_IDENTITY_MATRIX.m22;
-    matrix->m23 = ANI3_EVAL_IDENTITY_MATRIX.m23;
-    matrix->m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
-    matrix->m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
-    matrix->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
-    matrix->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
+    CustomiseVuVecCopy(&matrix->rows[2], &ANI3_EVAL_IDENTITY_MATRIX.rows[2]);
+    CustomiseVuVecCopy(&matrix->rows[3], &ANI3_EVAL_IDENTITY_MATRIX.rows[3]);
 }
 
 static void CustomiserMtxRotateX(NUMTX *matrix, i32 angle) {

@@ -102,26 +102,35 @@ static i16 ZipupACos(f32 cos) {
 
 // The rope draw inlines these numtx rotations (other units call the
 // exported versions), so this unit carries local copies of their bodies.
+static void ZipupVuVecCopy(NUVEC4 *destination, const NUVEC4 *source) {
+    destination->x = source->x;
+    destination->y = source->y;
+    destination->z = source->z;
+    destination->w = source->w;
+}
+
+static NUVEC4 ZipupVuVecMake(f32 x, f32 y, f32 z, f32 w) {
+    NUVEC4 v;
+    v.x = x;
+    v.y = y;
+    v.z = z;
+    v.w = w;
+    return v;
+}
+
 static void RopeMtxSetRotationZ(NUMTX *m, NUANG a) {
     f32 cosz = NU_COS_LUT(a);
     f32 sinz = NU_SIN_LUT(a);
+    NUVEC4 row;
 
-    m->m00 = cosz;
-    m->m01 = sinz;
-    m->m02 = 0.0f;
-    m->m03 = 0.0f;
+    row = ZipupVuVecMake(cosz, sinz, 0.0f, 0.0f);
+    ZipupVuVecCopy(&m->rows[0], &row);
     m->m10 = -sinz;
     m->m11 = cosz;
     m->m12 = 0.0f;
     m->m13 = 0.0f;
-    m->m20 = ANI3_EVAL_IDENTITY_MATRIX.m20;
-    m->m21 = ANI3_EVAL_IDENTITY_MATRIX.m21;
-    m->m22 = ANI3_EVAL_IDENTITY_MATRIX.m22;
-    m->m23 = ANI3_EVAL_IDENTITY_MATRIX.m23;
-    m->m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
-    m->m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
-    m->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
-    m->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
+    ZipupVuVecCopy(&m->rows[2], &ANI3_EVAL_IDENTITY_MATRIX.rows[2]);
+    ZipupVuVecCopy(&m->rows[3], &ANI3_EVAL_IDENTITY_MATRIX.rows[3]);
 }
 
 static void RopeMtxRotateX(NUMTX *m, NUANG a) {

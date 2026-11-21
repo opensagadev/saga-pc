@@ -244,25 +244,34 @@ static i16 MoveACos(f32 cos) {
     return 0x4000 - MovementArcSine(cos);
 }
 
+static void MoveVuVecCopy(NUVEC4 *destination, const NUVEC4 *source) {
+    destination->x = source->x;
+    destination->y = source->y;
+    destination->z = source->z;
+    destination->w = source->w;
+}
+
+static NUVEC4 MoveVuVecMake(f32 x, f32 y, f32 z, f32 w) {
+    NUVEC4 v;
+    v.x = x;
+    v.y = y;
+    v.z = z;
+    v.w = w;
+    return v;
+}
+
 static void MovementMtxSetRotationX(NUMTX *matrix, i32 angle) {
     f32 cos_x = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sin_x = NuTrigTable[(angle >> 1) & 0x7fff];
-    matrix->m00 = ANI3_EVAL_IDENTITY_MATRIX.m00;
-    matrix->m01 = ANI3_EVAL_IDENTITY_MATRIX.m01;
-    matrix->m02 = ANI3_EVAL_IDENTITY_MATRIX.m02;
-    matrix->m03 = ANI3_EVAL_IDENTITY_MATRIX.m03;
-    matrix->m10 = 0.0f;
-    matrix->m11 = cos_x;
-    matrix->m12 = sin_x;
-    matrix->m13 = 0.0f;
+    NUVEC4 row;
+    MoveVuVecCopy(&matrix->rows[0], &ANI3_EVAL_IDENTITY_MATRIX.rows[0]);
+    row = MoveVuVecMake(0.0f, cos_x, sin_x, 0.0f);
+    MoveVuVecCopy(&matrix->rows[1], &row);
     matrix->m20 = 0.0f;
     matrix->m21 = -sin_x;
     matrix->m22 = cos_x;
     matrix->m23 = 0.0f;
-    matrix->m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
-    matrix->m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
-    matrix->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
-    matrix->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
+    MoveVuVecCopy(&matrix->rows[3], &ANI3_EVAL_IDENTITY_MATRIX.rows[3]);
 }
 
 static void MovementMtxRotateX(NUMTX *m, NUANG angle) {
