@@ -40,8 +40,8 @@ typedef struct minicut_s { // size 0x30
     MINICUT_PART *parts;   // 0x10
     i32 part_count;        // 0x14
     u8 played;             // 0x18
-    u8 padding_19;         // 0x19
-    u16 unknown_1a;        // 0x1a
+    u8 padding[1];         // 0x19
+    u16 id;                // 0x1a
     f32 blend_in;          // 0x1c
     f32 tracking_speed;    // 0x20
     f32 blend_out;         // 0x24
@@ -140,10 +140,10 @@ void GizMiniCut_Activate(GIZMO *gizmo, i32 active) {
     }
 }
 
-/* Unreferenced: the minicut's word at 0x1a, or -1 without a minicut. */
+/* Unreferenced: the minicut's id, or -1 without a minicut. */
 i32 fun_005b0dd0(GIZMO *gizmo) {
     if (gizmo != NULL && gizmo->object != NULL) {
-        return ((MINICUT *)gizmo->object)->unknown_1a;
+        return ((MINICUT *)gizmo->object)->id;
     }
     return -1;
 }
