@@ -1249,7 +1249,7 @@
     "build/obj/nu2api/nuapi.obj": "c5547987ec01dcaf0313bb202ffc2eb9a799f8f97cea19367657422863cebdbe",
     "build/obj/nu2api/nubridge.obj": "5f370c4ef6be1348161fc6dcd34f3d50eed0e515836e49d1c7937fc57842ae62",
     "build/obj/nu2api/nucamera.obj": "91e8a89a34994f14807fa40a89dee51af18fe03970a1b8717e2da7a412041dee",
-    "build/obj/nu2api/nucore_includes.obj": "fabbeabd87762127ba84ee4646159439e52d19c671365c6c1269288f30db6863",
+    "build/obj/nu2api/nucore_includes.obj": "81405fb5f8715f5ec893fabf3b58db0c714164825ebb7e3d1e1a281ea3ff9d58",
     "build/obj/nu2api/nudebug.obj": "24f558c099f2661071834f62a67bb691b65af64ec1072eddc49b033c6d827092",
     "build/obj/nu2api/nudebug_pc.obj": "485c8fbe95ee5810bea52b87124299018c16a8df1ab843b8091bd9c9a051af9a",
     "build/obj/nu2api/nudlist_material.obj": "33e0a1cc9a89bdbdcba1b401706393f4d2ba04f31f357b388df5d21f48d2bd27",
@@ -1269,7 +1269,7 @@
     "build/obj/nu2api/nuparticle_state.obj": "a9a597e13105a78ad5a4a90c56b5aae7f1c1119c9b37ebdd2c0f8b6b65ec970f",
     "build/obj/nu2api/nupsfile.obj": "ee374622eb37737a6cfd30bee40802aace94f63ad7370918b5956f19bbe8abc4",
     "build/obj/nu2api/nurain.obj": "61ecf925f8885b82714d315c002f08dd1337df33d3979acc04a504cac8541354",
-    "build/obj/nu2api/nurndr.obj": "0f4758a19b0f2a2a7ba719c7ff93ecd1d59f1b61de482b1db260d54c20a6c315",
+    "build/obj/nu2api/nurndr.obj": "14dbc86ec8f1fa52aa274d0ed6a2361fc8513983d528b51cf696d03334270e93",
     "build/obj/nu2api/nurndr_swap.obj": "40405cc76da44220b62da09fb59f3ac67524c5b1c5d2f3552e4a1f77029382c1",
     "build/obj/nu2api/nuscratch.obj": "9fec8074864adc64cfa9010c5dcd5daaf3369bec24b5ab00c453bbe3895d97b8",
     "build/obj/nu2api/nushader.obj": "7d5778ee558579841cbab395bed236b04dcabfb8505caa41b41100fa946db728",
@@ -1315,7 +1315,7 @@
     "build/obj/nu2api/shader_dictionary.obj": "f78cdf341b2b30f731ee6bc73524199ddf3abac0c943ad4eb4e40012ccdd234d",
     "build/obj/nu2api/shader_lexical.obj": "26e6798bce744dbbfbfab7efee19543fb447b7173b8069603d1f2802d79ae69e",
     "build/obj/nu2api/shader_parser.obj": "4a99aee2d1285578bcda35c2974f8b68ae6bd8ca0e2f38ea53f181e6857452d3",
-    "build/obj/nu2api/terrain_collision.obj": "263cdd6a364b8333d278806044d19af72082458aa92e65f2a80b671f1e64f740",
+    "build/obj/nu2api/terrain_collision.obj": "afc2acb26a0f78112babf9cb2926ef88cb284cd7ef124745b19a9f5360cd8f39",
     "build/obj/nu2api/terrain_diagnostic.obj": "8f9efbc18d031c0b23b90e4d68de7864cb7a79c9ead633a2c8307b52e11dfdcd",
     "build/obj/nu2api/terrain_query.obj": "b366ed54342913a952bb873875ba2914d984dd7acc4ac71ba4197b653a182cf6",
     "build/obj/nu2api/terrain_scan.obj": "6c2d7f393eaddbe14025dfd06456ab5638aff49d17430f3ceee0f0c7dbfef26b",
@@ -899444,7 +899444,7 @@
       "metadata_sha256": "a005dfb7254f87304ba5e7d1c5083ab46db1e8272ef5fdd2e11a8953a1d1d2d5",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "cd95aac9efaec956c519e344ce5d0633019d01d34e32738eca4e90e0d3e5be9a",
+      "geometry_object_sha256": "e449c9130036535dc4bcee77961444526bfefbd189eb4de1ee3f025f0c1a8bd2",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
@@ -899887,7 +899887,7 @@
         },
         "src/nu2api/nurndr.c": {
           "source_sha256": "eb8f7cf8a7ce5b1927672edb39ca3f30aecd5ddc3df21d2367b71eae1fdc9fde",
-          "object_sha256": "0f4758a19b0f2a2a7ba719c7ff93ecd1d59f1b61de482b1db260d54c20a6c315"
+          "object_sha256": "14dbc86ec8f1fa52aa274d0ed6a2361fc8513983d528b51cf696d03334270e93"
         },
         "src/nu2api/nu3d_platform.cpp": {
           "source_sha256": "c91ec4d4b7aa6a6e3615c5d500deb659cf03d1b3ce587cd4e0e265712c82d87c",
