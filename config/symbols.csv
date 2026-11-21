@@ -7229,7 +7229,7 @@ address,symbol,size,ctype
 0x5c19b0,?Nu3dIncludesVecMin@@YAXPAUnuvec_s@@PBU1@1@Z,16,
 0x5c19c0,?Nu3dIncludesVecMax@@YAXPAUnuvec_s@@PBU1@1@Z,16,
 0x5c19d0,_NuAnimMtxCopyPrivate,95,
-0x5c1a30,_fun_005c1a30,95,
+0x5c1a30,_PostShadowMtxCopy,95,"void __cdecl(NUMTX *,const NUMTX *)"
 0x5c1a90,?Nu3dIncludesVecMtxTransform@@YAXPAUnuvec_s@@PBU1@PBUnumtx_s@@@Z,16,
 0x5c1aa0,_VisibilityTransformFour,111,
 0x5c1b10,_fun_005c1b10,91,

@@ -577,6 +577,26 @@ extern "C" {
         destination->m33 = source->m33;
     }
 
+    /* The post shadow code's own copy of the matrix copy helper. */
+    static void PostShadowMtxCopy(NUMTX *destination, const NUMTX *source) {
+        destination->m00 = source->m00;
+        destination->m01 = source->m01;
+        destination->m02 = source->m02;
+        destination->m03 = source->m03;
+        destination->m10 = source->m10;
+        destination->m11 = source->m11;
+        destination->m12 = source->m12;
+        destination->m13 = source->m13;
+        destination->m20 = source->m20;
+        destination->m21 = source->m21;
+        destination->m22 = source->m22;
+        destination->m23 = source->m23;
+        destination->m30 = source->m30;
+        destination->m31 = source->m31;
+        destination->m32 = source->m32;
+        destination->m33 = source->m33;
+    }
+
     void buildBitCountTable(void) {
         i32 value;
         for (value = 0; value < 256; ++value) {
@@ -18059,22 +18079,7 @@ void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrix(NURNDRLIGHTRECORD *set) {
         f32 bound_x;
         f32 bound_y;
         f32 bound_z;
-        basis_copy.m00 = basis.m00;
-        basis_copy.m01 = basis.m01;
-        basis_copy.m02 = basis.m02;
-        basis_copy.m03 = basis.m03;
-        basis_copy.m10 = basis.m10;
-        basis_copy.m11 = basis.m11;
-        basis_copy.m12 = basis.m12;
-        basis_copy.m13 = basis.m13;
-        basis_copy.m20 = basis.m20;
-        basis_copy.m21 = basis.m21;
-        basis_copy.m22 = basis.m22;
-        basis_copy.m23 = basis.m23;
-        basis_copy.m30 = basis.m30;
-        basis_copy.m31 = basis.m31;
-        basis_copy.m32 = basis.m32;
-        basis_copy.m33 = basis.m33;
+        PostShadowMtxCopy(&basis_copy, &basis);
         NuVecMtxTransformH((NUVEC *)&result, &corners[i].xyz, &basis_copy);
         projected[i].x = result.x;
         projected[i].y = result.y;
