@@ -1836,9 +1836,11 @@ extern "C" {
     typedef struct PC_EFFECT PC_EFFECT;
 
     /* ID3DXEffect method table up to ID3DXBaseEffect::SetTexture (slot 52). */
-    typedef struct PC_EFFECT_METHODS {                                                     // size 0xd4
-        void *unknown_00[52];                                                              // 0x00
-        HRESULT(__stdcall *set_texture)(PC_EFFECT *, const char *, PC_TEXTURE_RESOURCE *); // 0xd0
+    typedef struct PC_EFFECT_METHODS {                                                         // size 0xd4
+        void *unknown_00[36];                                                                  // 0x00
+        HRESULT(__stdcall *set_vector_array)(PC_EFFECT *, const char *, const NUVEC4 *, UINT); // 0x90
+        void *unknown_94[15];                                                                  // 0x94
+        HRESULT(__stdcall *set_texture)(PC_EFFECT *, const char *, PC_TEXTURE_RESOURCE *);     // 0xd0
     } PC_EFFECT_METHODS;
 
     struct PC_EFFECT {                    // size 0x4
@@ -2296,6 +2298,91 @@ extern "C" {
     void NuWaterReset(void) {
         nu_water_reset_state = 1;
         nu_water_reset_status = 0;
+    }
+
+    /* The water waves: a table of 32 points on circles around the camera, rotated a little further each frame,
+     * and per-vertex wave indices the water shader looks them up with. */
+    f32 dat_0080e170 = 0.26666668f;
+    f32 dat_0080e174 = 0.7f;
+    NUMTL *dat_02854c04 = NULL;
+    i32 dat_02854c08 = 0;
+    i32 dat_00924878 = 0;
+    NUVEC4 dat_028358c8[32] = {0};
+
+    void fun_005f9550(f32 time, i32 unused, NUMTL *material) {
+        NUMTX matrix;
+        NUVEC scale;
+        u32 seed;
+        f32 radius;
+        i32 i;
+        scale.x = 0.5f;
+        scale.y = 0.5f;
+        scale.z = 0.5f;
+        if (dat_02854c04 == NULL) {
+            dat_02854c04 = material;
+        }
+        if (dat_02854c08 != dat_00924878) {
+            dat_0080e174 += material->transform_scale * dat_0080e170;
+        }
+        if (dat_02854c04 == material && dat_02854c08 == dat_00924878) {
+            return;
+        }
+        dat_02854c08 = dat_00924878;
+        dat_02854c04 = material;
+        NuMtxInvR(&matrix, &global_camera.mtx);
+        NuMtxScale(&matrix, &scale);
+        matrix.m03 = matrix.m13 = matrix.m23 = 0.0f;
+        seed = 0x11;
+        radius = material->amplitude * time;
+        NuRandFloatSeeded(&seed);
+        for (i = 0; i < 32; ++i) {
+            NUVEC point;
+            NUVEC transformed;
+            f32 angle;
+            f32 speed = (f32)((NuRandFloatSeeded(&seed) * 0.4f + 0.8f) * dat_0080e174);
+            angle = NuRandFloatSeeded(&seed) * 6.2831855f + speed;
+            point.x = NuTrigTable[((i32)(angle * AIPathAngularScale) >> 1) & 0x7fff] * radius;
+            point.y = 0.0f;
+            speed = (f32)((NuRandFloatSeeded(&seed) * 0.4f + 0.7f) * dat_0080e174);
+            angle = NuRandFloatSeeded(&seed) * 6.2831855f + speed;
+            point.z = NuTrigTable[((i32)(angle * AIPathAngularScale) >> 1) & 0x7fff] * radius;
+            NuVecMtxTransformH(&transformed, &point, &matrix);
+            dat_028358c8[i].x = transformed.x;
+            dat_028358c8[i].y = transformed.y;
+            dat_028358c8[i].z = 1.0f;
+            dat_028358c8[i].w = radius;
+        }
+    }
+
+    void fun_005f9740(i32 unused, PC_GOBJ_REGISTRY_CHILD *child, PC_EFFECT *effect) {
+        u8 *source;
+        f32 *indices;
+        i32 i;
+        effect->methods->set_vector_array(effect, "mtxWaterTable", dat_028358c8, 32);
+        if (NuWaterVertexBuffer == NULL) {
+            PCDeviceCreateVertexBuffer(0x17700, 0x208, 0, 0, &NuWaterVertexBuffer);
+        }
+        PCDeviceLockVertexBuffer(child->auxiliary->first_vertex * 0x24, child->vertex_count * 0x24, (void **)&source, 0,
+                                 child->vertex_buffer);
+        PCDeviceLockVertexBuffer(0, 0, (void **)&indices, 0x2000, NuWaterVertexBuffer);
+        for (i = 0; i < child->vertex_count; ++i) {
+            NUVEC *position = (NUVEC *)(source + i * 0x24);
+            f32 x = position->x;
+            f32 z = position->z;
+            i32 cell_x = (i32)x;
+            i32 cell_z = (i32)z;
+            u32 seed = ((cell_z << 2 ^ cell_x) << 3) ^ (cell_z * cell_x);
+            i32 first = (i32)(NuRandFloatSeeded(&seed) * 1.5 + z);
+            i32 second = (i32)(NuRandFloatSeeded(&seed) * 1.5 + x);
+            indices[i] = (f32)((first + second) & 0x1f);
+        }
+        PCDeviceUnlockVertexBuffer(child->vertex_buffer);
+        PCDeviceUnlockVertexBuffer(NuWaterVertexBuffer);
+        if (child->stream_format == 0x400 || child->stream_format == 0x480) {
+            PCDeviceSetStreamSource(2, NuWaterVertexBuffer, 0, 4);
+        } else {
+            PCDeviceSetStreamSource(1, NuWaterVertexBuffer, 0, 4);
+        }
     }
 
     /* Releases the water vertex buffer before the D3D device is reset or destroyed. */

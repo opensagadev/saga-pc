@@ -257,7 +257,9 @@ extern "C" {
         void *payload;                     // 0x0c
         u8 unknown_10[4];                  // 0x10
         u8 unknown_14;                     // 0x14
-        u8 unknown_15[0x3b];               // 0x15
+        u8 unknown_15[0x27];               // 0x15
+        i32 first_vertex;                  // 0x3c
+        u8 unknown_40[0x10];               // 0x40
     } PC_GOBJ_REGISTRY_AUX;
 
     extern i32 NuGobjRegistryInitialized;
@@ -347,7 +349,8 @@ extern "C" {
         struct PC_BUFFER_RESOURCE *vertex_buffer; // 0x48
         u8 unknown_4c[0x1c];                      // 0x4c
         i32 vertex_type;                          // 0x68
-        u8 unknown_6c[0x2c];                      // 0x6c
+        u32 stream_format;                        // 0x6c
+        u8 unknown_70[0x28];                      // 0x70
     } PC_GOBJ_REGISTRY_CHILD;
 
     typedef struct PC_GOBJ_REGISTRY_ENTRY {      // size 0x14
