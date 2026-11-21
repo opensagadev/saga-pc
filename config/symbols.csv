@@ -10552,7 +10552,7 @@ address,symbol,size,ctype
 0x642160,?AddMenuItem@?$EdValueControl@H@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,231,
 0x642250,?AddMenuItem@?$EdValueControl@M@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,237,
 0x642340,_ObjectsallNuError,1,
-0x642350,?ObjectsallFabs@@YAMM@Z,18,
+0x642350,_PartsFabs,18,f32 __cdecl(f32)
 0x642370,_PartsFdiv,54,
 0x6423b0,_PartRuntimeDirectionalLightsPrivate,183,
 0x642470,_PartsSetAmbientLight,36,
