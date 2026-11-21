@@ -96,7 +96,7 @@ static void ChrisVuVecScale(NUVEC4 &destination, const NUVEC4 &v, f32 scale) {
 }
 
 /* Unit-length copy of a direction, as a point (w = 1). */
-static void ChrisVuVecNormalise(VuVec &destination, VuVec &source) {
+static void ChrisVuVecNormalise(NUVEC4 &destination, NUVEC4 &source) {
     NuVecNorm(&destination.xyz, &source.xyz);
     destination.w = 1.0f;
 }
@@ -105,11 +105,11 @@ static void ChrisVuVecCross(NUVEC4 &destination, NUVEC4 &a, NUVEC4 &b) {
     NuVecCross(&destination.xyz, &a.xyz, &b.xyz);
 }
 
-static f32 ChrisVuVecDot(const VuVec &a, const VuVec &b) {
+static f32 ChrisVuVecDot(const NUVEC4 &a, const NUVEC4 &b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
-static f32 ChrisVuVecLengthSq(const VuVec &v) {
+static f32 ChrisVuVecLengthSq(const NUVEC4 &v) {
     return v.x * v.x + v.y * v.y + v.z * v.z;
 }
 
@@ -121,7 +121,7 @@ static void ChrisVuVecMtxTransform(NUVEC4 *destination, NUVEC4 *v, NUMTX *matrix
     NuVecMtxTransform(&destination->xyz, &v->xyz, matrix);
 }
 
-static f32 ChrisVuVecLength(const VuVec &v) {
+static f32 ChrisVuVecLength(const NUVEC4 &v) {
     f32 length_squared = ChrisVuVecLengthSq(v);
     return NuFsqrt(length_squared);
 }
@@ -658,7 +658,7 @@ extern "C" {
             direction.y = spline->points[0].y - spline->points[1].y;
             direction.z = spline->points[0].z - spline->points[1].z;
             index = 0;
-            ChrisVuVecNormalise(*(VuVec *)&direction, *(VuVec *)&direction);
+            ChrisVuVecNormalise(direction, direction);
             direction.x *= 10.0;
             direction.y *= 10.0;
             direction.z *= 10.0;
@@ -810,7 +810,7 @@ extern "C" {
                 difference.x = current.x - previous.x;
                 difference.y = current.y - previous.y;
                 difference.z = current.z - previous.z;
-                squared = ChrisVuVecLengthSq(*(VuVec *)&difference);
+                squared = ChrisVuVecLengthSq(difference);
                 distance = (f32)((f64)NuFsqrt(squared) + distance);
             } while (along > 0.0f);
         }
@@ -1182,10 +1182,10 @@ extern "C" {
         __declspec(align(16)) NUVEC4 local;
         NUVEC *target_position;
         NUVEC *target_velocity;
-        NUVEC *axis;
-        NUVEC *front;
-        NUVEC *right;
-        NUVEC *up;
+        NUVEC4 *axis;
+        NUVEC4 *front;
+        NUVEC4 *right;
+        NUVEC4 *up;
         GAMEOBJECT *player;
         f32 forward;
         f32 square;
@@ -1229,7 +1229,7 @@ extern "C" {
             target_position = &fighter->target->matrix.translation;
             target_velocity = &fighter->velocity.xyz;
         }
-        front = (NUVEC *)&fighter->matrix.m20;
+        front = &fighter->matrix.rows[2];
         offset.x = target_position->x - fighter->matrix.m30;
         offset.y = target_position->y - fighter->matrix.m31;
         offset.z = target_position->z - fighter->matrix.m32;
@@ -1248,16 +1248,18 @@ extern "C" {
             return 2;
         }
         travel_time = forward / closing_speed;
-        ChrisVuVecScale(local, *(NUVEC4 *)target_velocity, travel_time);
+        local.x = (f64)target_velocity->x * travel_time;
+        local.y = (f64)target_velocity->y * travel_time;
+        local.z = (f64)target_velocity->z * travel_time;
         ChrisVuVecAdd(offset, offset, local);
         if (fighter->fired == 0) {
-            right = (NUVEC *)&fighter->matrix.m00;
-            up = (NUVEC *)&fighter->matrix.m10;
+            right = &fighter->matrix.rows[0];
+            up = &fighter->matrix.rows[1];
             least = ChrisFabs((f64)right->y * offset.y + (f64)right->x * offset.x + (f64)right->z * offset.z);
             absolute.value = (f64)up->y * offset.y + (f64)up->x * offset.x + (f64)up->z * offset.z;
             absolute.bits &= 0x7fffffff;
             up_dot = absolute.value;
-            absolute.value = ChrisVuVecDot(*(VuVec *)front, *(VuVec *)&offset);
+            absolute.value = ChrisVuVecDot(*front, offset);
             absolute.bits &= 0x7fffffff;
             front_dot = absolute.value;
             axis = front;
@@ -1268,8 +1270,8 @@ extern "C" {
             } else if (front_dot > up_dot) {
                 axis = up;
             }
-            ChrisVuVecCross(fighter->aim_direction, offset, *(NUVEC4 *)axis);
-            ChrisVuVecNormalise(*(VuVec *)&fighter->aim_direction, *(VuVec *)&fighter->aim_direction);
+            ChrisVuVecCross(fighter->aim_direction, offset, *axis);
+            ChrisVuVecNormalise(fighter->aim_direction, fighter->aim_direction);
         }
         if (fighter->aim_bias != 0.0f) {
             bias = fighter->aim_bias;
@@ -2219,7 +2221,7 @@ extern "C" {
         difference.x -= d.x;
         difference.y -= d.y;
         difference.z -= d.z;
-        ChrisVuVecLength(*(VuVec *)&difference);
+        ChrisVuVecLength(*(NUVEC4 *)&difference);
         difference.x = (f64)b.x + a.x;
         difference.y = (f64)b.y + a.y;
         difference.z = (f64)b.z + a.z;
@@ -2431,7 +2433,7 @@ extern "C" {
         }
         velocity = &group->velocity;
         ChrisVuVecSub(*velocity, *target, *start);
-        ChrisVuVecNormalise(*(VuVec *)velocity, *(VuVec *)velocity);
+        ChrisVuVecNormalise(*velocity, *velocity);
         speed = group->speed;
         ChrisVuVecScale(*velocity, *velocity, speed);
         group->duration = duration;

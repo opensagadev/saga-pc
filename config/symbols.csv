@@ -151,11 +151,11 @@ address,symbol,size,ctype
 0x40e760,?ChrisVuVecAdd@@YAXAAUNUVEC4@@ABU1@1@Z,29,"void __cdecl (NUVEC4 &, const NUVEC4 &, const NUVEC4 &)"
 0x40e780,?ChrisVuVecSub@@YAXAAUNUVEC4@@ABU1@1@Z,29,"void __cdecl (NUVEC4 &, const NUVEC4 &, const NUVEC4 &)"
 0x40e7a0,?ChrisVuVecScale@@YAXAAUNUVEC4@@ABU1@M@Z,29,"void __cdecl (NUVEC4 &, const NUVEC4 &, f32)"
-0x40e7c0,?ChrisVuVecNormalise@@YAXAAUVuVec@@0@Z,18,
+0x40e7c0,?ChrisVuVecNormalise@@YAXAAUNUVEC4@@0@Z,18,
 0x40e7e0,?ChrisVuVecCross@@YAXAAUNUVEC4@@00@Z,16,"void __cdecl (NUVEC4 &, NUVEC4 &, NUVEC4 &)"
-0x40e7f0,?ChrisVuVecDot@@YAMABUVuVec@@0@Z,29,
-0x40e810,?ChrisVuVecLengthSq@@YAMABUVuVec@@@Z,33,
-0x40e840,?ChrisVuVecLength@@YAMABUVuVec@@@Z,46,
+0x40e7f0,?ChrisVuVecDot@@YAMABUNUVEC4@@0@Z,29,
+0x40e810,?ChrisVuVecLengthSq@@YAMABUNUVEC4@@@Z,33,
+0x40e840,?ChrisVuVecLength@@YAMABUNUVEC4@@@Z,46,
 0x40e870,_CopyFlightMatrix,95,"void __cdecl (NUMTX *, const NUMTX *)"
 0x40e8d0,?ChrisVuVecMtxTransform@@YAXPAUNUVEC4@@0PAUnumtx_s@@@Z,16,
 0x40e8e0,_TransformFlightVector,91,"static void(NUMTX *, NUVEC *, NUVEC *)"
