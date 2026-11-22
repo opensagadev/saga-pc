@@ -5682,22 +5682,27 @@ i32 NuStrCpyW(u16 *dst, const u16 *src) {
 }
 
 i32 NuStrNCpyW(NUWCHAR *dst, const NUWCHAR *src, i32 n) {
-    i32 copied = 0;
+    i32 count = 0;
+
     if (src == NULL) {
         *dst = 0;
         return 0;
     }
+
     do {
-        n = (i32)((u32)n - 1u);
-        ++copied;
+        n--;
         if (n <= 0) {
             *dst = 0;
+            count++;
             break;
         }
+
         *dst = *src;
-        ++dst;
+        dst++;
+        count++;
     } while (*src++ != 0);
-    return copied - 1;
+
+    return count - 1;
 }
 
 NUWCHAR *NuStrChrW(NUWCHAR *str, NUWCHAR character) {
