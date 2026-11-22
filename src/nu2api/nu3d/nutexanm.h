@@ -56,7 +56,7 @@ extern "C" {
         i16 label_offsets[32];          // 0x170
         i32 label_count;                // 0x1b0
         i16 instruction_count;          // 0x1b4
-        u16 flags;                      // 0x1b6
+        i16 flags;                      // 0x1b6
         u16 mask;                       // 0x1b8
         i16 instructions[1];            // 0x1ba
     };

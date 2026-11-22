@@ -785,7 +785,7 @@ void NuTexAnimProgInit(TEXTURE_ANIM_PROGRAM *program) {
     program->off_mask = 0;
     program->name[0] = 0;
     program->label_count = 0;
-    *(i16 *)&program->flags &= ~1;
+    program->flags &= ~1;
     program->mask = 1;
 }
 
@@ -839,7 +839,7 @@ TEXTURE_ANIM_PROGRAM *NuTexAnimProgRead(VARIPTR *buffer, char *path) {
         program->previous = NULL;
         GHGTextureProgramsPC = program;
         if (buffer != NULL) {
-            program->flags &= ~1u;
+            program->flags &= ~1;
         } else {
             program->flags |= 1;
         }
