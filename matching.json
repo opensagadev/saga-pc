@@ -641,7 +641,7 @@
     "src/legoapi/shadow_light_setup.cpp": "eb34e57ad9cbc9053b4ff7861f32d757f86860c6fd9eaad0c4de5512c0a78a25",
     "src/legoapi/shop_code_data.cpp": "29a5848a2c351068651e650e2c703ed4a0795e618da2a723710af1c47a76e6c1",
     "src/legoapi/simpletons.cpp": "a10fc5da8490d9112d34e40dd7b70454f811d66818989922273d73ef0b165488",
-    "src/legoapi/status_alternate.cpp": "4483a6f11ab44a5dd08be6686cb19a959fed6494d14287a06a064b01cf461a1f",
+    "src/legoapi/status_alternate.cpp": "1c1cd9aa4f0d5b92ba8bbe27fb5b2373b78f6b789fd6e21856d96d84c7a1e1e0",
     "src/legoapi/streaks.cpp": "ab8df0b3c36fcd8a6e5886d185933f31e427c91241c55b7f9f10c9b9cc2edf24",
     "src/legoapi/text_tables.cpp": "9f4a118bc571386da54b9d988525af79008e4e58e89ffdf1d7f1a6d6742fba99",
     "src/legoapi/worldinfo.cpp": "e757531b6bfa8f307b7cf455ca9001998f9db5b18677bce8346a90b9dcf93c76",
@@ -1154,7 +1154,7 @@
     "build/obj/legoapi/specialmoves_diagnostic.obj": "9babc8d6664b0825a3e5130f81d2171ef8ccd52e832f2e0384bba345d42e8440",
     "build/obj/legoapi/specialsfx.obj": "08a2516bacfab252a1a7ecc0b834128120c5174ec7cce8aef77c908b2ca7ee86",
     "build/obj/legoapi/startup_dats.obj": "e6b8534a519a39dfacb676e3de022d0988ec873784a20004157ce46a81728ddc",
-    "build/obj/legoapi/status_alternate.obj": "2b00a1c0e0a5b9fd14bb5178be9675b0d484ed2ea82787bba91007cba58bd8c9",
+    "build/obj/legoapi/status_alternate.obj": "7a063f9b62f2c3d62047e5b9328d01969f469629344197720c40bd07c5134130",
     "build/obj/legoapi/streaks.obj": "f2affa2c409e045fc2d273e8a249945cb3d381a8fb766c5dbf28a8674846629e",
     "build/obj/legoapi/surfaces.obj": "a30289b239f0692fca8ed24c650374a43ff92f79e267f7704eb4a91307e03ce3",
     "build/obj/legoapi/tagging.obj": "e952a472bd860eb065ea86b26613cdf29d1b5a00f75643a6b07d60c55676f855",
@@ -28665,26 +28665,21 @@
         "src/legoapi/status_alternate.cpp"
       ],
       "target_size": 1168,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/status_alternate.cpp",
           "base_size": 1168,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "7f75893e3e71fc3ea7276c8ae3bd55f3e98d39fd519cff0910de8579c68f6c02",
-          "base_sha256": "d2c979d18d0114ce31de181e89a53d0d4c838aef349fbee4bd15fd71b6c9a9d6",
+          "base_sha256": "7f75893e3e71fc3ea7276c8ae3bd55f3e98d39fd519cff0910de8579c68f6c02",
           "relocation_count": 55,
           "comparison_unit": "00458ed0-5b453ad079fc",
-          "objdiff_percent": 98.53521
+          "objdiff_percent": 100.0
         }
       ],
-      "diff_class": "reordered",
-      "diff_hunks": 6,
-      "idioms": [
-        "I4"
-      ],
-      "status": "different",
-      "objdiff_percent": 98.53521
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "TrueHero_Alt_Draw",
@@ -28742,26 +28737,21 @@
         "src/legoapi/status_alternate.cpp"
       ],
       "target_size": 1040,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/status_alternate.cpp",
           "base_size": 1040,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "095f220a9ad012b64ad3bae387f1af0350cfce3d0376b1dca6e770c8e1d2ba2c",
-          "base_sha256": "ad0ad4a2fa0368012e43b342e7916ec303c24f9cf3567919921ac187b6c5b010",
+          "base_sha256": "095f220a9ad012b64ad3bae387f1af0350cfce3d0376b1dca6e770c8e1d2ba2c",
           "relocation_count": 56,
           "comparison_unit": "00459b50-6655c52aa731",
-          "objdiff_percent": 98.208954
+          "objdiff_percent": 100.0
         }
       ],
-      "diff_class": "reordered",
-      "diff_hunks": 4,
-      "idioms": [
-        "I4"
-      ],
-      "status": "different",
-      "objdiff_percent": 98.208954
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "MiniKit_Alt_Draw",
@@ -28891,26 +28881,21 @@
         "src/legoapi/status_alternate.cpp"
       ],
       "target_size": 692,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/status_alternate.cpp",
           "base_size": 692,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "eae429baa0606249e79b16a49eb9e7ed869917eade2485db5b7037eca0faa263",
-          "base_sha256": "aee25a3d776d591ba162eb38027d88964aa0d88c3b9e2ee8d28a04b2ab508f8e",
+          "base_sha256": "eae429baa0606249e79b16a49eb9e7ed869917eade2485db5b7037eca0faa263",
           "relocation_count": 39,
           "comparison_unit": "0045a8f0-a1965f8cd331",
-          "objdiff_percent": 93.454544
+          "objdiff_percent": 100.0
         }
       ],
-      "diff_class": "reordered",
-      "diff_hunks": 10,
-      "idioms": [
-        "I4"
-      ],
-      "status": "different",
-      "objdiff_percent": 93.454544
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "RedBrick_Alt_Draw",
@@ -29070,19 +29055,19 @@
           "base_size": 1384,
           "exact_match": false,
           "target_sha256": "c6540582878b9de98a5db4d3336b2ee92caad8c07040e4c3d2b75049b7f21590",
-          "base_sha256": "efbc746be51e1a02d3911487c8ba09bedf9a10e826d266b8c213f57da5c09e4b",
+          "base_sha256": "5e14c994732dcba32d13a58cd4d651f5d173ea7e2832db38ad972a1cf210741a",
           "relocation_count": 80,
           "comparison_unit": "0045ba60-63af6b22a339",
-          "objdiff_percent": 96.13941
+          "objdiff_percent": 99.463806
         }
       ],
       "diff_class": "reordered",
-      "diff_hunks": 12,
+      "diff_hunks": 2,
       "idioms": [
         "I4"
       ],
       "status": "different",
-      "objdiff_percent": 96.13941
+      "objdiff_percent": 99.463806
     },
     {
       "name": "GoldBrick_Alt_Draw",
@@ -29200,25 +29185,24 @@
       "objects": [
         {
           "unit": "src/legoapi/status_alternate.cpp",
-          "base_size": 500,
+          "base_size": 504,
           "exact_match": false,
           "target_sha256": "351db3ebe9e980b396c8e72e018ac0d3b8994e2bb48e385ce9b772262ab86128",
-          "base_sha256": "c1b2f7a89e7093571d2af985046122bf3122543c414e59adbcd86a9cd3778eb5",
+          "base_sha256": "56f68e28b93168ca88e863f7a7f67fd3f3956ea3523aa801f0ce68e99e4408ea",
           "relocation_count": 33,
           "comparison_unit": "0045c8c0-2d776935a9d9",
-          "objdiff_percent": 89.6129
+          "objdiff_percent": 97.47742
         }
       ],
       "diff_class": "structural",
-      "diff_hunks": 18,
+      "diff_hunks": 3,
       "idioms": [
-        "C",
         "I4",
         "U3",
         "?"
       ],
       "status": "different",
-      "objdiff_percent": 89.6129
+      "objdiff_percent": 97.47742
     },
     {
       "name": "Stage5_Alt_Draw",
@@ -29362,27 +29346,25 @@
       "objects": [
         {
           "unit": "src/legoapi/status_alternate.cpp",
-          "base_size": 865,
+          "base_size": 851,
           "exact_match": false,
           "target_sha256": "ccb4f747aa2357d5812c0b9b72e9ffb52b8d662d1acbe16dc6eda6406e64a603",
-          "base_sha256": "4b04efb8b19a83dd357bca4b1c96b5e18bf0f4de3e84abfca95e8bba1ab5c1a8",
+          "base_sha256": "d37a793f34f919896071e039cb744dde554034dc48a4c46e4790c2d85461f392",
           "relocation_count": 33,
           "comparison_unit": "0045d3d0-f550131408c3",
-          "objdiff_percent": 90.28309
+          "objdiff_percent": 86.27206
         }
       ],
       "diff_class": "structural",
-      "diff_hunks": 23,
+      "diff_hunks": 31,
       "idioms": [
         "I4",
-        "I24",
-        "U3",
         "U9",
         "U16",
         "?"
       ],
       "status": "different",
-      "objdiff_percent": 90.28309
+      "objdiff_percent": 86.27206
     },
     {
       "name": "LevelComplete_Alt_Draw",
@@ -900430,18 +900412,18 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 3348693,
-    "matched_code_bytes": 2117868,
-    "matching_percent": 61.01175197609158,
+    "matched_code_bytes": 2120768,
+    "matching_percent": 61.095295464510436,
     "padding_bytes": 114459,
-    "matched_padding_bytes": 101181,
-    "matched_code_with_padding_bytes": 2219049,
-    "matching_with_padding_percent": 63.92658428702546,
+    "matched_padding_bytes": 101193,
+    "matched_code_with_padding_bytes": 2221961,
+    "matching_with_padding_percent": 64.01047347263778,
     "fuzzy_text_data_bytes": 6896,
     "fuzzy_denominator_bytes": 3349891,
-    "fuzzy_coverage_percent": 96.45819430819292,
+    "fuzzy_coverage_percent": 96.46213758940297,
     "mapped_functions": 15914,
-    "matched_functions": 13966,
-    "objdiff_fuzzy_percent": 96.956345,
+    "matched_functions": 13969,
+    "objdiff_fuzzy_percent": 96.9603,
     "objdiff_total_code": 3338646,
     "image_bytes": 40067072,
     "mapped_bytes": 38533384,
@@ -900550,24 +900532,24 @@
   "text_coverage": {
     "original_text_bytes": 3471246,
     "mapped_reconstruction_bytes": 3348693,
-    "exact_reconstruction_bytes": 2117868,
-    "mapped_not_exact_bytes": 1230825,
+    "exact_reconstruction_bytes": 2120768,
+    "mapped_not_exact_bytes": 1227925,
     "excluded_import_glue_bytes": 1194,
     "text_data_bytes": 6896,
     "exact_text_data_bytes": 6896,
     "unclassified_text_bytes": 114463,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 61.01175197609158,
+    "strict_original_text_exact_percent": 61.095295464510436,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 61.03274533061752,
+    "reconstruction_scope_exact_percent": 61.11631756526992,
     "mapped_scope_denominator_bytes": 3348693,
-    "mapped_scope_exact_percent": 63.244615137906045,
+    "mapped_scope_exact_percent": 63.33121608938174,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image.",
     "alignment_padding_bytes": 114459,
-    "exact_alignment_padding_bytes": 101181,
+    "exact_alignment_padding_bytes": 101193,
     "unclassified_non_padding_text_bytes": 4,
-    "exact_with_padding_bytes": 2219049,
-    "exact_with_padding_percent": 63.92658428702546,
+    "exact_with_padding_bytes": 2221961,
+    "exact_with_padding_percent": 64.01047347263778,
     "padding_qualification": "Padding is int3/nop alignment fill shorter than 16 bytes between mapped extents, shorter than the alignment of the extent start it ends on; it is exact only after an exact function."
   },
   "data_members": [
@@ -901846,7 +901828,7 @@
       "metadata_sha256": "a005dfb7254f87304ba5e7d1c5083ab46db1e8272ef5fdd2e11a8953a1d1d2d5",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "7ee2e75d62804a909ea7710020e74041a3d6de53361c796469b9a29c07d3d83a",
+      "geometry_object_sha256": "503d4393884403628b4271db8271ded935f0a8c7836f940cb7290c40de5231df",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {

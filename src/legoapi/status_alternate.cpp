@@ -101,33 +101,33 @@ extern "C" {
         {"adaptivedifficulty", &tADAPTIVEDIFFICULTY, 0, {0, 0}, -1, 0, "------", 0, "shop_tool1", 0x0},
         {0},
     };
-    f32 StatusAltCountTextScale = 1.2f;
-    f32 StatusAltScale = 1.0f;
-    f32 StatusAltTitleY = 0.5f;
-    f32 StatusAltStepDuration = 0.5f;
-    f32 StatusAltBrickPulseTime = 0.5f;
-    f32 StatusAltMiniKitBaseScale = 0.333f;
-    f32 dat_007f822c = -0.5f;
-    f32 dat_007f8230 = -0.6f;
-    f32 StatusAltMiniKitZ = 1.1f;
-    f32 StatusAltSuitTextY = -0.25f;
-    f32 StatusAltSuitTextScale = 0.5f;
-    f32 dat_007f8240 = 0.3f;
-    f32 dat_007f8244 = 1.1f;
-    f32 StatusAltMiniKitStepDuration = 0.4f;
+    static f32 StatusAltCountTextScale = 1.2f;
+    static f32 StatusAltScale = 1.0f;
+    static f32 StatusAltTitleY = 0.5f;
+    static f32 StatusAltStepDuration = 0.5f;
+    static f32 StatusAltBrickPulseTime = 0.5f;
+    static f32 StatusAltMiniKitBaseScale = 0.333f;
+    static f32 dat_007f822c = -0.5f;
+    static f32 dat_007f8230 = -0.6f;
+    static f32 StatusAltMiniKitZ = 1.1f;
+    static f32 StatusAltSuitTextY = -0.25f;
+    static f32 StatusAltSuitTextScale = 0.5f;
+    static f32 dat_007f8240 = 0.3f;
+    static f32 dat_007f8244 = 1.1f;
+    static f32 StatusAltMiniKitStepDuration = 0.4f;
     f32 StatusAltGridStepX = 2.3f;
     f32 StatusAltGridStepY = 2.3f;
-    f32 StatusAltIconY = -0.2f;
-    f32 StatusAltZoom = 1.5f;
-    i32 StatusAltColumns = 3;
-    f32 dat_007f8260 = 0.333f;
-    f32 dat_007f8264 = 0.7f;
-    f32 StatusAltTrueHeroThreshold = 5.0f;
-    f32 StatusAltMiniKitStartScale = 10.0f;
-    f32 dat_007f8270 = 0.7f;
-    f32 StatusAltMiniKitScale = 1.0f;
-    f32 StatusAltLabelScale = 0.7f;
-    f32 StatusAltSuitRadius = 0.75f;
+    static f32 StatusAltIconY = -0.2f;
+    static f32 StatusAltZoom = 1.5f;
+    static i32 StatusAltColumns = 3;
+    static f32 dat_007f8260 = 0.333f;
+    static f32 dat_007f8264 = 0.7f;
+    static f32 StatusAltTrueHeroThreshold = 5.0f;
+    static f32 StatusAltMiniKitStartScale = 10.0f;
+    static f32 dat_007f8270 = 0.7f;
+    static f32 StatusAltMiniKitScale = 1.0f;
+    static f32 StatusAltLabelScale = 0.7f;
+    static f32 StatusAltSuitRadius = 0.75f;
 
     void TrueHero_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
     void TrueHero_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
@@ -165,7 +165,7 @@ extern "C" {
     void Save_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
     void Fade_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
 
-    STATUS_STAGE_s StatusStagesAlt[20] = {
+    static STATUS_STAGE_s StatusStagesAlt[20] = {
         {LevelComplete_Alt_Draw, LevelComplete_Alt_Update, LevelComplete_Alt_Skip, STATUS_STAGE_LEVEL_COMPLETE, 3, 0, 0, 0, 0.0f, 0.0f},
         {RedBrick_Alt_Draw, RedBrick_Alt_Update, RedBrick_Alt_Skip, STATUS_STAGE_RED_BRICK, 4, 0, 0, 0, 0.0f, 0.0f},
         {Stage5_Alt_Draw, Stage5_Alt_Update, Stage5_Alt_Skip, 5, 5, 0, 0, 0, 0.0f, 0.0f},
@@ -189,27 +189,27 @@ extern "C" {
         {NULL, NULL, NULL, -1, 0xffff, 0, 0, 0, 0.0f, 0.0f},
     };
 
-    i32 StatusStageOrderAlt[30] = {1,  2,  3,  4,  5,  7,  13, 14, 15, 16, 17, 18, 19, 20, 21,
-                                   22, 23, 24, 25, 26, 27, 28, 29, 30, 8,  9,  10, 11, 12, 0};
+    static i32 StatusStageOrderAlt[30] = {1,  2,  3,  4,  5,  7,  13, 14, 15, 16, 17, 18, 19, 20, 21,
+                                          22, 23, 24, 25, 26, 27, 28, 29, 30, 8,  9,  10, 11, 12, 0};
 
-    NUVEC StatusAltBgPos;
-    f32 StatusAltMiniKitX;
-    u16 StatusAltSpin;
-    f32 StatusAltTrueHeroX;
-    f32 StatusAltMiniKitY;
-    i32 StatusAltCoinsDone;
+    static NUVEC StatusAltBgPos;
+    static f32 StatusAltMiniKitX;
+    static u16 StatusAltSpin;
+    static f32 StatusAltTrueHeroX;
+    static f32 StatusAltMiniKitY;
+    static i32 StatusAltCoinsDone;
     i32 status_prompt = 0;
-    f32 dat_00876df4;
-    u32 StatusAltSuitsShown;
-    i32 StatusAltSuitIndex;
-    i32 StatusAltSuitAppearSfxPlayed;
-    i32 StatusAltSuitSlideSfxPlayed;
+    static f32 dat_00876df4;
+    static u32 StatusAltSuitsShown;
+    static i32 StatusAltSuitIndex;
+    static i32 StatusAltSuitAppearSfxPlayed;
+    static i32 StatusAltSuitSlideSfxPlayed;
     static struct STATUSPACKET_LSW_s StatusPacketAlt;
 
-    f32 StatusAltTextScale = StatusAltScale;
-    u32 dat_0087b770[15] = {GAMEPAD_TAG,  GAMEPAD_SPECIAL, GAMEPAD_SPECIAL, GAMEPAD_JUMP,   GAMEPAD_JUMP,
-                            GAMEPAD_JUMP, GAMEPAD_ACTION,  GAMEPAD_ACTION,  GAMEPAD_ACTION, GAMEPAD_ACTION,
-                            GAMEPAD_TAG,  GAMEPAD_TAG,     GAMEPAD_TAG,     GAMEPAD_TAG,    GAMEPAD_TAG};
+    static f32 StatusAltTextScale = StatusAltScale;
+    static u32 dat_0087b770[15] = {GAMEPAD_TAG,  GAMEPAD_SPECIAL, GAMEPAD_SPECIAL, GAMEPAD_JUMP,   GAMEPAD_JUMP,
+                                   GAMEPAD_JUMP, GAMEPAD_ACTION,  GAMEPAD_ACTION,  GAMEPAD_ACTION, GAMEPAD_ACTION,
+                                   GAMEPAD_TAG,  GAMEPAD_TAG,     GAMEPAD_TAG,     GAMEPAD_TAG,    GAMEPAD_TAG};
 
     /* Kept out of line; the draws inline it. */
     f32 StatusAltFabs(f32 value) {
