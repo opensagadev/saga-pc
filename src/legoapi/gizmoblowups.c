@@ -872,8 +872,7 @@ void GizmoBlowupEarlyUpdate(void *world_ptr, void *data, f32 delta_time) {
             }
         }
         animation = NuSpecialGetInstAnim(&blowup->type->animated_special);
-        if (((blowup->status_flags & BLOWUP_STATUS_ACTIVE) && !(blowup->status_flags & BLOWUP_STATUS_BLOWN_UP)) ||
-            (blowup->status_flags & 0x20000)) {
+        if ((blowup->active && !(blowup->status_flags & BLOWUP_STATUS_BLOWN_UP)) || (blowup->status_flags & 0x20000)) {
             if (blowup->draw_flags & BLOWUP_OPTION_FOLLOW_ANIMATION) {
                 blowup->transform = *NuSpecialGetInstanceMtx(&blowup->type->animated_special);
                 blowup->status_flags |= 0x10000;
@@ -941,7 +940,7 @@ void GizmoBlowupEarlyUpdate(void *world_ptr, void *data, f32 delta_time) {
                                                       NULL);
                 }
             }
-        } else if (!(blowup->status_flags & BLOWUP_STATUS_ACTIVE) && animation && (animation->flags & NUINSTANIM_FLAG_PLAYING)) {
+        } else if (!blowup->active && animation && (animation->flags & NUINSTANIM_FLAG_PLAYING)) {
             animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
         }
     }
@@ -1198,32 +1197,32 @@ i32 gizmoblowup_Load(void *world_ptr, void *data) {
                 type.particle_types[particle] = -1;
             }
             if (version >= 4) {
-                for (particle = 4; particle < 7; ++particle) {
+                for (particle = 0; particle < 3; ++particle) {
                     length = EdFileReadChar();
                     if (length > 0) {
                         EdFileRead(particle_text, length);
-                        type.particle_types[particle] = -1;
-                        type.particle_types[particle] = (i16)LookupDebrisEffectPageOnly(particle_text, (i8)world->page_pp);
+                        type.particle_types[particle + 4] = -1;
+                        type.particle_types[particle + 4] = (i16)LookupDebrisEffectPageOnly(particle_text, (i8)world->page_pp);
                     }
                 }
             }
             if (version >= 26) {
-                for (particle = 2; particle < 4; ++particle) {
+                for (particle = 0; particle < 2; ++particle) {
                     length = EdFileReadChar();
                     if (length > 0) {
                         EdFileRead(particle_text, length);
-                        type.particle_types[particle] = -1;
-                        type.particle_types[particle] = (i16)LookupDebrisEffect(particle_text);
+                        type.particle_types[particle + 2] = -1;
+                        type.particle_types[particle + 2] = (i16)LookupDebrisEffect(particle_text);
                     }
                 }
             }
             if (version >= 27) {
-                for (particle = 7; particle < 9; ++particle) {
+                for (particle = 0; particle < 2; ++particle) {
                     length = EdFileReadChar();
                     if (length > 0) {
                         EdFileRead(particle_text, length);
-                        type.particle_types[particle] = -1;
-                        type.particle_types[particle] = (i16)LookupDebrisEffect(particle_text);
+                        type.particle_types[particle + 7] = -1;
+                        type.particle_types[particle + 7] = (i16)LookupDebrisEffect(particle_text);
                     }
                 }
             }

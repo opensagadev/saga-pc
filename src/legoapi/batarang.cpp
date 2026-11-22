@@ -836,13 +836,13 @@ extern "C" void Batarangs_Update(void) {
         if (batarang->flight_state.current_target >= batarang->active) {
             batarang->owner->player.hold_timer = 0;
             NewBuzzFrames(batarang->owner->player.pad->bound_pad, 1, 0);
-            GAMEOBJECT *owner = batarang->owner;
-            if (owner->player.pad->buttons_held & GAMEPAD_ACTION) {
-                Batarang_StartTargetting(owner);
-            } else if (owner->player.pad->input_magnitude == 0 && owner->player.character_context == CHARACTER_CONTEXT_NONE &&
-                       owner->character_model->model_data_b[0x98] != NULL) {
-                owner->player.character_context = CHARACTER_CONTEXT_CATCH;
-                owner->player.context_animation = ACTION_CATCH;
+            if (batarang->owner->player.pad->buttons_held & GAMEPAD_ACTION) {
+                Batarang_StartTargetting(batarang->owner);
+            } else if (batarang->owner->player.pad->input_magnitude == 0 &&
+                       batarang->owner->player.character_context == CHARACTER_CONTEXT_NONE &&
+                       batarang->owner->character_model->model_data_b[0x98] != NULL) {
+                batarang->owner->player.character_context = CHARACTER_CONTEXT_CATCH;
+                batarang->owner->player.context_animation = ACTION_CATCH;
                 batarang->owner->player.context_timer =
                     AnimDuration((i16)batarang->owner->id, batarang->owner->player.context_animation, 0, 0, 1);
             }

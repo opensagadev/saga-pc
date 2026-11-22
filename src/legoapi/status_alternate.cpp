@@ -321,12 +321,12 @@ extern "C" {
                                    (packet->flags_word & STATUSPACKET_BONUS_MODE) != 0 || packet->challenge_state != CHALLENGE_OFF ||
                                    packet->mission_state != MISSION_STATE_NONE) {
                             if (status_prompt > 0) {
-                                if (((pad->left_pressed | buttons) & GAMEPAD_DUP) != 0) {
+                                if ((pad->left_pressed & GAMEPAD_DUP) != 0 || (buttons & GAMEPAD_DUP) != 0) {
                                     GameAudio_PlaySfx(0x2f, NULL, 0, 0);
                                     status_prompt = (i32)((u32)status_prompt - 1u);
                                     moved_up = 1;
                                 }
-                            } else if (status_prompt < 1 && ((pad->left_pressed | buttons) & GAMEPAD_DDOWN) != 0) {
+                            } else if (status_prompt < 1 && ((pad->left_pressed & GAMEPAD_DDOWN) != 0 || (buttons & GAMEPAD_DDOWN) != 0)) {
                                 GameAudio_PlaySfx(0x2f, NULL, 0, 0);
                                 status_prompt = (i32)((u32)status_prompt + 1u);
                                 moved_down = 1;
