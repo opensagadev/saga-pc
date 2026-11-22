@@ -151,9 +151,9 @@ void fun_006deb40(void) {
 NUMTX dat_0297ad08 = {0};
 
 void fun_006deb50(NUVEC *out, NUVEC *in) {
-    out->x = in->x * dat_0297ad08.m00 + in->y * dat_0297ad08.m10 + in->z * dat_0297ad08.m20 + dat_0297ad08.m30;
-    out->y = in->x * dat_0297ad08.m01 + in->y * dat_0297ad08.m11 + in->z * dat_0297ad08.m21 + dat_0297ad08.m31;
-    out->z = in->x * dat_0297ad08.m02 + in->y * dat_0297ad08.m12 + in->z * dat_0297ad08.m22 + dat_0297ad08.m32;
+    out->x = in->z * dat_0297ad08.m20 + (in->x * dat_0297ad08.m00 + in->y * dat_0297ad08.m10) + dat_0297ad08.m30;
+    out->y = in->z * dat_0297ad08.m21 + (in->x * dat_0297ad08.m01 + in->y * dat_0297ad08.m11) + dat_0297ad08.m31;
+    out->z = in->z * dat_0297ad08.m22 + (in->x * dat_0297ad08.m02 + in->y * dat_0297ad08.m12) + dat_0297ad08.m32;
 }
 
 i32 fun_006debd0(void) {

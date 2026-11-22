@@ -9330,7 +9330,7 @@ u32 ImplodeDecodeOffset() {
     u32 offset;
 
     offset = ImplodeOffsetTable[implode_bitbuf >> 0x18];
-    if (offset > 0xd) {
+    if (offset >= 14) {
         u32 mask = 0x800000;
         do {
             if ((implode_bitbuf & mask) != 0) {
@@ -9339,7 +9339,7 @@ u32 ImplodeDecodeOffset() {
                 offset = implode_left[offset];
             }
             mask >>= 1;
-        } while (offset > 0xd);
+        } while (offset >= 14);
     }
     ImplodeFillBuf(ImplodeOffsetLengths[offset]);
 

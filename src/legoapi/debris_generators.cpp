@@ -436,8 +436,8 @@ extern "C" {
         particle->inverse_lifetime = 64.0 / effect->particle_lifetime;
 
         NUVEC vector;
-        vector.x = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->emitter_random_extent.x - effect->emitter_random_extent.x);
-        vector.y = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->emitter_random_extent.y - effect->emitter_random_extent.y);
+        vector.x = ((NuRandFloatSeeded(&debrisseed) * 2.0f * effect->emitter_random_extent.x) - effect->emitter_random_extent.x);
+        vector.y = ((NuRandFloatSeeded(&debrisseed) * 2.0f * effect->emitter_random_extent.y) - effect->emitter_random_extent.y);
         vector.z = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->emitter_random_extent.z - effect->emitter_random_extent.z);
         NuVecMtxTransformVU0(&vector, &vector, &key->emitter_orientation);
         particle->position.x = vector.x;
