@@ -328,9 +328,8 @@ void SoundQueue::CancelPause(void) {
         return;
     }
     EnterCriticalSection(&volume_lock);
-    IDirectSoundBuffer *buffer = volume_sink;
-    if (stream_state == SOUNDQUEUE_STATE_PLAYING && buffer != NULL) {
-        buffer->vtable->play(buffer, 0, 0, 1);
+    if (stream_state == SOUNDQUEUE_STATE_PLAYING && volume_sink != NULL) {
+        volume_sink->vtable->play(volume_sink, 0, 0, 1);
     }
     LeaveCriticalSection(&volume_lock);
     stream_running = 0;
