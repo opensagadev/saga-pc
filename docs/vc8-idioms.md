@@ -831,7 +831,10 @@ helper. `NewCast` (0x6729e0, then in `nuterrain.c`) inlines all 16
 `InsideLineF` tests (0x66ffa0, `terrain_collision.cpp`); moved into
 `terrain_collision.cpp` it went from 45.9 to 56.2 %. Moving `InsideLineF` the
 other way broke `InsidePolLines`, which calls it but relies on knowing its
-register use (I35). The Android port of the same engine then showed the hit
+register use (I35). The `PC_SHADER_MATERIAL_FILTER::HasLayerFlag*` accessors
+(0x748890-0x748b20, just before the shader compiler) belong to
+`shader_compiler.cpp`: there `ShaderBuilderGen::Configure` inlines them into
+`shr`/`and 1` tests (71.6 -> 76.2 %). The Android port of the same engine then showed the hit
 record written once per shape kind (triangle, quad); duplicating it gave
 66.7 %.
 
