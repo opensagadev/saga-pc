@@ -2339,12 +2339,12 @@ extern "C" {
             NUVEC point;
             NUVEC transformed;
             f32 angle;
-            f32 speed = (NuRandFloatSeeded(&seed) * 0.4f + 0.8f) * dat_0080e174;
-            angle = NuRandFloatSeeded(&seed) * 6.2831855f + speed;
+            f64 speed = (NuRandFloatSeeded(&seed) * 0.4f + 0.8f) * dat_0080e174;
+            angle = NuRandFloatSeeded(&seed) * 6.283f + speed;
             point.x = NuTrigTable[((i32)(angle * AIPathAngularScale) >> 1) & 0x7fff] * radius;
             point.y = 0.0f;
             speed = (NuRandFloatSeeded(&seed) * 0.4f + 0.7f) * dat_0080e174;
-            angle = NuRandFloatSeeded(&seed) * 6.2831855f + speed;
+            angle = NuRandFloatSeeded(&seed) * 6.283f + speed;
             point.z = NuTrigTable[((i32)(angle * AIPathAngularScale) >> 1) & 0x7fff] * radius;
             NuVecMtxTransformH(&transformed, &point, &matrix);
             dat_028358c8[i].x = transformed.x;
