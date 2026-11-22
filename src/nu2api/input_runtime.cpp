@@ -423,6 +423,11 @@ PC_INPUT_RUNTIME::PC_INPUT_RUNTIME() {
             TextInputDefaultLabels = &TextInputLabelsFinnish;
             TextInputAlternateLabels = &TextInputLabelsFinnish;
             break;
+        case NULANGUAGE_US_ENGLISH:
+            TextInputKeyNames = TextInputKeyNamesDefault;
+            TextInputDefaultLabels = &TextInputLabelsEnglish;
+            TextInputAlternateLabels = &TextInputLabelsEnglish;
+            break;
         default:
             TextInputKeyNames = TextInputKeyNamesDefault;
             TextInputDefaultLabels = &TextInputLabelsEnglish;

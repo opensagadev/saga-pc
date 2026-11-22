@@ -7616,7 +7616,9 @@ extern "C" {
         planes[1].b = 0.0f;
         planes[1].c = -edge * inverse_length;
         planes[1].d = 0.0f;
-        camera_position = NuPortalLocalView.translation;
+        camera_position.x = NuPortalLocalView.m30;
+        camera_position.y = NuPortalLocalView.m31;
+        camera_position.z = NuPortalLocalView.m32;
         NuVec4MtxTransformH(&planes[0].equation, &planes[0].equation, &NuPortalLocalView);
         planes[0].d = -(planes[0].a * camera_position.x + planes[0].b * camera_position.y + planes[0].c * camera_position.z);
         NuVec4MtxTransformH(&planes[1].equation, &planes[1].equation, &NuPortalLocalView);
@@ -7631,7 +7633,10 @@ extern "C" {
 
     static NUPORTAL_FRUSTUM *buildPortalFrustrum(NUPORTAL *portal, i16 room_id) {
         NUPORTAL_FRUSTUM *frustum = allocateFrustrum(portal->vertex_count);
-        NUVEC camera_position = NuPortalLocalView.translation;
+        NUVEC camera_position;
+        camera_position.x = NuPortalLocalView.m30;
+        camera_position.y = NuPortalLocalView.m31;
+        camera_position.z = NuPortalLocalView.m32;
         f32 camera_side = portal->plane.a * camera_position.x + portal->plane.b * camera_position.y + portal->plane.c * camera_position.z +
                           portal->plane.d;
         i32 i;

@@ -38710,6 +38710,7 @@ address,symbol,size,ctype
 0x80e9e4,_FrameShaderMaterialFirstCall,4,i32
 0x80e9e8,_NuDisplayHandlerDefaultTint,16,NUVEC4
 0x80e9f8,_NuDisplayHandlerCameraId,4,i32
+0x80e9fc,_PostBlurOutputBias,4,f32
 0x80ea00,_NuSpeedBlurVertexScale,4,writable f32 initial40000
 0x80ea04,??_R0?AVNuMainFilter@@@8,27,native exactVT binding; unimplemented extent unclaimed
 0x80ea1f,_PostBloomAttachPending,1,u8 native initial 1
