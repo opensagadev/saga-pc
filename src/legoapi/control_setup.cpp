@@ -1208,7 +1208,7 @@ void PC_CONTROL_SCREEN::DrawDeadzone(f32 x, f32 y, f32 z, f32 width, f32 height,
     f32 step = (f32)(width / 20.0);
     f32 half_height = (f32)(height * 0.5);
     f32 offset = 0.0f;
-    u32 a = (u32)(i32)(alpha * 96.0) << 24;
+    i32 a = (i32)(alpha * 96.0) << 24;
     NuPrim2DBegin(14, 5, material);
     colour = ScaleAlpha(opacity, a | 0xc8c8c8);
     PcControlPrimColour(colour);

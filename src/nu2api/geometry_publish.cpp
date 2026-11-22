@@ -70,10 +70,6 @@ struct PC_GEOMETRY_PUBLISH_SORT_ITEM { // size 0xc
     u32 unknown_08;                    // 0x8
 };
 
-extern "C" i32 PcGeometryBackendAvailable(void) {
-    return PCDeviceHardwareVertexProcessingPC >= 4;
-}
-
 extern "C" i32 PcRegisterDynamicGeometry(PC_GEOMETRY_PUBLISH_FORMAT *format) {
     if (!PcGeometryBackendAvailable()) {
         return 0;

@@ -2369,8 +2369,8 @@ extern "C" {
             NUVEC *position = &vertices[i].position;
             f32 x = position->x;
             f32 z = position->z;
-            i32 cell_x = (i32)x;
-            i32 cell_z = (i32)z;
+            u32 cell_x = (u32)x;
+            u32 cell_z = (u32)z;
             u32 seed = ((cell_z << 2 ^ cell_x) << 3) ^ (cell_z * cell_x);
             i32 first = (i32)(NuRandFloatSeeded(&seed) * 1.5 + z);
             i32 second = (i32)(NuRandFloatSeeded(&seed) * 1.5 + x);
@@ -3188,6 +3188,10 @@ extern "C" {
     }
 
     void NuSpeedBlurFilter::ResizeTextures(i32, i32) {
+    }
+
+    i32 PcGeometryBackendAvailable(void) {
+        return PCDeviceHardwareVertexProcessingPC >= 4;
     }
 
     i32 PcInitializeDynamicGeometryBuffers(PC_DYNAMIC_GEOMETRY *geometry, i32 count) {

@@ -9,12 +9,6 @@
 #include <process.h>
 #include <string.h>
 
-/* Empty hook that receives each runtime error report. PCNativeErrorPrint
- * still calls it, which suggests it was compiled in another unit; here the
- * compiler drops the call to the empty body. */
-extern "C" void PCNativeErrorHook(char *text) {
-}
-
 PC_NATIVE_DEBUG_STATE *PC_NATIVE_DEBUG_STATE::DebugState() {
     return this;
 }
