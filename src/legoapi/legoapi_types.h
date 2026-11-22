@@ -1396,10 +1396,11 @@ typedef struct gizobstacle_s {              // size 0xa0
     union { // size 0x4
         u32 progress_flags;
 
-        struct {              // size 0x4
-            u32 active : 1;   // 0x94:0
-            u32 visible : 1;  // 0x94:1
-            u32 unknown : 30; // 0x94:2
+        struct {                       // size 0x4
+            u32 active : 1;            // 0x94:0
+            u32 visible : 1;           // 0x94:1
+            u32 techno_controlled : 1; // 0x94:2
+            u32 unknown : 29;          // 0x94:3
         } progress_bits;
     }; // 0x94
 

@@ -762,9 +762,9 @@ void GizObstacles_Update(void *world_ptr, void *data, f32 time) {
             } else {
                 GizObstacle_Stop(obstacle);
             }
-        } else if ((obstacle->progress_flags & OBSTACLE_TECHNO_CONTROLLED) && obstacle->animation_speed != 0.0f) {
+        } else if (obstacle->progress_bits.techno_controlled && obstacle->animation_speed != 0.0f) {
             GizObstacle_PlayForwards(obstacle);
-        } else if ((obstacle->progress_flags & OBSTACLE_TECHNO_CONTROLLED) && obstacle->animation_speed == 0.0f) {
+        } else if (obstacle->progress_bits.techno_controlled && obstacle->animation_speed == 0.0f) {
             GizObstacle_Stop(obstacle);
         } else if (GizObstacleUpdateFns[obstacle->mode]) {
             GizObstacleUpdateFns[obstacle->mode](obstacle);
