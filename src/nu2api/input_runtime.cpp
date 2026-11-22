@@ -1252,8 +1252,10 @@ void PC_INPUT_RUNTIME::CaptureBinding(i32 port) {
 void PC_INPUT_RUNTIME::NormalizeAxisPair(i16 *x, i16 *y) {
     f32 vx = (f32)*x;
     f32 vy = (f32)*y;
-    f32 ax = vx < 0 ? -vx : vx;
-    f32 ay = vy < 0 ? -vy : vy;
+    f32 ax;
+    f32 ay;
+    NU_FABS_STORE(ax, vx);
+    NU_FABS_STORE(ay, vy);
     f32 square = ax * ax + ay * ay;
     f32 magnitude = NuFsqrt(square);
     f32 ratio;

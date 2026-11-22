@@ -669,7 +669,7 @@
     "src/nu2api/input_descriptors.cpp": "f8c902546c59b23105af3730b88a99cb200df99e5ec77fff9c19168dbdd302f3",
     "src/nu2api/input_detection.cpp": "0ac06b6303bda6c22eb315510f719185480cc2cd61b914ca3403226f90a0bf9e",
     "src/nu2api/input_key_names.cpp": "d5c56461939ab99148f65dfa871160c848f96265fdb71bc365e13ea81fb27375",
-    "src/nu2api/input_runtime.cpp": "62b0e72bae84f57d1ddaa7405cc24b0de2cd54096865547f9338997c6766f70a",
+    "src/nu2api/input_runtime.cpp": "7945a5b0daafb23f20376e1d6589424c3c95f04cf1c09643cc33774f6d98b321",
     "src/nu2api/key_events.cpp": "54208dc28b5f60d83a580a1e1888a4c8932daba6558afd65de70d53e68934da0",
     "src/nu2api/nu3d_includes.cpp": "11080407672466c673b51f0f73d1fef5ca148c66d6ca9e5e1ab50194e84a405c",
     "src/nu2api/nu3d_platform.cpp": "78c38d8ca3912d69d3aa82af45a83b5428740e718b2016022002ccd209033022",
@@ -709,7 +709,7 @@
     "src/nu2api/shader_dictionary.cpp": "13baac0bae11be9605cdbbf6b59e5250df205aa2843842f112877dd513d325f2",
     "src/nu2api/shader_lexical.cpp": "f608b42a24f2bc836c08d6dd2e09019b408ff213926f131e51ad71af89655fd4",
     "src/nu2api/shader_parser.cpp": "895df23d99f85034b63df92d69a5646b7860c1760824f690c35b5cb0e375523c",
-    "src/nu2api/terrain_collision.cpp": "8305246da68af38e2e33bc64c3dcce3a9320fbf8aacdbc8655c5a42904b88144",
+    "src/nu2api/terrain_collision.cpp": "9dbca74036be81a3a79f09411c635a6e1160ec93d8111908f2bd53edc3fc43ec",
     "src/nu2api/terrain_query.cpp": "4bb137e912c228cc9d45d8cce2468a290892fc2f605289ef95de20b7d5d82e10",
     "src/nu2api/terrain_scan.cpp": "29ff25ba7a3358b95dc73248ee16ace572886d29931e8e3dab4d908dc57fef84",
     "src/nu2api/unref.cpp": "20d6c8ffb9de2d91a6ed7e2406f8a6f8a85d261dd90cdf0fb96dd7f9ec09fbfa",
@@ -776,7 +776,7 @@
     "src/legoapi/gameobjects.c": "9bbaec323b9c48954eb8aff4142b077bafdd881cbe3505e662072906ba9123ba",
     "src/legoapi/gamepads.c": "5206c7d8a20f1b2a7028c4928272d89294fa14337b395ae56a6d72942b1eb422",
     "src/legoapi/gcutscn.c": "838188788f75e3c8e6cdd238543725392fea31ff8e6961aefa3d5a179a357323",
-    "src/legoapi/gcutscn_locators.c": "0e7efa0b7052c6e4cb6a725a0f8bde24467d7564e6c57245f486cfc98ae99724",
+    "src/legoapi/gcutscn_locators.c": "1c277265d22904b0813d53329f509b5f529c473067d0efed756c1a4403224e0c",
     "src/legoapi/gizflow.c": "dd7ba262a4ef9252730fbc50a72f7a40f8961d6e44c0d3f42e20554b082ca608",
     "src/legoapi/gizflow_diagnostic.c": "cbc5fc25322c5dc7979de6148dc368eff08f57fa8f00ec3080cfc0ab33f250c4",
     "src/legoapi/gizmessage.c": "6a8cc3394cf4e9d46ce0ee9fd4a5f0ceaed102ce32867e62b2620b3db2af0370",
@@ -1084,7 +1084,7 @@
     "build/obj/legoapi/gamestructure.obj": "a90b30bca6b75548a530406b9aa58f986fc16d95830f447d0c4762ba588384fc",
     "build/obj/legoapi/gamethings.obj": "23cff3cb62bc80f9fdd5119885f4a4a964bb12711da7af33e70509c18870f885",
     "build/obj/legoapi/gcutscn.obj": "67dfafd8b57a0279030a97e0c46637e0bf47cf45ae6a1d6ca77a91cc2eb0c6ba",
-    "build/obj/legoapi/gcutscn_locators.obj": "e29675501afe8c0a22e92ff4c3e92d408726474d24fb061a5020dcf66cdd305a",
+    "build/obj/legoapi/gcutscn_locators.obj": "f11a1868f2d0d2a836050f7b0d93932d5860803bfc90bce787f5204b4379cc21",
     "build/obj/legoapi/gizbuildit.obj": "7459d180559db40ab5e3b83a6e0c9407da93eb1eeb95ee698dd87781c007f403",
     "build/obj/legoapi/gizflow.obj": "1635dc29ca84a19cec87942e33762da8765548a75fa42d4fd0f601a1e6307094",
     "build/obj/legoapi/gizflow_diagnostic.obj": "f3d3baa29b581d4fe447c81a9837610747955847ea7d77302b544124eb730fed",
@@ -1238,7 +1238,7 @@
     "build/obj/nu2api/input_descriptors.obj": "377ad7227432152a9c9451a0edee5df3a058c95507ce444a7e13cec5b7592117",
     "build/obj/nu2api/input_detection.obj": "ccffb88e3955e8b388f0b8f9614b9e03cadab6c8bf3d178f14e68a2d5d46c075",
     "build/obj/nu2api/input_key_names.obj": "cd6d9196ef844e8e50cc56febdc17bc1c0703f74965a804f0924fa9d97fd8039",
-    "build/obj/nu2api/input_runtime.obj": "f80c140d8e8d809347f8de9182bdfc10b4062c305122521a367124bf3480b67d",
+    "build/obj/nu2api/input_runtime.obj": "6973bfe14295f29b5d5ed52f2040b6e9546ecec2e763a2168a049d3544efe2af",
     "build/obj/nu2api/key_events.obj": "7f2a223465a6975d3954ef1c1f5cf56f35862c556e3ff053c7f72d481b0ed325",
     "build/obj/nu2api/keyboard_init.obj": "3a6748a3cc3b7e1521ad0d96b560c230b8eabcf09483d9bbe72be4316aa663b2",
     "build/obj/nu2api/keyboard_read.obj": "af7d5b8ec8e71f430a0edbdf113e31ac67db76c0ac08378adf5552347144e2ee",
@@ -1315,7 +1315,7 @@
     "build/obj/nu2api/shader_dictionary.obj": "f37cb3b9e48f39c87d4512f4098d8f1dbc2ddfe5acdf708f71b83f685dbaad2b",
     "build/obj/nu2api/shader_lexical.obj": "68e3e498436847c342977fb2536b56b34e43f478874123f5d11a4cda21d4cc3b",
     "build/obj/nu2api/shader_parser.obj": "f3f5ef50c6408599ff88530e354c7625494197c1c662842269a6405e2165790f",
-    "build/obj/nu2api/terrain_collision.obj": "73b490c5eb6491370c2d9e0e4b325fef6e3622f66d16df6596c2e386d483d0a3",
+    "build/obj/nu2api/terrain_collision.obj": "00364e77b8e266a1e8bf0f8235ee9e112e983ad9c1293495a74cf86544ef59df",
     "build/obj/nu2api/terrain_diagnostic.obj": "acc153aaa584d6d1a80930c7ec969fa9a31a08ff49746b9f6d756d3b0ca6e893",
     "build/obj/nu2api/terrain_query.obj": "b9f11bf01fe854f8f47c001f3fdc4907c95b96cf4d39a77f09d61ed18e748eec",
     "build/obj/nu2api/terrain_scan.obj": "fc1ac6c46ad4fb3eedf8938db82b6f4d1f18ec894a9b801aba9e5a78f6075870",
@@ -90482,17 +90482,17 @@
       "objects": [
         {
           "unit": "src/legoapi/gcutscn_locators.c",
-          "base_size": 1220,
+          "base_size": 1207,
           "exact_match": false,
           "target_sha256": "c4d1c896201cc659c34a149138fa51426208227937e10fb84aa47d09b840294e",
-          "base_sha256": "46bbcafb146bc99c965043c2197cba1600b117b64dddeb767e622dfe4a210ab1",
+          "base_sha256": "dbba5a0223889507364126fc5a64f329dda93bf55b1b7ffbc9e18887130dcbe4",
           "relocation_count": 36,
           "comparison_unit": "00506e40-e2550235210a",
-          "objdiff_percent": 89.84469
+          "objdiff_percent": 94.013626
         }
       ],
       "diff_class": "structural",
-      "diff_hunks": 18,
+      "diff_hunks": 15,
       "idioms": [
         "C",
         "I4",
@@ -90504,7 +90504,7 @@
         "?"
       ],
       "status": "different",
-      "objdiff_percent": 89.84469
+      "objdiff_percent": 94.013626
     },
     {
       "name": "RelocateCutScene",
@@ -285438,17 +285438,17 @@
       "objects": [
         {
           "unit": "src/nu2api/terrain_collision.cpp",
-          "base_size": 1927,
+          "base_size": 1957,
           "exact_match": false,
           "target_sha256": "2426b886fb52e4b5bf7f8cf82da7fa56e7a73711e0d11e0168cdcc342eb98468",
-          "base_sha256": "6bf1b54238bd700a4b0cace6ec009aa8a44aee724346a56443c542585051d563",
+          "base_sha256": "644e534f762748a94f4ea8a58cac9cb3467565aae634e95bea545715afb941fa",
           "relocation_count": 87,
           "comparison_unit": "0068f940-1b6c52e93c72",
-          "objdiff_percent": 87.00181
+          "objdiff_percent": 88.61845
         }
       ],
       "diff_class": "structural",
-      "diff_hunks": 72,
+      "diff_hunks": 34,
       "idioms": [
         "I4",
         "U1",
@@ -285459,7 +285459,7 @@
         "?"
       ],
       "status": "different",
-      "objdiff_percent": 87.00181
+      "objdiff_percent": 88.61845
     },
     {
       "name": "NewTerrainScaleY",
@@ -325047,25 +325047,24 @@
       "objects": [
         {
           "unit": "src/nu2api/input_runtime.cpp",
-          "base_size": 363,
+          "base_size": 364,
           "exact_match": false,
           "target_sha256": "b366c2113e20b2b49acb4fae49c0acb1051032ae53eba3b2b2abd656d1c846ed",
-          "base_sha256": "464d999c7d2e8a0f3dfa4e0775f88af1bea40505d7043c2953ce59fca26ba1db",
+          "base_sha256": "278d6fb275cc5df7689374ab36feb1d5a409e5118422a413e18f6f9738517ea6",
           "relocation_count": 8,
           "comparison_unit": "006d4880-2647f2def8c2",
-          "objdiff_percent": 81.46957
+          "objdiff_percent": 98.19131
         }
       ],
-      "diff_class": "structural",
-      "diff_hunks": 8,
+      "diff_class": "reordered",
+      "diff_hunks": 2,
       "idioms": [
         "I4",
         "U3",
-        "U7",
-        "?"
+        "U7"
       ],
       "status": "different",
-      "objdiff_percent": 81.46957
+      "objdiff_percent": 98.19131
     },
     {
       "name": "?FindButtonCommand@PC_INPUT_RUNTIME@@QAEHH@Z",
@@ -900451,10 +900450,10 @@
     "matching_with_padding_percent": 63.9219749911127,
     "fuzzy_text_data_bytes": 6896,
     "fuzzy_denominator_bytes": 3349891,
-    "fuzzy_coverage_percent": 96.45167503555152,
+    "fuzzy_coverage_percent": 96.4560250278635,
     "mapped_functions": 15914,
     "matched_functions": 13964,
-    "objdiff_fuzzy_percent": 96.94981,
+    "objdiff_fuzzy_percent": 96.95418,
     "objdiff_total_code": 3338646,
     "image_bytes": 40067072,
     "mapped_bytes": 38533384,
@@ -901859,7 +901858,7 @@
       "metadata_sha256": "a005dfb7254f87304ba5e7d1c5083ab46db1e8272ef5fdd2e11a8953a1d1d2d5",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "a32e26271dd85cad05762571df3bc4f249c15ee0b911cecdfab99e28b822a5fa",
+      "geometry_object_sha256": "53cc34e3f923c3d078c49733db657bf566a84db18e8231dd2d6a2ee47a342caf",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {

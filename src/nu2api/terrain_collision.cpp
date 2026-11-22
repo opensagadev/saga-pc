@@ -2597,18 +2597,15 @@ found_track:
     ScanTerrain(1, terrain_mask, scan_flags != 0 ? 0x40 : 0);
 
     if (hit_flags[1] != 0) {
-        TERRAIN_FLOAT_BITS absolute_x;
-        absolute_x.value = movement->x;
-        absolute_x.bits &= 0x7fffffff;
-        if (absolute_x.value < radius) {
-            TERRAIN_FLOAT_BITS absolute_y;
-            absolute_y.value = movement->y;
-            absolute_y.bits &= 0x7fffffff;
-            if (absolute_y.value < radius) {
-                TERRAIN_FLOAT_BITS absolute_z;
-                absolute_z.value = movement->z;
-                absolute_z.bits &= 0x7fffffff;
-                if (absolute_z.value < radius && platinrange == 0) {
+        f32 absolute_x;
+        NU_FABS_STORE(absolute_x, movement->x);
+        if (absolute_x < radius) {
+            f32 absolute_y;
+            NU_FABS_STORE(absolute_y, movement->y);
+            if (absolute_y < radius) {
+                f32 absolute_z;
+                NU_FABS_STORE(absolute_z, movement->z);
+                if (absolute_z < radius && platinrange == 0) {
                     NuScratchRelease();
                     terrhitflags |= 2;
                     ShadNorm.x = 0.0f;
