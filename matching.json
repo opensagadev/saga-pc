@@ -766,7 +766,7 @@
     "src/legoapi/episodes_diagnostic.c": "1314b8eb776b3b4c3b4bebfd9adf00b2a9364fc1a4aa06368dacdaffee7e386c",
     "src/legoapi/explosions.c": "79313938ac69136c245cd50c10ebe7507e933f7993c38cece6171e46861d110d",
     "src/legoapi/faders.c": "c2a6abc5fa5312a6f5a334ddf6dc4c62953775f9e96dcafc7e223c8147f57765",
-    "src/legoapi/fighting.c": "45fb1f26773a4301e7109bb724c65087806004114e25ec0a3ec6d9b91b4a56e1",
+    "src/legoapi/fighting.c": "8909d222cfa9fa4fd8b10d28c58f63fda3ec6559fd09a1f69aa1063294b92635",
     "src/legoapi/flightspline_diagnostic.c": "6226fa96593f2054f8eb31e36cb0bc452e9d553b17177a0357c474060e7f3011",
     "src/legoapi/game_deb.c": "16a0255043e6a693a0fc7c00e3cb001034dc69bcce454229fb753962820ca1fc",
     "src/legoapi/gameai.c": "51ca60065bf11e1047573e301e9549609902459f17d478c2760e4e0731799935",
@@ -1072,7 +1072,7 @@
     "build/obj/legoapi/explosions.obj": "7df3f90ea03005a663c605618d352de565ab396cad264d580f2cfca112e96611",
     "build/obj/legoapi/fade.obj": "28f525300ea5495475337592ae2ebd8c800d25286120aefdd9bd1c5748ded1f8",
     "build/obj/legoapi/faders.obj": "2f4847463b20a459796c2de68e43e78b085c92560c9f0a99ca5a4d066153ab20",
-    "build/obj/legoapi/fighting.obj": "a116d2c50f7b2d28ed31eb119567d1227c7e5c5e65b949ca3ba0c6601bee8eb7",
+    "build/obj/legoapi/fighting.obj": "56019486d91d6202479ca99f1cde024ab7db8d672a6b94e0b392a4f6a83d908f",
     "build/obj/legoapi/flightspline_diagnostic.obj": "6064b5509d4b336eee92b90b1a6c9b630a054e2bedd6059e4b59e1ad1273ccfa",
     "build/obj/legoapi/game_deb.obj": "5ebd96e107a0d994c725046fb734d2893c82d7259ebcf4ef759ae937c0c798e3",
     "build/obj/legoapi/gameai.obj": "76a16b0abcc19452d9f94d23c1c4a6979fd902a9a12955bdc844f3ca0833e627",
@@ -1243,7 +1243,7 @@
     "build/obj/nu2api/keyboard_init.obj": "aec86057808416263af0656c99c78f717afdd43031b1c4278d3bb4f4f631ac45",
     "build/obj/nu2api/keyboard_read.obj": "3db0bc541ab081d3cc6cd1b4d8c37ec47407c0b45ceff0fe3408b36a67983f51",
     "build/obj/nu2api/listman.obj": "a81bf160eeb37d75d3fe458523732265b25f17bfe9bd819ebdd32ae6645dc9ba",
-    "build/obj/nu2api/nu3d_includes.obj": "4438b8093713d736493502a59e9c7ae668ad5b0e7d2b310426e89adc2aeeb3a0",
+    "build/obj/nu2api/nu3d_includes.obj": "89e0a1ef94194c4f4516d880a90402370f994b39370703215c620a06f93e6736",
     "build/obj/nu2api/nu3d_platform.obj": "e6a95708b35c1e712f4f376f9b0ef34c699b25d93449f8f65e7205743804f0ff",
     "build/obj/nu2api/nualloc.obj": "4cf0d42663eafa9edde1bbd54562e688a7f2df315e6b006a6f62565fdc747470",
     "build/obj/nu2api/nuapi.obj": "1ced77da4e74288d743a008dc739857ea94d04ea1bb7efe996b28fa60eaed389",
@@ -152033,27 +152033,21 @@
         "src/legoapi/fighting.c"
       ],
       "target_size": 526,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/fighting.c",
-          "base_size": 542,
-          "exact_match": false,
+          "base_size": 526,
+          "exact_match": true,
           "target_sha256": "d7f96c25298ba97c4366cc961949c223da96ccb6717e0103f3eff3c8eab46c71",
-          "base_sha256": "72380de26b36ff2b80057e33f4f07f68617191f71d2f9a1e9d11054a6589263e",
-          "relocation_count": 12,
+          "base_sha256": "d7f96c25298ba97c4366cc961949c223da96ccb6717e0103f3eff3c8eab46c71",
+          "relocation_count": 11,
           "comparison_unit": "0058d6a0-d73693e7f9f2",
-          "objdiff_percent": 96.433334
+          "objdiff_percent": 100.0
         }
       ],
-      "diff_class": "structural",
-      "diff_hunks": 1,
-      "idioms": [
-        "U3",
-        "?"
-      ],
-      "status": "different",
-      "objdiff_percent": 96.433334
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "KeepWeaponOut",
@@ -152164,27 +152158,21 @@
         "src/legoapi/fighting.c"
       ],
       "target_size": 528,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/fighting.c",
-          "base_size": 544,
-          "exact_match": false,
+          "base_size": 528,
+          "exact_match": true,
           "target_sha256": "4c5063d05148c97f02dc021f1559fabec1ee7d3a17c79f7e10a3af7a3b0eed39",
-          "base_sha256": "97e57c9f8df7af1b03e8a5f9140167dddad483b88349a3d19aa510753288016e",
-          "relocation_count": 12,
+          "base_sha256": "4c5063d05148c97f02dc021f1559fabec1ee7d3a17c79f7e10a3af7a3b0eed39",
+          "relocation_count": 11,
           "comparison_unit": "0058db50-7781b9b4d643",
-          "objdiff_percent": 96.456955
+          "objdiff_percent": 100.0
         }
       ],
-      "diff_class": "structural",
-      "diff_hunks": 1,
-      "idioms": [
-        "U3",
-        "?"
-      ],
-      "status": "different",
-      "objdiff_percent": 96.456955
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "KeepWeaponIn",
@@ -900367,18 +900355,18 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 3348693,
-    "matched_code_bytes": 2123262,
-    "matching_percent": 61.167142864550655,
+    "matched_code_bytes": 2124316,
+    "matching_percent": 61.19750660137599,
     "padding_bytes": 114459,
-    "matched_padding_bytes": 101211,
-    "matched_code_with_padding_bytes": 2224473,
-    "matching_with_padding_percent": 64.08283941846818,
+    "matched_padding_bytes": 101213,
+    "matched_code_with_padding_bytes": 2225529,
+    "matching_with_padding_percent": 64.11326077149242,
     "fuzzy_text_data_bytes": 6896,
     "fuzzy_denominator_bytes": 3349891,
-    "fuzzy_coverage_percent": 96.47721578256717,
+    "fuzzy_coverage_percent": 96.47833426495241,
     "mapped_functions": 15914,
-    "matched_functions": 13975,
-    "objdiff_fuzzy_percent": 96.975395,
+    "matched_functions": 13977,
+    "objdiff_fuzzy_percent": 96.97653,
     "objdiff_total_code": 3338646,
     "image_bytes": 40067072,
     "mapped_bytes": 38533384,
@@ -900487,24 +900475,24 @@
   "text_coverage": {
     "original_text_bytes": 3471246,
     "mapped_reconstruction_bytes": 3348693,
-    "exact_reconstruction_bytes": 2123262,
-    "mapped_not_exact_bytes": 1225431,
+    "exact_reconstruction_bytes": 2124316,
+    "mapped_not_exact_bytes": 1224377,
     "excluded_import_glue_bytes": 1194,
     "text_data_bytes": 6896,
     "exact_text_data_bytes": 6896,
     "unclassified_text_bytes": 114463,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 61.167142864550655,
+    "strict_original_text_exact_percent": 61.19750660137599,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 61.188189687070974,
+    "reconstruction_scope_exact_percent": 61.218563871665324,
     "mapped_scope_denominator_bytes": 3348693,
-    "mapped_scope_exact_percent": 63.40569290765084,
+    "mapped_scope_exact_percent": 63.43716787415269,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image.",
     "alignment_padding_bytes": 114459,
-    "exact_alignment_padding_bytes": 101211,
+    "exact_alignment_padding_bytes": 101213,
     "unclassified_non_padding_text_bytes": 4,
-    "exact_with_padding_bytes": 2224473,
-    "exact_with_padding_percent": 64.08283941846818,
+    "exact_with_padding_bytes": 2225529,
+    "exact_with_padding_percent": 64.11326077149242,
     "padding_qualification": "Padding is int3/nop alignment fill shorter than 16 bytes between mapped extents, shorter than the alignment of the extent start it ends on; it is exact only after an exact function."
   },
   "data_members": [
@@ -901783,7 +901771,7 @@
       "metadata_sha256": "a005dfb7254f87304ba5e7d1c5083ab46db1e8272ef5fdd2e11a8953a1d1d2d5",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "1a8a051bd78865da0f55b7741109c92328fb33f42f71fbc975fa87eb0394d3c5",
+      "geometry_object_sha256": "5e22f12857e4e2f2248f21d956c68c06b9f9033a261416f6f084b919d67acd7e",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
