@@ -2970,8 +2970,8 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
         FreeTorpedoPacket(&object->player.torpedo);
         object->player.torpedo = NULL;
     }
-    if (VehicleArea != 0 && object->player_slot < 2) {
-        DebFreeInstantly(&FalconDebKey[object->player_slot]);
+    if (VehicleArea != 0 && (object->player_index == 0 || object->player_index == 1)) {
+        DebFreeInstantly(&FalconDebKey[object->player_index]);
     }
     return 1;
 }
@@ -3512,14 +3512,14 @@ impact:
                 no_hurt = 1;
             }
         } else if (VehicleArea || (WORLD->current_level == SPEEDERCHASEA_LDATA && !disable_narrow_socks)) {
-            i32 bits = attacker && attacker->player_slot <= 1 ? 1 << attacker->player_slot : 0;
+            i32 bits = attacker && (attacker->player_slot == 0 || attacker->player_slot == 1) ? 1 << attacker->player_slot : 0;
             GameAudio_PlaySfx(40, &target->collision_position, bits, 0);
         } else if (flags & OBJHIT_PUNCH) {
             if (attacker && attacker->player.character_context == CHARACTER_CONTEXT_PUNCH &&
                 (AnimMiscFlags(attacker->character_model, attacker->player.context_animation) & 4)) {
                 PlaySfx("WhipHit", &target->collision_position);
             } else {
-                i32 bits = attacker && attacker->player_slot <= 1 ? 1 << attacker->player_slot : 0;
+                i32 bits = attacker && (attacker->player_slot == 0 || attacker->player_slot == 1) ? 1 << attacker->player_slot : 0;
                 GameAudio_PlaySfx(74, &target->collision_position, bits, 0);
             }
         } else if (attacker) {
@@ -3781,7 +3781,7 @@ finish:
                 HitRumble(attacker);
             }
         }
-        if (!(flags & 0x4000) && result == 2 && attacker->player_slot <= 1 && Arcade) {
+        if (!(flags & 0x4000) && result == 2 && (attacker->player_slot == 0 || attacker->player_slot == 1) && Arcade) {
             Arcade_Kill(attacker->player_index, target->player_index);
         }
     }

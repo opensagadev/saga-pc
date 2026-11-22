@@ -11166,8 +11166,8 @@ void GameObjectStuffAfterAnimation(void) {
                 }
             }
         }
-        if (VehicleArea != 0 && object->player_slot <= 1) {
-            i32 *handle = &FalconDebKey[object->player_slot];
+        if (VehicleArea != 0 && (object->player_index == 0 || object->player_index == 1)) {
+            i32 *handle = &FalconDebKey[object->player_index];
             if (object->id == (u16)id_MILLENNIUMFALCON && (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
                 (object->player.flags_e24 & APIOBJECT_LOCATORS_VALID) != 0 && object->character_model->points_of_interest[2] != NULL &&
                 object->origin_scale == 1.0f) {
