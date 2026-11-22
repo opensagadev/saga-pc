@@ -164,14 +164,24 @@ typedef struct PART { // size 0x220
     }; // 0x10c
 
     /* rotation speeds (x, y, z) and the random spin of the part */
-    i32 spin_rates[5];            // 0x124
-    u16 rotation_x;               // 0x138
-    u16 rotation_y;               // 0x13a
-    u16 rotation_z;               // 0x13c
-    i16 part_id;                  // 0x13e
-    u16 unknown_140;              // 0x140
-    u8 rotation_axes[2];          // 0x142
-    u32 active;                   // 0x144
+    i32 spin_rates[5];   // 0x124
+    u16 rotation_x;      // 0x138
+    u16 rotation_y;      // 0x13a
+    u16 rotation_z;      // 0x13c
+    i16 part_id;         // 0x13e
+    u16 unknown_140;     // 0x140
+    u8 rotation_axes[2]; // 0x142
+
+    union { // 0x144
+        u32 active;
+
+        struct {
+            u32 : 4;
+            u32 impact_on_platform : 1; /* the pending impact is on a platform (platform_id) */
+            u32 : 27;
+        };
+    };
+
     nuhspecial_s special;         // 0x148
     nuhspecial_s *source_special; // 0x154
     NUVEC lighting[7];            // 0x158
