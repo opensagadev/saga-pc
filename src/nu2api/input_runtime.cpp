@@ -713,38 +713,36 @@ i32 PC_INPUT_RUNTIME::SampleDevice(i32 port, PC_INPUT_RAW_SAMPLE *sample) {
         return (i8)devices[port].action_keys_active;
     }
     if (port < 4) {
-        PC_INPUT_DEVICE *record = &devices[port];
-        record->back_pressed = 0;
-        if (record->kind != PC_INPUT_DEVICE_XINPUT) {
+        devices[port].back_pressed = 0;
+        if (devices[port].kind != PC_INPUT_DEVICE_XINPUT) {
             return 0;
         }
         PC_XINPUT_STATE state;
         if (XInputGetState(port, (XINPUT_STATE *)&state) != 0) {
             return 0;
         }
-        if (!record->capabilities_valid) {
+        if (!devices[port].capabilities_valid) {
             PC_XINPUT_CAPABILITIES caps;
-            record->capabilities_valid = XInputGetCapabilities(port, 1, (XINPUT_CAPABILITIES *)&caps) == 0;
-            if (record->capabilities_valid) {
-                InitXInputCaps(&caps, record);
+            devices[port].capabilities_valid = XInputGetCapabilities(port, 1, (XINPUT_CAPABILITIES *)&caps) == 0;
+            if (devices[port].capabilities_valid) {
+                InitXInputCaps(&caps, &devices[port]);
             }
         }
-        u32 bits = state.gamepad.buttons;
-        sample->buttons[7] = (u8)((bits >> 4) & 1);
-        sample->buttons[6] = (u8)((bits >> 5) & 1);
-        record->back_pressed = sample->buttons[6];
-        sample->buttons[128] = (u8)(bits & 1);
-        sample->buttons[130] = (u8)((bits >> 1) & 1);
-        sample->buttons[131] = (u8)((bits >> 2) & 1);
-        sample->buttons[129] = (u8)((bits >> 3) & 1);
-        sample->buttons[3] = (u8)((bits >> 15) & 1);
-        sample->buttons[1] = (u8)((bits >> 13) & 1);
-        sample->buttons[0] = (u8)((bits >> 12) & 1);
-        sample->buttons[5] = (u8)((bits >> 9) & 1);
-        sample->buttons[2] = (u8)((bits >> 14) & 1);
-        sample->buttons[4] = (u8)((bits >> 8) & 1);
-        sample->buttons[8] = (u8)((bits >> 6) & 1);
-        sample->buttons[9] = (u8)((bits >> 7) & 1);
+        sample->buttons[7] = (u8)((state.gamepad.buttons >> 4) & 1);
+        sample->buttons[6] = (u8)((state.gamepad.buttons >> 5) & 1);
+        devices[port].back_pressed = sample->buttons[6];
+        sample->buttons[128] = (u8)(state.gamepad.buttons & 1);
+        sample->buttons[130] = (u8)((state.gamepad.buttons >> 1) & 1);
+        sample->buttons[131] = (u8)((state.gamepad.buttons >> 2) & 1);
+        sample->buttons[129] = (u8)((state.gamepad.buttons >> 3) & 1);
+        sample->buttons[3] = (u8)((state.gamepad.buttons >> 15) & 1);
+        sample->buttons[1] = (u8)((state.gamepad.buttons >> 13) & 1);
+        sample->buttons[0] = (u8)((state.gamepad.buttons >> 12) & 1);
+        sample->buttons[5] = (u8)((state.gamepad.buttons >> 9) & 1);
+        sample->buttons[2] = (u8)((state.gamepad.buttons >> 14) & 1);
+        sample->buttons[4] = (u8)((state.gamepad.buttons >> 8) & 1);
+        sample->buttons[8] = (u8)((state.gamepad.buttons >> 6) & 1);
+        sample->buttons[9] = (u8)((state.gamepad.buttons >> 7) & 1);
         sample->axes[0] = state.gamepad.thumb_lx;
         if (state.gamepad.thumb_ly == -32768) {
             state.gamepad.thumb_ly = -32767;
@@ -772,20 +770,50 @@ i32 PC_INPUT_RUNTIME::SampleDevice(i32 port, PC_INPUT_RAW_SAMPLE *sample) {
         if (device->methods->get_state(device, 0x110, &state) != 0) {
             return 0;
         }
-        for (i32 axis = 0; axis < 8; ++axis) {
-            sample->axes[axis] = (i16)state.axes[axis];
-        }
-        for (i32 axis = 0; axis < 24; ++axis) {
-            sample->axes[axis + 8] = (i16)state.extended_axes[axis];
-        }
+        /* Each DIJOYSTATE2 axis field is copied by name. */
+        sample->axes[0] = state.axes[0];
+        sample->axes[1] = state.axes[1];
+        sample->axes[2] = state.axes[2];
+        sample->axes[3] = state.axes[3];
+        sample->axes[4] = state.axes[4];
+        sample->axes[5] = state.axes[5];
+        sample->axes[6] = state.axes[6];
+        sample->axes[7] = state.axes[7];
+        sample->axes[8] = state.extended_axes[0];
+        sample->axes[9] = state.extended_axes[1];
+        sample->axes[10] = state.extended_axes[2];
+        sample->axes[11] = state.extended_axes[3];
+        sample->axes[12] = state.extended_axes[4];
+        sample->axes[13] = state.extended_axes[5];
+        sample->axes[14] = state.extended_axes[6];
+        sample->axes[15] = state.extended_axes[7];
+        sample->axes[16] = state.extended_axes[8];
+        sample->axes[17] = state.extended_axes[9];
+        sample->axes[18] = state.extended_axes[10];
+        sample->axes[19] = state.extended_axes[11];
+        sample->axes[20] = state.extended_axes[12];
+        sample->axes[21] = state.extended_axes[13];
+        sample->axes[22] = state.extended_axes[14];
+        sample->axes[23] = state.extended_axes[15];
+        sample->axes[24] = state.extended_axes[16];
+        sample->axes[25] = state.extended_axes[17];
+        sample->axes[26] = state.extended_axes[18];
+        sample->axes[27] = state.extended_axes[19];
+        sample->axes[28] = state.extended_axes[20];
+        sample->axes[29] = state.extended_axes[21];
+        sample->axes[30] = state.extended_axes[22];
+        sample->axes[31] = state.extended_axes[23];
         PCByteCopy(sample->buttons, state.buttons, devices[port].button_count);
         if (state.pov[3] >= 0) {
-            u8 direction = PcInputPovBits[state.pov[3] / 4500];
-            for (i32 bit = 0; bit < 4; ++bit) {
-                sample->buttons[128 + bit] = (u8)((direction >> bit) & 1);
-            }
+            sample->buttons[128] = PcInputPovBits[state.pov[3] / 4500] & 1;
+            sample->buttons[129] = (PcInputPovBits[state.pov[3] / 4500] >> 1) & 1;
+            sample->buttons[130] = (PcInputPovBits[state.pov[3] / 4500] >> 2) & 1;
+            sample->buttons[131] = (PcInputPovBits[state.pov[3] / 4500] >> 3) & 1;
         } else {
-            memset(sample->buttons + 128, 0, 4);
+            sample->buttons[131] = 0;
+            sample->buttons[130] = 0;
+            sample->buttons[129] = 0;
+            sample->buttons[128] = 0;
         }
     }
     return 1;

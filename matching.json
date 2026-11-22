@@ -669,10 +669,10 @@
     "src/nu2api/input_descriptors.cpp": "f8c902546c59b23105af3730b88a99cb200df99e5ec77fff9c19168dbdd302f3",
     "src/nu2api/input_detection.cpp": "0ac06b6303bda6c22eb315510f719185480cc2cd61b914ca3403226f90a0bf9e",
     "src/nu2api/input_key_names.cpp": "d5c56461939ab99148f65dfa871160c848f96265fdb71bc365e13ea81fb27375",
-    "src/nu2api/input_runtime.cpp": "05353bfab1c208ef19959690edb59baaaa6db9886ab20507ee1d78e33b9353e1",
+    "src/nu2api/input_runtime.cpp": "c8f06176d6e3280af92df758fedf6f2aaf96024ede659763aa0b9777c2681701",
     "src/nu2api/key_events.cpp": "54208dc28b5f60d83a580a1e1888a4c8932daba6558afd65de70d53e68934da0",
     "src/nu2api/nu3d_includes.cpp": "11080407672466c673b51f0f73d1fef5ca148c66d6ca9e5e1ab50194e84a405c",
-    "src/nu2api/nu3d_platform.cpp": "7d0336c596221336a39792d07a277fdc8de9cbaf7899d84257d8daf1c27d553d",
+    "src/nu2api/nu3d_platform.cpp": "78c38d8ca3912d69d3aa82af45a83b5428740e718b2016022002ccd209033022",
     "src/nu2api/nudebug_pc.cpp": "f750e0a54640fc8f51471e3da5e1557ffad1ca4704195da7cc85aa15c0c4f262",
     "src/nu2api/nudlist_material.cpp": "b4cff5c4e38ba7b1388b692044919cb52d208533e7c8bf1d7ffe9aef09cecb6d",
     "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp": "980c3b70478a607b1c0f73d08902363f5167ead49a0735ac18fd2681e5435793",
@@ -689,7 +689,7 @@
     "src/nu2api/nustream.cpp": "bac072bf17c909a68bfc7dc2fd0d52f8fa863fbc62aa7ba1418b473281e8cffe",
     "src/nu2api/nuwin32/d3dApiCalls.cpp": "a4d7a5fe2e5ec8293050859c84440635161833e2a38d2e73e32aab4476d5c78f",
     "src/nu2api/oggreader.cpp": "90c9a00f33964a13896e474c77fbe03c485db65c240cb3ffe435e222c8e2041e",
-    "src/nu2api/pc_device.cpp": "9c4e4db9fdcb7ebf822b675b6a87ef90de80dccec9538352692c0be964f8ba54",
+    "src/nu2api/pc_device.cpp": "dd01e2e9e2bc46e191f5b4c7ee4901d2ce8b3d07e6c100104ac334927867ddaa",
     "src/nu2api/pc_fmv.cpp": "07e6cee39825e5aee7a06decbef2bbf2c6837db0e5f8aaec158332d904f45cf5",
     "src/nu2api/pc_fmv_control.cpp": "89cea4f7437029fbe750f44bc065a0e5022cccd9d7913b60a710bd0d1dc438ce",
     "src/nu2api/pc_fmv_leaves.cpp": "24b6fee35e824d2142cfdf6ab0822a95a9b6131f176f6242de6f632950de0838",
@@ -1088,7 +1088,7 @@
     "build/obj/legoapi/gizbuildit.obj": "7459d180559db40ab5e3b83a6e0c9407da93eb1eeb95ee698dd87781c007f403",
     "build/obj/legoapi/gizflow.obj": "1635dc29ca84a19cec87942e33762da8765548a75fa42d4fd0f601a1e6307094",
     "build/obj/legoapi/gizflow_diagnostic.obj": "f3d3baa29b581d4fe447c81a9837610747955847ea7d77302b544124eb730fed",
-    "build/obj/legoapi/gizmessage.obj": "66a3721c64e5a890b25122d3ca0c9bbc77ce827be576a62a214e99fb10d9eee7",
+    "build/obj/legoapi/gizmessage.obj": "9f4421a882f5f6fccf0e0d569dd66ce6dbe5120f6b103515bf14fa1e5a861e68",
     "build/obj/legoapi/gizminicut.obj": "b1a6b2353b6429cfaa14dae208115488a5aff8c45e419433da4cdc3c4cdd8aad",
     "build/obj/legoapi/gizmo.obj": "3c10f94621e291ae8fd59dd0f13f3cdae3b721a84931fc45be359f7fedd75599",
     "build/obj/legoapi/gizmoblowups.obj": "84cb4720514fde927733233feb77b4dcce7f05eba337bf9a983746197f375c1c",
@@ -1150,7 +1150,7 @@
     "build/obj/legoapi/snake.obj": "f5d83fd94673e38dc8e0468b408953a7bf3f268d339bcbd5f2a4e6434ad0bd07",
     "build/obj/legoapi/socksys.obj": "8888543cb254bc6e42396b299fc9096c535569091b0a2216865144c6fcf7481b",
     "build/obj/legoapi/socksys_diagnostic.obj": "74c26adffd3c64d0c925ea66d01eb8f6b15f9f97763e822208dcfd3bf0902e1e",
-    "build/obj/legoapi/specialmoves.obj": "042a40a1170838977acaa2c76c42f49d7a6e2e6968cac9f805ffdc9aac7eab33",
+    "build/obj/legoapi/specialmoves.obj": "a0bda1664f4dfcb1039311d43fd65a67c184b5ba8dbce174e07ff7020d6a4899",
     "build/obj/legoapi/specialmoves_diagnostic.obj": "9babc8d6664b0825a3e5130f81d2171ef8ccd52e832f2e0384bba345d42e8440",
     "build/obj/legoapi/specialsfx.obj": "a3f754337fbf35f0c1e4b523ae2d234a64b078fcc9e5567253074f0ab8dfdb5b",
     "build/obj/legoapi/startup_dats.obj": "e6b8534a519a39dfacb676e3de022d0988ec873784a20004157ce46a81728ddc",
@@ -1238,13 +1238,13 @@
     "build/obj/nu2api/input_descriptors.obj": "377ad7227432152a9c9451a0edee5df3a058c95507ce444a7e13cec5b7592117",
     "build/obj/nu2api/input_detection.obj": "ccffb88e3955e8b388f0b8f9614b9e03cadab6c8bf3d178f14e68a2d5d46c075",
     "build/obj/nu2api/input_key_names.obj": "cd6d9196ef844e8e50cc56febdc17bc1c0703f74965a804f0924fa9d97fd8039",
-    "build/obj/nu2api/input_runtime.obj": "56e709a4e2695f9a650dd480ba86867a3965e29176dbeefafd94cadb33b3ea82",
+    "build/obj/nu2api/input_runtime.obj": "8acb724205e9de5ce3a36700dd10201096b0d2829b147dc01379ce13b8f233a5",
     "build/obj/nu2api/key_events.obj": "7f2a223465a6975d3954ef1c1f5cf56f35862c556e3ff053c7f72d481b0ed325",
     "build/obj/nu2api/keyboard_init.obj": "3a6748a3cc3b7e1521ad0d96b560c230b8eabcf09483d9bbe72be4316aa663b2",
     "build/obj/nu2api/keyboard_read.obj": "af7d5b8ec8e71f430a0edbdf113e31ac67db76c0ac08378adf5552347144e2ee",
     "build/obj/nu2api/listman.obj": "29638e12c1ac08b2f1a2ff4e81e286f2e2689c66d1dbaad0916387a6cd54f7be",
     "build/obj/nu2api/nu3d_includes.obj": "482cb906f50e1211eebd857faef008fad9d8399c9f40e72eee7c86f89607ffcd",
-    "build/obj/nu2api/nu3d_platform.obj": "75dfffb0efd6913f5fdd15e81a0e42f134436a3faa61ddc6676a7ff6b934734f",
+    "build/obj/nu2api/nu3d_platform.obj": "c50f05e5d578eff58232444d30675c4ec7ae5b970e4e8a18900562e5d8c40d4e",
     "build/obj/nu2api/nualloc.obj": "850fccf2b772fb17ff150a96ac6b6aeb64a2de056a7d1e964c3c5bc9e10be4d0",
     "build/obj/nu2api/nuapi.obj": "7f1d8425dd4ecdb380d018940951b067810ea45411264720e9323caac63926ac",
     "build/obj/nu2api/nubridge.obj": "e75206ff80bfe4b4ed4d281d519260cb69b68df14755649353a8f03000a40749",
@@ -1280,7 +1280,7 @@
     "build/obj/nu2api/nushaderobject_pc.obj": "1a8c0e41330bb841ccd043f4260c1289e06987f055aab3f9a393c291002acccf",
     "build/obj/nu2api/nushaderobjectbase.obj": "86f520e5c2d3e777980bbce21d1534b99ddd3b4f5ec008d6a3a94bfe760e0e01",
     "build/obj/nu2api/nusound.obj": "9fe57b459f31ed57daead9ddc7e081c3c3b3877940da2d2b26eebd576036c072",
-    "build/obj/nu2api/nusound3/pc/nusound.obj": "f8060e2078a5a367d6ee2bff8baff0b5d43ef039b8eebce2d311ee738c63a253",
+    "build/obj/nu2api/nusound3/pc/nusound.obj": "f509051bef2e034bb3b97196ea783f89e588e4b0eda2563dc351d9faa750782f",
     "build/obj/nu2api/nusound_music.obj": "68cdbd5c5d925d6007ca92519d40a4b1be575042fc8ee990368bbb3794fd2473",
     "build/obj/nu2api/nustateanim.obj": "499cc2e73310dc5171e9cc39f983947303addf55409b0359a477e81fc506f8b7",
     "build/obj/nu2api/nustream.obj": "705b993bab29194f8ec76b9268cd24547097935a431ecb103637a0cf39c2944b",
@@ -1295,7 +1295,7 @@
     "build/obj/nu2api/nuwin32/d3dApiCalls.obj": "75611f4e8a2a685757d870af0d39df727783a600788f509add90989bd9a228fd",
     "build/obj/nu2api/nuwind.obj": "887f0e2af21d1758edabf290dde0783af22d714bab2ce7f1a8fcafd8c5f89b99",
     "build/obj/nu2api/oggreader.obj": "20db447b1e74fd33dfa593a0e5b3a961f4f1b60448f57aae02f5ccaf1dd122ed",
-    "build/obj/nu2api/pc_device.obj": "c57cc3b5f2c3f0cee9b05c94dadd02a3bc1ea615ceea5bac77fa32924ffe0a12",
+    "build/obj/nu2api/pc_device.obj": "b616bc7c70248377e2918f7a202182f16364206c0dd0d6f8ebabd11ea3d7b30b",
     "build/obj/nu2api/pc_fmv.obj": "bc566476d6e03991c03741d637018593c9fb1be08fb789de3bc009408198aa0b",
     "build/obj/nu2api/pc_fmv_control.obj": "cbd77873c803f2cd8592861803e705fd1d09211012f34c8b004e6d4588817acd",
     "build/obj/nu2api/pc_fmv_leaves.obj": "fe6685d6ce48b2b3a11aa04ae59fd87410aa7e73ac2654ea6458d43dbdbccd7e",
@@ -214534,30 +214534,21 @@
         "src/nu2api/nu3d_platform.cpp"
       ],
       "target_size": 445,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nu3d_platform.cpp",
-          "base_size": 289,
-          "exact_match": false,
+          "base_size": 445,
+          "exact_match": true,
           "target_sha256": "67f6dcf3a6438fe3def8ce9b56d7ef7f990aaa958442570e92caef0cbfff0d1d",
-          "base_sha256": "aa2e77c7e9615f7e14083ab446cc1a2b9c5fdb5e21a6faa007a44a06274064a4",
-          "relocation_count": 10,
+          "base_sha256": "67f6dcf3a6438fe3def8ce9b56d7ef7f990aaa958442570e92caef0cbfff0d1d",
+          "relocation_count": 14,
           "comparison_unit": "005ff100-c5dab9b02868",
-          "objdiff_percent": 36.986755
+          "objdiff_percent": 100.0
         }
       ],
-      "diff_class": "structural",
-      "diff_hunks": 23,
-      "idioms": [
-        "I4",
-        "I17",
-        "U7",
-        "U16",
-        "?"
-      ],
-      "status": "different",
-      "objdiff_percent": 36.986755
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuVpInitIdentityMatrix",
@@ -328717,17 +328708,17 @@
       "objects": [
         {
           "unit": "src/nu2api/input_runtime.cpp",
-          "base_size": 820,
+          "base_size": 1125,
           "exact_match": false,
           "target_sha256": "019e2fdc0a594bda334f034ddcf15b7c9205e2a72eeffa61cf6b08514f7d7c2a",
-          "base_sha256": "292f47d34cab6d679291826652dd9faa514bcb5d65b57e9d29c004f342839f85",
+          "base_sha256": "b31fbf8bb1fdc2f93dd871eea107032f79723cf9bb3b26cd979df5b6d8224098",
           "relocation_count": 12,
           "comparison_unit": "006d74e0-f9e1f8ff6b0f",
-          "objdiff_percent": 70.110344
+          "objdiff_percent": 96.14138
         }
       ],
       "diff_class": "structural",
-      "diff_hunks": 30,
+      "diff_hunks": 9,
       "idioms": [
         "I4",
         "U3",
@@ -328735,7 +328726,7 @@
         "?"
       ],
       "status": "different",
-      "objdiff_percent": 70.110344
+      "objdiff_percent": 96.14138
     },
     {
       "name": "?PollKeyboard@PC_INPUT_RUNTIME@@QAEHXZ",
@@ -339060,16 +339051,15 @@
           "base_size": 517,
           "exact_match": false,
           "target_sha256": "2bd78823aafe9b69f47f7b7dbd71488fc5a4c0bd7a37ff84b4309a607a8d8e5d",
-          "base_sha256": "b68914a41285a4f3551fd984d7c7230c1ac5a7b3f50089e691cdbaab9c4baf28",
+          "base_sha256": "a7f09d3e61e3d1a39ad35d8075e6624b31ff1c9a548ef008c310225979ba9822",
           "relocation_count": 30,
           "comparison_unit": "006e42d0-29b28ea7f5e5",
           "objdiff_percent": 85.439186
         }
       ],
       "diff_class": "structural",
-      "diff_hunks": 7,
+      "diff_hunks": 6,
       "idioms": [
-        "C",
         "U3",
         "?"
       ],
@@ -900455,18 +900445,18 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 3348693,
-    "matched_code_bytes": 2117277,
-    "matching_percent": 60.99472638931381,
+    "matched_code_bytes": 2117722,
+    "matching_percent": 61.007545993571185,
     "padding_bytes": 114459,
-    "matched_padding_bytes": 101164,
-    "matched_code_with_padding_bytes": 2218441,
-    "matching_with_padding_percent": 63.90906896255696,
+    "matched_padding_bytes": 101167,
+    "matched_code_with_padding_bytes": 2218889,
+    "matching_with_padding_percent": 63.9219749911127,
     "fuzzy_text_data_bytes": 6896,
     "fuzzy_denominator_bytes": 3349891,
-    "fuzzy_coverage_percent": 96.42739630647614,
+    "fuzzy_coverage_percent": 96.44462560589663,
     "mapped_functions": 15914,
-    "matched_functions": 13963,
-    "objdiff_fuzzy_percent": 96.925446,
+    "matched_functions": 13964,
+    "objdiff_fuzzy_percent": 96.94273,
     "objdiff_total_code": 3338646,
     "image_bytes": 40067072,
     "mapped_bytes": 38533384,
@@ -900575,24 +900565,24 @@
   "text_coverage": {
     "original_text_bytes": 3471246,
     "mapped_reconstruction_bytes": 3348693,
-    "exact_reconstruction_bytes": 2117277,
-    "mapped_not_exact_bytes": 1231416,
+    "exact_reconstruction_bytes": 2117722,
+    "mapped_not_exact_bytes": 1230971,
     "excluded_import_glue_bytes": 1194,
     "text_data_bytes": 6896,
     "exact_text_data_bytes": 6896,
     "unclassified_text_bytes": 114463,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 60.99472638931381,
+    "strict_original_text_exact_percent": 61.007545993571185,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 61.015713885555606,
+    "reconstruction_scope_exact_percent": 61.028537900872955,
     "mapped_scope_denominator_bytes": 3348693,
-    "mapped_scope_exact_percent": 63.22696646124324,
+    "mapped_scope_exact_percent": 63.2402552279352,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image.",
     "alignment_padding_bytes": 114459,
-    "exact_alignment_padding_bytes": 101164,
+    "exact_alignment_padding_bytes": 101167,
     "unclassified_non_padding_text_bytes": 4,
-    "exact_with_padding_bytes": 2218441,
-    "exact_with_padding_percent": 63.90906896255696,
+    "exact_with_padding_bytes": 2218889,
+    "exact_with_padding_percent": 63.9219749911127,
     "padding_qualification": "Padding is int3/nop alignment fill shorter than 16 bytes between mapped extents, shorter than the alignment of the extent start it ends on; it is exact only after an exact function."
   },
   "data_members": [
@@ -901871,7 +901861,7 @@
       "metadata_sha256": "a005dfb7254f87304ba5e7d1c5083ab46db1e8272ef5fdd2e11a8953a1d1d2d5",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "5107d7ae8e7e6c404369a52689c594e26c132e7558fbd06abc9e73cab7f1d129",
+      "geometry_object_sha256": "4aeb7a88a6dc395a7ed100e3f9cfba514adc02b3ee894adc7a81f31f3f4d749f",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
@@ -902317,8 +902307,8 @@
           "object_sha256": "c5b83152afbcd84b222619ee6313d057877c36fdcdb1962d9c2c428bf9ff473b"
         },
         "src/nu2api/nu3d_platform.cpp": {
-          "source_sha256": "7d0336c596221336a39792d07a277fdc8de9cbaf7899d84257d8daf1c27d553d",
-          "object_sha256": "75dfffb0efd6913f5fdd15e81a0e42f134436a3faa61ddc6676a7ff6b934734f"
+          "source_sha256": "78c38d8ca3912d69d3aa82af45a83b5428740e718b2016022002ccd209033022",
+          "object_sha256": "c50f05e5d578eff58232444d30675c4ec7ae5b970e4e8a18900562e5d8c40d4e"
         }
       }
     },
