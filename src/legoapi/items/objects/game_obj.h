@@ -172,15 +172,15 @@ typedef struct PART { // size 0x220
     u16 unknown_140;     // 0x140
     u8 rotation_axes[2]; // 0x142
 
-    union { // 0x144
+    union { // size 0x4
         u32 active;
 
-        struct {
-            u32 : 4;
-            u32 impact_on_platform : 1; /* the pending impact is on a platform (platform_id) */
-            u32 : 27;
+        struct {                        // size 0x4
+            u32 : 4;                    // 0x144:0
+            u32 impact_on_platform : 1; // 0x144:4 the pending impact is on a platform (platform_id)
+            u32 : 27;                   // 0x144:5
         };
-    };
+    }; // 0x144
 
     nuhspecial_s special;         // 0x148
     nuhspecial_s *source_special; // 0x154
