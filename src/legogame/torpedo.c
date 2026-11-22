@@ -351,6 +351,7 @@ void *FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 distance_squa
     f32 best;
     NUVEC delta;
     i32 index;
+    f32 distance;
     if (world->gizmo_blowup_count == 0) {
         return NULL;
     }
@@ -359,7 +360,6 @@ void *FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 distance_squa
     type = TORPEDO_TARGET_BLOWUP;
     for (index = 0; index < world->gizmo_blowup_count; ++index) {
         GIZMOBLOWUP *blowup = &world->gizmo_blowups[index];
-        f32 distance;
         if ((blowup->status_flags & BLOWUP_STATUS_VISIBLE) == 0 || (blowup->status_flags & BLOWUP_STATUS_DRAWN) == 0 ||
             (blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0 || (blowup->status_flags & BLOWUP_STATUS_ACTIVE) == 0 ||
             (blowup->draw_flags & BLOWUP_OPTION_TORPEDO_TARGET) == 0) {
@@ -380,7 +380,7 @@ void *FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 distance_squa
                 turret->primary_anim_obj != NULL) {
                 NUVEC *draw_position = NuSpecialGetDrawPos(&turret->primary_anim_obj->special);
                 if (draw_position != NULL) {
-                    f32 distance = NuVecDistSqr(draw_position, position, &delta);
+                    distance = NuVecDistSqr(draw_position, position, &delta);
                     if (distance < best) {
                         best = distance;
                         nearest = turret;
@@ -395,7 +395,7 @@ void *FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 distance_squa
             GIZOBSTACLE *obstacle = world->giz_obstacle_sys->active_gizmos[index]->obstacle;
             if ((obstacle->progress_flags & OBSTACLE_VISIBLE) != 0 && (obstacle->progress_flags & OBSTACLE_ACTIVE) != 0 &&
                 (obstacle->runtime_flags & 0x80) == 0) {
-                f32 distance = NuVecDistSqr(&obstacle->evaluated_position, position, &delta);
+                distance = NuVecDistSqr(&obstacle->evaluated_position, position, &delta);
                 if (distance < best) {
                     best = distance;
                     nearest = obstacle;
