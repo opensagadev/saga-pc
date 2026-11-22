@@ -37,7 +37,7 @@ NUVEC RtlUnitDirectionYPc = {0.0f, 1.0f, 0.0f};
 i32 rtl_dynamic_lights_enabled = 1;
 static i32 curr_version = 5;
 f32 rtl_shadow_blend_rate = 2.0f;
-NUVEC rtl_shadow_flicker = {0.1f, 0.1f, 0.1f};
+static NUVEC rtl_shadow_flicker = {0.1f, 0.1f, 0.1f};
 static u16 rtl_uid = 1;
 static i32 rtl_dynamic_cnt = 0;
 

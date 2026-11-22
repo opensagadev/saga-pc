@@ -804,7 +804,7 @@ void Coins_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed
             i32 player;
             for (player = 0; player < 2; ++player) {
                 u32 remaining = packet->coins_remaining[player];
-                if (remaining != 0) {
+                if (remaining > 0) {
                     u32 threshold = 100;
                     u32 rate = 35;
                     u32 amount;
