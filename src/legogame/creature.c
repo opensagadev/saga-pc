@@ -1142,17 +1142,18 @@ void MovePlayerSpline(GAMEOBJECT *object) {
     object->movement_mode = 0;
 
     if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_BANKING) != 0) {
-        roll = 0;
         if (object->player.character_context != CHARACTER_CONTEXT_TURN && object->player.character_context != CHARACTER_CONTEXT_LOOP &&
             object->player.character_context != CHARACTER_CONTEXT_BARREL_ROLL) {
             diff = RotDiff(object->previous_movement_angle, object->movement_angle);
             roll = (i32)(diff / FRAMETIME);
             roll += (i32)(object->movement_spline_lateral_speed * spline_xoffset_speed_roll);
-            if (roll < -0x10000) {
-                roll = -0x10000;
-            } else if (roll > 0x10000) {
-                roll = 0x10000;
-            }
+        } else {
+            roll = 0;
+        }
+        if (roll < -0x10000) {
+            roll = -0x10000;
+        } else if (roll > 0x10000) {
+            roll = 0x10000;
         }
         target_roll = roll / 4;
         if (target_roll < -0x2000) {
