@@ -114,6 +114,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* Diagnostic hook, compiled empty like PCSpecialEmptyHandler. */
+extern "C" void AnimationDiagnosticNoOp(...) {
+}
+
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 Nu3dIncludesFabs(f32 f) {
     f32 rv;
@@ -2994,7 +2998,7 @@ extern "C" {
                 }
                 if (flags & NUJOINT_OVERRIDE_LIMIT_Y) {
                     angles.y &= 0xffff;
-                    if (angles.y > 32767) {
+                    if (angles.y >= 32768) {
                         angles.y -= 65536;
                     }
                     if (angles.y > override_anim->rotation_max[1]) {
@@ -3005,7 +3009,7 @@ extern "C" {
                 }
                 if (flags & NUJOINT_OVERRIDE_LIMIT_Z) {
                     angles.z &= 0xffff;
-                    if (angles.z > 32767) {
+                    if (angles.z >= 32768) {
                         angles.z -= 65536;
                     }
                     if (angles.z > override_anim->rotation_max[2]) {

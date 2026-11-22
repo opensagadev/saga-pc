@@ -238,20 +238,20 @@ void NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
                 continue;
             case TEXANIM_OP_GOSUB:
                 if (environment->call_depth >= 16) {
-                    ((void (*)(i32))AnimationDiagnosticNoOp)(environment->instruction_index);
+                    AnimationDiagnosticNoOp(environment->instruction_index);
                 }
                 environment->return_stack[environment->call_depth++] = environment->instruction_index + 2;
                 environment->instruction_index = program->instructions[environment->instruction_index + 1];
                 continue;
             case TEXANIM_OP_RET:
                 if (environment->call_depth == 0) {
-                    ((void (*)(i32))AnimationDiagnosticNoOp)(environment->instruction_index);
+                    AnimationDiagnosticNoOp(environment->instruction_index);
                 }
                 environment->instruction_index = environment->return_stack[--environment->call_depth];
                 continue;
             case TEXANIM_OP_REPEAT:
                 if (environment->loop_depth >= 16) {
-                    ((void (*)(i32))AnimationDiagnosticNoOp)(environment->instruction_index);
+                    AnimationDiagnosticNoOp(environment->instruction_index);
                 }
                 environment->loop_counts[environment->loop_depth] = program->instructions[environment->instruction_index + 1];
                 if (program->instructions[environment->instruction_index + 2] != 0) {
@@ -264,7 +264,7 @@ void NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
                 continue;
             case TEXANIM_OP_REPEND:
                 if (environment->loop_depth == 0) {
-                    ((void (*)(i32))AnimationDiagnosticNoOp)(environment->instruction_index);
+                    AnimationDiagnosticNoOp(environment->instruction_index);
                 }
                 if (environment->loop_counts[environment->loop_depth - 1] == 0) {
                     --environment->loop_depth;
@@ -276,7 +276,7 @@ void NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
                 continue;
             case TEXANIM_OP_UNTILTEX:
                 if (environment->loop_depth == 0) {
-                    ((void (*)(i32))AnimationDiagnosticNoOp)(environment->instruction_index);
+                    AnimationDiagnosticNoOp(environment->instruction_index);
                 }
                 if (TextureAnimationConditionPrivate(program->instructions[environment->instruction_index + 1], environment->texture_index,
                                                      program->instructions[environment->instruction_index + 2]) ||
@@ -564,7 +564,7 @@ static i32 TextureAnimationReadComparisonPrivate(NUFPAR *parser) {
         case '=':
             return TEXANIM_CMP_EQ;
         default:
-            ((void (*)(const char *, i32))AnimationDiagnosticNoOp)(word, parser->line_number);
+            AnimationDiagnosticNoOp(word, parser->line_number);
             return TEXANIM_CMP_EQ;
     }
 }
@@ -1012,7 +1012,7 @@ void NuTexAnimProgReadCFG(char *path, VARIPTR *buffer, VARIPTR end) {
             NuStrCat(filename, ".cfg");
             item = NuFilePakGetItem(pak, filename);
             if (item == 0) {
-                ((void (*)(const void *))AnimationDiagnosticNoOp)(filename);
+                AnimationDiagnosticNoOp(filename);
             }
             NuFilePakGetItemInfo(pak, item, &data, &size);
             file = NuMemFileOpen(data, size, 0);
@@ -1023,7 +1023,7 @@ void NuTexAnimProgReadCFG(char *path, VARIPTR *buffer, VARIPTR end) {
                     while (NuFParGetLine(parser)) {
                         NuFParGetWord(parser);
                         if (parser->word_buffer_ptr[0] == '\0') {
-                            ((void (*)(const void *))AnimationDiagnosticNoOp)((void *)parser->line_number);
+                            AnimationDiagnosticNoOp(parser->line_number);
                         }
                         name = NuStrRChr(parser->word_buffer_ptr, '/');
                         if (name == NULL && (name = NuStrRChr(parser->word_buffer_ptr, '\\')) == NULL) {
@@ -1041,7 +1041,7 @@ void NuTexAnimProgReadCFG(char *path, VARIPTR *buffer, VARIPTR end) {
             for (cursor = list; *cursor.char_ptr != '\0'; cursor.char_ptr += NuStrLen(cursor.char_ptr) + 1) {
                 item = NuFilePakGetItem(pak, cursor.char_ptr);
                 if (item == 0) {
-                    ((void (*)(const void *))AnimationDiagnosticNoOp)(cursor.char_ptr);
+                    AnimationDiagnosticNoOp(cursor.char_ptr);
                 }
                 NuFilePakGetItemInfo(pak, item, &data, &size);
                 file = NuMemFileOpen(data, size, 0);
@@ -1055,7 +1055,7 @@ void NuTexAnimProgReadCFG(char *path, VARIPTR *buffer, VARIPTR end) {
             return;
         }
         if (NuTexAnimMissingPakDiagnostic != 0) {
-            ((void (*)(const void *))AnimationDiagnosticNoOp)(path);
+            AnimationDiagnosticNoOp(path);
         } else {
             PCSpecialEmptyHandler(path);
         }
@@ -1069,7 +1069,7 @@ void NuTexAnimProgReadCFG(char *path, VARIPTR *buffer, VARIPTR end) {
         while (NuFParGetLine(parser)) {
             NuFParGetWord(parser);
             if (parser->word_buffer_ptr[0] == '\0') {
-                ((void (*)(const void *))AnimationDiagnosticNoOp)((void *)parser->line_number);
+                AnimationDiagnosticNoOp(parser->line_number);
             }
             list.char_ptr -= NuStrLen(parser->word_buffer_ptr) + 1;
             NuStrCpy(list.char_ptr, parser->word_buffer_ptr);

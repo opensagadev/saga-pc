@@ -435,6 +435,11 @@ The same holds for x87: `StateAnimEvaluate` keeps the frame value on the x87
 stack and `edx` live across its argument-less call, so it is defined in
 `nu3d_includes.cpp` before the hook's definition (the sibling build also
 files it there); in its own unit it reloaded both (46.6 -> 50.2).
+`AnimationDiagnosticNoOp` (0x5c12e0, just before `PCSpecialEmptyHandler`) is
+the same kind of varargs hook: defined at the top of `nu3d_includes.cpp` instead
+of `nuvec.c`, `allocateFrustrum` keeps `eax` across its calls, `NuMtlSetCurrentRenderPlane`
+became exact and the `NuQFnt` callers improved; `NuAnimBuffEvaluate_3_QuatB`
+alone lost its guarded call (unexplained).
 
 ### I36: a local object pointer instead of repeated casts
 

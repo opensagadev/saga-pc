@@ -9193,7 +9193,7 @@ static void ImplodeReadLiteralLengthsPrivate() {
     i = 0;
     while (i < n) {
         value = ImplodeOffsetTable[implode_bitbuf >> 0x18];
-        if (value > 0x12) {
+        if (value >= 0x13) {
             u32 mask = 0x800000;
             do {
                 if ((implode_bitbuf & mask) != 0) {
@@ -9202,7 +9202,7 @@ static void ImplodeReadLiteralLengthsPrivate() {
                     value = implode_left[value];
                 }
                 mask >>= 1;
-            } while (value > 0x12);
+            } while (value >= 0x13);
         }
         ImplodeFillBuf(ImplodeOffsetLengths[value]);
 
@@ -9306,7 +9306,7 @@ u32 ImplodeDecodeC() {
     blocksize--;
 
     value = ImplodeLiteralTable[implode_bitbuf >> 0x14];
-    if (value > (sizeof(ImplodeLiteralLengths) - 1)) {
+    if (value >= sizeof(ImplodeLiteralLengths)) {
         u32 mask = 0x80000;
         do {
             if ((implode_bitbuf & mask) != 0) {
@@ -9315,7 +9315,7 @@ u32 ImplodeDecodeC() {
                 value = implode_left[value];
             }
             mask >>= 1;
-        } while (value > (sizeof(ImplodeLiteralLengths) - 1));
+        } while (value >= sizeof(ImplodeLiteralLengths));
     }
     ImplodeFillBuf(ImplodeLiteralLengths[value]);
 
@@ -9326,7 +9326,7 @@ u32 ImplodeDecodeOffset() {
     u32 offset;
 
     offset = ImplodeOffsetTable[implode_bitbuf >> 0x18];
-    if (offset > 0xd) {
+    if (offset >= 0xe) {
         u32 mask = 0x800000;
         do {
             if ((implode_bitbuf & mask) != 0) {
@@ -9335,7 +9335,7 @@ u32 ImplodeDecodeOffset() {
                 offset = implode_left[offset];
             }
             mask >>= 1;
-        } while (offset > 0xd);
+        } while (offset >= 0xe);
     }
     ImplodeFillBuf(ImplodeOffsetLengths[offset]);
 
