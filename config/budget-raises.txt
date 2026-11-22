@@ -367,3 +367,6 @@ config/oddscan-budget.json dup-macro-conflict 7 impl/engine: nusound.cpp renames
 config/oddscan-budget.json nolint 64 impl/engine: nusound.cpp renames vorbisfile.h's static _ov_header_fseek_wrap around its include, as nustream.cpp and oggreader.cpp do, so its retail copy NusoundOvHeaderFseekWrap (0x696ae0) is emitted
 config/oddscan-budget.json undef-in-unit 15 impl/engine: nusound.cpp renames vorbisfile.h's static _ov_header_fseek_wrap around its include, as nustream.cpp and oggreader.cpp do, so its retail copy NusoundOvHeaderFseekWrap (0x696ae0) is emitted
 config/castscan-budget.json scalar-pun 292 impl/engine: SockFabs and PartsFabs take the SDK NuFabs form of their exact siblings (masked float bits), replacing the written-out unions their callers had
+config/oddscan-budget.json magic-bound 1580 slip/legogame: LightSabreStreakCode tests use_model_origin < 2 (retail cmp 2 / jb), where the port had <= 1
+config/castscan-budget.json declaration-type 742 slip/legogame: LightSabreStreakCode compares object->id with the (u16) ids, as retail does (16-bit cmp), like the rest of move.c
+config/castscan-budget.json declaration-type 734 the legogame slip fixes (LightSabreStreakCode) compare (u16)id_* as retail does, merged with the nu2api slip branch's lower count

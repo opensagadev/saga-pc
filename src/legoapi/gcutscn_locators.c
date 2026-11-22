@@ -11,6 +11,7 @@
 #include "nu2api/nucore/nuanimdata.h"
 #include "nu2api/nucore/nugcutscene.h"
 #include "nu2api/nucore/nuhgobj.h"
+#include "nu2api/numath/nufloat.h"
 #include "nu2api/numath/numath_includes.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nutrig.h"
@@ -332,7 +333,7 @@ static void CutSceneLocatorLookAtUpdate(CUT_LOAD_LOCATOR_INSTANCE *instance, CUT
         if ((f64)x < -0.23999999463558197) {
             x = -0.24f;
         }
-        amount = x < 0.0f ? -x : x;
+        NU_FABS_STORE(amount, x);
         selected_frame = (i32)(((f64)amount / -0.23999999463558197) * 8192.0);
         limit = (f32)(((f64)NuTrigTable[((0x4000 - selected_frame) >> 1) & 0x7fff] - 0.699999988079071) * 0.18000000715255737 /
                       0.30000001192092896);

@@ -178,7 +178,6 @@ extern "C" {
     extern f32 rtl_frametime;
     extern f32 rtl_shadow_blend_rate;
     extern f32 rtlwob;
-    extern NUVEC rtl_shadow_flicker;
     extern NUVEC RtlUnitDirectionYPc;
     extern NUVEC RtlUnitDirectionZPc;
     extern f32 *modifiers;

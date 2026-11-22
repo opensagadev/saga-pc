@@ -6,7 +6,12 @@
 extern "C" {
 #endif
     void PCAnimationLoadFailureNoOp(char *);
-    void AnimationDiagnosticNoOp(void);
+    /* An empty diagnostic hook the callers pass their arguments to; C callers see it unprototyped. */
+#ifdef __cplusplus
+    void AnimationDiagnosticNoOp(...);
+#else
+void AnimationDiagnosticNoOp();
+#endif
 #ifdef __cplusplus
 }
 #endif

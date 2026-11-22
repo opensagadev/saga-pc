@@ -8,6 +8,7 @@ extern "C" {
     extern char PCNativeDebugFormatBuffer[];
     extern char PCNativeDebugOutputBuffer[];
     extern const char PCNativeDebugPrefix[];
+    void PCNativeErrorHook(char *text);
 #ifdef __cplusplus
 }
 #endif

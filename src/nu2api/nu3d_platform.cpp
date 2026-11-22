@@ -2339,12 +2339,12 @@ extern "C" {
             NUVEC point;
             NUVEC transformed;
             f32 angle;
-            f32 speed = (NuRandFloatSeeded(&seed) * 0.4f + 0.8f) * dat_0080e174;
-            angle = NuRandFloatSeeded(&seed) * 6.2831855f + speed;
+            f64 speed = (NuRandFloatSeeded(&seed) * 0.4f + 0.8f) * dat_0080e174;
+            angle = NuRandFloatSeeded(&seed) * 6.283f + speed;
             point.x = NuTrigTable[((i32)(angle * AIPathAngularScale) >> 1) & 0x7fff] * radius;
             point.y = 0.0f;
             speed = (NuRandFloatSeeded(&seed) * 0.4f + 0.7f) * dat_0080e174;
-            angle = NuRandFloatSeeded(&seed) * 6.2831855f + speed;
+            angle = NuRandFloatSeeded(&seed) * 6.283f + speed;
             point.z = NuTrigTable[((i32)(angle * AIPathAngularScale) >> 1) & 0x7fff] * radius;
             NuVecMtxTransformH(&transformed, &point, &matrix);
             dat_028358c8[i].x = transformed.x;
@@ -2369,8 +2369,8 @@ extern "C" {
             NUVEC *position = &vertices[i].position;
             f32 x = position->x;
             f32 z = position->z;
-            i32 cell_x = (i32)x;
-            i32 cell_z = (i32)z;
+            u32 cell_x = (u32)x;
+            u32 cell_z = (u32)z;
             u32 seed = ((cell_z << 2 ^ cell_x) << 3) ^ (cell_z * cell_x);
             i32 first = (i32)(NuRandFloatSeeded(&seed) * 1.5 + z);
             i32 second = (i32)(NuRandFloatSeeded(&seed) * 1.5 + x);
@@ -3188,6 +3188,10 @@ extern "C" {
     }
 
     void NuSpeedBlurFilter::ResizeTextures(i32, i32) {
+    }
+
+    i32 PcGeometryBackendAvailable(void) {
+        return PCDeviceHardwareVertexProcessingPC >= 4;
     }
 
     i32 PcInitializeDynamicGeometryBuffers(PC_DYNAMIC_GEOMETRY *geometry, i32 count) {
@@ -4220,41 +4224,13 @@ extern "C" {
 
     void NuVpSetClipRect(f32 min_x, f32 min_y, f32 max_x, f32 max_y) {
         f32 left = vpCurrent.x;
-        f32 right;
         f32 top;
-        f32 bottom;
-        if (min_x < left) {
-            min_x = left;
-        }
-        right = left + vpCurrent.width * 0.0625;
-        if (min_x > right) {
-            min_x = right;
-        }
-        vpCurrent.clip_min_x = min_x;
+        vpCurrent.clip_min_x = MIN(MAX(min_x, left), left + vpCurrent.width * 0.0625);
         top = vpCurrent.y;
-        if (min_y < top) {
-            min_y = top;
-        }
-        bottom = top + vpCurrent.height * 0.0625;
-        if (min_y > bottom) {
-            min_y = bottom;
-        }
-        vpCurrent.clip_min_y = min_y;
-        if (max_x < left) {
-            max_x = left;
-        }
-        if (max_x > right) {
-            max_x = right;
-        }
-        vpCurrent.clip_max_x = max_x;
-        if (max_y < top) {
-            max_y = top;
-        }
-        if (max_y > bottom) {
-            max_y = bottom;
-        }
+        vpCurrent.clip_min_y = MIN(MAX(min_y, top), top + vpCurrent.height * 0.0625);
+        vpCurrent.clip_max_x = MIN(MAX(max_x, left), left + vpCurrent.width * 0.0625);
+        vpCurrent.clip_max_y = MIN(MAX(max_y, top), top + vpCurrent.height * 0.0625);
         vport_inval = 1;
-        vpCurrent.clip_max_y = max_y;
     }
 
     void NuVpInitIdentityMatrix(void) {
@@ -7786,8 +7762,8 @@ extern "C" {
         if (near_distance != far_distance && (colour & 0xff000000) > 0x2000000) {
             PCFogSetMode(1, 1);
             PCFogSetColour(NuRndrFogColour);
-            PCFogSetRange(*(u32 *)&NuRndrFogNear, *(u32 *)&NuRndrFogFar);
-            PCFogSetDensity(*(u32 *)&NuRndrFogDensity);
+            PCFogSetRange(NuRndrFogNear, NuRndrFogFar);
+            PCFogSetDensity(NuRndrFogDensity);
         } else {
             PCFogSetMode(0, 0);
         }
@@ -7974,8 +7950,8 @@ extern "C" {
         PCFogColourSuppressed = 0;
     }
 
-    void PCFogSetDensity(u32 density) {
-        PCDeviceSetRenderState(D3DRS_FOGDENSITY, density);
+    void PCFogSetDensity(f32 density) {
+        PCDeviceSetRenderState(D3DRS_FOGDENSITY, *(u32 *)&density);
     }
 
     void PCFogSuppressColour(void) {
@@ -7992,9 +7968,9 @@ extern "C" {
         }
     }
 
-    void PCFogSetRange(u32 start, u32 end) {
-        PCDeviceSetRenderState(D3DRS_FOGSTART, start);
-        PCDeviceSetRenderState(D3DRS_FOGEND, end);
+    void PCFogSetRange(f32 start, f32 end) {
+        PCDeviceSetRenderState(D3DRS_FOGSTART, *(u32 *)&start);
+        PCDeviceSetRenderState(D3DRS_FOGEND, *(u32 *)&end);
     }
 
     void PCFogSetDensity2(u32 density) {

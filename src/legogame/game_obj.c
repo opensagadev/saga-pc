@@ -2419,9 +2419,8 @@ void UpdateGameObjects(WORLDINFO *world) {
     dagobah_luke = FindGameObject(id_LUKESKYWALKERDAGOBAH, 0, 1, 1, 0);
     for (i = 0; i < HIGHGAMEOBJECT; ++i) {
         object = &Obj[i];
-        if (world->rooms_visible_ptr[object->portal_room] != 0 &&
-            (object->flags_1fc_word & (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER)) ==
-                (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER)) {
+        if (world->rooms_visible_ptr[object->portal_room] != 0 && (object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+            (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0) {
             yoda_proximity = StartupGameFlag1 != 0 ? TakeOverYodaSeekDistanceHack(object, dagobah_luke, &offset) : 0;
             target = (object->player.flags_e20 & 0x80000000) != 0 || yoda_proximity != 0 ? 1.0f : 0.0f;
             object->player.arrow_blend = SeekLinearF(object->player.arrow_blend, target, FRAMETIME + FRAMETIME);
@@ -2480,12 +2479,12 @@ void UpdateGameObjects(WORLDINFO *world) {
     if (do_player_tag != 0) {
         result = 0;
         if (player_tag_to != NULL && player_tag_from != NULL && player_tag_to != player_tag_from &&
-            (player_tag_to->flags_1fc_word & (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER)) ==
-                (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER) &&
-            player_tag_to->dead == 0 && (player_tag_to->player.tag_flags & APIOBJECT_TAG_DISABLED) == 0 &&
-            (player_tag_from->flags_1fc_word & (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER)) ==
-                (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER) &&
-            player_tag_from->dead == 0 && (APIOBJECT_TAG_DISABLED & player_tag_from->player.tag_flags) == 0) {
+            (player_tag_to->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+            (player_tag_to->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && player_tag_to->dead == 0 &&
+            (player_tag_to->player.tag_flags & APIOBJECT_TAG_DISABLED) == 0 &&
+            (player_tag_from->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+            (player_tag_from->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && player_tag_from->dead == 0 &&
+            (APIOBJECT_TAG_DISABLED & player_tag_from->player.tag_flags) == 0) {
             result = TagCode(player_tag_to, player_tag_from, 0, 0, 1);
             if (result == 1) {
                 GameAudio_PlaySfx(0x22, &player_tag_to->collision_position, 0, 0);
@@ -2504,12 +2503,12 @@ void UpdateGameObjects(WORLDINFO *world) {
     } else if (player_tag_timer > 0.0f) {
         player_tag_timer -= FRAMETIME;
         if (player_tag_timer < 0.0f || player_tag_to == NULL || player_tag_from == NULL ||
-            (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER) !=
-                ((player_tag_to->flags_1fc_word & (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER))) ||
-            player_tag_to->dead != 0 || (player_tag_to->player.tag_flags & APIOBJECT_TAG_DISABLED) != 0 ||
-            (player_tag_from->flags_1fc_word & (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER)) !=
-                (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER) ||
-            player_tag_from->dead != 0 || (player_tag_from->player.tag_flags & APIOBJECT_TAG_DISABLED) != 0) {
+            (player_tag_to->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
+            (player_tag_to->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || player_tag_to->dead != 0 ||
+            (player_tag_to->player.tag_flags & APIOBJECT_TAG_DISABLED) != 0 ||
+            (player_tag_from->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
+            (player_tag_from->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || player_tag_from->dead != 0 ||
+            (player_tag_from->player.tag_flags & APIOBJECT_TAG_DISABLED) != 0) {
             player_tag_to = NULL;
             player_tag_timer = 0.0f;
             player_tag_from = NULL;
@@ -2660,13 +2659,14 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
             if (Cheat_IsOn(5)) {
                 debris[0] = 125;
                 debris[1] = 126;
+                PlaySfx("exp_thermalDet", &object->collision_position);
             } else {
                 debris[0] = 82;
                 debris[1] = 83;
                 debris[2] = 84;
                 part_debris = 3;
+                PlaySfx("exp_thermalDet", &object->collision_position);
             }
-            PlaySfx("exp_thermalDet", &object->collision_position);
         } else if (object->id == (u16)id_WOMPRAT) {
             part_debris = 5;
         } else if (object->id == (u16)id_PROBEDROID) {
@@ -2970,8 +2970,8 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
         FreeTorpedoPacket(&object->player.torpedo);
         object->player.torpedo = NULL;
     }
-    if (VehicleArea != 0 && object->player_slot < 2) {
-        DebFreeInstantly(&FalconDebKey[object->player_slot]);
+    if (VehicleArea != 0 && (object->player_index == 0 || object->player_index == 1)) {
+        DebFreeInstantly(&FalconDebKey[object->player_index]);
     }
     return 1;
 }
@@ -3512,14 +3512,14 @@ impact:
                 no_hurt = 1;
             }
         } else if (VehicleArea || (WORLD->current_level == SPEEDERCHASEA_LDATA && !disable_narrow_socks)) {
-            i32 bits = attacker && attacker->player_slot <= 1 ? 1 << attacker->player_slot : 0;
+            i32 bits = attacker && (attacker->player_slot == 0 || attacker->player_slot == 1) ? 1 << attacker->player_slot : 0;
             GameAudio_PlaySfx(40, &target->collision_position, bits, 0);
         } else if (flags & OBJHIT_PUNCH) {
             if (attacker && attacker->player.character_context == CHARACTER_CONTEXT_PUNCH &&
                 (AnimMiscFlags(attacker->character_model, attacker->player.context_animation) & 4)) {
                 PlaySfx("WhipHit", &target->collision_position);
             } else {
-                i32 bits = attacker && attacker->player_slot <= 1 ? 1 << attacker->player_slot : 0;
+                i32 bits = attacker && (attacker->player_slot == 0 || attacker->player_slot == 1) ? 1 << attacker->player_slot : 0;
                 GameAudio_PlaySfx(74, &target->collision_position, bits, 0);
             }
         } else if (attacker) {
@@ -3781,7 +3781,7 @@ finish:
                 HitRumble(attacker);
             }
         }
-        if (!(flags & 0x4000) && result == 2 && attacker->player_slot <= 1 && Arcade) {
+        if (!(flags & 0x4000) && result == 2 && (attacker->player_slot == 0 || attacker->player_slot == 1) && Arcade) {
             Arcade_Kill(attacker->player_index, target->player_index);
         }
     }

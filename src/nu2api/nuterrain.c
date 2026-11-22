@@ -179,8 +179,7 @@ i32 NewPlatInst(void *object, i32 instance) {
     CurrentTerrain->platforms[new_index].terrain_group_index = CurrentTerrain->group_count;
     CurrentTerrain->platforms[new_index].scene_object_index = (i16)instance;
     CurrentTerrain->platforms[new_index].instance_flags = NULL;
-    CurrentTerrain->platforms[new_index].flags ^=
-        (CurrentTerrain->platforms[source_index].flags ^ CurrentTerrain->platforms[new_index].flags) & 1;
+    CurrentTerrain->platforms[new_index].rotating = CurrentTerrain->platforms[source_index].rotating;
     CurrentTerrain->group_indices[CurrentTerrain->group_index_count] = CurrentTerrain->group_count;
     CurrentTerrain->group_index_count++;
     CurrentTerrain->platforms[new_index].bounce_impulse = 0.0f;

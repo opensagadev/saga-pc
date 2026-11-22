@@ -1141,33 +1141,36 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
                 }
                 if (line == last_line) {
                     end = bytes - 1;
-                } else if (max_width > 0.0) {
-                    next = begin;
-                    do {
-                        end = next;
-                        ++next;
-                        while (decoded[next] == ' ') {
+                } else {
+                    f64 limit = max_width;
+                    if (limit > 0.0) {
+                        next = begin;
+                        do {
+                            end = next;
                             ++next;
-                        }
-                        if (next == bytes) {
-                            end = next - 1;
-                            break;
-                        }
-                        next = FindNextBreak(decoded, next);
-                        if (decoded[next] != '-' && decoded[next] != '.' && decoded[next] != ',') {
-                            --next;
-                        }
-                        while (decoded[next] == ' ') {
-                            --next;
-                        }
-                        length = next - begin + 1;
-                        if (length > 511) {
-                            length = 511;
-                        }
-                        PCByteCopy(candidate, decoded + begin, length);
-                        candidate[length] = '\0';
-                        Text3DStringEncodeFont(candidate, encoded, (SmartTextFont != NULL ? SmartTextFont : QFont2D));
-                    } while (NuQFntPrintLenW((SmartTextFont != NULL ? SmartTextFont : QFont2D), encoded) < max_width);
+                            while (decoded[next] == ' ') {
+                                ++next;
+                            }
+                            if (next == bytes) {
+                                end = next - 1;
+                                break;
+                            }
+                            next = FindNextBreak(decoded, next);
+                            if (decoded[next] != '-' && decoded[next] != '.' && decoded[next] != ',') {
+                                --next;
+                            }
+                            while (decoded[next] == ' ') {
+                                --next;
+                            }
+                            length = next - begin + 1;
+                            if (length > 511) {
+                                length = 511;
+                            }
+                            PCByteCopy(candidate, decoded + begin, length);
+                            candidate[length] = '\0';
+                            Text3DStringEncodeFont(candidate, encoded, (SmartTextFont != NULL ? SmartTextFont : QFont2D));
+                        } while (NuQFntPrintLenW((SmartTextFont != NULL ? SmartTextFont : QFont2D), encoded) < limit);
+                    }
                 }
                 length = end - begin + 1;
                 if (length > 511) {

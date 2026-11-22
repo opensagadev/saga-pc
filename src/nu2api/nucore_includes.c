@@ -151,7 +151,7 @@ static FRAME_PAD_RAMP FramePadRampValues[5] = {{0.0f, 0.0f}, {0.5f, 0.1f}, {0.75
 i32 FramePadProfilePort = -1;
 i32 MaxGamePads = 2;
 i16 PlayerLastPort[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
-u32 PCImplodeWordMask = 0xffffffff;
+u32 ImplodeMask[5] = {0, 0xff, 0xffff, 0xffffff, 0xffffffff};
 i32 gExplodeInitialised = 1;
 static i32 FramePadDirectMapping = 0;
 static i32 FramePadActivated = 0;
@@ -5682,22 +5682,27 @@ i32 NuStrCpyW(u16 *dst, const u16 *src) {
 }
 
 i32 NuStrNCpyW(NUWCHAR *dst, const NUWCHAR *src, i32 n) {
-    i32 copied = 0;
+    i32 count = 0;
+
     if (src == NULL) {
         *dst = 0;
         return 0;
     }
+
     do {
-        n = (i32)((u32)n - 1u);
-        ++copied;
+        n--;
         if (n <= 0) {
             *dst = 0;
+            count++;
             break;
         }
+
         *dst = *src;
-        ++dst;
+        dst++;
+        count++;
     } while (*src++ != 0);
-    return copied - 1;
+
+    return count - 1;
 }
 
 NUWCHAR *NuStrChrW(NUWCHAR *str, NUWCHAR character) {
@@ -8949,6 +8954,11 @@ void ImplodeError(char *msg, ...) {
     NuFileError();
 }
 
+u32 ImplodeGetI(void *buf, i32 size) {
+    unsigned char *cursor = buf;
+    return ((((((u32)cursor[3] << 8) | cursor[2]) << 8) | cursor[1]) << 8 | cursor[0]) & ImplodeMask[size];
+}
+
 void *ImplodePutI(void *buf, u32 value, i32 size) {
     unsigned char *cursor = buf;
     while (size != 0) {
@@ -8968,9 +8978,7 @@ i32 ExplodeBuffer(char *in_buf, char *out_buf) {
     }
     original_size = ExplodeBufferSize(in_buf);
     if (original_size != 0) {
-        compressed_size =
-            (i32)(((u32)(u8)in_buf[8] | ((u32)(u8)in_buf[9] << 8) | ((u32)(u8)in_buf[10] << 16) | ((u32)(u8)in_buf[11] << 24)) &
-                  PCImplodeWordMask);
+        compressed_size = ImplodeGetI(in_buf + 8, 4);
         return ExplodeBufferNoHeader(in_buf + 12, out_buf, compressed_size, original_size);
     }
     return 0;
@@ -9190,7 +9198,7 @@ static void ImplodeReadLiteralLengthsPrivate() {
     i = 0;
     while (i < n) {
         value = ImplodeOffsetTable[implode_bitbuf >> 0x18];
-        if (value > 0x12) {
+        if (value >= 0x13) {
             u32 mask = 0x800000;
             do {
                 if ((implode_bitbuf & mask) != 0) {
@@ -9199,7 +9207,7 @@ static void ImplodeReadLiteralLengthsPrivate() {
                     value = implode_left[value];
                 }
                 mask >>= 1;
-            } while (value > 0x12);
+            } while (value >= 0x13);
         }
         ImplodeFillBuf(ImplodeOffsetLengths[value]);
 
@@ -9269,8 +9277,7 @@ i32 ExplodeBufferSize(char *header) {
             return 0;
         }
     }
-    return (i32)(((u32)(u8)header[0] | ((u32)(u8)header[1] << 8) | ((u32)(u8)header[2] << 16) | ((u32)(u8)header[3] << 24)) &
-                 PCImplodeWordMask);
+    return ImplodeGetI(header, 4);
 }
 
 i32 ExplodeCompressedSize(char *header) {
@@ -9283,7 +9290,7 @@ i32 ExplodeCompressedSize(char *header) {
             return 0;
         }
     }
-    size = ((u32)(u8)header[4] | ((u32)(u8)header[5] << 8) | ((u32)(u8)header[6] << 16) | ((u32)(u8)header[7] << 24)) & PCImplodeWordMask;
+    size = ImplodeGetI(header + 4, 4);
     if (size != 0) {
         size += 12;
     }
@@ -9304,7 +9311,7 @@ u32 ImplodeDecodeC() {
     blocksize--;
 
     value = ImplodeLiteralTable[implode_bitbuf >> 0x14];
-    if (value > (sizeof(ImplodeLiteralLengths) - 1)) {
+    if (value >= sizeof(ImplodeLiteralLengths)) {
         u32 mask = 0x80000;
         do {
             if ((implode_bitbuf & mask) != 0) {
@@ -9313,7 +9320,7 @@ u32 ImplodeDecodeC() {
                 value = implode_left[value];
             }
             mask >>= 1;
-        } while (value > (sizeof(ImplodeLiteralLengths) - 1));
+        } while (value >= sizeof(ImplodeLiteralLengths));
     }
     ImplodeFillBuf(ImplodeLiteralLengths[value]);
 
@@ -9324,7 +9331,7 @@ u32 ImplodeDecodeOffset() {
     u32 offset;
 
     offset = ImplodeOffsetTable[implode_bitbuf >> 0x18];
-    if (offset > 0xd) {
+    if (offset >= 0xe) {
         u32 mask = 0x800000;
         do {
             if ((implode_bitbuf & mask) != 0) {
@@ -9333,7 +9340,7 @@ u32 ImplodeDecodeOffset() {
                 offset = implode_left[offset];
             }
             mask >>= 1;
-        } while (offset > 0xd);
+        } while (offset >= 0xe);
     }
     ImplodeFillBuf(ImplodeOffsetLengths[offset]);
 

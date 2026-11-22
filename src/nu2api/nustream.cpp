@@ -328,9 +328,8 @@ void SoundQueue::CancelPause(void) {
         return;
     }
     EnterCriticalSection(&volume_lock);
-    IDirectSoundBuffer *buffer = volume_sink;
-    if (stream_state == SOUNDQUEUE_STATE_PLAYING && buffer != NULL) {
-        buffer->vtable->play(buffer, 0, 0, 1);
+    if (stream_state == SOUNDQUEUE_STATE_PLAYING && volume_sink != NULL) {
+        volume_sink->vtable->play(volume_sink, 0, 0, 1);
     }
     LeaveCriticalSection(&volume_lock);
     stream_running = 0;
@@ -372,9 +371,8 @@ SoundQueue::~SoundQueue(void) {
         timeKillEvent(timer_id);
     }
     timer_id = 0;
-    IDirectSoundBuffer *buffer = volume_sink;
-    if (buffer != NULL) {
-        buffer->vtable->release(buffer);
+    if (volume_sink != NULL) {
+        volume_sink->vtable->release(volume_sink);
     }
     volume_sink = NULL;
     active = 0;
@@ -387,8 +385,7 @@ extern "C" {
 i32 SoundQueue::SetFormat(const WAVEFORMATEX *format) {
     if (volume_sink != NULL) {
         EnterCriticalSection(&volume_lock);
-        IDirectSoundBuffer *buffer = volume_sink;
-        buffer->vtable->release(buffer);
+        volume_sink->vtable->release(volume_sink);
         volume_sink = NULL;
         wave_format.nSamplesPerSec = format->nSamplesPerSec;
         wave_format.nChannels = format->nChannels;
@@ -405,8 +402,7 @@ i32 SoundQueue::SetFormat(const WAVEFORMATEX *format) {
         volume_sink = NULL;
         if (SUCCEEDED(factory->vtable->create_sound_buffer(factory, &descriptor, &temporary, NULL))) {
             if (SUCCEEDED(temporary->vtable->query_interface(temporary, PCSoundBuffer8IID, (void **)&volume_sink))) {
-                buffer = volume_sink;
-                buffer->vtable->set_volume(buffer, requested_volume);
+                volume_sink->vtable->set_volume(volume_sink, requested_volume);
                 applied_volume = requested_volume;
             }
             temporary->vtable->release(temporary);
@@ -425,12 +421,11 @@ i32 SoundQueue::FillBuffer(i32 bytes, u32 flags) {
     if (stream_state != SOUNDQUEUE_STATE_PRELOADING && stream_state != SOUNDQUEUE_STATE_PLAYING) {
         return 0;
     }
-    IDirectSoundBuffer *buffer = volume_sink;
-    if (buffer == NULL) {
+    if (volume_sink == NULL) {
         return 0;
     }
     DWORD play_cursor;
-    HRESULT result = buffer->vtable->get_current_position(buffer, &play_cursor, NULL);
+    HRESULT result = volume_sink->vtable->get_current_position(volume_sink, &play_cursor, NULL);
     i32 requested = bytes;
     i32 total = buffer_seconds * wave_format.nAvgBytesPerSec;
     if (SUCCEEDED(result)) {
@@ -462,22 +457,18 @@ i32 SoundQueue::FillBuffer(i32 bytes, u32 flags) {
     void *second;
     DWORD data_bytes;
     DWORD second_bytes;
-    buffer = volume_sink;
-    result = buffer->vtable->lock(buffer, buffer_write_position, requested, &data, &data_bytes, &second, &second_bytes, 0);
+    result = volume_sink->vtable->lock(volume_sink, buffer_write_position, requested, &data, &data_bytes, &second, &second_bytes, 0);
     if (result == (HRESULT)0x88780096) {
-        buffer = volume_sink;
-        if (FAILED(buffer->vtable->restore(buffer))) {
+        if (FAILED(volume_sink->vtable->restore(volume_sink))) {
             return 0;
         }
-        buffer = volume_sink;
-        result = buffer->vtable->lock(buffer, buffer_write_position, requested, &data, &data_bytes, &second, &second_bytes, 0);
+        result = volume_sink->vtable->lock(volume_sink, buffer_write_position, requested, &data, &data_bytes, &second, &second_bytes, 0);
     }
     if (FAILED(result)) {
         return 0;
     }
     if (data_bytes < (u32)requested) {
-        buffer = volume_sink;
-        buffer->vtable->unlock(buffer, data, 0, second, 0);
+        volume_sink->vtable->unlock(volume_sink, data, 0, second, 0);
     } else {
         if ((flags & 1) != 0) {
             decoded = 0;
@@ -486,8 +477,7 @@ i32 SoundQueue::FillBuffer(i32 bytes, u32 flags) {
             if (FAILED(decoder->Read(data, decoded, &read_count)) || read_count != (u32)decoded) {
                 decoded_bytes = decoder->GetSize();
                 decoded = 0;
-                buffer = volume_sink;
-                if (SUCCEEDED(buffer->vtable->stop(buffer))) {
+                if (SUCCEEDED(volume_sink->vtable->stop(volume_sink))) {
                     stream_state = SOUNDQUEUE_STATE_STOPPED;
                 }
             }
@@ -507,8 +497,7 @@ i32 SoundQueue::FillBuffer(i32 bytes, u32 flags) {
                     if (FAILED(decoder->Read((u8 *)data + decoded, block, &read_count)) || read_count != (u32)block) {
                         decoded_bytes = decoder->GetSize();
                         memset(data, 0, requested);
-                        buffer = volume_sink;
-                        if (SUCCEEDED(buffer->vtable->stop(buffer))) {
+                        if (SUCCEEDED(volume_sink->vtable->stop(volume_sink))) {
                             stream_state = SOUNDQUEUE_STATE_STOPPED;
                         }
                         decoded = block;
@@ -541,8 +530,7 @@ i32 SoundQueue::FillBuffer(i32 bytes, u32 flags) {
                 }
             }
         }
-        buffer = volume_sink;
-        buffer->vtable->unlock(buffer, data, requested, second, 0);
+        volume_sink->vtable->unlock(volume_sink, data, requested, second, 0);
         decoded_bytes += decoded;
         buffer_write_position = (u32)(buffer_write_position + requested) % (u32)(buffer_seconds * wave_format.nAvgBytesPerSec);
     }
@@ -708,9 +696,8 @@ DWORD SoundQueue::Run(void) {
         } else if (wait == WAIT_OBJECT_0 && (i32)decoder_state >= 0) {
             FillBuffer((u32)(buffer_seconds * wave_format.nAvgBytesPerSec) >> 2, 0);
             if (pending_bytes > 0 && stream_state == SOUNDQUEUE_STATE_PLAYING) {
-                IDirectSoundBuffer *buffer = volume_sink;
-                if (buffer != NULL) {
-                    buffer->vtable->stop(buffer);
+                if (volume_sink != NULL) {
+                    volume_sink->vtable->stop(volume_sink);
                 }
                 stream_state = SOUNDQUEUE_STATE_STOPPED;
                 if (timer_id != 0) {
@@ -721,9 +708,8 @@ DWORD SoundQueue::Run(void) {
         }
         if (applied_volume != requested_volume || applied_volume == 1) {
             EnterCriticalSection(&volume_lock);
-            IDirectSoundBuffer *buffer = volume_sink;
-            if (buffer != NULL) {
-                buffer->vtable->set_volume(buffer, requested_volume);
+            if (volume_sink != NULL) {
+                volume_sink->vtable->set_volume(volume_sink, requested_volume);
                 applied_volume = requested_volume;
             }
             LeaveCriticalSection(&volume_lock);
@@ -852,9 +838,8 @@ void SoundQueue::SuspendForFocus(void) {
     }
     EnterCriticalSection(&operation_lock);
     EnterCriticalSection(&volume_lock);
-    IDirectSoundBuffer *buffer = volume_sink;
-    if (stream_state == SOUNDQUEUE_STATE_PLAYING && buffer != NULL) {
-        buffer->vtable->stop(buffer);
+    if (stream_state == SOUNDQUEUE_STATE_PLAYING && volume_sink != NULL) {
+        volume_sink->vtable->stop(volume_sink);
     }
     LeaveCriticalSection(&volume_lock);
     stream_running = 1;

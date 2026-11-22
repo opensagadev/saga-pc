@@ -518,8 +518,8 @@ extern "C" void PostBlur7x7Low(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, 
             PostBlurLowSetOffset(horizontal[3], dx * -1.0, dy * .5);
             PostBlurLowSetOffset(vertical[3], dx * -1.0, dy * -.5);
             f32 bias[4] = {1, 1, PostBlurInputBias / (f32)width, PostBlurInputBias / (f32)height};
-            f32 output_bias[4] = {(f32)output_width / (f32)work_width, (f32)output_height / (f32)work_height, 1.0f / (f32)work_width,
-                                  1.0f / (f32)work_height};
+            f32 output_bias[4] = {(f32)output_width / (f32)work_width, (f32)output_height / (f32)work_height,
+                                  PostBlurOutputBias / (f32)work_width, PostBlurOutputBias / (f32)work_height};
             {
                 PC_FRAMEBUFFER *framebuffer = PostBlurFramebuffer;
                 framebuffer->targets[0].Attach((PCGraphicsPostEffectWorkTexture), 0, false);
@@ -880,6 +880,8 @@ extern "C" f32 NuSpeedBlurVertexScale;
 extern "C" {
     i32 NuDisplayHandlerZMode = -1;
     NUVEC4 NuDisplayHandlerDefaultTint = {1.0f, 1.0f, 1.0f, 1.0f};
+    /* Output half-texel term of PostBlur7x7Low (PostBlurInputBias is its input term). */
+    f32 PostBlurOutputBias = 1.0f;
 }
 f32 NuSpeedBlurVertexScale = 40000.0f;
 

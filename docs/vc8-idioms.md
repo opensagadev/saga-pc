@@ -435,6 +435,11 @@ The same holds for x87: `StateAnimEvaluate` keeps the frame value on the x87
 stack and `edx` live across its argument-less call, so it is defined in
 `nu3d_includes.cpp` before the hook's definition (the sibling build also
 files it there); in its own unit it reloaded both (46.6 -> 50.2).
+`AnimationDiagnosticNoOp` (0x5c12e0, just before `PCSpecialEmptyHandler`) is
+the same kind of varargs hook: defined at the top of `nu3d_includes.cpp` instead
+of `nuvec.c`, `allocateFrustrum` keeps `eax` across its calls, `NuMtlSetCurrentRenderPlane`
+became exact and the `NuQFnt` callers improved; `NuAnimBuffEvaluate_3_QuatB`
+alone lost its guarded call (unexplained).
 
 ### I36: a local object pointer instead of repeated casts
 
@@ -826,7 +831,10 @@ helper. `NewCast` (0x6729e0, then in `nuterrain.c`) inlines all 16
 `InsideLineF` tests (0x66ffa0, `terrain_collision.cpp`); moved into
 `terrain_collision.cpp` it went from 45.9 to 56.2 %. Moving `InsideLineF` the
 other way broke `InsidePolLines`, which calls it but relies on knowing its
-register use (I35). The Android port of the same engine then showed the hit
+register use (I35). The `PC_SHADER_MATERIAL_FILTER::HasLayerFlag*` accessors
+(0x748890-0x748b20, just before the shader compiler) belong to
+`shader_compiler.cpp`: there `ShaderBuilderGen::Configure` inlines them into
+`shr`/`and 1` tests (71.6 -> 76.2 %). The Android port of the same engine then showed the hit
 record written once per shape kind (triangle, quad); duplicating it gave
 66.7 %.
 
@@ -841,6 +849,32 @@ every undeclared call (37 at the time); only callees whose return or
 parameters are narrower than `int` or floating point change code. The
 nu2api and gameapi ones all return `int` or `void` with `int`-sized
 parameters.
+
+### I69: a nested `MIN(MAX(...))` evaluates its arguments twice
+
+A retail clamp that is far longer than ours, compares the clamped value again
+after the second bound and stores the intermediate in both branches, is the
+`common.h` macro pair written as one expression: `MIN(MAX(x, lo), hi)`
+expands `MAX(x, lo)` twice. Separate `if` clamps (or `x = MAX(x, lo)` then
+`x = MIN(x, hi)`) give the short form. `NuVpSetClipRect` became exact
+(37.0 -> 100 %) with the bounds written inline (`left + width * 0.0625`).
+
+### I70: one test per flag and per value, not the folded mask
+
+```
+retail                                   ours
+  test al, 0x1                             and  edx, 0x1001
+  je   .skip                               cmp  edx, 0x1001
+  test eax, 0x1000                         jne  .skip
+  je   .skip
+```
+
+The port's `(flags & (A | B)) == (A | B)`, `(context & 0xfd) == 57` and
+`count <= 1` are what clang made of two flag tests, of `context == 59 ||
+context == 57` and of `count < 2`; VC8 compiles each source test as written.
+Write the tests one by one in retail's order (`LightSabreStreakCode`,
+`UpdateGameObjects`). The mask form is still right where retail has the
+`and`/`cmp` pair (`TightRope_InRange`).
 
 ## Unexplained (no natural source change found)
 

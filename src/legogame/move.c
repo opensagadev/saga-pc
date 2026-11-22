@@ -3648,14 +3648,14 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
     }
     context = object->player.character_context;
     if ((context == CHARACTER_CONTEXT_JUMP &&
-         (object->player.action_movement_state == JUMP_KIND_SLAM || object->player.action_movement_state == JUMP_KIND_COMBO)) ||
+         (object->player.action_movement_state == JUMP_KIND_COMBO || object->player.action_movement_state == JUMP_KIND_SLAM)) ||
         context == CHARACTER_CONTEXT_LAND_COMBO_JUMP || context == CHARACTER_CONTEXT_SWIPE ||
-        (context == CHARACTER_CONTEXT_LAND_LUNGE && object->id != id_THEEMPEROR) || context == CHARACTER_CONTEXT_LAND_SLAM ||
+        (context == CHARACTER_CONTEXT_LAND_LUNGE && object->id != (u16)id_THEEMPEROR) || context == CHARACTER_CONTEXT_LAND_SLAM ||
         (context == CHARACTER_CONTEXT_BIG_JUMP && object->player.context_phase == 1) ||
         ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Cheat_PowerUpActive(object->player_index))) {
         object->player.sabre_flags |= SABRE_STREAK;
     }
-    if (object->id == id_IMPERIALGUARD) {
+    if (object->id == (u16)id_IMPERIALGUARD) {
         object->player.sabre_flags &= ~(SABRE_PUSH | SABRE_STREAK);
     }
     if (object->player.sabre_flags == 0) {
@@ -3667,28 +3667,22 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
     joint_a = joints[0];
     joint_b = joints[1];
     object->player.blade_states[blade] = -1;
-    points[0].x = object->player.locator_matrices[joint_a].m30;
-    points[0].y = object->player.locator_matrices[joint_a].m31;
-    points[0].z = object->player.locator_matrices[joint_a].m32;
-    points[1].x = object->player.locator_matrices[joint_b].m30;
-    points[1].y = object->player.locator_matrices[joint_b].m31;
-    points[1].z = object->player.locator_matrices[joint_b].m32;
+    points[0] = object->player.locator_matrices[joint_a].translation;
+    points[1] = object->player.locator_matrices[joint_b].translation;
     if ((object->player.sabre_flags & SABRE_STREAK) != 0) {
-        i32 colour;
         const u8 *rgb;
         u32 packed;
         if (object->player_index != -1 && Cheat_IsOn(25)) {
-            colour = 0;
+            object->player.blade_states[blade] = 0;
         } else if (object->player_index != -1 && Player_HasPurpleForce(object)) {
-            colour = 3;
-        } else if (object->id == id_GRIEVOUS && (blade == 3 || blade == 0)) {
-            colour = 2;
-        } else if (AnakinGreenSabre(object) || (object->id == id_BOB && (object->flags_ef0 & 0x200) != 0)) {
-            colour = 1;
+            object->player.blade_states[blade] = 3;
+        } else if (object->id == (u16)id_GRIEVOUS && (blade == 0 || blade == 3)) {
+            object->player.blade_states[blade] = 2;
+        } else if (AnakinGreenSabre(object) || (object->id == (u16)id_BOB && (object->flags_ef0 & 0x200) != 0)) {
+            object->player.blade_states[blade] = 1;
         } else {
-            colour = GCDataList[(i16)object->id].blade_colour;
+            object->player.blade_states[blade] = GCDataList[(i16)object->id].blade_colour;
         }
-        object->player.blade_states[blade] = colour;
         rgb = BladeTab[object->player.blade_states[blade]].colour;
         packed = 0xff000000u | rgb[0] | (rgb[1] << 8) | (rgb[2] << 16);
         if (0 != object->model_draw_result) {
@@ -3714,7 +3708,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         effect = 1;
     } else if (object->player_index != -1 && Player_HasPurpleForce(object)) {
         effect = 4;
-    } else if (object->id == id_GRIEVOUS) {
+    } else if (object->id == (u16)id_GRIEVOUS) {
         effect = (blade == 3 || blade == 0) ? 3 : 2;
     }
     data = object->character_data->game_character;
@@ -3771,7 +3765,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         effect = 1;
     } else if (object->player_index != -1 && Player_HasPurpleForce(object)) {
         effect = 4;
-    } else if (object->id == id_GRIEVOUS) {
+    } else if (object->id == (u16)id_GRIEVOUS) {
         effect = (blade == 3 || blade == 0) ? 3 : 2;
     }
     nearest = NULL;
@@ -3781,11 +3775,11 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         GAMEOBJECT *target = &Obj[i];
         PLAYERCHARACTERCONFIG *target_data;
         i32 point;
-        if (target == object ||
-            (target->flags_1fc_word & (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER)) !=
-                (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER) ||
-            target->use_model_origin <= 1 || target->dead != 0 || (target->player.character_context & 0xfd) == 57 ||
-            target->player.character_context == CHARACTER_CONTEXT_GET_IN || (CInfo[target->player.character_context].flags & 0x8000) != 0) {
+        if (target == object || (target->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
+            (target->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || target->use_model_origin < 2 || target->dead != 0 ||
+            target->player.character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER ||
+            target->player.character_context == CHARACTER_CONTEXT_EATEN || target->player.character_context == CHARACTER_CONTEXT_GET_IN ||
+            (CInfo[target->player.character_context].flags & 0x8000) != 0) {
             continue;
         }
         target_data = target->character_data->game_character;
@@ -3860,7 +3854,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         AddGameDebris(WORLD->game_debris_sys, effect, &points[nearest_point]);
         if (!CannotKill(nearest)) {
             i32 damage = object->player.sabre_damage;
-            if (damage != 0 && (nearest->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) > 0) {
+            if (damage > 0 && (nearest->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                 damage = (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player_HasDoubleWeaponDamage(object) ? 2 : 1;
             }
             ObjHitObj(object, nearest, damage, (u16)(ObjHitObj_Flags(object) | 0x100), 0, 1);
@@ -11172,8 +11166,8 @@ void GameObjectStuffAfterAnimation(void) {
                 }
             }
         }
-        if (VehicleArea != 0 && object->player_slot <= 1) {
-            i32 *handle = &FalconDebKey[object->player_slot];
+        if (VehicleArea != 0 && (object->player_index == 0 || object->player_index == 1)) {
+            i32 *handle = &FalconDebKey[object->player_index];
             if (object->id == (u16)id_MILLENNIUMFALCON && (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
                 (object->player.flags_e24 & APIOBJECT_LOCATORS_VALID) != 0 && object->character_model->points_of_interest[2] != NULL &&
                 object->origin_scale == 1.0f) {

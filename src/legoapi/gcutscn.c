@@ -162,8 +162,7 @@ static void CutScenePushCoordinateSystem(i32 system) {
 }
 
 static void CutScenePopCoordinateSystem(void) {
-    --NuPrimCSPos;
-    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
 }
 
 void DisplayCutSceneMemory(void) {
@@ -171,8 +170,6 @@ void DisplayCutSceneMemory(void) {
     CUT_CLEANUP_ENTRY *end;
     INSTNUGCUTSCENE *instance;
     CUT_SCENE_LOAD *scene;
-    u32 start;
-    u32 finish;
     f32 scale;
     f32 start_x;
     f32 end_x;
@@ -194,20 +191,16 @@ void DisplayCutSceneMemory(void) {
             }
             instance = DefragGetInstFn(entry->handle);
             scene = instance->scene;
-            start = (u32)scene - (u32)DefragCutSceneBaseMem;
-            finish = start + scene->loaded_size;
-            start_x = start * scale;
-            end_x = finish * scale;
+            start_x = ((u32)scene - (u32)DefragCutSceneBaseMem) * scale;
+            end_x = ((u32)scene + scene->loaded_size - (u32)DefragCutSceneBaseMem) * scale;
             CutSceneSetPrimitiveColour(0x40008080);
             start_x = (f32)(start_x + 30.0);
             NuPrim2DAddXYZ(start_x, 206.0f, 0.0f);
             CutSceneSetPrimitiveColour(0x40008080);
             end_x = (f32)(end_x + 30.0);
             NuPrim2DAddXYZ(end_x, 210.0f, 0.0f);
-            start = (u32)instance - (u32)DefragCutSceneBaseMem;
-            finish = start + instance->allocation_size;
-            start_x = start * scale;
-            end_x = finish * scale;
+            start_x = ((u32)instance - (u32)DefragCutSceneBaseMem) * scale;
+            end_x = ((u32)instance + instance->allocation_size - (u32)DefragCutSceneBaseMem) * scale;
             CutSceneSetPrimitiveColour(0x40800080);
             start_x = (f32)(start_x + 30.0);
             NuPrim2DAddXYZ(start_x, 206.0f, 0.0f);
@@ -228,10 +221,8 @@ void DisplayCutSceneMemory(void) {
             }
             instance = DefragGetInstFn(entry->handle);
             scene = instance->scene;
-            start = (u32)scene - (u32)DefragCutSceneBaseMem;
-            finish = start + scene->loaded_size;
-            start_x = start * scale;
-            end_x = finish * scale;
+            start_x = ((u32)scene - (u32)DefragCutSceneBaseMem) * scale;
+            end_x = ((u32)scene + scene->loaded_size - (u32)DefragCutSceneBaseMem) * scale;
             CutSceneSetPrimitiveColour(0x40008080);
             start_x = (f32)(start_x + 30.0);
             NuPrim2DAddXYZ(start_x, 206.0f, 0.0f);
@@ -249,10 +240,8 @@ void DisplayCutSceneMemory(void) {
                 continue;
             }
             instance = DefragGetInstFn(entry->handle);
-            start = (u32)instance - (u32)DefragInstBaseMem;
-            finish = start + instance->allocation_size;
-            start_x = start * scale;
-            end_x = finish * scale;
+            start_x = ((u32)instance - (u32)DefragInstBaseMem) * scale;
+            end_x = ((u32)instance + instance->allocation_size - (u32)DefragInstBaseMem) * scale;
             CutSceneSetPrimitiveColour(0x40800080);
             start_x = (f32)(start_x + 30.0);
             NuPrim2DAddXYZ(start_x, 209.0f, 0.0f);

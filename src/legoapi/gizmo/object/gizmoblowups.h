@@ -182,11 +182,11 @@ typedef struct GIZMOBLOWUP { // size 0x114
             u32 blown_up : 1;          // 0x094:0
             u32 unknown_status_1 : 13; // 0x094:1
             u32 visible : 1;           // 0x094:14
-            u32 unknown_status_15 : 8; // 0x094:15
+            u32 drawn : 1;             // 0x094:15
+            u32 unknown_status_16 : 7; // 0x094:16
             u32 active : 1;            // 0x094:23
             u32 unknown_status_24 : 4; // 0x094:24
             u32 secondary_output : 1;  // 0x094:28
-            u32 unknown_status_29 : 3; // 0x094:29
         };
     }; // 0x094
 
