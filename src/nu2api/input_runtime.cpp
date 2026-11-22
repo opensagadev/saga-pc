@@ -185,26 +185,32 @@ extern "C" i32 PcInput_ScanForAnyInput(u32 excluded, u8 kinds, i32 *kind, i32 *v
             continue;
         }
         PC_INPUT_CAPTURE *capture = &runtime->staged_capture[port];
-        i32 selected = -1;
+        i8 selected_kind;
+        i32 selected_value;
         if ((u32)(port - 10) <= 3) {
             if ((kinds & 16) && capture->kind[0]) {
-                selected = 0;
+                selected_kind = capture->kind[0];
+                selected_value = capture->value[0];
             } else if ((kinds & 8) && capture->kind[1]) {
-                selected = 1;
+                selected_kind = capture->kind[1];
+                selected_value = capture->value[1];
             } else if ((kinds & 4) && capture->kind[2]) {
-                selected = 2;
+                selected_kind = capture->kind[2];
+                selected_value = capture->value[2];
+            } else {
+                continue;
             }
         } else {
             if ((kinds & 2) && capture->kind[0]) {
-                selected = 0;
+                selected_kind = capture->kind[0];
+                selected_value = capture->value[0];
             } else if ((kinds & 1) && capture->kind[2]) {
-                selected = 2;
+                selected_kind = capture->kind[2];
+                selected_value = capture->value[2];
+            } else {
+                continue;
             }
         }
-        if (selected < 0) {
-            continue;
-        }
-        i32 selected_kind = (i8)capture->kind[selected];
         if (!selected_kind) {
             return -1;
         }
@@ -212,7 +218,7 @@ extern "C" i32 PcInput_ScanForAnyInput(u32 excluded, u8 kinds, i32 *kind, i32 *v
             *kind = selected_kind;
         }
         if (value != NULL) {
-            *value = capture->value[selected];
+            *value = selected_value;
         }
         return port;
     }
@@ -927,7 +933,7 @@ void PC_INPUT_RUNTIME::ApplyMouseAxis(PC_INPUT_SAMPLE *sample) {
     } else if (difference < -32768) {
         difference += 65536;
     }
-    if ((difference < 0 ? -difference : difference) > 100) {
+    if (abs(difference) > 100) {
         goal = 0.3f;
     }
     if (sample->analog[1] < 112) {
@@ -1001,7 +1007,7 @@ i32 PC_INPUT_RUNTIME::TranslateBindings(i32 port, PC_INPUT_SAMPLE *out, i32 vali
                                     motion->accumulated[index] = -256.0f;
                                 }
                                 i32 moved = (i32)motion->delta[index];
-                                if ((moved < 0 ? -moved : moved) < 5) {
+                                if (abs(moved) < 5) {
                                     PcMouseAxisIdle[index] += NuTimeGetFrameTime();
                                 } else {
                                     PcMouseAxisIdle[index] = 0.0f;
@@ -1071,7 +1077,7 @@ i32 PC_INPUT_RUNTIME::TranslateBindings(i32 port, PC_INPUT_SAMPLE *out, i32 vali
                         } else {
                             *retained = value < 0 ? (i16)value : 0;
                         }
-                        i32 magnitude = *retained < 0 ? -*retained : *retained;
+                        i32 magnitude = abs(*retained);
                         pressed = magnitude > axis_threshold;
                         digital = 0;
                     }
@@ -2096,46 +2102,45 @@ void PC_INPUT_RUNTIME::ExportConfig(i32 port, PC_INPUT_CONFIG *config, i32 auxil
             continue;
         }
         if (axis >= 0) {
-            u8 *triplet = config->all_axes[axis];
             if (kind == 12 || kind == 13) {
-                triplet[0] = (u8)kind;
+                config->all_axes[axis][0] = (u8)kind;
                 u8 value = (u8)bindings[action].value;
-                triplet[1] = value;
-                triplet[2] = value;
+                config->all_axes[axis][1] = value;
+                config->all_axes[axis][2] = value;
             } else if (kind == PC_BINDING_JOYSTICK_AXIS || kind == PC_BINDING_JOYSTICK_AXIS_REVERSED) {
-                triplet[1] = (u8)bindings[action].value;
-                triplet[2] = (u8)bindings[action].value;
+                config->all_axes[axis][1] = (u8)bindings[action].value;
+                config->all_axes[axis][2] = (u8)bindings[action].value;
                 if (active == 3) {
-                    triplet[0] = (u8)kind;
+                    config->all_axes[axis][0] = (u8)kind;
                 } else if ((active == 2 && kind == PC_BINDING_JOYSTICK_AXIS) ||
                            (active == 1 && kind == PC_BINDING_JOYSTICK_AXIS_REVERSED)) {
-                    triplet[0] = 2;
+                    config->all_axes[axis][0] = 2;
                 } else {
-                    triplet[0] = 3;
+                    config->all_axes[axis][0] = 3;
                 }
             } else if (kind == PC_BINDING_MOUSE_AXIS || kind == PC_BINDING_MOUSE_AXIS_REVERSED) {
-                triplet[1] = (u8)bindings[action].value;
-                triplet[2] = (u8)bindings[action].value;
+                config->all_axes[axis][1] = (u8)bindings[action].value;
+                config->all_axes[axis][2] = (u8)bindings[action].value;
                 if (active == 3) {
-                    triplet[0] = (u8)kind;
+                    config->all_axes[axis][0] = (u8)kind;
                 } else if ((active == 2 && kind == PC_BINDING_MOUSE_AXIS) || (active == 1 && kind == PC_BINDING_MOUSE_AXIS_REVERSED)) {
-                    triplet[0] = 5;
+                    config->all_axes[axis][0] = 5;
                 } else {
-                    triplet[0] = 6;
+                    config->all_axes[axis][0] = 6;
                 }
             } else if (kind == PC_BINDING_JOYSTICK_BUTTON) {
-                triplet[0] = 11;
+                config->all_axes[axis][0] = 11;
                 if (active == 2 || active == 3) {
-                    triplet[2] = (u8)bindings[action].value;
+                    config->all_axes[axis][2] = (u8)bindings[action].value;
                 } else {
-                    triplet[1] = (u8)bindings[action].value;
+                    config->all_axes[axis][1] = (u8)bindings[action].value;
                 }
             } else if (kind == PC_BINDING_KEY) {
-                triplet[0] = 10;
+                config->all_axes[axis][0] = 10;
                 if (active == 2 || active == 3) {
-                    triplet[2] = (u8)bindings[action].value;
+                    config->all_axes[axis][2] = (u8)bindings[action].value;
                 } else {
-                    triplet[1] = (u8)bindings[action].value;
+                    config->all_axes[axis][1] = (u8)bindings[action].value;
                 }
             }
         }

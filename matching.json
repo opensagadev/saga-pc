@@ -669,7 +669,7 @@
     "src/nu2api/input_descriptors.cpp": "f8c902546c59b23105af3730b88a99cb200df99e5ec77fff9c19168dbdd302f3",
     "src/nu2api/input_detection.cpp": "0ac06b6303bda6c22eb315510f719185480cc2cd61b914ca3403226f90a0bf9e",
     "src/nu2api/input_key_names.cpp": "d5c56461939ab99148f65dfa871160c848f96265fdb71bc365e13ea81fb27375",
-    "src/nu2api/input_runtime.cpp": "c8f06176d6e3280af92df758fedf6f2aaf96024ede659763aa0b9777c2681701",
+    "src/nu2api/input_runtime.cpp": "62b0e72bae84f57d1ddaa7405cc24b0de2cd54096865547f9338997c6766f70a",
     "src/nu2api/key_events.cpp": "54208dc28b5f60d83a580a1e1888a4c8932daba6558afd65de70d53e68934da0",
     "src/nu2api/nu3d_includes.cpp": "11080407672466c673b51f0f73d1fef5ca148c66d6ca9e5e1ab50194e84a405c",
     "src/nu2api/nu3d_platform.cpp": "78c38d8ca3912d69d3aa82af45a83b5428740e718b2016022002ccd209033022",
@@ -1238,7 +1238,7 @@
     "build/obj/nu2api/input_descriptors.obj": "377ad7227432152a9c9451a0edee5df3a058c95507ce444a7e13cec5b7592117",
     "build/obj/nu2api/input_detection.obj": "ccffb88e3955e8b388f0b8f9614b9e03cadab6c8bf3d178f14e68a2d5d46c075",
     "build/obj/nu2api/input_key_names.obj": "cd6d9196ef844e8e50cc56febdc17bc1c0703f74965a804f0924fa9d97fd8039",
-    "build/obj/nu2api/input_runtime.obj": "8acb724205e9de5ce3a36700dd10201096b0d2829b147dc01379ce13b8f233a5",
+    "build/obj/nu2api/input_runtime.obj": "f80c140d8e8d809347f8de9182bdfc10b4062c305122521a367124bf3480b67d",
     "build/obj/nu2api/key_events.obj": "7f2a223465a6975d3954ef1c1f5cf56f35862c556e3ff053c7f72d481b0ed325",
     "build/obj/nu2api/keyboard_init.obj": "3a6748a3cc3b7e1521ad0d96b560c230b8eabcf09483d9bbe72be4316aa663b2",
     "build/obj/nu2api/keyboard_read.obj": "af7d5b8ec8e71f430a0edbdf113e31ac67db76c0ac08378adf5552347144e2ee",
@@ -324861,17 +324861,17 @@
       "objects": [
         {
           "unit": "src/nu2api/input_runtime.cpp",
-          "base_size": 733,
+          "base_size": 833,
           "exact_match": false,
           "target_sha256": "7bb07bb37ae320a26608b501c3b786346f853d0250490024258052b5b4de9a0a",
-          "base_sha256": "03248ce0b04129d52c3e66a9e473ea151c6a69153abeb22674402522701e5ec0",
+          "base_sha256": "ae1a1b8ec32b1d0f32223302c920f2534c94c998bb737be84890ed3aaf5574ba",
           "relocation_count": 3,
           "comparison_unit": "006d4070-28ad8ab292a9",
-          "objdiff_percent": 67.988144
+          "objdiff_percent": 83.667984
         }
       ],
       "diff_class": "structural",
-      "diff_hunks": 54,
+      "diff_hunks": 16,
       "idioms": [
         "I4",
         "I20",
@@ -324881,7 +324881,7 @@
         "?"
       ],
       "status": "different",
-      "objdiff_percent": 67.988144
+      "objdiff_percent": 83.667984
     },
     {
       "name": "?FindConfig@PC_INPUT_RUNTIME@@QAEPAUPC_INPUT_CONFIG@@EHH@Z",
@@ -327532,25 +327532,24 @@
       "objects": [
         {
           "unit": "src/nu2api/input_runtime.cpp",
-          "base_size": 595,
+          "base_size": 591,
           "exact_match": false,
           "target_sha256": "a6471782c781c68e1be3c84ba0eb7019161f73c603dc171a4e7b18be3485297d",
-          "base_sha256": "efcd11deee0564aaddbc50c187809a54b642ac258dc51d2aeecf4389246f86e0",
+          "base_sha256": "49a145af23dfcf564342d6451a2afe46b57bfbb6c0eeba6bd6a2c1d3bb007994",
           "relocation_count": 28,
           "comparison_unit": "006d6460-fe9a144fff1c",
-          "objdiff_percent": 86.2948
+          "objdiff_percent": 88.66474
         }
       ],
       "diff_class": "structural",
-      "diff_hunks": 12,
+      "diff_hunks": 10,
       "idioms": [
         "I4",
-        "U3",
         "U7",
         "?"
       ],
       "status": "different",
-      "objdiff_percent": 86.2948
+      "objdiff_percent": 88.66474
     },
     {
       "name": "PcInputSetMouseField",
@@ -328796,17 +328795,17 @@
       "objects": [
         {
           "unit": "src/nu2api/input_runtime.cpp",
-          "base_size": 1372,
+          "base_size": 1324,
           "exact_match": false,
           "target_sha256": "7a71c7608b9da4e67d4b4dfe29086b5159c82d2e2583bcc262bb945099732582",
-          "base_sha256": "d9788cc59ccaf20ca1068c62edb067d1e83260e8013ba1ca1daf637e1c615203",
+          "base_sha256": "6a28b29f12dfef3b0e6a761a1e953e0c14c8234c04750ade6fb60c44d60d8f93",
           "relocation_count": 30,
           "comparison_unit": "006d7d80-dfacbf7b3ba5",
-          "objdiff_percent": 78.785545
+          "objdiff_percent": 84.0
         }
       ],
       "diff_class": "structural",
-      "diff_hunks": 42,
+      "diff_hunks": 30,
       "idioms": [
         "C",
         "I4",
@@ -328817,7 +328816,7 @@
         "?"
       ],
       "status": "different",
-      "objdiff_percent": 78.785545
+      "objdiff_percent": 84.0
     },
     {
       "name": "?MergeKeyMouseButton@PC_INPUT_RUNTIME@@QAEIHIHHHHI@Z",
@@ -329065,26 +329064,25 @@
       "objects": [
         {
           "unit": "src/nu2api/input_runtime.cpp",
-          "base_size": 194,
+          "base_size": 196,
           "exact_match": false,
           "target_sha256": "847a20808824eea2d60ec38ae36fd6ec3ae7a54253d7ffc055f9c6f0efad397f",
-          "base_sha256": "204fcda4d2fa10ef979a5fc1f8d0968ba751813854100df8dd018ca4c1b9a2f3",
+          "base_sha256": "88a754f3e00820e6bbc0228bdad3329e5cb8fcd76d8b0a34ed8c843f9bd0714b",
           "relocation_count": 1,
           "comparison_unit": "006d9120-61d542a5f627",
-          "objdiff_percent": 79.341774
+          "objdiff_percent": 84.91139
         }
       ],
       "diff_class": "structural",
-      "diff_hunks": 9,
+      "diff_hunks": 6,
       "idioms": [
         "I4",
-        "I26",
         "U1",
         "U3",
         "?"
       ],
       "status": "different",
-      "objdiff_percent": 79.341774
+      "objdiff_percent": 84.91139
     },
     {
       "name": "PcInputAssignBinding",
@@ -900453,10 +900451,10 @@
     "matching_with_padding_percent": 63.9219749911127,
     "fuzzy_text_data_bytes": 6896,
     "fuzzy_denominator_bytes": 3349891,
-    "fuzzy_coverage_percent": 96.44462560589663,
+    "fuzzy_coverage_percent": 96.45167503555152,
     "mapped_functions": 15914,
     "matched_functions": 13964,
-    "objdiff_fuzzy_percent": 96.94273,
+    "objdiff_fuzzy_percent": 96.94981,
     "objdiff_total_code": 3338646,
     "image_bytes": 40067072,
     "mapped_bytes": 38533384,
@@ -901861,7 +901859,7 @@
       "metadata_sha256": "a005dfb7254f87304ba5e7d1c5083ab46db1e8272ef5fdd2e11a8953a1d1d2d5",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "4aeb7a88a6dc395a7ed100e3f9cfba514adc02b3ee894adc7a81f31f3f4d749f",
+      "geometry_object_sha256": "a32e26271dd85cad05762571df3bc4f249c15ee0b911cecdfab99e28b822a5fa",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
