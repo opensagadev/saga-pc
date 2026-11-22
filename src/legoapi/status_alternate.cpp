@@ -890,11 +890,12 @@ extern "C" {
             case GOLDBRICK_ALT_STEP_AWARD:
                 StatusAltSpin = 0;
                 if (stage->step_duration <= accumulated) {
-                    stage->step_time = 0.0f;
                     if (packet->displayed_gold_bricks < Game.gold_bricks) {
+                        stage->step_time = 0.0f;
                         stage->step_duration = 2.5f;
                         stage->step = GOLDBRICK_ALT_STEP_AWARD;
                     } else {
+                        stage->step_time = 0.0f;
                         stage->step_duration = StatusAltBrickPulseTime;
                         stage->step = GOLDBRICK_ALT_STEP_HOLD;
                     }
