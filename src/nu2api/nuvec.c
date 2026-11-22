@@ -87,9 +87,6 @@ f32 NuExpf2(f32 value) {
     return expf(value);
 }
 
-void AnimationDiagnosticNoOp(void) {
-}
-
 /* Retail 0x5c1880 takes parent in ECX, rotation in EDX and the output on the
  * stack (caller cleanup); __fastcall is the closest non-LTCG convention. */
 void __fastcall NuQuatMulAligned(const NUQUAT *parent, const NUQUAT *rotation, NUQUAT *out) {

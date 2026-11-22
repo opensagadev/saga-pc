@@ -1296,7 +1296,7 @@ void PC_DEVICE_BACKEND::InitializeAdapter() {
     }
     qsort(all_modes, total, sizeof(GRAPHICS_DISPLAY_MODE), PCGraphicsModeCompare);
     modes = new GRAPHICS_DISPLAY_MODE[mode_count];
-    memcpy(modes, all_modes, mode_count * sizeof(GRAPHICS_DISPLAY_MODE));
+    PCByteCopy(modes, all_modes, mode_count * sizeof(GRAPHICS_DISPLAY_MODE));
     delete all_modes;
     if (PcWindowOptions.usehires != 0 && PcWindowOptions.multisample != 6) {
         PcWindowOptions.SetMultisample(0);

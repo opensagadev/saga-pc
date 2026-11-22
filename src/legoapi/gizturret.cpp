@@ -755,12 +755,10 @@ extern "C" {
                                     i32 scatter_pitch = 0;
                                     i32 scatter_yaw = 0;
                                     if (bolt_type->spread != 0) {
-                                        f32 spread = static_cast<f32>(bolt_type->spread);
-                                        f32 random = NuRandFloat();
-                                        scatter_pitch = static_cast<i32>(spread - ((random * spread) + (random * spread))) / 2;
-                                        spread = static_cast<f32>(bolt_type->spread);
-                                        random = NuRandFloat();
-                                        scatter_yaw = static_cast<i32>(spread - ((random * spread) + (random * spread)));
+                                        f64 spread = bolt_type->spread;
+                                        scatter_pitch = static_cast<i32>(spread - NuRandFloat() * spread * 2.0) / 2;
+                                        spread = bolt_type->spread;
+                                        scatter_yaw = static_cast<i32>(spread - NuRandFloat() * spread * 2.0);
                                     }
                                     i32 sound_muzzle = 0;
                                     if (turret->muzzle_count != 0) {
@@ -1195,7 +1193,7 @@ extern "C" {
                                1, 0);
                     turret->flags |= TURRET_FLAG_REWARD_RELEASED;
                 }
-                if ((turret->behavior_flags & 0x4010) == TURRET_CAMERA && LEGOHINT_SHOOTCAMERAS != -1) {
+                if ((turret->behavior_flags & TURRET_CAMERA) && !(turret->behavior_flags & 0x10) && LEGOHINT_SHOOTCAMERAS != -1) {
                     Hint_SetComplete(LEGOHINT_SHOOTCAMERAS);
                 }
             } else if (player != -1 && (Player[player]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {

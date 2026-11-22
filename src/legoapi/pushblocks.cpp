@@ -681,13 +681,13 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
                     NUVEC *position = p->position;
                     i32 angle = static_cast<i32>(16384.0 + (static_cast<f64>(fraction) * 16384.0 + 49152.0));
                     fraction = NuTrigTable[(angle >> 1) & 0x7fff];
-                    position->x = p->snap_origin.x + (p->snap_positions[(p->packed_state_flags >> 15) & 7].x - p->snap_origin.x) * fraction;
-                    position->y = p->snap_origin.y + (p->snap_positions[(p->packed_state_flags >> 15) & 7].y - p->snap_origin.y) * fraction;
-                    position->z = p->snap_origin.z + (p->snap_positions[(p->packed_state_flags >> 15) & 7].z - p->snap_origin.z) * fraction;
+                    position->x = p->snap_origin.x + (p->snap_positions[p->snap_index].x - p->snap_origin.x) * fraction;
+                    position->y = p->snap_origin.y + (p->snap_positions[p->snap_index].y - p->snap_origin.y) * fraction;
+                    position->z = p->snap_origin.z + (p->snap_positions[p->snap_index].z - p->snap_origin.z) * fraction;
                     NuSpecialUpdate(&p->special);
                     for (i32 j = 0; j < p->end_position_count; ++j) {
                         NUVEC *translation = &NuSpecialGetInstanceMtx(&p->end_position_specials[j])->translation;
-                        NUVEC *target = &p->snap_positions[(p->packed_state_flags >> 15) & 7];
+                        NUVEC *target = &p->snap_positions[p->snap_index];
                         f32 z_product = (target->z - p->end_position_origins[j].z) * fraction;
                         f32 x_product = (target->x - p->end_position_origins[j].x) * fraction;
                         translation->x = p->end_position_origins[j].x + x_product;
@@ -697,9 +697,9 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
                     p->snap_timer += FRAMETIME;
                     continue;
                 }
-                PushSeekComplete(p, 7 & ((p->packed_state_flags >> 15)));
+                PushSeekComplete(p, p->snap_index);
             } else {
-                for (i32 j = 1; j < static_cast<i32>((p->packed_state_flags >> 12) & 7); ++j) {
+                for (i32 j = 1; j < static_cast<i32>(p->animation_positions); ++j) {
                     NUVEC *target = &p->snap_positions[j];
                     NUVEC *position = p->position;
                     f32 x = target->x - position->x;
@@ -727,7 +727,7 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
                     for (i32 k = 0; k < p->end_position_count; ++k) {
                         p->end_position_origins[k] = *NuSpecialGetDrawPos(&p->end_position_specials[k]);
                     }
-                    p->packed_state_flags = (p->packed_state_flags & ~0x38000u) | ((j & 7) << 15);
+                    p->snap_index = j;
                     p->snap_timer = FRAMETIME;
                     break;
                 }

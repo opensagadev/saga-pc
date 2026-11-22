@@ -13,6 +13,147 @@
 #include <stdio.h>
 #include <string.h>
 
+i32 PC_SHADER_MATERIAL_FILTER::HasAnisoFlip() const {
+    if (variant != 0) {
+        return 0;
+    }
+    return (descriptor->layer_flags & PC_SHADER_LAYER_ANISO_FLIP) != 0;
+}
+
+i32 PC_SHADER_MATERIAL_FILTER::HasPhongLighting() const {
+    if (variant != 0) {
+        return 0;
+    }
+    return (descriptor->layer_flags & PC_SHADER_LAYER_PHONG) != 0;
+}
+
+i32 PC_SHADER_MATERIAL_FILTER::HasLayerFlag2() const {
+    if (variant != 0) {
+        return 0;
+    }
+    return (descriptor->layer_flags & PC_SHADER_LAYER_FRESNEL) != 0;
+}
+
+i32 PC_SHADER_MATERIAL_FILTER::HasLayerFlag5() const {
+    if (variant != 0) {
+        return 0;
+    }
+    return (descriptor->layer_flags & PC_SHADER_LAYER_ENVMAP_CUBE) != 0;
+}
+
+i32 PC_SHADER_MATERIAL_FILTER::HasLayerFlags5And15() const {
+    return variant == 0 && (descriptor->layer_flags & PC_SHADER_LAYER_ENVMAP_CUBE) != 0 &&
+           (descriptor->layer_flags & PC_SHADER_LAYER_SHINEMAP) != 0;
+}
+
+i32 PC_SHADER_MATERIAL_FILTER::HasLayerFlag15() const {
+    if (variant != 0) {
+        return 0;
+    }
+    return (descriptor->layer_flags & PC_SHADER_LAYER_SHINEMAP) != 0;
+}
+
+i32 PC_SHADER_MATERIAL_FILTER::HasLayerFlag10() const {
+    if (variant != 0) {
+        return 0;
+    }
+    return (descriptor->layer_flags & PC_SHADER_LAYER_REFRACTION) != 0;
+}
+
+i32 PC_SHADER_MATERIAL_FILTER::HasLayerFlag21() const {
+    if (variant != 0) {
+        return 0;
+    }
+    return (descriptor->layer_flags & PC_SHADER_LAYER_DAPPLE) != 0;
+}
+
+i32 PC_SHADER_MATERIAL_FILTER::HasLayerFlag4() const {
+    if (variant != 0) {
+        return 0;
+    }
+    return (descriptor->layer_flags & PC_SHADER_LAYER_ANISO) != 0;
+}
+
+bool PC_SHADER_MATERIAL_FILTER::HasNoExtraLayer() const {
+    return false;
+}
+
+i32 PC_SHADER_MATERIAL_FILTER::HasLayerFlag17() const {
+    if (variant != 0) {
+        return 0;
+    }
+    return (descriptor->layer_flags & PC_SHADER_LAYER_GOOCH) != 0;
+}
+
+i32 PC_SHADER_MATERIAL_FILTER::HasLayerFlag19() const {
+    if (variant != 0) {
+        return 0;
+    }
+    return (descriptor->layer_flags & PC_SHADER_LAYER_ENVMAP_LIGHTING) != 0;
+}
+
+bool PC_SHADER_MATERIAL_FILTER::HasNoExtraLighting() const {
+    return false;
+}
+
+i32 PC_SHADER_MATERIAL_FILTER::HasLayerFlag18() const {
+    if (variant != 0) {
+        return 0;
+    }
+    return (descriptor->layer_flags & 0x40000) != 0;
+}
+
+i32 PC_SHADER_MATERIAL_FILTER::HasLayerFlag30() const {
+    if (variant != 0) {
+        return 0;
+    }
+    return (descriptor->layer_flags & PC_SHADER_LAYER_LEGO) != 0;
+}
+
+i32 PC_SHADER_MATERIAL_FILTER::HasLayerFlag9() const {
+    if (variant != 0) {
+        return 0;
+    }
+    return (descriptor->layer_flags & PC_SHADER_LAYER_WATER) != 0;
+}
+
+i32 PC_SHADER_MATERIAL_FILTER::HasLayerFlag29() const {
+    if (variant != 0) {
+        return 0;
+    }
+    return (descriptor->layer_flags & PC_SHADER_LAYER_REFRACTED_GLASS) != 0;
+}
+
+i32 PC_SHADER_MATERIAL_FILTER::HasUnfilteredLayerFlag22() const {
+    return (descriptor->layer_flags & PC_SHADER_LAYER_WIND) != 0;
+}
+
+i32 PC_SHADER_MATERIAL_FILTER::IsVariantOrLayerFlag12() const {
+    return variant != 0 || (descriptor->layer_flags & 0x1000) != 0;
+}
+
+i32 PC_SHADER_MATERIAL_FILTER::HasLayerFlag28() const {
+    if (variant != 0) {
+        return 0;
+    }
+    return (descriptor->layer_flags & PC_SHADER_LAYER_FRACTAL) != 0;
+}
+
+i32 PC_SHADER_MATERIAL_FILTER::HasLayerFlag27() const {
+    if (variant != 0) {
+        return 0;
+    }
+    return (descriptor->layer_flags & PC_SHADER_LAYER_EDGE_LIGHTING) != 0;
+}
+
+i32 PC_SHADER_MATERIAL_FILTER::HasSelector0() const {
+    return (descriptor->selectors & 1) != 0;
+}
+
+i32 PC_SHADER_MATERIAL_FILTER::HasSelector1() const {
+    return (descriptor->selectors & 2) != 0;
+}
+
 void ShaderCompilerBase::Prepare(const NUSHADERMTLDESC *descriptor, ShaderCompilerDictionary *dictionary) {
     PC_SHADER_MATERIAL_FILTER filter;
     filter.Initialize(descriptor, NULL, 0, 0);
@@ -52,14 +193,12 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER *filter, ShaderComp
         definitions->AddDefinition("VTF_NORMAL_UVSET", uv_names[descriptor->sampler_indices[5] - 1], 1);
         definitions->AddDefinition("FUNC_fs_computeVTFNormal", "VTF_SURFACE_NORMAL_MAP", 0);
     }
-    if (0 == filter->variant && (filter->descriptor->layer_flags & PC_SHADER_LAYER_LEGO)) {
+    if (filter->HasLayerFlag30()) {
         definitions->AddDefinition("LEGO", NULL, 0);
     }
     if (nvidia_profile) {
-        if ((filter->descriptor->layer_flags & PC_SHADER_LAYER_WIND) && (filter->descriptor->vertex_format & 0x2000000)) {
-            definitions->AddDefinition("FUNC_pipePosition",
-                                       filter->variant == 0 && (filter->descriptor->layer_flags & 0x40000) ? "VERTEX_TRANSFORM_PLANT2"
-                                                                                                           : "VERTEX_TRANSFORM_PLANT",
+        if (filter->HasUnfilteredLayerFlag22() && (filter->descriptor->vertex_format & 0x2000000)) {
+            definitions->AddDefinition("FUNC_pipePosition", filter->HasLayerFlag18() ? "VERTEX_TRANSFORM_PLANT2" : "VERTEX_TRANSFORM_PLANT",
                                        0);
             definitions->AddDefinition("WIND", NULL, 0);
         }
@@ -78,14 +217,13 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER *filter, ShaderComp
         }
     }
     if (!nvidia_profile || filter->variant != 0 || !(filter->descriptor->layer_flags & PC_SHADER_LAYER_VERTEX_DISPLACEMENT)) {
-        if (0 == filter->variant && (filter->descriptor->layer_flags & PC_SHADER_LAYER_REFRACTED_GLASS) &&
-            (filter->descriptor->vertex_format & 0x30000) && !(filter->descriptor->vertex_format & 0x400000)) {
+        if (filter->HasLayerFlag29() && (filter->descriptor->vertex_format & 0x30000) && !(filter->descriptor->vertex_format & 0x400000)) {
             definitions->AddDefinition("FUNC_pipePosition", "VERTEX_TRANSFORM_REFRACTED_GLASS_SKINNING", 0);
             definitions->AddDefinition("FUNC_computeNormal", "VERTEX_TRANSFORM_SKINNING", 0);
             definitions->AddDefinition("FUNC_computeTangent", "VERTEX_TRANSFORM_SKINNING", 0);
-        } else if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_REFRACTED_GLASS)) {
+        } else if (filter->HasLayerFlag29()) {
             definitions->AddDefinition("FUNC_pipePosition", "VERTEX_TRANSFORM_REFRACTED_GLASS", 0);
-        } else if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_WATER)) {
+        } else if (filter->HasLayerFlag9()) {
             definitions->AddDefinition("FUNC_pipePosition", "VERTEX_TRANSFORM_WATER", 0);
         } else if (filter->descriptor->vertex_format & 0x40000) {
             definitions->AddDefinition("FUNC_pipePosition", "VERTEX_RAW", 0);
@@ -183,7 +321,7 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER *filter, ShaderComp
             definitions->AddDefinition("LIGHTING_STAGE", "LIGHTING_ENVMAP", 0);
         } else if (filter->descriptor->layer_flags & PC_SHADER_LAYER_ANISO) {
             definitions->AddDefinition("LIGHTING_STAGE", "LIGHTING_ANISO", 0);
-            if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_ANISO_FLIP)) {
+            if (filter->HasAnisoFlip()) {
                 definitions->AddDefinition("ANISO_FLIP", NULL, 0);
             }
         } else {
@@ -208,7 +346,7 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER *filter, ShaderComp
     } else {
         definitions->AddDefinition("LIGHTING_STAGE", "DISABLE", 0);
     }
-    if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x40000) && !(filter->descriptor->layer_flags & PC_SHADER_LAYER_WIND) &&
+    if (filter->HasLayerFlag18() && !filter->HasUnfilteredLayerFlag22() &&
         ((i32)filter->descriptor->flags >= 0 || !(filter->descriptor->flags & 0x800000))) {
         definitions->AddDefinition("CAR_PAINT", NULL, 0);
     }
@@ -241,10 +379,10 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER *filter, ShaderComp
                                   profile != PC_SHADER_MODEL_1_1))) {
         environment = true;
         definitions->AddDefinition("ENVMAP_STAGE", "ENVMAP_CUBE", 0);
-        if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_REFRACTED_GLASS) && profile != PC_SHADER_MODEL_1_1) {
+        if (filter->HasLayerFlag29() && profile != PC_SHADER_MODEL_1_1) {
             definitions->AddDefinition("SPECULAR_STAGE", "SPECULAR_PHONG", 0);
         }
-    } else if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_SHINEMAP)) {
+    } else if (filter->HasLayerFlag15()) {
         environment = true;
         definitions->AddDefinition("ENVMAP_STAGE", "PS2_SHINEMAP", 0);
     }
@@ -272,7 +410,7 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER *filter, ShaderComp
         if (filter->descriptor->layer_flags & PC_SHADER_LAYER_FRESNEL) {
             definitions->AddDefinition("FRESNEL_STAGE", NULL, 0);
         }
-        if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_REFRACTION)) {
+        if (filter->HasLayerFlag10()) {
             definitions->AddDefinition("REFRACTION_STAGE",
                                        filter->descriptor->layer_flags & PC_SHADER_LAYER_WATER             ? "REFRACTION_WATER"
                                        : filter->descriptor->layer_flags & PC_SHADER_LAYER_REFRACTED_GLASS ? "REFRACTION_GLASS"
@@ -317,13 +455,13 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER *filter, ShaderComp
     if (!(filter->descriptor->vertex_format & 0x40000) && filter->variant == 0 && profile != PC_SHADER_MODEL_1_1) {
         definitions->AddDefinition("FOG_STAGE", "FOG_VERTEX_CLAMP_EXPONENTIAL2", 0);
     }
-    if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_DAPPLE) && profile != PC_SHADER_MODEL_1_1) {
+    if (filter->HasLayerFlag21() && profile != PC_SHADER_MODEL_1_1) {
         definitions->AddDefinition("DAPPLE", NULL, 0);
     }
-    if (filter->variant == 0 && (PC_SHADER_LAYER_FRACTAL & filter->descriptor->layer_flags)) {
+    if (filter->HasLayerFlag28()) {
         definitions->AddDefinition("FRACTAL", NULL, 0);
     }
-    if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_EDGE_LIGHTING)) {
+    if (filter->HasLayerFlag27()) {
         definitions->AddDefinition("EDGE_LIGHTING", NULL, 0);
     }
     bool swizzle = true;

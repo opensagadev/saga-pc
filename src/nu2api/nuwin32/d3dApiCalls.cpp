@@ -543,6 +543,10 @@ extern "C" void PcCaptureScreenshot(u32 width, u32 height) {
 extern "C" void fun_006dff30(void) {
 }
 
+/* Empty hook that receives each runtime error report (PCNativeErrorPrint). */
+extern "C" void PCNativeErrorHook(char *text) {
+}
+
 /* Uncalled: draws the screen triangle, optionally with no pixel shader bound. */
 void PC_DEVICE_BACKEND::DrawScreenTriangle(u8 without_pixel_shader) {
     PCDeviceSetVertexDeclaration(screen_uv_declaration);

@@ -27,7 +27,7 @@ typedef struct nubridge_s {      // size 0xb0c
     i8 platform_count;           // 0xae6
     u8 special_spacing;          // 0xae7
     u32 colour;                  // 0xae8
-    u16 contact_frames;          // 0xaec
+    i16 contact_frames;          // 0xaec
     i16 rotation_y;              // 0xaee
     f32 width;                   // 0xaf0
     f32 spring_strength;         // 0xaf4

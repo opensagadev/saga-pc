@@ -872,8 +872,7 @@ void GizmoBlowupEarlyUpdate(void *world_ptr, void *data, f32 delta_time) {
             }
         }
         animation = NuSpecialGetInstAnim(&blowup->type->animated_special);
-        if (((blowup->status_flags & BLOWUP_STATUS_ACTIVE) && !(blowup->status_flags & BLOWUP_STATUS_BLOWN_UP)) ||
-            (blowup->status_flags & 0x20000)) {
+        if ((blowup->active && !(blowup->status_flags & BLOWUP_STATUS_BLOWN_UP)) || (blowup->status_flags & 0x20000)) {
             if (blowup->draw_flags & BLOWUP_OPTION_FOLLOW_ANIMATION) {
                 blowup->transform = *NuSpecialGetInstanceMtx(&blowup->type->animated_special);
                 blowup->status_flags |= 0x10000;
@@ -941,7 +940,7 @@ void GizmoBlowupEarlyUpdate(void *world_ptr, void *data, f32 delta_time) {
                                                       NULL);
                 }
             }
-        } else if (!(blowup->status_flags & BLOWUP_STATUS_ACTIVE) && animation && (animation->flags & NUINSTANIM_FLAG_PLAYING)) {
+        } else if (!blowup->active && animation && (animation->flags & NUINSTANIM_FLAG_PLAYING)) {
             animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
         }
     }
@@ -1198,32 +1197,32 @@ i32 gizmoblowup_Load(void *world_ptr, void *data) {
                 type.particle_types[particle] = -1;
             }
             if (version >= 4) {
-                for (particle = 4; particle < 7; ++particle) {
+                for (particle = 0; particle < 3; ++particle) {
                     length = EdFileReadChar();
                     if (length > 0) {
                         EdFileRead(particle_text, length);
-                        type.particle_types[particle] = -1;
-                        type.particle_types[particle] = (i16)LookupDebrisEffectPageOnly(particle_text, (i8)world->page_pp);
+                        type.particle_types[particle + 4] = -1;
+                        type.particle_types[particle + 4] = (i16)LookupDebrisEffectPageOnly(particle_text, (i8)world->page_pp);
                     }
                 }
             }
             if (version >= 26) {
-                for (particle = 2; particle < 4; ++particle) {
+                for (particle = 0; particle < 2; ++particle) {
                     length = EdFileReadChar();
                     if (length > 0) {
                         EdFileRead(particle_text, length);
-                        type.particle_types[particle] = -1;
-                        type.particle_types[particle] = (i16)LookupDebrisEffect(particle_text);
+                        type.particle_types[particle + 2] = -1;
+                        type.particle_types[particle + 2] = (i16)LookupDebrisEffect(particle_text);
                     }
                 }
             }
             if (version >= 27) {
-                for (particle = 7; particle < 9; ++particle) {
+                for (particle = 0; particle < 2; ++particle) {
                     length = EdFileReadChar();
                     if (length > 0) {
                         EdFileRead(particle_text, length);
-                        type.particle_types[particle] = -1;
-                        type.particle_types[particle] = (i16)LookupDebrisEffect(particle_text);
+                        type.particle_types[particle + 7] = -1;
+                        type.particle_types[particle + 7] = (i16)LookupDebrisEffect(particle_text);
                     }
                 }
             }
@@ -2119,8 +2118,7 @@ void GizmoBlowupDraw(void *world_ptr, void *data, f32 delta_time) {
     i32 index;
     for (index = 0; index < world->gizmo_blowup_count; ++index, ++blowup) {
         if ((blowup->status_flags & BLOWUP_STATUS_VISIBLE) != 0) {
-            i32 drawn = NuSpecialDrawAt(&blowup->type->animated_special, &blowup->transform);
-            blowup->status_flags = (blowup->status_flags & ~BLOWUP_STATUS_DRAWN) | (((u32)drawn << 15) & 0x8000u);
+            blowup->drawn = NuSpecialDrawAt(&blowup->type->animated_special, &blowup->transform);
             if ((blowup->status_flags & BLOWUP_STATUS_DRAWN) != 0) {
                 NuCameraTransformScreenClip(&blowup->screen_position, &blowup->position, 1, NULL);
             }
@@ -2161,7 +2159,6 @@ void GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_time) {
     f32 reflection_height;
     i32 type_index;
     i32 instance_index;
-    i32 drawn;
     for (type_index = 0; type_index < world->gizmo_blowup_type_count; ++type_index) {
         type = blowup->type;
         if (type != NULL) {
@@ -2200,15 +2197,13 @@ void GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_time) {
                         EvalAnim(special, (blowup->status_flags & 0x400000) ? frame : blowup->animation_time, &animated_matrix, 0);
                         NuMtxMulVU0(&animated_matrix, &animated_matrix, &blowup->transform);
                     }
-                    drawn = NuSpecialDrawAt(special, &animated_matrix);
-                    blowup->status_flags = (blowup->status_flags & ~BLOWUP_STATUS_DRAWN) | (((u32)drawn << 15) & 0x8000u);
+                    blowup->drawn = NuSpecialDrawAt(special, &animated_matrix);
                     draw_matrix = animated_matrix;
                     if (blowup->status_flags & BLOWUP_STATUS_DRAWN) {
                         NuCameraTransformScreenClip(&blowup->screen_position, NUMTX_GET_ROW_VEC(&animated_matrix, 3), 1, NULL);
                     }
                 } else {
-                    drawn = NuSpecialDrawAt(special, &blowup->transform);
-                    blowup->status_flags = (blowup->status_flags & ~BLOWUP_STATUS_DRAWN) | (((u32)drawn << 15) & 0x8000u);
+                    blowup->drawn = NuSpecialDrawAt(special, &blowup->transform);
                     draw_matrix = blowup->transform;
                     if (blowup->status_flags & BLOWUP_STATUS_DRAWN) {
                         NuCameraTransformScreenClip(&blowup->screen_position, &blowup->position, 1, NULL);

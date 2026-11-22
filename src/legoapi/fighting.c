@@ -67,9 +67,9 @@ void SetWeaponOut(GAMEOBJECT *object) {
 i32 WeaponInOut_NoAIJediSfx = 0;
 
 void FastWeaponOut(GAMEOBJECT *object, i32 force_sound) {
-    i8 context = object->player.character_context;
     i32 animation;
-    if (context != CHARACTER_CONTEXT_NONE && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
+    if (object->player.character_context != CHARACTER_CONTEXT_NONE &&
+        (object->player.character_context == LEGOCONTEXT_WEAPONIN || object->player.character_context == LEGOCONTEXT_WEAPONOUT)) {
         object->player.character_context = CHARACTER_CONTEXT_NONE;
     }
     if (force_sound != 0 && object->player.weapon_scale == 0.0f && object->player.weapon_draw_state != 1) {
@@ -190,9 +190,9 @@ void SetWeaponIn(GAMEOBJECT *object) {
 }
 
 void FastWeaponIn(GAMEOBJECT *object, i32 force_sound) {
-    i8 context = object->player.character_context;
     i32 animation;
-    if (context != CHARACTER_CONTEXT_NONE && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
+    if (object->player.character_context != CHARACTER_CONTEXT_NONE &&
+        (object->player.character_context == LEGOCONTEXT_WEAPONIN || object->player.character_context == LEGOCONTEXT_WEAPONOUT)) {
         object->player.character_context = CHARACTER_CONTEXT_NONE;
     }
     if (force_sound != 0 && object->player.weapon_scale == 1.0f && object->player.weapon_draw_state != 2) {

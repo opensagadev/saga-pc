@@ -156,9 +156,9 @@ void PC_CONTROL_SCREEN::RefreshItems(void) {
                 }
             }
             if (item->kind == 0) {
-                item->flags = (item->flags & ~PC_CONTROL_ITEM_UNBOUND_PLAYER1) | (ports[0] < 0 ? 0x20 : 0);
-                item->flags = (item->flags & ~PC_CONTROL_ITEM_UNBOUND_PLAYER2) | (ports[1] < 0 ? 0x40 : 0);
-                item->flags = (item->flags & ~PC_CONTROL_ITEM_UNBOUND_SELECTED) | (ports[selected_player] < 0 ? 0x80 : 0);
+                item->unbound_player1 = ports[0] < 0;
+                item->unbound_player2 = ports[1] < 0;
+                item->unbound_selected = ports[selected_player] < 0;
                 if ((item->flags & 7) == 1) {
                     item->label = 7;
                 }
@@ -1208,7 +1208,7 @@ void PC_CONTROL_SCREEN::DrawDeadzone(f32 x, f32 y, f32 z, f32 width, f32 height,
     f32 step = (f32)(width / 20.0);
     f32 half_height = (f32)(height * 0.5);
     f32 offset = 0.0f;
-    u32 a = (u32)(i32)(alpha * 96.0) << 24;
+    i32 a = (i32)(alpha * 96.0) << 24;
     NuPrim2DBegin(14, 5, material);
     colour = ScaleAlpha(opacity, a | 0xc8c8c8);
     PcControlPrimColour(colour);

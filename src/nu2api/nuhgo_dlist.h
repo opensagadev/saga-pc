@@ -43,6 +43,7 @@ extern "C" {
     extern f32 PostBlurDirectInputBias;
     extern f32 PostBlurDirectOutputBias;
     extern f32 PostBlurInputBias;
+    extern f32 PostBlurOutputBias;
     void PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER *, i32, GRAPHICS_RENDER_TEXTURE *, i32);
     void PCGraphicsCreatePostEffectTextures(u32, u32);
     void PCGraphicsDestroyFramebuffer(PC_FRAMEBUFFER *);

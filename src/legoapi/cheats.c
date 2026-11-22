@@ -21,7 +21,7 @@ CHEATSYSTEM CheatSystem = {0};
 static f32 Cheat_PowerUpTime = 0;
 i32 POWERUP_TEXTID = 0;
 
-CHEATSYSTEM *CheatSystemPtr = &CheatSystem;
+static CHEATSYSTEM *CheatSystemPtr = &CheatSystem;
 
 void Cheats_Init(CHEAT *cheats) {
     CHEATSYSTEM *system;
@@ -57,19 +57,11 @@ void Cheats_SetFlags(void) {
     system->flags = 0;
     for (index = 0; index < system->count; ++index) {
         CHEAT *cheat = &system->cheats[index];
-        if (cheat->enabled == 0) {
-            if (ONEPLAYERPOWERUPS != 0 || !(Cheat_PowerUpTime > 0.0f)) {
-                continue;
-            }
-            if (VehicleArea != 0) {
-                if ((cheat->flags & CHEAT_POWERUP_IN_VEHICLE) == 0) {
-                    continue;
-                }
-            } else if ((cheat->flags & CHEAT_POWERUP_ON_FOOT) == 0) {
-                continue;
-            }
+        if (cheat->enabled != 0 || (ONEPLAYERPOWERUPS == 0 && Cheat_PowerUpTime > 0.0f &&
+                                    ((VehicleArea != 0 && (cheat->flags & CHEAT_POWERUP_IN_VEHICLE) != 0) ||
+                                     (VehicleArea == 0 && (cheat->flags & CHEAT_POWERUP_ON_FOOT) != 0)))) {
+            system->flags |= cheat->flags;
         }
-        system->flags |= cheat->flags;
     }
 }
 

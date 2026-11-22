@@ -15,7 +15,6 @@ typedef struct cheatsystem_s { // size 0xc
 extern "C" {
 #endif
     void Cheats_FrameUpdate(void);
-    extern CHEATSYSTEM *CheatSystemPtr;
     i32 GetAnimDirection(NUINSTANIM *);
 #ifdef __cplusplus
 }
