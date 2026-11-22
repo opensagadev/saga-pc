@@ -1195,7 +1195,7 @@ extern "C" {
                                1, 0);
                     turret->flags |= TURRET_FLAG_REWARD_RELEASED;
                 }
-                if ((turret->behavior_flags & 0x4010) == TURRET_CAMERA && LEGOHINT_SHOOTCAMERAS != -1) {
+                if ((turret->behavior_flags & TURRET_CAMERA) && !(turret->behavior_flags & 0x10) && LEGOHINT_SHOOTCAMERAS != -1) {
                     Hint_SetComplete(LEGOHINT_SHOOTCAMERAS);
                 }
             } else if (player != -1 && (Player[player]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
