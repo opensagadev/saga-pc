@@ -21,7 +21,7 @@ CHEATSYSTEM CheatSystem = {0};
 static f32 Cheat_PowerUpTime = 0;
 i32 POWERUP_TEXTID = 0;
 
-CHEATSYSTEM *CheatSystemPtr = &CheatSystem;
+static CHEATSYSTEM *CheatSystemPtr = &CheatSystem;
 
 void Cheats_Init(CHEAT *cheats) {
     CHEATSYSTEM *system;
