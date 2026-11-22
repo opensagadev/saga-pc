@@ -850,6 +850,15 @@ parameters are narrower than `int` or floating point change code. The
 nu2api and gameapi ones all return `int` or `void` with `int`-sized
 parameters.
 
+### I69: a nested `MIN(MAX(...))` evaluates its arguments twice
+
+A retail clamp that is far longer than ours, compares the clamped value again
+after the second bound and stores the intermediate in both branches, is the
+`common.h` macro pair written as one expression: `MIN(MAX(x, lo), hi)`
+expands `MAX(x, lo)` twice. Separate `if` clamps (or `x = MAX(x, lo)` then
+`x = MIN(x, hi)`) give the short form. `NuVpSetClipRect` became exact
+(37.0 -> 100 %) with the bounds written inline (`left + width * 0.0625`).
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated

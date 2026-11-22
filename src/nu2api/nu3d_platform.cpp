@@ -4224,41 +4224,13 @@ extern "C" {
 
     void NuVpSetClipRect(f32 min_x, f32 min_y, f32 max_x, f32 max_y) {
         f32 left = vpCurrent.x;
-        f32 right;
         f32 top;
-        f32 bottom;
-        if (min_x < left) {
-            min_x = left;
-        }
-        right = left + vpCurrent.width * 0.0625;
-        if (min_x > right) {
-            min_x = right;
-        }
-        vpCurrent.clip_min_x = min_x;
+        vpCurrent.clip_min_x = MIN(MAX(min_x, left), left + vpCurrent.width * 0.0625);
         top = vpCurrent.y;
-        if (min_y < top) {
-            min_y = top;
-        }
-        bottom = top + vpCurrent.height * 0.0625;
-        if (min_y > bottom) {
-            min_y = bottom;
-        }
-        vpCurrent.clip_min_y = min_y;
-        if (max_x < left) {
-            max_x = left;
-        }
-        if (max_x > right) {
-            max_x = right;
-        }
-        vpCurrent.clip_max_x = max_x;
-        if (max_y < top) {
-            max_y = top;
-        }
-        if (max_y > bottom) {
-            max_y = bottom;
-        }
+        vpCurrent.clip_min_y = MIN(MAX(min_y, top), top + vpCurrent.height * 0.0625);
+        vpCurrent.clip_max_x = MIN(MAX(max_x, left), left + vpCurrent.width * 0.0625);
+        vpCurrent.clip_max_y = MIN(MAX(max_y, top), top + vpCurrent.height * 0.0625);
         vport_inval = 1;
-        vpCurrent.clip_max_y = max_y;
     }
 
     void NuVpInitIdentityMatrix(void) {
