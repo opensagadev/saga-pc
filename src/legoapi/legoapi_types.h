@@ -2167,7 +2167,7 @@ struct pushblock_s { // size 0xd4
             u32 flag_007 : 1;              // 0xc8:7
             u32 unknown_flags_008_011 : 4; // 0xc8:8
             u32 animation_positions : 3;   // 0xc8:12
-            u32 unknown_flags_015_017 : 3; // 0xc8:15
+            u32 snap_index : 3;            // 0xc8:15
             u32 push_visible : 1;          // 0xc8:18
             u32 unknown_flags_019_023 : 5; // 0xc8:19
             u32 push_active : 1;           // 0xc8:24
