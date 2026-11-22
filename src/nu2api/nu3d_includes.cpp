@@ -18553,6 +18553,7 @@ extern "C" PC_DISPLAY_ITEM_HANDLER PCDisplayShadowItemHandlers[49] = {NuDisplayL
 extern "C" void PostBlur7x7High(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, GRAPHICS_RENDER_TEXTURE *textures, i32 first_lod,
                                 i32 iterations, i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM *program) {
     // Explicitly spills ceil's double result to binary32 before ftol2.
+    f32 offset = 0.0f;
     f32 rounded_radius = (f32)ceil((f64)radius);
     i32 guard = (i32)rounded_radius * 3;
     i32 work_width = PCGraphicsEffectTextureWidth(PCGraphicsPostEffectWorkTexture);
@@ -18584,16 +18585,16 @@ extern "C" void PostBlur7x7High(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod,
             f32 dy = radius / (f32)height;
             NUVEC4 horizontal[7];
             NUVEC4 vertical[7];
-            OccluderVertexSet(&horizontal[0], dx * 0.0f, 0, .34f, 0);
-            OccluderVertexSet(&vertical[0], 0, dy * 0.0f, .34f, 0);
+            OccluderVertexSet(&horizontal[0], dx * offset, 0, .34f, 0);
+            OccluderVertexSet(&vertical[0], 0, dy * offset, .34f, 0);
             OccluderVertexSet(&horizontal[1], dx, 0, .18f, 0);
             OccluderVertexSet(&vertical[1], 0, dy, .18f, 0);
             OccluderVertexSet(&horizontal[2], (f32)(dx * 2.0), 0, .10f, 0);
             OccluderVertexSet(&vertical[2], 0, (f32)(dy * 2.0), .10f, 0);
             OccluderVertexSet(&horizontal[3], (f32)(dx * 3.0), 0, .05f, 0);
             OccluderVertexSet(&vertical[3], 0, (f32)(dy * 3.0), .05f, 0);
-            OccluderVertexSet(&horizontal[4], (f32) - (dx * 1.0), 0, .18f, 0);
-            OccluderVertexSet(&vertical[4], 0, (f32) - (dy * 1.0), .18f, 0);
+            OccluderVertexSet(&horizontal[4], (f32) - (dx * (offset + 1.0)), 0, .18f, 0);
+            OccluderVertexSet(&vertical[4], 0, (f32) - (dy * (offset + 1.0)), .18f, 0);
             OccluderVertexSet(&horizontal[5], (f32) - (dx * 2.0), 0, .10f, 0);
             OccluderVertexSet(&vertical[5], 0, (f32) - (dy * 2.0), .10f, 0);
             OccluderVertexSet(&horizontal[6], (f32) - (dx * 3.0), 0, .05f, 0);
@@ -18714,6 +18715,7 @@ extern "C" void PostBlur7x7High(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod,
 /* Unreferenced 7x7 blur variant: both passes render straight into the output level, no work texture. */
 extern "C" void PostBlur7x7Direct(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, GRAPHICS_RENDER_TEXTURE *textures, i32 first_lod,
                                   i32 iterations, i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM *program) {
+    f32 offset = 0.0f;
     NuShaderProgramMakeCurrent(program);
     for (i32 lod = 0; lod < levels; ++lod) {
         GRAPHICS_RENDER_TEXTURE *input;
@@ -18741,16 +18743,16 @@ extern "C" void PostBlur7x7Direct(GRAPHICS_RENDER_TEXTURE *source, i32 source_lo
             f32 dy = radius / (f32)height;
             __declspec(align(16)) NUVEC4 horizontal[7];
             NUVEC4 vertical[7];
-            OccluderVertexSet(&horizontal[0], dx * 0.0f, 0, .34f, 0);
-            OccluderVertexSet(&vertical[0], 0, dy * 0.0f, .34f, 0);
+            OccluderVertexSet(&horizontal[0], dx * offset, 0, .34f, 0);
+            OccluderVertexSet(&vertical[0], 0, dy * offset, .34f, 0);
             OccluderVertexSet(&horizontal[1], dx, 0, .18f, 0);
             OccluderVertexSet(&vertical[1], 0, dy, .18f, 0);
             OccluderVertexSet(&horizontal[2], (f32)(dx * 2.0), 0, .10f, 0);
             OccluderVertexSet(&vertical[2], 0, (f32)(dy * 2.0), .10f, 0);
             OccluderVertexSet(&horizontal[3], (f32)(dx * 3.0), 0, .05f, 0);
             OccluderVertexSet(&vertical[3], 0, (f32)(dy * 3.0), .05f, 0);
-            OccluderVertexSet(&horizontal[4], (f32) - (dx * 1.0), 0, .18f, 0);
-            OccluderVertexSet(&vertical[4], 0, (f32) - (dy * 1.0), .18f, 0);
+            OccluderVertexSet(&horizontal[4], (f32) - (dx * (offset + 1.0)), 0, .18f, 0);
+            OccluderVertexSet(&vertical[4], 0, (f32) - (dy * (offset + 1.0)), .18f, 0);
             OccluderVertexSet(&horizontal[5], (f32) - (dx * 2.0), 0, .10f, 0);
             OccluderVertexSet(&vertical[5], 0, (f32) - (dy * 2.0), .10f, 0);
             OccluderVertexSet(&horizontal[6], (f32) - (dx * 3.0), 0, .05f, 0);
