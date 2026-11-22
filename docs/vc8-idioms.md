@@ -842,6 +842,23 @@ parameters are narrower than `int` or floating point change code. The
 nu2api and gameapi ones all return `int` or `void` with `int`-sized
 parameters.
 
+### I69: one test per flag and per value, not the folded mask
+
+```
+retail                                   ours
+  test al, 0x1                             and  edx, 0x1001
+  je   .skip                               cmp  edx, 0x1001
+  test eax, 0x1000                         jne  .skip
+  je   .skip
+```
+
+The port's `(flags & (A | B)) == (A | B)`, `(context & 0xfd) == 57` and
+`count <= 1` are what clang made of two flag tests, of `context == 59 ||
+context == 57` and of `count < 2`; VC8 compiles each source test as written.
+Write the tests one by one in retail's order (`LightSabreStreakCode`,
+`UpdateGameObjects`). The mask form is still right where retail has the
+`and`/`cmp` pair (`TightRope_InRange`).
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated
