@@ -7762,8 +7762,8 @@ extern "C" {
         if (near_distance != far_distance && (colour & 0xff000000) > 0x2000000) {
             PCFogSetMode(1, 1);
             PCFogSetColour(NuRndrFogColour);
-            PCFogSetRange(*(u32 *)&NuRndrFogNear, *(u32 *)&NuRndrFogFar);
-            PCFogSetDensity(*(u32 *)&NuRndrFogDensity);
+            PCFogSetRange(NuRndrFogNear, NuRndrFogFar);
+            PCFogSetDensity(NuRndrFogDensity);
         } else {
             PCFogSetMode(0, 0);
         }
@@ -7950,8 +7950,8 @@ extern "C" {
         PCFogColourSuppressed = 0;
     }
 
-    void PCFogSetDensity(u32 density) {
-        PCDeviceSetRenderState(D3DRS_FOGDENSITY, density);
+    void PCFogSetDensity(f32 density) {
+        PCDeviceSetRenderState(D3DRS_FOGDENSITY, *(u32 *)&density);
     }
 
     void PCFogSuppressColour(void) {
@@ -7968,9 +7968,9 @@ extern "C" {
         }
     }
 
-    void PCFogSetRange(u32 start, u32 end) {
-        PCDeviceSetRenderState(D3DRS_FOGSTART, start);
-        PCDeviceSetRenderState(D3DRS_FOGEND, end);
+    void PCFogSetRange(f32 start, f32 end) {
+        PCDeviceSetRenderState(D3DRS_FOGSTART, *(u32 *)&start);
+        PCDeviceSetRenderState(D3DRS_FOGEND, *(u32 *)&end);
     }
 
     void PCFogSetDensity2(u32 density) {
