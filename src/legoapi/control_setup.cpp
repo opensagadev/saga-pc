@@ -156,9 +156,9 @@ void PC_CONTROL_SCREEN::RefreshItems(void) {
                 }
             }
             if (item->kind == 0) {
-                item->flags = (item->flags & ~PC_CONTROL_ITEM_UNBOUND_PLAYER1) | (ports[0] < 0 ? 0x20 : 0);
-                item->flags = (item->flags & ~PC_CONTROL_ITEM_UNBOUND_PLAYER2) | (ports[1] < 0 ? 0x40 : 0);
-                item->flags = (item->flags & ~PC_CONTROL_ITEM_UNBOUND_SELECTED) | (ports[selected_player] < 0 ? 0x80 : 0);
+                item->unbound_player1 = ports[0] < 0;
+                item->unbound_player2 = ports[1] < 0;
+                item->unbound_selected = ports[selected_player] < 0;
                 if ((item->flags & 7) == 1) {
                     item->label = 7;
                 }
