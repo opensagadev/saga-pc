@@ -126,6 +126,13 @@ static f32 Nu3dIncludesFabs(f32 f) {
     return rv;
 }
 
+static f32 Nu3dIncludesFdiv(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f) {
+        return 0.0f;
+    }
+    return a / b;
+}
+
 static void Nu3dIncludesVuVecCopy(VuVec &destination, const VuVec &source) {
     destination.x = source.x;
     destination.y = source.y;
@@ -12935,14 +12942,14 @@ extern "C" {
     void NuVpSetPosition(f32 x, f32 y) {
         f32 pixel_height = (f32)PS2_REZ_H;
         f32 virtual_height = (f32)PS2_VREZ_H;
-        f32 y_ratio = pixel_height != 0.0f && virtual_height != 0.0f ? (f32)((f64)pixel_height / virtual_height) : 0.0f;
+        f32 y_ratio = Nu3dIncludesFdiv(pixel_height, virtual_height);
         f32 y_offset = (f32)((f64)y * 0.0625 - ((f32)PS2_VCNTR_Y - (PS2_REZ_H >> 1)));
-        f32 new_y = y_offset != 0.0f && y_ratio != 0.0f ? (f32)((f64)y_offset / y_ratio) : 0.0f;
+        f32 new_y = Nu3dIncludesFdiv(y_offset, y_ratio);
         f32 pixel_width = (f32)PS2_REZ_W;
         f32 virtual_width = (f32)PS2_VREZ_W;
-        f32 x_ratio = pixel_width != 0.0f && virtual_width != 0.0f ? (f32)((f64)pixel_width / virtual_width) : 0.0f;
+        f32 x_ratio = Nu3dIncludesFdiv(pixel_width, virtual_width);
         f32 x_offset = (f32)((f64)x * 0.0625 - ((f32)PS2_VCNTR_X - (PS2_REZ_W >> 1)));
-        f32 new_x = x_offset != 0.0f && x_ratio != 0.0f ? (f32)((f64)x_offset / x_ratio) : 0.0f;
+        f32 new_x = Nu3dIncludesFdiv(x_offset, x_ratio);
         NuVpSetPosition2(new_x, new_y);
     }
 

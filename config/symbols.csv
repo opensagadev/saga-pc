@@ -642,7 +642,7 @@ address,symbol,size,ctype
 0x43ff30,_AIPathCnxControlSysCreate,97,"void * __cdecl (VARIPTR *, VARIPTR *, i32)"
 0x43ffa0,_GameaiscriptNuError,1,
 0x43ffb0,_GameaiscriptFabs,18,
-0x43ffd0,_GameaiscriptFdiv,54,
+0x43ffd0,_GameaiscriptFdiv,54,"f32 __cdecl (f32, f32)"
 0x440010,_GameaiscriptVuVecMake,28,
 0x440030,_GetGenericGoon,226,
 0x00440120,_GetNamedGameObject,34,"GAMEOBJECT *__cdecl (void *, char *)"
@@ -7201,7 +7201,7 @@ address,symbol,size,ctype
 0x5c1330,?Nu3dIncludesMtxGetPerspective@@YAXPAUnumtx_s@@PAM111@Z,26,
 0x5c1350,_NuRndrIsScreenGrabbing,6,
 0x5c1360,?Nu3dIncludesFabs@@YAMM@Z,18,
-0x5c1380,?Nu3dIncludesFdiv@@YAMMM@Z,54,
+0x5c1380,?Nu3dIncludesFdiv@@YAMMM@Z,54,"f32 __cdecl (f32, f32)"
 0x5c13c0,_RenderPostASin,320,i16 __cdecl(f32)
 0x5c1500,?Nu3dIncludesACos@@YAMM@Z,27,
 0x5c1520,?Nu3dIncludesVecZero@@YAXPAUnuvec_s@@@Z,11,
