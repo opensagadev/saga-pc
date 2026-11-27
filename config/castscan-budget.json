@@ -18,7 +18,7 @@
   "scalar-pun": 292,
   "int-pointer": 738,
   "const": 878,
-  "void-pointer-cpp": 1249,
+  "void-pointer-cpp": 1250,
   "unprototyped-argument": 0,
   "vararg": 26,
   "enum": 4,

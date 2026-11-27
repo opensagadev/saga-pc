@@ -365,7 +365,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x004fb7d0,31,_NuFileReadUnsignedChar,extent,,nu2api/nucore_includes.cpp,unreferenced,
 0x004fcba0,190,_NuFileReadSize,extent,,nu2api/nucore_includes.cpp,unreferenced,
 0x004fda20,99,_NuFileLoadRelocated,extent,,nu2api/nucore_includes.cpp,unreferenced,
-0x004fe630,5,_NuStrFind,extent,,nu2api/nucore_includes.cpp,unreferenced,
+0x004fe630,5,?strstr@@YAPADPADPBD@Z,extent,,nu2api/nucore_pc_includes.cpp,unreferenced,
 0x004fe660,28,?NucorePcIncludesVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,nu2api/nucore_pc_includes.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x004fe9a0,1,_NuDebugMsgFunctionTTY,extent,,nu2api/nucore_pc_includes.cpp,unreferenced,
 0x004fe9d0,25,_NuDebugMsgPrologTTY,extent,,nu2api/nucore_pc_includes.cpp,unreferenced,

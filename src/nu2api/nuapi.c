@@ -7,9 +7,3 @@
 i32 StartupParseArgument(i32 count, char **arguments) {
     return 0;
 }
-
-void NuVideoSetBrightnessPS(void) {
-}
-
-void NuVideoSetSwapModePS(i32 mode) {
-}

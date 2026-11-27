@@ -125,32 +125,6 @@ def write_file_constants(directory):
     return source
 
 
-def write_clock_provider(directory):
-    """Use the actual clock bodies needed by the expanded thread owner.
-
-    The DAT fixture does not exercise timebar rendering. Extract its complete
-    tick routine (NuTimeGet itself lives in the nucore unit) and the actual
-    tick-base definition, without substituting a clock mock or pulling rendering
-    services into this isolated parser test.
-    """
-    production = (ROOT / "src/nu2api/nutimebar.c").read_text()
-    start = production.index("void NuTimeGetTicksPS(")
-    end = production.index("void PcInitializeStartupCriticalSection(", start)
-    bodies = production[start:end]
-    if len(re.findall(r"^.*void NuTime\w+\(", bodies, re.MULTILINE)) != 1:
-        raise ValueError("DAT clock provider no longer contains exactly the production tick routine")
-    definitions = []
-    for name, unit in (("NuTime_TickBase", "nutimebar.c"), ("NuTime_PerformanceFrequency", "nuthread.c")):
-        data = (ROOT / "src/nu2api" / unit).read_text(encoding="latin-1")
-        definition = re.search(rf"^\s*i64 {name}\s*=\s*0;\s*$", data, re.MULTILINE)
-        if definition is None:
-            raise ValueError(f"DAT clock provider is missing the production {name} definition")
-        definitions.append(definition.group().strip())
-    source = directory / "clock_provider.c"
-    source.write_text(all_headers_source() + "\n".join(definitions) + "\n" + bodies)
-    return source
-
-
 def write_implode_state(directory):
     """Reuse the decoder's eight production backing definitions in isolation."""
     production = (ROOT / "src/nu2api/nucore_includes.c").read_text(encoding="latin-1")
@@ -209,15 +183,15 @@ class DatParserTests(unittest.TestCase):
             directory = Path(temp)
             write_fixtures(directory)
             objects = []
-            sources = [ROOT / f"src/nu2api/{name}.c" for name in
-                       ("nucore_includes", "nualloc", "nudebug", "nufile_pc", "nupsfile", "nufile_mc", "nuthread")]
+            sources = [ROOT / f"src/nu2api/{name}" for name in
+                       ("nucore_includes.c", "nualloc.c", "nudebug.c", "nufile_pc.c", "nucore_pc_includes.cpp",
+                        "nufile_mc.c", "nuthread.c")]
             fixture = directory / "test_dat_fixture.c"
             defined = production_globals(sources)
             fixture.write_text(all_headers_source() +
                                without_definitions((ROOT / "tools/test_dat_fixture.c").read_text(), defined))
             sources.append(fixture)
-            for generated in (write_file_constants(directory), write_clock_provider(directory),
-                              write_implode_state(directory)):
+            for generated in (write_file_constants(directory), write_implode_state(directory)):
                 generated.write_text(without_definitions(generated.read_text(), defined))
                 sources.append(generated)
             for source in sources:

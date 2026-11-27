@@ -173,8 +173,10 @@ REVIEW = {
     0x4eeae0: dict(name=None, why="marker; DrawRopeCurved (Batman legoapi utilities) and Win32 imports thunks"),
     0x4ef6e0: dict(name="nucore_includes", conf="high",
                    why="Batman nucore_includes.cpp; retail numem.c, nufile.c, numemblk.c, nupad.cpp inside"),
-    0x4fe640: dict(name="nucore_pc_includes", conf="medium",
-                   why="marker; Batman pc/nucore_pc_includes.cpp; retail nucore\\pc\\nufile_pc.c inside"),
+    0x4fe630: dict(name="nucore_pc_includes", conf="medium",
+                   why="its C++ strstr(char *, const char *) inline copy opens it (the only inlined call is in this "
+                   "unit); marker; Batman pc/nucore_pc_includes.cpp; retail nucore\\pc\\nufile_pc.c inside"),
+    0x4fe640: dict(name="nucore_pc_includes", join=True, why="continues 0x4fe630"),
     0x4fff00: dict(name="cutscene_include", conf="medium",
                    why="marker; Batman cutscene_include.cpp (gcutscn+trigger+script); the PS2 sibling dump "
                    "has them as separate files"),

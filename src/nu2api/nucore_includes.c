@@ -7297,10 +7297,6 @@ void NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
     NumBadWords = i;
 }
 
-char *NuStrFind(const char *text, const char *pattern) {
-    return strstr(text, pattern);
-}
-
 static i32 NuStringCharEquivalent(u16 a, u16 b) {
     i32 i = 0;
     if (a == b) {

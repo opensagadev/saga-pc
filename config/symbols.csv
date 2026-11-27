@@ -3375,7 +3375,7 @@ address,symbol,size,ctype
 0x004fdf80,_NuStringTableLoadTXT,899,"i32 __cdecl (char *, VARIPTR *, VARIPTR)"
 0x004fe310,_NuStringTableLoad,114,"i32 __cdecl (char *, VARIPTR *, VARIPTR)"
 0x004fe390,_NuStringFilterLoad,659,"void __cdecl (char*, VARIPTR*, VARIPTR)"
-0x4fe630,_NuStrFind,5,
+0x4fe630,?strstr@@YAPADPADPBD@Z,5,
 0x004fe640,_bgProcDataOversize,1,void __cdecl (i32)
 0x004fe650,_FileDirectoryError,1,
 0x4fe660,?NucorePcIncludesVuVecMake@@YA?AUVuVec@@MMMM@Z,28,

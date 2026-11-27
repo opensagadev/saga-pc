@@ -388,3 +388,4 @@ config/castscan-budget.json record-pun 356 gathering retail compilands moves cod
 config/castscan-budget.json declaration-type 828 specialsfx and whip are C++ compilands now (retail language): their void * conversions need explicit casts
 config/castscan-budget.json void-pointer-cpp 1249 specialsfx and whip are C++ compilands now (retail language): their void * conversions need explicit casts
 config/oddscan-budget.json long-file 11 PCInput.cpp is one retail compiland and passes 5,000 lines once the empty input stubs retail compiled in it move back
+config/castscan-budget.json void-pointer-cpp 1250 nucore_pc_includes is a C++ unity, so the NuAlloc result FileDirectoryHostOpen took from nupsfile.c needs an explicit cast
