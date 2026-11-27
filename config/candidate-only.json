@@ -372,17 +372,17 @@
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nushaderkey.cpp",
+   "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
    "symbol": "?IsAlternateType@PC_SHADER_MATERIAL_FILTER@@QBE_NXZ",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nushaderkey.cpp",
+   "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
    "symbol": "?IsPlainType@PC_SHADER_MATERIAL_FILTER@@QBE_NXZ",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nushaderkey.cpp",
+   "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
    "symbol": "?LayerBit@PC_SHADER_MATERIAL_FILTER@@QBEEH@Z",
    "kind": "function"
   },
@@ -443,6 +443,11 @@
   },
   {
    "unit": "src/nu2api/ShaderManagerHLSL.cpp",
+   "symbol": "__bad_alloc_Message",
+   "kind": "data"
+  },
+  {
+   "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
    "symbol": "__bad_alloc_Message",
    "kind": "data"
   }

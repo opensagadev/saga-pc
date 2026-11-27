@@ -15694,7 +15694,7 @@ address,symbol,size,ctype
 0x745120,_fun_00745120,8,
 0x745130,?GetForceMode@ShaderCompilerDictionary@@QBE_NXZ,7,
 0x745140,?GetProfile@ShaderCompilerDictionary@@QBEHXZ,7,
-0x745150,_fun_00745150,53,
+0x745150,??1ShaderBuilderGen@@UAE@XZ,53,
 0x745190,??0PC_SHADER_MATERIAL_FILTER@@QAE@PBUnushadermtldesc_s@@HH@Z,33,
 0x7451c0,?SetForceMode@ShaderCompilerDictionary@@QAEX_N@Z,13,
 0x7451d0,??_EShaderBuilderGen@@UAEPAXI@Z,,COFF weak alias to same scalar deleting destructor; zero new byte credit
@@ -15709,7 +15709,6 @@ address,symbol,size,ctype
 0x7452b0,?Prepare@ShaderBuilderGen@@UAEXPBUnushadermtldesc_s@@PAUShaderCompilerDictionary@@@Z,52,"void __thiscall ShaderBuilderGen::Prepare(const NUSHADERMTLDESC *, ShaderCompilerDictionary *)"
 0x7452f0,??0HLSLShaderBuilder@@QAE@AAUVirtualStackAllocator@@@Z,27,
 0x745310,??1HLSLShaderBuilder@@UAE@XZ,53,
-0x745310,??1ShaderBuilderGen@@UAE@XZ,53,
 0x745350,_fun_00745350,8,
 0x745360,_fun_00745360,5,
 0x745370,_fun_00745370,4,

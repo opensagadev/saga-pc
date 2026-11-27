@@ -27,7 +27,11 @@ class ShaderBuilderGen { // size 0xbd0
     ShaderCompilerBufferAllocator source_buffer; // 0xbb0
     VirtualStackAllocator parser_memory;         // 0xbc0
     ShaderBuilderGen(VirtualStackAllocator &, i32);
-    virtual ~ShaderBuilderGen();
+
+    virtual ~ShaderBuilderGen() {
+        parsed_source = NULL;
+    }
+
     virtual void SetIncludeDirectories(const char *);
     virtual void SetSaveDirectory(const char *);
     virtual void SetProfile(i32, i32, i32);

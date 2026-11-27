@@ -247,6 +247,10 @@ REVIEW = {
     0x740f00: dict(name="VirtualStackAllocator", area="gamelib/util", lang="cpp", conf="medium",
                    why="C++ class after the CRT; Batman includes VirtualStackAllocator_gen.cpp in nucore_includes"),
     0x740f60: dict(name="VirtualStackAllocator", join=True, why="continues 0x740f00"),
+    0x744ba0: dict(name="ShaderObjectKey_pc", conf="low",
+                   why="RET marker after the ShaderObjectKey block, and its code calls PC_SHADER_MATERIAL_FILTER::Initialize "
+                   "(0x7443d0) with the full thiscall register save, so Initialize was not compiled in this unit; Batman "
+                   "names both ranges ShaderObjectKey, and the HLSL builder code here is PC-only"),
 }
 
 # ------------------------------------------------------------------ inputs

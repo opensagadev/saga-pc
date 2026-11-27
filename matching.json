@@ -277,7 +277,7 @@
     "src/nu2api/cutscene_include.h": "44d1ad9c39d5f73ef868c53517c0ab9f54dc25df61e5696342885a2ed2f26c2f",
     "src/nu2api/huffdecode.h": "821231d53e60749ea9f7055c73d7fc08e27a8c51812468df07461158a9e3e545",
     "src/nu2api/nu3d/ShaderManager.h": "61b858dd3b7928bb4705659b0a279f0aee9df232242b1e5add5e5cb43722de9c",
-    "src/nu2api/nu3d/ShaderObjectKey.h": "6c5869dddb456640aa83f764f9a385435010eab62cf4f55c1f1ad1654cfb6653",
+    "src/nu2api/nu3d/ShaderObjectKey.h": "8614c9ffaaede7f24c5b9d06371a68602c8fdb75d495430a5a8c0e38818c8fa3",
     "src/nu2api/nu3d/glutils.h": "e78b92602abfb9e4605c85018f982c2ba61aff42dff4d766f29b5cdf58bb5357",
     "src/nu2api/nu3d/nu2api_nu3d_types.h": "f7d7dd81aef2a397cf0bc736edfa306e50819f48b229bdba87012c297c1eea40",
     "src/nu2api/nu3d/nu3d_includes.h": "9251136f96653e9f79b118dc802b92aa6c93c32c01bfc8c6247fc846ffc053bc",
@@ -429,7 +429,7 @@
     "src/nu2api/shader_parser.h": "e192219dd005bfa8c46c46ec47e32593905d0ef38c101aac79e77fa4a49b6a12",
     "src/nu2api/wavreader.h": "6acb0f5ca7ccbcef5945e705cc918a66f14f3af9f07cc9b5ce7fa31e78f05043",
     "config/budget-raises.txt": "599601a56ca8593912172d98bbdc9970c32e7911ac047c505ce561c43a93234a",
-    "config/candidate-only.json": "f4d0296d5a65403f42b6af62f2ee79670374fac3b5a94ef08290fdefbaaee0f6",
+    "config/candidate-only.json": "1a10bc2621ee3b01957892f4e1f485485e02b2a4ae9b3d400655afbfcb9b5dd5",
     "config/castscan-budget.json": "211f8047834975b27106289aa244c6a302e0daf4ef9c6aeff6402666625f1ca2",
     "config/castscan-keep.csv": "cb5e0f24bcae043979afd37568718947ed78ad1cff89a93d1dedc62c4035f45c",
     "config/clang-format-vendored": "726e4d44212725e1d294bd517c38a52eca9d7f41b505d7246c433e30a749f683",
@@ -439,7 +439,7 @@
     "config/declscan-budget.json": "e0554a10e2b156d3eccd2eeca4ee1379ecb90941be3c7c28e8d5c2a237306710",
     "config/header-map.csv": "8e3d4b0b92aff1316147fb6c6bb4d753c120fd50cb01b5a386a08a9953e75e0b",
     "config/layout-android-units.csv": "e746c9966cf3cb289a48dd1df1bee1e9c8fbbbf8a1891ca973f2b865a6e89fbc",
-    "config/layout-target.csv": "3c728986b123e519909089d65bf4b14d67253b790ebb68755f14a4d84691450e",
+    "config/layout-target.csv": "41f1e4a3c36a790263caf7ba5a6953942b1c449cccf74521b740d319c46cc88b",
     "config/library-objects.json": "4e0e91f5abb9855a0624aa79f38e17687b47eaa447383f272352c1f024b9a872",
     "config/literalscan-budget.json": "31c786e269f1756cf35489ad41e6941a8881a76410f4579c939a0d083ea69a89",
     "config/literalscan-keep.csv": "7919326d1c419514fa11275d955381135bf23bb927f899b69a05e3b70b7b010d",
@@ -449,11 +449,11 @@
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
     "config/sibling-names.csv": "0412f6238a62d5d75181cb275bbaeea889f8b7e7021810b9b5261dbbe9852810",
     "config/standalone-budget.json": "7f7c580012d4dfaecc55c9c35cf3461c9c45615ddc805efb95d7aae11b86330f",
-    "config/symbols.csv": "6dba98c66ec2cd04eeb9d06873e9ff8841dad5886aa520d108c9d5089cf0139e",
+    "config/symbols.csv": "c17cc0e91367ea8328a4e367b0a2c73a31e2a9a47cd1eac74e202cb83ebc08b3",
     "config/symbols.md": "3d018cc044b5a14025b0fc457df71a0c9a193cea32ceb3081e6a86bcdd4b242b",
     "config/toolchain.json": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
     "config/tools.json": "8e9a5f8077abc1bd9cce37004a47ea493e67a75ba964d8df3f13223958e6f4c8",
-    "config/units.csv": "e9c113c235824d104d9f0f3edb4c4779b0e2b7c4e9881987c00ad5f4fb02ff41",
+    "config/units.csv": "4e4ddefaad18b9b6b9ecd2dbe2981fbccc321916ebe3d85e54b3a82ad365bdc1",
     "config/warning-budget.json": "2fb62147f02c41b6f3c48da61b374099ba00403e547c81315cbe5564ebe44c54",
     "tools/altbuild.py": "bf4e210afbe779e689abd7b160d5deae2948913c5b8b5020ad9a16c3b612b02a",
     "tools/binary.py": "1168154b0bf5549c93bc5fa22fc3dafb48c9529d3ea681bb447552928cc066eb",
@@ -483,7 +483,7 @@
     "tools/idiomscan.py": "eab18618f9feac46a2e3c8af7e8389423adc2dc104e5187a8f65657e02c880fc",
     "tools/langscan.py": "7bb44ac2c8802b3b03d3e025b62463c1b190cc2238f4ffdc6d554548afcd1a9c",
     "tools/layoutcheck.py": "bcb5e0c12b6d115425ca0452cf01784c7d11c3908c60cf9e0bc7751eb3ad1145",
-    "tools/layoutscan.py": "9fb2c3efbe11a8c021339057e8ce17587743b12ded655fc6e1c553bd0113a73f",
+    "tools/layoutscan.py": "b407e7e1c12ae92f0586c43fffa7e7c9596464b6157324c8db17b59f7068bb25",
     "tools/lib.py": "612b3f8cf413d2c5492a6e6a1e554c1607b72873fa88c03b837a7a8b7b5e03fd",
     "tools/libmatch.py": "3b69b9be10a1282ffea804f84c56f7cd90bce8728eb33167d5ce7712c969885f",
     "tools/lintcache.py": "5cba942b00f45058923f2a2f7c928c00d7f4f0fe92dc30fe01f37a8662fddbeb",
@@ -796,6 +796,7 @@
     "src/nu2api/PCInput.cpp": "1d6900bb05f33c30c849aa7e97a672baf3cea8f1832ad81859ce60ae99fabd7a",
     "src/nu2api/ShaderManagerHLSL.cpp": "ec98a841d47300d94c905f78a75de33b333c3446576af48828f25cb169077ab4",
     "src/nu2api/ShaderObjectKey.cpp": "d283e76538861235a42d64015ee8c6817dc4c7bd883f8c4df8f37f8d42496872",
+    "src/nu2api/ShaderObjectKey_pc.cpp": "68a2c783f127114edca2965c81cf41cd1327d9cd2c3e56d115dec78867ea0777",
     "src/nu2api/crc16.cpp": "784741a2b29c2e3f86997c06cde1b0ec5b2f9b8017dc804f75f54cfa8b192d3b",
     "src/nu2api/geometry_publish.cpp": "8ce41fd569c5f4c4c2125f2e6e3be469b23d108946c62f4699876b5173b69941",
     "src/nu2api/hardware_dispatch.cpp": "dd3b62d00932e7a95b35ed9afce9a083b157d17afc960b0be9469b2589e7086d",
@@ -817,8 +818,7 @@
     "src/nu2api/nurndr_swap.cpp": "720f168a7a136ba9671e386617b3ac4370c57197ac87770c94288cb2374fa62d",
     "src/nu2api/nuscratch.cpp": "a63bf92ffcd9ca195a0ebc0d226722468eaec8a536cb2147f07c7fb674f078ae",
     "src/nu2api/nushader.cpp": "cfbc6466a6cc58d3fee84df95e49ff1774eb1e443e6a216529df9afedc8c661d",
-    "src/nu2api/nushaderkey.cpp": "9fc770c3fe2f46f02585e6ad41f453ceb44f8e12b9435a629b09476ee32451c2",
-    "src/nu2api/nushadermanager.cpp": "8c3bbd1839539fad709a640a277df99e01c8b0833cd1f1e3b32b67c04c970cf9",
+    "src/nu2api/nushadermanager.cpp": "aec743189008ef0c90f1c28a3a7d920cd186ea5a282d079f8e90ee2cbe6d11c1",
     "src/nu2api/nushadermanager_gen.cpp": "a3b2a5dc1f4c050507e4e31aaccc5623ee6ee3aec3fae253bb3a1fc67e57846b",
     "src/nu2api/nushaderobject.cpp": "dbdb684efe6b022be9ba15409718f89490b2e081412d4a6289d3c1af10269ded",
     "src/nu2api/nushaderobject_pc.cpp": "c54d28b258776461d0679538cfcd32ba1981fdeaa2d953fc78e6ebcbab6b53f6",
@@ -850,8 +850,8 @@
     "src/nu2api/save_folder.cpp": "37faba290ef98f56f0a39d6c5fd80f3e02968a7b09b3cb97df8b7998079b843b",
     "src/nu2api/shaderSemantics.cpp": "44000c48db960082c46a1c6eb5c98252521a83e7253a06cd9b160b4495138a8c",
     "src/nu2api/shader_buffer_allocator.cpp": "c38944b9364e6608d40fe4b530e22dd60f06e3962da48374f0ec2b63bfcf928e",
-    "src/nu2api/shader_compiler.cpp": "7e80da54cbabfa7bd6638b4acae97ecb069295d908b80f7dda9c0e09d8522281",
-    "src/nu2api/shader_dictionary.cpp": "13baac0bae11be9605cdbbf6b59e5250df205aa2843842f112877dd513d325f2",
+    "src/nu2api/shader_compiler.cpp": "d34c83a5acd3899c02ef6f47d7e2d166054c47f72e3745720f82ebe7908aa163",
+    "src/nu2api/shader_dictionary.cpp": "7a739df73448eb7715031d8e70fc475d98035b76a28d95a9e9b152e3f8758c7a",
     "src/nu2api/shader_lexical.cpp": "f608b42a24f2bc836c08d6dd2e09019b408ff213926f131e51ad71af89655fd4",
     "src/nu2api/shader_parser.cpp": "895df23d99f85034b63df92d69a5646b7860c1760824f690c35b5cb0e375523c",
     "src/nu2api/terrain_collision.cpp": "9dbca74036be81a3a79f09411c635a6e1160ec93d8111908f2bd53edc3fc43ec",
@@ -1240,10 +1240,11 @@
     "build/obj/legogame/transform.obj": "361fad176295d6e4b88fcbda595672e71bd18614509ca73f05b409fcd7bb3145",
     "build/obj/legogame/zipup.obj": "e45765a0ad4212d353f434e0334712964e211e54028127061b0b62518131388c",
     "build/obj/nu2api/PCInput.obj": "bdafcdd88f4be2bea29f09dc1c61d1148328d944216e20de9a73ea91a05f7b18",
-    "build/obj/nu2api/ShaderManagerHLSL.obj": "f82c8141741424c31f01870f0f607f9b62a702f45eaa4fb8f8aa003a33ea6817",
-    "build/obj/nu2api/ShaderObjectKey.obj": "ec3718e48184258e3d0f280249537bbb839c8cb810ce47df38a87cc88d5f47d0",
+    "build/obj/nu2api/ShaderManagerHLSL.obj": "eea9ba36eb8ce0ceb9e5578d3ce3d36a6fdcb9e9fae261342c3d6bb610aad235",
+    "build/obj/nu2api/ShaderObjectKey.obj": "829bea9b900a468da5391aa9fc4865353f55cc9179dd459292a940fc25543ae4",
+    "build/obj/nu2api/ShaderObjectKey_pc.obj": "b0a45b9be9e5c206f39580e32a6093fc8a180dde25cb66aedfd8824fd10b4b07",
     "build/obj/nu2api/bgproc.obj": "f5507ac7de1af7cf9ecf2862fe3b90d507a585f40c9d7a428b5aba37a287b654",
-    "build/obj/nu2api/crc16.obj": "0f70690f77b9f340a2b7c130eb1b851e3d8121dfd1a6048285827253fea740ee",
+    "build/obj/nu2api/crc16.obj": "11aeaafeab734b85d06b177713a82e6f3fe999ae443f2572f6268f4dac62d4c5",
     "build/obj/nu2api/geometry_publish.obj": "d9c36e6ca4b30fcfc6e699cde03eddfc444ec311aeac6cc93cd0e7691d445453",
     "build/obj/nu2api/glutils.obj": "d98aa20497b9e15d5e93475ed926e6e6e2f03c8afa87874931ab42e2299ab6d7",
     "build/obj/nu2api/hardware_dispatch.obj": "815c694c84863eeb9d57ce70f0ba561543f16ec99188461b8d340497714ac7df",
@@ -1281,9 +1282,8 @@
     "build/obj/nu2api/nurndr_swap.obj": "6be27e87ffc38807679b1bd4c0aaf0f72507470852e6a062a5de33c7a5cb71ba",
     "build/obj/nu2api/nuscratch.obj": "bde1499670a1c1cfcddb29dc18025a5c0d8fd387b6ace58ba0ee6a7d1950da85",
     "build/obj/nu2api/nushader.obj": "8c4ae81f92d0a0570716b861a311e04ad72dd590bfb180a045239885d6dc8aa6",
-    "build/obj/nu2api/nushaderkey.obj": "fda1a1bb5e0aa7e931088c83cc1bfa42815580837d57e1771eebf5896c614044",
-    "build/obj/nu2api/nushadermanager.obj": "4feaeb793730176e2b6d65ff46da02fb821d40aa039ff4057319eb028eeb3989",
-    "build/obj/nu2api/nushadermanager_gen.obj": "554e686d0bc556598bc2d8b0eec7fc6254622c5831fe33eced6d1e7b77dce027",
+    "build/obj/nu2api/nushadermanager.obj": "3b911544b2550412e61064c4308eb25018fb90a69cf9f9c6a4d8a6800659fb3d",
+    "build/obj/nu2api/nushadermanager_gen.obj": "9b065a20940e6132e188051ed28a6bb683b9a53e6d069b1f850f0d4be67ba674",
     "build/obj/nu2api/nushaderobject.obj": "ee9b8ee63c9b00972750afcb75d7927840139743472c10e3f5a928363cdae60d",
     "build/obj/nu2api/nushaderobject_pc.obj": "c0986833e2abd84ccf3b1dd0cad4aff9d361c3e43e1f9f005b6d43c697c6feb6",
     "build/obj/nu2api/nushaderobjectbase.obj": "e5d46c8057658a53a65d75def4a8550070a1376b947a141b5093ca79d7f12b5f",
@@ -1323,8 +1323,8 @@
     "build/obj/nu2api/save_folder.obj": "ea5b6b44ad27d8c5d6c9768919948c8e486a857fdfde888ab0db1f251a9a566f",
     "build/obj/nu2api/shaderSemantics.obj": "8ce2bda28328d66ed0a8e492d36419950dfcb5873e67af2ebad6fa11b330c4c3",
     "build/obj/nu2api/shader_buffer_allocator.obj": "73389fbd7fbc0e9c0b18b73ba667871abeecdded683c7a6a11b7fedb91ca0104",
-    "build/obj/nu2api/shader_compiler.obj": "775bfab603959a83b6d70938a476228eb92d0d073c68ca01afc4af518978cd18",
-    "build/obj/nu2api/shader_dictionary.obj": "574e628398d1ec25596c04d8c952566e0f0cd2437d3a15b75af3a39540c77905",
+    "build/obj/nu2api/shader_compiler.obj": "11a61699b7c838500d1bff6ec3aed8e4fac60b5a2c6aa85566157a0af88cb028",
+    "build/obj/nu2api/shader_dictionary.obj": "4a5087228a8185dd07a37f606596e1acc33c1e2f99745eecfc35f75bf5c6ff25",
     "build/obj/nu2api/shader_lexical.obj": "b588ea4bc1d1fa80854c5bd6379a952e1509cee3722c9791ba1036687e2310e5",
     "build/obj/nu2api/shader_parser.obj": "95b187ad0443548595b4318106f1ed6f05a7e91709d8b6df6db1233caf66b3fc",
     "build/obj/nu2api/terrain_collision.obj": "06e46e9a6c863c11d76d51906ccbc6ea55c50b503c2856173c453fb5795cebe8",
@@ -374152,7 +374152,7 @@
       "symbol": "??0PC_SHADER_MATERIAL_FILTER@@QAE@XZ",
       "address": "0x007418a0",
       "units": [
-        "src/nu2api/nushaderkey.cpp",
+        "src/nu2api/ShaderObjectKey_pc.cpp",
         "src/nu2api/nushadermanager_gen.cpp",
         "src/nu2api/shader_compiler.cpp"
       ],
@@ -374160,13 +374160,13 @@
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nushaderkey.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "58367ffa2a0179375018fa0f5c26da24391e42ebe0ed8fdda35a21fc7bdc396f",
           "base_sha256": "58367ffa2a0179375018fa0f5c26da24391e42ebe0ed8fdda35a21fc7bdc396f",
           "relocation_count": 0,
-          "comparison_unit": "007418a0-d02da3b5f205",
+          "comparison_unit": "007418a0-354ad811f4ce",
           "objdiff_percent": 100.0
         },
         {
@@ -376638,19 +376638,19 @@
       "symbol": "?HasSurfaceLayerAbove@PC_SHADER_MATERIAL_FILTER@@QBEHXZ",
       "address": "0x00744bc0",
       "units": [
-        "src/nu2api/nushadermanager.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 39,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/nu2api/nushadermanager.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 37,
           "exact_match": false,
           "target_sha256": "79d25eeb2cb089397dfe4158c0da3e971bdf54dd23c4426e262aaa9f9712795d",
           "base_sha256": "adfc7f82d29e67d15d2a238fa5026b6c0d4fe0aa13fdf034396b65214ad270fd",
           "relocation_count": 0,
-          "comparison_unit": "00744bc0-eb9a90efe9fe",
+          "comparison_unit": "00744bc0-e849eb95a6a8",
           "objdiff_percent": 80.71429
         }
       ],
@@ -376668,19 +376668,19 @@
       "symbol": "?HasSurfaceLayerAtOrBelow@PC_SHADER_MATERIAL_FILTER@@QBEHXZ",
       "address": "0x00744bf0",
       "units": [
-        "src/nu2api/nushadermanager.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 39,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/nu2api/nushadermanager.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 37,
           "exact_match": false,
           "target_sha256": "27ac4c6f5549c128d51b321ab97ec6b66d521e267db75ae63d6fc9fd547ee6f1",
           "base_sha256": "d6148007ec227a06cb82506105aa5cbc4da0095b3204776123bf740cf9a51981",
           "relocation_count": 0,
-          "comparison_unit": "00744bf0-ee1327746cc7",
+          "comparison_unit": "00744bf0-c32592b75e72",
           "objdiff_percent": 80.71429
         }
       ],
@@ -376698,19 +376698,19 @@
       "symbol": "_NuShaderObjectKeyGenerate3",
       "address": "0x00744c20",
       "units": [
-        "src/nu2api/nushaderkey.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 1093,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/nu2api/nushaderkey.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 1096,
           "exact_match": false,
           "target_sha256": "85980f602e04aaf6b1d6e657a6bc4b959c50d44bae8822ee0c75c903084c0c32",
           "base_sha256": "368e92cadbe850bade8745d9fd9765a665e41cee7747451c8c083363b8b4073f",
           "relocation_count": 16,
-          "comparison_unit": "00744c20-4eb90eedd516",
+          "comparison_unit": "00744c20-3863a0d86e55",
           "objdiff_percent": 92.709404
         }
       ],
@@ -376731,19 +376731,19 @@
       "symbol": "_NuShaderObjectKeyGenerate",
       "address": "0x00745070",
       "units": [
-        "src/nu2api/nushaderkey.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 56,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nushaderkey.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 56,
           "exact_match": true,
           "target_sha256": "102818ca54e89dd76757c7a503d6b35aeeee8818fa2d16a7f03473cb799e350c",
           "base_sha256": "102818ca54e89dd76757c7a503d6b35aeeee8818fa2d16a7f03473cb799e350c",
           "relocation_count": 2,
-          "comparison_unit": "00745070-866ce9f87979",
+          "comparison_unit": "00745070-480d6300b5ee",
           "objdiff_percent": 100.0
         }
       ],
@@ -376815,19 +376815,19 @@
       "symbol": "?GetForceMode@ShaderCompilerDictionary@@QBE_NXZ",
       "address": "0x00745130",
       "units": [
-        "src/nu2api/shader_dictionary.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/shader_dictionary.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 7,
           "exact_match": true,
           "target_sha256": "00ae7eb087df350b7d111d964d9ee320067e794c8749a9246cc2668011b67c6a",
           "base_sha256": "00ae7eb087df350b7d111d964d9ee320067e794c8749a9246cc2668011b67c6a",
           "relocation_count": 0,
-          "comparison_unit": "00745130-15d2eed6e126",
+          "comparison_unit": "00745130-b082a2dd5dc9",
           "objdiff_percent": 100.0
         }
       ],
@@ -376839,19 +376839,19 @@
       "symbol": "?GetProfile@ShaderCompilerDictionary@@QBEHXZ",
       "address": "0x00745140",
       "units": [
-        "src/nu2api/shader_dictionary.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/shader_dictionary.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 7,
           "exact_match": true,
           "target_sha256": "f85c25c1e6f11b838286f2a9e85cfc0103c5bd35f55e69f64a451fccf4ae3c17",
           "base_sha256": "f85c25c1e6f11b838286f2a9e85cfc0103c5bd35f55e69f64a451fccf4ae3c17",
           "relocation_count": 0,
-          "comparison_unit": "00745140-a04618ad5480",
+          "comparison_unit": "00745140-58174fdddcc7",
           "objdiff_percent": 100.0
         }
       ],
@@ -376859,33 +376859,58 @@
       "objdiff_percent": 100.0
     },
     {
-      "name": "fun_00745150",
-      "symbol": "_fun_00745150",
+      "name": "??1ShaderBuilderGen@@UAE@XZ",
+      "symbol": "??1ShaderBuilderGen@@UAE@XZ",
       "address": "0x00745150",
-      "units": [],
+      "units": [
+        "src/nu2api/ShaderObjectKey_pc.cpp",
+        "src/nu2api/shader_compiler.cpp"
+      ],
       "target_size": 53,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
+          "base_size": 53,
+          "exact_match": true,
+          "target_sha256": "fdedc6899a7dfe9c216f5da8f0f82eefa5c6de0f816b933b4c6b0d22c7033f62",
+          "base_sha256": "fdedc6899a7dfe9c216f5da8f0f82eefa5c6de0f816b933b4c6b0d22c7033f62",
+          "relocation_count": 4,
+          "comparison_unit": "00745150-8c9a02f282f9",
+          "objdiff_percent": 100.0
+        },
+        {
+          "unit": "src/nu2api/shader_compiler.cpp",
+          "base_size": 53,
+          "exact_match": true,
+          "target_sha256": "fdedc6899a7dfe9c216f5da8f0f82eefa5c6de0f816b933b4c6b0d22c7033f62",
+          "base_sha256": "fdedc6899a7dfe9c216f5da8f0f82eefa5c6de0f816b933b4c6b0d22c7033f62",
+          "relocation_count": 4,
+          "comparison_unit": "00745150-f56d1d6fa082",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "??0PC_SHADER_MATERIAL_FILTER@@QAE@PBUnushadermtldesc_s@@HH@Z",
       "symbol": "??0PC_SHADER_MATERIAL_FILTER@@QAE@PBUnushadermtldesc_s@@HH@Z",
       "address": "0x00745190",
       "units": [
-        "src/nu2api/shader_dictionary.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 33,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/shader_dictionary.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 33,
           "exact_match": true,
           "target_sha256": "5c59a891290ff937a6f7dff6eb73dad52118edce48c76b3a3b53d81920e856fb",
           "base_sha256": "5c59a891290ff937a6f7dff6eb73dad52118edce48c76b3a3b53d81920e856fb",
           "relocation_count": 1,
-          "comparison_unit": "00745190-39e3e5d2d95d",
+          "comparison_unit": "00745190-c873e99265da",
           "objdiff_percent": 100.0
         }
       ],
@@ -376897,19 +376922,19 @@
       "symbol": "?SetForceMode@ShaderCompilerDictionary@@QAEX_N@Z",
       "address": "0x007451c0",
       "units": [
-        "src/nu2api/shader_dictionary.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 13,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/shader_dictionary.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 13,
           "exact_match": true,
           "target_sha256": "8c13b8f59cc0339d7f987c57d4c9c49b6bee1072d4bee473537a14fed16c1e71",
           "base_sha256": "8c13b8f59cc0339d7f987c57d4c9c49b6bee1072d4bee473537a14fed16c1e71",
           "relocation_count": 0,
-          "comparison_unit": "007451c0-3e387842cb08",
+          "comparison_unit": "007451c0-2f409cc3dc53",
           "objdiff_percent": 100.0
         }
       ],
@@ -376931,11 +376956,22 @@
       "symbol": "??_GShaderBuilderGen@@UAEPAXI@Z",
       "address": "0x007451d0",
       "units": [
+        "src/nu2api/ShaderObjectKey_pc.cpp",
         "src/nu2api/shader_compiler.cpp"
       ],
       "target_size": 74,
       "exact_match": true,
       "objects": [
+        {
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
+          "base_size": 74,
+          "exact_match": true,
+          "target_sha256": "5184f3b4ea3355fb3a9fdf469e78ff874de2bd3d7e3a8549a41405fbaeabdd13",
+          "base_sha256": "5184f3b4ea3355fb3a9fdf469e78ff874de2bd3d7e3a8549a41405fbaeabdd13",
+          "relocation_count": 5,
+          "comparison_unit": "007451d0-d3ab10d6616f",
+          "objdiff_percent": 100.0
+        },
         {
           "unit": "src/nu2api/shader_compiler.cpp",
           "base_size": 74,
@@ -376944,30 +376980,30 @@
           "base_sha256": "5184f3b4ea3355fb3a9fdf469e78ff874de2bd3d7e3a8549a41405fbaeabdd13",
           "relocation_count": 5,
           "comparison_unit": "007451d0-dcd474889a71",
-          "objdiff_percent": 100.0
+          "objdiff_percent": 61.11111
         }
       ],
       "status": "exact",
-      "objdiff_percent": 100.0
+      "objdiff_percent": 61.11111
     },
     {
       "name": "?SetIncludeDirectories@ShaderBuilderGen@@UAEXPBD@Z",
       "symbol": "?SetIncludeDirectories@ShaderBuilderGen@@UAEXPBD@Z",
       "address": "0x00745220",
       "units": [
-        "src/nu2api/shader_compiler.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 31,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/shader_compiler.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 31,
           "exact_match": true,
           "target_sha256": "2bf5386e12bfb73d922d162cda17ff53a1ec87c5e1fa152e38b0bdcd6abbbbcd",
           "base_sha256": "2bf5386e12bfb73d922d162cda17ff53a1ec87c5e1fa152e38b0bdcd6abbbbcd",
           "relocation_count": 0,
-          "comparison_unit": "00745220-b4944a47136b",
+          "comparison_unit": "00745220-1311de1f5048",
           "objdiff_percent": 100.0
         }
       ],
@@ -376979,19 +377015,19 @@
       "symbol": "?SetSaveDirectory@ShaderBuilderGen@@UAEXPBD@Z",
       "address": "0x00745240",
       "units": [
-        "src/nu2api/shader_compiler.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 31,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/shader_compiler.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 31,
           "exact_match": true,
           "target_sha256": "0b4ff66b1fd8237aa31e4ddef184b664f45ab1e6cd56e3f7c1a702e4a723ec41",
           "base_sha256": "0b4ff66b1fd8237aa31e4ddef184b664f45ab1e6cd56e3f7c1a702e4a723ec41",
           "relocation_count": 0,
-          "comparison_unit": "00745240-febef25c2ba9",
+          "comparison_unit": "00745240-f21acaafab5f",
           "objdiff_percent": 100.0
         }
       ],
@@ -377003,19 +377039,19 @@
       "symbol": "?SetProfile@ShaderBuilderGen@@UAEXHHH@Z",
       "address": "0x00745260",
       "units": [
-        "src/nu2api/shader_compiler.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 11,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/shader_compiler.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 11,
           "exact_match": true,
           "target_sha256": "095475758ad18246468de528fd08e10401100e95eccdf258f5c7b2434977b4e0",
           "base_sha256": "095475758ad18246468de528fd08e10401100e95eccdf258f5c7b2434977b4e0",
           "relocation_count": 1,
-          "comparison_unit": "00745260-c3f00451ebd9",
+          "comparison_unit": "00745260-2a9d7b674de5",
           "objdiff_percent": 100.0
         }
       ],
@@ -377027,19 +377063,19 @@
       "symbol": "?AddDictionaryRegisterBlock@ShaderBuilderGen@@QAEXPBDH@Z",
       "address": "0x00745270",
       "units": [
-        "src/nu2api/shader_compiler.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 11,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/shader_compiler.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 11,
           "exact_match": true,
           "target_sha256": "3d1e301510188d6f2d977f715d55fbe93515161ef43ef6421c6d5a77de8a28c5",
           "base_sha256": "3d1e301510188d6f2d977f715d55fbe93515161ef43ef6421c6d5a77de8a28c5",
           "relocation_count": 1,
-          "comparison_unit": "00745270-e0ac2a18eb21",
+          "comparison_unit": "00745270-820649f92799",
           "objdiff_percent": 100.0
         }
       ],
@@ -377051,19 +377087,19 @@
       "symbol": "?SetForceMode@ShaderBuilderGen@@UAEX_N@Z",
       "address": "0x00745280",
       "units": [
-        "src/nu2api/shader_compiler.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 13,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/shader_compiler.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 13,
           "exact_match": true,
           "target_sha256": "23e0858b12cc503816ddee2dd6cdc21a173e9719d46afe6cc9ae7b9e075437da",
           "base_sha256": "23e0858b12cc503816ddee2dd6cdc21a173e9719d46afe6cc9ae7b9e075437da",
           "relocation_count": 0,
-          "comparison_unit": "00745280-0cf5cd11ee46",
+          "comparison_unit": "00745280-2a7b737923aa",
           "objdiff_percent": 100.0
         }
       ],
@@ -377075,19 +377111,19 @@
       "symbol": "?GetDictionaryForceMode@ShaderBuilderGen@@QAE_NXZ",
       "address": "0x00745290",
       "units": [
-        "src/nu2api/shader_compiler.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/shader_compiler.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 7,
           "exact_match": true,
           "target_sha256": "c98add1126db88d3c8c57f3ef477f3866b8272400a35854194a02917c35ae2c3",
           "base_sha256": "c98add1126db88d3c8c57f3ef477f3866b8272400a35854194a02917c35ae2c3",
           "relocation_count": 0,
-          "comparison_unit": "00745290-4affbcaec965",
+          "comparison_unit": "00745290-5fd9d27c13f8",
           "objdiff_percent": 100.0
         }
       ],
@@ -377099,19 +377135,19 @@
       "symbol": "?GetDictionaryProfile@ShaderBuilderGen@@QAEHXZ",
       "address": "0x007452a0",
       "units": [
-        "src/nu2api/shader_compiler.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/shader_compiler.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 7,
           "exact_match": true,
           "target_sha256": "a849e7f5ddaa03c0dc5fe635999e9adf93de960ff5fe4eaf36f2c3bcd9973682",
           "base_sha256": "a849e7f5ddaa03c0dc5fe635999e9adf93de960ff5fe4eaf36f2c3bcd9973682",
           "relocation_count": 0,
-          "comparison_unit": "007452a0-ef47af2cd41c",
+          "comparison_unit": "007452a0-76ff5a366928",
           "objdiff_percent": 100.0
         }
       ],
@@ -377123,19 +377159,19 @@
       "symbol": "?Prepare@ShaderBuilderGen@@UAEXPBUnushadermtldesc_s@@PAUShaderCompilerDictionary@@@Z",
       "address": "0x007452b0",
       "units": [
-        "src/nu2api/shader_compiler.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 52,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/shader_compiler.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 52,
           "exact_match": true,
           "target_sha256": "9da1b150c84c4d395e553bfe7495fd2c25d43ae957ee09754c8755c07f4f25c4",
           "base_sha256": "9da1b150c84c4d395e553bfe7495fd2c25d43ae957ee09754c8755c07f4f25c4",
           "relocation_count": 1,
-          "comparison_unit": "007452b0-d95d2cca6b3b",
+          "comparison_unit": "007452b0-7d2f8936a6ba",
           "objdiff_percent": 100.0
         }
       ],
@@ -377147,19 +377183,19 @@
       "symbol": "??0HLSLShaderBuilder@@QAE@AAUVirtualStackAllocator@@@Z",
       "address": "0x007452f0",
       "units": [
-        "src/nu2api/shader_compiler.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 27,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/shader_compiler.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 27,
           "exact_match": true,
           "target_sha256": "3410bdf891d2e6a22774afc0073f44006aaded147c118b7effa969e114fc635a",
           "base_sha256": "3410bdf891d2e6a22774afc0073f44006aaded147c118b7effa969e114fc635a",
           "relocation_count": 2,
-          "comparison_unit": "007452f0-2f3b3e1c73ee",
+          "comparison_unit": "007452f0-f0f9f2c631c7",
           "objdiff_percent": 100.0
         }
       ],
@@ -377171,43 +377207,19 @@
       "symbol": "??1HLSLShaderBuilder@@UAE@XZ",
       "address": "0x00745310",
       "units": [
-        "src/nu2api/shader_compiler.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 53,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/shader_compiler.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 53,
           "exact_match": true,
           "target_sha256": "43e2bbc4d27f1213108625d74535c9905629635ae1141d49975ec257f8bef6c8",
           "base_sha256": "43e2bbc4d27f1213108625d74535c9905629635ae1141d49975ec257f8bef6c8",
           "relocation_count": 4,
-          "comparison_unit": "00745310-04a67de57de6",
-          "objdiff_percent": 100.0
-        }
-      ],
-      "status": "exact",
-      "objdiff_percent": 100.0
-    },
-    {
-      "name": "??1ShaderBuilderGen@@UAE@XZ",
-      "symbol": "??1ShaderBuilderGen@@UAE@XZ",
-      "address": "0x00745310",
-      "units": [
-        "src/nu2api/shader_compiler.cpp"
-      ],
-      "target_size": 53,
-      "exact_match": true,
-      "objects": [
-        {
-          "unit": "src/nu2api/shader_compiler.cpp",
-          "base_size": 53,
-          "exact_match": true,
-          "target_sha256": "43e2bbc4d27f1213108625d74535c9905629635ae1141d49975ec257f8bef6c8",
-          "base_sha256": "43e2bbc4d27f1213108625d74535c9905629635ae1141d49975ec257f8bef6c8",
-          "relocation_count": 4,
-          "comparison_unit": "00745310-f56d1d6fa082",
+          "comparison_unit": "00745310-730e44e9ecc3",
           "objdiff_percent": 100.0
         }
       ],
@@ -377427,19 +377439,19 @@
       "symbol": "?InitHLSL@NuShaderObject@@QAEXPBIHPBDH1HH@Z",
       "address": "0x00745470",
       "units": [
-        "src/nu2api/nushadermanager.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 47,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nushadermanager.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 47,
           "exact_match": true,
           "target_sha256": "51eb1e3271b909a503150c73d0cada2a250f4392c1d8db5f44e2c86c1cd4f46b",
           "base_sha256": "51eb1e3271b909a503150c73d0cada2a250f4392c1d8db5f44e2c86c1cd4f46b",
           "relocation_count": 1,
-          "comparison_unit": "00745470-7cdb9a687c05",
+          "comparison_unit": "00745470-493008adce65",
           "objdiff_percent": 100.0
         }
       ],
@@ -377451,19 +377463,19 @@
       "symbol": "?GetMarker@NuShaderObject@@QAEHXZ",
       "address": "0x007454a0",
       "units": [
-        "src/nu2api/nushadermanager.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nushadermanager.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "19d200194d49b34530548575f37a1bb4203ee60f18d42f0084e86b7a8c899faa",
           "base_sha256": "19d200194d49b34530548575f37a1bb4203ee60f18d42f0084e86b7a8c899faa",
           "relocation_count": 0,
-          "comparison_unit": "007454a0-e87b9116bd01",
+          "comparison_unit": "007454a0-25a964b12161",
           "objdiff_percent": 100.0
         }
       ],
@@ -377475,19 +377487,19 @@
       "symbol": "_NuShaderManagerGetHardwareVertexProcessing",
       "address": "0x007454b0",
       "units": [
-        "src/nu2api/nushadermanager.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nushadermanager.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 6,
           "exact_match": true,
           "target_sha256": "28cc1771172769d5693dae51d955083f7ba5f1da0f07d85474b732007545e80d",
           "base_sha256": "28cc1771172769d5693dae51d955083f7ba5f1da0f07d85474b732007545e80d",
           "relocation_count": 1,
-          "comparison_unit": "007454b0-74c0f0fdb3bb",
+          "comparison_unit": "007454b0-e8cfce8fa283",
           "objdiff_percent": 100.0
         }
       ],
@@ -377499,19 +377511,19 @@
       "symbol": "?AdaptDescriptor@ShaderManagerHLSL@@UAEXPBUnushadermtldesc_s@@PBUnumtl_s@@@Z",
       "address": "0x007454c0",
       "units": [
-        "src/nu2api/nushadermanager.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 835,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nushadermanager.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 835,
           "exact_match": true,
           "target_sha256": "bd8d0c5d2de1cd371851f925ebe480bc50a05ec854346f30813fcee563b4ec27",
           "base_sha256": "bd8d0c5d2de1cd371851f925ebe480bc50a05ec854346f30813fcee563b4ec27",
           "relocation_count": 2,
-          "comparison_unit": "007454c0-e624ffa0c87f",
+          "comparison_unit": "007454c0-6abe1c1dc34f",
           "objdiff_percent": 100.0
         }
       ],
@@ -377523,19 +377535,19 @@
       "symbol": "?CreateShader@ShaderManagerHLSL@@UAE_NPBUPC_SHADER_MATERIAL_FILTER@@_NPAVNuShaderObject@@H@Z",
       "address": "0x00745810",
       "units": [
-        "src/nu2api/nushadermanager.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 265,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/nu2api/nushadermanager.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 265,
           "exact_match": false,
           "target_sha256": "67aaf81b47649cb931f7dddbdcd486fdbef10132262c08325003e9c846b6b877",
           "base_sha256": "7ac8deae103ccf50c85956ee54b29a450ab2ba7f53721534d6f97965bc964d56",
           "relocation_count": 3,
-          "comparison_unit": "00745810-9601a6d0a783",
+          "comparison_unit": "00745810-aa7fdffaea90",
           "objdiff_percent": 91.445656
         }
       ],
@@ -377599,19 +377611,19 @@
       "symbol": "??_GHLSLShaderBuilder@@UAEPAXI@Z",
       "address": "0x00745950",
       "units": [
-        "src/nu2api/shader_compiler.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 74,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/shader_compiler.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "base_size": 74,
           "exact_match": true,
           "target_sha256": "424233c241523d3aa32810a5ef5ac190b3f27aea0f153e681c7ebd793d07be6d",
           "base_sha256": "424233c241523d3aa32810a5ef5ac190b3f27aea0f153e681c7ebd793d07be6d",
           "relocation_count": 5,
-          "comparison_unit": "00745950-e42e40bdef64",
+          "comparison_unit": "00745950-7ea5f16b658f",
           "objdiff_percent": 100.0
         }
       ],
@@ -388078,6 +388090,7 @@
         "src/legoapi/rtlhelper.cpp",
         "src/nu2api/ShaderManagerHLSL.cpp",
         "src/nu2api/ShaderObjectKey.cpp",
+        "src/nu2api/ShaderObjectKey_pc.cpp",
         "src/nu2api/nu3d_includes.cpp",
         "src/nu2api/nushadermanager.cpp",
         "src/nu2api/posteffect_shader_pc.cpp",
@@ -388115,6 +388128,14 @@
         },
         {
           "unit": "src/nu2api/ShaderObjectKey.cpp",
+          "exact_match": true,
+          "target_size": 15,
+          "base_size": 15,
+          "target_sha256": "e01774f026bbb1c8fb8a4893e3c59246dcf3587f65a7d408c7fecea20e22bfb7",
+          "base_sha256": "e01774f026bbb1c8fb8a4893e3c59246dcf3587f65a7d408c7fecea20e22bfb7"
+        },
+        {
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "exact_match": true,
           "target_size": 15,
           "base_size": 15,
@@ -402028,8 +402049,8 @@
         "src/legogame/panel.cpp",
         "src/legogame/signal.cpp",
         "src/legogame/torpedo.cpp",
+        "src/nu2api/ShaderObjectKey_pc.cpp",
         "src/nu2api/nu3d_platform.cpp",
-        "src/nu2api/nushadermanager.cpp",
         "src/nu2api/nushaderobjectbase.cpp",
         "src/nu2api/nuterrain.c",
         "src/nu2api/terrain_query.cpp"
@@ -402190,7 +402211,7 @@
           "base_sha256": "249efb90916da9c4846d66ee60b3a759ebd1510e7780f5d4a3a877fbb59c67af"
         },
         {
-          "unit": "src/nu2api/nu3d_platform.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -402198,7 +402219,7 @@
           "base_sha256": "249efb90916da9c4846d66ee60b3a759ebd1510e7780f5d4a3a877fbb59c67af"
         },
         {
-          "unit": "src/nu2api/nushadermanager.cpp",
+          "unit": "src/nu2api/nu3d_platform.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -727725,11 +727746,20 @@
       "symbol": "??_7ShaderBuilderGen@@6B@",
       "address": "0x007e92d0",
       "units": [
+        "src/nu2api/ShaderObjectKey_pc.cpp",
         "src/nu2api/shader_compiler.cpp"
       ],
       "target_size": 28,
       "exact_match": true,
       "objects": [
+        {
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
+          "exact_match": true,
+          "target_size": 28,
+          "base_size": 28,
+          "target_sha256": "9c2888185133cea37af63dde59fa7d1078a28dbd6f341156a05c1147815c04e3",
+          "base_sha256": "9c2888185133cea37af63dde59fa7d1078a28dbd6f341156a05c1147815c04e3"
+        },
         {
           "unit": "src/nu2api/shader_compiler.cpp",
           "exact_match": true,
@@ -727746,13 +727776,13 @@
       "symbol": "??_7HLSLShaderBuilder@@6B@",
       "address": "0x007e92f0",
       "units": [
-        "src/nu2api/shader_compiler.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 28,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/shader_compiler.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "exact_match": true,
           "target_size": 28,
           "base_size": 28,
@@ -743954,11 +743984,20 @@
       "symbol": "??_R4ShaderBuilderGen@@6B@",
       "address": "0x007ec898",
       "units": [
+        "src/nu2api/ShaderObjectKey_pc.cpp",
         "src/nu2api/shader_compiler.cpp"
       ],
       "target_size": 20,
       "exact_match": true,
       "objects": [
+        {
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
+          "exact_match": true,
+          "target_size": 20,
+          "base_size": 20,
+          "target_sha256": "0416c760cbe1e4995bd41c0c3e13ffc9f13761477c8b6bcf200fec57545e70b1",
+          "base_sha256": "0416c760cbe1e4995bd41c0c3e13ffc9f13761477c8b6bcf200fec57545e70b1"
+        },
         {
           "unit": "src/nu2api/shader_compiler.cpp",
           "exact_match": true,
@@ -743975,11 +744014,20 @@
       "symbol": "??_R3ShaderBuilderGen@@8",
       "address": "0x007ec8ac",
       "units": [
+        "src/nu2api/ShaderObjectKey_pc.cpp",
         "src/nu2api/shader_compiler.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
+        {
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
+          "exact_match": true,
+          "target_size": 16,
+          "base_size": 16,
+          "target_sha256": "84693c2e1b3126c3393605aeada5442414d94570f914538184d6028a094fa724",
+          "base_sha256": "84693c2e1b3126c3393605aeada5442414d94570f914538184d6028a094fa724"
+        },
         {
           "unit": "src/nu2api/shader_compiler.cpp",
           "exact_match": true,
@@ -743996,11 +744044,20 @@
       "symbol": "??_R2ShaderBuilderGen@@8",
       "address": "0x007ec8bc",
       "units": [
+        "src/nu2api/ShaderObjectKey_pc.cpp",
         "src/nu2api/shader_compiler.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
+        {
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
+          "exact_match": true,
+          "target_size": 5,
+          "base_size": 5,
+          "target_sha256": "ca9a18358b9dab4ecd7d32318f927c345576af5426202949ca8f730dff2469e5",
+          "base_sha256": "ca9a18358b9dab4ecd7d32318f927c345576af5426202949ca8f730dff2469e5"
+        },
         {
           "unit": "src/nu2api/shader_compiler.cpp",
           "exact_match": true,
@@ -744017,11 +744074,20 @@
       "symbol": "??_R1A@?0A@EA@ShaderBuilderGen@@8",
       "address": "0x007ec8c4",
       "units": [
+        "src/nu2api/ShaderObjectKey_pc.cpp",
         "src/nu2api/shader_compiler.cpp"
       ],
       "target_size": 28,
       "exact_match": true,
       "objects": [
+        {
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
+          "exact_match": true,
+          "target_size": 28,
+          "base_size": 28,
+          "target_sha256": "b162f7e1dc4173422d7a937171e36e67351a88db5b64ed40e09f9f12937502d3",
+          "base_sha256": "b162f7e1dc4173422d7a937171e36e67351a88db5b64ed40e09f9f12937502d3"
+        },
         {
           "unit": "src/nu2api/shader_compiler.cpp",
           "exact_match": true,
@@ -744038,13 +744104,13 @@
       "symbol": "??_R4HLSLShaderBuilder@@6B@",
       "address": "0x007ec8e0",
       "units": [
-        "src/nu2api/shader_compiler.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 20,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/shader_compiler.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "exact_match": true,
           "target_size": 20,
           "base_size": 20,
@@ -744059,13 +744125,13 @@
       "symbol": "??_R3HLSLShaderBuilder@@8",
       "address": "0x007ec8f4",
       "units": [
-        "src/nu2api/shader_compiler.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/shader_compiler.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "exact_match": true,
           "target_size": 16,
           "base_size": 16,
@@ -744080,13 +744146,13 @@
       "symbol": "??_R2HLSLShaderBuilder@@8",
       "address": "0x007ec904",
       "units": [
-        "src/nu2api/shader_compiler.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/shader_compiler.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -744101,13 +744167,13 @@
       "symbol": "??_R1A@?0A@EA@HLSLShaderBuilder@@8",
       "address": "0x007ec910",
       "units": [
-        "src/nu2api/shader_compiler.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 28,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/shader_compiler.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "exact_match": true,
           "target_size": 28,
           "base_size": 28,
@@ -801673,13 +801739,13 @@
       "symbol": "_ShaderProgramHashPC",
       "address": "0x00854270",
       "units": [
-        "src/nu2api/nushaderkey.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nushaderkey.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "exact_match": true,
           "target_size": 16,
           "base_size": 16,
@@ -801694,11 +801760,20 @@
       "symbol": "??_R0?AVShaderBuilderGen@@@8",
       "address": "0x008542e0",
       "units": [
+        "src/nu2api/ShaderObjectKey_pc.cpp",
         "src/nu2api/shader_compiler.cpp"
       ],
       "target_size": 31,
       "exact_match": true,
       "objects": [
+        {
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
+          "exact_match": true,
+          "target_size": 31,
+          "base_size": 31,
+          "target_sha256": "0fe3e23ec94f3dddb9034cf787a8a9e53538914edb15c2f26ee5e888e128ea11",
+          "base_sha256": "0fe3e23ec94f3dddb9034cf787a8a9e53538914edb15c2f26ee5e888e128ea11"
+        },
         {
           "unit": "src/nu2api/shader_compiler.cpp",
           "exact_match": true,
@@ -801715,13 +801790,13 @@
       "symbol": "??_R0?AVHLSLShaderBuilder@@@8",
       "address": "0x00854300",
       "units": [
-        "src/nu2api/shader_compiler.cpp"
+        "src/nu2api/ShaderObjectKey_pc.cpp"
       ],
       "target_size": 32,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/shader_compiler.cpp",
+          "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
           "exact_match": true,
           "target_size": 32,
           "base_size": 32,
@@ -900047,17 +900122,17 @@
       "kind": "function"
     },
     {
-      "unit": "src/nu2api/nushaderkey.cpp",
+      "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
       "symbol": "?IsAlternateType@PC_SHADER_MATERIAL_FILTER@@QBE_NXZ",
       "kind": "function"
     },
     {
-      "unit": "src/nu2api/nushaderkey.cpp",
+      "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
       "symbol": "?IsPlainType@PC_SHADER_MATERIAL_FILTER@@QBE_NXZ",
       "kind": "function"
     },
     {
-      "unit": "src/nu2api/nushaderkey.cpp",
+      "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
       "symbol": "?LayerBit@PC_SHADER_MATERIAL_FILTER@@QBEEH@Z",
       "kind": "function"
     },
@@ -900118,6 +900193,11 @@
     },
     {
       "unit": "src/nu2api/ShaderManagerHLSL.cpp",
+      "symbol": "__bad_alloc_Message",
+      "kind": "data"
+    },
+    {
+      "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
       "symbol": "__bad_alloc_Message",
       "kind": "data"
     }
@@ -900321,19 +900401,19 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 3348693,
-    "matched_code_bytes": 2121934,
-    "matching_percent": 61.12888570847471,
+    "matched_code_bytes": 2121987,
+    "matching_percent": 61.13041253774581,
     "padding_bytes": 114459,
-    "matched_padding_bytes": 101195,
-    "matched_code_with_padding_bytes": 2223129,
-    "matching_with_padding_percent": 64.04412133280096,
+    "matched_padding_bytes": 101206,
+    "matched_code_with_padding_bytes": 2223193,
+    "matching_with_padding_percent": 64.04596505116606,
     "fuzzy_text_data_bytes": 6896,
     "fuzzy_denominator_bytes": 3349891,
-    "fuzzy_coverage_percent": 96.47915490894172,
-    "mapped_functions": 15915,
+    "fuzzy_coverage_percent": 96.47987798385371,
+    "mapped_functions": 15914,
     "matched_functions": 13977,
-    "objdiff_fuzzy_percent": 96.9773,
-    "objdiff_total_code": 3338616,
+    "objdiff_fuzzy_percent": 96.97657,
+    "objdiff_total_code": 3338743,
     "image_bytes": 40067072,
     "mapped_bytes": 38533384,
     "mapping_percent": 96.17219845762625,
@@ -900372,7 +900452,7 @@
         "mapped_zero_fill_data_bytes": 34181704
       }
     ],
-    "mapping_known_size_symbols": 43602,
+    "mapping_known_size_symbols": 43601,
     "mapping_unknown_size_symbols": 190,
     "mapping_code_bytes": 3356783,
     "mapping_code_total_bytes": 3471246,
@@ -900395,11 +900475,11 @@
     "mapping_file_backed_data_with_padding_percent": 95.72630143214367,
     "mapping_zero_fill_data_with_padding_bytes": 34181704,
     "mapping_zero_fill_data_with_padding_percent": 97.78939468807482,
-    "mapping_code_named_bytes": 3340494,
-    "mapping_code_named_percent": 96.23328338008888,
-    "mapping_code_address_named_bytes": 16289,
-    "mapping_code_address_named_percent": 0.46925513201887736,
-    "mapping_code_address_named_functions": 827,
+    "mapping_code_named_bytes": 3340547,
+    "mapping_code_named_percent": 96.23481020935998,
+    "mapping_code_address_named_bytes": 16236,
+    "mapping_code_address_named_percent": 0.46772830274777416,
+    "mapping_code_address_named_functions": 826,
     "reproduced_file_backed_data_exact_bytes": 537647,
     "reproduced_file_backed_data_library_bytes": 452841,
     "reproduced_file_backed_data_different_padding_bytes": 0,
@@ -900441,24 +900521,24 @@
   "text_coverage": {
     "original_text_bytes": 3471246,
     "mapped_reconstruction_bytes": 3348693,
-    "exact_reconstruction_bytes": 2121934,
-    "mapped_not_exact_bytes": 1226759,
+    "exact_reconstruction_bytes": 2121987,
+    "mapped_not_exact_bytes": 1226706,
     "excluded_import_glue_bytes": 1194,
     "text_data_bytes": 6896,
     "exact_text_data_bytes": 6896,
     "unclassified_text_bytes": 114463,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 61.12888570847471,
+    "strict_original_text_exact_percent": 61.13041253774581,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 61.149919367202564,
+    "reconstruction_scope_exact_percent": 61.15144672183587,
     "mapped_scope_denominator_bytes": 3348693,
-    "mapped_scope_exact_percent": 63.366035644354376,
+    "mapped_scope_exact_percent": 63.36761835139859,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image.",
     "alignment_padding_bytes": 114459,
-    "exact_alignment_padding_bytes": 101195,
+    "exact_alignment_padding_bytes": 101206,
     "unclassified_non_padding_text_bytes": 4,
-    "exact_with_padding_bytes": 2223129,
-    "exact_with_padding_percent": 64.04412133280096,
+    "exact_with_padding_bytes": 2223193,
+    "exact_with_padding_percent": 64.04596505116606,
     "padding_qualification": "Padding is int3/nop alignment fill shorter than 16 bytes between mapped extents, shorter than the alignment of the extent start it ends on; it is exact only after an exact function."
   },
   "data_members": [
@@ -901737,7 +901817,7 @@
       "metadata_sha256": "525d436eee3d48951222f1fd54574554983d228c3d06f19a545ba7cab50fe057",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "492682289348406696fb528e8d69c1f80fec008a1b7ea7acae803d526f95c371",
+      "geometry_object_sha256": "35c98b2a31f9472fc7e33ce23d3e5f575297e754d38cff211aaa8c4c7dd1e7f2",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
@@ -902013,7 +902093,7 @@
         "src/nu2api/cutscene_include.h": "44d1ad9c39d5f73ef868c53517c0ab9f54dc25df61e5696342885a2ed2f26c2f",
         "src/nu2api/huffdecode.h": "821231d53e60749ea9f7055c73d7fc08e27a8c51812468df07461158a9e3e545",
         "src/nu2api/nu3d/ShaderManager.h": "61b858dd3b7928bb4705659b0a279f0aee9df232242b1e5add5e5cb43722de9c",
-        "src/nu2api/nu3d/ShaderObjectKey.h": "6c5869dddb456640aa83f764f9a385435010eab62cf4f55c1f1ad1654cfb6653",
+        "src/nu2api/nu3d/ShaderObjectKey.h": "8614c9ffaaede7f24c5b9d06371a68602c8fdb75d495430a5a8c0e38818c8fa3",
         "src/nu2api/nu3d/glutils.h": "e78b92602abfb9e4605c85018f982c2ba61aff42dff4d766f29b5cdf58bb5357",
         "src/nu2api/nu3d/nu2api_nu3d_types.h": "f7d7dd81aef2a397cf0bc736edfa306e50819f48b229bdba87012c297c1eea40",
         "src/nu2api/nu3d/nu3d_includes.h": "9251136f96653e9f79b118dc802b92aa6c93c32c01bfc8c6247fc846ffc053bc",
