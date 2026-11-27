@@ -60,7 +60,7 @@ address,symbol,size,ctype
 0x4036a0,_Attracto_MoveCode,1457,"void __cdecl(WORLDINFO *,GAMEOBJECT *)"
 0x403c60,_Attracto_GetSuctionPos,35,"void __cdecl(GAMEOBJECT *,NUVEC *)"
 0x403c90,_BatarangFabs,18,
-0x00403cb0,_NuFdiv,54,"f32 __cdecl (f32, f32)"
+0x00403cb0,_BatarangFdiv,54,"f32 __cdecl (f32, f32)"
 0x403cf0,?BatarangASin@@YAFM@Z,320,
 0x403e30,?BatarangACos@@YAFM@Z,27,
 0x403e50,_BatarangVuVecMake,28,

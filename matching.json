@@ -428,28 +428,28 @@
     "src/nu2api/save_folder.h": "776a18c43805e45817ed6d5aecfdd524e6893c90e415e7a385697b42472acf1c",
     "src/nu2api/shader_parser.h": "e192219dd005bfa8c46c46ec47e32593905d0ef38c101aac79e77fa4a49b6a12",
     "src/nu2api/wavreader.h": "6acb0f5ca7ccbcef5945e705cc918a66f14f3af9f07cc9b5ce7fa31e78f05043",
-    "config/budget-raises.txt": "599601a56ca8593912172d98bbdc9970c32e7911ac047c505ce561c43a93234a",
+    "config/budget-raises.txt": "c9b340e8fbd8f73751d09d7992135bbbdd8537abdf8fcf6bdf9cfef2125cda81",
     "config/candidate-only.json": "712167c8d51c9026eadbce95c5b9955c87691c8899156d68f3fdcafcef929295",
-    "config/castscan-budget.json": "211f8047834975b27106289aa244c6a302e0daf4ef9c6aeff6402666625f1ca2",
+    "config/castscan-budget.json": "f486c156467ae9cc0ac6dbb41403c78bd877b630d1853a40f75cc855b17dd197",
     "config/castscan-keep.csv": "cb5e0f24bcae043979afd37568718947ed78ad1cff89a93d1dedc62c4035f45c",
     "config/clang-format-vendored": "726e4d44212725e1d294bd517c38a52eca9d7f41b505d7246c433e30a749f683",
     "config/code-evidence.csv": "f439da6dc4afa2cb9e1ee5f08c8d954754172afbcc888f98a83d39822f2fa4b4",
     "config/code-groups.json": "ea6681492ff67f8b1fc3d51627d335b549941a4c77b26fb1811d96ffed572002",
     "config/data-members.json": "525d436eee3d48951222f1fd54574554983d228c3d06f19a545ba7cab50fe057",
-    "config/declscan-budget.json": "e0554a10e2b156d3eccd2eeca4ee1379ecb90941be3c7c28e8d5c2a237306710",
+    "config/declscan-budget.json": "37d355a8e608c5f84dc64ccfad9ddde5b07315ba616e35820341f168ea6991a8",
     "config/header-map.csv": "8e3d4b0b92aff1316147fb6c6bb4d753c120fd50cb01b5a386a08a9953e75e0b",
     "config/layout-android-units.csv": "e746c9966cf3cb289a48dd1df1bee1e9c8fbbbf8a1891ca973f2b865a6e89fbc",
     "config/layout-target.csv": "f863eda0174e9737754dcbf85befb581751c8b2fc578167a2748992a62290cae",
     "config/library-objects.json": "4e0e91f5abb9855a0624aa79f38e17687b47eaa447383f272352c1f024b9a872",
     "config/literalscan-budget.json": "31c786e269f1756cf35489ad41e6941a8881a76410f4579c939a0d083ea69a89",
     "config/literalscan-keep.csv": "7919326d1c419514fa11275d955381135bf23bb927f899b69a05e3b70b7b010d",
-    "config/oddscan-budget.json": "484b326cf7b30e7ec8038df651681f3a9a87773d7660bb690d22ccb4ceb6435e",
+    "config/oddscan-budget.json": "72ccecbfe26fea333b409cac8cccb9450d1910a6b1d60a71aa452ecde133151e",
     "config/ogg-vorbis.json": "e94a5fc2946a282cb184876e2152524085f47ef2e761cb386d21bbd9cdfab985",
     "config/ogg-vorbis.patch": "8fbd6a3958c9e9bbb862010aec90a60592205f9850c290d1bfa02108d24871ce",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
     "config/sibling-names.csv": "0412f6238a62d5d75181cb275bbaeea889f8b7e7021810b9b5261dbbe9852810",
     "config/standalone-budget.json": "7f7c580012d4dfaecc55c9c35cf3461c9c45615ddc805efb95d7aae11b86330f",
-    "config/symbols.csv": "c17cc0e91367ea8328a4e367b0a2c73a31e2a9a47cd1eac74e202cb83ebc08b3",
+    "config/symbols.csv": "bda6a07bf8f7e740cda3915d73b8399c3ec60d243f5cbb0f859181ba20ec88f4",
     "config/symbols.md": "3d018cc044b5a14025b0fc457df71a0c9a193cea32ceb3081e6a86bcdd4b242b",
     "config/toolchain.json": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
     "config/tools.json": "8e9a5f8077abc1bd9cce37004a47ea493e67a75ba964d8df3f13223958e6f4c8",
@@ -615,7 +615,6 @@
     "src/legoapi/areas.cpp": "8301fbb3a73ee432378fea5cb4df98827cd2f58147aab38d7f4e4513b0e8a544",
     "src/legoapi/areas_diagnostic.cpp": "22681dc5671baa6e982db0f086e8d1b29bc06b9cdc4d921b8bc120baed66cf18",
     "src/legoapi/audio.cpp": "5280060763415e2dc432b93710301a201a2ec277c85de3777d06e0001bd4a486",
-    "src/legoapi/batarang.cpp": "e3c8dea6adb713de871076a2b40acd7452562000cc5e70bc486b5874e64a74d2",
     "src/legoapi/bolts.cpp": "cf869fc31835dbb83fff4826a8620bbc5901aa09ec35c525dd850cc29d0478c1",
     "src/legoapi/buffers.cpp": "8e28099aff61adbf1283b9bb7843f0420dda8b3974c84cb1eea2c3fe3b45f97b",
     "src/legoapi/camera.cpp": "230df229c0b27134e236b5b1b62ad8a4892ee05ca755ed12577068401d9772bb",
@@ -729,6 +728,7 @@
     "src/legoapi/worldinfo.cpp": "e757531b6bfa8f307b7cf455ca9001998f9db5b18677bce8346a90b9dcf93c76",
     "src/legogame/aitrigger.cpp": "13a3fc8c3f1372c0261e2492056fbcbeb47f426d3dbf8cf953eb7eb269bdabc7",
     "src/legogame/attracto.cpp": "5f28023a91941ba2b8e3c40c67d5aa9d0ee97d0ae5a55923ad6b02b6e603db4e",
+    "src/legogame/batarang.cpp": "189ceb22f0302ceb5cc40cda6a38427ca84527a5db85d1a69681f2c508e62995",
     "src/legogame/batman_gameai.cpp": "73cc6490be52986a77588906f5320af75e549482a456a6200f25595828aef401",
     "src/legogame/bolt.cpp": "06e9c588a90abc636a78dc6ac5938cb21a396dce2473b612fb5d8acd9fe35ecd",
     "src/legogame/cable.cpp": "cf61f69eaf24b8d86a4dfdae8b174d2da5b280a8eb1c4edc04599ec78053f149",
@@ -864,7 +864,7 @@
     "src/editor/edtoolsall.c": "e2d7b1c9273d3a0ff82609fa5cf5adfd3893974726e70719183881e7c770fc9f",
     "src/float_constants.c": "ef551c0df7e43790aaca9bc5b5d0bd5a2cf2b744cce2a997b08172fe9229f3d1",
     "src/gameapi/aisys_empty.c": "cdc3c4c34e851f27734937a302108a3129692b3e7141d290c560396a160a251b",
-    "src/gameapi/aisysall.c": "d6b27a27e229a47883699e4bbe6ba7178925646ce2f32da6ba12c3ddf5e8d4e7",
+    "src/gameapi/aisysall.c": "0dd2c1333f2bcd50d7b1fa21931ba2b59f70f1619450be3074bc0aa0bbb526f0",
     "src/gameapi/apiobject.c": "3f5a4c2dbbf73bdcaa8959d0ee9808da5695f718abe6ce7e91a37eacc6d3256d",
     "src/gameapi/edanim_load.c": "8541bc1699302f24e6c0390494ef2d1ca2f2742bfaa18a967d6baeaad9337f71",
     "src/gameapi/edanim_update.c": "d161e532e8af104e38e65cc256b3f2d37c0d1f05666f76cd95814108da06f730",
@@ -1004,7 +1004,7 @@
     "build/obj/editor/edtoolsall.obj": "bdaeed6419b5d82cf871ca75b8db2f8170722bb003ea3c3c2e4415a6860e4142",
     "build/obj/float_constants.obj": "c608f03c7ddcb965e4d2c00dc76225c15ac2cc82f0dbc7659e5bec7bcc0faa07",
     "build/obj/gameapi/aisys_empty.obj": "c4564f71b8ea12ac1011810b52f9ef852f3654fbee1e2a66300f8b920cb809ba",
-    "build/obj/gameapi/aisysall.obj": "b97709d8890bf4952ef0d28d3a7fafe3b5e97a7b1cc9efb3d1edd92dc1ca231c",
+    "build/obj/gameapi/aisysall.obj": "5a91fb1dc1ada2c929a32c24041a011c8d127bb1e0a6d5ca4be262502dab33b9",
     "build/obj/gameapi/apiobject.obj": "88076670688d151e8f5bb958b086039ffcb7cd3931232d42b6bf92475b669f6d",
     "build/obj/gameapi/apisave.obj": "26da7f2fa6d3565bf0ab08f9676726208e1de2a1b83d75e96f8f5e2a41795a3a",
     "build/obj/gameapi/edanim_load.obj": "eb7ff3c886f2e6d7ffa69f2df9948fb49882ddcd5bdf55f30473697a45569c43",
@@ -1040,7 +1040,6 @@
     "build/obj/legoapi/areas.obj": "d877df9f59d9c7ca218c9adb521f506473d239e7505123e4194dbc138c50fcdd",
     "build/obj/legoapi/areas_diagnostic.obj": "2315f4f968ec57cd2e9e2e2194cd8d23d8f7f9f92190944ced8c20b68c7d3af7",
     "build/obj/legoapi/audio.obj": "d26bd475fb0474a6b276894a19b81fd4baa06cf7c787b0678a93bae55357e096",
-    "build/obj/legoapi/batarang.obj": "8e804c933360efaca3629bac0b1deae5533a684e1487d0247910d41326238a74",
     "build/obj/legoapi/bolts.obj": "27c7165f564aedaf4a30c45a2fd85273718ff4f8fd3afd3648c7c9e97742f43c",
     "build/obj/legoapi/buffers.obj": "34fc5182027d6c3ecfda5f0be0f258bcc78ce5dd1021bddbda14b33781c3a4b0",
     "build/obj/legoapi/camera.obj": "6c9c841b6910614f6c1859da5666de911d3ba5c78c41fcc45675c62fd2302544",
@@ -1174,6 +1173,7 @@
     "build/obj/legoapi/worldinfo.obj": "66b1528044cb233b8e6c85f06e32b1ca45cc8eb8e04bd736a717e32428f39d8c",
     "build/obj/legogame/aitrigger.obj": "e6e5f27ec1294d2fca485aa8bcb6981ce424b2e72e1210492fdab0a493dbfb8b",
     "build/obj/legogame/attracto.obj": "563bf9a4efb5d43e14ca3acc9cf403012ae284a519b1dd13cf632bc1ff99e14a",
+    "build/obj/legogame/batarang.obj": "d1fe9dad8aa6402afee4d722c871e37213e49e8ec506a4426fd9784f39e0bb53",
     "build/obj/legogame/batman_gameai.obj": "c2f34d160b8bb8094eeeb3d6bc78c7aac24fea7e37cd0ae0eae1420f5798074d",
     "build/obj/legogame/bolt.obj": "073abbbde0e2bb12acdae7dd43c00fcbfcca3d11314b9e111dddec19a21a596f",
     "build/obj/legogame/cable.obj": "90d95fd2d9ca27615cddfd8ec75281d1b0c2c35bee1d22f3211f79ae921882c6",
@@ -2794,19 +2794,19 @@
       "symbol": "_BatarangFabs",
       "address": "0x00403c90",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 18,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 18,
           "exact_match": true,
           "target_sha256": "f04452784f2c37f441a0b891da5218c27511fcf7de54e00e75908e1099beb02a",
           "base_sha256": "f04452784f2c37f441a0b891da5218c27511fcf7de54e00e75908e1099beb02a",
           "relocation_count": 0,
-          "comparison_unit": "00403c90-022fe56879b4",
+          "comparison_unit": "00403c90-3630bcaa53ba",
           "objdiff_percent": 100.0
         }
       ],
@@ -2814,34 +2814,23 @@
       "objdiff_percent": 100.0
     },
     {
-      "name": "NuFdiv",
-      "symbol": "_NuFdiv",
+      "name": "BatarangFdiv",
+      "symbol": "_BatarangFdiv",
       "address": "0x00403cb0",
       "units": [
-        "src/gameapi/aisysall.c",
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 54,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/gameapi/aisysall.c",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 54,
           "exact_match": true,
           "target_sha256": "ea11759cc5ce90d28a2f63b614ff70700198687f8610032a5c8013895358027b",
           "base_sha256": "ea11759cc5ce90d28a2f63b614ff70700198687f8610032a5c8013895358027b",
           "relocation_count": 0,
-          "comparison_unit": "00403cb0-960d3339b8cc",
-          "objdiff_percent": 100.0
-        },
-        {
-          "unit": "src/legoapi/batarang.cpp",
-          "base_size": 54,
-          "exact_match": true,
-          "target_sha256": "ea11759cc5ce90d28a2f63b614ff70700198687f8610032a5c8013895358027b",
-          "base_sha256": "ea11759cc5ce90d28a2f63b614ff70700198687f8610032a5c8013895358027b",
-          "relocation_count": 0,
-          "comparison_unit": "00403cb0-8bb52b7bce37",
+          "comparison_unit": "00403cb0-e4af01f72a92",
           "objdiff_percent": 100.0
         }
       ],
@@ -2853,19 +2842,19 @@
       "symbol": "?BatarangASin@@YAFM@Z",
       "address": "0x00403cf0",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 320,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 318,
           "exact_match": false,
           "target_sha256": "71b6fcc15200e0405f25d117d5f5edcb8cb52bf2e2c4014dc9dd3cf1bbd2d238",
           "base_sha256": "cd651250eedd6d171d6010588e46f2920b4babf7b4b1f538e5036f92bf13c65c",
           "relocation_count": 12,
-          "comparison_unit": "00403cf0-f32beb1155a9",
+          "comparison_unit": "00403cf0-7426812da96c",
           "objdiff_percent": 81.89286
         }
       ],
@@ -2885,19 +2874,19 @@
       "symbol": "?BatarangACos@@YAFM@Z",
       "address": "0x00403e30",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 27,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 27,
           "exact_match": true,
           "target_sha256": "58b524ecade4c53b505f11ac6b255490cbdda9efdbdb8ed8291756e80bdbc234",
           "base_sha256": "58b524ecade4c53b505f11ac6b255490cbdda9efdbdb8ed8291756e80bdbc234",
           "relocation_count": 1,
-          "comparison_unit": "00403e30-ec8871ec8b1e",
+          "comparison_unit": "00403e30-9fd6471b6a13",
           "objdiff_percent": 100.0
         }
       ],
@@ -2919,19 +2908,19 @@
       "symbol": "?BatarangContainsTarget@@YAHPAUplayer_batarang_slot_s@@PAX@Z",
       "address": "0x00403e70",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 40,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 40,
           "exact_match": true,
           "target_sha256": "e35e251d5e20716371430af27d080593e46b271f4b4068d587c8d4beaac5b847",
           "base_sha256": "e35e251d5e20716371430af27d080593e46b271f4b4068d587c8d4beaac5b847",
           "relocation_count": 0,
-          "comparison_unit": "00403e70-8867c676be8e",
+          "comparison_unit": "00403e70-ff55e08228e3",
           "objdiff_percent": 100.0
         }
       ],
@@ -2943,19 +2932,19 @@
       "symbol": "?BatarangAppendTarget@@YAHPAUplayer_batarang_slot_s@@PAXH@Z",
       "address": "0x00403ea0",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 178,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 178,
           "exact_match": true,
           "target_sha256": "8b9f401222708be633a372eb8860e1de5780d7117c3c48b3d0f8fb89b9b066a8",
           "base_sha256": "8b9f401222708be633a372eb8860e1de5780d7117c3c48b3d0f8fb89b9b066a8",
           "relocation_count": 5,
-          "comparison_unit": "00403ea0-0144228d9acd",
+          "comparison_unit": "00403ea0-29010dfb2465",
           "objdiff_percent": 100.0
         }
       ],
@@ -2967,19 +2956,19 @@
       "symbol": "_Batarang_FindTarget",
       "address": "0x00403f60",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 1720,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 1689,
           "exact_match": false,
           "target_sha256": "5f47149e34da421cf24f8e8d97e3da38ed849254a2b4bc7f170697890373f23a",
           "base_sha256": "c83e07b8c45c01225c121ba5ec51aa146bb4a993f52d4953adf7b681b61a998f",
           "relocation_count": 31,
-          "comparison_unit": "00403f60-8c58323cf83e",
+          "comparison_unit": "00403f60-fdad50384737",
           "objdiff_percent": 97.83044
         }
       ],
@@ -3002,19 +2991,19 @@
       "symbol": "_Batarang_Release",
       "address": "0x00404620",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 560,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 560,
           "exact_match": true,
           "target_sha256": "77554b9d17c4e5086023e53e03d270ac65f4c1647d706fc2c96ac699e8c46b2d",
           "base_sha256": "77554b9d17c4e5086023e53e03d270ac65f4c1647d706fc2c96ac699e8c46b2d",
           "relocation_count": 11,
-          "comparison_unit": "00404620-a5e9e8c4808c",
+          "comparison_unit": "00404620-74eafa1fbd62",
           "objdiff_percent": 100.0
         }
       ],
@@ -3026,19 +3015,19 @@
       "symbol": "_Batarang_GetTargetPos",
       "address": "0x00404850",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 201,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 201,
           "exact_match": true,
           "target_sha256": "29a0d41af43d0316dbcf222f0473f8f5cb87b88fac5dc9dcbb4fbcbbb718ca3c",
           "base_sha256": "29a0d41af43d0316dbcf222f0473f8f5cb87b88fac5dc9dcbb4fbcbbb718ca3c",
           "relocation_count": 0,
-          "comparison_unit": "00404850-242fff81aeec",
+          "comparison_unit": "00404850-fc3155366ec0",
           "objdiff_percent": 100.0
         }
       ],
@@ -3050,19 +3039,19 @@
       "symbol": "_Batarang_StartThrowQuick",
       "address": "0x00404920",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 78,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 78,
           "exact_match": true,
           "target_sha256": "16dbb3ffd9692dc4fc86bd0d2a93f3f6a1b4565c6ae843f2e6c3801ddf0b9f96",
           "base_sha256": "16dbb3ffd9692dc4fc86bd0d2a93f3f6a1b4565c6ae843f2e6c3801ddf0b9f96",
           "relocation_count": 2,
-          "comparison_unit": "00404920-8020836e4d69",
+          "comparison_unit": "00404920-e990c6f8fc9c",
           "objdiff_percent": 100.0
         }
       ],
@@ -3074,19 +3063,19 @@
       "symbol": "?BatarangSlotReset@@YAXPAUplayer_batarang_slot_s@@@Z",
       "address": "0x00404970",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 24,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 24,
           "exact_match": true,
           "target_sha256": "9ee34b265bddd7df99f315efc3ed78e56b63c1b44afd033d4e920d34ebf7bfe5",
           "base_sha256": "9ee34b265bddd7df99f315efc3ed78e56b63c1b44afd033d4e920d34ebf7bfe5",
           "relocation_count": 0,
-          "comparison_unit": "00404970-1981ca033e91",
+          "comparison_unit": "00404970-a34b39ca764f",
           "objdiff_percent": 100.0
         }
       ],
@@ -3098,19 +3087,19 @@
       "symbol": "_Batarangs_Reset",
       "address": "0x00404990",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 184,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 184,
           "exact_match": true,
           "target_sha256": "bf5e430b8bf39e123ef9ac41ee25b0cee06da99f0e4e70a976bb152b69f24556",
           "base_sha256": "bf5e430b8bf39e123ef9ac41ee25b0cee06da99f0e4e70a976bb152b69f24556",
           "relocation_count": 32,
-          "comparison_unit": "00404990-05ac009867c9",
+          "comparison_unit": "00404990-eb7536c27266",
           "objdiff_percent": 100.0
         }
       ],
@@ -3122,19 +3111,19 @@
       "symbol": "_Batarang_InitRicochet",
       "address": "0x00404a50",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 569,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 569,
           "exact_match": true,
           "target_sha256": "2a9016b375a721f1072ffcd6353fd71b8a199668cd1b01782696ea5b765f5e76",
           "base_sha256": "2a9016b375a721f1072ffcd6353fd71b8a199668cd1b01782696ea5b765f5e76",
           "relocation_count": 25,
-          "comparison_unit": "00404a50-4ea9edfc8e1b",
+          "comparison_unit": "00404a50-6243f3bcd1b5",
           "objdiff_percent": 100.0
         }
       ],
@@ -3146,19 +3135,19 @@
       "symbol": "?Batarang_Ricochet@@YAXPAUplayer_batarang_slot_s@@@Z",
       "address": "0x00404c90",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 109,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 109,
           "exact_match": true,
           "target_sha256": "3b32d670369011be6703a2458e943b8fd6ca8f1438847d02da52401d029a2ca1",
           "base_sha256": "3b32d670369011be6703a2458e943b8fd6ca8f1438847d02da52401d029a2ca1",
           "relocation_count": 5,
-          "comparison_unit": "00404c90-e34cbb355f4c",
+          "comparison_unit": "00404c90-0e9d3f0b5cdd",
           "objdiff_percent": 100.0
         }
       ],
@@ -3170,19 +3159,19 @@
       "symbol": "?Batarang_ShouldRicochet@@YAHPAUplayer_batarang_slot_s@@@Z",
       "address": "0x00404d00",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 185,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 185,
           "exact_match": true,
           "target_sha256": "40a889af90c6ce7a6526f4a97edb170eb51d9eb1f941f3d04ad8b675c48cc364",
           "base_sha256": "40a889af90c6ce7a6526f4a97edb170eb51d9eb1f941f3d04ad8b675c48cc364",
           "relocation_count": 5,
-          "comparison_unit": "00404d00-84dc65d747d8",
+          "comparison_unit": "00404d00-c34ad101fc9a",
           "objdiff_percent": 100.0
         }
       ],
@@ -3194,19 +3183,19 @@
       "symbol": "_Batarangs_Draw",
       "address": "0x00404dc0",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 109,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 109,
           "exact_match": true,
           "target_sha256": "f8555645a8c7d42dce8694ce3d4526b345543bf7b8dbe6c79ae8b63e361cc0c1",
           "base_sha256": "f8555645a8c7d42dce8694ce3d4526b345543bf7b8dbe6c79ae8b63e361cc0c1",
           "relocation_count": 5,
-          "comparison_unit": "00404dc0-27a4441c5aa2",
+          "comparison_unit": "00404dc0-df5d25444317",
           "objdiff_percent": 100.0
         }
       ],
@@ -3218,19 +3207,19 @@
       "symbol": "_Batarangs_CheckLostData",
       "address": "0x00404e30",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 220,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 220,
           "exact_match": true,
           "target_sha256": "ac730a616c367eac429f07b51c797b70bd98eb5a3ef7137987d1b86201268369",
           "base_sha256": "ac730a616c367eac429f07b51c797b70bd98eb5a3ef7137987d1b86201268369",
           "relocation_count": 1,
-          "comparison_unit": "00404e30-716edc3168b3",
+          "comparison_unit": "00404e30-41af0db0edc9",
           "objdiff_percent": 100.0
         }
       ],
@@ -3242,19 +3231,19 @@
       "symbol": "_BatarangGetObjectFromCharId",
       "address": "0x00404f10",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 22,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 22,
           "exact_match": true,
           "target_sha256": "d6c08bd76458bd639cff4f2a02705fc784dd396d2c5d33f620ae10c5fbeb2fd4",
           "base_sha256": "d6c08bd76458bd639cff4f2a02705fc784dd396d2c5d33f620ae10c5fbeb2fd4",
           "relocation_count": 1,
-          "comparison_unit": "00404f10-a9af7b897572",
+          "comparison_unit": "00404f10-7965813c7579",
           "objdiff_percent": 100.0
         }
       ],
@@ -3266,19 +3255,19 @@
       "symbol": "_Batarang_GetSightInfo",
       "address": "0x00404f30",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 101,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 101,
           "exact_match": true,
           "target_sha256": "5148346036c36f467c793fd759c2573bfe849039ac189ef78603917ecb00f122",
           "base_sha256": "5148346036c36f467c793fd759c2573bfe849039ac189ef78603917ecb00f122",
           "relocation_count": 5,
-          "comparison_unit": "00404f30-be57d9f555b8",
+          "comparison_unit": "00404f30-c835a4678d8f",
           "objdiff_percent": 100.0
         }
       ],
@@ -3290,19 +3279,19 @@
       "symbol": "_Batarang_StartTargetting",
       "address": "0x00404fa0",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 288,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 288,
           "exact_match": true,
           "target_sha256": "abec808f3181077f266e891617a0266436f8edf4009b08fb95e037777678a5ad",
           "base_sha256": "abec808f3181077f266e891617a0266436f8edf4009b08fb95e037777678a5ad",
           "relocation_count": 3,
-          "comparison_unit": "00404fa0-d6218b940194",
+          "comparison_unit": "00404fa0-103ba213c113",
           "objdiff_percent": 100.0
         }
       ],
@@ -3314,19 +3303,19 @@
       "symbol": "_Batarang_MoveCode",
       "address": "0x004050c0",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 2006,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 2001,
           "exact_match": false,
           "target_sha256": "b5cdfc418c382d8ed0d9e9568182f67e6a50c0e23a54f8598a7810c4ae6d3b8c",
           "base_sha256": "55b25fac462669b704ae7de1ab4a05660d0b579087955580c317c33cfdfccc93",
           "relocation_count": 61,
-          "comparison_unit": "004050c0-e7d87fc888e1",
+          "comparison_unit": "004050c0-6bd2f16de666",
           "objdiff_percent": 96.12245
         }
       ],
@@ -3348,19 +3337,19 @@
       "symbol": "_Batarang_SeekToTarget",
       "address": "0x004058a0",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 530,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 530,
           "exact_match": true,
           "target_sha256": "afc2b05de07565322da178dec7e25de1da8fd8fbd5a27e4685cd032e6734e8c6",
           "base_sha256": "afc2b05de07565322da178dec7e25de1da8fd8fbd5a27e4685cd032e6734e8c6",
           "relocation_count": 23,
-          "comparison_unit": "004058a0-a79f7b03610f",
+          "comparison_unit": "004058a0-58bc1580ba07",
           "objdiff_percent": 100.0
         }
       ],
@@ -3372,19 +3361,19 @@
       "symbol": "_Batarangs_Update",
       "address": "0x00405ac0",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 651,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "base_size": 651,
           "exact_match": true,
           "target_sha256": "871a408dd4a5f9a3564175cd19fe734a237528ddbfbe987c44c313bfd906ebcf",
           "base_sha256": "871a408dd4a5f9a3564175cd19fe734a237528ddbfbe987c44c313bfd906ebcf",
           "relocation_count": 19,
-          "comparison_unit": "00405ac0-3628eed8b25a",
+          "comparison_unit": "00405ac0-9b5ebf52b12c",
           "objdiff_percent": 100.0
         }
       ],
@@ -388312,7 +388301,6 @@
         "src/gamelib/nuwind.cpp",
         "src/legoapi/animation.cpp",
         "src/legoapi/audio.cpp",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/bolts.cpp",
         "src/legoapi/camera.cpp",
         "src/legoapi/carrying.cpp",
@@ -388385,6 +388373,7 @@
         "src/legoapi/worldinfo.cpp",
         "src/legogame/aitrigger.cpp",
         "src/legogame/attracto.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/batman_gameai.cpp",
         "src/legogame/bolt.cpp",
         "src/legogame/cable.cpp",
@@ -388664,14 +388653,6 @@
         },
         {
           "unit": "src/legoapi/audio.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c",
-          "base_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
-        },
-        {
-          "unit": "src/legoapi/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -389248,6 +389229,14 @@
         },
         {
           "unit": "src/legogame/attracto.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c",
+          "base_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -389989,7 +389978,6 @@
         "src/gameapi/rtl.c",
         "src/gamelib/net/TTNetwork.cpp",
         "src/legoapi/audio.cpp",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/bolts.cpp",
         "src/legoapi/camera.cpp",
         "src/legoapi/carrying.cpp",
@@ -390026,6 +390014,7 @@
         "src/legoapi/utilities.cpp",
         "src/legoapi/whip.c",
         "src/legogame/attracto.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/batman_gameai.cpp",
         "src/legogame/bolt.cpp",
         "src/legogame/camera.cpp",
@@ -390203,14 +390192,6 @@
         },
         {
           "unit": "src/legoapi/audio.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "d99e58435243d9fef9c88273b8d553b4fba4d0baf8009d29eae74fa99e0d9f57",
-          "base_sha256": "d99e58435243d9fef9c88273b8d553b4fba4d0baf8009d29eae74fa99e0d9f57"
-        },
-        {
-          "unit": "src/legoapi/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -390499,6 +390480,14 @@
         },
         {
           "unit": "src/legogame/attracto.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "d99e58435243d9fef9c88273b8d553b4fba4d0baf8009d29eae74fa99e0d9f57",
+          "base_sha256": "d99e58435243d9fef9c88273b8d553b4fba4d0baf8009d29eae74fa99e0d9f57"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -391925,7 +391914,6 @@
         "src/gameapi/edbri.c",
         "src/gameapi/edfile.c",
         "src/gameapi/edgrass.c",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/bolts.cpp",
         "src/legoapi/charshadows.cpp",
         "src/legoapi/climbing.cpp",
@@ -391955,6 +391943,7 @@
         "src/legoapi/utilities.cpp",
         "src/legogame/aitrigger.cpp",
         "src/legogame/attracto.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/cable.cpp",
         "src/legogame/camera.cpp",
         "src/legogame/chris.cpp",
@@ -392023,14 +392012,6 @@
         },
         {
           "unit": "src/gameapi/edgrass.c",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d",
-          "base_sha256": "fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d"
-        },
-        {
-          "unit": "src/legoapi/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -392263,6 +392244,14 @@
         },
         {
           "unit": "src/legogame/attracto.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d",
+          "base_sha256": "fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -393257,7 +393246,6 @@
         "src/gamelib/nuwind.cpp",
         "src/legoapi/animation.cpp",
         "src/legoapi/audio.cpp",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/bolts.cpp",
         "src/legoapi/camera.cpp",
         "src/legoapi/carrying.cpp",
@@ -393342,6 +393330,7 @@
         "src/legoapi/whip.c",
         "src/legoapi/worldinfo.cpp",
         "src/legogame/attracto.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/batman_gameai.cpp",
         "src/legogame/bolt.cpp",
         "src/legogame/cable.cpp",
@@ -393705,14 +393694,6 @@
         },
         {
           "unit": "src/legoapi/audio.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
-          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
-        },
-        {
-          "unit": "src/legoapi/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -394385,6 +394366,14 @@
         },
         {
           "unit": "src/legogame/attracto.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -395380,7 +395369,6 @@
         "lib/ogg-vorbis/vorbis/vorbisfile.c",
         "src/gameapi/edfile.c",
         "src/gameapi/rtl.c",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/credits.cpp",
         "src/legoapi/cutscenes.cpp",
         "src/legoapi/fade.cpp",
@@ -395392,6 +395380,7 @@
         "src/legoapi/status_alternate.cpp",
         "src/legoapi/text.cpp",
         "src/legogame/attracto.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/customise.cpp",
         "src/legogame/episodeI.cpp",
         "src/legogame/gamehint.cpp",
@@ -395428,14 +395417,6 @@
         },
         {
           "unit": "src/gameapi/rtl.c",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "6ff6480f7ecb3e3aa42116fecee7c99b00fe9c28cd564b835a249d74b74c679a",
-          "base_sha256": "6ff6480f7ecb3e3aa42116fecee7c99b00fe9c28cd564b835a249d74b74c679a"
-        },
-        {
-          "unit": "src/legoapi/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -395524,6 +395505,14 @@
         },
         {
           "unit": "src/legogame/attracto.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "6ff6480f7ecb3e3aa42116fecee7c99b00fe9c28cd564b835a249d74b74c679a",
+          "base_sha256": "6ff6480f7ecb3e3aa42116fecee7c99b00fe9c28cd564b835a249d74b74c679a"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -395802,7 +395791,6 @@
         "src/gameapi/apisave.cpp",
         "src/gameapi/edfile.c",
         "src/gamelib/net/NetworkObjectManager.cpp",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/bolts.cpp",
         "src/legoapi/carrying.cpp",
         "src/legoapi/control_setup.cpp",
@@ -395815,6 +395803,7 @@
         "src/legoapi/movies.cpp",
         "src/legoapi/parts.c",
         "src/legogame/attracto.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/batman_gameai.cpp",
         "src/legogame/chris.cpp",
         "src/legogame/creature.cpp",
@@ -395883,14 +395872,6 @@
         },
         {
           "unit": "src/gamelib/net/NetworkObjectManager.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "f27f321d41d1f66907d86235348f63886a5307036a6dba8a620dae20e3eb2c2c",
-          "base_sha256": "f27f321d41d1f66907d86235348f63886a5307036a6dba8a620dae20e3eb2c2c"
-        },
-        {
-          "unit": "src/legoapi/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -395987,6 +395968,14 @@
         },
         {
           "unit": "src/legogame/attracto.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "f27f321d41d1f66907d86235348f63886a5307036a6dba8a620dae20e3eb2c2c",
+          "base_sha256": "f27f321d41d1f66907d86235348f63886a5307036a6dba8a620dae20e3eb2c2c"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -396899,7 +396888,6 @@
         "src/gameapi/rtl.c",
         "src/gamelib/net/NetworkObjectManager.cpp",
         "src/legoapi/animation.cpp",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/bolts.cpp",
         "src/legoapi/camera.cpp",
         "src/legoapi/characters.cpp",
@@ -396953,6 +396941,7 @@
         "src/legoapi/tubes.cpp",
         "src/legoapi/utilities.cpp",
         "src/legogame/attracto.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/batman_gameai.cpp",
         "src/legogame/cable.cpp",
         "src/legogame/camera.cpp",
@@ -397180,14 +397169,6 @@
         },
         {
           "unit": "src/legoapi/animation.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712",
-          "base_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712"
-        },
-        {
-          "unit": "src/legoapi/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -397612,6 +397593,14 @@
         },
         {
           "unit": "src/legogame/attracto.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712",
+          "base_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -398363,11 +398352,11 @@
       "address": "0x007516a8",
       "units": [
         "src/gamelib/net/NetworkObjectManager.cpp",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/control_setup.cpp",
         "src/legoapi/grapples.cpp",
         "src/legoapi/menu.cpp",
         "src/legogame/attracto.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/cable.cpp",
         "src/legogame/camera.cpp",
         "src/legogame/creature.cpp",
@@ -398405,14 +398394,6 @@
           "base_sha256": "ae6d9d43f048f225ddad45cdfe3a2f523b6df4b0077e408a0709905c88ec2f73"
         },
         {
-          "unit": "src/legoapi/batarang.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "ae6d9d43f048f225ddad45cdfe3a2f523b6df4b0077e408a0709905c88ec2f73",
-          "base_sha256": "ae6d9d43f048f225ddad45cdfe3a2f523b6df4b0077e408a0709905c88ec2f73"
-        },
-        {
           "unit": "src/legoapi/control_setup.cpp",
           "exact_match": true,
           "target_size": 8,
@@ -398438,6 +398419,14 @@
         },
         {
           "unit": "src/legogame/attracto.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "ae6d9d43f048f225ddad45cdfe3a2f523b6df4b0077e408a0709905c88ec2f73",
+          "base_sha256": "ae6d9d43f048f225ddad45cdfe3a2f523b6df4b0077e408a0709905c88ec2f73"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -399077,7 +399066,6 @@
         "src/gameapi/edpp.c",
         "src/gameapi/edpp_load.c",
         "src/gamelib/nuwind.cpp",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/control_setup.cpp",
         "src/legoapi/debris_engine.c",
         "src/legoapi/gizbuildit.cpp",
@@ -399085,6 +399073,7 @@
         "src/legoapi/parts.c",
         "src/legoapi/text.cpp",
         "src/legogame/attracto.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/chris.cpp",
         "src/legogame/creature.cpp",
         "src/legogame/customise.cpp",
@@ -399143,14 +399132,6 @@
           "base_sha256": "a7ca1349517e14c0690dccc98bf9a515019b2018116a3191f6c7d53831c0432a"
         },
         {
-          "unit": "src/legoapi/batarang.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "a7ca1349517e14c0690dccc98bf9a515019b2018116a3191f6c7d53831c0432a",
-          "base_sha256": "a7ca1349517e14c0690dccc98bf9a515019b2018116a3191f6c7d53831c0432a"
-        },
-        {
           "unit": "src/legoapi/control_setup.cpp",
           "exact_match": true,
           "target_size": 8,
@@ -399200,6 +399181,14 @@
         },
         {
           "unit": "src/legogame/attracto.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "a7ca1349517e14c0690dccc98bf9a515019b2018116a3191f6c7d53831c0432a",
+          "base_sha256": "a7ca1349517e14c0690dccc98bf9a515019b2018116a3191f6c7d53831c0432a"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -400032,7 +400021,6 @@
         "src/gameapi/rtl.c",
         "src/gamelib/net/NetStats.cpp",
         "src/legoapi/audio.cpp",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/bolts.cpp",
         "src/legoapi/carrying.cpp",
         "src/legoapi/charconfig.cpp",
@@ -400070,6 +400058,7 @@
         "src/legoapi/text.cpp",
         "src/legoapi/utilities.cpp",
         "src/legogame/attracto.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/batman_gameai.cpp",
         "src/legogame/bolt.cpp",
         "src/legogame/cable.cpp",
@@ -400335,14 +400324,6 @@
         },
         {
           "unit": "src/legoapi/audio.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "4cfa5b42ca669328764e67cd9a34bb8f90b16ed7ca8d85e8443783d7ccce15ed",
-          "base_sha256": "4cfa5b42ca669328764e67cd9a34bb8f90b16ed7ca8d85e8443783d7ccce15ed"
-        },
-        {
-          "unit": "src/legoapi/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -400639,6 +400620,14 @@
         },
         {
           "unit": "src/legogame/attracto.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "4cfa5b42ca669328764e67cd9a34bb8f90b16ed7ca8d85e8443783d7ccce15ed",
+          "base_sha256": "4cfa5b42ca669328764e67cd9a34bb8f90b16ed7ca8d85e8443783d7ccce15ed"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -401125,22 +401114,14 @@
       "symbol": "__real@42800000",
       "address": "0x007516e0",
       "units": [
-        "src/legoapi/batarang.cpp",
         "src/legoapi/gameantinode.cpp",
         "src/legogame/attracto.cpp",
+        "src/legogame/batarang.cpp",
         "src/nu2api/terrain_collision.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
-        {
-          "unit": "src/legoapi/batarang.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "8568e5a1fe347c4aa003af9f44d1f42d104b5e40ea0502e869357877af7fb537",
-          "base_sha256": "8568e5a1fe347c4aa003af9f44d1f42d104b5e40ea0502e869357877af7fb537"
-        },
         {
           "unit": "src/legoapi/gameantinode.cpp",
           "exact_match": true,
@@ -401151,6 +401132,14 @@
         },
         {
           "unit": "src/legogame/attracto.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "8568e5a1fe347c4aa003af9f44d1f42d104b5e40ea0502e869357877af7fb537",
+          "base_sha256": "8568e5a1fe347c4aa003af9f44d1f42d104b5e40ea0502e869357877af7fb537"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -401578,7 +401567,6 @@
         "src/gameapi/aisysall.c",
         "src/gameapi/apiobject.c",
         "src/gameapi/edbits.c",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/camera.cpp",
         "src/legoapi/collection.cpp",
         "src/legoapi/credits.cpp",
@@ -401591,6 +401579,7 @@
         "src/legoapi/simpletons.cpp",
         "src/legoapi/status_alternate.cpp",
         "src/legogame/attracto.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/chris.cpp",
         "src/legogame/creature.cpp",
         "src/legogame/episodeVI.cpp",
@@ -401663,14 +401652,6 @@
         },
         {
           "unit": "src/gameapi/edbits.c",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "272f78036db6721f7cf7444315e5f6360426d14c3d446d6ae8a89ef70d134002",
-          "base_sha256": "272f78036db6721f7cf7444315e5f6360426d14c3d446d6ae8a89ef70d134002"
-        },
-        {
-          "unit": "src/legoapi/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -401767,6 +401748,14 @@
         },
         {
           "unit": "src/legogame/attracto.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "272f78036db6721f7cf7444315e5f6360426d14c3d446d6ae8a89ef70d134002",
+          "base_sha256": "272f78036db6721f7cf7444315e5f6360426d14c3d446d6ae8a89ef70d134002"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -402552,7 +402541,6 @@
       "units": [
         "src/editor/edlevelall.cpp",
         "src/legoapi/audio.cpp",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/camera.cpp",
         "src/legoapi/carrying.cpp",
         "src/legoapi/credits.cpp",
@@ -402564,6 +402552,7 @@
         "src/legoapi/screen.cpp",
         "src/legoapi/status_alternate.cpp",
         "src/legogame/attracto.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/camera.cpp",
         "src/legogame/chris.cpp",
         "src/legogame/creature.cpp",
@@ -402611,14 +402600,6 @@
         },
         {
           "unit": "src/legoapi/audio.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "ea2845900b5856c9bf354b1aa9761b5aa6888e5ed61738fe9579ca42bc0f6054",
-          "base_sha256": "ea2845900b5856c9bf354b1aa9761b5aa6888e5ed61738fe9579ca42bc0f6054"
-        },
-        {
-          "unit": "src/legoapi/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -402707,6 +402688,14 @@
         },
         {
           "unit": "src/legogame/attracto.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "ea2845900b5856c9bf354b1aa9761b5aa6888e5ed61738fe9579ca42bc0f6054",
+          "base_sha256": "ea2845900b5856c9bf354b1aa9761b5aa6888e5ed61738fe9579ca42bc0f6054"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -402991,7 +402980,6 @@
         "src/gameapi/edpp_load.c",
         "src/gameapi/rtl.c",
         "src/legoapi/audio.cpp",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/carrying.cpp",
         "src/legoapi/climbing.cpp",
         "src/legoapi/control_setup.cpp",
@@ -403003,6 +402991,7 @@
         "src/legoapi/simpletons.cpp",
         "src/legoapi/snake.cpp",
         "src/legogame/attracto.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/cable.cpp",
         "src/legogame/camera.cpp",
         "src/legogame/customise.cpp",
@@ -403072,14 +403061,6 @@
         },
         {
           "unit": "src/legoapi/audio.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "80c8a717ccd70c8809eb78e6a9591c003e11c721fe0ccaf62fd592abda1a5593",
-          "base_sha256": "80c8a717ccd70c8809eb78e6a9591c003e11c721fe0ccaf62fd592abda1a5593"
-        },
-        {
-          "unit": "src/legoapi/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -403168,6 +403149,14 @@
         },
         {
           "unit": "src/legogame/attracto.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "80c8a717ccd70c8809eb78e6a9591c003e11c721fe0ccaf62fd592abda1a5593",
+          "base_sha256": "80c8a717ccd70c8809eb78e6a9591c003e11c721fe0ccaf62fd592abda1a5593"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -403373,7 +403362,6 @@
         "src/gameapi/edfile.c",
         "src/gameapi/edpp.c",
         "src/gameapi/edui_widget_render.cpp",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/debris_callbacks.c",
         "src/legoapi/gizspinner.cpp",
         "src/legoapi/grapples.cpp",
@@ -403381,6 +403369,7 @@
         "src/legoapi/simpletons.cpp",
         "src/legoapi/status_alternate.cpp",
         "src/legogame/attracto.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/chris.cpp",
         "src/legogame/customise.cpp",
         "src/legogame/episodeI.cpp",
@@ -403459,14 +403448,6 @@
           "base_sha256": "400c52dd5bd0047d64c0582af027b387a7938a64283d0d4f727331140cb6462c"
         },
         {
-          "unit": "src/legoapi/batarang.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "400c52dd5bd0047d64c0582af027b387a7938a64283d0d4f727331140cb6462c",
-          "base_sha256": "400c52dd5bd0047d64c0582af027b387a7938a64283d0d4f727331140cb6462c"
-        },
-        {
           "unit": "src/legoapi/debris_callbacks.c",
           "exact_match": true,
           "target_size": 8,
@@ -403516,6 +403497,14 @@
         },
         {
           "unit": "src/legogame/attracto.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "400c52dd5bd0047d64c0582af027b387a7938a64283d0d4f727331140cb6462c",
+          "base_sha256": "400c52dd5bd0047d64c0582af027b387a7938a64283d0d4f727331140cb6462c"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -403670,7 +403659,6 @@
         "src/gameapi/aisysall.c",
         "src/gameapi/edanim_load.c",
         "src/gameapi/edpp.c",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/camera.cpp",
         "src/legoapi/cheats.cpp",
         "src/legoapi/climbing.cpp",
@@ -403687,6 +403675,7 @@
         "src/legoapi/socksys.c",
         "src/legoapi/whip.c",
         "src/legogame/attracto.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/bolt.cpp",
         "src/legogame/camera.cpp",
         "src/legogame/creature.cpp",
@@ -403744,14 +403733,6 @@
         },
         {
           "unit": "src/gameapi/edpp.c",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "75e253f50979177eba47b2d0805ad36038789108924514d2a761a70de057d16f",
-          "base_sha256": "75e253f50979177eba47b2d0805ad36038789108924514d2a761a70de057d16f"
-        },
-        {
-          "unit": "src/legoapi/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -403880,6 +403861,14 @@
         },
         {
           "unit": "src/legogame/attracto.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "75e253f50979177eba47b2d0805ad36038789108924514d2a761a70de057d16f",
+          "base_sha256": "75e253f50979177eba47b2d0805ad36038789108924514d2a761a70de057d16f"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -404113,9 +404102,9 @@
         "src/gameapi/edbits.c",
         "src/gameapi/edfile.c",
         "src/gameapi/edui_widget_render.cpp",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/fighting.cpp",
         "src/legogame/attracto.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/episodeVI.cpp",
         "src/legogame/game_obj.cpp",
         "src/legogame/grabber.cpp",
@@ -404149,14 +404138,6 @@
           "base_sha256": "dbd4c1a79b2e521053ee9b910f06d6110e7169884cda62d8acf6b5f9dbf4b7dd"
         },
         {
-          "unit": "src/legoapi/batarang.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "dbd4c1a79b2e521053ee9b910f06d6110e7169884cda62d8acf6b5f9dbf4b7dd",
-          "base_sha256": "dbd4c1a79b2e521053ee9b910f06d6110e7169884cda62d8acf6b5f9dbf4b7dd"
-        },
-        {
           "unit": "src/legoapi/fighting.cpp",
           "exact_match": true,
           "target_size": 8,
@@ -404166,6 +404147,14 @@
         },
         {
           "unit": "src/legogame/attracto.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "dbd4c1a79b2e521053ee9b910f06d6110e7169884cda62d8acf6b5f9dbf4b7dd",
+          "base_sha256": "dbd4c1a79b2e521053ee9b910f06d6110e7169884cda62d8acf6b5f9dbf4b7dd"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -404214,7 +404203,6 @@
       "units": [
         "src/gameapi/apisave.cpp",
         "src/gamelib/net/TTNetwork.cpp",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/control_setup.cpp",
         "src/legoapi/edgizshadow.cpp",
         "src/legoapi/fighting.cpp",
@@ -404223,6 +404211,7 @@
         "src/legoapi/pushing.cpp",
         "src/legoapi/status_alternate.cpp",
         "src/legogame/attracto.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/bolt.cpp",
         "src/legogame/camera.cpp",
         "src/legogame/chris.cpp",
@@ -404260,14 +404249,6 @@
         },
         {
           "unit": "src/gamelib/net/TTNetwork.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "45a6d738a7607576d3fe0862200bc67b10c12d5ed74167b4d5d5a708974c0f32",
-          "base_sha256": "45a6d738a7607576d3fe0862200bc67b10c12d5ed74167b4d5d5a708974c0f32"
-        },
-        {
-          "unit": "src/legoapi/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -404332,6 +404313,14 @@
         },
         {
           "unit": "src/legogame/attracto.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "45a6d738a7607576d3fe0862200bc67b10c12d5ed74167b4d5d5a708974c0f32",
+          "base_sha256": "45a6d738a7607576d3fe0862200bc67b10c12d5ed74167b4d5d5a708974c0f32"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -404663,9 +404652,9 @@
       "address": "0x00751738",
       "units": [
         "src/gameapi/aisysall.c",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/debris_callbacks.c",
         "src/legoapi/snake.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/move.cpp",
         "src/legogame/torpedo.cpp",
         "src/legogame/zipup.cpp",
@@ -404684,14 +404673,6 @@
           "base_sha256": "337c7acc3afb312dee8daf294676a3b1f8dbf215b2c5d43de61ad9dfbe02c6e7"
         },
         {
-          "unit": "src/legoapi/batarang.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "337c7acc3afb312dee8daf294676a3b1f8dbf215b2c5d43de61ad9dfbe02c6e7",
-          "base_sha256": "337c7acc3afb312dee8daf294676a3b1f8dbf215b2c5d43de61ad9dfbe02c6e7"
-        },
-        {
           "unit": "src/legoapi/debris_callbacks.c",
           "exact_match": true,
           "target_size": 8,
@@ -404701,6 +404682,14 @@
         },
         {
           "unit": "src/legoapi/snake.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "337c7acc3afb312dee8daf294676a3b1f8dbf215b2c5d43de61ad9dfbe02c6e7",
+          "base_sha256": "337c7acc3afb312dee8daf294676a3b1f8dbf215b2c5d43de61ad9dfbe02c6e7"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -404840,9 +404829,9 @@
       "address": "0x00751760",
       "units": [
         "src/gameapi/aisysall.c",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/debris_callbacks.c",
         "src/legoapi/snake.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/move.cpp",
         "src/legogame/torpedo.cpp",
         "src/legogame/zipup.cpp",
@@ -404861,14 +404850,6 @@
           "base_sha256": "89c5b166d8647b0a3063cba6c7f801f0eb0512deab4165cbebbf06038fe1529b"
         },
         {
-          "unit": "src/legoapi/batarang.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "89c5b166d8647b0a3063cba6c7f801f0eb0512deab4165cbebbf06038fe1529b",
-          "base_sha256": "89c5b166d8647b0a3063cba6c7f801f0eb0512deab4165cbebbf06038fe1529b"
-        },
-        {
           "unit": "src/legoapi/debris_callbacks.c",
           "exact_match": true,
           "target_size": 8,
@@ -404878,6 +404859,14 @@
         },
         {
           "unit": "src/legoapi/snake.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "89c5b166d8647b0a3063cba6c7f801f0eb0512deab4165cbebbf06038fe1529b",
+          "base_sha256": "89c5b166d8647b0a3063cba6c7f801f0eb0512deab4165cbebbf06038fe1529b"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -404940,7 +404929,6 @@
         "src/gameapi/edpp.c",
         "src/gameapi/edtools_outline.cpp",
         "src/gameapi/rtl.c",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/bolts.cpp",
         "src/legoapi/camera.cpp",
         "src/legoapi/cutscene_lifecycle.c",
@@ -404959,6 +404947,7 @@
         "src/legoapi/socksys.c",
         "src/legoapi/streaks.cpp",
         "src/legoapi/surfaces.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/camera.cpp",
         "src/legogame/chris.cpp",
         "src/legogame/creature.cpp",
@@ -405055,14 +405044,6 @@
         },
         {
           "unit": "src/gameapi/rtl.c",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "c68830a25204a09f8e77aada6bc5807f607cccaaa0ebb2a7122d317584478a8b",
-          "base_sha256": "c68830a25204a09f8e77aada6bc5807f607cccaaa0ebb2a7122d317584478a8b"
-        },
-        {
-          "unit": "src/legoapi/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -405207,6 +405188,14 @@
         },
         {
           "unit": "src/legoapi/surfaces.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "c68830a25204a09f8e77aada6bc5807f607cccaaa0ebb2a7122d317584478a8b",
+          "base_sha256": "c68830a25204a09f8e77aada6bc5807f607cccaaa0ebb2a7122d317584478a8b"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -405496,11 +405485,11 @@
         "lib/ogg-vorbis/vorbis/info.c",
         "lib/ogg-vorbis/vorbis/lsp.c",
         "src/gameapi/aisysall.c",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/credits.cpp",
         "src/legoapi/debris_callbacks.c",
         "src/legoapi/snake.cpp",
         "src/legoapi/text.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/gamestatus.cpp",
         "src/legogame/grabber.cpp",
         "src/legogame/move.cpp",
@@ -405540,14 +405529,6 @@
           "base_sha256": "e77817b649821c634355a917817c1224a360514b1244fe09e832bac4e8ea4440"
         },
         {
-          "unit": "src/legoapi/batarang.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "e77817b649821c634355a917817c1224a360514b1244fe09e832bac4e8ea4440",
-          "base_sha256": "e77817b649821c634355a917817c1224a360514b1244fe09e832bac4e8ea4440"
-        },
-        {
           "unit": "src/legoapi/credits.cpp",
           "exact_match": true,
           "target_size": 8,
@@ -405573,6 +405554,14 @@
         },
         {
           "unit": "src/legoapi/text.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "e77817b649821c634355a917817c1224a360514b1244fe09e832bac4e8ea4440",
+          "base_sha256": "e77817b649821c634355a917817c1224a360514b1244fe09e832bac4e8ea4440"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -405668,9 +405657,9 @@
       "address": "0x00751778",
       "units": [
         "src/gameapi/aisysall.c",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/debris_callbacks.c",
         "src/legoapi/snake.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/move.cpp",
         "src/legogame/torpedo.cpp",
         "src/legogame/zipup.cpp",
@@ -405689,14 +405678,6 @@
           "base_sha256": "2a759974279599e138c5f390c331210a1816962c9dfb9bbd1cf0536fdd7b24f1"
         },
         {
-          "unit": "src/legoapi/batarang.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "2a759974279599e138c5f390c331210a1816962c9dfb9bbd1cf0536fdd7b24f1",
-          "base_sha256": "2a759974279599e138c5f390c331210a1816962c9dfb9bbd1cf0536fdd7b24f1"
-        },
-        {
           "unit": "src/legoapi/debris_callbacks.c",
           "exact_match": true,
           "target_size": 8,
@@ -405706,6 +405687,14 @@
         },
         {
           "unit": "src/legoapi/snake.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "2a759974279599e138c5f390c331210a1816962c9dfb9bbd1cf0536fdd7b24f1",
+          "base_sha256": "2a759974279599e138c5f390c331210a1816962c9dfb9bbd1cf0536fdd7b24f1"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -405762,9 +405751,9 @@
       "units": [
         "lib/ogg-vorbis/vorbis/mdct.c",
         "src/gameapi/aisysall.c",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/debris_callbacks.c",
         "src/legoapi/snake.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/move.cpp",
         "src/legogame/torpedo.cpp",
         "src/legogame/zipup.cpp",
@@ -405791,14 +405780,6 @@
           "base_sha256": "73642b0464e06dd4d68145ae0806575d51cf3ec3098edec13116c3a70a274ae1"
         },
         {
-          "unit": "src/legoapi/batarang.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "73642b0464e06dd4d68145ae0806575d51cf3ec3098edec13116c3a70a274ae1",
-          "base_sha256": "73642b0464e06dd4d68145ae0806575d51cf3ec3098edec13116c3a70a274ae1"
-        },
-        {
           "unit": "src/legoapi/debris_callbacks.c",
           "exact_match": true,
           "target_size": 8,
@@ -405808,6 +405789,14 @@
         },
         {
           "unit": "src/legoapi/snake.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "73642b0464e06dd4d68145ae0806575d51cf3ec3098edec13116c3a70a274ae1",
+          "base_sha256": "73642b0464e06dd4d68145ae0806575d51cf3ec3098edec13116c3a70a274ae1"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -405891,7 +405880,6 @@
         "src/gameapi/edgrass.c",
         "src/gameapi/edpp.c",
         "src/gamelib/net/NetworkObjectManager.cpp",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/bolts.cpp",
         "src/legoapi/carrying.cpp",
         "src/legoapi/climbing.cpp",
@@ -405913,6 +405901,7 @@
         "src/legoapi/surfaces.cpp",
         "src/legoapi/tagging.cpp",
         "src/legoapi/timing.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/camera.cpp",
         "src/legogame/creature.cpp",
         "src/legogame/episodeI.cpp",
@@ -406008,14 +405997,6 @@
         },
         {
           "unit": "src/gamelib/net/NetworkObjectManager.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "3e2a4d232d889625aa1c184b27588b7c6ebdfef18e01332502d986209f65b905",
-          "base_sha256": "3e2a4d232d889625aa1c184b27588b7c6ebdfef18e01332502d986209f65b905"
-        },
-        {
-          "unit": "src/legoapi/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -406184,6 +406165,14 @@
         },
         {
           "unit": "src/legoapi/timing.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "3e2a4d232d889625aa1c184b27588b7c6ebdfef18e01332502d986209f65b905",
+          "base_sha256": "3e2a4d232d889625aa1c184b27588b7c6ebdfef18e01332502d986209f65b905"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -406494,7 +406483,6 @@
         "src/gameapi/edfile.c",
         "src/gameapi/edui_widget_render.cpp",
         "src/gameapi/rtl.c",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/carrying.cpp",
         "src/legoapi/charconfig.cpp",
         "src/legoapi/climbing.cpp",
@@ -406519,6 +406507,7 @@
         "src/legoapi/streaks.cpp",
         "src/legoapi/text.cpp",
         "src/legoapi/utilities.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/batman_gameai.cpp",
         "src/legogame/cable.cpp",
         "src/legogame/camera.cpp",
@@ -406642,14 +406631,6 @@
         },
         {
           "unit": "src/gameapi/rtl.c",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc",
-          "base_sha256": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc"
-        },
-        {
-          "unit": "src/legoapi/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -406842,6 +406823,14 @@
         },
         {
           "unit": "src/legoapi/utilities.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc",
+          "base_sha256": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -407175,9 +407164,9 @@
       "units": [
         "lib/ogg-vorbis/vorbis/psy.c",
         "src/gameapi/rtl.c",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/control_setup.cpp",
         "src/legoapi/lighting.cpp",
+        "src/legogame/batarang.cpp",
         "src/nu2api/nu3d_includes.cpp"
       ],
       "target_size": 4,
@@ -407200,14 +407189,6 @@
           "base_sha256": "140efb356462f70dd1c7f1dfb10bcc07d0f14d439043fb9e9d50f4d7be71ea96"
         },
         {
-          "unit": "src/legoapi/batarang.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "140efb356462f70dd1c7f1dfb10bcc07d0f14d439043fb9e9d50f4d7be71ea96",
-          "base_sha256": "140efb356462f70dd1c7f1dfb10bcc07d0f14d439043fb9e9d50f4d7be71ea96"
-        },
-        {
           "unit": "src/legoapi/control_setup.cpp",
           "exact_match": true,
           "target_size": 4,
@@ -407217,6 +407198,14 @@
         },
         {
           "unit": "src/legoapi/lighting.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "140efb356462f70dd1c7f1dfb10bcc07d0f14d439043fb9e9d50f4d7be71ea96",
+          "base_sha256": "140efb356462f70dd1c7f1dfb10bcc07d0f14d439043fb9e9d50f4d7be71ea96"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -407247,7 +407236,6 @@
         "src/gameapi/edfile.c",
         "src/gameapi/edpp.c",
         "src/gameapi/edui_widget_render.cpp",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/cutscene_lifecycle.c",
         "src/legoapi/debris_callbacks.c",
         "src/legoapi/gamepads.cpp",
@@ -407259,6 +407247,7 @@
         "src/legoapi/specialsfx.c",
         "src/legoapi/status_alternate.cpp",
         "src/legoapi/utilities.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/chris.cpp",
         "src/legogame/episodeI.cpp",
         "src/legogame/episodeV.cpp",
@@ -407352,14 +407341,6 @@
           "base_sha256": "3f710ac088db33363087de2b9a657541fe5447821debaa9fe5cbd538eb1a5f29"
         },
         {
-          "unit": "src/legoapi/batarang.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "3f710ac088db33363087de2b9a657541fe5447821debaa9fe5cbd538eb1a5f29",
-          "base_sha256": "3f710ac088db33363087de2b9a657541fe5447821debaa9fe5cbd538eb1a5f29"
-        },
-        {
           "unit": "src/legoapi/cutscene_lifecycle.c",
           "exact_match": true,
           "target_size": 8,
@@ -407441,6 +407422,14 @@
         },
         {
           "unit": "src/legoapi/utilities.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "3f710ac088db33363087de2b9a657541fe5447821debaa9fe5cbd538eb1a5f29",
+          "base_sha256": "3f710ac088db33363087de2b9a657541fe5447821debaa9fe5cbd538eb1a5f29"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -407647,14 +407636,14 @@
       "symbol": "??_C@_02HDNDEOON@?B?$KH?$AA@",
       "address": "0x007517a8",
       "units": [
-        "src/legoapi/batarang.cpp",
+        "src/legogame/batarang.cpp",
         "src/nu2api/input_key_names.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 3,
           "base_size": 3,
@@ -407677,13 +407666,13 @@
       "symbol": "??_C@_02GPELPLDK@?B?$LB?$AA@",
       "address": "0x007517ac",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 3,
           "base_size": 3,
@@ -407719,7 +407708,7 @@
       "symbol": "__real@3d800000",
       "address": "0x007517b0",
       "units": [
-        "src/legoapi/batarang.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/signal.cpp",
         "src/nu2api/nu3d_includes.cpp"
       ],
@@ -407727,7 +407716,7 @@
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -407760,13 +407749,13 @@
       "units": [
         "src/gameapi/edbri.c",
         "src/gameapi/rtl.c",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/gizmopickups.cpp",
         "src/legoapi/minikits.cpp",
         "src/legoapi/rtlhelper.cpp",
         "src/legoapi/specialsfx.c",
         "src/legoapi/status_alternate.cpp",
         "src/legoapi/tubes.cpp",
+        "src/legogame/batarang.cpp",
         "src/legogame/cable.cpp",
         "src/legogame/chris.cpp",
         "src/legogame/episodeII.cpp",
@@ -407801,14 +407790,6 @@
         },
         {
           "unit": "src/gameapi/rtl.c",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "4f4b9b7d8b86633e2824e2f439819357b0cd010ab410ea1a691b12c5f94e91e0",
-          "base_sha256": "4f4b9b7d8b86633e2824e2f439819357b0cd010ab410ea1a691b12c5f94e91e0"
-        },
-        {
-          "unit": "src/legoapi/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -407857,6 +407838,14 @@
         },
         {
           "unit": "src/legoapi/tubes.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "4f4b9b7d8b86633e2824e2f439819357b0cd010ab410ea1a691b12c5f94e91e0",
+          "base_sha256": "4f4b9b7d8b86633e2824e2f439819357b0cd010ab410ea1a691b12c5f94e91e0"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -408037,7 +408026,6 @@
         "src/gameapi/edpp.c",
         "src/gameapi/rtl.c",
         "src/legoapi/audio.cpp",
-        "src/legoapi/batarang.cpp",
         "src/legoapi/bolts.cpp",
         "src/legoapi/carrying.cpp",
         "src/legoapi/control_setup.cpp",
@@ -408060,6 +408048,7 @@
         "src/legoapi/status_alternate.cpp",
         "src/legoapi/text.cpp",
         "src/legoapi/whip.c",
+        "src/legogame/batarang.cpp",
         "src/legogame/batman_gameai.cpp",
         "src/legogame/bolt.cpp",
         "src/legogame/camera.cpp",
@@ -408148,14 +408137,6 @@
         },
         {
           "unit": "src/legoapi/audio.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d",
-          "base_sha256": "d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d"
-        },
-        {
-          "unit": "src/legoapi/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -408332,6 +408313,14 @@
         },
         {
           "unit": "src/legoapi/whip.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d",
+          "base_sha256": "d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d"
+        },
+        {
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -442181,13 +442170,13 @@
       "symbol": "??_C@_02BHLPILOJ@?B?$KD?$AA@",
       "address": "0x00754f9c",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 3,
           "base_size": 3,
@@ -748895,13 +748884,13 @@
       "symbol": "_BatarangCatwomanStunTime",
       "address": "0x007ef224",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -750709,18 +750698,19 @@
       "symbol": "_ID_DEFAULTCHARACTER_B",
       "address": "0x007f180c",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 2,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 2,
-          "base_size": 2,
+          "base_size": 4,
           "target_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb",
-          "base_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb"
+          "base_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb",
+          "gap_bytes": 2
         }
       ],
       "status": "exact"
@@ -750730,13 +750720,13 @@
       "symbol": "_id_ROBIN",
       "address": "0x007f180c",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 2,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 2,
           "base_size": 4,
@@ -756619,13 +756609,13 @@
       "symbol": "_TagAsciiDown",
       "address": "0x007f3a1c",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -776978,13 +776968,13 @@
       "symbol": "_GAMEPAD_JUMP",
       "address": "0x00802278",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -776999,13 +776989,13 @@
       "symbol": "_GAMEPAD_ACTION",
       "address": "0x0080227c",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -779651,13 +779641,13 @@
       "symbol": "_AddGameMsg_Default",
       "address": "0x00802cd8",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 80,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 80,
           "base_size": 80,
@@ -802065,13 +802055,13 @@
       "symbol": "_BatarangPackets",
       "address": "0x008548b8",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 1440,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 1440,
           "base_size": 1440,
@@ -803641,13 +803631,13 @@
       "symbol": "_Detonator",
       "address": "0x008569d8",
       "units": [
-        "src/legoapi/batarang.cpp"
+        "src/legogame/batarang.cpp"
       ],
       "target_size": 560,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/batarang.cpp",
+          "unit": "src/legogame/batarang.cpp",
           "exact_match": true,
           "target_size": 560,
           "base_size": 560,
@@ -900380,8 +900370,8 @@
     "fuzzy_coverage_percent": 96.47987463886845,
     "mapped_functions": 15914,
     "matched_functions": 13977,
-    "objdiff_fuzzy_percent": 96.97657,
-    "objdiff_total_code": 3338743,
+    "objdiff_fuzzy_percent": 96.97651,
+    "objdiff_total_code": 3338689,
     "image_bytes": 40067072,
     "mapped_bytes": 38533384,
     "mapping_percent": 96.17219845762625,
@@ -901785,7 +901775,7 @@
       "metadata_sha256": "525d436eee3d48951222f1fd54574554983d228c3d06f19a545ba7cab50fe057",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "eb3e79f36af76b839894724d5e777f68079f9323666701f6730f4c76340517ba",
+      "geometry_object_sha256": "1dbe2aea5b33e8013f759d546ea03a05e31442b0e98f1684e240bb0ade86da9c",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {

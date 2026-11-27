@@ -52,15 +52,10 @@
 #include "gameapi/ai/aisys/gameaiscript.h"
 #include "legoapi/gizmo/object/gizbuildit.h"
 #include "legoapi/world/levels/episodeV.h"
-static i16 id_ROBIN = -1;
-extern "C" {
-    const char *TagAsciiDown = "\xC2\xA3";
-}
 
 typedef PLAYER_BATARANG_SLOT BATARANG_NATIVE;
-
-/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 extern "C" {
+
     static f32 BatarangFabs(f32 f) {
         f32 rv;
 
@@ -380,10 +375,6 @@ extern "C" void Batarang_StartThrowQuick(GAMEOBJECT *object) {
     object->player.context_timer = AnimDuration((i16)object->id, 0xb2, 0.0f, 0.0f, 1);
 }
 
-extern "C" {
-    PLAYER_BATARANG_SLOT BatarangPackets[8] = {0};
-}
-
 /* An idle slot: nothing in flight, no owner, the throw cooldown restarted. */
 static void BatarangSlotReset(PLAYER_BATARANG_SLOT *slot) {
     slot->flight_state.in_flight = 0;
@@ -392,11 +383,26 @@ static void BatarangSlotReset(PLAYER_BATARANG_SLOT *slot) {
     slot->cooldown = 50;
 }
 
+extern "C" {
+    PLAYER_BATARANG_SLOT BatarangPackets[8] = {0};
+}
+
 void Batarangs_Reset(void) {
     i32 i;
     for (i = 0; i < 8; ++i) {
         PLAYER_BATARANG_SLOT *slot = &BatarangPackets[i];
         BatarangSlotReset(slot);
+    }
+}
+
+extern "C" {
+    /* The SDK's NuFdiv: zero when either operand is zero. */
+    static f32 BatarangFdiv(f32 a, f32 b) {
+        if (a == 0.0f || b == 0.0f) {
+            return 0.0f;
+        }
+        f32 result = a / b;
+        return result;
     }
 }
 
@@ -423,7 +429,7 @@ extern "C" i32 Batarang_InitRicochet(BATARANG_NATIVE *batarang, NUVEC *normal) {
     NuMtxSetIdentity(&rotation);
     f32 magnitudes = NuVecMag(&batarang->ricochet_normal) * NuVecMag(&reflected_velocity);
     f32 dot = NuVecDot(&batarang->ricochet_normal, &reflected_velocity);
-    f32 cosine = NuFdiv(dot, magnitudes);
+    f32 cosine = BatarangFdiv(dot, magnitudes);
     i32 angle = BatarangACos(cosine);
     NuMtxSetRotationAxis(&rotation, 0x8000 - angle * 2, &axis);
     NuVecMtxRotate(&reflected_velocity, &reflected_velocity, &rotation);
@@ -514,6 +520,8 @@ void Batarangs_CheckLostData(void *data) {
     }
 }
 
+static i16 id_ROBIN = -1;
+
 i32 BatarangGetObjectFromCharId(i32 character) {
     return 0x32 + (character == id_ROBIN);
 }
@@ -534,6 +542,10 @@ extern "C" void Batarang_GetSightInfo(i32 character, i32 *red, i32 *green, i32 *
             NuStrCpy(text, "\xc2\xa7");
         }
     }
+}
+
+extern "C" {
+    i16 ID_DEFAULTCHARACTER_B = -1;
 }
 
 i32 Batarang_StartTargetting(GAMEOBJECT *object) {
@@ -566,6 +578,7 @@ i32 Batarang_StartTargetting(GAMEOBJECT *object) {
 }
 
 extern "C" {
+    const char *TagAsciiDown = "\xC2\xA3";
     u32 GAMEPAD_JUMP = PAD_BUTTON_CROSS;
     u32 GAMEPAD_ACTION = PAD_BUTTON_SQUARE;
     ADD_GAME_MESSAGE AddGameMsg_Default = {NULL, &v000, &v000, 1.0f, 1.0f, 255,  255,  255,  128,  0,  1.0f, 0.0f, 0, -1,
@@ -862,17 +875,4 @@ extern "C" void Batarangs_Update(void) {
             GizmoBlowupBlowup(static_cast<GIZMOBLOWUP *>(target.object), 1, BLOWUP_HIT_BATARANG, 2, NULL, 1);
         }
     }
-}
-
-extern "C" {
-
-    i16 ID_DEFAULTCHARACTER_B = -1;
-}
-
-extern "C" f32 NuFdiv(f32 a, f32 b) {
-    if (a == 0.0f || b == 0.0f) {
-        return 0.0f;
-    }
-    f32 result = a / b;
-    return result;
 }
