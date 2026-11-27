@@ -449,12 +449,12 @@
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
     "config/sibling-names.csv": "0412f6238a62d5d75181cb275bbaeea889f8b7e7021810b9b5261dbbe9852810",
     "config/standalone-budget.json": "7f7c580012d4dfaecc55c9c35cf3461c9c45615ddc805efb95d7aae11b86330f",
-    "config/symbols.csv": "2700b66f181bfa8851aeb2634785542ae9c9817ca2a105e5c361f80fb2292de6",
+    "config/symbols.csv": "6dba98c66ec2cd04eeb9d06873e9ff8841dad5886aa520d108c9d5089cf0139e",
     "config/symbols.md": "3d018cc044b5a14025b0fc457df71a0c9a193cea32ceb3081e6a86bcdd4b242b",
     "config/toolchain.json": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
     "config/tools.json": "8e9a5f8077abc1bd9cce37004a47ea493e67a75ba964d8df3f13223958e6f4c8",
-    "config/units.csv": "3947f737772a0f4c6cb974c823e4ee0a932fe8bfe79f4eb7d9b42a290a8f37dd",
-    "config/warning-budget.json": "afc6df3b52459209dd38852b0aa26a2a551e8f0ec09e3c7c1e655c59526033b8",
+    "config/units.csv": "1a20ab8648366fad5546a87d2888dd8ba35a9694296c20dad585debbcc09e53f",
+    "config/warning-budget.json": "2fb62147f02c41b6f3c48da61b374099ba00403e547c81315cbe5564ebe44c54",
     "tools/altbuild.py": "bf4e210afbe779e689abd7b160d5deae2948913c5b8b5020ad9a16c3b612b02a",
     "tools/binary.py": "1168154b0bf5549c93bc5fa22fc3dafb48c9529d3ea681bb447552928cc066eb",
     "tools/budget.py": "69b0498aa7e5eaedd28cc66b03ee235fe2d51f65b761a0dae84c4a4ca50ece07",
@@ -531,7 +531,7 @@
     "tools/test_dat.py": "307c7cb1150e885e97c81349d46467b3a4e0562ffd061d63fa6a64d99aa6f888",
     "tools/test_data_members.py": "c2a4e46a27eeac5ccb42ed5eb8f1067c039d460823ae168c034d5f063a5b8a0f",
     "tools/test_datadiff.py": "5dee79c307d50cbe2c28b7b27f352506f22484ff663ef6101bc57cbb8b53566a",
-    "tools/test_datasizes.py": "f11007a00d89cacd78d7718eaaefb78cabf5de3ea2a6a16f24824c2d71a04e28",
+    "tools/test_datasizes.py": "1ea1836c987815344beba20576a19d4d5df855d7b0599a6a4fcc2dda119cbadd",
     "tools/test_debug_identity.py": "835ad86e989a518955b9b69cb5e9fbf809d58db0563eab257d22621807ef3beb",
     "tools/test_declscan.py": "01a884bcda6e61fafe153c29bb098cb79d3438dd38c472a7f94fdd47c821e26a",
     "tools/test_dependencies.py": "28b203a0ee2ed566486a0dafc20b79b00f1beb54307f10cda68cd79f0fdd9c65",
@@ -724,7 +724,6 @@
     "src/legoapi/texanim_scripts.cpp": "07e6d1f5835999c5712371d99a60c537af4124d3d36a7c34b364c6c38fba4a4d",
     "src/legoapi/text.cpp": "7b3740be7d7339ff8dafc6c8ac2afe269177500fb3de2f7f08f194f2faac5e1b",
     "src/legoapi/text_tables.cpp": "9f4a118bc571386da54b9d988525af79008e4e58e89ffdf1d7f1a6d6742fba99",
-    "src/legoapi/thermaldetonators.cpp": "f73e222a9463bbd21db0b1a409310f4cd421c7245a7dca15ce0341cbc17a05eb",
     "src/legoapi/timing.cpp": "63e725ed6f0115f73abbac2c386f4614ff0dfecefc03431a420677d54f1996e7",
     "src/legoapi/tubes.cpp": "9016b2f21598479e753986a8de01615a41c04bf4e873e830236bd38585a65ad5",
     "src/legoapi/utilities.cpp": "f1bff0ed4206fd2dd4a83533a6682e794ed8e8888980c6b91bc39b83b9aa3e5f",
@@ -746,8 +745,8 @@
     "src/legogame/episodeIV.cpp": "17330c3b87598bba359d2f04879cc7d9df01760ebf8611435b213b6eae0d2009",
     "src/legogame/game.cpp": "dbcf5bedf428debba2ed9a31aa7db197bfb23c93a249706efdf4d1ca65f884a1",
     "src/legogame/game_deb.cpp": "0ba2620d8ee653d52871f93765ab458c2ab9b75e453f16a4394df33745ed5222",
-    "src/legogame/game_obj.cpp": "e33783006bbd5a5d38fff052296f7d8abb29b9e27995c85392928c6a239fad93",
-    "src/legogame/gameai.cpp": "9096ef69f59f4b11d5619214c20aeaa21c4c4fbf52a777cebb213df656b08d58",
+    "src/legogame/game_obj.cpp": "218ebf35300191e15c4b8c312ed73986a883bb7ead68cb8e3272ed21c8673b3c",
+    "src/legogame/gameai.cpp": "dff521924aa8265419f4855f4e27b8417ccb455c4dd9de18ab80f3413604cb02",
     "src/legogame/gameaiscript.cpp": "fb107985ff0126e9368f5e2e446f47e029145e3f78dff811fda62547a0aa306c",
     "src/legogame/gamehint.cpp": "835e79bc6e85057de239aad413135e885e397d2b5b18564b8caf4e8d51e603a0",
     "src/legogame/gamestatus.cpp": "068016920828f601d4a6588a87be11cbcb8130bc3d660e5ac02013cc1f5fc27e",
@@ -785,6 +784,7 @@
     "src/legogame/techno.cpp": "201c49ed3891409d1ff5f64caf690ade972f56608b5959657cc3ddfcfa58d5d2",
     "src/legogame/teleport.cpp": "5c3ff011e22815bff8e58a230cfdf11933af0415d547bf14297ece660a62b91a",
     "src/legogame/text.cpp": "1166de988aee6729b01b5f28be7f2dde57c08d6281fe8848f7b7141d1f78698d",
+    "src/legogame/thermaldetonators.cpp": "3fa7de5b047bd692423930860d1df1c625ff11f38e8c81dd0c236200f765c7bb",
     "src/legogame/tightrope.cpp": "7906b89e57cafaa2af4fa8490c3461b388d8d2c8bc1eb39d451e57166fd8fd3e",
     "src/legogame/torpedo.cpp": "6255e353fb8025521b541aa2b7be4f568397c57cfaa31d0cc698772b274a67e1",
     "src/legogame/traffic.cpp": "a40ae833aa3a895eba1b6d03ebcdfd02ee3e61ce22d2a2fa40fac116d873bfa7",
@@ -1164,7 +1164,6 @@
     "build/obj/legoapi/texanim_scripts.obj": "f8154cf60585fcd25f3f0b8cf4eeb17412db18faccae5fb8ca8f471644df4fd7",
     "build/obj/legoapi/text.obj": "cc5e8dc99075ceb82f0c418ea3d04a3076cbf45ad716e40e4b84c9fdefdbc2ca",
     "build/obj/legoapi/text_tables.obj": "e80f92f8fdbc1ef18462bdfdc070bf11da2415fc5a91a0b6d7cbb89c6016b6f7",
-    "build/obj/legoapi/thermaldetonators.obj": "f7375112657c476336526be6fe64f2c0a0b398baaf6b80768b4c7e3b73550373",
     "build/obj/legoapi/timing.obj": "454a6b24167d16e331f17a7758975adff99704e8281239911cfac4ae22471656",
     "build/obj/legoapi/tubes.obj": "13d2c9afbe3080fd504eaf491812d1287a65550df07a3da19affab156ee3c9fc",
     "build/obj/legoapi/utilities.obj": "8a9a3f742ccb14eaa71e90b6df529dadfccae6a8c6f50b73a7bf1f052e8859ea",
@@ -1187,8 +1186,8 @@
     "build/obj/legogame/episodeIV.obj": "0a122d2679e9a0e176b6120b7f4250f34bb5307afa0213a7f4a2f0e4f5c00bbb",
     "build/obj/legogame/game.obj": "7ca180abdb0c1e4fdd71c4ad5c08cf1d74c80c12e6c57063ebb9e879ab59dbaf",
     "build/obj/legogame/game_deb.obj": "54de7ea551ee6e7f3fa14e4425926fb6c81543f26feb8829544c035b892f3b68",
-    "build/obj/legogame/game_obj.obj": "edd425da09bcfe37cdaf7fbf1a155faa71201141c3f6d493f90adc346c2efd72",
-    "build/obj/legogame/gameai.obj": "029ae6bebc736ca48c2334c369ab20fa8db55b470bbafc8a1dafcf403e22ddf3",
+    "build/obj/legogame/game_obj.obj": "157d49aa17d6311f965ecfe96bd4741c82191b533b7bbd2fa63ce028e1e22f77",
+    "build/obj/legogame/gameai.obj": "898337853f36f5b67f96baabf00a2dac4c0c2b9906041f9ff842f6aee5c5fc19",
     "build/obj/legogame/gameaiscript.obj": "12621696c2e071257f77f767bbf20ce68cb7c32aaef19566c0a0476ee0f921db",
     "build/obj/legogame/gamehint.obj": "54704f53550c7318419f10a650098f528b1ec77a1bd4fd737f888916fb8b2264",
     "build/obj/legogame/gamestatus.obj": "ea924d953dfacab7903d80154f3d0d224b5a5f0cf3cc4f4e99b95c73cde141e9",
@@ -1226,6 +1225,7 @@
     "build/obj/legogame/techno.obj": "8ad4a887333ae663236b994ca400a34cddc69510f59bf339012300aaea679c37",
     "build/obj/legogame/teleport.obj": "63028c0eff5e3bfe7914c35b19b9925f27eef3ab0ef9427d963ad87bd57a9263",
     "build/obj/legogame/text.obj": "67544028e74896f866bf91f2280cc112497f6b7cb803181114fefadc67911460",
+    "build/obj/legogame/thermaldetonators.obj": "0d24699277e85efdb1c5bb5d37b22152df276491d53854574bc5023dc7d440a9",
     "build/obj/legogame/tightrope.obj": "764b4410d532f27a8d1a48398938fe68b4ec74711428d2f78d8acf5b0ad14160",
     "build/obj/legogame/torpedo.obj": "8203e9e61610654ed936875f7ae7df7f7d95aebb8d0b8d812c392589b9cd795a",
     "build/obj/legogame/traffic.obj": "66abb0e7b6a19bcef095b0900ae4ece0cfd6e76781a517e4a5bcb1f3a83a82bd",
@@ -60691,19 +60691,19 @@
       "symbol": "_PartImpact_ThermalDetonator",
       "address": "0x004cf680",
       "units": [
-        "src/legoapi/thermaldetonators.cpp"
+        "src/legogame/thermaldetonators.cpp"
       ],
       "target_size": 413,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/legoapi/thermaldetonators.cpp",
+          "unit": "src/legogame/thermaldetonators.cpp",
           "base_size": 407,
           "exact_match": false,
           "target_sha256": "7c53bd6b07b10fe2b13140806125e8264d5ef1cede51c37662d5e8eb7c34c222",
           "base_sha256": "0a54f7fee608a04065e4abcabff493a2bd2698fbea5088f0416970f962fb0e8c",
           "relocation_count": 19,
-          "comparison_unit": "004cf680-cccbd8f42b7a",
+          "comparison_unit": "004cf680-075409f2af33",
           "objdiff_percent": 82.60162
         }
       ],
@@ -60721,19 +60721,19 @@
       "symbol": "_PartUpdate_ThermalDetonator",
       "address": "0x004cf820",
       "units": [
-        "src/legoapi/thermaldetonators.cpp"
+        "src/legogame/thermaldetonators.cpp"
       ],
       "target_size": 451,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/thermaldetonators.cpp",
+          "unit": "src/legogame/thermaldetonators.cpp",
           "base_size": 451,
           "exact_match": true,
           "target_sha256": "fd2f413abd87284fcd6af1ab2a3f38200ae995c1840987f89a21c9b9a0123acf",
           "base_sha256": "fd2f413abd87284fcd6af1ab2a3f38200ae995c1840987f89a21c9b9a0123acf",
           "relocation_count": 19,
-          "comparison_unit": "004cf820-e2d23846969a",
+          "comparison_unit": "004cf820-c1b3161e7ae6",
           "objdiff_percent": 100.0
         }
       ],
@@ -60745,19 +60745,19 @@
       "symbol": "_PartDraw_ThermalDetonator",
       "address": "0x004cf9f0",
       "units": [
-        "src/legoapi/thermaldetonators.cpp"
+        "src/legogame/thermaldetonators.cpp"
       ],
       "target_size": 313,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/thermaldetonators.cpp",
+          "unit": "src/legogame/thermaldetonators.cpp",
           "base_size": 313,
           "exact_match": true,
           "target_sha256": "ea6e98472cbe557d9a89111274e1c99b2dc3a8a21cf094621b307915c38d20de",
           "base_sha256": "ea6e98472cbe557d9a89111274e1c99b2dc3a8a21cf094621b307915c38d20de",
           "relocation_count": 11,
-          "comparison_unit": "004cf9f0-6ed9aa1f9cbc",
+          "comparison_unit": "004cf9f0-131e3dbbb430",
           "objdiff_percent": 100.0
         }
       ],
@@ -60769,19 +60769,19 @@
       "symbol": "_PartKill_ThermalDetonator",
       "address": "0x004cfb30",
       "units": [
-        "src/legoapi/thermaldetonators.cpp"
+        "src/legogame/thermaldetonators.cpp"
       ],
       "target_size": 124,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/thermaldetonators.cpp",
+          "unit": "src/legogame/thermaldetonators.cpp",
           "base_size": 124,
           "exact_match": true,
           "target_sha256": "e6bb42511d6a61a0d945e182ce390bd6a617a946cf0fa9f689443d7f6407b382",
           "base_sha256": "e6bb42511d6a61a0d945e182ce390bd6a617a946cf0fa9f689443d7f6407b382",
           "relocation_count": 3,
-          "comparison_unit": "004cfb30-7c1f560fc769",
+          "comparison_unit": "004cfb30-4cc958e5d454",
           "objdiff_percent": 100.0
         }
       ],
@@ -60793,19 +60793,19 @@
       "symbol": "_ThermalDetonator_Throw",
       "address": "0x004cfbb0",
       "units": [
-        "src/legoapi/thermaldetonators.cpp"
+        "src/legogame/thermaldetonators.cpp"
       ],
       "target_size": 993,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/thermaldetonators.cpp",
+          "unit": "src/legogame/thermaldetonators.cpp",
           "base_size": 993,
           "exact_match": true,
           "target_sha256": "7d3a34171835dfa9872a3da85f02aeb893b15820878b3810dbca09634f4da7ed",
           "base_sha256": "7d3a34171835dfa9872a3da85f02aeb893b15820878b3810dbca09634f4da7ed",
           "relocation_count": 46,
-          "comparison_unit": "004cfbb0-014c5ee9e1fb",
+          "comparison_unit": "004cfbb0-2b67025f0792",
           "objdiff_percent": 100.0
         }
       ],
@@ -60817,19 +60817,19 @@
       "symbol": "_ThermalDetonator_ThrowMom",
       "address": "0x004cffa0",
       "units": [
-        "src/legoapi/thermaldetonators.cpp"
+        "src/legogame/thermaldetonators.cpp"
       ],
       "target_size": 744,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/thermaldetonators.cpp",
+          "unit": "src/legogame/thermaldetonators.cpp",
           "base_size": 744,
           "exact_match": true,
           "target_sha256": "b1bfc4936b4afc8dcf19a66a82690fcbb8803c69564b54b2b947183ccecc4def",
           "base_sha256": "b1bfc4936b4afc8dcf19a66a82690fcbb8803c69564b54b2b947183ccecc4def",
           "relocation_count": 37,
-          "comparison_unit": "004cffa0-48425a63cdc8",
+          "comparison_unit": "004cffa0-1bd7d9718697",
           "objdiff_percent": 100.0
         }
       ],
@@ -60841,19 +60841,19 @@
       "symbol": "_ThermalDetonator_MoveCode",
       "address": "0x004d0290",
       "units": [
-        "src/legoapi/thermaldetonators.cpp"
+        "src/legogame/thermaldetonators.cpp"
       ],
       "target_size": 727,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/legoapi/thermaldetonators.cpp",
+          "unit": "src/legogame/thermaldetonators.cpp",
           "base_size": 719,
           "exact_match": false,
           "target_sha256": "2cceea53f724b30d63385a1151ebbed3ae16bc47bb4887d1733c6d306a11b2b0",
           "base_sha256": "d2cd2eda68e9af0c7e868c174dbfa441dafc79b430845acee64b6c086c42d3d6",
           "relocation_count": 13,
-          "comparison_unit": "004d0290-a8655f869b1c",
+          "comparison_unit": "004d0290-f0b90f5cdf15",
           "objdiff_percent": 89.938095
         }
       ],
@@ -60874,19 +60874,19 @@
       "symbol": "_ShinyMetal_UpdateHint",
       "address": "0x004d0570",
       "units": [
-        "src/legoapi/thermaldetonators.cpp"
+        "src/legogame/thermaldetonators.cpp"
       ],
       "target_size": 214,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/thermaldetonators.cpp",
+          "unit": "src/legogame/thermaldetonators.cpp",
           "base_size": 214,
           "exact_match": true,
           "target_sha256": "bbc8d0b855f7908730195f85e139091a6cffa6dda75a5989c5793c982e00567e",
           "base_sha256": "bbc8d0b855f7908730195f85e139091a6cffa6dda75a5989c5793c982e00567e",
           "relocation_count": 14,
-          "comparison_unit": "004d0570-dd42c0a511d0",
+          "comparison_unit": "004d0570-d2628a73bb11",
           "objdiff_percent": 100.0
         }
       ],
@@ -388347,7 +388347,6 @@
         "src/legoapi/streaks.cpp",
         "src/legoapi/surfaces.cpp",
         "src/legoapi/text.cpp",
-        "src/legoapi/thermaldetonators.cpp",
         "src/legoapi/timing.cpp",
         "src/legoapi/utilities.cpp",
         "src/legoapi/whip.c",
@@ -388401,6 +388400,7 @@
         "src/legogame/starwars_gameai.cpp",
         "src/legogame/techno.cpp",
         "src/legogame/teleport.cpp",
+        "src/legogame/thermaldetonators.cpp",
         "src/legogame/tightrope.cpp",
         "src/legogame/torpedo.cpp",
         "src/legogame/traffic.cpp",
@@ -389197,14 +389197,6 @@
           "base_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
         },
         {
-          "unit": "src/legoapi/thermaldetonators.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c",
-          "base_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
-        },
-        {
           "unit": "src/legoapi/timing.cpp",
           "exact_match": true,
           "target_size": 4,
@@ -389629,6 +389621,14 @@
           "base_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
         },
         {
+          "unit": "src/legogame/thermaldetonators.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c",
+          "base_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
+        },
+        {
           "unit": "src/legogame/tightrope.cpp",
           "exact_match": true,
           "target_size": 4,
@@ -389998,7 +389998,6 @@
         "src/legoapi/status_alternate.cpp",
         "src/legoapi/streaks.cpp",
         "src/legoapi/tagging.cpp",
-        "src/legoapi/thermaldetonators.cpp",
         "src/legoapi/timing.cpp",
         "src/legoapi/utilities.cpp",
         "src/legoapi/whip.c",
@@ -390045,6 +390044,7 @@
         "src/legogame/techno.cpp",
         "src/legogame/teleport.cpp",
         "src/legogame/text.cpp",
+        "src/legogame/thermaldetonators.cpp",
         "src/legogame/tightrope.cpp",
         "src/legogame/torpedo.cpp",
         "src/legogame/zipup.cpp",
@@ -390464,14 +390464,6 @@
           "base_sha256": "d99e58435243d9fef9c88273b8d553b4fba4d0baf8009d29eae74fa99e0d9f57"
         },
         {
-          "unit": "src/legoapi/thermaldetonators.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "d99e58435243d9fef9c88273b8d553b4fba4d0baf8009d29eae74fa99e0d9f57",
-          "base_sha256": "d99e58435243d9fef9c88273b8d553b4fba4d0baf8009d29eae74fa99e0d9f57"
-        },
-        {
           "unit": "src/legoapi/timing.cpp",
           "exact_match": true,
           "target_size": 4,
@@ -390833,6 +390825,14 @@
         },
         {
           "unit": "src/legogame/text.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "d99e58435243d9fef9c88273b8d553b4fba4d0baf8009d29eae74fa99e0d9f57",
+          "base_sha256": "d99e58435243d9fef9c88273b8d553b4fba4d0baf8009d29eae74fa99e0d9f57"
+        },
+        {
+          "unit": "src/legogame/thermaldetonators.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -391489,7 +391489,6 @@
         "src/legoapi/simpletons.cpp",
         "src/legoapi/snake.cpp",
         "src/legoapi/socksys.c",
-        "src/legoapi/thermaldetonators.cpp",
         "src/legoapi/utilities.cpp",
         "src/legogame/aitrigger.cpp",
         "src/legogame/attracto.cpp",
@@ -391511,6 +391510,7 @@
         "src/legogame/signal.cpp",
         "src/legogame/techno.cpp",
         "src/legogame/teleport.cpp",
+        "src/legogame/thermaldetonators.cpp",
         "src/legogame/zipup.cpp",
         "src/nu2api/nuobject.c",
         "src/nu2api/nuwind.c",
@@ -391673,14 +391673,6 @@
         },
         {
           "unit": "src/legoapi/socksys.c",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "3a90d026a393f9d932af641537d402879f87b4647350c0df27eaa649927a6227",
-          "base_sha256": "3a90d026a393f9d932af641537d402879f87b4647350c0df27eaa649927a6227"
-        },
-        {
-          "unit": "src/legoapi/thermaldetonators.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -391856,6 +391848,14 @@
           "base_sha256": "3a90d026a393f9d932af641537d402879f87b4647350c0df27eaa649927a6227"
         },
         {
+          "unit": "src/legogame/thermaldetonators.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "3a90d026a393f9d932af641537d402879f87b4647350c0df27eaa649927a6227",
+          "base_sha256": "3a90d026a393f9d932af641537d402879f87b4647350c0df27eaa649927a6227"
+        },
+        {
           "unit": "src/legogame/zipup.cpp",
           "exact_match": true,
           "target_size": 8,
@@ -391927,7 +391927,6 @@
         "src/legoapi/status_alternate.cpp",
         "src/legoapi/streaks.cpp",
         "src/legoapi/surfaces.cpp",
-        "src/legoapi/thermaldetonators.cpp",
         "src/legoapi/utilities.cpp",
         "src/legogame/aitrigger.cpp",
         "src/legogame/attracto.cpp",
@@ -391960,6 +391959,7 @@
         "src/legogame/startup.cpp",
         "src/legogame/techno.cpp",
         "src/legogame/teleport.cpp",
+        "src/legogame/thermaldetonators.cpp",
         "src/legogame/torpedo.cpp",
         "src/legogame/traffic.cpp",
         "src/legogame/zipup.cpp",
@@ -392228,14 +392228,6 @@
           "base_sha256": "fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d"
         },
         {
-          "unit": "src/legoapi/thermaldetonators.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d",
-          "base_sha256": "fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d"
-        },
-        {
           "unit": "src/legoapi/utilities.cpp",
           "exact_match": true,
           "target_size": 4,
@@ -392485,6 +392477,14 @@
         },
         {
           "unit": "src/legogame/teleport.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d",
+          "base_sha256": "fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d"
+        },
+        {
+          "unit": "src/legogame/thermaldetonators.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -393313,7 +393313,6 @@
         "src/legoapi/surfaces.cpp",
         "src/legoapi/tagging.cpp",
         "src/legoapi/text.cpp",
-        "src/legoapi/thermaldetonators.cpp",
         "src/legoapi/timing.cpp",
         "src/legoapi/tubes.cpp",
         "src/legoapi/utilities.cpp",
@@ -393369,6 +393368,7 @@
         "src/legogame/techno.cpp",
         "src/legogame/teleport.cpp",
         "src/legogame/text.cpp",
+        "src/legogame/thermaldetonators.cpp",
         "src/legogame/tightrope.cpp",
         "src/legogame/torpedo.cpp",
         "src/legogame/traffic.cpp",
@@ -394345,14 +394345,6 @@
           "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
         },
         {
-          "unit": "src/legoapi/thermaldetonators.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
-          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
-        },
-        {
           "unit": "src/legoapi/timing.cpp",
           "exact_match": true,
           "target_size": 4,
@@ -394786,6 +394778,14 @@
         },
         {
           "unit": "src/legogame/text.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        },
+        {
+          "unit": "src/legogame/thermaldetonators.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -402547,7 +402547,6 @@
         "src/legoapi/pushing.cpp",
         "src/legoapi/screen.cpp",
         "src/legoapi/status_alternate.cpp",
-        "src/legoapi/thermaldetonators.cpp",
         "src/legogame/attracto.cpp",
         "src/legogame/camera.cpp",
         "src/legogame/chris.cpp",
@@ -402574,6 +402573,7 @@
         "src/legogame/shard.cpp",
         "src/legogame/startup.cpp",
         "src/legogame/teleport.cpp",
+        "src/legogame/thermaldetonators.cpp",
         "src/legogame/torpedo.cpp",
         "src/legogame/zipup.cpp",
         "src/nu2api/nu3d_includes.cpp",
@@ -402690,14 +402690,6 @@
         },
         {
           "unit": "src/legoapi/status_alternate.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "ea2845900b5856c9bf354b1aa9761b5aa6888e5ed61738fe9579ca42bc0f6054",
-          "base_sha256": "ea2845900b5856c9bf354b1aa9761b5aa6888e5ed61738fe9579ca42bc0f6054"
-        },
-        {
-          "unit": "src/legoapi/thermaldetonators.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -402913,6 +402905,14 @@
           "base_sha256": "ea2845900b5856c9bf354b1aa9761b5aa6888e5ed61738fe9579ca42bc0f6054"
         },
         {
+          "unit": "src/legogame/thermaldetonators.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "ea2845900b5856c9bf354b1aa9761b5aa6888e5ed61738fe9579ca42bc0f6054",
+          "base_sha256": "ea2845900b5856c9bf354b1aa9761b5aa6888e5ed61738fe9579ca42bc0f6054"
+        },
+        {
           "unit": "src/legogame/torpedo.cpp",
           "exact_match": true,
           "target_size": 4,
@@ -402987,7 +402987,6 @@
         "src/legoapi/rtlhelper.cpp",
         "src/legoapi/simpletons.cpp",
         "src/legoapi/snake.cpp",
-        "src/legoapi/thermaldetonators.cpp",
         "src/legogame/attracto.cpp",
         "src/legogame/cable.cpp",
         "src/legogame/camera.cpp",
@@ -403006,6 +403005,7 @@
         "src/legogame/panel.cpp",
         "src/legogame/shard.cpp",
         "src/legogame/teleport.cpp",
+        "src/legogame/thermaldetonators.cpp",
         "src/nu2api/numath_includes.c",
         "src/nu2api/pc_fmv_player.cpp",
         "src/nu2api/terrain_query.cpp"
@@ -403166,14 +403166,6 @@
           "base_sha256": "80c8a717ccd70c8809eb78e6a9591c003e11c721fe0ccaf62fd592abda1a5593"
         },
         {
-          "unit": "src/legoapi/thermaldetonators.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "80c8a717ccd70c8809eb78e6a9591c003e11c721fe0ccaf62fd592abda1a5593",
-          "base_sha256": "80c8a717ccd70c8809eb78e6a9591c003e11c721fe0ccaf62fd592abda1a5593"
-        },
-        {
           "unit": "src/legogame/attracto.cpp",
           "exact_match": true,
           "target_size": 4,
@@ -403311,6 +403303,14 @@
         },
         {
           "unit": "src/legogame/teleport.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "80c8a717ccd70c8809eb78e6a9591c003e11c721fe0ccaf62fd592abda1a5593",
+          "base_sha256": "80c8a717ccd70c8809eb78e6a9591c003e11c721fe0ccaf62fd592abda1a5593"
+        },
+        {
+          "unit": "src/legogame/thermaldetonators.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -407242,7 +407242,6 @@
         "src/legoapi/simpletons.cpp",
         "src/legoapi/specialsfx.c",
         "src/legoapi/status_alternate.cpp",
-        "src/legoapi/thermaldetonators.cpp",
         "src/legoapi/utilities.cpp",
         "src/legogame/chris.cpp",
         "src/legogame/episodeI.cpp",
@@ -407255,6 +407254,7 @@
         "src/legogame/move.cpp",
         "src/legogame/panel.cpp",
         "src/legogame/signal.cpp",
+        "src/legogame/thermaldetonators.cpp",
         "src/legogame/transform.cpp",
         "src/nu2api/nu3d_includes.cpp",
         "src/nu2api/nubridge.c",
@@ -407431,14 +407431,6 @@
           "base_sha256": "3f710ac088db33363087de2b9a657541fe5447821debaa9fe5cbd538eb1a5f29"
         },
         {
-          "unit": "src/legoapi/thermaldetonators.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "3f710ac088db33363087de2b9a657541fe5447821debaa9fe5cbd538eb1a5f29",
-          "base_sha256": "3f710ac088db33363087de2b9a657541fe5447821debaa9fe5cbd538eb1a5f29"
-        },
-        {
           "unit": "src/legoapi/utilities.cpp",
           "exact_match": true,
           "target_size": 8,
@@ -407528,6 +407520,14 @@
         },
         {
           "unit": "src/legogame/signal.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "3f710ac088db33363087de2b9a657541fe5447821debaa9fe5cbd538eb1a5f29",
+          "base_sha256": "3f710ac088db33363087de2b9a657541fe5447821debaa9fe5cbd538eb1a5f29"
+        },
+        {
+          "unit": "src/legogame/thermaldetonators.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -408044,7 +408044,6 @@
         "src/legoapi/ripples.cpp",
         "src/legoapi/status_alternate.cpp",
         "src/legoapi/text.cpp",
-        "src/legoapi/thermaldetonators.cpp",
         "src/legoapi/whip.c",
         "src/legogame/bolt.cpp",
         "src/legogame/camera.cpp",
@@ -408077,6 +408076,7 @@
         "src/legogame/speederchase.cpp",
         "src/legogame/starwars_gameai.cpp",
         "src/legogame/teleport.cpp",
+        "src/legogame/thermaldetonators.cpp",
         "src/legogame/tightrope.cpp",
         "src/legogame/zipup.cpp",
         "src/nu2api/input_runtime.cpp",
@@ -408323,14 +408323,6 @@
         },
         {
           "unit": "src/legoapi/text.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d",
-          "base_sha256": "d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d"
-        },
-        {
-          "unit": "src/legoapi/thermaldetonators.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -408587,6 +408579,14 @@
         },
         {
           "unit": "src/legogame/teleport.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d",
+          "base_sha256": "d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d"
+        },
+        {
+          "unit": "src/legogame/thermaldetonators.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -414576,7 +414576,6 @@
         "src/legoapi/rtlhelper.cpp",
         "src/legoapi/screen.cpp",
         "src/legoapi/status_alternate.cpp",
-        "src/legoapi/thermaldetonators.cpp",
         "src/legogame/camera.cpp",
         "src/legogame/episodeI.cpp",
         "src/legogame/episodeIV.cpp",
@@ -414589,6 +414588,7 @@
         "src/legogame/menu.cpp",
         "src/legogame/move.cpp",
         "src/legogame/signal.cpp",
+        "src/legogame/thermaldetonators.cpp",
         "src/nu2api/nu3d_includes.cpp",
         "src/nu2api/nurain.c",
         "src/nu2api/nuwind.c",
@@ -414672,14 +414672,6 @@
         },
         {
           "unit": "src/legoapi/status_alternate.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "e4319a2d73934f7c5fcec97280687f50b66a4335ae57a4ae90f3920400c8f976",
-          "base_sha256": "e4319a2d73934f7c5fcec97280687f50b66a4335ae57a4ae90f3920400c8f976"
-        },
-        {
-          "unit": "src/legoapi/thermaldetonators.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -414776,6 +414768,14 @@
         },
         {
           "unit": "src/legogame/signal.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "e4319a2d73934f7c5fcec97280687f50b66a4335ae57a4ae90f3920400c8f976",
+          "base_sha256": "e4319a2d73934f7c5fcec97280687f50b66a4335ae57a4ae90f3920400c8f976"
+        },
+        {
+          "unit": "src/legogame/thermaldetonators.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -416729,10 +416729,10 @@
         "src/gameapi/edpart.c",
         "src/gameapi/edpp.c",
         "src/legoapi/debris_engine.c",
-        "src/legoapi/thermaldetonators.cpp",
         "src/legogame/chris.cpp",
         "src/legogame/gameaiscript.cpp",
         "src/legogame/move.cpp",
+        "src/legogame/thermaldetonators.cpp",
         "src/nu2api/nucore_includes.c"
       ],
       "target_size": 8,
@@ -416763,14 +416763,6 @@
           "base_sha256": "e7b8ee63056a30fe915339c69a58a2c6524122e307384c171a612d2c97c26a3a"
         },
         {
-          "unit": "src/legoapi/thermaldetonators.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "e7b8ee63056a30fe915339c69a58a2c6524122e307384c171a612d2c97c26a3a",
-          "base_sha256": "e7b8ee63056a30fe915339c69a58a2c6524122e307384c171a612d2c97c26a3a"
-        },
-        {
           "unit": "src/legogame/chris.cpp",
           "exact_match": true,
           "target_size": 8,
@@ -416788,6 +416780,14 @@
         },
         {
           "unit": "src/legogame/move.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "e7b8ee63056a30fe915339c69a58a2c6524122e307384c171a612d2c97c26a3a",
+          "base_sha256": "e7b8ee63056a30fe915339c69a58a2c6524122e307384c171a612d2c97c26a3a"
+        },
+        {
+          "unit": "src/legogame/thermaldetonators.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -417822,7 +417822,6 @@
         "src/legoapi/players.cpp",
         "src/legoapi/simpletons.cpp",
         "src/legoapi/surfaces.cpp",
-        "src/legoapi/thermaldetonators.cpp",
         "src/legoapi/utilities.cpp",
         "src/legogame/chris.cpp",
         "src/legogame/creature.cpp",
@@ -417835,6 +417834,7 @@
         "src/legogame/levels.cpp",
         "src/legogame/move.cpp",
         "src/legogame/teleport.cpp",
+        "src/legogame/thermaldetonators.cpp",
         "src/legogame/torpedo.cpp",
         "src/nu2api/terrain_collision.cpp"
       ],
@@ -417946,14 +417946,6 @@
           "base_sha256": "13c79b20846fd648330bc58b569bfb3b28e3ae6a85bda1ed60a0730eec087d8b"
         },
         {
-          "unit": "src/legoapi/thermaldetonators.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "13c79b20846fd648330bc58b569bfb3b28e3ae6a85bda1ed60a0730eec087d8b",
-          "base_sha256": "13c79b20846fd648330bc58b569bfb3b28e3ae6a85bda1ed60a0730eec087d8b"
-        },
-        {
           "unit": "src/legoapi/utilities.cpp",
           "exact_match": true,
           "target_size": 4,
@@ -418043,6 +418035,14 @@
         },
         {
           "unit": "src/legogame/teleport.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "13c79b20846fd648330bc58b569bfb3b28e3ae6a85bda1ed60a0730eec087d8b",
+          "base_sha256": "13c79b20846fd648330bc58b569bfb3b28e3ae6a85bda1ed60a0730eec087d8b"
+        },
+        {
+          "unit": "src/legogame/thermaldetonators.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -418229,11 +418229,11 @@
         "src/gameapi/edpp.c",
         "src/legoapi/customiser.cpp",
         "src/legoapi/snake.cpp",
-        "src/legoapi/thermaldetonators.cpp",
         "src/legogame/chris.cpp",
         "src/legogame/game_obj.cpp",
         "src/legogame/hub.cpp",
-        "src/legogame/move.cpp"
+        "src/legogame/move.cpp",
+        "src/legogame/thermaldetonators.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
@@ -418256,14 +418256,6 @@
         },
         {
           "unit": "src/legoapi/snake.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "4bb8b6f7c4656ab2458282989317052b159802a1b162c13c61d7fcd1d96a226e",
-          "base_sha256": "4bb8b6f7c4656ab2458282989317052b159802a1b162c13c61d7fcd1d96a226e"
-        },
-        {
-          "unit": "src/legoapi/thermaldetonators.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -418296,6 +418288,14 @@
         },
         {
           "unit": "src/legogame/move.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "4bb8b6f7c4656ab2458282989317052b159802a1b162c13c61d7fcd1d96a226e",
+          "base_sha256": "4bb8b6f7c4656ab2458282989317052b159802a1b162c13c61d7fcd1d96a226e"
+        },
+        {
+          "unit": "src/legogame/thermaldetonators.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -431163,21 +431163,13 @@
       "symbol": "??_C@_0BG@HIHHGAPE@imp_thermalDet_attach?$AA@",
       "address": "0x007533e4",
       "units": [
-        "src/legoapi/thermaldetonators.cpp",
         "src/legogame/detonator.cpp",
-        "src/legogame/sfx.cpp"
+        "src/legogame/sfx.cpp",
+        "src/legogame/thermaldetonators.cpp"
       ],
       "target_size": 22,
       "exact_match": true,
       "objects": [
-        {
-          "unit": "src/legoapi/thermaldetonators.cpp",
-          "exact_match": true,
-          "target_size": 22,
-          "base_size": 22,
-          "target_sha256": "106a39614f11cc00f1df611f816bcd61885552ee700a61d48665ddcf7c9c791c",
-          "base_sha256": "106a39614f11cc00f1df611f816bcd61885552ee700a61d48665ddcf7c9c791c"
-        },
         {
           "unit": "src/legogame/detonator.cpp",
           "exact_match": true,
@@ -431188,6 +431180,14 @@
         },
         {
           "unit": "src/legogame/sfx.cpp",
+          "exact_match": true,
+          "target_size": 22,
+          "base_size": 22,
+          "target_sha256": "106a39614f11cc00f1df611f816bcd61885552ee700a61d48665ddcf7c9c791c",
+          "base_sha256": "106a39614f11cc00f1df611f816bcd61885552ee700a61d48665ddcf7c9c791c"
+        },
+        {
+          "unit": "src/legogame/thermaldetonators.cpp",
           "exact_match": true,
           "target_size": 22,
           "base_size": 22,
@@ -449091,14 +449091,14 @@
       "symbol": "??_C@_0N@MLHMDPOC@FS_WaterJump?$AA@",
       "address": "0x00755ad4",
       "units": [
-        "src/legoapi/thermaldetonators.cpp",
-        "src/legogame/game_deb.cpp"
+        "src/legogame/game_deb.cpp",
+        "src/legogame/thermaldetonators.cpp"
       ],
       "target_size": 13,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/thermaldetonators.cpp",
+          "unit": "src/legogame/game_deb.cpp",
           "exact_match": true,
           "target_size": 13,
           "base_size": 13,
@@ -449106,7 +449106,7 @@
           "base_sha256": "3928862f9b23b9b22e34a79905227dc819bad6489810db8ef549d33bb1fff326"
         },
         {
-          "unit": "src/legogame/game_deb.cpp",
+          "unit": "src/legogame/thermaldetonators.cpp",
           "exact_match": true,
           "target_size": 13,
           "base_size": 13,
@@ -503023,14 +503023,14 @@
       "symbol": "??_C@_0BA@NFDJPKN@ThermalDet_Beep?$AA@",
       "address": "0x0075c690",
       "units": [
-        "src/legoapi/thermaldetonators.cpp",
-        "src/legogame/sfx.cpp"
+        "src/legogame/sfx.cpp",
+        "src/legogame/thermaldetonators.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/thermaldetonators.cpp",
+          "unit": "src/legogame/sfx.cpp",
           "exact_match": true,
           "target_size": 16,
           "base_size": 16,
@@ -503038,7 +503038,7 @@
           "base_sha256": "93194b9e1f0ed225c4368a48fb1087bd4b43e13d6e9069f5475dd7082da5daae"
         },
         {
-          "unit": "src/legogame/sfx.cpp",
+          "unit": "src/legogame/thermaldetonators.cpp",
           "exact_match": true,
           "target_size": 16,
           "base_size": 16,
@@ -508303,13 +508303,13 @@
       "symbol": "??_C@_0BA@OJGKICAK@ThermalDet_Bnce?$AA@",
       "address": "0x0075d3b0",
       "units": [
-        "src/legoapi/thermaldetonators.cpp"
+        "src/legogame/thermaldetonators.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/thermaldetonators.cpp",
+          "unit": "src/legogame/thermaldetonators.cpp",
           "exact_match": true,
           "target_size": 16,
           "base_size": 16,
@@ -508324,13 +508324,13 @@
       "symbol": "??_C@_08ONNIHKCE@ThrowDet?$AA@",
       "address": "0x0075d3c0",
       "units": [
-        "src/legoapi/thermaldetonators.cpp"
+        "src/legogame/thermaldetonators.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/thermaldetonators.cpp",
+          "unit": "src/legogame/thermaldetonators.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -780666,13 +780666,13 @@
       "symbol": "_GetSurfaceInfoDefaultMask",
       "address": "0x008034c4",
       "units": [
-        "src/legoapi/thermaldetonators.cpp"
+        "src/legogame/thermaldetonators.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/thermaldetonators.cpp",
+          "unit": "src/legogame/thermaldetonators.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -901752,7 +901752,7 @@
       "metadata_sha256": "525d436eee3d48951222f1fd54574554983d228c3d06f19a545ba7cab50fe057",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "21b16d4e23df1f2a689a19d3b32cd18f64521bb9db7180142b9e37f6816889cf",
+      "geometry_object_sha256": "e1a0e8b68d51740e7e5cdca6c3dd3ffa1b231ad221248c167f7aeeefd282e50c",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {

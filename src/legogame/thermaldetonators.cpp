@@ -45,6 +45,36 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
+/* Retail unit 0x4cf660-0x4d0646: definitions in retail address order. */
+
+static i32 TightRopes_Load(void *world_info, void *unused1) {
+    i32 version;
+    i32 i;
+    WORLDINFO *world = (WORLDINFO *)world_info;
+    if (world->tightrope_count != 0) {
+        return 0;
+    }
+    version = EdFileReadInt();
+    world->tightrope_count = EdFileReadInt();
+    for (i = 0; i < world->tightrope_count; ++i) {
+        EdFileRead(world->tightropes[i].name, 16);
+        EdFileReadNuVec(&world->tightropes[i].start_position);
+        EdFileReadNuVec(&world->tightropes[i].end_position);
+        if (version > 1) {
+            world->tightropes[i].start_pitch = EdFileReadUnsignedShort();
+            world->tightropes[i].end_pitch = EdFileReadUnsignedShort();
+            world->tightropes[i].start_yaw = EdFileReadUnsignedShort();
+            world->tightropes[i].end_yaw = EdFileReadUnsignedShort();
+            world->tightropes[i].start_post_variant = EdFileReadUnsignedChar();
+            world->tightropes[i].end_post_variant = EdFileReadUnsignedChar();
+            if (version != 2) {
+                world->tightropes[i].show_start_post = EdFileReadChar();
+            }
+        }
+    }
+    return 1;
+}
+
 void PartImpact_ThermalDetonator(PART *part) {
     i32 stuck = 0;
     u32 shadow;
@@ -431,32 +461,4 @@ i32 ShinyMetal_UpdateHint(HINT *hint) {
         return 1;
     }
     return 0;
-}
-
-static i32 TightRopes_Load(void *world_info, void *unused1) {
-    i32 version;
-    i32 i;
-    WORLDINFO *world = (WORLDINFO *)world_info;
-    if (world->tightrope_count != 0) {
-        return 0;
-    }
-    version = EdFileReadInt();
-    world->tightrope_count = EdFileReadInt();
-    for (i = 0; i < world->tightrope_count; ++i) {
-        EdFileRead(world->tightropes[i].name, 16);
-        EdFileReadNuVec(&world->tightropes[i].start_position);
-        EdFileReadNuVec(&world->tightropes[i].end_position);
-        if (version > 1) {
-            world->tightropes[i].start_pitch = EdFileReadUnsignedShort();
-            world->tightropes[i].end_pitch = EdFileReadUnsignedShort();
-            world->tightropes[i].start_yaw = EdFileReadUnsignedShort();
-            world->tightropes[i].end_yaw = EdFileReadUnsignedShort();
-            world->tightropes[i].start_post_variant = EdFileReadUnsignedChar();
-            world->tightropes[i].end_post_variant = EdFileReadUnsignedChar();
-            if (version != 2) {
-                world->tightropes[i].show_start_post = EdFileReadChar();
-            }
-        }
-    }
-    return 1;
 }
