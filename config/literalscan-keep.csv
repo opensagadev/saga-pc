@@ -7,7 +7,7 @@ src/gameapi/objectsall.cpp,edpartSoundModeOffText,"named: the frontend string ta
 src/float_constants.c,ActionSnapWeightedRandomZero,"inline, UpdateTotalPtls compares with the literal 0.0 through fldz where retail compares with this double in memory (fcomp qword ptr [0x751790]), and VC8 folds 1.0f - 0.0 and 0.0 + x elsewhere"
 src/float_constants.c,NuQFntHalfScale,"inline, VC8 folds x * 0.5 * -10240.0 and x * 0.5 * -3584.0 in objectsall.c into one constant, so retail's __real@c0c4000000000000 and __real@c0ac000000000000 lose their definitions"
 src/gameapi/edtoolsall.cpp,FS_ParentEntry,"named: retail keeps this char array in the writable .data section, so it is a data object, not a pooled literal"
-src/legoapi/gameanim.c,id_test,"named: retail keeps this char array in the writable .data section, so it is a data object, not a pooled literal"
+src/gameapi/gameliball.cpp,id_test,"named: retail keeps this char array in the writable .data section, so it is a data object, not a pooled literal"
 src/legoapi/gizmessage.cpp,gizaimessage_prefix,"named: retail keeps this char array in the writable .data section, so it is a data object, not a pooled literal"
 src/gameapi/objectsall.cpp,PartNullInstanceName,"named: retail keeps this char array in the writable .data section, so it is a data object, not a pooled literal"
 src/legogame/gameai.cpp,AIProcessingOutputText,"named: retail keeps this char array in the writable .data section, so it is a data object, not a pooled literal"

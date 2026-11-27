@@ -398,3 +398,10 @@ config/oddscan-budget.json nolint 68 edtoolsall.cpp: the texture picker snaps UV
 config/oddscan-budget.json long-file 12 objectsall.cpp is one retail unity (partterr.cpp, edpart.cpp and part.cpp gathered in address order)
 config/castscan-budget.json const 888 objectsall is a C++ unity (retail partterr.cpp/edpart.cpp/part.cpp): the edpart menu titles it gathers from C pass string literals as char *
 config/castscan-budget.json void-pointer-cpp 1284 objectsall is a C++ unity: the C parts code it gathers needs an explicit cast on its buffer allocation
+config/oddscan-budget.json long-file 13 gameliball.cpp is one retail unity (audio.c, debris.c, edanim.c, edbits.c, edgra.c, terrain.c, edptl.c gathered in address order)
+config/oddscan-budget.json dense-function 1180 gameliball gathers the terrain code; one of its functions counts as dense once it shares the unity's declarations
+config/oddscan-budget.json nolint 70 gameliball.cpp: edgra rounds grass weights to eighths and tenths with (i32)(x * n + 0.5), which clang-tidy flags once the code is C++
+config/declscan-budget.json C 447 gameliball is one retail unity: its audio, debris, editor and terrain parts keep forward declarations of helpers defined later in address order
+config/castscan-budget.json const 982 gameliball is a C++ unity (retail audio.c, debris.c, edanim.c, edbits.c, edgra.c, terrain.c, edptl.c): the C editor code it gathers passes string literals as char *
+config/castscan-budget.json declaration-type 853 gameliball is a C++ unity: the C code it gathers passes pointers to the declared types C converted implicitly
+config/castscan-budget.json void-pointer-cpp 1300 gameliball is a C++ unity: the C code it gathers needs explicit casts on NuAlloc and void * results

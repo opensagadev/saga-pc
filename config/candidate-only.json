@@ -147,67 +147,67 @@
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppDebrisClearRoomID",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppDebrisEmitterPos",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppDebrisSetDetailLevels",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppDebrisSetGroupID",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppDebrisSetPriority",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppFabs",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppDebrisStatusNormal",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edgra.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edgraSliderSetValue",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edgrass.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edgrassSliderSetValue",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp_load.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppLoadDebrisSetGroupID",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp_load.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppLoadDebrisSetTrigger",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppDebrisSetTrigger",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppDebrisReflectionOrientation",
    "kind": "function"
   },
@@ -217,7 +217,7 @@
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edanim_update.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_EdAnimFabs",
    "kind": "function"
   },
@@ -387,7 +387,7 @@
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nuterrain.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_TerrDrawEdgeLines",
    "kind": "function"
   },
@@ -407,22 +407,22 @@
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/terrain_scan.cpp",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "?TerrainComputeScanBounds@@YAMAAM00000@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/terrain_scan.cpp",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "?TerrainFinishScanGroup@@YAXAAPAEAAPAPAUTERRAIN_POLYGON_INFO@@AAHH@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/terrain_scan.cpp",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "?TerrainScaleNormal@@YAXAAUnuvec_s@@ABU1@@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/terrain_scan.cpp",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "?TerrainStoreScanShape@@YAXAAPAPAUTERRAIN_POLYGON_INFO@@AAH1PAU1@ABUTERRAIN_GROUP@@@Z",
    "kind": "function"
   },

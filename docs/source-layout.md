@@ -305,6 +305,10 @@ a unit, or a boundary between two:
   hook body was in another compiland; such hooks stay in their own
   `*_diagnostic` files, and the cutscene (0x4fff00) and aisys unities stay
   split until the original mechanism is known.
+  The `gameliball` unity starts the same way: its opening group (three
+  bare-`ret` hooks, a 54-byte divide that retail calls 29 times instead of
+  inlining it) stays in `terrain_diagnostic.c`, and the unity is built from
+  0x64ff60.
 - **COMDAT members and register choice.** VC8 does not use the register
   usage of an `inline` member (a select-any COMDAT) when it allocates the
   callee-saved registers of the caller. A plain member in the same unit
