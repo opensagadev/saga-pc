@@ -435,6 +435,16 @@
    "unit": "src/nu2api/ShaderObjectKey.cpp",
    "symbol": "__bad_alloc_Message",
    "kind": "data"
+  },
+  {
+   "unit": "src/nu2api/ShaderManagerHLSL.cpp",
+   "symbol": "??2@YAPAXIPAX@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/ShaderManagerHLSL.cpp",
+   "symbol": "__bad_alloc_Message",
+   "kind": "data"
   }
  ]
 }
