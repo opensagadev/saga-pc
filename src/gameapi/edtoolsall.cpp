@@ -1999,7 +1999,9 @@ extern "C" {
             return 1;
         }
         if (pad->digital_buttons_pressed & PAD_BUTTON_SELECT) {
+            // NOLINTNEXTLINE(bugprone-incorrect-roundings): snaps to the 1/256 UV grid.
             pick->uv_x[pick->selected_corner] = (i32)(pick->uv_x[pick->selected_corner] * 256.0 + 0.5) * (1.0 / 256.0);
+            // NOLINTNEXTLINE(bugprone-incorrect-roundings): snaps to the 1/256 UV grid.
             pick->uv_y[pick->selected_corner] = (i32)(pick->uv_y[pick->selected_corner] * 256.0 + 0.5) * (1.0 / 256.0);
         }
         if (pad->digital_buttons_pressed & PAD_BUTTON_SQUARE) {

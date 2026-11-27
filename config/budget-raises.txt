@@ -394,3 +394,7 @@ config/declscan-budget.json C 431 socksysall is one retail unity now: its camera
 config/declscan-budget.json D 32 socksysall gathers saveload and socksys; one local declaration of a function another unit defines moves with them
 config/castscan-budget.json const 886 edtoolsall is a C++ unity (retail edui.cpp): the C edfile.c code it gathers passes string literals and const buffers where C took them implicitly
 config/castscan-budget.json void-pointer-cpp 1283 edtoolsall is a C++ unity (retail edui.cpp): the C edfile.c code it gathers needs explicit casts on NuAlloc and void * results
+config/oddscan-budget.json nolint 68 edtoolsall.cpp: the texture picker snaps UVs to the 1/256 grid with (i32)(x * 256.0 + 0.5), which clang-tidy flags once the code is C++
+config/oddscan-budget.json long-file 12 objectsall.cpp is one retail unity (partterr.cpp, edpart.cpp and part.cpp gathered in address order)
+config/castscan-budget.json const 888 objectsall is a C++ unity (retail partterr.cpp/edpart.cpp/part.cpp): the edpart menu titles it gathers from C pass string literals as char *
+config/castscan-budget.json void-pointer-cpp 1284 objectsall is a C++ unity: the C parts code it gathers needs an explicit cast on its buffer allocation

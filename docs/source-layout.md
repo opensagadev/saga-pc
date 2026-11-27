@@ -250,9 +250,11 @@ name or boundary; `config/units.csv` now follows this table instead (below).
   unity nests includes, or the block is several marker-free compilands. Same
   pattern in edtools (`edui.cpp` around `edfile.c` and `fileselect.c`). Rows
   marked `file-conflict`.
-- Unity or not: nu3d PC (0x5f7490) and nucore PC (0x4fe640) are `*_pc_includes`
-  only in Batman (Feral's Mac build). TCS has no marker inside either block,
-  which fits a unity, but separate files without helpers are possible.
+- Unity or not: nu3d PC (0x5f7490) and nucore PC (0x4fe630) are `*_pc_includes`
+  only in Batman (Feral's Mac build). TCS has no marker inside either block.
+  Both are now built as one unity each with no function lost, and the nucore
+  PC block opens with the `strstr` COMDAT only that unit calls, which fits a
+  unity.
 - Unity language: `.cpp` (Batman) or `.c`.
 - `nufloat_pc`/`numaths` (0x5c0240) may be part of `numath_includes`; Batman
   builds them separately and TCS has no marker there.
@@ -266,6 +268,80 @@ name or boundary; `config/units.csv` now follows this table instead (below).
   `nufmv_gen`; the game library directory (`saga\`, proposed `src/legogame/`).
 - Static data order (.data/.rdata/.bss per compiland) is not used yet; it would
   confirm boundaries without markers.
+
+## Codegen evidence found while gathering units
+
+Gathering each compiland into its target file (`tools/unitize.py apply`, then
+build, check-objects and `match.py --update`, kept only when no function is
+lost and no score changes) turned up codegen rules that place a function in
+a unit, or a boundary between two:
+
+- **Register-convention statics.** A `static` function that takes its
+  arguments in ECX/EAX (VC8's custom convention for local functions) was
+  compiled in the same unit as its caller. A boundary between the two is
+  wrong, even when Batman's map puts one there.
+- **Inlined copy plus out-of-line copy.** When a caller inlines a function
+  whose never-called out-of-line copy also exists, both are plain definitions
+  in one unit. A function inlined in one unit and emitted out of line in
+  another needs an inline header definition (`ShaderCloneArenaString`, open).
+- **Calls into another unit.** A call that keeps the full thiscall register
+  save and does not reuse ECX after the call goes to a function the compiler
+  could not see, so the callee is in another unit.
+- **Unit openers.** Bare-`ret` stubs and the 28-byte copies of header statics
+  (`VuVecMake` style) open a unit. A bare-`ret` stub stays in the file of its
+  callers only when retail calls it directly from inside that range; VC8 drops
+  calls to an empty body it can see, so such a call means the caller's unit
+  was compiled without the body. Otherwise the stub belongs to the unit whose
+  range holds it.
+- **Same name, two ranges.** When Batman names two retail ranges after the
+  same file and a unit-start marker separates them, they are two compilands.
+  The PC-only half takes a `_pc` suffix (`ShaderObjectKey_pc.cpp`,
+  `nushaderobject_pc.cpp`).
+- **Empty varargs hooks** (`EdsplinesNuError`, the `CutScene*` and AI
+  `*NuError` hooks). VC8 drops a call with only the format argument whenever
+  the empty body is visible: in C and C++, `static` or not, with or without
+  `va_start`, `inline` or not, defined before or after the callers. Only calls
+  with further variadic arguments stay. Retail keeps one-argument calls, so the
+  hook body was in another compiland; such hooks stay in their own
+  `*_diagnostic` files, and the cutscene (0x4fff00) and aisys unities stay
+  split until the original mechanism is known.
+- **COMDAT members and register choice.** VC8 does not use the register
+  usage of an `inline` member (a select-any COMDAT) when it allocates the
+  callee-saved registers of the caller. A plain member in the same unit
+  changes that choice: `PC_DEVICE_BACKEND::SupportsMultisample` had to become
+  an `inline` header member for `MenuUpdateEffects` to match. Function order in
+  the file does not matter here.
+- **Inline base destructors.** Retail inlines `NuPostFilterGen`'s destructor
+  into every derived destructor, so it is an inline member in the class header,
+  not an out-of-line definition in one unit.
+- **COMDAT openers.** A COMDAT that only one unit calls opens that unit: the
+  `strstr` C++ overload at 0x4fe630 starts `nucore_pc_includes.cpp`.
+- **No ICF.** Retail keeps identical function bodies at separate addresses
+  (the `ShaderBuilderGen` destructor at 0x745150 and 0x745310), so two equal
+  bodies are two definitions.
+- **Single-user types stay local.** Moving a typedef into a widely included
+  header changed the code of unrelated functions (`FixUpLevels`,
+  `BlockadeRunnerDEjectCreature`), so a type used by one unit stays in it.
+  One extra prototype in `edfile.h` does the same to `FixUpLevels`, so a
+  declaration that only a unity needs goes into a header the other units do
+  not include (`edpart_internal.h` for `EdFileWriteUnsignedInt`).
+- **C to C++.** A C file gathered into a C++ unity takes casts on `NuAlloc`
+  and `void *` results and on string literals passed as `char *`, and its
+  function-local statics take C++ names in `config/symbols.csv`
+  (`?x@?1??f@@9@9` becomes `?x@?1??f@@9@4<type>A`). C++ code gathered into a C
+  unity is written as C89, and globals both languages share get C linkage.
+
+### Link order
+
+The retail linker laid out .text in command-line order and kept the first
+COMDAT copy in that order. The Makefile links in `config/units.csv` order
+(`tools/linkorder.py`, objects without a row last in their old order), so
+inline class members land in the same object as in retail.
+
+`match.py` scores the least similar copy of a COMDAT that several objects
+emit, not the one the linker kept. A unit whose discarded copy differs (the
+`supportall` copy of ThingManager's operator delete) therefore reads as a
+score loss although the linked code is unchanged.
 
 ## Migration plan
 
