@@ -41,12 +41,6 @@
 #include "legoapi/menus/screens/movies.h"
 #include "nu2api/nucore/nupad.h"
 
-typedef struct BGPROC_HANDLER {
-    struct BGPROC_HANDLER *next;
-    void *unknown_04;
-    void (*handler)(void);
-} BGPROC_HANDLER;
-
 extern "C" i32 fun_006de710(void) {
     return 0;
 }

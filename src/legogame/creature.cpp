@@ -124,9 +124,6 @@ typedef struct TERRAIN_PLAYER_IMPACT { // size 0x1c
     u8 normal_flags;                   // 0x1b
 } TERRAIN_PLAYER_IMPACT;
 
-extern PLAYER_POSITION_RECORD PlayerStart[8];
-extern GAMEOBJECT *player;
-NUVEC *Player_StartPos(GAMEOBJECT *object);
 extern "C" i16 id_WOMPRAT;
 
 typedef struct SPECIAL_LAYER_s {

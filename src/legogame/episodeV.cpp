@@ -65,8 +65,6 @@
 #include "nu2api/nusound/nusound.h"
 #include "nu2api/nustencilshadows_PC.h"
 
-extern struct GIZTURRET_s *StarDestroyerTurrets[16];
-
 static void AsteroidChaseD_SetTurretTarget(i32 index, NUVEC *position) {
     if (StarDestroyerTurrets[index] != NULL && StarDestroyerTurrets[index]->opponent == NULL) {
         StarDestroyerTurrets[index]->opponent = position;

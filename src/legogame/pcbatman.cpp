@@ -30,9 +30,6 @@ extern "C" {
     VARIPTR original_permbuffer_base = {0};
 }
 
-extern u32 GAMEPAD_SKIP;
-extern "C" char *TextButtonString(i32 action, const char *player0, const char *player1);
-
 /* Allocates the permanent arena (InitOnce does the same inline). */
 extern "C" void fun_004010c0(void) {
     permbuffer_base.void_ptr = NuAlloc(SUPERBUFFERSIZE, ".\\pcbatman.cpp", 0x112);

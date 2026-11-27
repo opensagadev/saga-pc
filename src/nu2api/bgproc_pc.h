@@ -5,6 +5,12 @@
 #include "nu2api/nucore/bgproc.h"
 #include "nu2api/nucore/nulst.h"
 
+typedef struct BGPROC_HANDLER {
+    struct BGPROC_HANDLER *next;
+    void *unknown_04;
+    void (*handler)(void);
+} BGPROC_HANDLER;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

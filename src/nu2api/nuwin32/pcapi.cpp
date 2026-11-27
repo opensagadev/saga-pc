@@ -47,11 +47,6 @@
 #include <shlobj.h>
 #include <string.h>
 
-extern "C" {
-    extern u32 NuHwParameter4f;
-}
-extern "C" i32 PcNativeSelectLanguage(const char *configuration_name);
-
 u32 PC_DEVICE_BACKEND::GetShaderFlags() {
     return shader_flags;
 }

@@ -57,11 +57,6 @@ extern "C" {
     const char *TagAsciiDown = "\xC2\xA3";
 }
 
-typedef struct batman_prepare_s {      // size 0x8
-    u32 capabilities;                  // 0x0
-    AI_PREPARING_SPECIAL_MOVE prepare; // 0x4
-} BATMAN_PREPARE;
-
 typedef PLAYER_BATARANG_SLOT BATARANG_NATIVE;
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */

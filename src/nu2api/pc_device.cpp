@@ -247,22 +247,6 @@ void PC_DEVICE_BACKEND::ApplyAspectMode(i32 mode) {
     }
 }
 
-/* IDirect3DSurface9 methods used by the BMP dump; the shared resource table models textures. */
-typedef struct PC_SURFACE PC_SURFACE;
-
-typedef struct PC_SURFACE_METHODS {                                                   // size 0x3c
-    void *unknown_0000[2];                                                            // 0x00
-    ULONG(__stdcall *release)(PC_SURFACE *);                                          // 0x08
-    void *unknown_000c[9];                                                            // 0x0c
-    HRESULT(__stdcall *get_desc)(PC_SURFACE *, PC_TEXTURE_LEVEL_DESC *);              // 0x30
-    HRESULT(__stdcall *lock_rect)(PC_SURFACE *, PC_LOCKED_RECT *, const RECT *, u32); // 0x34
-    HRESULT(__stdcall *unlock_rect)(PC_SURFACE *);                                    // 0x38
-} PC_SURFACE_METHODS;
-
-struct PC_SURFACE {
-    const PC_SURFACE_METHODS *methods;
-};
-
 extern "C" {
     i32 MenuAppliedAspect = 0;
 }

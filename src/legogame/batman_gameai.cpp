@@ -60,28 +60,8 @@ typedef struct batman_prepare_s {      // size 0x8
 
 extern "C" {
     extern BATMAN_PREPARE batman_prepareforspecialmove[11];
-    extern u32 GAMEPAD_JUMP;
 }
 
-extern "C" {
-    i32 Batman_MidSpecialMove_BigJump(AISYS *system, AIPACKET *packet, APIOBJECT *object);
-    i32 Batman_MidSpecialMove_ClimbDown(AISYS *system, AIPACKET *packet, APIOBJECT *object);
-    i32 Batman_MidSpecialMove_ClimbUp(AISYS *system, AIPACKET *packet, APIOBJECT *object);
-    i32 Batman_MidSpecialMove_Default(AISYS *system, AIPACKET *packet, APIOBJECT *object);
-    i32 Batman_MidSpecialMove_Glide(AISYS *system, AIPACKET *packet, APIOBJECT *object);
-    i32 Batman_MidSpecialMove_Grapple(AISYS *system, AIPACKET *packet, APIOBJECT *object);
-    i32 Batman_MidSpecialMove_SpecialUse(AISYS *system, AIPACKET *packet, APIOBJECT *object);
-    i32 Batman_MidSpecialMove_StartJump(AISYS *system, AIPACKET *packet, APIOBJECT *object);
-    i32 Batman_PrepareBigJump(AIPACKET *packet, APIOBJECT *apiobject, i32 checks_unused);
-    i32 Batman_PrepareClimb(AIPACKET *packet, APIOBJECT *object, i32 checks);
-    i32 Batman_PrepareGlide(AIPACKET *packet, APIOBJECT *object, i32 checks_unused);
-    i32 Batman_PrepareGrapple(AIPACKET *packet, APIOBJECT *object, i32 checks_unused);
-    i32 Batman_PrepareHoverTube(AIPACKET *packet, APIOBJECT *apiobject, i32 checks_unused);
-    i32 Batman_PrepareJump(AIPACKET *packet, APIOBJECT *object, i32 checks);
-    i32 Batman_PrepareObstacle(AIPACKET *packet, APIOBJECT *object, i32 checks_unused);
-    i32 Batman_PrepareSpecialUse(AIPACKET *packet, APIOBJECT *object, i32 checks_unused);
-    i32 Batman_PrepareTakeOverJump(AIPACKET *packet, APIOBJECT *object, i32 checks_unused);
-}
 extern "C" {
 
     i32 Batman_MidSpecialMove_Default(AISYS *system, AIPACKET *packet, APIOBJECT *object) {

@@ -9,12 +9,6 @@
 
 NULSTHDR *bgproc_procinfo_pool = 0;
 
-typedef struct BGPROC_HANDLER {
-    struct BGPROC_HANDLER *next;
-    void *unknown_04;
-    void (*handler)(void);
-} BGPROC_HANDLER;
-
 volatile u32 nu_current_thread_id = 0;
 
 /* The PC build has no debug-print lock; both halves are empty. */

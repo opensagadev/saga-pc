@@ -91,11 +91,7 @@ extern "C" {
     static void BT_single_debris(NUFPAR *parser);
     static void BT_speed(NUFPAR *parser);
     static void BT_trooper_bolt(NUFPAR *parser);
-    void Bolt_Debris_Default(BOLT *bolt, NUVEC *points, i32 point, NUVEC *velocity, i32 flags);
-    u16 Bolt_GetShootDirection_Default(GAMEOBJECT *object, NUVEC *direction);
-    void Bolt_GetShootOrigin_Default(GAMEOBJECT *object, NUVEC *position);
 }
-extern "C" BOLT *Bolt_Add(GAMEOBJECT *owner, NUVEC *position, NUMTX *matrix, i32 type_id, i32 flags);
 extern "C" {
     /* 44 records; the configuration is published in InitGameAfterConfig. */
     BOLTTYPE GlobalBoltType[44] = {

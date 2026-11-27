@@ -377,3 +377,8 @@ config/castscan-budget.json duplicate-type 54 compiling 138 game/legoapi/engine 
 config/castscan-budget.json record-pun 353 compiling 138 game/legoapi/engine files as C++, the retail language (Rich header, communals; tools/langscan.py): C++ needs explicit casts from void * and string literals, and casts in C++ files change class
 config/castscan-budget.json void-pointer-cpp 1220 compiling 138 game/legoapi/engine files as C++, the retail language (Rich header, communals; tools/langscan.py): C++ needs explicit casts from void * and string literals, and casts in C++ files change class
 config/oddscan-budget.json nolint 66 gameai.cpp is C++ now: the VC8 __movsd intrinsic declaration and its call keep the intrinsic's unsigned long types (google-runtime-int)
+config/castscan-budget.json declaration-type 827 gathering retail compilands moves code from C files into its C++ unit, where void * and string literal conversions need explicit casts
+config/castscan-budget.json void-pointer-cpp 1239 gathering retail compilands moves code from C files into its C++ unit, where void * and string literal conversions need explicit casts
+config/castscan-budget.json layout-compatible 48 PC_SURFACE is one shared type in d3dCalls.h now instead of a per-file copy, so PCDeviceSaveSurfaceBmp casts it to the texture resource it wraps
+config/declscan-budget.json C 365 gathering retail compilands turns cross-unit declarations into forward declarations inside the unit (docs/declarations.md: classes C and D wait for the layout move to finish)
+config/declscan-budget.json D 30 gathering retail compilands moves a cross-unit declaration with its code (docs/declarations.md: classes C and D wait for the layout move to finish)

@@ -32,25 +32,7 @@ extern "C" {
     extern const CPU_VENDOR_WORDS CpuVendorNoCpuid = {0x6f4e5f5fu, 0x5550435fu, 0x5f5f4449u, {0}};
     extern const CPU_VENDOR_WORDS CpuVendorIntel = {0x756e6547u, 0x49656e69u, 0x6c65746eu, {0}};
 }
-extern "C" {
-    extern HRESULT PCDeviceLastResult;
-}
 extern "C" const char *WINAPI DXGetErrorString9A(HRESULT result);
-/* IDirect3DSurface9 methods used by the BMP dump; the shared resource table models textures. */
-typedef struct PC_SURFACE PC_SURFACE;
-
-typedef struct PC_SURFACE_METHODS {                                                   // size 0x3c
-    void *unknown_0000[2];                                                            // 0x00
-    ULONG(__stdcall *release)(PC_SURFACE *);                                          // 0x08
-    void *unknown_000c[9];                                                            // 0x0c
-    HRESULT(__stdcall *get_desc)(PC_SURFACE *, PC_TEXTURE_LEVEL_DESC *);              // 0x30
-    HRESULT(__stdcall *lock_rect)(PC_SURFACE *, PC_LOCKED_RECT *, const RECT *, u32); // 0x34
-    HRESULT(__stdcall *unlock_rect)(PC_SURFACE *);                                    // 0x38
-} PC_SURFACE_METHODS;
-
-struct PC_SURFACE {
-    const PC_SURFACE_METHODS *methods;
-};
 
 extern "C" void NuPs2GetViewport(NUVPCURRENT *viewport) {
     if (viewport != NULL) {

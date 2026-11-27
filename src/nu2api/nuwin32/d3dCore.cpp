@@ -46,17 +46,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-extern "C" __declspec(noinline) HRESULT PCDeviceTestCooperativeLevel();
-extern "C" {
-    extern HRESULT PCDeviceLastResult;
-}
-extern "C" __declspec(noinline) void PCDeviceCreateVertexBuffer(u32 size, u32 usage, u32 vertex_format, i32 pool,
-                                                                PC_BUFFER_RESOURCE **resource);
-extern "C" __declspec(noinline) void PCDeviceCreateIndexBuffer(u32 size, u32 usage, i32 format, i32 pool, PC_BUFFER_RESOURCE **resource,
-                                                               HANDLE *shared_handle);
-extern "C" void PCDeviceCreateVertexDeclaration(const PC_VERTEX_ELEMENT *elements, PC_TEXTURE_RESOURCE **out);
-extern "C" __declspec(noinline) void PCDeviceClear(u32 count, const RECT *rectangles, u32 flags, u32 colour, f32 depth, u32 stencil);
-__declspec(noinline) void PCDeviceEvictManagedResources();
+extern "C" HRESULT PCDeviceTestCooperativeLevel();
 
 struct PC_GRAPHICS_CLIP_VERTEX { // size 0x14
     f32 x;                       // 0x00
@@ -72,10 +62,6 @@ struct PC_GRAPHICS_SCREEN_VERTEX { // size 0x10
     f32 u;                         // 0x8
     f32 v;                         // 0xc
 };
-
-extern "C" __declspec(noinline) void PCDeviceDrawPrimitive(i32 type, u32 start, u32 count);
-extern "C" __declspec(noinline) void PCDeviceDrawIndexedPrimitive(i32 type, i32 base_vertex, u32 minimum_vertex, u32 vertex_count,
-                                                                  u32 start_index, u32 primitive_count);
 
 i32 PC_WINDOW_OPTIONS::GetDeviceWidth() {
     return device_width;
