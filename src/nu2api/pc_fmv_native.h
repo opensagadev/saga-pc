@@ -3,7 +3,14 @@
 #include "externals/bink.h"
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nufmv/pc/Bink/dsplay_bink.h"
-struct RADFMV_TEXTURE;
+
+typedef struct RADFMV_LOCK RADFMV_LOCK;
+typedef struct RADFMV_TEXTURE_METHODS RADFMV_TEXTURE_METHODS;
+typedef struct RADFMV_TEXTURE RADFMV_TEXTURE;
+typedef struct RADFMV_CONTEXT RADFMV_CONTEXT;
+typedef struct RADFMV_IMAGE RADFMV_IMAGE;
+typedef struct PC_FMV_BINK PC_FMV_BINK;
+typedef struct PC_FMV_MOVIE PC_FMV_MOVIE;
 
 struct RADFMV_LOCK {
     i32 pitch;
@@ -58,7 +65,9 @@ struct RADFMV_IMAGE {            // size 0x50
     RADFMV_TEXTURE *texture;     // 0x4c
 };
 
+#ifdef __cplusplus
 extern "C" {
+#endif
     i32 RadFmvInitializeFormats(GRAPHICS_FACTORY *, u32, RADFMV_CONTEXT *);
     void RadFmvBeginScene(RADFMV_CONTEXT *);
     void RadFmvEndScene(RADFMV_CONTEXT *);
@@ -69,7 +78,9 @@ extern "C" {
     void RadFmvUnlockImage(RADFMV_IMAGE *);
     RADFMV_IMAGE *RadFmvCreateImage(RADFMV_CONTEXT *, u32, u32, u32, u32);
     void RadFmvDestroyImage(RADFMV_IMAGE *);
+#ifdef __cplusplus
 }
+#endif
 
 struct PC_FMV_BINK {              // size 0x254
     u32 width;                    // 0x000
@@ -116,7 +127,9 @@ struct PC_FMV_MOVIE {                // size 0x48
 #define NUFMV_VOLUME 14        /* f32 *: the volume */
 #define NUFMV_DRAW_CALLBACK 15 /* void (*)(void): FmvDrawCallback */
 
+#ifdef __cplusplus
 extern "C" {
+#endif
     extern PC_FMV_MOVIE FmvMovie;
     extern i32 FmvInitialized;
     extern i32 FmvState1;
@@ -142,7 +155,9 @@ extern "C" {
     extern void (*FmvDrawCallback)(void);
     void NuFmvTextureRelease(void);
     void NuFmvTextureRestore(void);
+#ifdef __cplusplus
 }
+#endif
 
 #ifdef __cplusplus
 extern "C" {
