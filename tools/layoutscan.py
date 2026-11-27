@@ -247,6 +247,9 @@ REVIEW = {
     0x740f00: dict(name="VirtualStackAllocator", area="gamelib/util", lang="cpp", conf="medium",
                    why="C++ class after the CRT; Batman includes VirtualStackAllocator_gen.cpp in nucore_includes"),
     0x740f60: dict(name="VirtualStackAllocator", join=True, why="continues 0x740f00"),
+    0x742010: dict(name="nushaderobject", conf="medium",
+                   why="the static helpers from 0x742010 take an argument in ECX (VC8 custom convention of a static) and "
+                   "only PCShaderSetMaterialParameters (0x7427e0) calls them, so the unit starts after NuGetVertexDeclaration"),
     0x744ba0: dict(name="ShaderObjectKey_pc", conf="low",
                    why="RET marker after the ShaderObjectKey block, and its code calls PC_SHADER_MATERIAL_FILTER::Initialize "
                    "(0x7443d0) with the full thiscall register save, so Initialize was not compiled in this unit; Batman "

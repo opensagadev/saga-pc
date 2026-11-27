@@ -429,7 +429,7 @@
     "src/nu2api/shader_parser.h": "e192219dd005bfa8c46c46ec47e32593905d0ef38c101aac79e77fa4a49b6a12",
     "src/nu2api/wavreader.h": "6acb0f5ca7ccbcef5945e705cc918a66f14f3af9f07cc9b5ce7fa31e78f05043",
     "config/budget-raises.txt": "599601a56ca8593912172d98bbdc9970c32e7911ac047c505ce561c43a93234a",
-    "config/candidate-only.json": "1a10bc2621ee3b01957892f4e1f485485e02b2a4ae9b3d400655afbfcb9b5dd5",
+    "config/candidate-only.json": "ad76ff4c61699ce16bfe85f1464fcfd4f735b491505f199332bf858d5a208025",
     "config/castscan-budget.json": "211f8047834975b27106289aa244c6a302e0daf4ef9c6aeff6402666625f1ca2",
     "config/castscan-keep.csv": "cb5e0f24bcae043979afd37568718947ed78ad1cff89a93d1dedc62c4035f45c",
     "config/clang-format-vendored": "726e4d44212725e1d294bd517c38a52eca9d7f41b505d7246c433e30a749f683",
@@ -439,7 +439,7 @@
     "config/declscan-budget.json": "e0554a10e2b156d3eccd2eeca4ee1379ecb90941be3c7c28e8d5c2a237306710",
     "config/header-map.csv": "8e3d4b0b92aff1316147fb6c6bb4d753c120fd50cb01b5a386a08a9953e75e0b",
     "config/layout-android-units.csv": "e746c9966cf3cb289a48dd1df1bee1e9c8fbbbf8a1891ca973f2b865a6e89fbc",
-    "config/layout-target.csv": "41f1e4a3c36a790263caf7ba5a6953942b1c449cccf74521b740d319c46cc88b",
+    "config/layout-target.csv": "62650d28341afba099a32a0a98e51d992b6079a253abc09ed255ee101e56a932",
     "config/library-objects.json": "4e0e91f5abb9855a0624aa79f38e17687b47eaa447383f272352c1f024b9a872",
     "config/literalscan-budget.json": "31c786e269f1756cf35489ad41e6941a8881a76410f4579c939a0d083ea69a89",
     "config/literalscan-keep.csv": "7919326d1c419514fa11275d955381135bf23bb927f899b69a05e3b70b7b010d",
@@ -453,7 +453,7 @@
     "config/symbols.md": "3d018cc044b5a14025b0fc457df71a0c9a193cea32ceb3081e6a86bcdd4b242b",
     "config/toolchain.json": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
     "config/tools.json": "8e9a5f8077abc1bd9cce37004a47ea493e67a75ba964d8df3f13223958e6f4c8",
-    "config/units.csv": "4e4ddefaad18b9b6b9ecd2dbe2981fbccc321916ebe3d85e54b3a82ad365bdc1",
+    "config/units.csv": "bc9c8014c3bc36a9d4fb097d23b4629d1f12c29547741f06ee381f960dfb28fb",
     "config/warning-budget.json": "2fb62147f02c41b6f3c48da61b374099ba00403e547c81315cbe5564ebe44c54",
     "tools/altbuild.py": "bf4e210afbe779e689abd7b160d5deae2948913c5b8b5020ad9a16c3b612b02a",
     "tools/binary.py": "1168154b0bf5549c93bc5fa22fc3dafb48c9529d3ea681bb447552928cc066eb",
@@ -483,7 +483,7 @@
     "tools/idiomscan.py": "eab18618f9feac46a2e3c8af7e8389423adc2dc104e5187a8f65657e02c880fc",
     "tools/langscan.py": "7bb44ac2c8802b3b03d3e025b62463c1b190cc2238f4ffdc6d554548afcd1a9c",
     "tools/layoutcheck.py": "bcb5e0c12b6d115425ca0452cf01784c7d11c3908c60cf9e0bc7751eb3ad1145",
-    "tools/layoutscan.py": "b407e7e1c12ae92f0586c43fffa7e7c9596464b6157324c8db17b59f7068bb25",
+    "tools/layoutscan.py": "81f1758d74226378a6bb418524de1653b50de935646d29a3a7b0ad6a7f585b39",
     "tools/lib.py": "612b3f8cf413d2c5492a6e6a1e554c1607b72873fa88c03b837a7a8b7b5e03fd",
     "tools/libmatch.py": "3b69b9be10a1282ffea804f84c56f7cd90bce8728eb33167d5ce7712c969885f",
     "tools/lintcache.py": "5cba942b00f45058923f2a2f7c928c00d7f4f0fe92dc30fe01f37a8662fddbeb",
@@ -797,6 +797,7 @@
     "src/nu2api/ShaderManagerHLSL.cpp": "ec98a841d47300d94c905f78a75de33b333c3446576af48828f25cb169077ab4",
     "src/nu2api/ShaderObjectKey.cpp": "d283e76538861235a42d64015ee8c6817dc4c7bd883f8c4df8f37f8d42496872",
     "src/nu2api/ShaderObjectKey_pc.cpp": "68a2c783f127114edca2965c81cf41cd1327d9cd2c3e56d115dec78867ea0777",
+    "src/nu2api/VertexDeclarations.cpp": "1b1521a3e66b238a12f199340e940bafaf6160fcb44c90f14525aa38e35d7efc",
     "src/nu2api/crc16.cpp": "784741a2b29c2e3f86997c06cde1b0ec5b2f9b8017dc804f75f54cfa8b192d3b",
     "src/nu2api/geometry_publish.cpp": "8ce41fd569c5f4c4c2125f2e6e3be469b23d108946c62f4699876b5173b69941",
     "src/nu2api/hardware_dispatch.cpp": "dd3b62d00932e7a95b35ed9afce9a083b157d17afc960b0be9469b2589e7086d",
@@ -922,7 +923,7 @@
     "src/nu2api/nuthread.c": "f4d2317de3072f6fec0f56933be2f8c875111e1a583b9d8a7beac69b4a0c0db5",
     "src/nu2api/nutimebar.c": "3d11dd005859e1d51572d074430fd1d7dc4ed299e49d34227a9232ac3cee0271",
     "src/nu2api/nuvec.c": "667c38ab9e8ca43390053df95e72411f86dc58b82b31533184e19782027eafa4",
-    "src/nu2api/nuvertexdecl.c": "baf69b6787dc6324c4dd09a08b13020e116e63b9a3792e86bdad3484db9bdb57",
+    "src/nu2api/nuvertexdecl.c": "986afc1810a33be671cb7ad1e1966aae3c694ec975875f2767405f63e6670ba1",
     "src/nu2api/nuvideo.c": "52d656cf7258f4a6ae340fe364a17074c613ed1fb05d39c4b6c4476b6489973f",
     "src/nu2api/nuwin.c": "43878585f868ec97d6267259f63251a7f79c5ad00b1df81457e68cefdef6fb2a",
     "src/nu2api/nuwind.c": "a81bbe7ce9c1fb13bf6fb974cb8fb9785f5100beb3a2913485f6ed9494553ce1",
@@ -1243,6 +1244,7 @@
     "build/obj/nu2api/ShaderManagerHLSL.obj": "eea9ba36eb8ce0ceb9e5578d3ce3d36a6fdcb9e9fae261342c3d6bb610aad235",
     "build/obj/nu2api/ShaderObjectKey.obj": "829bea9b900a468da5391aa9fc4865353f55cc9179dd459292a940fc25543ae4",
     "build/obj/nu2api/ShaderObjectKey_pc.obj": "b0a45b9be9e5c206f39580e32a6093fc8a180dde25cb66aedfd8824fd10b4b07",
+    "build/obj/nu2api/VertexDeclarations.obj": "c5f688daef5cc3996792414ed0388b25a4a0bfd8d551a95bb3e36fd55bc5acf4",
     "build/obj/nu2api/bgproc.obj": "f5507ac7de1af7cf9ecf2862fe3b90d507a585f40c9d7a428b5aba37a287b654",
     "build/obj/nu2api/crc16.obj": "11aeaafeab734b85d06b177713a82e6f3fe999ae443f2572f6268f4dac62d4c5",
     "build/obj/nu2api/geometry_publish.obj": "d9c36e6ca4b30fcfc6e699cde03eddfc444ec311aeac6cc93cd0e7691d445453",
@@ -1284,8 +1286,8 @@
     "build/obj/nu2api/nushader.obj": "8c4ae81f92d0a0570716b861a311e04ad72dd590bfb180a045239885d6dc8aa6",
     "build/obj/nu2api/nushadermanager.obj": "3b911544b2550412e61064c4308eb25018fb90a69cf9f9c6a4d8a6800659fb3d",
     "build/obj/nu2api/nushadermanager_gen.obj": "9b065a20940e6132e188051ed28a6bb683b9a53e6d069b1f850f0d4be67ba674",
-    "build/obj/nu2api/nushaderobject.obj": "ee9b8ee63c9b00972750afcb75d7927840139743472c10e3f5a928363cdae60d",
-    "build/obj/nu2api/nushaderobject_pc.obj": "c0986833e2abd84ccf3b1dd0cad4aff9d361c3e43e1f9f005b6d43c697c6feb6",
+    "build/obj/nu2api/nushaderobject.obj": "3d9e4bd615213f08d4a4051fa03c8b2b10080033eac41cb1cf660268debfcff1",
+    "build/obj/nu2api/nushaderobject_pc.obj": "23092cdef025a6ae1b65775af0e29556abe4319fc49dafaef01a56cfbdf1e134",
     "build/obj/nu2api/nushaderobjectbase.obj": "e5d46c8057658a53a65d75def4a8550070a1376b947a141b5093ca79d7f12b5f",
     "build/obj/nu2api/nusound.obj": "d1053e84e196eb11af0513e64ce8712587e6e9665a5cd980e34a51faf5a3b40f",
     "build/obj/nu2api/nusound3/pc/nusound.obj": "dfc042bc1c366408a02eae3f8d41efc75c8000a24feaffec6146a777eb341a45",
@@ -1297,7 +1299,7 @@
     "build/obj/nu2api/nuthread.obj": "599c89b0888c2d76ea861f525635fd43be62c8dc04e2f14a3f96628c5368fd48",
     "build/obj/nu2api/nutimebar.obj": "3143e7b698e701b32949995ad0fb4a5de79e81c45c69471f7d88541dcbb864b2",
     "build/obj/nu2api/nuvec.obj": "4f42f61dfda930fc8891da473fbc2191c742825b568325f1fb3606bb4d169a7e",
-    "build/obj/nu2api/nuvertexdecl.obj": "0c87929e744a4b8aa7b5a57e65b880276d22fe08ce3d07f2bb95feaae911f701",
+    "build/obj/nu2api/nuvertexdecl.obj": "9b3d985cb86dabaea58cc550c5f16468d9533240f5c539f6f6caaefe28213c08",
     "build/obj/nu2api/nuvideo.obj": "b2a2e2bbeb2ea35cb7c859b1ee736afc9c7ec610c4d7d472083ae8b9edd2f4a7",
     "build/obj/nu2api/nuwin.obj": "e8b8f425930bfd70137bbb0ed6a749f68f41c12b89ef7c93d79e25d23c708070",
     "build/obj/nu2api/nuwin32/Stubs.obj": "0e2ece6bcd9e0001e727988c3531cf2476c8faa91716cc0d43c55edd06edb277",
@@ -374262,20 +374264,20 @@
       "symbol": "_NuGetVertexDeclaration",
       "address": "0x00741970",
       "units": [
-        "src/nu2api/nuvertexdecl.c"
+        "src/nu2api/VertexDeclarations.cpp"
       ],
       "target_size": 1684,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/nu2api/nuvertexdecl.c",
+          "unit": "src/nu2api/VertexDeclarations.cpp",
           "base_size": 1604,
           "exact_match": false,
           "target_sha256": "e0c05ce1b8d2d391d0ce6a354c299d6e421d124954130f65f44034b304f3b263",
-          "base_sha256": "1e7d99159cc3eb7b6661b59a67dcf1c7853a0195c540d036e6e89b995c9d8600",
+          "base_sha256": "1867fd74bb49e86d901d9257165babcbbae86afdc7044652874a00a1dd7c5ef3",
           "relocation_count": 18,
-          "comparison_unit": "00741970-afcbbd933522",
-          "objdiff_percent": 76.028824
+          "comparison_unit": "00741970-4640f6ed0cc2",
+          "objdiff_percent": 76.02217
         }
       ],
       "diff_class": "structural",
@@ -374293,7 +374295,7 @@
         "?"
       ],
       "status": "different",
-      "objdiff_percent": 76.028824
+      "objdiff_percent": 76.02217
     },
     {
       "name": "fun_00742010",
@@ -894124,13 +894126,13 @@
       "symbol": "_PCVertexDeclarationCountPC",
       "address": "0x0297cc90",
       "units": [
-        "src/nu2api/nuvertexdecl.c"
+        "src/nu2api/VertexDeclarations.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nuvertexdecl.c",
+          "unit": "src/nu2api/VertexDeclarations.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 8,
@@ -894146,13 +894148,13 @@
       "symbol": "_PCVertexDeclarationCachePC",
       "address": "0x0297cc98",
       "units": [
-        "src/nu2api/nuvertexdecl.c"
+        "src/nu2api/VertexDeclarations.cpp"
       ],
       "target_size": 2048,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nuvertexdecl.c",
+          "unit": "src/nu2api/VertexDeclarations.cpp",
           "exact_match": true,
           "target_size": 2048,
           "base_size": 2048,
@@ -900142,7 +900144,7 @@
       "kind": "function"
     },
     {
-      "unit": "src/nu2api/nuvertexdecl.c",
+      "unit": "src/nu2api/VertexDeclarations.cpp",
       "symbol": "_PCVertexElementSet",
       "kind": "function"
     },
@@ -900409,7 +900411,7 @@
     "matching_with_padding_percent": 64.04596505116606,
     "fuzzy_text_data_bytes": 6896,
     "fuzzy_denominator_bytes": 3349891,
-    "fuzzy_coverage_percent": 96.47987798385371,
+    "fuzzy_coverage_percent": 96.47987463886845,
     "mapped_functions": 15914,
     "matched_functions": 13977,
     "objdiff_fuzzy_percent": 96.97657,
@@ -901817,7 +901819,7 @@
       "metadata_sha256": "525d436eee3d48951222f1fd54574554983d228c3d06f19a545ba7cab50fe057",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "35c98b2a31f9472fc7e33ce23d3e5f575297e754d38cff211aaa8c4c7dd1e7f2",
+      "geometry_object_sha256": "c626845b432830a7c5d98fe9a84f7866187789c48a8e98d35c2b7fa6a0347de2",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
