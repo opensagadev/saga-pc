@@ -822,10 +822,10 @@
     "src/nu2api/nushaderobject.cpp": "dbdb684efe6b022be9ba15409718f89490b2e081412d4a6289d3c1af10269ded",
     "src/nu2api/nushaderobject_pc.cpp": "c54d28b258776461d0679538cfcd32ba1981fdeaa2d953fc78e6ebcbab6b53f6",
     "src/nu2api/nushaderobjectbase.cpp": "63ebaf01b3e89189f6f127ca667107443fb0b7e927f3d09f2735b527a3129101",
-    "src/nu2api/nusound3/pc/nusound.cpp": "f9122e6b9f73a6bbb0e4ac89cefb2754957d8a9504365f003b8dd9ed158eb7aa",
+    "src/nu2api/nusound3/pc/nusound.cpp": "fb72631c96c3601e74ba680e9307c9f414ea84db0239007c6931cf3f4a6040d2",
     "src/nu2api/nusound_music.cpp": "5d074ea871ed4401a38a60c7f52a48c96969cf873716d70b0407ddff636a9852",
     "src/nu2api/nustateanim.cpp": "acd6f007839358075e8c14f58f3fedf8147935d983604904081364e789f1096c",
-    "src/nu2api/nustream.cpp": "420e4589cd8162811050a16fb79665f791d4ee085fae9b94b1bd8dcc5c7b608a",
+    "src/nu2api/nustream.cpp": "92d48682e9f0d521686f984c7da81c2599e923e42639b41cee255bb4046faf40",
     "src/nu2api/nutexanim.cpp": "df1a7a3bba4902dc35ebcd48ade0924965f2e8c509a7fbae9dbef12e67e0198b",
     "src/nu2api/nuwin32/Stubs.cpp": "904a2e0f9f879e7257e20c510166bf6ed35529d497e4e1b5196da1dc91901ee0",
     "src/nu2api/nuwin32/d3dApiCalls.cpp": "a4d7a5fe2e5ec8293050859c84440635161833e2a38d2e73e32aab4476d5c78f",
@@ -915,7 +915,7 @@
     "src/nu2api/nuobject.c": "cba7c4c0c836ffe1c1c92b92e08dd9ba2e8a3543a0db56e0babc5bbdf0b90e5d",
     "src/nu2api/nupsfile.c": "2405c0fc5925f73142e83ba7e21d3c3c859eb1c9610373c5db218787797a905a",
     "src/nu2api/nurain.c": "7385896d85fdaf2499e22abef4a140a8e2af3ec3259d3e66297409b7dbd506cc",
-    "src/nu2api/nusound.c": "56011b5eded260cf5fbcd3cdf77d7871ec5d1719a0eaa62b82af2c1401607166",
+    "src/nu2api/nusound.c": "0bbc4e0305f96befddf764c1a7bfc7ba328900b13dff11e8aac194e287d8dde2",
     "src/nu2api/nuterrain.c": "36e469737e58f140b952f219492c54b78feff2171532891df9ab199d005c4387",
     "src/nu2api/nuthread.c": "f4d2317de3072f6fec0f56933be2f8c875111e1a583b9d8a7beac69b4a0c0db5",
     "src/nu2api/nutimebar.c": "3d11dd005859e1d51572d074430fd1d7dc4ed299e49d34227a9232ac3cee0271",
@@ -1284,11 +1284,11 @@
     "build/obj/nu2api/nushaderobject.obj": "2a01eb98fbd2b4477bce4bb29d0afc1a59df7cb64f33907b4f4dc110a7f0886c",
     "build/obj/nu2api/nushaderobject_pc.obj": "46b94775719af2d6477c8b940c74a3801285eec407d38f998b49e8c2a50616be",
     "build/obj/nu2api/nushaderobjectbase.obj": "8e04e8663c29a37662308ba66fe4af9c87fd8bcb6595ab76156ea5268cdb289d",
-    "build/obj/nu2api/nusound.obj": "ab22fed17d6222ef09a132978b247de419b6819f8cc1418d15ce4ccf9718dccd",
-    "build/obj/nu2api/nusound3/pc/nusound.obj": "7f57ab69c85e8b4c169eec538c4ee79b71ef75ccedb8a9b4a7094cffab8b806f",
+    "build/obj/nu2api/nusound.obj": "d1053e84e196eb11af0513e64ce8712587e6e9665a5cd980e34a51faf5a3b40f",
+    "build/obj/nu2api/nusound3/pc/nusound.obj": "dfc042bc1c366408a02eae3f8d41efc75c8000a24feaffec6146a777eb341a45",
     "build/obj/nu2api/nusound_music.obj": "3f2bc674fa1f70b273d85e7d98bf9e2446f246027f62106e59f4e66a1d0e0890",
     "build/obj/nu2api/nustateanim.obj": "f870ba1aa15159b3a3c8c9f1801431bb471fc5bc19572515d19ceb8a67366132",
-    "build/obj/nu2api/nustream.obj": "eb1b99293f8d49717baaf089e8a74af575d2e7930b7c873157db5de07d0fd193",
+    "build/obj/nu2api/nustream.obj": "eaf02f0a44dab41e82c3dff2b36f4677a8529d28a2c0d09d410eb4db5698c0ef",
     "build/obj/nu2api/nuterrain.obj": "0a5bbf8383217c33b7ff5a3e1cae5f57f2f75bbfeda6cc5c332c141da7d7f644",
     "build/obj/nu2api/nutexanim.obj": "e9be57fb7e7fc5272362773abfc223f8e8bdc2a3da1fae96de420a51a3ce8c6d",
     "build/obj/nu2api/nuthread.obj": "599c89b0888c2d76ea861f525635fd43be62c8dc04e2f14a3f96628c5368fd48",
@@ -288882,19 +288882,19 @@
       "symbol": "_NuSound3ResumeAfterFocus",
       "address": "0x00696b00",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 32,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 32,
           "exact_match": true,
           "target_sha256": "35ba6b684f4732bd97ff1289297b61f8814767587f3fc41f051b0bed7cb6eca8",
           "base_sha256": "35ba6b684f4732bd97ff1289297b61f8814767587f3fc41f051b0bed7cb6eca8",
           "relocation_count": 5,
-          "comparison_unit": "00696b00-939f78147e16",
+          "comparison_unit": "00696b00-c4d0fc702b85",
           "objdiff_percent": 100.0
         }
       ],
@@ -288906,19 +288906,19 @@
       "symbol": "_PCSoundVolumeLookup",
       "address": "0x00696b20",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 21,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 21,
           "exact_match": true,
           "target_sha256": "4707c41cd84d0125b7ab71a3427e819183bed90e2d9fcc46c83a406a68c6e8d6",
           "base_sha256": "4707c41cd84d0125b7ab71a3427e819183bed90e2d9fcc46c83a406a68c6e8d6",
           "relocation_count": 1,
-          "comparison_unit": "00696b20-4e04f15c83d6",
+          "comparison_unit": "00696b20-9848dee76dad",
           "objdiff_percent": 100.0
         }
       ],
@@ -288930,19 +288930,19 @@
       "symbol": "_PCSoundSetRawVolume",
       "address": "0x00696b40",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 48,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 48,
           "exact_match": true,
           "target_sha256": "46c9973d8858a37b9b53973cdc89165418add3abaa4380e5b76f32821857bca6",
           "base_sha256": "46c9973d8858a37b9b53973cdc89165418add3abaa4380e5b76f32821857bca6",
           "relocation_count": 1,
-          "comparison_unit": "00696b40-ab6cb12c7694",
+          "comparison_unit": "00696b40-0982eb5b21bb",
           "objdiff_percent": 100.0
         }
       ],
@@ -288954,19 +288954,19 @@
       "symbol": "_PCSoundSetLinearVolume",
       "address": "0x00696b70",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 53,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 53,
           "exact_match": true,
           "target_sha256": "a0cd3c911b96e29ca43f60914507c9ecb9a156d15539be648d7ff895d7a28bdd",
           "base_sha256": "a0cd3c911b96e29ca43f60914507c9ecb9a156d15539be648d7ff895d7a28bdd",
           "relocation_count": 2,
-          "comparison_unit": "00696b70-671b7d79013f",
+          "comparison_unit": "00696b70-0c5d3de12623",
           "objdiff_percent": 100.0
         }
       ],
@@ -289074,8 +289074,7 @@
       "symbol": "??_GSoundQueue@@QAEPAXI@Z",
       "address": "0x00696bf0",
       "units": [
-        "src/nu2api/nusound3/pc/nusound.cpp",
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 30,
       "exact_match": true,
@@ -289088,16 +289087,6 @@
           "base_sha256": "88c28e439aa09770d2ae2e81cef7691ab199dfc522f255c9d03e355ceaffa301",
           "relocation_count": 2,
           "comparison_unit": "00696bf0-7d024e2a5a5b",
-          "objdiff_percent": 100.0
-        },
-        {
-          "unit": "src/nu2api/nustream.cpp",
-          "base_size": 30,
-          "exact_match": true,
-          "target_sha256": "88c28e439aa09770d2ae2e81cef7691ab199dfc522f255c9d03e355ceaffa301",
-          "base_sha256": "88c28e439aa09770d2ae2e81cef7691ab199dfc522f255c9d03e355ceaffa301",
-          "relocation_count": 2,
-          "comparison_unit": "00696bf0-0d24300fdcd8",
           "objdiff_percent": 100.0
         }
       ],
@@ -289436,24 +289425,23 @@
       "objects": [
         {
           "unit": "src/nu2api/nusound3/pc/nusound.cpp",
-          "base_size": 251,
+          "base_size": 262,
           "exact_match": false,
           "target_sha256": "b95d88bd466e45c78372da37f055a963a70a82db3a640ea78e1f00721e847aa9",
-          "base_sha256": "b04d6353c0d091952af27c49ef6a341ccc2d38a52b594983b90b391d108a1d14",
-          "relocation_count": 3,
+          "base_sha256": "8a098c5a1fd2dc0c7f740d3401f1295e1345937c6649a2a404358367de23c57f",
+          "relocation_count": 4,
           "comparison_unit": "00697580-13c77cff076a",
-          "objdiff_percent": 91.608246
+          "objdiff_percent": 96.86598
         }
       ],
       "diff_class": "structural",
-      "diff_hunks": 2,
+      "diff_hunks": 1,
       "idioms": [
-        "I17",
         "U7",
         "?"
       ],
       "status": "different",
-      "objdiff_percent": 91.608246
+      "objdiff_percent": 96.86598
     },
     {
       "name": "?StopVoice@SoundVoiceManagerPC@@QAEXH@Z",
@@ -289648,19 +289636,19 @@
       "symbol": "_NuFmvGetSoundFactory",
       "address": "0x00697a20",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 6,
           "exact_match": true,
           "target_sha256": "5d2ba177e94ed2f8b647ac4406a62a81437b5bf93ab9c9e68599c2e8ca0ab184",
           "base_sha256": "5d2ba177e94ed2f8b647ac4406a62a81437b5bf93ab9c9e68599c2e8ca0ab184",
           "relocation_count": 1,
-          "comparison_unit": "00697a20-9b66b505e72a",
+          "comparison_unit": "00697a20-d769c6280e81",
           "objdiff_percent": 100.0
         }
       ],
@@ -289672,19 +289660,19 @@
       "symbol": "_NuSound3SetReverb",
       "address": "0x00697a30",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 22,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 22,
           "exact_match": true,
           "target_sha256": "aef685ef63d07b098de6ad67a868cce22a0ea5a23f9a5f07319c652cb7e448d2",
           "base_sha256": "aef685ef63d07b098de6ad67a868cce22a0ea5a23f9a5f07319c652cb7e448d2",
           "relocation_count": 2,
-          "comparison_unit": "00697a30-d77fb4b02e0d",
+          "comparison_unit": "00697a30-d38cadca55c3",
           "objdiff_percent": 100.0
         }
       ],
@@ -289988,19 +289976,19 @@
       "symbol": "_NuSound3StopStereoStream",
       "address": "0x00698400",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 25,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 25,
           "exact_match": true,
           "target_sha256": "f4a904321c25f52e7e48bdf63e194186fd9e6bde2e1fb98f33514c200b26068b",
           "base_sha256": "f4a904321c25f52e7e48bdf63e194186fd9e6bde2e1fb98f33514c200b26068b",
           "relocation_count": 2,
-          "comparison_unit": "00698400-2db9f6d72f01",
+          "comparison_unit": "00698400-946e6e9236bc",
           "objdiff_percent": 100.0
         }
       ],
@@ -290012,19 +290000,19 @@
       "symbol": "_NuSound3ResumeStereoStream",
       "address": "0x00698420",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 25,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 25,
           "exact_match": true,
           "target_sha256": "3880a1f3facb178e1a20df35834fa380218f3c243ee4f0477922d5227517ef4d",
           "base_sha256": "3880a1f3facb178e1a20df35834fa380218f3c243ee4f0477922d5227517ef4d",
           "relocation_count": 2,
-          "comparison_unit": "00698420-ecd24931f572",
+          "comparison_unit": "00698420-c56b03304941",
           "objdiff_percent": 100.0
         }
       ],
@@ -290036,19 +290024,19 @@
       "symbol": "_NuSound3PauseStereoStream",
       "address": "0x00698440",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 25,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 25,
           "exact_match": true,
           "target_sha256": "f335cd9e85a4f753331babca6d048414b646ca040ff5f2ac5a117899330ba906",
           "base_sha256": "f335cd9e85a4f753331babca6d048414b646ca040ff5f2ac5a117899330ba906",
           "relocation_count": 2,
-          "comparison_unit": "00698440-aa96b1e02c0d",
+          "comparison_unit": "00698440-2d61e8abeeb7",
           "objdiff_percent": 100.0
         }
       ],
@@ -290060,19 +290048,19 @@
       "symbol": "_NuSound3SetStreamVolume",
       "address": "0x00698460",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 72,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 72,
           "exact_match": true,
           "target_sha256": "485e4a800c2e9da5eb3909b3e1f1e3002c34febca268731b61b0f71a2475f194",
           "base_sha256": "485e4a800c2e9da5eb3909b3e1f1e3002c34febca268731b61b0f71a2475f194",
           "relocation_count": 5,
-          "comparison_unit": "00698460-f5f1d7b5551a",
+          "comparison_unit": "00698460-f5f37acd6993",
           "objdiff_percent": 100.0
         }
       ],
@@ -290108,19 +290096,19 @@
       "symbol": "_NuSound3GetStereoStreamStatus",
       "address": "0x006984c0",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 25,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 25,
           "exact_match": true,
           "target_sha256": "7235322a7a0b41429c4b36144a8609de1f782082be34f690da04906a1f70439b",
           "base_sha256": "7235322a7a0b41429c4b36144a8609de1f782082be34f690da04906a1f70439b",
           "relocation_count": 2,
-          "comparison_unit": "006984c0-b3cfe55539d8",
+          "comparison_unit": "006984c0-ceb6bcedb5f0",
           "objdiff_percent": 100.0
         }
       ],
@@ -290132,19 +290120,19 @@
       "symbol": "_NuSoundGetStereoStreamStatus",
       "address": "0x006984e0",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 59,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 59,
           "exact_match": true,
           "target_sha256": "3cbc41771c6a80879c6f6d31ec853d53280cf3b6968b1654bce5b8f0e788fc92",
           "base_sha256": "3cbc41771c6a80879c6f6d31ec853d53280cf3b6968b1654bce5b8f0e788fc92",
           "relocation_count": 6,
-          "comparison_unit": "006984e0-66de045b955c",
+          "comparison_unit": "006984e0-97aee1e9be6b",
           "objdiff_percent": 100.0
         }
       ],
@@ -290180,19 +290168,19 @@
       "symbol": "_fun_006985e0",
       "address": "0x006985e0",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 5,
           "exact_match": true,
           "target_sha256": "6b4a3fb6de2bf5d80043ea50cfa314401451c67c6489ee6b6f8db149139160b3",
           "base_sha256": "6b4a3fb6de2bf5d80043ea50cfa314401451c67c6489ee6b6f8db149139160b3",
           "relocation_count": 1,
-          "comparison_unit": "006985e0-d5a2848f849c",
+          "comparison_unit": "006985e0-c03262eb4bcb",
           "objdiff_percent": 100.0
         }
       ],
@@ -290204,19 +290192,19 @@
       "symbol": "_fun_006985f0",
       "address": "0x006985f0",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 5,
           "exact_match": true,
           "target_sha256": "23ce64383f60a755b7c3082141c31ad485412f108df6c375d60236cbf162a521",
           "base_sha256": "23ce64383f60a755b7c3082141c31ad485412f108df6c375d60236cbf162a521",
           "relocation_count": 1,
-          "comparison_unit": "006985f0-4d1d73c7cacf",
+          "comparison_unit": "006985f0-5518a62a4a86",
           "objdiff_percent": 100.0
         }
       ],
@@ -290252,19 +290240,19 @@
       "symbol": "_fun_00698610",
       "address": "0x00698610",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 8,
           "exact_match": true,
           "target_sha256": "1f8d7de2129938ff1008cf10d282069a3f6d09230caecdc71ad8a037bf21ac1a",
           "base_sha256": "1f8d7de2129938ff1008cf10d282069a3f6d09230caecdc71ad8a037bf21ac1a",
           "relocation_count": 1,
-          "comparison_unit": "00698610-561f6014ac46",
+          "comparison_unit": "00698610-53e241e37695",
           "objdiff_percent": 100.0
         }
       ],
@@ -290540,19 +290528,19 @@
       "symbol": "_NuSound3SetDat",
       "address": "0x006986d0",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 10,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 10,
           "exact_match": true,
           "target_sha256": "5eac150b2cae2162e21e589fd3d48d4b3cff630d232e4fbc7a5417889d9e5c55",
           "base_sha256": "5eac150b2cae2162e21e589fd3d48d4b3cff630d232e4fbc7a5417889d9e5c55",
           "relocation_count": 1,
-          "comparison_unit": "006986d0-3bf2def2babd",
+          "comparison_unit": "006986d0-1fd209c53a07",
           "objdiff_percent": 100.0
         }
       ],
@@ -290732,19 +290720,19 @@
       "symbol": "_fun_006987b0",
       "address": "0x006987b0",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 5,
           "exact_match": true,
           "target_sha256": "40246ffd7f66d1d0f577f5baf13643f64cf2d9abaee706b0ebf305b77c2a4a04",
           "base_sha256": "40246ffd7f66d1d0f577f5baf13643f64cf2d9abaee706b0ebf305b77c2a4a04",
           "relocation_count": 1,
-          "comparison_unit": "006987b0-24eccdf9d436",
+          "comparison_unit": "006987b0-89294933af13",
           "objdiff_percent": 100.0
         }
       ],
@@ -290756,19 +290744,19 @@
       "symbol": "_fun_006987c0",
       "address": "0x006987c0",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 5,
           "exact_match": true,
           "target_sha256": "964e9c8d23bfca015ea9b227753283cdc7848b3cef4f3748a1728c2526769150",
           "base_sha256": "964e9c8d23bfca015ea9b227753283cdc7848b3cef4f3748a1728c2526769150",
           "relocation_count": 1,
-          "comparison_unit": "006987c0-e7dd5d56e2df",
+          "comparison_unit": "006987c0-b3d34bbab52d",
           "objdiff_percent": 100.0
         }
       ],
@@ -290828,19 +290816,19 @@
       "symbol": "_fun_006987f0",
       "address": "0x006987f0",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 5,
           "exact_match": true,
           "target_sha256": "0b650b55e72e4d7cb69c493ccc6d13460d6eb848b540355ad4b27840bb708179",
           "base_sha256": "0b650b55e72e4d7cb69c493ccc6d13460d6eb848b540355ad4b27840bb708179",
           "relocation_count": 1,
-          "comparison_unit": "006987f0-d4ae6e382e72",
+          "comparison_unit": "006987f0-dfedf4dfb579",
           "objdiff_percent": 100.0
         }
       ],
@@ -290924,19 +290912,19 @@
       "symbol": "_fun_00698830",
       "address": "0x00698830",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 5,
           "exact_match": true,
           "target_sha256": "0620c24570acacaa953f33028c4d386520db9760b084b5b65191c367ff9bb0a0",
           "base_sha256": "0620c24570acacaa953f33028c4d386520db9760b084b5b65191c367ff9bb0a0",
           "relocation_count": 1,
-          "comparison_unit": "00698830-bebd83404881",
+          "comparison_unit": "00698830-d99dbe7a7cc6",
           "objdiff_percent": 100.0
         }
       ],
@@ -290948,19 +290936,19 @@
       "symbol": "_fun_00698840",
       "address": "0x00698840",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 5,
           "exact_match": true,
           "target_sha256": "a451c726cea3930176e158ea7b9d2703d4bd0bc507f126d4e683ca396ebc83dd",
           "base_sha256": "a451c726cea3930176e158ea7b9d2703d4bd0bc507f126d4e683ca396ebc83dd",
           "relocation_count": 1,
-          "comparison_unit": "00698840-1394e8ea12a4",
+          "comparison_unit": "00698840-3caa98f0f336",
           "objdiff_percent": 100.0
         }
       ],
@@ -291140,19 +291128,19 @@
       "symbol": "_fun_006988c0",
       "address": "0x006988c0",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 5,
           "exact_match": true,
           "target_sha256": "ffe442cd3ad372fd74b106a3bd5d9df9aee0a12d91e628f0f869184f8f869ce8",
           "base_sha256": "ffe442cd3ad372fd74b106a3bd5d9df9aee0a12d91e628f0f869184f8f869ce8",
           "relocation_count": 1,
-          "comparison_unit": "006988c0-db61224aa7f7",
+          "comparison_unit": "006988c0-4c52f7caf2b4",
           "objdiff_percent": 100.0
         }
       ],
@@ -291164,19 +291152,19 @@
       "symbol": "_fun_006988d0",
       "address": "0x006988d0",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 8,
           "exact_match": true,
           "target_sha256": "e61e837636d660a359179dc013b63292fb2847c4d4152bcd68a01cadcb70aa39",
           "base_sha256": "e61e837636d660a359179dc013b63292fb2847c4d4152bcd68a01cadcb70aa39",
           "relocation_count": 1,
-          "comparison_unit": "006988d0-be8db0e39f04",
+          "comparison_unit": "006988d0-542d2b487441",
           "objdiff_percent": 100.0
         }
       ],
@@ -291188,19 +291176,19 @@
       "symbol": "_fun_006988e0",
       "address": "0x006988e0",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 8,
           "exact_match": true,
           "target_sha256": "7d22160f0e5576d1c32bc22535b4cdee769c5497966f23e6f3034693ae56f3ca",
           "base_sha256": "7d22160f0e5576d1c32bc22535b4cdee769c5497966f23e6f3034693ae56f3ca",
           "relocation_count": 1,
-          "comparison_unit": "006988e0-7ade5bd58019",
+          "comparison_unit": "006988e0-7c977de9436a",
           "objdiff_percent": 100.0
         }
       ],
@@ -291332,19 +291320,19 @@
       "symbol": "_fun_00698940",
       "address": "0x00698940",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 6,
           "exact_match": true,
           "target_sha256": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67",
           "base_sha256": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67",
           "relocation_count": 0,
-          "comparison_unit": "00698940-85d64f9818da",
+          "comparison_unit": "00698940-b8eaaf00de85",
           "objdiff_percent": 100.0
         }
       ],
@@ -291356,19 +291344,19 @@
       "symbol": "_fun_00698950",
       "address": "0x00698950",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 6,
           "exact_match": true,
           "target_sha256": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67",
           "base_sha256": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67",
           "relocation_count": 0,
-          "comparison_unit": "00698950-9b234bcc9527",
+          "comparison_unit": "00698950-542220b0bc41",
           "objdiff_percent": 100.0
         }
       ],
@@ -291380,19 +291368,19 @@
       "symbol": "_fun_00698960",
       "address": "0x00698960",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 6,
           "exact_match": true,
           "target_sha256": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67",
           "base_sha256": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67",
           "relocation_count": 0,
-          "comparison_unit": "00698960-a7322a666dff",
+          "comparison_unit": "00698960-8c507e32e319",
           "objdiff_percent": 100.0
         }
       ],
@@ -291404,19 +291392,19 @@
       "symbol": "_fun_00698970",
       "address": "0x00698970",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "00698970-0d485956305d",
+          "comparison_unit": "00698970-717853b02b8f",
           "objdiff_percent": 100.0
         }
       ],
@@ -291428,19 +291416,19 @@
       "symbol": "_fun_00698980",
       "address": "0x00698980",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "00698980-85872b6bbe86",
+          "comparison_unit": "00698980-aa1af2d547e2",
           "objdiff_percent": 100.0
         }
       ],
@@ -291452,19 +291440,19 @@
       "symbol": "_NuSound3LoadingSfx",
       "address": "0x00698990",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 12,
           "exact_match": true,
           "target_sha256": "271bc1178190eac20416e3e4454eba6c39d2a3ae571be7155d60ce3e4327b776",
           "base_sha256": "271bc1178190eac20416e3e4454eba6c39d2a3ae571be7155d60ce3e4327b776",
           "relocation_count": 1,
-          "comparison_unit": "00698990-c0d18024a5a7",
+          "comparison_unit": "00698990-94d8742b4ffd",
           "objdiff_percent": 100.0
         }
       ],
@@ -291500,19 +291488,19 @@
       "symbol": "_PCSoundStopStereoChannel",
       "address": "0x006989b0",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 79,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 79,
           "exact_match": true,
           "target_sha256": "f1d9290193d04d983c466892f64adef297c76808dfe84dc4e37737cbc7f0f5d0",
           "base_sha256": "f1d9290193d04d983c466892f64adef297c76808dfe84dc4e37737cbc7f0f5d0",
           "relocation_count": 8,
-          "comparison_unit": "006989b0-129b4df2d076",
+          "comparison_unit": "006989b0-25bb60fd13ed",
           "objdiff_percent": 100.0
         }
       ],
@@ -291524,19 +291512,19 @@
       "symbol": "_NuSound3SetLoopHoldTime",
       "address": "0x00698a00",
       "units": [
-        "src/nu2api/nusound.c"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 21,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 21,
           "exact_match": true,
           "target_sha256": "c8c18726cfc616eb207a13567c8c5136cf0851d2a7736a2f06aa98e9c4768cbc",
           "base_sha256": "c8c18726cfc616eb207a13567c8c5136cf0851d2a7736a2f06aa98e9c4768cbc",
           "relocation_count": 3,
-          "comparison_unit": "00698a00-fd8da4a69c22",
+          "comparison_unit": "00698a00-a1806c0f16fd",
           "objdiff_percent": 100.0
         }
       ],
@@ -291620,19 +291608,19 @@
       "symbol": "_NuStreamGetStatusText",
       "address": "0x00698a50",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 165,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 165,
           "exact_match": true,
           "target_sha256": "cd5a95bec793d38efaf4767d79254b80463003aba19547181321ee62f83eeb67",
           "base_sha256": "cd5a95bec793d38efaf4767d79254b80463003aba19547181321ee62f83eeb67",
           "relocation_count": 10,
-          "comparison_unit": "00698a50-27b760544340",
+          "comparison_unit": "00698a50-ae1312ed0d40",
           "objdiff_percent": 100.0
         }
       ],
@@ -291644,19 +291632,19 @@
       "symbol": "_fun_00698b00",
       "address": "0x00698b00",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "00698b00-25429595aa29",
+          "comparison_unit": "00698b00-fda7e1772dba",
           "objdiff_percent": 100.0
         }
       ],
@@ -291668,19 +291656,19 @@
       "symbol": "_fun_00698b10",
       "address": "0x00698b10",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "00698b10-4f7a6b3015e4",
+          "comparison_unit": "00698b10-d2d42f388b72",
           "objdiff_percent": 100.0
         }
       ],
@@ -291692,19 +291680,19 @@
       "symbol": "_fun_00698b20",
       "address": "0x00698b20",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "00698b20-aa690f9c7561",
+          "comparison_unit": "00698b20-a37b18cf213c",
           "objdiff_percent": 100.0
         }
       ],
@@ -291716,19 +291704,19 @@
       "symbol": "_fun_00698b30",
       "address": "0x00698b30",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "00698b30-7d1abc670562",
+          "comparison_unit": "00698b30-40bf287a1fb4",
           "objdiff_percent": 100.0
         }
       ],
@@ -291740,19 +291728,19 @@
       "symbol": "_fun_00698b40",
       "address": "0x00698b40",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "00698b40-aa2a7d93c8c5",
+          "comparison_unit": "00698b40-48e0a7e2a3ef",
           "objdiff_percent": 100.0
         }
       ],
@@ -291764,19 +291752,19 @@
       "symbol": "_fun_00698b50",
       "address": "0x00698b50",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "00698b50-185cec21bc25",
+          "comparison_unit": "00698b50-dfaaabbf68f8",
           "objdiff_percent": 100.0
         }
       ],
@@ -291788,19 +291776,19 @@
       "symbol": "_NuSound3DestroyStereoStreams",
       "address": "0x00698b60",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 22,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 22,
           "exact_match": true,
           "target_sha256": "2f702ca320a9a43616e9061225a084b329efb99bad86a6bd05a30d11421a65f9",
           "base_sha256": "2f702ca320a9a43616e9061225a084b329efb99bad86a6bd05a30d11421a65f9",
           "relocation_count": 4,
-          "comparison_unit": "00698b60-c498ef26e14f",
+          "comparison_unit": "00698b60-10999dd125c6",
           "objdiff_percent": 100.0
         }
       ],
@@ -291945,19 +291933,19 @@
       "symbol": "_NuSound3KillAllAudio",
       "address": "0x00698ed0",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 32,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 32,
           "exact_match": true,
           "target_sha256": "08ff4b453d5c645863110b9b4729ce139a04e6775927e0b8a8650348649ff4af",
           "base_sha256": "08ff4b453d5c645863110b9b4729ce139a04e6775927e0b8a8650348649ff4af",
           "relocation_count": 6,
-          "comparison_unit": "00698ed0-ef77c3e0216e",
+          "comparison_unit": "00698ed0-8b9f3e359f45",
           "objdiff_percent": 100.0
         }
       ],
@@ -291969,19 +291957,19 @@
       "symbol": "_NuSound3KillAllAudioWaitEx",
       "address": "0x00698ef0",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 32,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 32,
           "exact_match": true,
           "target_sha256": "fd99fa1a2eafbd06b1b5a827980699791b042154b1dde57f6a972a2a5d9cba9e",
           "base_sha256": "fd99fa1a2eafbd06b1b5a827980699791b042154b1dde57f6a972a2a5d9cba9e",
           "relocation_count": 6,
-          "comparison_unit": "00698ef0-bb0ed24b726a",
+          "comparison_unit": "00698ef0-b800eaa60f25",
           "objdiff_percent": 100.0
         }
       ],
@@ -292017,19 +292005,19 @@
       "symbol": "_NuFmvStopSound",
       "address": "0x00698f20",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 118,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 118,
           "exact_match": true,
           "target_sha256": "da1483ef8399c880c6d27821fa96d020d23683c3f79aba0e49034d0ceccc1142",
           "base_sha256": "da1483ef8399c880c6d27821fa96d020d23683c3f79aba0e49034d0ceccc1142",
           "relocation_count": 13,
-          "comparison_unit": "00698f20-77e503924493",
+          "comparison_unit": "00698f20-03c4134d09db",
           "objdiff_percent": 100.0
         }
       ],
@@ -292041,19 +292029,19 @@
       "symbol": "_NuSound3SuspendForFocus",
       "address": "0x00698fa0",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 42,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "base_size": 42,
           "exact_match": true,
           "target_sha256": "5cfa1e86bc8c1d7471316dc59a8e9a0a5427268e3074da02486a4291069568dc",
           "base_sha256": "5cfa1e86bc8c1d7471316dc59a8e9a0a5427268e3074da02486a4291069568dc",
           "relocation_count": 7,
-          "comparison_unit": "00698fa0-f247588e78eb",
+          "comparison_unit": "00698fa0-225c6375635a",
           "objdiff_percent": 100.0
         }
       ],
@@ -444490,7 +444478,7 @@
         "src/nu2api/nucore_includes.c",
         "src/nu2api/numath_includes.c",
         "src/nu2api/nunetemu.cpp",
-        "src/nu2api/nusound.c",
+        "src/nu2api/nusound3/pc/nusound.cpp",
         "src/nu2api/pc_device.cpp"
       ],
       "target_size": 8,
@@ -444553,7 +444541,7 @@
           "base_sha256": "139107fd63d004e94cb64abb75361dd8490810c6709a9311896ca17496f5ecde"
         },
         {
-          "unit": "src/nu2api/nusound.c",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -552494,7 +552482,7 @@
       "address": "0x00763ed0",
       "units": [
         "src/legoapi/gizminicut.cpp",
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
@@ -552508,7 +552496,7 @@
           "base_sha256": "71f27beab0e797c64b42da727ced1f591ae5879cc292f69a8e7fdde390a21b13"
         },
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -585191,13 +585179,13 @@
       "symbol": "??_C@_0BJ@BHFHENMF@?$DO?$DO?$DO?5NuSoundStopStereo?5?$CFd?$AA@",
       "address": "0x0076ef38",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 25,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "exact_match": true,
           "target_size": 25,
           "base_size": 25,
@@ -585212,13 +585200,13 @@
       "symbol": "??_C@_0P@JDJCDANL@unknown?5status?$AA@",
       "address": "0x0076ef54",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 15,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "exact_match": true,
           "target_size": 15,
           "base_size": 15,
@@ -585233,13 +585221,13 @@
       "symbol": "??_C@_04OPEFEHND@Busy?$AA@",
       "address": "0x0076ef64",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -585254,13 +585242,13 @@
       "symbol": "??_C@_04HJMOFLDF@Free?$AA@",
       "address": "0x0076ef6c",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -795833,13 +795821,13 @@
       "symbol": "_NuSound3VolumeOffset",
       "address": "0x00810dbc",
       "units": [
-        "src/nu2api/nustream.cpp"
+        "src/nu2api/nusound3/pc/nusound.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nustream.cpp",
+          "unit": "src/nu2api/nusound3/pc/nusound.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -900277,11 +900265,11 @@
     "matching_with_padding_percent": 64.04412133280096,
     "fuzzy_text_data_bytes": 6896,
     "fuzzy_denominator_bytes": 3349891,
-    "fuzzy_coverage_percent": 96.47695486693378,
+    "fuzzy_coverage_percent": 96.47737392981612,
     "mapped_functions": 15915,
     "matched_functions": 13977,
-    "objdiff_fuzzy_percent": 96.97513,
-    "objdiff_total_code": 3338646,
+    "objdiff_fuzzy_percent": 96.975525,
+    "objdiff_total_code": 3338616,
     "image_bytes": 40067072,
     "mapped_bytes": 38533384,
     "mapping_percent": 96.17219845762625,
@@ -901685,7 +901673,7 @@
       "metadata_sha256": "525d436eee3d48951222f1fd54574554983d228c3d06f19a545ba7cab50fe057",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "be1e0e5f209102fce28ff01cc8503c7a8b017044b7d7bdca376665cd193817f9",
+      "geometry_object_sha256": "911ff8644e0a283236ffc65883bd8d03f2ec37516a01b61b5795c555ae0180f0",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {

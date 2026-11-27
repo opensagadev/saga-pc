@@ -930,30 +930,6 @@ void NuSound3AddRumble(void *pad, f32 strength, i32 duration, f32 priority, f32 
 void NuSound3SetRumblePads(void *pad_0, void *pad1) {
 }
 
-i32 fun_00698940(void) {
-    return 1;
-}
-
-i32 fun_00698950(void) {
-    return 1;
-}
-
-i32 fun_00698960(void) {
-    return 1;
-}
-
-i32 fun_00698970(void) {
-    return 0;
-}
-
-i32 fun_00698980(void) {
-    return 0;
-}
-
-void NuSound3SetDat(NUDATHDR *header) {
-    NuSoundDat = header;
-}
-
 void fun_006986e0(void) {
 }
 
@@ -963,97 +939,10 @@ void fun_006986f0(void) {
 void fun_00698700(void) {
 }
 
-void fun_006985e0(void) {
-    PCSoundAlreadyPlayingHook();
-}
-
-void fun_006985f0(void) {
-    PCSoundAlreadyPlayingHook();
-}
-
-void fun_006987b0(void) {
-    PCSoundAlreadyPlayingHook();
-}
-
-void fun_006987c0(void) {
-    PCSoundAlreadyPlayingHook();
-}
-
-void fun_006987f0(void) {
-    PCSoundAlreadyPlayingHook();
-}
-
-void fun_00698830(void) {
-    PCSoundAlreadyPlayingHook();
-}
-
-void fun_00698840(void) {
-    PCSoundAlreadyPlayingHook();
-}
-
-void fun_006988c0(void) {
-    PCSoundAlreadyPlayingHook();
-}
-
-i32 fun_00698610(void) {
-    PCSoundAlreadyPlayingHook();
-    return 0;
-}
-
-i32 fun_006988d0(void) {
-    PCSoundAlreadyPlayingHook();
-    return 0;
-}
-
-i32 fun_006988e0(void) {
-    PCSoundAlreadyPlayingHook();
-    return 0;
-}
-
-i32 NuSound3SetReverb(i32 enable) {
-    i32 previous = SoundVoiceManager.option_d14;
-    SoundVoiceManager.option_d14 = enable != 0;
-    return previous;
-}
-
-void NuSound3SetLoopHoldTime(f32 time) {
-    NuSound3LoopHoldTime = (i32)(time * 1000.0);
-}
-
 void NuSound3StopRumble(void) {
 }
 
 void NuSound3UpdateRumble(f32 frame_time) {
-}
-
-f32 PCSoundVolumeLookup(i32 index) {
-    /* Checks only the upper bound; keeps its negative-index behavior. */
-    if (index > 0x3fff) {
-        index = 0;
-    }
-
-    return NuSound3VolumeTable[index];
-}
-
-HRESULT PCSoundSetRawVolume(IDirectSoundBuffer *buffer, i32 volume) {
-    volume += SoundVoiceVolumeOffset;
-    volume = volume > 0 ? 0 : volume;
-    if (volume < -10000) {
-        volume = -10000;
-    }
-
-    return buffer->vtable->set_volume(buffer, volume);
-}
-
-HRESULT PCSoundSetLinearVolume(IDirectSoundBuffer *buffer, f32 volume) {
-    i32 raw_volume = (i32)volume + SoundVoiceVolumeOffset;
-
-    raw_volume = raw_volume > 0 ? 0 : raw_volume;
-    if (raw_volume < -10000) {
-        raw_volume = -10000;
-    }
-
-    return buffer->vtable->set_volume(buffer, raw_volume);
 }
 
 void SetSoundBitsById(const i32 *ids, void (*set_bit)(i32)) {
@@ -1111,10 +1000,6 @@ char *GetSfxName(i32 sound_id) {
         return SfxInfo[sound_id].name;
     }
     return NULL;
-}
-
-i32 NuSound3LoadingSfx(void) {
-    return NuSound3SfxLoading != 0;
 }
 
 SFX_RECORD *SfxRevertInfo = 0;
