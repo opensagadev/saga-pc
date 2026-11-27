@@ -465,26 +465,6 @@ extern "C" void MenuDrawEffects(MENU *menu) {
     }
 }
 
-void PC_DEVICE_BACKEND::RestoreSavedMode() {
-    requested_windowed = saved_windowed;
-    if (saved_mode < mode_count) {
-        requested_mode = saved_mode;
-    } else {
-        requested_mode = active_mode;
-    }
-    requested_feature = saved_feature;
-    requested_multisample = saved_multisample;
-    requested_target_count = saved_target_count;
-    PcWindowOptions.SetAspectMode(saved_aspect);
-    PcWindowOptions.Save();
-    i32 aspect = PcWindowOptions.aspect_mode;
-    if (aspect == PC_ASPECT_AUTO) {
-        aspect = active_aspect_mode;
-    }
-    MenuAppliedAspect = aspect;
-    CreateOrResetDevice(1);
-}
-
 extern "C" {
     f32 MenuVideoConfirmDuration = 0;
     i32 MenuVideoConfirmWait = 0;

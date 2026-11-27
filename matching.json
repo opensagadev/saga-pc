@@ -686,7 +686,7 @@
     "src/legoapi/menu.cpp": "10f43d636471b9e69fe31a01b999fab9369d11c8a2b1ea257222d015303fb4c0",
     "src/legoapi/menu_pause.cpp": "b4fa54a35fb32b79e896b8987bcaa658fa9cda1279e3e5a772cfbbcf2985a68e",
     "src/legoapi/menu_titles.cpp": "b167d302fe37d7bd247b1aaf99870b41c24a0685d11e82527f64352cb629989d",
-    "src/legoapi/menu_video.cpp": "46ad6ae415ef6f09806b3ef8a2c9cc0d7683d46fafb8cd47cc2946b5ee53cdfe",
+    "src/legoapi/menu_video.cpp": "0f7287343481c89b5ce618507fcb5d2ab48296db5b8a55cabcfab183af770761",
     "src/legoapi/menus.cpp": "6e124a77df85bb93579a0f8b7304ea655fef746f533ba0b1f8992890b875fe46",
     "src/legoapi/minicamcut.cpp": "b9c949340c64c8df7b4fb3daf2ae66d53fcae48edb2c45356b578730fb0e30e5",
     "src/legoapi/minikits.cpp": "e4b24cd8f6b9e6958205762104fca5e1c0cb7fb375eb97d409f592b7081f2ab0",
@@ -828,11 +828,12 @@
     "src/nu2api/nustream.cpp": "92d48682e9f0d521686f984c7da81c2599e923e42639b41cee255bb4046faf40",
     "src/nu2api/nutexanim.cpp": "df1a7a3bba4902dc35ebcd48ade0924965f2e8c509a7fbae9dbef12e67e0198b",
     "src/nu2api/nuwin32/Stubs.cpp": "904a2e0f9f879e7257e20c510166bf6ed35529d497e4e1b5196da1dc91901ee0",
-    "src/nu2api/nuwin32/d3dApiCalls.cpp": "a4d7a5fe2e5ec8293050859c84440635161833e2a38d2e73e32aab4476d5c78f",
+    "src/nu2api/nuwin32/d3dApiCalls.cpp": "7e3e2688b2333745e3fa3271dc48c72395a55e80355d7754a40fc36aae5c8f8c",
     "src/nu2api/nuwin32/d3dCalls.cpp": "ee6c884e4e02b5f416a46f51017c4079391ac8a3e77a6e8698623d38952d4819",
+    "src/nu2api/nuwin32/d3dCore.cpp": "26e9722e01daa9a30668300b27a9febd17ad58a3c1c426aaa719bd0b705e8b54",
     "src/nu2api/nuwin32/pcapi.cpp": "5dff9ecd7700e57d046ea563e421dd809ae6b91ddd8cb9b163e5c4940cc4408b",
     "src/nu2api/oggreader.cpp": "90c9a00f33964a13896e474c77fbe03c485db65c240cb3ffe435e222c8e2041e",
-    "src/nu2api/pc_device.cpp": "3097c031ff48d609e1f6d4a15b8c2162d7ed4ed9bf348feb5782dc3229306661",
+    "src/nu2api/pc_device.cpp": "a291c701173e6885ed819e4e0b535c74a2ce57768e37612d4a9c40a38e2fa7d8",
     "src/nu2api/pc_fmv.cpp": "07e6cee39825e5aee7a06decbef2bbf2c6837db0e5f8aaec158332d904f45cf5",
     "src/nu2api/pc_fmv_control.cpp": "7c1e9a63664ade78dcf1978fe3b50a8df50a658af550682d4bee9c14076421a9",
     "src/nu2api/pc_fmv_leaves.cpp": "2ebdf7d48262f55cf9a8b5d7a0b91c2962fd3f346272637a188795ca6d103046",
@@ -1120,7 +1121,7 @@
     "build/obj/legoapi/menu.obj": "30831f22837a0bf2cd711033cda3f45926b3cd7eca4a9d553f903dac54bb9435",
     "build/obj/legoapi/menu_pause.obj": "2d48f24bbf757b5e82ebc29bbd83dab8f028e5e2cec595781194ddb30410aba5",
     "build/obj/legoapi/menu_titles.obj": "16c9a351dc7ca2b436af8f4e5af0afef2a5b3344046912bcfaa9c86f8588aa3f",
-    "build/obj/legoapi/menu_video.obj": "14285bc082286b281e0e84367485c8c0e79325f790004b09adc299a61fbaf6e0",
+    "build/obj/legoapi/menu_video.obj": "cf38803b129f821bf9b6ef753acec86894a610a6e6c5dc59f4b451e284f8fe9a",
     "build/obj/legoapi/menus.obj": "df3f17a9e2ff9b864d4e387696853399ea4d3bff102b5ffb996b93ccf774b0a8",
     "build/obj/legoapi/minicamcut.obj": "1862454331a1ecc6725476ea5cd534d0d40e63cc69281400194a1d07cf6403df",
     "build/obj/legoapi/minikits.obj": "729064a2a17817e71e8a3c8c97e5a831ccde5384ca905020419feb089db54211",
@@ -1298,12 +1299,13 @@
     "build/obj/nu2api/nuvideo.obj": "aad7ecaff372d53cf2a3bbf014693c819c565a6539f56d28bd0e17a79bba0532",
     "build/obj/nu2api/nuwin.obj": "e8b8f425930bfd70137bbb0ed6a749f68f41c12b89ef7c93d79e25d23c708070",
     "build/obj/nu2api/nuwin32/Stubs.obj": "8040ea1b5e287b26672f6a311ec214f1d96b2b25c3518c47288bf406586a7843",
-    "build/obj/nu2api/nuwin32/d3dApiCalls.obj": "4655833edcd4d11ff6c2437886c72d49bf783bfa3336c81f00558cdf3da73a2d",
+    "build/obj/nu2api/nuwin32/d3dApiCalls.obj": "350304e0de3aef62466b73c54088f8f0ce2aeb42184cc9a3b1250b0781dceb54",
     "build/obj/nu2api/nuwin32/d3dCalls.obj": "a6abec81763cebd66c75625d29cdfa3799d772445f5cc3803051fbd218313e6f",
+    "build/obj/nu2api/nuwin32/d3dCore.obj": "bf1c78ac99a9795e5395493f5af81deeafc6d13a3cd4f2bacefa00547020cb2b",
     "build/obj/nu2api/nuwin32/pcapi.obj": "24829733e52a1dbcc4818d5c9f3efd007b50f34c38fa471591c7feb93d172209",
     "build/obj/nu2api/nuwind.obj": "21f1e1116797fe047eb69396356311d4761da602726ec06848e5d4c3689ca888",
     "build/obj/nu2api/oggreader.obj": "cbcd120f83c4345d34b9173baa42f05b631665a59342f812f61f26a7c4e18301",
-    "build/obj/nu2api/pc_device.obj": "9e2286b156f545df8e3f1024968a3c4683b8aa3cda5ca4b3205e26aa9ef9a793",
+    "build/obj/nu2api/pc_device.obj": "d8c67ab717582d7cb8cefc15ec48505f7f28d07b74913a52c4ec411dca6caeaf",
     "build/obj/nu2api/pc_fmv.obj": "feb82faac8c29d646d290e2933df8d5f6eecd326294bf16fdfa64193a80f44ff",
     "build/obj/nu2api/pc_fmv_control.obj": "9b2da8ae0daf7d5e0a9192949819e16f4c7ef02db12bef403b1b91e0060253e1",
     "build/obj/nu2api/pc_fmv_leaves.obj": "773280038554ebaf6ba1a711b277fdcc2cafdb3b23bf70d58639a68746df8f63",
@@ -337361,19 +337363,19 @@
       "symbol": "?GetDeviceWidth@PC_WINDOW_OPTIONS@@QAEHXZ",
       "address": "0x006e1850",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 7,
           "exact_match": true,
           "target_sha256": "e2d7162e36ec61247a1cb7ce7305f472db9ffae432b1b164d1062a6441c8788b",
           "base_sha256": "e2d7162e36ec61247a1cb7ce7305f472db9ffae432b1b164d1062a6441c8788b",
           "relocation_count": 0,
-          "comparison_unit": "006e1850-9dc143f6a6d6",
+          "comparison_unit": "006e1850-c41e8b246530",
           "objdiff_percent": 100.0
         }
       ],
@@ -337385,19 +337387,19 @@
       "symbol": "?GetDeviceHeight@PC_WINDOW_OPTIONS@@QAEHXZ",
       "address": "0x006e1860",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 7,
           "exact_match": true,
           "target_sha256": "f40a6cf8532e0e005662c57d2e1e96cffc6a6cb475c60453aecaa1f9b6d32783",
           "base_sha256": "f40a6cf8532e0e005662c57d2e1e96cffc6a6cb475c60453aecaa1f9b6d32783",
           "relocation_count": 0,
-          "comparison_unit": "006e1860-4d53e453a81c",
+          "comparison_unit": "006e1860-8b927110476b",
           "objdiff_percent": 100.0
         }
       ],
@@ -337409,19 +337411,19 @@
       "symbol": "?GetRefresh@PC_WINDOW_OPTIONS@@QAEHXZ",
       "address": "0x006e1870",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 7,
           "exact_match": true,
           "target_sha256": "84b8410ce5eb641a7d38d0ca1afaf63a104ba3835e480c35ce6e237d454bb194",
           "base_sha256": "84b8410ce5eb641a7d38d0ca1afaf63a104ba3835e480c35ce6e237d454bb194",
           "relocation_count": 0,
-          "comparison_unit": "006e1870-6ff5ca1e9347",
+          "comparison_unit": "006e1870-f5e4e790b1f8",
           "objdiff_percent": 100.0
         }
       ],
@@ -337433,19 +337435,19 @@
       "symbol": "?GetMultisample@PC_WINDOW_OPTIONS@@QAEHXZ",
       "address": "0x006e1880",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 7,
           "exact_match": true,
           "target_sha256": "df9ae61b0c83918ebebfff67700fd70f79454afe00d1e1fe6ab0b5163430f651",
           "base_sha256": "df9ae61b0c83918ebebfff67700fd70f79454afe00d1e1fe6ab0b5163430f651",
           "relocation_count": 0,
-          "comparison_unit": "006e1880-4501d9dfd8e6",
+          "comparison_unit": "006e1880-b41fd63990c4",
           "objdiff_percent": 100.0
         }
       ],
@@ -337457,19 +337459,19 @@
       "symbol": "?GetBloomMethod@PC_WINDOW_OPTIONS@@QAEHXZ",
       "address": "0x006e1890",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 7,
           "exact_match": true,
           "target_sha256": "0a2a4a82e58c44dee59c4f6ae11b0670102f94daba8668d05c1e0876334a5c8b",
           "base_sha256": "0a2a4a82e58c44dee59c4f6ae11b0670102f94daba8668d05c1e0876334a5c8b",
           "relocation_count": 0,
-          "comparison_unit": "006e1890-e6b7df6628c3",
+          "comparison_unit": "006e1890-f0f203716816",
           "objdiff_percent": 100.0
         }
       ],
@@ -337481,19 +337483,19 @@
       "symbol": "?GetDesiredBloomMethod@PC_WINDOW_OPTIONS@@QAEHXZ",
       "address": "0x006e18a0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 7,
           "exact_match": true,
           "target_sha256": "3baaeb1d2ceb6a0b0a8e05a36bca9775197152b9920f5c7f925b51c8066bad1f",
           "base_sha256": "3baaeb1d2ceb6a0b0a8e05a36bca9775197152b9920f5c7f925b51c8066bad1f",
           "relocation_count": 0,
-          "comparison_unit": "006e18a0-fbe1b26c9265",
+          "comparison_unit": "006e18a0-043872950174",
           "objdiff_percent": 100.0
         }
       ],
@@ -337505,19 +337507,19 @@
       "symbol": "?GetDesiredShadowMethod@PC_WINDOW_OPTIONS@@QAEHXZ",
       "address": "0x006e18b0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 7,
           "exact_match": true,
           "target_sha256": "06ce523dc8d6c0a892614ae7d57970705f4359ff8161d972db6bdb2e70297514",
           "base_sha256": "06ce523dc8d6c0a892614ae7d57970705f4359ff8161d972db6bdb2e70297514",
           "relocation_count": 0,
-          "comparison_unit": "006e18b0-8b36a177029a",
+          "comparison_unit": "006e18b0-e6ac290eed4e",
           "objdiff_percent": 100.0
         }
       ],
@@ -337529,19 +337531,19 @@
       "symbol": "?GetSpeedBlurSupported@PC_WINDOW_OPTIONS@@QAEEXZ",
       "address": "0x006e18c0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 7,
           "exact_match": true,
           "target_sha256": "04e1b42958139477ca77b13a557dcf8730b07b721f4863d7eab1397aeafe8144",
           "base_sha256": "04e1b42958139477ca77b13a557dcf8730b07b721f4863d7eab1397aeafe8144",
           "relocation_count": 0,
-          "comparison_unit": "006e18c0-6cffda45316d",
+          "comparison_unit": "006e18c0-71f43bfe2727",
           "objdiff_percent": 100.0
         }
       ],
@@ -337553,19 +337555,19 @@
       "symbol": "?IsDeviceLost@PC_DEVICE_BACKEND@@QAEHXZ",
       "address": "0x006e18d0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 9,
           "exact_match": true,
           "target_sha256": "4f1a01b214aa9f6ec2c29a7f09a99dce925333fb0c65dc604c2ed4e3fd7a6060",
           "base_sha256": "4f1a01b214aa9f6ec2c29a7f09a99dce925333fb0c65dc604c2ed4e3fd7a6060",
           "relocation_count": 0,
-          "comparison_unit": "006e18d0-0561921c6ab5",
+          "comparison_unit": "006e18d0-310639e0459d",
           "objdiff_percent": 100.0
         }
       ],
@@ -337577,19 +337579,19 @@
       "symbol": "?SetRequestedFeature@PC_DEVICE_BACKEND@@QAEXE@Z",
       "address": "0x006e18e0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 13,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 13,
           "exact_match": true,
           "target_sha256": "d06a66d4acdc8cdf7e08e9efd31e844efc41f2d90809b183b71a0863795a7665",
           "base_sha256": "d06a66d4acdc8cdf7e08e9efd31e844efc41f2d90809b183b71a0863795a7665",
           "relocation_count": 0,
-          "comparison_unit": "006e18e0-c0de6c6e8d95",
+          "comparison_unit": "006e18e0-a3d105a16cea",
           "objdiff_percent": 100.0
         }
       ],
@@ -337601,19 +337603,19 @@
       "symbol": "?SetRequestedTargetCount@PC_DEVICE_BACKEND@@QAEXG@Z",
       "address": "0x006e18f0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 15,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 15,
           "exact_match": true,
           "target_sha256": "15d115b0d32ce4e5f666319a32825b4680c314ec74b8c0fb679f61bd67f2b39b",
           "base_sha256": "15d115b0d32ce4e5f666319a32825b4680c314ec74b8c0fb679f61bd67f2b39b",
           "relocation_count": 0,
-          "comparison_unit": "006e18f0-9135f55e2040",
+          "comparison_unit": "006e18f0-c753b1186904",
           "objdiff_percent": 100.0
         }
       ],
@@ -337625,19 +337627,19 @@
       "symbol": "?GetDeviceType@PC_DEVICE_BACKEND@@QAEHXZ",
       "address": "0x006e1900",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 4,
           "exact_match": true,
           "target_sha256": "916ae10aa3fd76a4d5b25b2fb66e9df0fd04957c7ab10930268d1ed7808be689",
           "base_sha256": "916ae10aa3fd76a4d5b25b2fb66e9df0fd04957c7ab10930268d1ed7808be689",
           "relocation_count": 0,
-          "comparison_unit": "006e1900-5df7e75ccb63",
+          "comparison_unit": "006e1900-bb4f1855fc98",
           "objdiff_percent": 100.0
         }
       ],
@@ -337649,19 +337651,19 @@
       "symbol": "_PcDeviceGetHardwareVertexProcessing",
       "address": "0x006e1910",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 6,
           "exact_match": true,
           "target_sha256": "28cc1771172769d5693dae51d955083f7ba5f1da0f07d85474b732007545e80d",
           "base_sha256": "28cc1771172769d5693dae51d955083f7ba5f1da0f07d85474b732007545e80d",
           "relocation_count": 1,
-          "comparison_unit": "006e1910-b253c9e599bc",
+          "comparison_unit": "006e1910-422d9bcdf6c6",
           "objdiff_percent": 100.0
         }
       ],
@@ -337697,19 +337699,19 @@
       "symbol": "??0PC_DEVICE_BACKEND@@QAE@XZ",
       "address": "0x006e1930",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 472,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 472,
           "exact_match": false,
           "target_sha256": "3679c307e0b52c12bc4c7599124ef463a402bfcc4b328969b38d45e9544e281e",
           "base_sha256": "ec2b93b362cd849bf7c922f7f4ad75452ae6aeb8d5a831842fc5c4fed3debc47",
           "relocation_count": 4,
-          "comparison_unit": "006e1930-06eb9a8d9f31",
+          "comparison_unit": "006e1930-56ac563a5542",
           "objdiff_percent": 79.74
         }
       ],
@@ -337728,19 +337730,19 @@
       "symbol": "?PCGraphicsModeCompare@@YAHPBX0@Z",
       "address": "0x006e1b10",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 87,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 87,
           "exact_match": true,
           "target_sha256": "80d32778ad4c01225c34f1c1c5ed655618fe6a04e3b5e4b3f15fbd8b504fda44",
           "base_sha256": "80d32778ad4c01225c34f1c1c5ed655618fe6a04e3b5e4b3f15fbd8b504fda44",
           "relocation_count": 0,
-          "comparison_unit": "006e1b10-716faf6b8f5f",
+          "comparison_unit": "006e1b10-b3583eb676d9",
           "objdiff_percent": 100.0
         }
       ],
@@ -337752,19 +337754,19 @@
       "symbol": "?FindMode@PC_DEVICE_BACKEND@@QAEIIII@Z",
       "address": "0x006e1b70",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 390,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 390,
           "exact_match": true,
           "target_sha256": "e75b78b6cf8a246489b24274de63f24078299e88cf0b428a74b3c07c59d7da30",
           "base_sha256": "e75b78b6cf8a246489b24274de63f24078299e88cf0b428a74b3c07c59d7da30",
           "relocation_count": 0,
-          "comparison_unit": "006e1b70-e4491de18741",
+          "comparison_unit": "006e1b70-68bba7fa1ef9",
           "objdiff_percent": 100.0
         }
       ],
@@ -337776,19 +337778,19 @@
       "symbol": "?FindAspect@PC_DEVICE_BACKEND@@QAEHII@Z",
       "address": "0x006e1d00",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 206,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 206,
           "exact_match": true,
           "target_sha256": "ac592b32a436ab7c880326670d74dcad068bc0502f13d8f3bcefabe671a5b7f3",
           "base_sha256": "ac592b32a436ab7c880326670d74dcad068bc0502f13d8f3bcefabe671a5b7f3",
           "relocation_count": 7,
-          "comparison_unit": "006e1d00-ab7002d2ceda",
+          "comparison_unit": "006e1d00-79215d8d3b3d",
           "objdiff_percent": 100.0
         }
       ],
@@ -337800,19 +337802,19 @@
       "symbol": "?RequestMode@PC_DEVICE_BACKEND@@QAEXI@Z",
       "address": "0x006e1dd0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 27,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 27,
           "exact_match": true,
           "target_sha256": "62a30fea50f40e950a2f8d52625bf956c57563cfcf789511184ea6f67a307d0a",
           "base_sha256": "62a30fea50f40e950a2f8d52625bf956c57563cfcf789511184ea6f67a307d0a",
           "relocation_count": 0,
-          "comparison_unit": "006e1dd0-bdbd67d9a501",
+          "comparison_unit": "006e1dd0-b7801dc605b5",
           "objdiff_percent": 100.0
         }
       ],
@@ -337824,19 +337826,19 @@
       "symbol": "?NextResolution@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e1df0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 261,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 261,
           "exact_match": true,
           "target_sha256": "e16e708ae16031bab8b834138c8e43d022696a8e197b88505d253ded2fd9ea4a",
           "base_sha256": "e16e708ae16031bab8b834138c8e43d022696a8e197b88505d253ded2fd9ea4a",
           "relocation_count": 0,
-          "comparison_unit": "006e1df0-0af849cdf4ce",
+          "comparison_unit": "006e1df0-eb390d0d99a1",
           "objdiff_percent": 100.0
         }
       ],
@@ -337848,19 +337850,19 @@
       "symbol": "?PreviousResolution@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e1f00",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 262,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 262,
           "exact_match": true,
           "target_sha256": "417e38b98d3e9881ac6c3acfa7c964474343ffc86658335f02bb15e743c3d0e7",
           "base_sha256": "417e38b98d3e9881ac6c3acfa7c964474343ffc86658335f02bb15e743c3d0e7",
           "relocation_count": 0,
-          "comparison_unit": "006e1f00-804202771c9f",
+          "comparison_unit": "006e1f00-468aa5371441",
           "objdiff_percent": 100.0
         }
       ],
@@ -337872,19 +337874,19 @@
       "symbol": "?NextRefresh@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e2010",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 103,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 103,
           "exact_match": true,
           "target_sha256": "b16862d76d057b2fa6399928f2230e20e357d2746d5a8f0e5ab1f0e31eb1854e",
           "base_sha256": "b16862d76d057b2fa6399928f2230e20e357d2746d5a8f0e5ab1f0e31eb1854e",
           "relocation_count": 0,
-          "comparison_unit": "006e2010-6acc743cde0b",
+          "comparison_unit": "006e2010-bbff0ba21cbc",
           "objdiff_percent": 100.0
         }
       ],
@@ -337896,19 +337898,19 @@
       "symbol": "?PreviousRefresh@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e2080",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 104,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 104,
           "exact_match": true,
           "target_sha256": "89d5585424da0fa40dbcee34e974d5e122589586f27b35a2e906581bf282c5dc",
           "base_sha256": "89d5585424da0fa40dbcee34e974d5e122589586f27b35a2e906581bf282c5dc",
           "relocation_count": 0,
-          "comparison_unit": "006e2080-3e61a8367cc9",
+          "comparison_unit": "006e2080-7ca4b1a33d93",
           "objdiff_percent": 100.0
         }
       ],
@@ -337920,19 +337922,19 @@
       "symbol": "?ResetRequestedMode@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e20f0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 53,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 53,
           "exact_match": true,
           "target_sha256": "b616bc552152ad965ee4788fa447432c7cb3871f199968f5e9c1b92b2dc3f6f2",
           "base_sha256": "b616bc552152ad965ee4788fa447432c7cb3871f199968f5e9c1b92b2dc3f6f2",
           "relocation_count": 0,
-          "comparison_unit": "006e20f0-21e7dae677ac",
+          "comparison_unit": "006e20f0-2dd5e6dffe85",
           "objdiff_percent": 100.0
         }
       ],
@@ -337944,19 +337946,19 @@
       "symbol": "?GetMultisampleType@PC_DEVICE_BACKEND@@QAEIXZ",
       "address": "0x006e2130",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 14,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 14,
           "exact_match": true,
           "target_sha256": "5246edec2418f4d44eac6475ee008c540140c94049a01de06bffb6fa5b4540d9",
           "base_sha256": "5246edec2418f4d44eac6475ee008c540140c94049a01de06bffb6fa5b4540d9",
           "relocation_count": 1,
-          "comparison_unit": "006e2130-7c53e42e7a79",
+          "comparison_unit": "006e2130-b0c813f8f4db",
           "objdiff_percent": 100.0
         }
       ],
@@ -337968,19 +337970,19 @@
       "symbol": "?GetSimultaneousRenderTargets@PC_DEVICE_BACKEND@@QAEGXZ",
       "address": "0x006e2140",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 31,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 31,
           "exact_match": true,
           "target_sha256": "59569ed693abc5a90c29c08646f8865f6c24ff5fb1af958164204564980aa213",
           "base_sha256": "59569ed693abc5a90c29c08646f8865f6c24ff5fb1af958164204564980aa213",
           "relocation_count": 1,
-          "comparison_unit": "006e2140-3fb6a1b5c999",
+          "comparison_unit": "006e2140-46f0871264f5",
           "objdiff_percent": 100.0
         }
       ],
@@ -338016,19 +338018,19 @@
       "symbol": "?ReleaseDefaultPoolResources@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e2170",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 208,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 208,
           "exact_match": true,
           "target_sha256": "0782dde8320812b3d2bbfbcbc9aefdb7a705e86d387e44c9e37df059a44e41e0",
           "base_sha256": "0782dde8320812b3d2bbfbcbc9aefdb7a705e86d387e44c9e37df059a44e41e0",
           "relocation_count": 1,
-          "comparison_unit": "006e2170-9badf3756840",
+          "comparison_unit": "006e2170-187d6d060fe1",
           "objdiff_percent": 100.0
         }
       ],
@@ -338040,19 +338042,19 @@
       "symbol": "?EndScene@PC_DEVICE_BACKEND@@QAEJXZ",
       "address": "0x006e2240",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 15,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 15,
           "exact_match": true,
           "target_sha256": "d64ccc9bbd38e5eea2c51a05ca203105a38ca57d9a8b792ab9aad288f5c7ddcd",
           "base_sha256": "d64ccc9bbd38e5eea2c51a05ca203105a38ca57d9a8b792ab9aad288f5c7ddcd",
           "relocation_count": 0,
-          "comparison_unit": "006e2240-d664deae6d29",
+          "comparison_unit": "006e2240-75a8dd646ee0",
           "objdiff_percent": 100.0
         }
       ],
@@ -338088,19 +338090,19 @@
       "symbol": "?SetDepthStencilSurface@PC_DEVICE_BACKEND@@QAEXPAUPC_EFFECT_SURFACE@@@Z",
       "address": "0x006e2260",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 64,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 64,
           "exact_match": true,
           "target_sha256": "0a1ea4d31aa5de3ed11eec1b7816e6ee60a6990fff62aad84b171681bf2e81da",
           "base_sha256": "0a1ea4d31aa5de3ed11eec1b7816e6ee60a6990fff62aad84b171681bf2e81da",
           "relocation_count": 0,
-          "comparison_unit": "006e2260-9c3bd4fe0498",
+          "comparison_unit": "006e2260-282498026af7",
           "objdiff_percent": 100.0
         }
       ],
@@ -338112,19 +338114,19 @@
       "symbol": "?ClearDepthStencilSurface@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e22a0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 17,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 17,
           "exact_match": true,
           "target_sha256": "7da00bfff25fcdbf5c530e37689489fd3148d3a5033309db03b004e810065dc4",
           "base_sha256": "7da00bfff25fcdbf5c530e37689489fd3148d3a5033309db03b004e810065dc4",
           "relocation_count": 0,
-          "comparison_unit": "006e22a0-ef407cff4ef3",
+          "comparison_unit": "006e22a0-dd99acb9ffea",
           "objdiff_percent": 100.0
         }
       ],
@@ -338136,19 +338138,19 @@
       "symbol": "?RestoreDepthStencil@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e22c0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 22,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 22,
           "exact_match": true,
           "target_sha256": "9eace5fc2651fb4b39e0af0122f506692d55c030561c6e741db16482425a1273",
           "base_sha256": "9eace5fc2651fb4b39e0af0122f506692d55c030561c6e741db16482425a1273",
           "relocation_count": 0,
-          "comparison_unit": "006e22c0-d930d5bcea47",
+          "comparison_unit": "006e22c0-d14622e16bcc",
           "objdiff_percent": 100.0
         }
       ],
@@ -338160,19 +338162,19 @@
       "symbol": "?CopyBackBufferTo@PC_DEVICE_BACKEND@@QAEJPAUPC_EFFECT_SURFACE@@H@Z",
       "address": "0x006e22e0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 62,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 62,
           "exact_match": true,
           "target_sha256": "385cce133299b61873a6f0b46f35b40dc9b240786bfb8e245cc6b0eb151c22a6",
           "base_sha256": "385cce133299b61873a6f0b46f35b40dc9b240786bfb8e245cc6b0eb151c22a6",
           "relocation_count": 0,
-          "comparison_unit": "006e22e0-83b484ecf359",
+          "comparison_unit": "006e22e0-fffb6ef9194a",
           "objdiff_percent": 100.0
         }
       ],
@@ -338184,19 +338186,19 @@
       "symbol": "?CopySurfaceTarget@PC_DEVICE_BACKEND@@QAEJPAUPC_EFFECT_SURFACE@@HH@Z",
       "address": "0x006e2320",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 43,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 43,
           "exact_match": true,
           "target_sha256": "ae986ea1bb3a6645f950167480adba18247ebd1c1ade204ae553c612d63dd639",
           "base_sha256": "ae986ea1bb3a6645f950167480adba18247ebd1c1ade204ae553c612d63dd639",
           "relocation_count": 0,
-          "comparison_unit": "006e2320-c8683f242fa2",
+          "comparison_unit": "006e2320-c7aa9e4f1994",
           "objdiff_percent": 100.0
         }
       ],
@@ -338208,19 +338210,19 @@
       "symbol": "?SwapTargets@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e2350",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 49,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 49,
           "exact_match": true,
           "target_sha256": "a5bfa288af0276edc0f778b4feb836437c97b075cc1990a6aa897217573e2774",
           "base_sha256": "a5bfa288af0276edc0f778b4feb836437c97b075cc1990a6aa897217573e2774",
           "relocation_count": 0,
-          "comparison_unit": "006e2350-ef8b0d782232",
+          "comparison_unit": "006e2350-ff0314f92dcc",
           "objdiff_percent": 100.0
         }
       ],
@@ -338232,19 +338234,19 @@
       "symbol": "?DrawScreenTriangle@PC_DEVICE_BACKEND@@QAEXE@Z",
       "address": "0x006e2390",
       "units": [
-        "src/nu2api/nuwin32/d3dApiCalls.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 71,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nuwin32/d3dApiCalls.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 71,
           "exact_match": true,
           "target_sha256": "1a1dbdd607a5a294fa856efe7b9a72d1489403373231f12a8d9d305199481146",
           "base_sha256": "1a1dbdd607a5a294fa856efe7b9a72d1489403373231f12a8d9d305199481146",
           "relocation_count": 4,
-          "comparison_unit": "006e2390-e856b7f4c455",
+          "comparison_unit": "006e2390-8cd40a075aac",
           "objdiff_percent": 100.0
         }
       ],
@@ -338256,19 +338258,19 @@
       "symbol": "?DrawPostEffectQuad@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e23e0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 49,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 49,
           "exact_match": true,
           "target_sha256": "4b0dc0ac9c2605c2fe1dbf5a20c36371b447b867e4004b6c6e9f832ffde9c281",
           "base_sha256": "4b0dc0ac9c2605c2fe1dbf5a20c36371b447b867e4004b6c6e9f832ffde9c281",
           "relocation_count": 3,
-          "comparison_unit": "006e23e0-68a0ca1f4211",
+          "comparison_unit": "006e23e0-6c64c41f832a",
           "objdiff_percent": 100.0
         }
       ],
@@ -338280,19 +338282,19 @@
       "symbol": "?DrawPostEffectIndexed@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e2420",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 77,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 77,
           "exact_match": true,
           "target_sha256": "7710ef6a56849578bd02708b0b68f321a853e1aec5933bb3a0aad32380c6e883",
           "base_sha256": "7710ef6a56849578bd02708b0b68f321a853e1aec5933bb3a0aad32380c6e883",
           "relocation_count": 4,
-          "comparison_unit": "006e2420-47fd97523a62",
+          "comparison_unit": "006e2420-09763eefcf27",
           "objdiff_percent": 100.0
         }
       ],
@@ -338304,19 +338306,19 @@
       "symbol": "?ApplyViewport@PC_DEVICE_BACKEND@@QAEXPBUPC_VIEWPORT@@@Z",
       "address": "0x006e2470",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 159,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 159,
           "exact_match": true,
           "target_sha256": "bb592a999703ad8001e63a7065f8474374804976168d0d30cd78bed6b8f74eef",
           "base_sha256": "bb592a999703ad8001e63a7065f8474374804976168d0d30cd78bed6b8f74eef",
           "relocation_count": 2,
-          "comparison_unit": "006e2470-ce7fc2214b9a",
+          "comparison_unit": "006e2470-8487eb461359",
           "objdiff_percent": 100.0
         }
       ],
@@ -338328,19 +338330,19 @@
       "symbol": "?ResetViewport@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e2510",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 255,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 255,
           "exact_match": true,
           "target_sha256": "6b07141048a5cd99f1bc41823201739a4d45c825ddb39ead66e88bde5ab0e983",
           "base_sha256": "6b07141048a5cd99f1bc41823201739a4d45c825ddb39ead66e88bde5ab0e983",
           "relocation_count": 14,
-          "comparison_unit": "006e2510-ae2e35938398",
+          "comparison_unit": "006e2510-8b4ea03f4ac4",
           "objdiff_percent": 100.0
         }
       ],
@@ -338352,19 +338354,19 @@
       "symbol": "?ConfigureTargetKinds@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e2610",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 433,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 433,
           "exact_match": true,
           "target_sha256": "058e4710efaac73f00f719a49d42bb355bc38d4746f337269e4cdb6bad3ecf53",
           "base_sha256": "058e4710efaac73f00f719a49d42bb355bc38d4746f337269e4cdb6bad3ecf53",
           "relocation_count": 39,
-          "comparison_unit": "006e2610-f6e72d9a1e7a",
+          "comparison_unit": "006e2610-d0538ede1577",
           "objdiff_percent": 100.0
         }
       ],
@@ -338376,19 +338378,19 @@
       "symbol": "?ShaderVariant16@PC_DEVICE_BACKEND@@QAEHXZ",
       "address": "0x006e27d0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 17,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 17,
           "exact_match": true,
           "target_sha256": "a29e3b040f4837fe93452bb80bed1046aaccc345f85535f0c1b1efe5d67ec46e",
           "base_sha256": "a29e3b040f4837fe93452bb80bed1046aaccc345f85535f0c1b1efe5d67ec46e",
           "relocation_count": 0,
-          "comparison_unit": "006e27d0-fad3b808b4af",
+          "comparison_unit": "006e27d0-5a868ff00dcf",
           "objdiff_percent": 100.0
         }
       ],
@@ -338400,19 +338402,19 @@
       "symbol": "?ShaderVariant1@PC_DEVICE_BACKEND@@QAEHXZ",
       "address": "0x006e27f0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 17,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 17,
           "exact_match": true,
           "target_sha256": "bc24291de3c4d7c6b1522c21e76eae318e5897555d2bf56789cd270d8e3abe5e",
           "base_sha256": "bc24291de3c4d7c6b1522c21e76eae318e5897555d2bf56789cd270d8e3abe5e",
           "relocation_count": 0,
-          "comparison_unit": "006e27f0-b2d786bd691c",
+          "comparison_unit": "006e27f0-b2707ef45ff8",
           "objdiff_percent": 100.0
         }
       ],
@@ -338424,19 +338426,19 @@
       "symbol": "?SetColorWriteMask@PC_DEVICE_BACKEND@@QAEXEEH@Z",
       "address": "0x006e2810",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 107,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 107,
           "exact_match": true,
           "target_sha256": "d943b1b54cd1553f0b5e86196f7ef17a1f851433beed2fc0c691e081928e6436",
           "base_sha256": "d943b1b54cd1553f0b5e86196f7ef17a1f851433beed2fc0c691e081928e6436",
           "relocation_count": 3,
-          "comparison_unit": "006e2810-90af9900edc4",
+          "comparison_unit": "006e2810-3bfd4a4e9df1",
           "objdiff_percent": 100.0
         }
       ],
@@ -338448,19 +338450,19 @@
       "symbol": "?SetRenderTarget@PC_DEVICE_BACKEND@@QAEXHPAUPC_TEXTURE_RESOURCE@@@Z",
       "address": "0x006e2880",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 87,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 87,
           "exact_match": true,
           "target_sha256": "b1efa06687b08820b195b827a65ed87e8ee45fe4f2297d39ec98a0d28f07b2a5",
           "base_sha256": "b1efa06687b08820b195b827a65ed87e8ee45fe4f2297d39ec98a0d28f07b2a5",
           "relocation_count": 1,
-          "comparison_unit": "006e2880-3d6a18c9482b",
+          "comparison_unit": "006e2880-e1f84bc0d843",
           "objdiff_percent": 100.0
         }
       ],
@@ -338472,19 +338474,19 @@
       "symbol": "?CaptureScreenshot@PC_DEVICE_BACKEND@@QAEIIIPAPAX@Z",
       "address": "0x006e28e0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 520,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 508,
           "exact_match": false,
           "target_sha256": "bd9f4b378e22faa8cb9a8e4df51c2c64f661062b5da9fe63cde48986a73f1d47",
           "base_sha256": "ec417772ab5893ae2f041f99702c1acd6af1baade973d7b35813f96b4464a744",
           "relocation_count": 14,
-          "comparison_unit": "006e28e0-9b6e42260e01",
+          "comparison_unit": "006e28e0-266beb1e5a73",
           "objdiff_percent": 89.80645
         }
       ],
@@ -338505,19 +338507,19 @@
       "symbol": "?SaveSettings@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e2af0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 79,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 79,
           "exact_match": true,
           "target_sha256": "d165a62c07efdaeda71d0ffd63a600a2189cd3abb8433592e64bc4259dba971e",
           "base_sha256": "d165a62c07efdaeda71d0ffd63a600a2189cd3abb8433592e64bc4259dba971e",
           "relocation_count": 1,
-          "comparison_unit": "006e2af0-1a2bbb24a3ae",
+          "comparison_unit": "006e2af0-12e3d90d57b8",
           "objdiff_percent": 100.0
         }
       ],
@@ -338529,19 +338531,19 @@
       "symbol": "?HasRequestedModeChanged@PC_DEVICE_BACKEND@@QAE_NXZ",
       "address": "0x006e2b40",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 90,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 90,
           "exact_match": true,
           "target_sha256": "f702952f53e0247ccb768d3244751eb1edaf62fce6224cc31ad64ef98a84729b",
           "base_sha256": "f702952f53e0247ccb768d3244751eb1edaf62fce6224cc31ad64ef98a84729b",
           "relocation_count": 0,
-          "comparison_unit": "006e2b40-3578e5ec0482",
+          "comparison_unit": "006e2b40-65f685039a67",
           "objdiff_percent": 100.0
         }
       ],
@@ -338553,19 +338555,19 @@
       "symbol": "?InitializeFactory@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e2ba0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 187,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 187,
           "exact_match": true,
           "target_sha256": "4a9a43f2dc2830177846015b5d83ee57e8265c307580338f8775cf8e721baa28",
           "base_sha256": "4a9a43f2dc2830177846015b5d83ee57e8265c307580338f8775cf8e721baa28",
           "relocation_count": 7,
-          "comparison_unit": "006e2ba0-48c1843493c2",
+          "comparison_unit": "006e2ba0-a724e699bab1",
           "objdiff_percent": 100.0
         }
       ],
@@ -338577,19 +338579,19 @@
       "symbol": "?Shutdown@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e2c60",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 123,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 123,
           "exact_match": true,
           "target_sha256": "f237edba388763bc45a95bb5bc6b3ceafa53d3b85236466dd11522ffab4460b5",
           "base_sha256": "f237edba388763bc45a95bb5bc6b3ceafa53d3b85236466dd11522ffab4460b5",
           "relocation_count": 2,
-          "comparison_unit": "006e2c60-073218ddd57b",
+          "comparison_unit": "006e2c60-b0eb651ee2f0",
           "objdiff_percent": 100.0
         }
       ],
@@ -338601,19 +338603,19 @@
       "symbol": "?RequestDisplayMode@PC_DEVICE_BACKEND@@QAEXIII@Z",
       "address": "0x006e2ce0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 49,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 49,
           "exact_match": true,
           "target_sha256": "e39b60c0428c069a12740df7fba1655e53a26cb19d0f92772bd55fe713bafd71",
           "base_sha256": "e39b60c0428c069a12740df7fba1655e53a26cb19d0f92772bd55fe713bafd71",
           "relocation_count": 1,
-          "comparison_unit": "006e2ce0-d86edc977592",
+          "comparison_unit": "006e2ce0-add75cc89694",
           "objdiff_percent": 100.0
         }
       ],
@@ -338625,19 +338627,19 @@
       "symbol": "?BuildDefaultPoolResources@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e2d20",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 1640,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 1603,
           "exact_match": false,
           "target_sha256": "f79b47ec3983993c24a4f20a132ee45d99a1d9b44d337f83d8ee25c0e637c2a4",
           "base_sha256": "adc279b76ec4c2edf9b5e5b693ff00dd71807b00c7ebb4da4eaa137b3b411e4f",
           "relocation_count": 33,
-          "comparison_unit": "006e2d20-02a16d6e449d",
+          "comparison_unit": "006e2d20-65f7effdb459",
           "objdiff_percent": 94.57563
         }
       ],
@@ -338659,19 +338661,19 @@
       "symbol": "?RestoreDefaultPoolResources@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e3390",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 5,
           "exact_match": true,
           "target_sha256": "b67e53120e56f20dc2c4bb13b91556778f7cb711e2ab33a8401088dce6631b38",
           "base_sha256": "b67e53120e56f20dc2c4bb13b91556778f7cb711e2ab33a8401088dce6631b38",
           "relocation_count": 1,
-          "comparison_unit": "006e3390-a21efa4a6d86",
+          "comparison_unit": "006e3390-d5c0d1aae7c1",
           "objdiff_percent": 100.0
         }
       ],
@@ -338683,19 +338685,19 @@
       "symbol": "?ConfigureCurrentTargets@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e33a0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 293,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 293,
           "exact_match": true,
           "target_sha256": "0d11173096a87f2348a65e33aa03c8a4fb003feffcc906d44c73d83021bd5075",
           "base_sha256": "0d11173096a87f2348a65e33aa03c8a4fb003feffcc906d44c73d83021bd5075",
           "relocation_count": 14,
-          "comparison_unit": "006e33a0-a00486b0254f",
+          "comparison_unit": "006e33a0-b64075ccb654",
           "objdiff_percent": 100.0
         }
       ],
@@ -338707,19 +338709,19 @@
       "symbol": "?BeginDefaultTargets@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e34d0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 383,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 383,
           "exact_match": true,
           "target_sha256": "b7c46381c0a63fe193527cf4e595c0fbf78a4535ecff2940f2a54d00ee881bd5",
           "base_sha256": "b7c46381c0a63fe193527cf4e595c0fbf78a4535ecff2940f2a54d00ee881bd5",
           "relocation_count": 9,
-          "comparison_unit": "006e34d0-c88ea931f692",
+          "comparison_unit": "006e34d0-a2afb2c70ab0",
           "objdiff_percent": 100.0
         }
       ],
@@ -338731,19 +338733,19 @@
       "symbol": "?ResetTargets@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e3650",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 205,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 205,
           "exact_match": true,
           "target_sha256": "d335e9cea8162c72e0eefe6571eb9733408135a42da83326b9828463fb245203",
           "base_sha256": "d335e9cea8162c72e0eefe6571eb9733408135a42da83326b9828463fb245203",
           "relocation_count": 7,
-          "comparison_unit": "006e3650-c9fbd1ee75ea",
+          "comparison_unit": "006e3650-8e8e5e41ef24",
           "objdiff_percent": 100.0
         }
       ],
@@ -338755,19 +338757,19 @@
       "symbol": "?SetSurfaceRenderTarget@PC_DEVICE_BACKEND@@QAEXPAUPC_EFFECT_SURFACE@@I@Z",
       "address": "0x006e3720",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 209,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 211,
           "exact_match": false,
           "target_sha256": "fb98815116125f19f8ce72e20726a15cb2ea409c223b3a088f2188c39694ed82",
           "base_sha256": "e203d1ae99526b177d084e483934cf444ad53ef1d788bc9b56f15c5b3bf17f71",
           "relocation_count": 11,
-          "comparison_unit": "006e3720-96f1b23ece80",
+          "comparison_unit": "006e3720-1e277be696ba",
           "objdiff_percent": 57.761192
         }
       ],
@@ -338784,19 +338786,19 @@
       "symbol": "?CopyBackBuffer@PC_DEVICE_BACKEND@@QAEXPAUGRAPHICS_RENDER_TEXTURE@@@Z",
       "address": "0x006e3800",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 153,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 153,
           "exact_match": true,
           "target_sha256": "405d5148d8176b4ceb7fc8f78e37666eeb4719bb538546aad335b72e40159bf0",
           "base_sha256": "405d5148d8176b4ceb7fc8f78e37666eeb4719bb538546aad335b72e40159bf0",
           "relocation_count": 7,
-          "comparison_unit": "006e3800-ed61b86614fc",
+          "comparison_unit": "006e3800-801f1edb60dc",
           "objdiff_percent": 100.0
         }
       ],
@@ -338808,19 +338810,19 @@
       "symbol": "?CopyCurrentSurface@PC_DEVICE_BACKEND@@QAEXPAUGRAPHICS_RENDER_TEXTURE@@@Z",
       "address": "0x006e38a0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 134,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 134,
           "exact_match": true,
           "target_sha256": "6c8fb78268eb798b15e7281045a50a8d5f0d3ea5b0c5e0c020397d8f8170f33e",
           "base_sha256": "6c8fb78268eb798b15e7281045a50a8d5f0d3ea5b0c5e0c020397d8f8170f33e",
           "relocation_count": 7,
-          "comparison_unit": "006e38a0-dc57f9331300",
+          "comparison_unit": "006e38a0-d755b1d449d6",
           "objdiff_percent": 100.0
         }
       ],
@@ -338856,19 +338858,19 @@
       "symbol": "?CreateOrResetDevice@PC_DEVICE_BACKEND@@QAEXH@Z",
       "address": "0x006e3940",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 2087,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 2089,
           "exact_match": false,
           "target_sha256": "90db6b96c895b719155d19873fee40c2ccabc3ef2f6d49bec8ded4a5fd61c2e8",
           "base_sha256": "e58802ff3d6051d83c34c7ae7a55d2af1404cd86ff07a4399f5af0c01267c692",
           "relocation_count": 81,
-          "comparison_unit": "006e3940-c6b736052ca5",
+          "comparison_unit": "006e3940-138ec5228916",
           "objdiff_percent": 98.754715
         }
       ],
@@ -338887,19 +338889,19 @@
       "symbol": "?BeginScene@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e4170",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 48,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 48,
           "exact_match": true,
           "target_sha256": "553217cb80aad6764bd515855974d2e69d28859451d526b50028b8ea74fb042f",
           "base_sha256": "553217cb80aad6764bd515855974d2e69d28859451d526b50028b8ea74fb042f",
           "relocation_count": 4,
-          "comparison_unit": "006e4170-c5abd4979751",
+          "comparison_unit": "006e4170-15a6aa88ad33",
           "objdiff_percent": 100.0
         }
       ],
@@ -338911,19 +338913,19 @@
       "symbol": "?Present@PC_DEVICE_BACKEND@@QAEXPBUtagRECT@@0PAUHWND__@@PBU_RGNDATA@@@Z",
       "address": "0x006e41a0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 140,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 140,
           "exact_match": true,
           "target_sha256": "8fbaeda3b08e3b854812f41822036ef96f1dfe183d4a2489e7904285e5337718",
           "base_sha256": "8fbaeda3b08e3b854812f41822036ef96f1dfe183d4a2489e7904285e5337718",
           "relocation_count": 5,
-          "comparison_unit": "006e41a0-4b7850af9516",
+          "comparison_unit": "006e41a0-d3be2700982e",
           "objdiff_percent": 100.0
         }
       ],
@@ -338935,19 +338937,19 @@
       "symbol": "?RestoreSavedMode@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e4230",
       "units": [
-        "src/legoapi/menu_video.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 146,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_video.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 146,
           "exact_match": true,
           "target_sha256": "81e625eb416137d2d1e2fad5c770062857127f3b3b1d9b99802cfb289a8a086e",
           "base_sha256": "81e625eb416137d2d1e2fad5c770062857127f3b3b1d9b99802cfb289a8a086e",
           "relocation_count": 7,
-          "comparison_unit": "006e4230-84dc5f534a96",
+          "comparison_unit": "006e4230-d080ebc906f0",
           "objdiff_percent": 100.0
         }
       ],
@@ -338959,49 +338961,49 @@
       "symbol": "?InitializeAdapter@PC_DEVICE_BACKEND@@QAEXXZ",
       "address": "0x006e42d0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 476,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
-          "base_size": 517,
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
+          "base_size": 469,
           "exact_match": false,
           "target_sha256": "2bd78823aafe9b69f47f7b7dbd71488fc5a4c0bd7a37ff84b4309a607a8d8e5d",
-          "base_sha256": "a7f09d3e61e3d1a39ad35d8075e6624b31ff1c9a548ef008c310225979ba9822",
-          "relocation_count": 30,
-          "comparison_unit": "006e42d0-29b28ea7f5e5",
-          "objdiff_percent": 85.439186
+          "base_sha256": "e9931d9f4de389138d43928371622674b6553fbc889bbd7bf426a0fb6c080344",
+          "relocation_count": 27,
+          "comparison_unit": "006e42d0-9471a000de6a",
+          "objdiff_percent": 97.97298
         }
       ],
       "diff_class": "structural",
-      "diff_hunks": 6,
+      "diff_hunks": 1,
       "idioms": [
         "U3",
         "?"
       ],
       "status": "different",
-      "objdiff_percent": 85.439186
+      "objdiff_percent": 97.97298
     },
     {
       "name": "?Invalidate@PC_DEVICE_STATE_CACHE@@QAEXXZ",
       "symbol": "?Invalidate@PC_DEVICE_STATE_CACHE@@QAEXXZ",
       "address": "0x006e44b0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 128,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "base_size": 128,
           "exact_match": true,
           "target_sha256": "1cf9de17102ae1c7ef7930a8f27df5d24a32da7d7d0e702cd603b67cb36ea303",
           "base_sha256": "1cf9de17102ae1c7ef7930a8f27df5d24a32da7d7d0e702cd603b67cb36ea303",
           "relocation_count": 0,
-          "comparison_unit": "006e44b0-1da230ac19b0",
+          "comparison_unit": "006e44b0-52f3665cd802",
           "objdiff_percent": 100.0
         }
       ],
@@ -388422,6 +388424,7 @@
         "src/nu2api/nusound_music.cpp",
         "src/nu2api/nuterrain.c",
         "src/nu2api/nuwin32/d3dApiCalls.cpp",
+        "src/nu2api/nuwin32/d3dCore.cpp",
         "src/nu2api/nuwin32/pcapi.cpp",
         "src/nu2api/nuwind.c",
         "src/nu2api/pc_device.cpp",
@@ -389831,6 +389834,14 @@
         },
         {
           "unit": "src/nu2api/nuwin32/d3dApiCalls.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c",
+          "base_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
+        },
+        {
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -393384,6 +393395,7 @@
         "src/nu2api/nusound_music.cpp",
         "src/nu2api/nuterrain.c",
         "src/nu2api/nuwin32/d3dApiCalls.cpp",
+        "src/nu2api/nuwin32/d3dCore.cpp",
         "src/nu2api/nuwind.c",
         "src/nu2api/pc_device.cpp",
         "src/nu2api/pc_fmv_player.cpp",
@@ -395008,6 +395020,14 @@
         },
         {
           "unit": "src/nu2api/nuwin32/d3dApiCalls.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        },
+        {
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -396982,8 +397002,8 @@
         "src/nu2api/nusound_music.cpp",
         "src/nu2api/nuterrain.c",
         "src/nu2api/nuwin32/d3dApiCalls.cpp",
+        "src/nu2api/nuwin32/d3dCore.cpp",
         "src/nu2api/nuwind.c",
-        "src/nu2api/pc_device.cpp",
         "src/nu2api/pc_fmv_player.cpp",
         "src/nu2api/shader_compiler.cpp",
         "src/nu2api/terrain_collision.cpp",
@@ -398138,7 +398158,7 @@
           "base_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712"
         },
         {
-          "unit": "src/nu2api/nuwind.c",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -398146,7 +398166,7 @@
           "base_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712"
         },
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwind.c",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -402555,7 +402575,7 @@
         "src/nu2api/nu3d_includes.cpp",
         "src/nu2api/nu3d_platform.cpp",
         "src/nu2api/numath_includes.c",
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
@@ -402929,7 +402949,7 @@
           "base_sha256": "ea2845900b5856c9bf354b1aa9761b5aa6888e5ed61738fe9579ca42bc0f6054"
         },
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -404949,6 +404969,7 @@
         "src/nu2api/nusound.c",
         "src/nu2api/nusound_music.cpp",
         "src/nu2api/nuterrain.c",
+        "src/nu2api/nuwin32/d3dCore.cpp",
         "src/nu2api/pc_device.cpp",
         "src/nu2api/terrain_query.cpp"
       ],
@@ -405413,6 +405434,14 @@
         },
         {
           "unit": "src/nu2api/nuterrain.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "c68830a25204a09f8e77aada6bc5807f607cccaaa0ebb2a7122d317584478a8b",
+          "base_sha256": "c68830a25204a09f8e77aada6bc5807f607cccaaa0ebb2a7122d317584478a8b"
+        },
+        {
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -407230,7 +407259,7 @@
         "src/nu2api/nurain.c",
         "src/nu2api/nurndr.cpp",
         "src/nu2api/nuterrain.c",
-        "src/nu2api/pc_device.cpp",
+        "src/nu2api/nuwin32/d3dCore.cpp",
         "src/nu2api/terrain_collision.cpp",
         "src/nu2api/terrain_query.cpp"
       ],
@@ -407566,7 +407595,7 @@
           "base_sha256": "3f710ac088db33363087de2b9a657541fe5447821debaa9fe5cbd538eb1a5f29"
         },
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -411098,7 +411127,7 @@
         "src/legogame/camera.cpp",
         "src/legogame/startup.cpp",
         "src/nu2api/nuwin32/d3dApiCalls.cpp",
-        "src/nu2api/pc_device.cpp",
+        "src/nu2api/nuwin32/d3dCore.cpp",
         "src/nu2api/pc_fmv_player.cpp"
       ],
       "target_size": 4,
@@ -411129,7 +411158,7 @@
           "base_sha256": "6f4cd532e8c154c45c348ae70bd34e9a5dffdb04411785cb9aa4d5f2ff1ce765"
         },
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -411155,7 +411184,7 @@
         "src/legogame/camera.cpp",
         "src/legogame/startup.cpp",
         "src/nu2api/nuwin32/d3dApiCalls.cpp",
-        "src/nu2api/pc_device.cpp",
+        "src/nu2api/nuwin32/d3dCore.cpp",
         "src/nu2api/pc_fmv_player.cpp"
       ],
       "target_size": 4,
@@ -411186,7 +411215,7 @@
           "base_sha256": "7976acfbc3de10e4e4720f1fe68a3621615536679ef373fd7d6df906c8c86dc4"
         },
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -411212,7 +411241,7 @@
         "src/legogame/camera.cpp",
         "src/legogame/startup.cpp",
         "src/nu2api/nuwin32/d3dApiCalls.cpp",
-        "src/nu2api/pc_device.cpp",
+        "src/nu2api/nuwin32/d3dCore.cpp",
         "src/nu2api/pc_fmv_player.cpp"
       ],
       "target_size": 4,
@@ -411243,7 +411272,7 @@
           "base_sha256": "ba8b7f7d8bf2361b76ade0a0ad0bb9b25f34505d6776498d807ec1f55b8410b1"
         },
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -411317,7 +411346,7 @@
         "src/nu2api/nubridge.c",
         "src/nu2api/numath_includes.c",
         "src/nu2api/nurain.c",
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
@@ -411563,7 +411592,7 @@
           "base_sha256": "161f4c0b1a18a0501127332c387e782b5acc10c6c7a9f7e494c1e3394c49bad5"
         },
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -428680,7 +428709,7 @@
         "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp",
         "src/nu2api/numouse.cpp",
         "src/nu2api/nunetemu.cpp",
-        "src/nu2api/pc_device.cpp",
+        "src/nu2api/nuwin32/d3dCore.cpp",
         "src/nu2api/pc_fmv_player.cpp",
         "src/nu2api/pc_window.cpp",
         "src/nu2api/wavreader.cpp"
@@ -428865,7 +428894,7 @@
           "base_sha256": "9d459b445179d46efc315fd7ef9a5c8185bd7f3e2860dc6d325ab1b85acf6a96"
         },
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -444479,7 +444508,7 @@
         "src/nu2api/numath_includes.c",
         "src/nu2api/nunetemu.cpp",
         "src/nu2api/nusound3/pc/nusound.cpp",
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
@@ -444549,7 +444578,7 @@
           "base_sha256": "139107fd63d004e94cb64abb75361dd8490810c6709a9311896ca17496f5ecde"
         },
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -475166,7 +475195,7 @@
         "src/legogame/panel.cpp",
         "src/nu2api/keyboard_read.c",
         "src/nu2api/nu3d_includes.cpp",
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
@@ -475252,7 +475281,7 @@
           "base_sha256": "fc57e20e0f4b24af2c72cdd8d1652a641c478704bfcbb087e8096dac9091af68"
         },
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -499965,7 +499994,7 @@
       "units": [
         "src/gameapi/edfile.c",
         "src/legogame/panel.cpp",
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
@@ -499987,7 +500016,7 @@
           "base_sha256": "9b9ba346be908602f08cc9df103cd4c6463bea6db69062bc77e7819ac69f1200"
         },
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -506896,7 +506925,7 @@
         "src/legoapi/camera.cpp",
         "src/legogame/startup.cpp",
         "src/nu2api/nu3d_platform.cpp",
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
@@ -506926,7 +506955,7 @@
           "base_sha256": "a07746c196bc8a6e12e36432458eac0bd2ab52e23da1a4d3f1140146c4026825"
         },
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -553598,7 +553627,7 @@
         "src/nu2api/nu3d_includes.cpp",
         "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp",
         "src/nu2api/numath_includes.c",
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
@@ -553660,7 +553689,7 @@
           "base_sha256": "07883481b5c147464597d44401db095d88c2a6b049fbbcd7b278de98a5ceeb71"
         },
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -561339,7 +561368,7 @@
       "address": "0x0076ae90",
       "units": [
         "src/gameapi/edfile.c",
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
@@ -561353,7 +561382,7 @@
           "base_sha256": "99c197cb0f787cc693728b3c326b30d5a8fd4e4b280ddae2c06fc3f767ad9988"
         },
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -586977,7 +587006,7 @@
       "address": "0x0076f888",
       "units": [
         "src/editor/edlevelall.cpp",
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
@@ -586991,7 +587020,7 @@
           "base_sha256": "78a03322bef4ec0c3a79afc1927b2237f80812e84f9b9e446b6ec1ba62ffe42d"
         },
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -624734,13 +624763,13 @@
       "symbol": "__real@3ffc71c720000000",
       "address": "0x00776f20",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -624755,13 +624784,13 @@
       "symbol": "??_C@_0O@BIONPBJK@?4?2d3dCore?4cpp?$AA@",
       "address": "0x00776f28",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 14,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 14,
           "base_size": 14,
@@ -624776,13 +624805,13 @@
       "symbol": "??_C@_0BN@PIBILGOO@Failed?5to?5initialize?5DirectX?$AA@",
       "address": "0x00776f38",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 29,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 29,
           "base_size": 29,
@@ -624797,13 +624826,13 @@
       "symbol": "??_C@_0CP@FAFLNBAP@Out?5of?5Video?5Memory?4?5Application@",
       "address": "0x00776f58",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 47,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 47,
           "base_size": 47,
@@ -624818,13 +624847,13 @@
       "symbol": "??_C@_0CL@LOJAACK@Lost?5d3d?5device?4?5Application?5wil@",
       "address": "0x00776f88",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 43,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 43,
           "base_size": 43,
@@ -624839,13 +624868,13 @@
       "symbol": "??_C@_0DC@NAKKJAGN@d3d?5device?5unavailable?4?5Applicat@",
       "address": "0x00776fb4",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 50,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 50,
           "base_size": 50,
@@ -624860,13 +624889,13 @@
       "symbol": "??_C@_0EF@PCKHEFMH@Failed?5to?5create?5d3d?5device?4?5App@",
       "address": "0x00776fe8",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 69,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 69,
           "base_size": 69,
@@ -776442,13 +776471,13 @@
       "symbol": "_PS2_VCNTR_X",
       "address": "0x0080202c",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -776463,13 +776492,13 @@
       "symbol": "_PS2_VCNTR_Y",
       "address": "0x00802030",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -799875,13 +799904,13 @@
       "symbol": "_PCGraphicsPositionUvDeclaration",
       "address": "0x008281e0",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 24,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 24,
           "base_size": 24,
@@ -799896,13 +799925,13 @@
       "symbol": "_PCGraphicsScreenUvDeclaration",
       "address": "0x008281f8",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 24,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 24,
           "base_size": 24,
@@ -799917,13 +799946,13 @@
       "symbol": "_PCGraphicsScreenColourUvDeclaration",
       "address": "0x00828210",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 32,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 32,
           "base_size": 32,
@@ -799938,13 +799967,13 @@
       "symbol": "_PCGraphicsMultisampleTypes",
       "address": "0x00828230",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 20,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 20,
           "base_size": 20,
@@ -847064,13 +847093,13 @@
       "symbol": "_PCInputInstance",
       "address": "0x00924884",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -892112,13 +892141,13 @@
       "symbol": "_PCGraphicsDeviceLostCallback",
       "address": "0x0297beb8",
       "units": [
-        "src/nu2api/pc_device.cpp"
+        "src/nu2api/nuwin32/d3dCore.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_device.cpp",
+          "unit": "src/nu2api/nuwin32/d3dCore.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -900265,10 +900294,10 @@
     "matching_with_padding_percent": 64.04412133280096,
     "fuzzy_text_data_bytes": 6896,
     "fuzzy_denominator_bytes": 3349891,
-    "fuzzy_coverage_percent": 96.47737392981612,
+    "fuzzy_coverage_percent": 96.47915490894172,
     "mapped_functions": 15915,
     "matched_functions": 13977,
-    "objdiff_fuzzy_percent": 96.975525,
+    "objdiff_fuzzy_percent": 96.9773,
     "objdiff_total_code": 3338616,
     "image_bytes": 40067072,
     "mapped_bytes": 38533384,
@@ -901673,7 +901702,7 @@
       "metadata_sha256": "525d436eee3d48951222f1fd54574554983d228c3d06f19a545ba7cab50fe057",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "911ff8644e0a283236ffc65883bd8d03f2ec37516a01b61b5795c555ae0180f0",
+      "geometry_object_sha256": "15425e6c9d8b6ee4d7db8a9bb678953f01a97050f72933bd45f4860c34f3e9f9",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
