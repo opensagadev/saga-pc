@@ -514,6 +514,18 @@ class Copy:
 
 # ---------------------------------------------------------------- emitting
 
+def rebase_include(line, path, target):
+    """Rewrite a quoted include that names a file next to `path` as a src/-rooted path for `target`."""
+    match = re.match(r'#\s*include\s+"([^"]+)"', line)
+    if not match or Path(path).parent == Path(target).parent:
+        return line
+    local = ROOT / Path(path).parent / match.group(1)
+    if not local.is_file():
+        return line
+    rooted = local.resolve().relative_to((ROOT / "src").resolve()).as_posix()
+    return line.replace(f'"{match.group(1)}"', f'"{rooted}"', 1)
+
+
 def wrap_c(item, target_cxx):
     """Does this item need an extern "C" block in the target?"""
     if not target_cxx:
@@ -718,9 +730,11 @@ def apply_plan(plan, note=None, write=True):
     includes = []
     for path, source in plan.sources.items():
         for item in source.items:
-            if item.kind == "include" and item.text.strip() not in includes:
-                if path == target or any(i.source is source for _, i in plan.moved):
-                    includes.append(item.text.strip())
+            if item.kind != "include" or not (path == target or any(i.source is source for _, i in plan.moved)):
+                continue
+            line = rebase_include(item.text.strip(), path, target)
+            if line not in includes:
+                includes.append(line)
     header = f"/* Retail unit 0x{plan.lo:06x}-0x{plan.hi:06x}" + (f" ({note})" if note else "") + \
         ": definitions in retail address order. */\n"
     section = (render_items(preamble, target_cxx) + render_items(copies, target_cxx) + ("\n" if copies else "")
