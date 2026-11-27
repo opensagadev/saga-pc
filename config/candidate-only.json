@@ -430,6 +430,11 @@
    "unit": "src/nu2api/shader_dictionary.cpp",
    "symbol": "?ShaderAddDefinition@@YAXPAUShaderCompilerDictionary@@PBD1H@Z",
    "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/ShaderObjectKey.cpp",
+   "symbol": "__bad_alloc_Message",
+   "kind": "data"
   }
  ]
 }

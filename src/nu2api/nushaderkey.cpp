@@ -114,38 +114,3 @@ extern "C" void NuShaderObjectKeyGenerate(u32 *key, const NUSHADERMTLDESC *desc,
     filter.Initialize(desc, material, flags, variant);
     NuShaderObjectKeyGenerate3(key, &filter, pixel_stage);
 }
-
-extern "C" u8 NuShaderKeyHash[16];
-
-extern "C" {
-    u8 NuShaderKeyHash[16] = {0};
-}
-
-/* Installs the 16-byte hash of the uber shader source that every key mixes in. */
-extern "C" void NuShaderObjectKeySetUberShaderHash(const u8 *hash) {
-    if (hash == NULL) {
-        hash = NuShaderKeyHash;
-    }
-    for (i32 i = 0; i < 16; i++) {
-        reinterpret_cast<u8 *>(ShaderProgramHashPC)[i] = hash[i];
-    }
-}
-
-/* The key of a program described by flags alone. No caller. */
-extern "C" void NuShaderObjectKeyGenerate4(u32 *key, u32 flags, i32) {
-    PC_SHADER_KEY_BLOCK block;
-    memset(&block, 0, sizeof(block));
-    block.bytes[0x14] = 1;
-    block.words.program_hash[0] = ShaderProgramHashPC[0];
-    block.words.program_hash[1] = ShaderProgramHashPC[1];
-    block.bytes[4] = (u8)flags;
-    block.bytes[5] = (u8)(flags >> 8);
-    block.bytes[6] = (u8)(flags >> 16);
-    block.bytes[7] = (u8)(flags >> 24);
-    block.bytes[8] = (u8)flags;
-    block.bytes[9] = (u8)(flags >> 8);
-    block.bytes[0xa] = (u8)(flags >> 16);
-    block.bytes[0xb] = (u8)(flags >> 24);
-    *key = (i16)CRC16::hashInverse(block.bytes, 104) << 16;
-    *key |= (u16)CRC16::hash(block.bytes, 104);
-}
