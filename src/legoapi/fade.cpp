@@ -61,10 +61,6 @@ void Fade::DrawFade() {
     }
 }
 
-FADETYPE_VALUE Fade::GetFadeType() const {
-    return FADE_TYPE_SCREEN;
-}
-
 extern "C" void fun_005644b0() {
 }
 
@@ -92,10 +88,6 @@ void FadeWipe::UpdateFade() {
 
 void FadeWipe::DrawFade() {
     DrawFadeScreenWipe();
-}
-
-FADETYPE_VALUE FadeWipe::GetFadeType() const {
-    return FADE_TYPE_WIPE;
 }
 
 void FadeStillWipe::Init(FADEINFO_s *state) {
@@ -148,10 +140,6 @@ void FadeStillWipe::DrawFade() {
     }
 }
 
-FADETYPE_VALUE FadeStillWipe::GetFadeType() const {
-    return FADE_TYPE_STILL_WIPE;
-}
-
 void FadeStill::Init(FADEINFO_s *state) {
     info = state;
 }
@@ -189,10 +177,6 @@ void FadeStill::DrawFade() {
     } else {
         wait_till_next_frame--;
     }
-}
-
-FADETYPE_VALUE FadeStill::GetFadeType() const {
-    return FADE_TYPE_STILL;
 }
 
 i32 FadeSystem::AddFade(FadeBase *fade_object) {

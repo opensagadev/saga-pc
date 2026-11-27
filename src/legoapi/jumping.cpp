@@ -29,6 +29,9 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
+static i32 BigJump_JumpAction_Default(GAMEOBJECT *object);
+static i32 BigJump_LandAction_Default(GAMEOBJECT *object);
+
 void StartJump(GAMEOBJECT *object, i32 movement_state) {
     if (LEGOCONTEXT_JUMP != -1) {
         u32 attack_jump;
@@ -110,7 +113,6 @@ static i32 BigJump_LandAction_Default(GAMEOBJECT *object) {
     return BigJumpLandFallback;
 }
 
-f32 HIGHJUMPHEIGHT = 1.14f;
 extern "C" i32 (*BigJump_JumpActionFn)(GAMEOBJECT *) = BigJump_JumpAction_Default;
 
 i32 StartBigJump(GAMEOBJECT *object, NUVEC *destination, i32 mode, f32 height, f32 duration_scale, i32 animation) {
@@ -203,6 +205,7 @@ i32 UseFallAnim(GAMEOBJECT *object) {
 }
 
 i32 (*IsWearingBackPackFn)(GAMEOBJECT *) = 0;
+i32 (*UsingExtraActionsFn)(GAMEOBJECT *) = 0;
 
 i32 StartFallLand(GAMEOBJECT *object, i32 action) {
     PlayLandSfx(object, 0, 0);
@@ -299,6 +302,7 @@ i32 Slam_Start(GAMEOBJECT *object, f32 speed) {
     return 0;
 }
 
+f32 HIGHJUMPHEIGHT = 1.14f;
 f32 JumpFailedLandChainTime = 0.0f;
 i32 DoubleJump_AlwaysReachJump2Height = 0;
 i32 DoubleJump_JediSlam = 0;
@@ -306,7 +310,8 @@ i32 (*Jump_PreventJumpFn)(GAMEOBJECT *) = NULL;
 void (*Jump_EndOfLandContextFn)(GAMEOBJECT *) = NULL;
 i32 (*Slam_GetDebrisFn)(GAMEOBJECT *, i32) = NULL;
 i32 (*CanGlideFn)(GAMEOBJECT *) = NULL;
-i32 (*UsingExtraActionsFn)(GAMEOBJECT *) = 0;
+f32 SLAMJUMPSPEED = 3.0f;
+f32 PUNCHCHARGAP = 0.6f;
 
 void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation_set, i32 action_pressed, i32 action_held, i32 hit_effect) {
     WORLDINFO *world;
@@ -897,9 +902,6 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
 }
 
 i32 (*BigJump_LandActionFn)(GAMEOBJECT *) = BigJump_LandAction_Default;
-f32 SLAMJUMPSPEED = 3.0f;
-f32 PUNCHCHARGAP = 0.6f;
-
 void (*BigJump_EndOfLandFn)(GAMEOBJECT *) = 0;
 
 void BigJumpCode(GAMEOBJECT *object) {
@@ -989,4 +991,20 @@ void BigJumpCode(GAMEOBJECT *object) {
     if (object->player.character_context != CHARACTER_CONTEXT_NONE) {
         object->ai_packet.flags |= AIPACKET_KEEP_PATH_POS;
     }
+}
+
+FADETYPE_VALUE Fade::GetFadeType() const {
+    return FADE_TYPE_SCREEN;
+}
+
+FADETYPE_VALUE FadeWipe::GetFadeType() const {
+    return FADE_TYPE_WIPE;
+}
+
+FADETYPE_VALUE FadeStillWipe::GetFadeType() const {
+    return FADE_TYPE_STILL_WIPE;
+}
+
+FADETYPE_VALUE FadeStill::GetFadeType() const {
+    return FADE_TYPE_STILL;
 }

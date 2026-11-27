@@ -646,7 +646,7 @@
     "src/legoapi/episodes.cpp": "97ce86f75cd7ac37adea45f8fa8792a2cd87268e5efc2eee3cc066fa4629454f",
     "src/legoapi/episodes_diagnostic.cpp": "27b06b0487ad45334f98afddf9b6743128005a4ff6aadd717e070c9bdb8bfc8c",
     "src/legoapi/explosions.cpp": "79313938ac69136c245cd50c10ebe7507e933f7993c38cece6171e46861d110d",
-    "src/legoapi/fade.cpp": "c5cf6df56fd546c4728297ca5d008ec1913f04d18d0333078f91e6e9cf0aa07e",
+    "src/legoapi/fade.cpp": "47d821f5878bb5581bb02b4280a4d4cb1aae229e550ad4629a2f90e97c0c9a34",
     "src/legoapi/faders.cpp": "8a152518db560774dc2898fb1e71dd6bd08a88e58ddd9730141c302d2edabcac",
     "src/legoapi/fighting.cpp": "31f5d02e5d94e1839ea8cd0aba941b3e6e31616c5804e02997a49c39f0a15075",
     "src/legoapi/flightspline_diagnostic.cpp": "2afae99ef86ba84ab1dfab229564107dfd091e49ac1fa51dde4b897c72b8050b",
@@ -677,7 +677,7 @@
     "src/legoapi/hint.cpp": "30bc664dc6fac1a4dbd48ccde70f5391d09cc01e1e7f0ddf7328c2010f5e711c",
     "src/legoapi/hits.cpp": "cf0efc1ecde8c178f2402736ae3f9a6eb0ba25af7b006640810ef508928713d0",
     "src/legoapi/hub.cpp": "a987cbdc42d0352a306e3259ff9c04ff72f8b796e1ccd2dd470362396029f3aa",
-    "src/legoapi/jumping.cpp": "c158054f7e84b29ce5a7070171eebebf2b15d44a9a8c07053f78b4fc0de62641",
+    "src/legoapi/jumping.cpp": "6a885a5d8a5dc22998fc88ffc00bdb723f8abd6b7e9edcd808d55036858fb53e",
     "src/legoapi/leveldata.cpp": "8a57dc331679d80aeb93feaf55b9d321b5f65f91e55dc6482c762580abe9f040",
     "src/legoapi/levels.cpp": "16ab613ae7c7b5ca928f4a3df2e2845906ad8877f73a7ff06f43a3dec5abad19",
     "src/legoapi/levels_diagnostic.cpp": "5159439d07c290e5fac8c87a1f73454e15dfe28dcc2157db4708aedcbc6f0c1a",
@@ -1077,7 +1077,7 @@
     "build/obj/legoapi/episodes.obj": "48e7ccc630c17526a2c451ce758746e30d83860791daabcf23123e36c34c858c",
     "build/obj/legoapi/episodes_diagnostic.obj": "350386a9b7d0f0ec64ff36cd52a4ad66b750468cfe98c48cf9dabc3fabbc049a",
     "build/obj/legoapi/explosions.obj": "cb0279a3069df0aa4489921f81797d7cd511af3d09335aae45260569b60181bc",
-    "build/obj/legoapi/fade.obj": "34a07b9de326980527441b7e34d34a18a7d64c14c8790008f7149e3f8672dd03",
+    "build/obj/legoapi/fade.obj": "86f55db6845f2340c83162945452c3a4dbc69ababd391b1640194ff430f36645",
     "build/obj/legoapi/faders.obj": "d06987b7a7957f3b7c03528264b656a38df6114ee19d4e77dca2f589bdd0ee69",
     "build/obj/legoapi/fighting.obj": "972d7028804062db9834085179db0de41df7ee92b18bb104535a86bcb68c67c1",
     "build/obj/legoapi/flightspline_diagnostic.obj": "f7c40bbe0eae8ad22459e90f6536842ea5f1866913742ba79606039006a16979",
@@ -1112,7 +1112,7 @@
     "build/obj/legoapi/hint.obj": "51310e525512f8f48fa5adef31fbbde0b3dae186d6fc8034f66d23db46a905c3",
     "build/obj/legoapi/hits.obj": "86455938309f0630a141cfe21c3361b4c9f44b7081a4118d894273efe58cc07d",
     "build/obj/legoapi/hub.obj": "e4b4c76359f2520ed887ab532d2ed1220bdb33ae14edd5b30af90e15199e0ace",
-    "build/obj/legoapi/jumping.obj": "59111d589bdbe5bc68029f8fea48fdb7d156c63c2bee3e2f698142d230fc42dd",
+    "build/obj/legoapi/jumping.obj": "bc6b2c13cdc748a068d06d5ccf8b2b87d5c860b1542e7f31f79ac79aaae8553a",
     "build/obj/legoapi/leveldata.obj": "8e1a517defbe2135bb2b572f059167b6d44f70df2087eba13643917a7a16d782",
     "build/obj/legoapi/levels.obj": "a24571f6f08a4590a69506e6a73f05c499206fd24ea1dfcd3c23a63e20674ce1",
     "build/obj/legoapi/levels_diagnostic.obj": "c8fa818e050b152c7f2da8362364856ffc75db0aaf08a1acc96228bbf3da348e",
@@ -129617,19 +129617,19 @@
       "symbol": "?GetFadeType@Fade@@UBE?AW4FADETYPE_VALUE@@XZ",
       "address": "0x00564370",
       "units": [
-        "src/legoapi/fade.cpp"
+        "src/legoapi/jumping.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/fade.cpp",
+          "unit": "src/legoapi/jumping.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "00564370-9ca8c6cfc7f3",
+          "comparison_unit": "00564370-3a3549510516",
           "objdiff_percent": 100.0
         }
       ],
@@ -129723,19 +129723,19 @@
       "symbol": "?GetFadeType@FadeWipe@@UBE?AW4FADETYPE_VALUE@@XZ",
       "address": "0x005643c0",
       "units": [
-        "src/legoapi/fade.cpp"
+        "src/legoapi/jumping.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/fade.cpp",
+          "unit": "src/legoapi/jumping.cpp",
           "base_size": 6,
           "exact_match": true,
           "target_sha256": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67",
           "base_sha256": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67",
           "relocation_count": 0,
-          "comparison_unit": "005643c0-c5cbb91a44df",
+          "comparison_unit": "005643c0-708db3915c28",
           "objdiff_percent": 100.0
         }
       ],
@@ -129829,19 +129829,19 @@
       "symbol": "?GetFadeType@FadeStillWipe@@UBE?AW4FADETYPE_VALUE@@XZ",
       "address": "0x00564410",
       "units": [
-        "src/legoapi/fade.cpp"
+        "src/legoapi/jumping.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/fade.cpp",
+          "unit": "src/legoapi/jumping.cpp",
           "base_size": 6,
           "exact_match": true,
           "target_sha256": "7140f35dee6220b79b12aecc27acf5105bf3b77d1588e89fce345de7c16c72b7",
           "base_sha256": "7140f35dee6220b79b12aecc27acf5105bf3b77d1588e89fce345de7c16c72b7",
           "relocation_count": 0,
-          "comparison_unit": "00564410-6f6b878a2f44",
+          "comparison_unit": "00564410-e3b434ff27f7",
           "objdiff_percent": 100.0
         }
       ],
@@ -129935,19 +129935,19 @@
       "symbol": "?GetFadeType@FadeStill@@UBE?AW4FADETYPE_VALUE@@XZ",
       "address": "0x00564460",
       "units": [
-        "src/legoapi/fade.cpp"
+        "src/legoapi/jumping.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/fade.cpp",
+          "unit": "src/legoapi/jumping.cpp",
           "base_size": 6,
           "exact_match": true,
           "target_sha256": "7adb2a5467d3718ab3b55c6851599af573d4fbeadcd90dd961cfd69d4f94cc9f",
           "base_sha256": "7adb2a5467d3718ab3b55c6851599af573d4fbeadcd90dd961cfd69d4f94cc9f",
           "relocation_count": 0,
-          "comparison_unit": "00564460-1ec328f9eb93",
+          "comparison_unit": "00564460-2d04d4dee66c",
           "objdiff_percent": 100.0
         }
       ],
@@ -901705,7 +901705,7 @@
       "metadata_sha256": "525d436eee3d48951222f1fd54574554983d228c3d06f19a545ba7cab50fe057",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "c1dae5f8132cf6eb732457265293910c87fdf80ba6fd51fa0c5e316789c54688",
+      "geometry_object_sha256": "1965c275230083cd0f68cfab1d3040b602858a5a1b114911f2b0c1ea2ebab779",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
