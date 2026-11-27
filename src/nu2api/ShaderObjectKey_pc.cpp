@@ -22,17 +22,6 @@
 #include <stdio.h>
 #include "nu2api/nucore/nustring.h"
 
-union PC_SHADER_KEY_BLOCK {
-    u8 bytes[104];
-
-    struct {
-        u32 vertex_flags;
-        u32 layer_flags;
-        u32 layer_flags_copy;
-        u32 program_hash[2];
-    } words;
-};
-
 // for the header: NuShaderObject::stage_flags is a bitfield (each path bit is stored with xor/and/xor).
 struct NuShaderObjectPaths {
     u32 base : 1;

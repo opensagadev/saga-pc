@@ -77,8 +77,6 @@ typedef struct CHARACTER_PACK_ANIMATION { // size 0x8
 
 static f32 APIObjectFabs(f32 value);
 
-i32 PCBuildModelLayerList(CHARACTER_MODEL_LAYERS *model, i16 *indices, u32 mask);
-
 /* Float fabs by clearing the sign bit. */
 static f32 APIObjectFabs(f32 value) {
     f32 result;

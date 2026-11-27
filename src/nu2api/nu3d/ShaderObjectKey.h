@@ -17,6 +17,17 @@ extern "C" {
 #endif
 #ifdef __cplusplus
 
+union PC_SHADER_KEY_BLOCK {
+    u8 bytes[104];
+
+    struct {
+        u32 vertex_flags;
+        u32 layer_flags;
+        u32 layer_flags_copy;
+        u32 program_hash[2];
+    } words;
+};
+
 class ShaderBuilderGen { // size 0xbd0
   public:
     char save_directory[0x100];                  // 0x004

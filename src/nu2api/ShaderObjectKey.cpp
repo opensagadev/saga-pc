@@ -17,20 +17,6 @@
 #include <string.h>
 #include <new>
 
-union PC_SHADER_KEY_BLOCK {
-    u8 bytes[104];
-
-    struct {
-        u32 vertex_flags;
-        u32 layer_flags;
-        u32 layer_flags_copy;
-        u32 program_hash[2];
-    } words;
-};
-
-extern "C" {
-    extern u32 ShaderProgramHashPC[4];
-}
 extern "C" u8 NuShaderKeyHash[16];
 
 void PC_SHADER_MATERIAL_FILTER::Initialize(const NUSHADERMTLDESC *desc, const NUMTL *mtl, i32 input_flags, i32 input_parameter) {

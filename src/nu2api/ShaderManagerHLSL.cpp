@@ -16,10 +16,6 @@
 #include <string.h>
 #include <new>
 
-extern "C" {
-    extern u32 CRC16TablePC[256];
-}
-
 /* Builds (or rebuilds in place) the shader object for a precompiled key. */
 void ShaderManagerHLSL::BuildPrecompiledShader(i32 flags, i32 selector, const char *vertex_text, i32 vertex_length, const char *pixel_text,
                                                i32 pixel_length) {
