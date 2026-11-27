@@ -77,6 +77,15 @@ typedef struct CHARACTER_PACK_ANIMATION { // size 0x8
 
 static f32 APIObjectFabs(f32 value);
 
+i32 PCBuildModelLayerList(CHARACTER_MODEL_LAYERS *model, i16 *indices, u32 mask);
+
+/* Float fabs by clearing the sign bit. */
+static f32 APIObjectFabs(f32 value) {
+    f32 result;
+    *(u32 *)&result = *(u32 *)&value & 0x7fffffff;
+    return result;
+}
+
 static f32 APIObjectSafeDivide(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
         return 0.0f;
@@ -160,8 +169,6 @@ void AnimList_RequestAnimGroupForCreatures(i32 group_id, ...) {
 }
 
 static i32 AnimBlendMode = 1;
-i32 (*MakeLayerList)(CHARACTER_MODEL_LAYERS *, i16 *, u32) = PCBuildModelLayerList;
-char RedirectAnimDir[64] = "chars\\commonanims\\";
 
 void SetAnimBlendMode(i32 mode) {
     AnimBlendMode = mode;
@@ -937,6 +944,8 @@ i32 AddGameDebrisMom(APIDEBRISSYS *system, i32 type, NUVEC *position, i32 count,
     return 0;
 }
 
+void (*APIObjPlaySfxByIdFn)(i32, NUVEC *) = 0;
+
 void SetAPIObjPlaySfxByIdFn(void (*play_sfx)(i32, NUVEC *)) {
     APIObjPlaySfxByIdFn = play_sfx;
 }
@@ -1266,6 +1275,8 @@ void *LoadAnim(char *path, i32 area_animation, VARIPTR *cursor, VARIPTR end) {
     return NULL;
 }
 
+char RedirectAnimDir[64] = "chars\\commonanims\\";
+
 void APIObjectRegisterAnimRedirect(i32 (*callback)(char *, void *, CHARACTERANIM_CONFIG *, char *), void *list, char *directory) {
     i32 length = NuStrLen(directory);
     RedirectAnimFn = callback;
@@ -1551,10 +1562,7 @@ i16 FindAnimIX(CHARACTERDATA *character, char *name) {
     return -1;
 }
 
-NUHGOBJ_EVAL *Temphgobj = 0;
 f32 animduration_blendouttime = 0;
-NUMTL *APITrans_Mtl[2] = {0};
-void (*APIObjPlaySfxByIdFn)(i32, NUVEC *) = 0;
 
 f32 AnimDuration(i32 character_id, i32 animation, f32 start_frame, f32 end_frame, i32 subtract_blend_out) {
     i16 model_id;
@@ -1632,6 +1640,8 @@ void PCStoreModelLocatorCoordinates(CHARACTER_MODEL_LAYERS *model, NUMTX *world_
         }
     }
 }
+
+i32 (*MakeLayerList)(CHARACTER_MODEL_LAYERS *, i16 *, u32) = PCBuildModelLayerList;
 
 void EvalModelAnim(CHARACTER_MODEL_LAYERS *model, ANIMPACKET *packet, NUMTX *world_matrix, NUMTX *joint_matrices,
                    DWA_WEIGHT_BLOCK ***dwa_output, NUVEC *locator_positions, NUMTX *locator_matrices, u32 layer_mask) {
@@ -2330,6 +2340,8 @@ void BlendRootFn(NUMTX *matrix, void *data, NUVEC *source_root, NUVEC *target_ro
     }
 }
 
+NUHGOBJ_EVAL *Temphgobj = 0;
+
 void NuHGobjRestrictEvaluation(NUHGOBJ_EVAL *object) {
     Temphgobj = object;
     if (object != NULL) {
@@ -2344,6 +2356,8 @@ void NuHGobjRestoreEvaluation(void) {
         Temphgobj = NULL;
     }
 }
+
+NUMTL *APITrans_Mtl[2] = {0};
 
 void APITransparentInit(void) {
     APITrans_Mtl[0] = NuMtlCreate3D(1);
@@ -2933,10 +2947,3 @@ void WindShear(NUMTX *output, NUMTX *input, i32 wind_scale, i32 wind_speed) {
 }
 
 // extern "C"
-
-/* Float fabs by clearing the sign bit. */
-static f32 APIObjectFabs(f32 value) {
-    f32 result;
-    *(u32 *)&result = *(u32 *)&value & 0x7fffffff;
-    return result;
-}

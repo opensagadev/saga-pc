@@ -219,8 +219,9 @@ REVIEW = {
                    why="Batman pc/numaths.cpp is its own object; no marker here, may be part of numath_includes"),
     0x60ed30: dict(name=None, why="C++ members that Batman has in supportall; probably COMDAT inlines placed "
                    "with the first network object that uses them"),
-    0x630e00: dict(name="nufmv_gen", area="nu2api/nufmv", conf="low",
-                   why="one function, Batman nufmv/nufmv_gen.cpp; TCS spelling unknown"),
+    0x630d60: dict(name="nufmv_gen", area="nu2api/nufmv", conf="low",
+                   why="bare-RET FmvOptionError opens it, then the Fmv overlay and poll helpers before NuFmv; Batman "
+                   "nufmv/nufmv_gen.cpp; TCS spelling unknown"),
     0x6310c0: dict(name="dsplay_bink", area="nu2api/nufmv/pc/Bink", lang="cpp", conf="high",
                    why="marker; retail .\\pc\\Bink\\dsplay_bink.cpp from FmvInitialize"),
     0x633390: dict(name="supportall", lang="cpp", conf="medium", why="marker; Batman supportall (C++ classes)"),

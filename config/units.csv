@@ -209,8 +209,8 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x6179c0,0x617a52,src/gamelib/net/?0x6179c0,,gamelib,android,none,,3,133,133,133,0,0,gamelib/util/Utilities.cpp:133
 0x617a60,0x617c0a,src/gamelib/net/?0x617a60,,gamelib,android,none,,1,426,426,426,0,0,nu2api/unref.cpp:426
 0x617c10,0x62a5d9,src/gameapi/edtoolsall.cpp,edmain.cpp edui.cpp edfile.c edui.cpp fileselect.c ? edui.cpp,gameapi,file+marker+review,high,ret fabs 22 11 28,402,73159,73015,37160,3179,2179,gameapi/edfile.c:40022 gameapi/edui_widget_render.cpp:27593 nu2api/keyboard_read.c:4443 gameapi/edtools_outline.cpp:872 editor/edtoolsall.c:85
-0x62a5e0,0x630df4,src/gameapi/apiobject.c,,gameapi,marker+review,high,ret ret fabs 54 11,90,25948,25937,14485,379,0,gameapi/apiobject.c:25830 nu2api/pc_fmv_leaves.cpp:75 nu2api/pc_fmv.cpp:30 nu2api/nudebug.c:2
-0x630e00,0x6310b6,src/nu2api/nufmv/nufmv_gen.c,,nu2api,review,low,,2,682,682,70,75,0,nu2api/pc_fmv.cpp:682
+0x62a5e0,0x630d5c,src/gameapi/apiobject.c,,gameapi,marker+review,high,ret ret fabs 54 11,84,25843,25832,14380,379,0,gameapi/apiobject.c:25830 nu2api/nudebug.c:2
+0x630d60,0x6310b6,src/nu2api/nufmv/nufmv_gen.cpp,,nu2api,review,low,,8,787,787,175,75,0,nu2api/pc_fmv.cpp:712 nu2api/pc_fmv_leaves.cpp:75
 0x6310c0,0x6312c8,src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp,,nu2api,marker+review,high,ret 28,12,426,391,391,0,0,nu2api/nufmv/pc/Bink/dsplay_bink.cpp:390 nu2api/pc_fmv_control.cpp:1
 0x6312d0,0x633386,src/gameapi/?0x6312d0,,gameapi,file+marker+android,none,,45,8069,8041,6217,327,38,nu2api/nufmv/pc/Bink/dsplay_bink.cpp:5214 nu2api/pc_fmv_player.cpp:2827
 0x633390,0x633def,src/gameapi/supportall.cpp,,gameapi,marker+review,medium,ret ret 28,34,2385,2332,2082,16,0,gameapi/supportall.cpp:2146 legoapi/memorymanager.cpp:169 editor/edlevelall.cpp:16 nu2api/nufmv/pc/Bink/dsplay_bink.cpp:1
@@ -253,7 +253,7 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x7443d0,0x744b96,src/nu2api/ShaderObjectKey.cpp,,nu2api,batman,low,,33,1744,1552,734,85,0,nu2api/ShaderObjectKey.cpp:1552
 0x744ba0,0x745919,src/nu2api/ShaderObjectKey_pc.cpp,,nu2api,batman+code+marker,low,,50,3019,2837,1401,146,0,nu2api/ShaderObjectKey_pc.cpp:2813 nu2api/ShaderManagerHLSL.cpp:24
 0x745920,0x74635f,src/nu2api/ShaderManagerHLSL.cpp,,nu2api,batman+marker,high,ret 28,17,2491,2463,2043,30,0,nu2api/ShaderManagerHLSL.cpp:2388 nu2api/ShaderObjectKey_pc.cpp:74 nu2api/shader_compiler.cpp:1
-0x746360,0x746e3c,src/nu2api/CRC16.cpp,,nu2api,batman+code,medium,,36,2508,2448,2380,14,14,nu2api/shader_dictionary.cpp:2122 nu2api/crc16.cpp:258 nu2api/shader_lexical.cpp:68
+0x746360,0x746e3c,src/nu2api/CRC16.cpp,,nu2api,batman+code,medium,,36,2508,2448,2380,14,14,nu2api/shader_dictionary.cpp:2122 nu2api/CRC16.cpp:258 nu2api/shader_lexical.cpp:68
 0x746e40,0x74873c,src/nu2api/?0x746e40,,nu2api,marker+android,none,,21,6280,6252,4468,48,5,nu2api/shader_dictionary.cpp:5703 nu2api/shader_buffer_allocator.cpp:549
 0x748740,0x7493d8,src/nu2api/?0x748740,,nu2api,code+marker+android,none,,42,2902,2834,2250,8,0,nu2api/shader_compiler.cpp:2627 nu2api/shader_buffer_allocator.cpp:207
 0x7493e0,0x74a9c7,src/nu2api/?0x7493e0,,nu2api,marker+android,none,ret 28,10,5522,5494,852,1106,0,nu2api/shader_compiler.cpp:5494
