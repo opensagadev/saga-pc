@@ -569,23 +569,6 @@ void Text_SetLanguage(i32 language) {
     }
 }
 
-i32 GetMenuID(void) {
-    i16 menu = GameMenu[GameMenuLevel].menu;
-    return menu == -1 ? -1 : MenuInfo[menu].id;
-}
-
-i32 GetParentMenuID(void) {
-    i16 menu;
-    if (GameMenuLevel <= 1) {
-        return -1;
-    }
-    menu = GameMenu[GameMenuLevel - 1].menu;
-    if (menu == -1) {
-        return -1;
-    }
-    return MenuInfo[menu].id;
-}
-
 i32 TriggerAutoSave(void) {
     if (memcard_autosave != 0 && memcard_autosaveenabled != 0 && saveload_autosave != -1) {
         memcard_autosaveneeded = 1;
@@ -1581,7 +1564,6 @@ void Text_LoadFont(char *path, VARIPTR *buffer, VARIPTR *end) {
     LoadButtonFont("stuff\\text\\Buttons", NULL, buffer, end, 0);
 }
 
-i32 GameMenuLevel = -1;
 f32 MENUBOTY = -0.75f;
 f32 MenuTextScale = 0.5f;
 f32 MENUDY = -0.10664f;
