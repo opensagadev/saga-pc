@@ -188,8 +188,12 @@ REVIEW = {
     0x547060: dict(name="listman", lang="c", conf="high", why="retail gamelib\\listman.c"),
     0x56cdb0: dict(name="guidelines", conf="medium", why="marker at 0x56cd80; Android guidelines; Batman has none"),
     0x5925c0: dict(name="customiser", conf="medium", why="marker; TCS only; Android customiser.c"),
-    0x5950e0: dict(name=None, lang="cpp", why="a bare RET after Collection_Draw opens it; lighting helpers "
-                   "(ZeroLightSetupPrivate, which only lighting code calls, LightingSetAmbientLight); name unknown"),
+    0x5950e0: dict(name="lighting", conf="medium",
+                   why="a bare RET after Collection_Draw opens it; lighting code inlines PC_SPECIAL_SHADOW_LIGHT::BeginCapture "
+                   "and SetParameterf, whose never-called out-of-line copies sit before SetLights, so the shadow light "
+                   "methods and lighting are one unit"),
+    0x595200: dict(name="lighting", join=True, why="continues 0x5950e0"),
+    0x5954f0: dict(name="lighting", join=True, why="continues 0x595200"),
     0x5a86d0: dict(name="simpletons", conf="medium", why="marker; TCS only; Android simpletons.c"),
     0x59cb90: dict(name="credits", conf="medium",
                    why="CreditsFindType, CreditsReadColour and CreditsInitCredit are called only by "

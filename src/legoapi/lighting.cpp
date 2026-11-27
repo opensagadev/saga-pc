@@ -43,6 +43,24 @@
 #include <stdio.h>
 
 extern "C" {
+    /* PC_SPECIAL_SHADOW_LIGHT::SetEnabled, inlined here. */
+    static void EnableShadowLight(struct PC_SPECIAL_SHADOW_LIGHT *light, i32 enabled) {
+        if (enabled != 0 && light->enabled == 0) {
+            i32 i;
+            for (i = 0; i < light->render_set_count; ++i) {
+                light->render_sets[i].shadow_lists[0].mtl_last = light->render_sets[i].shadow_lists[0].first;
+                light->render_sets[i].shadow_lists[1].mtl_last = light->render_sets[i].shadow_lists[1].first;
+            }
+        }
+        light->enabled = enabled;
+    }
+}
+
+static void LightingLookAtD3D(NUMTX *view, NUVEC *eye, NUVEC *target, NUVEC *up) {
+    NuMtxLookAtD3D(view, eye, target, up);
+}
+
+extern "C" {
 
     static void ZeroLightSetupPrivate(NUVEC *direction0, NUVEC *colour0, NUVEC *direction1, NUVEC *colour1, NUVEC *direction2,
                                       NUVEC *colour2) {
@@ -54,10 +72,13 @@ extern "C" {
         PCGlobalLightingState.intensity[2] = *colour2;
         NuRndrSetDirectionalLightsPS(direction0, colour0, direction1, colour1, direction2, colour2);
     }
-}
 
-/* The engine's VuVecNormalise: unit-length copy of a direction, as a point (w = 1). */
-extern "C" {
+    /* The ambient colour both in the PC lighting state and in the pixel shader constants. */
+    static i32 LightingSetAmbientLight(NUVEC *ambient) {
+        PCGlobalLightingState.ambient = *ambient;
+        return NuRndrSetAmbientLightPS(ambient);
+    }
+
     static void fun_00595220(NUVEC4 &destination, NUVEC4 &source) {
         NuVecNorm(&destination.xyz, &source.xyz);
         destination.w = 1.0f;
@@ -84,10 +105,6 @@ NUVEC4 &NUVEC4::SetPoint(const NUVEC &v) {
     z = new_z;
     w = 1.0f;
     return *this;
-}
-
-static void LightingLookAtD3D(NUMTX *view, NUVEC *eye, NUVEC *target, NUVEC *up) {
-    NuMtxLookAtD3D(view, eye, target, up);
 }
 
 void PC_SPECIAL_SHADOW_LIGHT::LookAt(NUVEC *eye, NUVEC *target, NUVEC *up) {
@@ -161,16 +178,16 @@ void PC_SPECIAL_SHADOW_LIGHT::SetParameterf(i32 parameter, f32 value) {
     }
 }
 
+void PC_SPECIAL_SHADOW_LIGHT::BeginCapture(i32 render_set) {
+    currentScene.dyn_light_count = 1;
+    currentScene.dyn_light_ptr = this;
+    currentScene.light_render_set = render_set;
+}
+
 extern "C" void fun_005954e0() {
 }
 
 extern "C" {
-
-    /* The ambient colour both in the PC lighting state and in the pixel shader constants. */
-    static i32 LightingSetAmbientLight(NUVEC *ambient) {
-        PCGlobalLightingState.ambient = *ambient;
-        return NuRndrSetAmbientLightPS(ambient);
-    }
 
     void SetLights(NUVEC *colour0, NUVEC *direction0, NUVEC *colour1, NUVEC *direction1, NUVEC *colour2, NUVEC *direction2,
                    NUVEC *ambient) {
@@ -199,6 +216,8 @@ extern "C" {
         scaled.ambient.z *= scale;
         rtlSetLights(&scaled);
     }
+
+    RTL_DATA LevelLightingData = {0};
 
     void SetLevelLights(void *set, f32 scale) {
         f32 old_specular = rtlSpecularValue(&LevelLightingData);
@@ -369,6 +388,16 @@ extern "C" {
         object->flags_ef0 &= ~0x80u;
     }
 
+    f32 Lighting_RedFlashRed = 2.0f;
+    f32 Lighting_BlueFlickerGreen = 2.0f;
+    f32 Lighting_BlueFlickerBlue = 2.0f;
+    i32 Lighting_FlashRedOnLastHeart = 0;
+    i32 Lighting_HighlightFlash = 0;
+    f32 Lighting_RedFlashGreen = 0.0f;
+    f32 Lighting_RedFlashBlue = 0.0f;
+    f32 Lighting_BlueFlickerRed = 0.0f;
+    i32 (*Lighting_BlueFlickerFn)(GAMEOBJECT *) = NULL;
+
     void SetCreatureLights(APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
         NUVEC ambient;
@@ -485,18 +514,8 @@ extern "C" {
         }
         SetLights(&intensity[0], &direction[0], &intensity[1], &direction[1], &intensity[2], &direction[2], &ambient);
     }
-
-    /* PC_SPECIAL_SHADOW_LIGHT::SetEnabled, inlined here. */
-    static void EnableShadowLight(struct PC_SPECIAL_SHADOW_LIGHT *light, i32 enabled) {
-        if (enabled != 0 && light->enabled == 0) {
-            i32 i;
-            for (i = 0; i < light->render_set_count; ++i) {
-                light->render_sets[i].shadow_lists[0].mtl_last = light->render_sets[i].shadow_lists[0].first;
-                light->render_sets[i].shadow_lists[1].mtl_last = light->render_sets[i].shadow_lists[1].first;
-            }
-        }
-        light->enabled = enabled;
-    }
+    struct PC_SPECIAL_SHADOW_LIGHT *PCShadowCurrentLight = 0;
+    struct PC_SPECIAL_SHADOW_LIGHT *PCShadowSecondaryLight = 0;
 
     void InitShadowLights(void) {
         struct PC_SPECIAL_SHADOW_LIGHT *light;
@@ -549,12 +568,6 @@ extern "C" {
         }
         return count;
     }
-}
-
-inline void PC_SPECIAL_SHADOW_LIGHT::BeginCapture(i32 render_set) {
-    currentScene.dyn_light_count = 1;
-    currentScene.dyn_light_ptr = this;
-    currentScene.light_render_set = render_set;
 }
 
 extern "C" void RenderShadowLights(i32 paused) {
@@ -614,9 +627,6 @@ extern "C" void LightProcessCharacters(void *set) {
 }
 
 extern "C" {
-    f32 Lighting_RedFlashRed = 2.0f;
-    f32 Lighting_BlueFlickerGreen = 2.0f;
-    f32 Lighting_BlueFlickerBlue = 2.0f;
     f32 ShadowLightSplitScale = 0.9f;
     static f32 ShadowLightWarp = 5.0f;
     NUVEC ShadowLightUp = {0.0f, 1.0f, 0.0f};
@@ -625,17 +635,7 @@ extern "C" {
     f32 ShadowLightFallbackHeight = 5.0f;
     f32 ShadowLightEyeDistance = 20.0f;
     f32 ShadowLightFocusHeight = -2.0f;
-    RTL_DATA LevelLightingData = {0};
-    i32 Lighting_FlashRedOnLastHeart = 0;
-    i32 Lighting_HighlightFlash = 0;
-    f32 Lighting_RedFlashGreen = 0.0f;
-    f32 Lighting_RedFlashBlue = 0.0f;
-    f32 Lighting_BlueFlickerRed = 0.0f;
-    i32 (*Lighting_BlueFlickerFn)(GAMEOBJECT *) = NULL;
-    struct PC_SPECIAL_SHADOW_LIGHT *PCShadowCurrentLight = 0;
-    struct PC_SPECIAL_SHADOW_LIGHT *PCShadowSecondaryLight = 0;
     i32 ShadowLightSplitCount = 0;
-    NUCAMERA *EdMainCurrentCamera = 0;
 }
 
 extern "C" void SetShadowLight(void) {

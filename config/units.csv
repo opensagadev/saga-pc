@@ -137,10 +137,8 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x58d340,0x58e8e2,src/legoapi/fighting.cpp,,legoapi,batman,medium,,22,5373,5373,4752,1,0,legoapi/fighting.cpp:5373
 0x58e8f0,0x5925b9,src/legoapi/gizbuildit.cpp,,legoapi,batman+marker,high,ret fabs 54 28,50,15172,15144,7920,88,0,legoapi/gizbuildit.cpp:15144
 0x5925c0,0x59420b,src/legoapi/customiser.cpp,,legoapi,marker+review,medium,ret 28,22,7026,6998,2978,294,0,legoapi/customiser.cpp:6997 legoapi/customise_diagnostic.cpp:1
-0x594210,0x5950dd,src/legoapi/collection.cpp,,legoapi,batman+marker,high,ret ret 28,15,3672,3644,2446,137,137,legoapi/collection.cpp:2445 legoapi/collection_render.cpp:1198 legoapi/customiser.cpp:1
-0x5950e0,0x5951f4,src/legoapi/?0x5950e0,,legoapi,marker+review,none,,4,241,241,241,0,0,legoapi/lighting_unit.cpp:240 legoapi/collection_render.cpp:1
-0x595200,0x5954e1,src/legoapi/?0x595200,,legoapi,marker+android,none,,11,659,628,480,5,0,legoapi/lighting_unit.cpp:628
-0x5954f0,0x5970a8,src/legoapi/lighting.cpp,,legoapi,batman+code,medium,,27,6896,6896,6127,85,0,legoapi/lighting_unit.cpp:6895 legoapi/shadow.c:1
+0x594210,0x5950dd,src/legoapi/collection.cpp,,legoapi,batman+marker,high,ret ret 28,15,3672,3644,2446,137,0,legoapi/collection.cpp:3643 legoapi/customiser.cpp:1
+0x5950e0,0x5970a8,src/legoapi/lighting.cpp,,legoapi,batman+code+review,medium,,42,7796,7765,6848,89,0,legoapi/lighting.cpp:7763 legoapi/collection_render.cpp:1 legoapi/shadow.c:1
 0x5970b0,0x597bf5,src/legoapi/snake.cpp,,legoapi,batman+marker,high,fabs,11,2811,2783,1210,51,0,legoapi/snake.cpp:2783
 0x597c00,0x5999e0,src/legoapi/carrying.cpp,,legoapi,batman+marker,high,,14,7539,7511,2131,246,0,legoapi/carrying.cpp:7511
 0x5999e0,0x59a595,src/legoapi/minikits.cpp,,legoapi,batman+marker,high,ret 28,13,2917,2889,2325,1,0,legoapi/minikits.cpp:2889

@@ -337,7 +337,7 @@
    "kind": "data"
   },
   {
-   "unit": "src/legoapi/lighting_unit.cpp",
+   "unit": "src/legoapi/lighting.cpp",
    "symbol": "_EnableShadowLight",
    "kind": "function"
   },

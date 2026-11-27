@@ -429,7 +429,7 @@
     "src/nu2api/shader_parser.h": "e192219dd005bfa8c46c46ec47e32593905d0ef38c101aac79e77fa4a49b6a12",
     "src/nu2api/wavreader.h": "6acb0f5ca7ccbcef5945e705cc918a66f14f3af9f07cc9b5ce7fa31e78f05043",
     "config/budget-raises.txt": "599601a56ca8593912172d98bbdc9970c32e7911ac047c505ce561c43a93234a",
-    "config/candidate-only.json": "61ef91d39de93b3dc38f5b392dd8a7bb1bbbf4c54b0ccb2763bac077401289f3",
+    "config/candidate-only.json": "712167c8d51c9026eadbce95c5b9955c87691c8899156d68f3fdcafcef929295",
     "config/castscan-budget.json": "211f8047834975b27106289aa244c6a302e0daf4ef9c6aeff6402666625f1ca2",
     "config/castscan-keep.csv": "cb5e0f24bcae043979afd37568718947ed78ad1cff89a93d1dedc62c4035f45c",
     "config/clang-format-vendored": "726e4d44212725e1d294bd517c38a52eca9d7f41b505d7246c433e30a749f683",
@@ -439,7 +439,7 @@
     "config/declscan-budget.json": "e0554a10e2b156d3eccd2eeca4ee1379ecb90941be3c7c28e8d5c2a237306710",
     "config/header-map.csv": "8e3d4b0b92aff1316147fb6c6bb4d753c120fd50cb01b5a386a08a9953e75e0b",
     "config/layout-android-units.csv": "e746c9966cf3cb289a48dd1df1bee1e9c8fbbbf8a1891ca973f2b865a6e89fbc",
-    "config/layout-target.csv": "c6e0bdd272de487babb23de76b7d150a5de7b6500b12c38b87d3889a6b98dd22",
+    "config/layout-target.csv": "f863eda0174e9737754dcbf85befb581751c8b2fc578167a2748992a62290cae",
     "config/library-objects.json": "4e0e91f5abb9855a0624aa79f38e17687b47eaa447383f272352c1f024b9a872",
     "config/literalscan-budget.json": "31c786e269f1756cf35489ad41e6941a8881a76410f4579c939a0d083ea69a89",
     "config/literalscan-keep.csv": "7919326d1c419514fa11275d955381135bf23bb927f899b69a05e3b70b7b010d",
@@ -453,7 +453,7 @@
     "config/symbols.md": "3d018cc044b5a14025b0fc457df71a0c9a193cea32ceb3081e6a86bcdd4b242b",
     "config/toolchain.json": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
     "config/tools.json": "8e9a5f8077abc1bd9cce37004a47ea493e67a75ba964d8df3f13223958e6f4c8",
-    "config/units.csv": "46c4ce0e94a82571569cdb9f12c84698ca9c3b02e9df579626e2f90fbeadccce",
+    "config/units.csv": "ec547beee7e2b6612c1c91e9bcd4c6754732796d73913a35aec5587f3fb344a6",
     "config/warning-budget.json": "2fb62147f02c41b6f3c48da61b374099ba00403e547c81315cbe5564ebe44c54",
     "tools/altbuild.py": "030cf55976c0afdcdd8f9bc141f005827f47899761899855ed945dccca8024e3",
     "tools/binary.py": "1168154b0bf5549c93bc5fa22fc3dafb48c9529d3ea681bb447552928cc066eb",
@@ -483,7 +483,7 @@
     "tools/idiomscan.py": "eab18618f9feac46a2e3c8af7e8389423adc2dc104e5187a8f65657e02c880fc",
     "tools/langscan.py": "7bb44ac2c8802b3b03d3e025b62463c1b190cc2238f4ffdc6d554548afcd1a9c",
     "tools/layoutcheck.py": "bcb5e0c12b6d115425ca0452cf01784c7d11c3908c60cf9e0bc7751eb3ad1145",
-    "tools/layoutscan.py": "d4d9be8b1576438b3d3e1b494ef2e8c73019df766f1a96fae39ca502dbce8bdb",
+    "tools/layoutscan.py": "802af41b1a16b936b41eb7d606482a08330ac22ac3e3a68be049ec2ef1b906ae",
     "tools/lib.py": "612b3f8cf413d2c5492a6e6a1e554c1607b72873fa88c03b837a7a8b7b5e03fd",
     "tools/libmatch.py": "3b69b9be10a1282ffea804f84c56f7cd90bce8728eb33167d5ce7712c969885f",
     "tools/lintcache.py": "5cba942b00f45058923f2a2f7c928c00d7f4f0fe92dc30fe01f37a8662fddbeb",
@@ -680,7 +680,7 @@
     "src/legoapi/leveldata.cpp": "8a57dc331679d80aeb93feaf55b9d321b5f65f91e55dc6482c762580abe9f040",
     "src/legoapi/levels.cpp": "16ab613ae7c7b5ca928f4a3df2e2845906ad8877f73a7ff06f43a3dec5abad19",
     "src/legoapi/levels_diagnostic.cpp": "5159439d07c290e5fac8c87a1f73454e15dfe28dcc2157db4708aedcbc6f0c1a",
-    "src/legoapi/lighting_unit.cpp": "84e8c2eaca4b9321beec56260421ab1d0d2a32617aa0c39906478bd03b42bb83",
+    "src/legoapi/lighting.cpp": "b330207e60465edbe8ff9cb8844cdb25eb78cfc6842fbf983deee6c5361e3040",
     "src/legoapi/lsw_hub_ai.cpp": "dac2db7cc2d5b9091f72ef6a8e44ddc4608c05ba37670770ffa6f614001bedd1",
     "src/legoapi/memorymanager.cpp": "f3f6b3dc9993711c5cd6958a2148fa9b228018545a51c95b4ca534f833adf039",
     "src/legoapi/menu.cpp": "10f43d636471b9e69fe31a01b999fab9369d11c8a2b1ea257222d015303fb4c0",
@@ -1115,7 +1115,7 @@
     "build/obj/legoapi/leveldata.obj": "8e1a517defbe2135bb2b572f059167b6d44f70df2087eba13643917a7a16d782",
     "build/obj/legoapi/levels.obj": "2cb80040a967c03c2b033de54e52f06534ff1567f37c31e4ee0dbea60e6e1f0c",
     "build/obj/legoapi/levels_diagnostic.obj": "c8fa818e050b152c7f2da8362364856ffc75db0aaf08a1acc96228bbf3da348e",
-    "build/obj/legoapi/lighting_unit.obj": "700f3553addcc1e02469f001e417a85f43550a6628d767f94c74e2229dfd381e",
+    "build/obj/legoapi/lighting.obj": "224205e14c0a555975016bc1f1c9afc32aa622d78b2915dbf0877604bee1dab8",
     "build/obj/legoapi/lsw_hub_ai.obj": "0a9b21c8dc3d3987473cf2294a5ab25097bac10a79074839912c03309a018d9b",
     "build/obj/legoapi/memorymanager.obj": "a35933e1b1e23396e2f53284e9286e3f05da797c0238ff6e5e243dddadb3e092",
     "build/obj/legoapi/menu.obj": "4b26c40dbd703f62d741d7e09f9014d8c433ea15388778c255f49afcba4c53a6",
@@ -154667,19 +154667,19 @@
       "symbol": "?LightingLookAtD3D@@YAXPAUnumtx_s@@PAUnuvec_s@@11@Z",
       "address": "0x005950f0",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 21,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 21,
           "exact_match": true,
           "target_sha256": "d09ee59e87d42494b6e0c51ab32978a770dd52ecb0bf36381dd085ddc12b41c1",
           "base_sha256": "d09ee59e87d42494b6e0c51ab32978a770dd52ecb0bf36381dd085ddc12b41c1",
           "relocation_count": 1,
-          "comparison_unit": "005950f0-d9cc8b46ec73",
+          "comparison_unit": "005950f0-dbd74a4a91f1",
           "objdiff_percent": 100.0
         }
       ],
@@ -154691,19 +154691,19 @@
       "symbol": "_ZeroLightSetupPrivate",
       "address": "0x00595110",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 183,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 183,
           "exact_match": true,
           "target_sha256": "c47d5d3ed0e268279c28c63ab744ed969c73185bb4c709e34e7caad4b4532524",
           "base_sha256": "c47d5d3ed0e268279c28c63ab744ed969c73185bb4c709e34e7caad4b4532524",
           "relocation_count": 19,
-          "comparison_unit": "00595110-b17fae06577f",
+          "comparison_unit": "00595110-99c0bfb91bf5",
           "objdiff_percent": 100.0
         }
       ],
@@ -154715,19 +154715,19 @@
       "symbol": "_LightingSetAmbientLight",
       "address": "0x005951d0",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 36,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 36,
           "exact_match": true,
           "target_sha256": "16148de27d80d7422570e34ffb194d66f3275a7bdf3397c3b3d2ce2a437e7a51",
           "base_sha256": "16148de27d80d7422570e34ffb194d66f3275a7bdf3397c3b3d2ce2a437e7a51",
           "relocation_count": 4,
-          "comparison_unit": "005951d0-e5e1a3bc7a0b",
+          "comparison_unit": "005951d0-42ae65139b93",
           "objdiff_percent": 100.0
         }
       ],
@@ -154749,19 +154749,19 @@
       "symbol": "_fun_00595220",
       "address": "0x00595220",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 18,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 18,
           "exact_match": true,
           "target_sha256": "d46aa8d46cc504468efab509460eb3dc3f5a984da5b69580a95103ef6d7826dc",
           "base_sha256": "d46aa8d46cc504468efab509460eb3dc3f5a984da5b69580a95103ef6d7826dc",
           "relocation_count": 1,
-          "comparison_unit": "00595220-382637d85958",
+          "comparison_unit": "00595220-56b82f12e0a7",
           "objdiff_percent": 100.0
         }
       ],
@@ -154783,19 +154783,19 @@
       "symbol": "?SetXYZW@NUVEC4@@QAEXMMMM@Z",
       "address": "0x00595250",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 30,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 30,
           "exact_match": true,
           "target_sha256": "47ed5a8a399f7c29cacc7c9f3d6a57521ce7071c313a85aa6ac765ca6cb98ef2",
           "base_sha256": "47ed5a8a399f7c29cacc7c9f3d6a57521ce7071c313a85aa6ac765ca6cb98ef2",
           "relocation_count": 0,
-          "comparison_unit": "00595250-8d5a85f7a72b",
+          "comparison_unit": "00595250-41a5cee34300",
           "objdiff_percent": 100.0
         }
       ],
@@ -154807,19 +154807,19 @@
       "symbol": "?NormaliseXYZ@NUVEC4@@QAEXXZ",
       "address": "0x00595270",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 22,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 22,
           "exact_match": true,
           "target_sha256": "f12c74e0279aaa70df44fe397dfd1c0302f72ad83c7a1988ddf87efe8ab9d2c4",
           "base_sha256": "f12c74e0279aaa70df44fe397dfd1c0302f72ad83c7a1988ddf87efe8ab9d2c4",
           "relocation_count": 1,
-          "comparison_unit": "00595270-50aafe0a040a",
+          "comparison_unit": "00595270-ebe5b9d8f5da",
           "objdiff_percent": 100.0
         }
       ],
@@ -154831,19 +154831,19 @@
       "symbol": "?SetPoint@NUVEC4@@QAEAAU1@ABUnuvec_s@@@Z",
       "address": "0x00595290",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 46,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 46,
           "exact_match": true,
           "target_sha256": "c34e9ab492d4e5c81a1ed898990a78be81dbdbb04a49d07a92949fef1814fc0f",
           "base_sha256": "c34e9ab492d4e5c81a1ed898990a78be81dbdbb04a49d07a92949fef1814fc0f",
           "relocation_count": 0,
-          "comparison_unit": "00595290-49cae73dbb83",
+          "comparison_unit": "00595290-b61955c5d8c9",
           "objdiff_percent": 100.0
         }
       ],
@@ -154855,19 +154855,19 @@
       "symbol": "?LookAt@PC_SPECIAL_SHADOW_LIGHT@@QAEXPAUnuvec_s@@00@Z",
       "address": "0x005952c0",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 148,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 145,
           "exact_match": false,
           "target_sha256": "b77094b2d06c2b25e2ee22962eadc38387fec6e4a5df3adfc6b9dfc7795e8c21",
           "base_sha256": "782dfb603200ce1cb245d27ef1254ca1e190a7b675486c7d966eac353abd1bb0",
           "relocation_count": 2,
-          "comparison_unit": "005952c0-475132a82d78",
+          "comparison_unit": "005952c0-447b23d327ae",
           "objdiff_percent": 96.666664
         }
       ],
@@ -154885,19 +154885,19 @@
       "symbol": "?SetOrthoProjection@PC_SPECIAL_SHADOW_LIGHT@@QAEXMMMMMM@Z",
       "address": "0x00595360",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 78,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 78,
           "exact_match": true,
           "target_sha256": "211e9b456a12d94ce45d0e1919935a6b515602b93716610ca16eea9a33c334bd",
           "base_sha256": "211e9b456a12d94ce45d0e1919935a6b515602b93716610ca16eea9a33c334bd",
           "relocation_count": 1,
-          "comparison_unit": "00595360-498328a3387f",
+          "comparison_unit": "00595360-a92da749ad7f",
           "objdiff_percent": 100.0
         }
       ],
@@ -154909,19 +154909,19 @@
       "symbol": "?SetParameterf@PC_SPECIAL_SHADOW_LIGHT@@QAEXHM@Z",
       "address": "0x005953b0",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 257,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 257,
           "exact_match": true,
           "target_sha256": "7edb616eb5e12cf25793c4a29e954a8bae97ccd4746bd65132d975778ce9bf52",
           "base_sha256": "7edb616eb5e12cf25793c4a29e954a8bae97ccd4746bd65132d975778ce9bf52",
           "relocation_count": 15,
-          "comparison_unit": "005953b0-14844ead152a",
+          "comparison_unit": "005953b0-278d8cbec69b",
           "objdiff_percent": 100.0
         }
       ],
@@ -154933,19 +154933,19 @@
       "symbol": "?BeginCapture@PC_SPECIAL_SHADOW_LIGHT@@QAEXH@Z",
       "address": "0x005954c0",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 28,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 28,
           "exact_match": true,
           "target_sha256": "a86d149b67cdb5ab582d30b78df3fc69abad4fd094cee5e764b446df6c5b404b",
           "base_sha256": "a86d149b67cdb5ab582d30b78df3fc69abad4fd094cee5e764b446df6c5b404b",
           "relocation_count": 3,
-          "comparison_unit": "005954c0-d33b2cbe6cdb",
+          "comparison_unit": "005954c0-1a3514ba3c0e",
           "objdiff_percent": 100.0
         }
       ],
@@ -154957,19 +154957,19 @@
       "symbol": "_fun_005954e0",
       "address": "0x005954e0",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 1,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 1,
           "exact_match": true,
           "target_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
           "base_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
           "relocation_count": 0,
-          "comparison_unit": "005954e0-58cb74288f47",
+          "comparison_unit": "005954e0-359077ffd29b",
           "objdiff_percent": 100.0
         }
       ],
@@ -154981,19 +154981,19 @@
       "symbol": "_SetLights",
       "address": "0x005954f0",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 75,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 75,
           "exact_match": true,
           "target_sha256": "302a7ff4bc5851821bdad9373d2412c5bf7c2b90e1e74edd564a27d728e5f019",
           "base_sha256": "302a7ff4bc5851821bdad9373d2412c5bf7c2b90e1e74edd564a27d728e5f019",
           "relocation_count": 5,
-          "comparison_unit": "005954f0-13f232755dbc",
+          "comparison_unit": "005954f0-a604d40306a2",
           "objdiff_percent": 100.0
         }
       ],
@@ -155005,19 +155005,19 @@
       "symbol": "_SetLights_RTLDATA",
       "address": "0x00595540",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 283,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 283,
           "exact_match": true,
           "target_sha256": "04b08396409d4159bd2e08616a4822d24f151543de4881ffc0159a61e45f06a0",
           "base_sha256": "04b08396409d4159bd2e08616a4822d24f151543de4881ffc0159a61e45f06a0",
           "relocation_count": 2,
-          "comparison_unit": "00595540-fffd2db96eeb",
+          "comparison_unit": "00595540-cc2c46311e89",
           "objdiff_percent": 100.0
         }
       ],
@@ -155029,19 +155029,19 @@
       "symbol": "_SetLevelLights",
       "address": "0x00595660",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 190,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 190,
           "exact_match": true,
           "target_sha256": "354cf0c2165aa6c483c3fd44569045b708a3f289fa7f3389278a0d61c71e136b",
           "base_sha256": "354cf0c2165aa6c483c3fd44569045b708a3f289fa7f3389278a0d61c71e136b",
           "relocation_count": 21,
-          "comparison_unit": "00595660-fff8a1a37b5b",
+          "comparison_unit": "00595660-eb0be14b1db2",
           "objdiff_percent": 100.0
         }
       ],
@@ -155053,19 +155053,19 @@
       "symbol": "_SetPanelLights",
       "address": "0x00595720",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 273,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 273,
           "exact_match": true,
           "target_sha256": "02248d28da10aaa7cefcc50ac05815d7099eac15e697e6094cf70df248286fe2",
           "base_sha256": "02248d28da10aaa7cefcc50ac05815d7099eac15e697e6094cf70df248286fe2",
           "relocation_count": 23,
-          "comparison_unit": "00595720-5f667976a7c7",
+          "comparison_unit": "00595720-d8a5ec802932",
           "objdiff_percent": 100.0
         }
       ],
@@ -155077,19 +155077,19 @@
       "symbol": "_ResetLights",
       "address": "0x00595840",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 51,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 51,
           "exact_match": true,
           "target_sha256": "99530740a7866aa70fc58b57d13f9110b9de14f9a2c2b8c3f898afa4898a28e1",
           "base_sha256": "99530740a7866aa70fc58b57d13f9110b9de14f9a2c2b8c3f898afa4898a28e1",
           "relocation_count": 2,
-          "comparison_unit": "00595840-adb7ff8fda6b",
+          "comparison_unit": "00595840-26d86682b229",
           "objdiff_percent": 100.0
         }
       ],
@@ -155101,19 +155101,19 @@
       "symbol": "_rtlGetEnvPath",
       "address": "0x00595880",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 6,
           "exact_match": true,
           "target_sha256": "2c47e93bdc4f324189709485feb3366ed2390560475cedf5f091e21a4328173b",
           "base_sha256": "2c47e93bdc4f324189709485feb3366ed2390560475cedf5f091e21a4328173b",
           "relocation_count": 1,
-          "comparison_unit": "00595880-523024eef242",
+          "comparison_unit": "00595880-81023479e759",
           "objdiff_percent": 100.0
         }
       ],
@@ -155125,19 +155125,19 @@
       "symbol": "_rtlGetEnvSceneName",
       "address": "0x00595890",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 11,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 11,
           "exact_match": true,
           "target_sha256": "197a5d5d898596eb2c531baa786c0746159d5dccfb477bfded694af392fe8644",
           "base_sha256": "197a5d5d898596eb2c531baa786c0746159d5dccfb477bfded694af392fe8644",
           "relocation_count": 1,
-          "comparison_unit": "00595890-93f54ac5283f",
+          "comparison_unit": "00595890-e980b9d5b655",
           "objdiff_percent": 100.0
         }
       ],
@@ -155149,19 +155149,19 @@
       "symbol": "_rtlGetEnvSet",
       "address": "0x005958a0",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 12,
           "exact_match": true,
           "target_sha256": "ea26d6cd0c1124141dd8e7aa8ad61119b93bba931b1c4feab0d6ca509320cc36",
           "base_sha256": "ea26d6cd0c1124141dd8e7aa8ad61119b93bba931b1c4feab0d6ca509320cc36",
           "relocation_count": 1,
-          "comparison_unit": "005958a0-c2f1baa28981",
+          "comparison_unit": "005958a0-53648192877e",
           "objdiff_percent": 100.0
         }
       ],
@@ -155173,19 +155173,19 @@
       "symbol": "_SetZeroLights",
       "address": "0x005958b0",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 96,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 96,
           "exact_match": true,
           "target_sha256": "506300f5d8cb3111f471a6655a939f996e5d8a34a47cbe87241b7921ba7e962c",
           "base_sha256": "506300f5d8cb3111f471a6655a939f996e5d8a34a47cbe87241b7921ba7e962c",
           "relocation_count": 11,
-          "comparison_unit": "005958b0-949c7e7c0030",
+          "comparison_unit": "005958b0-be31db7aaec7",
           "objdiff_percent": 100.0
         }
       ],
@@ -155197,19 +155197,19 @@
       "symbol": "_FindAndSetLights",
       "address": "0x00595910",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 92,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 92,
           "exact_match": true,
           "target_sha256": "426be503b4cdb5ac70f7f883e53632df6b4884cd99c2f5f67f1cb7b907a74b25",
           "base_sha256": "426be503b4cdb5ac70f7f883e53632df6b4884cd99c2f5f67f1cb7b907a74b25",
           "relocation_count": 5,
-          "comparison_unit": "00595910-9e419100d257",
+          "comparison_unit": "00595910-80c6a3232cea",
           "objdiff_percent": 100.0
         }
       ],
@@ -155221,19 +155221,19 @@
       "symbol": "_LoadLights",
       "address": "0x00595970",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 150,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 150,
           "exact_match": true,
           "target_sha256": "fbdd8fa2aaf32b27e038c15db4d0acb895e3206f4602af8e2daffd6263351263",
           "base_sha256": "fbdd8fa2aaf32b27e038c15db4d0acb895e3206f4602af8e2daffd6263351263",
           "relocation_count": 8,
-          "comparison_unit": "00595970-4b8798dac4e1",
+          "comparison_unit": "00595970-a96645d27fbf",
           "objdiff_percent": 100.0
         }
       ],
@@ -155245,19 +155245,19 @@
       "symbol": "_InitGameObjectLights",
       "address": "0x00595a10",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 124,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 124,
           "exact_match": true,
           "target_sha256": "b51657042ee9e67c6520eedf61931cc1dca10f61fdf93c2f46ebb814be06e8d0",
           "base_sha256": "b51657042ee9e67c6520eedf61931cc1dca10f61fdf93c2f46ebb814be06e8d0",
           "relocation_count": 7,
-          "comparison_unit": "00595a10-e9f128337ffc",
+          "comparison_unit": "00595a10-5d026f976600",
           "objdiff_percent": 100.0
         }
       ],
@@ -155269,19 +155269,19 @@
       "symbol": "_FreeGameObjectLights",
       "address": "0x00595a90",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 91,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 91,
           "exact_match": true,
           "target_sha256": "2e4801424d5c203f39e4d7f5356f6557928ecd2ed38087f7e75369bbc84eb869",
           "base_sha256": "2e4801424d5c203f39e4d7f5356f6557928ecd2ed38087f7e75369bbc84eb869",
           "relocation_count": 4,
-          "comparison_unit": "00595a90-5e02b50f1d2e",
+          "comparison_unit": "00595a90-1e969b79d142",
           "objdiff_percent": 100.0
         }
       ],
@@ -155293,19 +155293,19 @@
       "symbol": "_LightGameObject",
       "address": "0x00595af0",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 769,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 747,
           "exact_match": false,
           "target_sha256": "3f76874b31d5cf0d356167c060e213f1cf5aae04525841d593c02e7cfb368f18",
           "base_sha256": "26b480a74d38d72507891924bc2da9a1787ff25cd674ddb31954db2d0cb33e6c",
           "relocation_count": 26,
-          "comparison_unit": "00595af0-2de347e90bd3",
+          "comparison_unit": "00595af0-89767a4d27c7",
           "objdiff_percent": 89.004974
         }
       ],
@@ -155323,19 +155323,19 @@
       "symbol": "_SetCreatureLights",
       "address": "0x00595e00",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 1812,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 1812,
           "exact_match": true,
           "target_sha256": "76c6130258c77d9a40baed21c5556c354a31a224867a6c23436b914fbd05dab6",
           "base_sha256": "76c6130258c77d9a40baed21c5556c354a31a224867a6c23436b914fbd05dab6",
           "relocation_count": 60,
-          "comparison_unit": "00595e00-eec24dc14ffa",
+          "comparison_unit": "00595e00-7b00f8752244",
           "objdiff_percent": 100.0
         }
       ],
@@ -155371,19 +155371,19 @@
       "symbol": "_InitShadowLights",
       "address": "0x00596530",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 632,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 632,
           "exact_match": true,
           "target_sha256": "41cd9883aee45d3bb919971ea07e61278067ccf3e46f3e65c076f12928511373",
           "base_sha256": "41cd9883aee45d3bb919971ea07e61278067ccf3e46f3e65c076f12928511373",
           "relocation_count": 59,
-          "comparison_unit": "00596530-b3a6e174c9e0",
+          "comparison_unit": "00596530-cdbef600141b",
           "objdiff_percent": 100.0
         }
       ],
@@ -155395,19 +155395,19 @@
       "symbol": "_ShadowAveragePlayerBounds",
       "address": "0x005967b0",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 179,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 179,
           "exact_match": true,
           "target_sha256": "80750029e6c19328e024b6b392831746bb660b35273299a53dfcffd6a224dd0e",
           "base_sha256": "80750029e6c19328e024b6b392831746bb660b35273299a53dfcffd6a224dd0e",
           "relocation_count": 8,
-          "comparison_unit": "005967b0-7147cc145f84",
+          "comparison_unit": "005967b0-3e07022dfcba",
           "objdiff_percent": 100.0
         }
       ],
@@ -155419,19 +155419,19 @@
       "symbol": "_RenderShadowLights",
       "address": "0x00596870",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 172,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 172,
           "exact_match": true,
           "target_sha256": "30bec36eba9e264f1a2d7f61614ac9f09c7ed93f66ef7e375832a28fffe5c7e6",
           "base_sha256": "30bec36eba9e264f1a2d7f61614ac9f09c7ed93f66ef7e375832a28fffe5c7e6",
           "relocation_count": 18,
-          "comparison_unit": "00596870-1ecd590e746c",
+          "comparison_unit": "00596870-19e5c20435a1",
           "objdiff_percent": 100.0
         }
       ],
@@ -155443,19 +155443,19 @@
       "symbol": "_EnableShadowMapRendering",
       "address": "0x00596920",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 33,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 33,
           "exact_match": true,
           "target_sha256": "cdc2ce2becabc00efd5adfa495d368a52b9ba0a608fcc34c15339fffc2f4847e",
           "base_sha256": "cdc2ce2becabc00efd5adfa495d368a52b9ba0a608fcc34c15339fffc2f4847e",
           "relocation_count": 4,
-          "comparison_unit": "00596920-499eaa2eca3c",
+          "comparison_unit": "00596920-a0067238fe6e",
           "objdiff_percent": 100.0
         }
       ],
@@ -155467,19 +155467,19 @@
       "symbol": "_ResetShadowMapRendering",
       "address": "0x00596950",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 5,
           "exact_match": true,
           "target_sha256": "b7eec89fe824d07b9cf8fa620dbd7e403318aa3b449815f3f57b6744acd5cc0d",
           "base_sha256": "b7eec89fe824d07b9cf8fa620dbd7e403318aa3b449815f3f57b6744acd5cc0d",
           "relocation_count": 1,
-          "comparison_unit": "00596950-03b983b9b21d",
+          "comparison_unit": "00596950-3cf9d64b7478",
           "objdiff_percent": 100.0
         }
       ],
@@ -155491,19 +155491,19 @@
       "symbol": "_SetSpotLightMode",
       "address": "0x00596960",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 12,
           "exact_match": true,
           "target_sha256": "7ec9d4a008446c26ebe49b365b1e0fe9830c4a09cbdf9e28ce1a9a723d11026c",
           "base_sha256": "7ec9d4a008446c26ebe49b365b1e0fe9830c4a09cbdf9e28ce1a9a723d11026c",
           "relocation_count": 1,
-          "comparison_unit": "00596960-697812f15e33",
+          "comparison_unit": "00596960-e5ba114af2fa",
           "objdiff_percent": 100.0
         }
       ],
@@ -155515,19 +155515,19 @@
       "symbol": "_ResetShadowMapRenderingFn",
       "address": "0x00596970",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 5,
           "exact_match": true,
           "target_sha256": "12a541d195dda5907cc9a90a8f21d520618045da52768c095c87dd21c79ad699",
           "base_sha256": "12a541d195dda5907cc9a90a8f21d520618045da52768c095c87dd21c79ad699",
           "relocation_count": 1,
-          "comparison_unit": "00596970-6d66a6d885a0",
+          "comparison_unit": "00596970-dbc9cc66118b",
           "objdiff_percent": 100.0
         }
       ],
@@ -155539,19 +155539,19 @@
       "symbol": "_EnableShadowMapRenderingFn",
       "address": "0x00596980",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 31,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 31,
           "exact_match": true,
           "target_sha256": "9c3efaab6368b86989f4722deaa54d752ce3eeb65c5e3941cd1370b7e6cdf0b8",
           "base_sha256": "9c3efaab6368b86989f4722deaa54d752ce3eeb65c5e3941cd1370b7e6cdf0b8",
           "relocation_count": 4,
-          "comparison_unit": "00596980-835b2c73bac0",
+          "comparison_unit": "00596980-fcca9d66db66",
           "objdiff_percent": 100.0
         }
       ],
@@ -155563,19 +155563,19 @@
       "symbol": "_LightLerp",
       "address": "0x005969a0",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 29,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 29,
           "exact_match": true,
           "target_sha256": "3f35947d6262c019d8bc284fead0d0ba003b9071bfd3efd4fed791c63eddb118",
           "base_sha256": "3f35947d6262c019d8bc284fead0d0ba003b9071bfd3efd4fed791c63eddb118",
           "relocation_count": 0,
-          "comparison_unit": "005969a0-9d844b42d0e2",
+          "comparison_unit": "005969a0-08f1c2e3ddd0",
           "objdiff_percent": 100.0
         }
       ],
@@ -155587,19 +155587,19 @@
       "symbol": "_LightProcessCharacters",
       "address": "0x005969c0",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 106,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 106,
           "exact_match": true,
           "target_sha256": "b72883d3a6538d22188d0474c691b4c8caf42c37ab652ff9d5c7916d2ad09f4f",
           "base_sha256": "b72883d3a6538d22188d0474c691b4c8caf42c37ab652ff9d5c7916d2ad09f4f",
           "relocation_count": 6,
-          "comparison_unit": "005969c0-c6c58922679b",
+          "comparison_unit": "005969c0-a129f9a0397f",
           "objdiff_percent": 100.0
         }
       ],
@@ -155611,19 +155611,19 @@
       "symbol": "_SetShadowLight",
       "address": "0x00596a30",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 1656,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "base_size": 1656,
           "exact_match": true,
           "target_sha256": "e6c37e77ca78cdd0e1b3dfe6e097a4b39f7d74f1992e3433f9721d9fd77921f2",
           "base_sha256": "e6c37e77ca78cdd0e1b3dfe6e097a4b39f7d74f1992e3433f9721d9fd77921f2",
           "relocation_count": 70,
-          "comparison_unit": "00596a30-a938c3ea654b",
+          "comparison_unit": "00596a30-4590702d7dfa",
           "objdiff_percent": 100.0
         }
       ],
@@ -388353,7 +388353,7 @@
         "src/legoapi/hits.cpp",
         "src/legoapi/jumping.cpp",
         "src/legoapi/levels.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/menu.cpp",
         "src/legoapi/menu_video.cpp",
         "src/legoapi/menus.cpp",
@@ -388999,7 +388999,7 @@
           "base_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -390010,7 +390010,7 @@
         "src/legoapi/grapples.cpp",
         "src/legoapi/jumping.cpp",
         "src/legoapi/levels.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/menu.cpp",
         "src/legoapi/minicamcut.cpp",
         "src/legoapi/parts.c",
@@ -390378,7 +390378,7 @@
           "base_sha256": "d99e58435243d9fef9c88273b8d553b4fba4d0baf8009d29eae74fa99e0d9f57"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -391507,7 +391507,7 @@
         "src/legoapi/gizmoblowups.cpp",
         "src/legoapi/grapples.cpp",
         "src/legoapi/jumping.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/minikits.cpp",
         "src/legoapi/parts.c",
         "src/legoapi/players.cpp",
@@ -391642,7 +391642,7 @@
           "base_sha256": "3a90d026a393f9d932af641537d402879f87b4647350c0df27eaa649927a6227"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -391939,7 +391939,7 @@
         "src/legoapi/gizspinner.cpp",
         "src/legoapi/grapples.cpp",
         "src/legoapi/jumping.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/menu_pause.cpp",
         "src/legoapi/parts.c",
         "src/legoapi/players.cpp",
@@ -392142,7 +392142,7 @@
           "base_sha256": "fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -393304,7 +393304,7 @@
         "src/legoapi/hits.cpp",
         "src/legoapi/jumping.cpp",
         "src/legoapi/levels.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/menu.cpp",
         "src/legoapi/menu_pause.cpp",
         "src/legoapi/menu_video.cpp",
@@ -394088,7 +394088,7 @@
           "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -395811,7 +395811,7 @@
         "src/legoapi/gizmopickups.cpp",
         "src/legoapi/grapples.cpp",
         "src/legoapi/jumping.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/movies.cpp",
         "src/legoapi/parts.c",
         "src/legogame/attracto.cpp",
@@ -395962,7 +395962,7 @@
           "base_sha256": "f27f321d41d1f66907d86235348f63886a5307036a6dba8a620dae20e3eb2c2c"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -396401,7 +396401,7 @@
         "src/legoapi/gizmopickups.cpp",
         "src/legoapi/gizspinner.cpp",
         "src/legoapi/grapples.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/menu.cpp",
         "src/legoapi/minicamcut.cpp",
         "src/legoapi/minikits.cpp",
@@ -396529,7 +396529,7 @@
           "base_sha256": "ec1efe6bc7914122bb829981cdea4ee350e838cb7097de066da2f67d622e757a"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -396929,7 +396929,7 @@
         "src/legoapi/gizturret.cpp",
         "src/legoapi/grapples.cpp",
         "src/legoapi/jumping.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/menu.cpp",
         "src/legoapi/minicamcut.cpp",
         "src/legoapi/missions.cpp",
@@ -397427,7 +397427,7 @@
           "base_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -398674,7 +398674,7 @@
         "src/legoapi/gizmopickups.cpp",
         "src/legoapi/gizspinner.cpp",
         "src/legoapi/grapples.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/menu.cpp",
         "src/legoapi/minikits.cpp",
         "src/legoapi/parts.c",
@@ -398786,7 +398786,7 @@
           "base_sha256": "962b9b484dbe0e4b254d53508edb68b1a3561d3d71ccaa9e9a84070897a6e1f4"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -399400,7 +399400,7 @@
         "src/legoapi/grapples.cpp",
         "src/legoapi/guidelines.cpp",
         "src/legoapi/levels.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/menu.cpp",
         "src/legoapi/plugs.cpp",
         "src/legoapi/pushblocks.cpp",
@@ -399580,7 +399580,7 @@
           "base_sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 1,
           "base_size": 1,
@@ -400057,7 +400057,7 @@
         "src/legoapi/gizturret.cpp",
         "src/legoapi/grapples.cpp",
         "src/legoapi/hint.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/menu.cpp",
         "src/legoapi/minicamcut.cpp",
         "src/legoapi/parts.c",
@@ -400542,7 +400542,7 @@
           "base_sha256": "4cfa5b42ca669328764e67cd9a34bb8f90b16ed7ca8d85e8443783d7ccce15ed"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -401186,7 +401186,7 @@
         "src/legoapi/gizbuildit.cpp",
         "src/legoapi/gizmopickups.cpp",
         "src/legoapi/jumping.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/timing.cpp",
         "src/legogame/attracto.cpp",
         "src/legogame/chris.cpp",
@@ -401325,7 +401325,7 @@
           "base_sha256": "5d96a77c55b4ac1eea2d77815396c4349292b85e3b07beaca6aff933e7ef8752"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -402015,7 +402015,7 @@
         "src/legoapi/control_setup.cpp",
         "src/legoapi/debris_callbacks.c",
         "src/legoapi/gizspinner.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/pushing.cpp",
         "src/legoapi/tagging.cpp",
         "src/legoapi/text.cpp",
@@ -402079,7 +402079,7 @@
           "base_sha256": "249efb90916da9c4846d66ee60b3a759ebd1510e7780f5d4a3a877fbb59c67af"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -403680,7 +403680,7 @@
         "src/legoapi/gizmopickups.cpp",
         "src/legoapi/gizobstacle.cpp",
         "src/legoapi/gizspinner.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/parts.c",
         "src/legoapi/pushblocks.cpp",
         "src/legoapi/pushing.cpp",
@@ -403831,7 +403831,7 @@
           "base_sha256": "75e253f50979177eba47b2d0805ad36038789108924514d2a761a70de057d16f"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -404951,7 +404951,7 @@
         "src/legoapi/gizspecial.cpp",
         "src/legoapi/gizspinner.cpp",
         "src/legoapi/gizturret.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/parts.c",
         "src/legoapi/pushing.cpp",
         "src/legoapi/shadow_light_setup.cpp",
@@ -405150,7 +405150,7 @@
           "base_sha256": "c68830a25204a09f8e77aada6bc5807f607cccaaa0ebb2a7122d317584478a8b"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -407177,7 +407177,7 @@
         "src/gameapi/rtl.c",
         "src/legoapi/batarang.cpp",
         "src/legoapi/control_setup.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/nu2api/nu3d_includes.cpp"
       ],
       "target_size": 4,
@@ -407216,7 +407216,7 @@
           "base_sha256": "140efb356462f70dd1c7f1dfb10bcc07d0f14d439043fb9e9d50f4d7be71ea96"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -407252,7 +407252,7 @@
         "src/legoapi/debris_callbacks.c",
         "src/legoapi/gamepads.cpp",
         "src/legoapi/levels.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/particles.cpp",
         "src/legoapi/render.cpp",
         "src/legoapi/simpletons.cpp",
@@ -407392,7 +407392,7 @@
           "base_sha256": "3f710ac088db33363087de2b9a657541fe5447821debaa9fe5cbd538eb1a5f29"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -408052,7 +408052,7 @@
         "src/legoapi/gizturret.cpp",
         "src/legoapi/grapples.cpp",
         "src/legoapi/jumping.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/minikits.cpp",
         "src/legoapi/parts.c",
         "src/legoapi/pushblocks.cpp",
@@ -408275,7 +408275,7 @@
           "base_sha256": "d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -410402,7 +410402,7 @@
       "address": "0x0075194c",
       "units": [
         "src/gameapi/aisysall.c",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/parts.c",
         "src/legoapi/text.cpp",
         "src/legogame/cable.cpp",
@@ -410422,7 +410422,7 @@
           "base_sha256": "fb7614b89815f3ebaaba34a1cbd1fe490c839c39571d6a45e3a3cff5fcb1383c"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -411343,7 +411343,7 @@
         "src/legoapi/gizmopickups.cpp",
         "src/legoapi/grapples.cpp",
         "src/legoapi/hint.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/screen.cpp",
         "src/legoapi/status_alternate.cpp",
         "src/legoapi/streaks.cpp",
@@ -411421,7 +411421,7 @@
           "base_sha256": "161f4c0b1a18a0501127332c387e782b5acc10c6c7a9f7e494c1e3394c49bad5"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -413694,7 +413694,7 @@
       "units": [
         "src/legoapi/collection.cpp",
         "src/legoapi/grapples.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legogame/camera.cpp",
         "src/legogame/creature.cpp",
         "src/legogame/hub.cpp",
@@ -413720,7 +413720,7 @@
           "base_sha256": "1502365300f1202e2bdd1ffb71c54209ad6a45bdf2ad5ced73317428e50d37a4"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -413841,7 +413841,7 @@
         "src/legoapi/gizmoblowups.cpp",
         "src/legoapi/grapples.cpp",
         "src/legoapi/jumping.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/status_alternate.cpp",
         "src/legoapi/text.cpp",
         "src/legogame/camera.cpp",
@@ -413908,7 +413908,7 @@
           "base_sha256": "e163f8cb0f7067a7fc78ca859a77f849aea3214f38fb75b884e4a16be725c905"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -415581,7 +415581,7 @@
         "src/legoapi/gcutscn_locators.c",
         "src/legoapi/gizbuildit.cpp",
         "src/legoapi/gizmoblowups.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/parts.c",
         "src/legoapi/rtlhelper.cpp",
         "src/legoapi/screen.cpp",
@@ -415716,7 +415716,7 @@
           "base_sha256": "24b1f4ef66b650ff816e519b01742ff1753733d36e1b4c3e3b52743168915b1f"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -416532,7 +416532,7 @@
       "units": [
         "src/gameapi/aisysall.c",
         "src/legoapi/edgizshadow.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/text.cpp",
         "src/legogame/chris.cpp",
         "src/legogame/game_obj.cpp",
@@ -416561,7 +416561,7 @@
           "base_sha256": "e4767380eb5e2fc046bce28b8b2a30c81c733be1a56203cd9499066086617f6c"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -418318,14 +418318,14 @@
       "symbol": "__real@43960000",
       "address": "0x00751d98",
       "units": [
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legogame/chris.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -426183,7 +426183,7 @@
       "units": [
         "src/gameapi/apiobject.c",
         "src/legoapi/climbing.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/pushing.cpp",
         "src/legogame/creature.cpp",
         "src/legogame/game.cpp",
@@ -426213,7 +426213,7 @@
           "base_sha256": "c34fde18c1b8ec18aa9dd952cdbbcce00cf0505358e6cfcce5a6fe795e1d019b"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -429498,7 +429498,7 @@
         "src/legoapi/gizobstacle.cpp",
         "src/legoapi/gizturret.cpp",
         "src/legoapi/jumping.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/pushing.cpp",
         "src/legoapi/status_alternate.cpp",
         "src/legogame/episodeIV.cpp",
@@ -429601,7 +429601,7 @@
           "base_sha256": "e0fb2d87992a9fc79e7729163ad2aea5efbf14806711292c8c46e873bac1a253"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -429915,7 +429915,7 @@
       "address": "0x007532d0",
       "units": [
         "src/legoapi/control_setup.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legogame/gamehint.cpp",
         "src/legogame/shop.cpp"
       ],
@@ -429931,7 +429931,7 @@
           "base_sha256": "55bcbd6097be4e6dbb2e3a87d63d96cb17ed13c4483b7f9a79c7cb115111b3ce"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -444039,7 +444039,7 @@
       "address": "0x00755120",
       "units": [
         "src/legoapi/credits.cpp",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/status_alternate.cpp",
         "src/legoapi/text.cpp",
         "src/legogame/game.cpp",
@@ -444062,7 +444062,7 @@
           "base_sha256": "42cbbe7ad6950d50bb1d8381d7e2d7f9e49ac53d0134e46b5852e49d0cdc66b7"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -445472,7 +445472,7 @@
       "symbol": "__real@40600000",
       "address": "0x00755304",
       "units": [
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/simpletons.cpp",
         "src/legogame/game.cpp",
         "src/legogame/zipup.cpp"
@@ -445481,7 +445481,7 @@
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -449243,7 +449243,7 @@
       "symbol": "__real@4004000000000000",
       "address": "0x00755b18",
       "units": [
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/screen.cpp",
         "src/legogame/episodeII.cpp",
         "src/legogame/game_obj.cpp",
@@ -449257,7 +449257,7 @@
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -472544,7 +472544,7 @@
       "units": [
         "src/editor/edlevelall.cpp",
         "src/gameapi/edbits.c",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legogame/gizforce.cpp",
         "src/legogame/gizpanel.cpp",
         "src/legogame/move.cpp"
@@ -472569,7 +472569,7 @@
           "base_sha256": "b73a5d6d967e6e7ccf276c8caf481a8dda88438e06fdd6ce1164dd63b1276791"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -500136,7 +500136,7 @@
       "symbol": "__real@3f59999a",
       "address": "0x0075c0a8",
       "units": [
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/menu.cpp",
         "src/legoapi/screen.cpp",
         "src/legogame/panel.cpp",
@@ -500147,7 +500147,7 @@
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -528004,7 +528004,7 @@
       "units": [
         "lib/ogg-vorbis/vorbis/psy.c",
         "src/gameapi/aisysall.c",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/screen.cpp"
       ],
       "target_size": 4,
@@ -528027,7 +528027,7 @@
           "base_sha256": "0f2f3591427956b004ca17393783192e0f81858c06bb5496aa2cea004f1ee863"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -535591,7 +535591,7 @@
       "units": [
         "src/gameapi/rtl.c",
         "src/legoapi/debris_engine.c",
-        "src/legoapi/lighting_unit.cpp",
+        "src/legoapi/lighting.cpp",
         "src/legoapi/text.cpp",
         "src/nu2api/PCInput.cpp",
         "src/nu2api/nu3d_platform.cpp"
@@ -535616,7 +535616,7 @@
           "base_sha256": "ad286c64373644140ff927b256b8415467b5d27645ff997010b15519d022631b"
         },
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -549624,13 +549624,13 @@
       "symbol": "??_C@_06NCENFGPH@?$CFs?4bur?$AA@",
       "address": "0x00763934",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -549645,13 +549645,13 @@
       "symbol": "??_C@_06FHNHFEIA@?$CFs?4rtl?$AA@",
       "address": "0x0076393c",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -549687,13 +549687,13 @@
       "symbol": "__real@3feccccd",
       "address": "0x00763950",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -549708,13 +549708,13 @@
       "symbol": "__real@c2700000",
       "address": "0x00763954",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -784545,13 +784545,13 @@
       "symbol": "_Lighting_RedFlashRed",
       "address": "0x0080508c",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -784566,13 +784566,13 @@
       "symbol": "_Lighting_BlueFlickerGreen",
       "address": "0x00805090",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -784587,13 +784587,13 @@
       "symbol": "_Lighting_BlueFlickerBlue",
       "address": "0x00805094",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -784629,13 +784629,13 @@
       "symbol": "_ShadowLightSplitScale",
       "address": "0x00805100",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -784650,13 +784650,13 @@
       "symbol": "_ShadowLightWarp",
       "address": "0x00805104",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -784671,13 +784671,13 @@
       "symbol": "_ShadowLightUp",
       "address": "0x00805108",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -784692,13 +784692,13 @@
       "symbol": "_ShadowLightNearOffset",
       "address": "0x00805114",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -784713,13 +784713,13 @@
       "symbol": "_ShadowLightBlendPower",
       "address": "0x00805118",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -784734,13 +784734,13 @@
       "symbol": "_ShadowLightFallbackHeight",
       "address": "0x0080511c",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -784755,13 +784755,13 @@
       "symbol": "_ShadowLightEyeDistance",
       "address": "0x00805120",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -784776,13 +784776,13 @@
       "symbol": "_ShadowLightFocusHeight",
       "address": "0x00805124",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -858332,13 +858332,13 @@
       "symbol": "_LevelLightingData",
       "address": "0x009559f8",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 324,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 324,
           "base_size": 324,
@@ -858353,13 +858353,13 @@
       "symbol": "_Lighting_FlashRedOnLastHeart",
       "address": "0x00955b3c",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -858374,13 +858374,13 @@
       "symbol": "_Lighting_HighlightFlash",
       "address": "0x00955b40",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -858395,13 +858395,13 @@
       "symbol": "_Lighting_RedFlashGreen",
       "address": "0x00955b44",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -858416,13 +858416,13 @@
       "symbol": "_Lighting_RedFlashBlue",
       "address": "0x00955b48",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -858437,13 +858437,13 @@
       "symbol": "_Lighting_BlueFlickerRed",
       "address": "0x00955b4c",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -858458,13 +858458,13 @@
       "symbol": "_Lighting_BlueFlickerFn",
       "address": "0x00955b50",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -858500,13 +858500,13 @@
       "symbol": "_PCShadowCurrentLight",
       "address": "0x00955b58",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -858521,13 +858521,13 @@
       "symbol": "_PCShadowSecondaryLight",
       "address": "0x00955b5c",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -858542,13 +858542,13 @@
       "symbol": "_ShadowLightSplitCount",
       "address": "0x00955b60",
       "units": [
-        "src/legoapi/lighting_unit.cpp"
+        "src/legoapi/lighting.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/lighting_unit.cpp",
+          "unit": "src/legoapi/lighting.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -872673,22 +872673,11 @@
       "name": "EdMainCurrentCamera",
       "symbol": "_EdMainCurrentCamera",
       "address": "0x02912e98",
-      "units": [
-        "src/legoapi/lighting_unit.cpp"
-      ],
+      "units": [],
       "target_size": 4,
-      "exact_match": true,
-      "objects": [
-        {
-          "unit": "src/legoapi/lighting_unit.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
-          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
-        }
-      ],
-      "status": "exact"
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "ed_loc",
@@ -900066,7 +900055,7 @@
       "kind": "data"
     },
     {
-      "unit": "src/legoapi/lighting_unit.cpp",
+      "unit": "src/legoapi/lighting.cpp",
       "symbol": "_EnableShadowLight",
       "kind": "function"
     },
@@ -900470,17 +900459,17 @@
     "reproduced_file_backed_data_total_bytes": 1040393,
     "reproduced_file_backed_data_gap_bytes": 24165,
     "reproduced_file_backed_data_percent": 95.2032549238605,
-    "reproduced_zero_fill_data_exact_bytes": 34178961,
+    "reproduced_zero_fill_data_exact_bytes": 34178957,
     "reproduced_zero_fill_data_library_bytes": 2775,
     "reproduced_zero_fill_data_different_padding_bytes": 4,
     "reproduced_zero_fill_data_different_bytes": 0,
-    "reproduced_zero_fill_data_undefined_bytes": 0,
+    "reproduced_zero_fill_data_undefined_bytes": 4,
     "reproduced_zero_fill_data_padding_bytes": 0,
     "reproduced_zero_fill_data_unidentified_bytes": 772668,
-    "reproduced_zero_fill_data_bytes": 34181736,
+    "reproduced_zero_fill_data_bytes": 34181732,
     "reproduced_zero_fill_data_total_bytes": 34954408,
     "reproduced_zero_fill_data_gap_bytes": 0,
-    "reproduced_zero_fill_data_percent": 97.78948623589906,
+    "reproduced_zero_fill_data_percent": 97.78947479242103,
     "reproduced_classes": {
       "exact": "defined by our objects and byte-exact (tools/datadiff.py class =)",
       "library": "provided by a pinned archive member whose section is proven byte-exact in place",
@@ -900495,7 +900484,7 @@
       "exact_in_report_different_in_datadiff": 0,
       "different_in_report_exact_in_datadiff": 0
     },
-    "matched_data_region_bytes": 34722018
+    "matched_data_region_bytes": 34722014
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
@@ -901796,7 +901785,7 @@
       "metadata_sha256": "525d436eee3d48951222f1fd54574554983d228c3d06f19a545ba7cab50fe057",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "80aafdd2d36b0c3e253c930dd6604cf1efafa42e715f3dee9ffb26b3bc3a8e07",
+      "geometry_object_sha256": "0b12121d6df24a9a10ebebbcc680845743c3f1913b74c1164ce8e180ce01e99d",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
