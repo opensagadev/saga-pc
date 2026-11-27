@@ -42687,17 +42687,17 @@ address,symbol,size,ctype
 0x029130c4,_FileSelFilterOutBlockCount,4,i32
 0x29130c8,_near_clip_at_cursor,4,i32
 0x29130cc,_EduiSliderDynamicScale,4,f32
-0x29130d0,?offsety@?1??cbInteractMenuTitle@@9@9,4,
-0x29130d4,?offsetx@?1??cbInteractMenuTitle@@9@9,4,
+0x29130d0,?offsety@?1??cbInteractMenuTitle@@9@4MA,4,
+0x29130d4,?offsetx@?1??cbInteractMenuTitle@@9@4MA,4,
 0x29130d8,_EduiColourSliderDynamicScale,4,f32; minimum4B view Native extent unknown
-0x29130dc,?TargetAng@?1??do_maya_mouse_camera@@9@9,4,
-0x29130e0,?RawTargetAng@?1??do_maya_mouse_camera@@9@9,4,EdcamMayaAngleObserved
-0x29130e4,?PadRepeat@?1??FS_GetPadWithRepeat@@9@9,4,
-0x29130e8,?LastPad@?1??FS_GetPadWithRepeat@@9@9,4,
-0x29130ec,?tpent@?1??eduiAddTextPickEntEx@@9@9,4,
-0x29130f0,?gpcfg@?1??eduicbProcessGradPick@@9@9,4,eduimenu_s *
-0x29130f4,?down_rept@?1??eduiMenuProcessInput@@9@9,4,
-0x29130f8,?up_rept@?1??eduiMenuProcessInput@@9@9,4,
+0x29130dc,?TargetAng@?1??do_maya_mouse_camera@@9@4TEdcamMayaAngleObserved@@A,4,
+0x29130e0,?RawTargetAng@?1??do_maya_mouse_camera@@9@4TEdcamMayaAngleObserved@@A,4,EdcamMayaAngleObserved
+0x29130e4,?PadRepeat@?1??FS_GetPadWithRepeat@@9@4MA,4,
+0x29130e8,?LastPad@?1??FS_GetPadWithRepeat@@9@4HA,4,
+0x29130ec,?tpent@?1??eduiAddTextPickEntEx@@9@4PAUeduimenu_s@@A,4,
+0x29130f0,?gpcfg@?1??eduicbProcessGradPick@@9@4PAUeduimenu_s@@A,4,eduimenu_s *
+0x29130f4,?down_rept@?1??eduiMenuProcessInput@@9@4MA,4,
+0x29130f8,?up_rept@?1??eduiMenuProcessInput@@9@4MA,4,
 0x029130fc,_EduiColourPickerInitialized,4,"i32; minimum4Bworkingview Nativeextentunknown"
 0x02913104,_apicharsys,4,APICHARSYS *
 0x2913108,_append,4,i32

@@ -392,3 +392,5 @@ config/castscan-budget.json void-pointer-cpp 1250 nucore_pc_includes is a C++ un
 config/declscan-budget.json C 375 gamemenuall is one retail unity now and keeps the local declarations its apisave, menu and text parts had for functions other units define (docs/declarations.md: classes C and D wait for the layout move to finish)
 config/declscan-budget.json C 431 socksysall is one retail unity now: its camera tuning data and helpers are defined after their first use in address order, so the unit keeps forward declarations of them
 config/declscan-budget.json D 32 socksysall gathers saveload and socksys; one local declaration of a function another unit defines moves with them
+config/castscan-budget.json const 886 edtoolsall is a C++ unity (retail edui.cpp): the C edfile.c code it gathers passes string literals and const buffers where C took them implicitly
+config/castscan-budget.json void-pointer-cpp 1283 edtoolsall is a C++ unity (retail edui.cpp): the C edfile.c code it gathers needs explicit casts on NuAlloc and void * results

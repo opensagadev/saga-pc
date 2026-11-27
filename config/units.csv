@@ -207,7 +207,7 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x617270,0x6179bc,src/gamelib/net/?0x617270,,gamelib,code+android,none,,42,1530,1421,1313,74,0,gamelib/net/Ftp.cpp:1421
 0x6179c0,0x617a52,src/gamelib/net/?0x6179c0,,gamelib,android,none,,3,133,133,133,0,0,gamelib/util/Utilities.cpp:133
 0x617a60,0x617c0a,src/gamelib/net/?0x617a60,,gamelib,android,none,,1,426,426,426,0,0,nu2api/unref.cpp:426
-0x617c10,0x62a5d9,src/gameapi/edtoolsall.cpp,edmain.cpp edui.cpp edfile.c edui.cpp fileselect.c ? edui.cpp,gameapi,file+marker+review,high,ret fabs 22 11 28,402,73159,73015,37160,3179,2179,gameapi/edfile.c:40022 gameapi/edui_widget_render.cpp:27593 nu2api/keyboard_read.c:4443 gameapi/edtools_outline.cpp:872 editor/edtoolsall.c:85
+0x617c10,0x62a5d9,src/gameapi/edtoolsall.cpp,edmain.cpp edui.cpp edfile.c edui.cpp fileselect.c ? edui.cpp,gameapi,file+marker+review,high,ret fabs 22 11 28,402,73159,73015,37160,3218,0,gameapi/edtoolsall.cpp:73015
 0x62a5e0,0x630d5c,src/gameapi/apiobject.c,,gameapi,marker+review,high,ret ret fabs 54 11,84,25843,25832,14380,379,0,gameapi/apiobject.c:25830 nu2api/nudebug.c:2
 0x630d60,0x6310b6,src/nu2api/nufmv/nufmv_gen.cpp,,nu2api,review,low,,8,787,787,175,75,0,nu2api/nufmv/nufmv_gen.cpp:786 nu2api/pc_fmv_leaves.cpp:1
 0x6310c0,0x6312c8,src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp,,nu2api,marker+review,high,ret 28,12,426,391,391,0,0,nu2api/nufmv/pc/Bink/dsplay_bink.cpp:391

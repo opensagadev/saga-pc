@@ -222,7 +222,7 @@
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edui_widget_render.cpp",
+   "unit": "src/gameapi/edtoolsall.cpp",
    "symbol": "?EduiFabs@@YAMM@Z",
    "kind": "function"
   },
