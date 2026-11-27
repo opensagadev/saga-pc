@@ -5,11 +5,33 @@
 #include "nu2api/nucore/nupad.h"
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/nufile/nufile.h"
-#include "pc_fmv_native.h"
+#include "nu2api/pc_fmv_native.h"
 #include <stdarg.h>
 #include <string.h>
+#include "legoapi/items/base/apiobject.h"
+#include "nu2api/nu3d/nuqfnt.h"
+#include "nu2api/nu3d/nurndr.h"
+#include "nu2api/nucore/nutime.h"
+
 typedef i32 (*FMV_INPUT_CALLBACK)(void);
 typedef void (*FMV_DRAW_CALLBACK)(void);
+extern "C" i32 dat_0080fbf0;
+
+extern "C" void FmvDrawOverlay(void) {
+    if (FmvDrawCallback != NULL && NuRndrBeginScene(1)) {
+        NuFntSet(0);
+        FmvDrawCallback();
+        NuRndrEndScene();
+    }
+}
+
+extern "C" i32 fun_00630da0(void) {
+    return 0;
+}
+
+extern "C" i32 fun_00630db0(void) {
+    return 1;
+}
 
 /* Polls the movie's input callback: 1 stops the movie, 2 skips to the next one. */
 static i32 FmvPollCallback(FMV_INPUT_CALLBACK callback) {
@@ -23,6 +45,16 @@ static i32 FmvPollCallback(FMV_INPUT_CALLBACK callback) {
         }
     }
     return 0;
+}
+
+extern "C" {
+    i32 dat_0080fbf0 = 1;
+}
+
+extern "C" void fun_00630de0(void) {
+    if (dat_0080fbf0 != 0) {
+        dat_0080fbf0 = 0;
+    }
 }
 
 extern "C" i32 NuFmvPlayV(i32 option, ...) {
