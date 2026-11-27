@@ -40,10 +40,6 @@
 extern "C" void GamepadsNuError(void) {
 }
 
-/* Empty hook; NuMainRenderWorld calls it after SetDepthOfField. */
-void NuMainRenderLeaf(void) {
-}
-
 u32 GAMEPAD_SKIP = PAD_BUTTON_TRIANGLE | PAD_BUTTON_CROSS | PAD_BUTTON_START;
 
 extern "C" void fun_00401810(void) {

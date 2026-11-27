@@ -18,15 +18,15 @@
 #include "editor/aieditor_state.h"
 #include "nu2api/nucore/nustring.h"
 
+extern "C" {
+    i32 CHARACTERBUFFERSIZE = 0x02800000;
+}
+
 extern "C" void PcbatmanNuError(void) {
 }
 
 extern "C" {
     i32 SUPERBUFFERSIZE = 0x09600000;
-    i32 CHARACTERBUFFERSIZE = 0x02800000;
-}
-
-extern "C" {
     VARIPTR original_permbuffer_base = {0};
 }
 
@@ -180,6 +180,10 @@ extern "C" i32 Text_ExpandButtonString(char *command, char *output) {
         return 1;
     }
     return 0;
+}
+
+/* Empty hook; NuMainRenderWorld calls it after SetDepthOfField. */
+void NuMainRenderLeaf(void) {
 }
 
 u32 GAMEPAD_TAG = PAD_BUTTON_TRIANGLE;
