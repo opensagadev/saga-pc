@@ -729,7 +729,7 @@
     "src/legoapi/utilities.cpp": "f1bff0ed4206fd2dd4a83533a6682e794ed8e8888980c6b91bc39b83b9aa3e5f",
     "src/legoapi/whip.cpp": "90b22bf52a3a39557ae22d9316dab7ac1c7fe72eafa1a27968d9fc512dbb1cef",
     "src/legoapi/worldinfo.cpp": "e757531b6bfa8f307b7cf455ca9001998f9db5b18677bce8346a90b9dcf93c76",
-    "src/legogame/aitrigger.cpp": "13a3fc8c3f1372c0261e2492056fbcbeb47f426d3dbf8cf953eb7eb269bdabc7",
+    "src/legogame/aitrigger.cpp": "5aaf866e0d1c95c6c05e461e897f0dee49a11fac4aeff6cffca8202d91be18df",
     "src/legogame/attracto.cpp": "5f28023a91941ba2b8e3c40c67d5aa9d0ee97d0ae5a55923ad6b02b6e603db4e",
     "src/legogame/batarang.cpp": "189ceb22f0302ceb5cc40cda6a38427ca84527a5db85d1a69681f2c508e62995",
     "src/legogame/batman_gameai.cpp": "73cc6490be52986a77588906f5320af75e549482a456a6200f25595828aef401",
@@ -903,7 +903,7 @@
     "src/nu2api/keyboard_read.c": "a5d044e413ee15476d9eea209890b0ad86d2f9f5c9af7def7981936ebfd0b177",
     "src/nu2api/listman.c": "09c49898e01f4834f9acb507e9a1399430d63826dfa63bbd826816031fdf663a",
     "src/nu2api/nualloc.c": "0ded85a012fb23f549d4d561ec1aa13f218f3456c2b8354ee484ce0d0a65af96",
-    "src/nu2api/nuapi.c": "de0c2e4db48ca8536c35f2a62f46278b73ca2a07411e7d4071b497b7eacd3bc7",
+    "src/nu2api/nuapi.c": "c98e95d8f6ca49ea13b4ed30bbc200a52a537266210e2d34f571eae47e61ad2d",
     "src/nu2api/nubridge.c": "9c1d5590cb4cef5cba96714fca660ca768cc6fb7b07dbbcea4166aac43db44ce",
     "src/nu2api/nucore_includes.c": "f52dd4f0e46fe32647fc3717aa59809b82fc39aa78ef7ed979533b405f45510d",
     "src/nu2api/nudebug.c": "d1d0743b3393f1057d28414f8816b73254d627d8f8869167a7b3d314d677addf",
@@ -1172,7 +1172,7 @@
     "build/obj/legoapi/utilities.obj": "d593ca4cc9f9628f9ef3e57996df30a82808336e1ba999dee655627b5dc65e43",
     "build/obj/legoapi/whip.obj": "adbcc6b26a633cd2c1c965534829c2fdf157ed2c77bbb3d6964a82c11acc1abe",
     "build/obj/legoapi/worldinfo.obj": "0d1271a3f43abfc40ea7ff614984eccf1ed99f577f02fc38b68f392f13aba130",
-    "build/obj/legogame/aitrigger.obj": "1fbd2fc88d8eae55c442eeb5efb7174e9cc894ad5addd66aafba6d5292ad427c",
+    "build/obj/legogame/aitrigger.obj": "84ee8b62d6e611bf3752ede29ffb48a149f91d00ee828158f1270cc6af3b961b",
     "build/obj/legogame/attracto.obj": "d5c956ee50f897330c1686ec377bbfa8a2afd981d782e2c9805964c20dc79b46",
     "build/obj/legogame/batarang.obj": "0b544801521c55acf73388aa86f03aff91e44c17f6b7405a44f59e2f62f94f79",
     "build/obj/legogame/batman_gameai.obj": "ba8af547fbc0e222a231f391d95814c959c784cc2e6552057c129e1a7dffd6c8",
@@ -1257,7 +1257,7 @@
     "build/obj/nu2api/nu3d_includes.obj": "14e9c4b8f8049f63fe0ce6d4025dcf28723d334ec723ce2e2134631f902824b3",
     "build/obj/nu2api/nu3d_platform.obj": "c222113ae8159c08e534e5c9d899f5218d47eb7b8cd5f7c53a3d691776dac5d7",
     "build/obj/nu2api/nualloc.obj": "c77fe4df2b08c9ed348752bce67524bddc12abfb5cdac9570694f581f3c17a2d",
-    "build/obj/nu2api/nuapi.obj": "3968ef80ba70c6b11edccbf9eb96d7c19e8b4b93e81f59c68c3ab00a350eef72",
+    "build/obj/nu2api/nuapi.obj": "25d0b737c7ef8c3b9333498870469ecffc1dd7e2cdca5280dd6cb48e19a87304",
     "build/obj/nu2api/nubridge.obj": "9e3a3c2e4776d764f2d747808da1ce1950e9d97ea27c8812129e237b84336e21",
     "build/obj/nu2api/nucamera.obj": "9767603d9883cf36b9acbf384fc0ea664609dfcd02b2eec92e0d070a09cd4685",
     "build/obj/nu2api/nucore_includes.obj": "545be6a0e2e50e6f82b0594bbf634abd700f4af606c0b4a208090c8bc9863d72",
@@ -1865,19 +1865,19 @@
       "symbol": "_NuMainTrailerLeaf",
       "address": "0x00401870",
       "units": [
-        "src/nu2api/nuapi.c"
+        "src/legogame/aitrigger.cpp"
       ],
       "target_size": 1,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nuapi.c",
+          "unit": "src/legogame/aitrigger.cpp",
           "base_size": 1,
           "exact_match": true,
           "target_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
           "base_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
           "relocation_count": 0,
-          "comparison_unit": "00401870-488aa8986a64",
+          "comparison_unit": "00401870-d4fd293a8875",
           "objdiff_percent": 100.0
         }
       ],
@@ -901712,7 +901712,7 @@
       "metadata_sha256": "525d436eee3d48951222f1fd54574554983d228c3d06f19a545ba7cab50fe057",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "7716686267d822c54750bcb50691c3998216232cd1c7f41d6aeb6d8f73743faa",
+      "geometry_object_sha256": "9bbf07e77ad2e6114fc0413748d5d513a9f786a796c51b7b4ca0f259c0a57b3d",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {

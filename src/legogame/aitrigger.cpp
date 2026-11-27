@@ -30,6 +30,12 @@
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
 
+extern "C" {
+
+    void NuMainTrailerLeaf(void) {
+    }
+}
+
 void AITriggerSetSysReset(AITRIGGERSETSYS_s *system) {
     i32 index;
     if (system == NULL) {

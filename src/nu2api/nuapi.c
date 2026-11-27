@@ -20,6 +20,3 @@ void MenuSetPlatformState(i32 state) {
 /* Empty; its presentation caller consumes no return value. */
 void PCPresentationPlatformLeaf(void) {
 }
-
-void NuMainTrailerLeaf(void) {
-}
