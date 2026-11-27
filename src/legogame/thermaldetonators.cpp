@@ -45,8 +45,6 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
-/* Retail unit 0x4cf660-0x4d0646: definitions in retail address order. */
-
 static i32 TightRopes_Load(void *world_info, void *unused1) {
     i32 version;
     i32 i;

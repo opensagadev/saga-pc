@@ -60,8 +60,6 @@
 #include "nu2api/numusic/sfx.h"
 #include <stdio.h>
 
-/* Retail unit 0x4e9f30-0x4eead7: definitions in retail address order. */
-
 typedef struct SARLACC_DISCO {      // size 0x400
     AIAREA *area;                   // 0x000
     nuhspecial_s off[16];           // 0x004
