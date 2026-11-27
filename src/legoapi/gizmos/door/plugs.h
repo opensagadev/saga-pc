@@ -29,7 +29,7 @@ extern "C" {
 #endif
     CARRY_PLUG *Plug_FindNearest(CARRY_PLUG_SYS *, NUVEC *, f32 *, i32);
     void Plug_MakeDrawMtx(CARRY_PLUG *, NUMTX *);
-    extern const char *PlugGizmoName;
+    extern char *PlugGizmoName;
     extern const char *PlugOutputName;
     extern i32 plug_gizmotype_id;
     struct addgizmotype_s *Plugs_RegisterGizmo(i32);

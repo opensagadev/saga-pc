@@ -218,7 +218,7 @@ extern "C" {
         return NULL;
     }
 
-    LEVELDATA *Level_FindByName(char *name, i32 *index_out) {
+    LEVELDATA *Level_FindByName(const char *name, i32 *index_out) {
         i32 index;
 
         for (index = 0; index < LEVELCOUNT; ++index) {

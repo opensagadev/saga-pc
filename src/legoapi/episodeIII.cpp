@@ -1,0 +1,38 @@
+#include <string.h>
+#include "gameapi/ai/aisys/aipath.h"
+#include "legoapi/gizmo/base/gizmessage.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/world/world.h"
+#include "nu2api/nu3d/nuhspecial.h"
+
+/* Episode III FixUpLevels callbacks (Cruiser_A/C/D, Grievous_A, Kashyyyk_A/B/C, Vader_A/B/C). */
+
+extern "C" void GrievousA_Init(WORLDINFO *world) {
+}
+
+extern "C" void KashyyykA_Init(WORLDINFO *world) {
+}
+
+extern "C" void KashyyykA_Update(WORLDINFO *world) {
+}
+
+extern "C" void KashyyykB_Init(WORLDINFO *world) {
+}
+
+extern "C" void KashyyykB_Reset(WORLDINFO *world) {
+}
+
+extern "C" void KashyyykB_Update(WORLDINFO *world) {
+}
+
+extern "C" void KashyyykC_Init(WORLDINFO *world) {
+}
+
+extern "C" void KashyyykC_Update(WORLDINFO *world) {
+}
+
+extern "C" void VaderB_Init(WORLDINFO *world) {
+}
+
+extern "C" void VaderB_DrawPanel(WORLDINFO *world) {
+}

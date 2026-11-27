@@ -1,6 +1,0 @@
-#include "nu2api/nucore/common.h"
-
-/* Empty on PC. InitTexAnimScripts (utilities unit) still calls it, so the
-   body was not visible there: VC8 drops calls to an empty body it can see. */
-void NuTexAnimScriptMissing(char *path) {
-}

@@ -42,7 +42,7 @@ typedef struct TUBE {   // size 0x40
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern const char *TubeGizmoName;
+    extern char *TubeGizmoName;
     extern const char *Tube_OutputName;
     struct addgizmotype_s *Tubes_RegisterGizmo(i32);
 #ifdef __cplusplus

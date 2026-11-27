@@ -57,7 +57,7 @@
    "kind": "data"
   },
   {
-   "unit": "src/legoapi/episodeV.c",
+   "unit": "src/legoapi/episodeV.cpp",
    "symbol": "_AsteroidChaseD_SetTurretTarget",
    "kind": "function"
   },
@@ -212,8 +212,8 @@
    "kind": "function"
   },
   {
-   "unit": "src/legogame/gamestatus.c",
-   "symbol": "_StatusLerp",
+   "unit": "src/legogame/gamestatus.cpp",
+   "symbol": "?StatusLerp@@YAMMMM@Z",
    "kind": "function"
   },
   {
@@ -367,8 +367,8 @@
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nurndr.c",
-   "symbol": "_NuRndrPrimUV",
+   "unit": "src/nu2api/nurndr.cpp",
+   "symbol": "?NuRndrPrimUV@@YAXMM@Z",
    "kind": "function"
   },
   {

@@ -16,13 +16,13 @@ from tools.lib import (archive_members, bindings_for, changed_files, changed_tre
 WITNESSES = [
     ('integer', 'src/nu2api/numath_includes.c', '_NuRand'),
     ('x87', 'src/gameapi/aisysall.c', '_Condition_CurrentLocatorIs'),
-    ('x87-struct-global', 'src/legogame/gameaiscript.c', '_Condition_PlayerOnGround'),
-    ('switch', 'src/legoapi/gameobjects.c', '_GetCharacterGoalSpeed'),
+    ('x87-struct-global', 'src/legogame/gameaiscript.cpp', '_Condition_PlayerOnGround'),
+    ('switch', 'src/legoapi/gameobjects.cpp', '_GetCharacterGoalSpeed'),
     ('struct-loop-call', 'src/legoapi/parts.c', '_Part_FindFromHSpecial'),
-    ('private-call', 'src/legogame/move.c', '_DodgeCode'),
-    ('private-esi', 'src/legogame/move.c', '_BlockFindAttack'),
-    ('private-esi', 'src/legogame/move.c', '_BlockFindSpecialAttack'),
-    ('private-ecx-x87', 'src/legogame/move.c', '_BlockFindIncomingPart'),
+    ('private-call', 'src/legogame/move.cpp', '?DodgeCode@@YAXPAUgameobject_s@@HH@Z'),
+    ('private-esi', 'src/legogame/move.cpp', '?BlockFindAttack@@YAPAUgameobject_s@@PAU1@@Z'),
+    ('private-esi', 'src/legogame/move.cpp', '?BlockFindSpecialAttack@@YAPAUgameobject_s@@PAU1@@Z'),
+    ('private-ecx-x87', 'src/legogame/move.cpp', '?BlockFindIncomingPart@@YAPAUPART@@PAUgameobject_s@@@Z'),
 ]
 
 
@@ -60,16 +60,16 @@ def mutated_object(obj, symbol, offset, value, path):
 
 
 def negative_controls(pe, objects, records, bindings, directory):
-    dodge = objects['src/legogame/move.c']
-    record = records['_DodgeCode']
-    original = dodge.extract_function('_DodgeCode')['bytes']
+    dodge = objects['src/legogame/move.cpp']
+    record = records['?DodgeCode@@YAXPAUgameobject_s@@HH@Z']
+    original = dodge.extract_function('?DodgeCode@@YAXPAUgameobject_s@@HH@Z')['bytes']
     # cmp al,25h: change the actual immediate, leaving opcode/extent intact.
     if original[13:15] != b'\x3c\x25':
         raise ValueError('Dodge immediate mutation precondition changed')
-    immediate = mutated_object(dodge, '_DodgeCode', 14, 0x24, directory / 'immediate.obj')
+    immediate = mutated_object(dodge, '?DodgeCode@@YAXPAUgameobject_s@@HH@Z', 14, 0x24, directory / 'immediate.obj')
     results = [{'name': 'wrong-immediate', 'rejected': not compare(pe, immediate, record, bindings)['exact_match']}]
     # BlockFindAttack takes its object in ESI: [ESI+50h] becomes [ECX+50h].
-    symbol = '_BlockFindAttack'
+    symbol = '?BlockFindAttack@@YAPAUgameobject_s@@PAU1@@Z'
     if dodge.extract_function(symbol)['bytes'][:3] != b'\x8b\x46\x50':
         raise ValueError('Private ESI ABI mutation precondition changed')
     abi = mutated_object(dodge, symbol, 1, 0x41, directory / 'abi.obj')

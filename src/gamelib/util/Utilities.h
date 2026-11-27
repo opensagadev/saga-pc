@@ -11,10 +11,10 @@ extern "C" {
     extern u32 LAYER_HOVERIGNORE;
     i32 getqseed(void);
     i32 StreamingInsideLineXZ(f32, f32, f32, f32, f32, f32);
+    f32 NuSpecialGetAnimPos(struct nuhspecial_s *special);
 #ifdef __cplusplus
 }
 #endif
-f32 NuSpecialGetAnimPos(struct nuhspecial_s *special);
 #ifdef __cplusplus
 
 u32 UtilGetTime(void);

@@ -1,0 +1,625 @@
+#include "globals.h"
+#include "legoapi/actions/character/speederchase.h"
+#include "legoapi/actions/combat/fighting.h"
+#include "legoapi/actions/combat/hits.h"
+#include "legoapi/actions/movement/climbing.h"
+#include "legoapi/ai/game/creature.h"
+#include "legoapi/audio/audio.h"
+#include "legoapi/characters/core/character.h"
+#include "legoapi/characters/core/players.h"
+#include "legoapi/characters/motion.h"
+#include "legoapi/characters/motion/action_info.h"
+#include "legoapi/characters/motion/animlist.h"
+#include "legoapi/characters/motion/contexts.h"
+#include "legoapi/characters/motion/gameanim.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/core/config/cheat.h"
+#include "legoapi/core/input/gamepads.h"
+#include "legoapi/core/input/qrand.h"
+#include "legoapi/gizmo/object/gizmoblowups.h"
+#include "legoapi/items/base/animpacket.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/lib/camera.h"
+#include "legoapi/misc/gamemain.h"
+#include "legogame/startup.h"
+#include "nu2api/nucore/nuanim3.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
+#include <string.h>
+#include <stdio.h>
+
+i32 ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 gap) {
+    NUVEC forward;
+    NUVEC difference;
+    f32 distance;
+    f32 dot;
+    f32 radius;
+    f32 radius_squared;
+    if (object->player.force_target == NULL) {
+        return 0;
+    }
+    NuVecRotateY(&forward, &v001, object->movement_angle);
+    distance = NuVecDistSqr(&opponent->position, &object->position, &difference);
+    dot = forward.x * difference.x + forward.z * difference.z;
+    if ((!((object->player.context_variant_flags >> 7) & 1) && dot >= 0.0f) ||
+        (((object->player.context_variant_flags >> 7) & 1) && dot <= 0.0f)) {
+        radius = object->bounds_radius + opponent->bounds_radius;
+        radius += gap;
+        radius_squared = radius * radius;
+        if (distance < radius_squared) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void SetWeaponOut(GAMEOBJECT *object) {
+    i8 context = object->player.character_context;
+    if (context != CHARACTER_CONTEXT_NONE && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
+    }
+    object->player.weapon_scale = 1.0f;
+    object->player.flags_e20 |= APIOBJECT_WEAPON_OUT;
+    object->player.weapon_draw_state = 0;
+}
+
+i32 WeaponInOut_NoAIJediSfx = 0;
+
+void FastWeaponOut(GAMEOBJECT *object, i32 force_sound) {
+    i32 animation;
+    if (object->player.character_context != CHARACTER_CONTEXT_NONE &&
+        (object->player.character_context == LEGOCONTEXT_WEAPONIN || object->player.character_context == LEGOCONTEXT_WEAPONOUT)) {
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
+    }
+    if (force_sound != 0 && object->player.weapon_scale == 0.0f && object->player.weapon_draw_state != 1) {
+        animation = CurrentAnim(&object->anim_packet);
+        if (animation == -1 || object->character_model->animation_configs[animation] == NULL ||
+            (object->character_model->animation_configs[animation]->flags & CHARANIM_GUN_OFF) == 0) {
+            if (object->character_data->model_flags & CHARACTER_MODEL_JEDI) {
+                if (object->player_index != -1 || WeaponInOut_NoAIJediSfx == 0) {
+                    GameAudio_PlaySfx(0x3e, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
+                }
+            } else if (object->character_data->model_flags & CHARACTER_MODEL_BLASTER) {
+                GameAudio_PlaySfx(0x43, &object->collision_position, 0, 1);
+            }
+        }
+    }
+    object->player.weapon_scale_rate = 5.0f;
+    object->player.weapon_draw_state = 1;
+}
+
+i32 (*Fighting_WeaponOutActionFn)(GAMEOBJECT *) = 0;
+
+void SlowWeaponOut(GAMEOBJECT *object) {
+    i32 action;
+    f32 end;
+    f32 start;
+    f32 finish;
+    if (LEGOCONTEXT_WEAPONOUT != -1 && Fighting_WeaponOutActionFn != NULL) {
+        action = Fighting_WeaponOutActionFn(object);
+        if (action != -1 && object->character_model->model_data_b[action] != NULL) {
+            end = NuAnimEndFrame(object->character_model->model_data_b[action]);
+            start = AnimListFrame(object->character_model, action, 0);
+            if (start < 1.0f) {
+                start = 1.0f;
+            }
+            if (start >= 1.0f && start < end) {
+                finish = AnimListFrame(object->character_model, action, 1);
+                if (end > finish) {
+                    end = finish;
+                }
+                if (end > start) {
+                    object->player.character_context = (i8)LEGOCONTEXT_WEAPONOUT;
+                    object->player.context_animation = (i16)action;
+                    object->player.context_timer = AnimDuration((i16)object->id, (i16)action, 0.0f, 0.0f, 1);
+                    object->player.weapon_scale = 0.0f;
+                    return;
+                }
+            }
+        }
+    }
+    FastWeaponOut(object, 1);
+}
+
+void WeaponOutCode(GAMEOBJECT *object) {
+    f32 start;
+    f32 end;
+    f32 *time;
+    if (LEGOCONTEXT_WEAPONOUT == -1 || object->player.character_context != LEGOCONTEXT_WEAPONOUT) {
+        return;
+    }
+    if (object->player.pad->input_magnitude > 0.0f &&
+        (object->character_data->game_character->flags_094 & CHARACTER_OPTION_WAIT_FOR_WEAPON_IN_OUT) == 0) {
+        if (object->player.weapon_scale == 0.0f && object->player.weapon_draw_state != 1) {
+            FastWeaponOut(object, 0);
+        }
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
+        return;
+    }
+    if ((object->anim_packet.blending && object->anim_packet.blend_target_animation != object->player.context_animation) ||
+        (!object->anim_packet.blending && object->anim_packet.animation_index != object->player.context_animation)) {
+        object->player.weapon_scale = 0.0f;
+        return;
+    }
+    start = AnimListFrame(object->character_model, object->player.context_animation, 0);
+    object->player.context_timer -= FRAMETIME;
+    if (object->player.context_timer <= 0.0f) {
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
+        if (object->player.weapon_scale != 0.0f) {
+            return;
+        }
+    } else {
+        if (object->player.weapon_scale != 0.0f || object->player.weapon_draw_state == 1 ||
+            object->anim_packet.requested_animation != object->player.context_animation) {
+            return;
+        }
+        time = object->anim_packet.blending ? &object->anim_packet.blend_target_time : &object->anim_packet.current_time;
+        if (!(*time >= start)) {
+            return;
+        }
+    }
+    end = AnimListFrame(object->character_model, object->player.context_animation, 1);
+    object->player.weapon_draw_state = 1;
+    object->player.weapon_scale_rate = 1.0f / AnimDuration((i16)object->id, object->player.context_animation, start, end, 0);
+    if ((object->character_data->model_flags & CHARACTER_MODEL_JEDI) != 0) {
+        if (object->player_index != -1 || WeaponInOut_NoAIJediSfx == 0) {
+            GameAudio_PlaySfx(0x3e, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
+        }
+    } else {
+        GameAudio_PlaySfx(0x43, &object->collision_position, 0, 1);
+    }
+    ResetCharacterIdle(object, 1, GetDefaultIdle(object));
+}
+
+void KeepWeaponOut(GAMEOBJECT *object) {
+    object->player.weapon_scale = 1.0f;
+    object->player.flags_e20 |= APIOBJECT_WEAPON_OUT;
+    object->portal_flags |= APIOBJECT_KEEP_WEAPON_OUT;
+    object->player.weapon_draw_state = 0;
+}
+
+void SetWeaponIn(GAMEOBJECT *object) {
+    i8 context = object->player.character_context;
+    if (context != CHARACTER_CONTEXT_NONE && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
+    }
+    object->player.weapon_scale = 0.0f;
+    object->player.flags_e20 &= ~APIOBJECT_WEAPON_OUT;
+    object->player.weapon_draw_state = 0;
+}
+
+void FastWeaponIn(GAMEOBJECT *object, i32 force_sound) {
+    i32 animation;
+    if (object->player.character_context != CHARACTER_CONTEXT_NONE &&
+        (object->player.character_context == LEGOCONTEXT_WEAPONIN || object->player.character_context == LEGOCONTEXT_WEAPONOUT)) {
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
+    }
+    if (force_sound != 0 && object->player.weapon_scale == 1.0f && object->player.weapon_draw_state != 2) {
+        animation = CurrentAnim(&object->anim_packet);
+        if (animation == -1 || object->character_model->animation_configs[animation] == NULL ||
+            (object->character_model->animation_configs[animation]->flags & CHARANIM_GUN_ON) == 0) {
+            if (object->character_data->model_flags & CHARACTER_MODEL_JEDI) {
+                if (object->player_index != -1 || WeaponInOut_NoAIJediSfx == 0) {
+                    GameAudio_PlaySfx(0x3d, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
+                }
+            } else if (object->character_data->model_flags & CHARACTER_MODEL_BLASTER) {
+                GameAudio_PlaySfx(0x42, &object->collision_position, 0, 1);
+            }
+        }
+    }
+    object->player.weapon_scale_rate = 5.0f;
+    object->player.weapon_draw_state = 2;
+}
+
+i32 (*Fighting_WeaponInActionFn)(GAMEOBJECT *) = 0;
+
+void SlowWeaponIn(GAMEOBJECT *object) {
+    i32 action = -1;
+    f32 end;
+    f32 start;
+    f32 finish;
+    if (LEGOCONTEXT_WEAPONIN != -1) {
+        if (Fighting_WeaponInActionFn != NULL) {
+            action = Fighting_WeaponInActionFn(object);
+        }
+        /* Indexes model_data_b with -1 when the callback is absent or returns -1. */
+        if (object->character_model->model_data_b[action] != NULL) {
+            end = NuAnimEndFrame(object->character_model->model_data_b[action]);
+            start = AnimListFrame(object->character_model, action, 0);
+            if (start < 1.0f) {
+                start = 1.0f;
+            }
+            if (start >= 1.0f && start < end) {
+                finish = AnimListFrame(object->character_model, action, 1);
+                if (end > finish) {
+                    end = finish;
+                }
+                if (end > start) {
+                    object->player.character_context = (i8)LEGOCONTEXT_WEAPONIN;
+                    object->player.context_animation = (i16)action;
+                    object->player.context_timer = AnimDuration((i16)object->id, (i16)action, 0.0f, 0.0f, 1);
+                    object->player.weapon_scale = 1.0f;
+                    return;
+                }
+            }
+        }
+    }
+    FastWeaponIn(object, 1);
+}
+
+void WeaponInCode(GAMEOBJECT *object) {
+    f32 start;
+    f32 end;
+    f32 *time;
+    if (LEGOCONTEXT_WEAPONIN == -1 || object->player.character_context != LEGOCONTEXT_WEAPONIN) {
+        return;
+    }
+    if (object->player.pad->input_magnitude > 0.0f &&
+        (object->character_data->game_character->flags_094 & CHARACTER_OPTION_WAIT_FOR_WEAPON_IN_OUT) == 0) {
+        if (object->player.weapon_scale == 1.0f && object->player.weapon_draw_state != 2) {
+            FastWeaponIn(object, 0);
+        }
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
+        return;
+    }
+    if ((object->anim_packet.blending && object->anim_packet.blend_target_animation != object->player.context_animation) ||
+        (!object->anim_packet.blending && object->anim_packet.animation_index != object->player.context_animation)) {
+        object->player.weapon_scale = 1.0f;
+        return;
+    }
+    start = AnimListFrame(object->character_model, object->player.context_animation, 0);
+    object->player.context_timer -= FRAMETIME;
+    if (object->player.context_timer <= 0.0f) {
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
+        if (object->player.weapon_scale != 1.0f) {
+            return;
+        }
+    } else {
+        if (object->player.weapon_scale != 1.0f || object->player.weapon_draw_state == 2 ||
+            object->anim_packet.requested_animation != object->player.context_animation) {
+            return;
+        }
+        time = object->anim_packet.blending ? &object->anim_packet.blend_target_time : &object->anim_packet.current_time;
+        if (!(*time >= start)) {
+            return;
+        }
+    }
+    end = AnimListFrame(object->character_model, object->player.context_animation, 1);
+    object->player.weapon_draw_state = 2;
+    object->player.weapon_scale_rate = 1.0f / AnimDuration((i16)object->id, object->player.context_animation, start, end, 0);
+    if ((object->character_data->model_flags & CHARACTER_MODEL_JEDI) != 0) {
+        if (object->player_index != -1 || WeaponInOut_NoAIJediSfx == 0) {
+            GameAudio_PlaySfx(0x3d, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
+        }
+    } else {
+        GameAudio_PlaySfx(0x42, &object->collision_position, 0, 1);
+    }
+    ResetCharacterIdle(object, 1, GetDefaultIdle(object));
+}
+
+void KeepWeaponIn(GAMEOBJECT *object) {
+    object->player.flags_e20 &= ~APIOBJECT_WEAPON_OUT;
+    object->player.weapon_scale = 0.0f;
+    object->portal_flags &= ~APIOBJECT_KEEP_WEAPON_OUT;
+    object->player.weapon_draw_state = 0;
+}
+
+void AutoWeaponOnOff(GAMEOBJECT *object) {
+    i32 animation;
+    u32 flags;
+    i8 context = object->player.character_context;
+    if (context != CHARACTER_CONTEXT_NONE && (context == LEGOCONTEXT_WEAPONOUT || context == LEGOCONTEXT_WEAPONIN)) {
+        return;
+    }
+    animation = CurrentAnim(&object->anim_packet);
+    if (animation == -1) {
+        return;
+    }
+    flags = object->character_model->animation_configs[animation]->flags;
+    if ((flags & CHARANIM_GUN_OFF) != 0) {
+        if (object->player.weapon_scale > 0.0f) {
+            if ((object->anim_packet.flags & 4) != 0) {
+                if (object->anim_packet.blending != 0) {
+                    FastWeaponIn(object, 0);
+                } else {
+                    SetWeaponIn(object);
+                }
+            } else if (object->player.weapon_draw_state != 2) {
+                SetWeaponIn(object);
+            }
+        }
+    } else if ((flags & CHARANIM_GUN_ON) != 0 && object->player.weapon_scale < 1.0f) {
+        if ((object->anim_packet.flags & 4) != 0) {
+            if (object->anim_packet.blending != 0) {
+                FastWeaponOut(object, 0);
+            } else {
+                SetWeaponOut(object);
+            }
+        } else if (object->player.weapon_draw_state != 1) {
+            SetWeaponOut(object);
+        }
+    }
+}
+
+void WeaponScalingCode(GAMEOBJECT *object) {
+    switch (object->player.weapon_draw_state) {
+        case 1:
+            object->player.weapon_scale = SeekLinearF(object->player.weapon_scale, 1.0f, object->player.weapon_scale_rate * FRAMETIME);
+            if (object->player.weapon_scale >= 1.0f) {
+                object->player.weapon_draw_state = 0;
+                object->player.flags_e20 |= APIOBJECT_WEAPON_OUT;
+            }
+            break;
+        case 2:
+            object->player.weapon_scale = SeekLinearF(object->player.weapon_scale, 0.0f, object->player.weapon_scale_rate * FRAMETIME);
+            if (object->player.weapon_scale <= 0.0f) {
+                object->player.weapon_draw_state = 0;
+                object->player.flags_e20 &= ~APIOBJECT_WEAPON_OUT;
+            }
+            break;
+    }
+}
+
+i32 NewBlockAction(GAMEOBJECT *object) {
+    i32 actions[3];
+    i32 count = 0;
+    i32 action;
+    for (action = 0; count < 3 && action < apicharsys->model_id_capacity; ++action) {
+        if ((((API_ACTION_INFO *)PlayerBlockActionInfo)[action].flags & 8) != 0 && object->character_model->model_data_b[action] != NULL) {
+            actions[count++] = action;
+        }
+    }
+    if (count == 0) {
+        return 0;
+    }
+    if (count > 1) {
+        do {
+            action = actions[qrand() / (0xffff / count + 1)];
+        } while (action == object->player.previous_block_animation);
+    } else {
+        action = actions[0];
+    }
+    object->player.previous_block_animation = (i16)action;
+    object->player.context_animation = (i16)action;
+    return 1;
+}
+
+void BlockSfx(GAMEOBJECT *object) {
+    GAMEOBJECT *target = object->player.force_target;
+    if (target != NULL) {
+        if ((CInfo[target->player.character_context].flags & 0x4000000) != 0 ||
+            ((CInfo[target->player.character_context].flags & 0x8000000) != 0 &&
+             (target->player.context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE) != 0)) {
+            GameAudio_PlaySfx(0x3f, &object->collision_position, GameAudio_GetPlrSfxBits(target), 0);
+        }
+    }
+}
+
+i32 CanStepBack(GAMEOBJECT *object) {
+    i8 context = object->player.character_context;
+    if ((CInfo[context].flags & 0x10000) != 0) {
+        return 1;
+    }
+    if (LEGOCONTEXT_JUMP != -1 && context == LEGOCONTEXT_JUMP && object->player.action_movement_state == JUMP_KIND_LUNGE) {
+        return 1;
+    }
+    if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) && LEGOCONTEXT_COMBO != 0 &&
+        context == LEGOCONTEXT_COMBO) {
+        return 1;
+    }
+    return 0;
+}
+
+const f64 PlayerStepInnerAction = 1.75;
+const f64 PlayerStepOuterAction = 2.25;
+
+i32 StepBackFromTarget(GAMEOBJECT *object) {
+    NUVEC *target_position;
+    GIZMOBLOWUP *blowup = object->player.blowup_target;
+    f32 inner_distance;
+    f32 outer_distance;
+    f32 speed;
+    f32 distance_squared;
+    f32 blend;
+    if (blowup != NULL) {
+        target_position = &blowup->mid_position;
+        if ((LEGOCONTEXT_COMBO != -1 && object->player.character_context == LEGOCONTEXT_COMBO) ||
+            (LEGOCONTEXT_JUMP != -1 && object->player.character_context == LEGOCONTEXT_JUMP &&
+             object->player.action_movement_state == JUMP_KIND_LUNGE)) {
+            inner_distance = object->collision_radius * PlayerStepInnerAction + blowup->target_scale;
+            outer_distance = object->collision_radius * PlayerStepOuterAction + blowup->target_scale;
+        } else {
+            inner_distance = object->collision_radius * 0.75 + blowup->target_scale;
+            outer_distance = object->collision_radius * 1.25 + blowup->target_scale;
+        }
+    } else {
+        if (!(object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) || object->player.force_target == NULL) {
+            return 0;
+        }
+        if ((LEGOCONTEXT_COMBO == -1 || object->player.character_context != LEGOCONTEXT_COMBO) &&
+            (LEGOCONTEXT_JUMP == -1 || object->player.character_context != LEGOCONTEXT_JUMP ||
+             object->player.action_movement_state != JUMP_KIND_LUNGE)) {
+            return 0;
+        }
+        target_position = &object->player.force_target->collision_position;
+        inner_distance = object->bounds_radius * PlayerStepInnerAction + object->player.force_target->bounds_radius;
+        outer_distance = object->bounds_radius * PlayerStepOuterAction + object->player.force_target->bounds_radius;
+    }
+    if (target_position == NULL) {
+        return 0;
+    }
+    speed = AnimSpeed(object->character_model, object->player.context_animation);
+    if (speed == 0.0f) {
+        return 0;
+    }
+    distance_squared = NuVecXZDistSqr(&object->collision_position, target_position, NULL);
+    if (distance_squared >= outer_distance * outer_distance) {
+        return 0;
+    }
+    if (inner_distance * inner_distance >= distance_squared) {
+        blend = 1.0f;
+    } else {
+        blend = 1.0f - (NuFsqrt(distance_squared) - inner_distance) / (outer_distance - inner_distance);
+    }
+    speed = (-speed - speed) * blend + speed;
+    object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
+    object->target_velocity.z = speed * NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff];
+    return 1;
+}
+
+void ComboHitFrame(GAMEOBJECT *object, i32 damage) {
+    object->player.context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
+    object->player.sabre_flags |= SABRE_PUSH | SABRE_DAMAGE;
+    object->player.sabre_damage = (u8)damage;
+    if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player_HasDoubleWeaponDamage(object)) {
+        object->player.sabre_damage = (u8)(object->player.sabre_damage + object->player.sabre_damage);
+    }
+    BlockSfx(object);
+}
+
+i32 (*CanStartHoldFn)(GAMEOBJECT *) = 0;
+
+void StartHold(GAMEOBJECT *object) {
+    if (CanStartHoldFn == NULL) {
+        return;
+    }
+    if (CanStartHoldFn(object) == 2) {
+        object->player.hold_timer = 0.0f;
+        object->player.character_context = CHARACTER_CONTEXT_NONE;
+        return;
+    }
+    if (LEGOCONTEXT_HOLD != -1 && NewBlockAction(object)) {
+        object->player.character_context = (i8)LEGOCONTEXT_HOLD;
+        object->player.context_timer = 0.3f;
+        PlaySabreSfx(NULL, object, NULL, 1);
+        return;
+    }
+    object->player.character_context = CHARACTER_CONTEXT_NONE;
+}
+
+void HoldCode(GAMEOBJECT *object) {
+    if (LEGOCONTEXT_HOLD != -1 && object->player.character_context == LEGOCONTEXT_HOLD) {
+        if (object->player.context_timer > 0.0f) {
+            object->player.context_timer -= FRAMETIME;
+        } else if ((object->player.pad->buttons_held & GAMEPAD_ACTION) == 0) {
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
+        }
+    }
+}
+
+extern "C" void Fighting_UpdateHoldContext(GAMEOBJECT *object) {
+    if (LEGOCONTEXT_HOLD != -1 && object->player.character_context == LEGOCONTEXT_HOLD) {
+        if (object->player.context_timer > 0.0f) {
+            object->player.context_timer -= FRAMETIME;
+        } else if ((object->player.pad->buttons_held & GAMEPAD_ACTION) == 0) {
+            object->player.character_context = CHARACTER_CONTEXT_NONE;
+        }
+    }
+}
+
+i32 (*Punch_GetDamageFn)(GAMEOBJECT *, GAMEOBJECT *) = 0;
+void (*Punch_HitExtraCodeFn)(GAMEOBJECT *, NUVEC *) = 0;
+void (*Punch_HitHoldFn)(GAMEOBJECT *, GAMEOBJECT *) = 0;
+
+void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
+    NUVEC *hit_position = NULL;
+    u64 flags;
+    f32 impulse;
+    u16 angle;
+    i32 damage;
+    GIZMOBLOWUP *blowup;
+    attacker->player.context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
+    if (LEGOCONTEXT_PUNCH != -1 && attacker->player.character_context == LEGOCONTEXT_PUNCH) {
+        if (attacker->character_model->animations[attacker->player.context_animation] != NULL) {
+            attacker->player.debris_joint = attacker->character_model->animations[attacker->player.context_animation]->locator;
+        }
+    }
+    if (target != NULL) {
+        if (!(target->flags_1fc_word & APIOBJECT_FLAG_IN_USE) || !(target->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) ||
+            target->dead != 0 || attacker->collision_max.y < target->collision_min.y ||
+            attacker->collision_min.y > target->collision_max.y) {
+            goto finish;
+        }
+        if (LEGOCONTEXT_HOLD != -1 && target->player.character_context == LEGOCONTEXT_HOLD) {
+            NewBlockAction(target);
+            hit_position = &target->collision_position;
+            if (Punch_HitHoldFn != NULL) {
+                Punch_HitHoldFn(attacker, target);
+            }
+        } else {
+            if (target->player_controlled) {
+                if (LEGOCONTEXT_PUNCH != -1 && target->player.character_context == LEGOCONTEXT_PUNCH) {
+                    goto finish;
+                }
+                if (LEGOCONTEXT_JUMP != -1 && target->player.character_context == LEGOCONTEXT_JUMP &&
+                    attacker->player.action_movement_state == JUMP_KIND_LUNGE) {
+                    goto finish;
+                }
+            }
+            if (!ObjOpponentStillThere(attacker, target, gap)) {
+                goto finish;
+            }
+            damage = 1;
+            if (Punch_GetDamageFn != NULL) {
+                damage = Punch_GetDamageFn(attacker, target);
+            }
+            if (damage != -1 && Cheats_CheckFlags(CHEAT_DOUBLE_PUNCH_DAMAGE)) {
+                damage *= 2;
+            }
+            flags = CInfo[target->player.character_context].flags;
+            if (!(flags & 0x80)) {
+                if ((flags & 0x04000000) ||
+                    ((flags & 0x08000000) && (target->player.context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE)) ||
+                    CannotKill(target)) {
+                    NewRumble(attacker->player.pad->bound_pad, 0.5f, 0);
+                    NewRumble(target->player.pad->bound_pad, 0.5f, 0);
+                    if (!(CInfo[target->player.character_context].flags & 0x80000000)) {
+                        target->movement_facing_angle = NuAtan2D(attacker->collision_position.x - target->collision_position.x,
+                                                                 attacker->collision_position.z - target->collision_position.z);
+                    }
+                } else {
+                    ObjHitObj(attacker, target, damage, (u16)(ObjHitObj_Flags(attacker) | 0x40), 0, 1);
+                }
+                hit_position = &target->collision_position;
+            }
+            if (!(target->flags_1fc & APIOBJECT_FLAG_DONT_PUSH)) {
+                impulse = target->character_data->game_character->run_speed;
+                if (attacker->scaled_radius > 1.0f) {
+                    impulse /= attacker->scaled_radius;
+                }
+                angle = attacker->movement_facing_angle;
+                if (attacker->player.context_flags & 0x80) {
+                    angle += 0x8000;
+                }
+                target->velocity.x += NuTrigTable[angle >> 1] * impulse;
+                target->velocity.z += NuTrigTable[(angle + 0x4000) >> 1 & 0x7fff] * impulse;
+            }
+        }
+    } else {
+        blowup = attacker->player.blowup_target;
+        if (blowup == NULL || (blowup->status_flags & 1) || !(blowup->status_flags & 0x4000) || !(blowup->status_flags & 0x800000) ||
+            attacker->collision_max.y < blowup->bounds_min.y || attacker->collision_min.y > blowup->bounds_max.y) {
+            goto finish;
+        }
+        hit_position = &blowup->mid_position;
+        if (GizmoBlowupBlowup(blowup, 1, BLOWUP_HIT_PUNCH, 1, NULL, 1)) {
+            NewBuzz(attacker->player.pad->bound_pad, 0.1f, 0);
+        }
+        NewRumble(attacker->player.pad->bound_pad, 0.5f, 0);
+    }
+    if (hit_position == NULL) {
+        goto finish;
+    }
+    attacker->player.flags_e24 |= APIOBJECT_PUNCH_LANDED;
+    if (attacker->player_controlled) {
+        GameCam_HitJudder();
+    }
+    goto extra;
+finish:
+    attacker->player.flags_e24 &= ~APIOBJECT_PUNCH_LANDED;
+extra:
+    if (Punch_HitExtraCodeFn != NULL) {
+        Punch_HitExtraCodeFn(attacker, hit_position);
+    }
+}
