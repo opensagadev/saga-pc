@@ -24,16 +24,20 @@
 #include "nu2api/nuwin32/d3dCore.h"
 #include "nu2api/nu3d/nushaderobjectbase.h"
 
-void PCShaderNativeUnInit(NuShaderObject *shader) {
-    if (shader->vertex_shader != NULL) {
-        shader->vertex_shader->methods->release(shader->vertex_shader);
-        shader->vertex_shader = NULL;
+void PC_SHADER_PARAMETER_LOCAL::SetClassValues(i32 first_element, i32 count, const f32 *values) {
+    switch ((i32)(metadata << 4) >> 28) {
+        case 1:
+            SetScalarValues(first_element, count, values);
+            break;
+        case 2:
+            SetVectorValues(first_element, count, values);
+            break;
+        case 3:
+            SetTransposedMatrixValues(first_element, count, values);
+            break;
+        case 4:
+            return;
     }
-    if (shader->pixel_shader != NULL) {
-        shader->pixel_shader->methods->release(shader->pixel_shader);
-        shader->pixel_shader = NULL;
-    }
-    NuShaderObjectUnInit(shader);
 }
 
 void PCShaderObjectInitHLSLPc(NuShaderObject *shader, const u32 *key, i32 index, const char *vertex_source, i32 vertex_length,
@@ -141,7 +145,16 @@ void PCShaderObjectInitHLSLPc(NuShaderObject *shader, const u32 *key, i32 index,
     }
 }
 
-extern "C" void NushaderobjectNuError(void) {
+void PCShaderNativeUnInit(NuShaderObject *shader) {
+    if (shader->vertex_shader != NULL) {
+        shader->vertex_shader->methods->release(shader->vertex_shader);
+        shader->vertex_shader = NULL;
+    }
+    if (shader->pixel_shader != NULL) {
+        shader->pixel_shader->methods->release(shader->pixel_shader);
+        shader->pixel_shader = NULL;
+    }
+    NuShaderObjectUnInit(shader);
 }
 
 extern "C" void NuShaderObjectSetElementsfv(NuShaderObject *shader, i32 semantic, i32 first_element, i32 count, const f32 *values) {
@@ -185,23 +198,10 @@ extern "C" void NuShaderObjectSetElementsfv_transpose(NuShaderObject *shader, i3
     }
 }
 
+extern "C" void NushaderobjectNuError(void) {
+}
+
 /* Minimum accessed cohort, not a whole NUMTL allocation/size claim. */
 
 extern "C" void fun_00743970(void) {
-}
-
-void PC_SHADER_PARAMETER_LOCAL::SetClassValues(i32 first_element, i32 count, const f32 *values) {
-    switch ((i32)(metadata << 4) >> 28) {
-        case 1:
-            SetScalarValues(first_element, count, values);
-            break;
-        case 2:
-            SetVectorValues(first_element, count, values);
-            break;
-        case 3:
-            SetTransposedMatrixValues(first_element, count, values);
-            break;
-        case 4:
-            return;
-    }
 }

@@ -245,10 +245,10 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x740f00,0x7412d4,src/gamelib/util/VirtualStackAllocator.cpp,,gamelib,review,medium,,40,592,469,469,0,0,gamelib/util/VirtualStackAllocator.cpp:469
 0x7412e0,0x7418ef,src/nu2api/nushadermanager_gen.cpp,,nu2api,batman+code,medium,,39,1317,1193,941,24,13,nu2api/nushadermanager_gen.cpp:1026 nu2api/nushadermanager.cpp:124 nu2api/nushader.cpp:40 nu2api/ShaderObjectKey_pc.cpp:3
 0x7418f0,0x741962,src/nu2api/?0x7418f0,,nu2api,marker+android,none,,2,110,82,82,0,0,nu2api/nuvertexdecl.c:82
-0x741970,0x742003,src/nu2api/VertexDeclarations.cpp,,nu2api,batman,medium,,1,1684,1684,0,404,0,nu2api/nuvertexdecl.c:1684
-0x742010,0x743990,src/nu2api/nushaderobject.cpp,,nu2api,batman+code,low,,34,6257,6197,983,309,6,nu2api/nushaderobject_pc.cpp:5508 nu2api/nushaderobject.cpp:689
+0x741970,0x742003,src/nu2api/VertexDeclarations.cpp,,nu2api,batman,medium,,1,1684,1684,0,404,0,nu2api/VertexDeclarations.cpp:1684
+0x742010,0x743990,src/nu2api/nushaderobject.cpp,,nu2api,batman+code,low,,34,6257,6197,983,309,0,nu2api/nushaderobject.cpp:6195 nu2api/nushaderobject_pc.cpp:2
 0x743990,0x743dd5,src/nu2api/nushaderobjectbase.cpp,,nu2api,batman,medium,,17,958,846,245,0,0,nu2api/nushaderobjectbase.cpp:846
-0x743de0,0x744210,src/nu2api/nushaderobject.cpp,,nu2api,batman+code+marker,low,ret 28,7,1029,1001,1001,0,0,nu2api/nushaderobject_pc.cpp:1000 nu2api/nushaderobjectbase.cpp:1
+0x743de0,0x744210,src/nu2api/nushaderobject_pc.cpp,,nu2api,batman+code+marker,low,ret 28,7,1029,1001,1001,0,0,nu2api/nushaderobject_pc.cpp:1000 nu2api/nushaderobjectbase.cpp:1
 0x744210,0x7443c6,src/nu2api/shaderSemantics.cpp,,nu2api,batman,medium,,13,397,369,369,0,0,nu2api/shaderSemantics.cpp:369
 0x7443d0,0x744b96,src/nu2api/ShaderObjectKey.cpp,,nu2api,batman,low,,33,1744,1552,734,85,0,nu2api/ShaderObjectKey.cpp:1552
 0x744ba0,0x745919,src/nu2api/ShaderObjectKey_pc.cpp,,nu2api,batman+code+marker,low,,50,3019,2837,1401,146,0,nu2api/ShaderObjectKey_pc.cpp:2813 nu2api/ShaderManagerHLSL.cpp:24
