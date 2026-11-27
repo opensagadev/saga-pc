@@ -320,53 +320,6 @@ i32 fun_006d3410(void) {
     return 0;
 }
 
-i32 NuKeyboard_db(i32 key) {
-    i32 page = nu_keyboard_page_index;
-    u8 current = nu_keyboard_pages[(page << 8) + key];
-    if (current != 0 && (current ^ nu_keyboard_pages[((page ^ 1) << 8) + key]) != 0) {
-        return 1;
-    }
-    return 0;
-}
-
-i32 NuKeyboardGetPreviousKeyIndex(void) {
-    return nu_keyboard_previous_key_index;
-}
-
-i32 NuKeyboardGetKeyIndex(void) {
-    return nu_keyboard_key_index;
-}
-
-i32 PcKeyboardPressedKey = 0;
-i32 PcKeyboardPreviousKey = 0;
-i32 PcKeyboardHeldKey = 0;
-
-void PcKeyboardReadKey(i32 *key, i32 *pressed, i32 *shift, i32 *repeat) {
-    i32 page = nu_keyboard_page_index << 8;
-    i32 i;
-    PcKeyboardPreviousKey = PcKeyboardHeldKey;
-    if (nu_keyboard_pages[page + PcKeyboardHeldKey] == 0) {
-        PcKeyboardHeldKey = 0;
-    }
-    for (i = 0; i < nu_keyboard_owner.key_count; ++i) {
-        if (i != 0x2a && i != 0x36 && nu_keyboard_pages[page + i] != 0 && i != PcKeyboardPreviousKey) {
-            PcKeyboardHeldKey = i;
-            break;
-        }
-    }
-    PcKeyboardPressedKey = PcKeyboardPreviousKey != PcKeyboardHeldKey ? PcKeyboardHeldKey : 0;
-    if (shift != NULL) {
-        *shift = nu_keyboard_pages[page + 0x2a] != 0 || nu_keyboard_pages[page + 0x36] != 0;
-    }
-    if (key != NULL) {
-        *key = PcKeyboardHeldKey;
-    }
-    if (pressed != NULL) {
-        *pressed = PcKeyboardPressedKey;
-    }
-    *repeat = PcKeyboardKeyAutoRepeat(PcKeyboardHeldKey) ? PcKeyboardHeldKey : 0;
-}
-
 /* Private Source proposal; append in keyboard_read.c after old source. */
 void do_Pad_flymode_camera(edcam_s *camera, f32 delta_time, FRAME_PAD *pad) {
     f32 frame_scale = (f32)(delta_time / (f64)(1.0f / 60.0f));

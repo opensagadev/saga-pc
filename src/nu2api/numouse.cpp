@@ -6,17 +6,6 @@
 void NuMouseRead(void) {
 }
 
-u32 NuMouseReadButtons(void) {
-    return mbuttons;
-}
-
-extern "C" u32 NuMouseButtonDown(i32 button) {
-    if (button >= 0 && button < 4u) {
-        return (1 << button) & mbuttons;
-    }
-    return 0;
-}
-
 extern "C" void fun_006d5940(void) {
 }
 

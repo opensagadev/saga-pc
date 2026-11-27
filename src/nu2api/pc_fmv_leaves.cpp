@@ -44,29 +44,3 @@ extern "C" void FmvPlatformFinish(void) {
 
 extern "C" void fun_006d6b60(void) {
 }
-
-extern "C" f32 FmvOverlayTimer;
-
-extern "C" {
-    f32 FmvOverlayTimer = 0.0f;
-}
-
-extern "C" i32 PcKeyboardKeyAutoRepeat(i32 key) {
-    if (nu_keyboard_key_index == 0 || key != nu_keyboard_key_index) {
-        return 0;
-    }
-    if (nu_keyboard_no_key_state == 0) {
-        FmvOverlayTimer = 0.5f;
-        nu_keyboard_no_key_state = 1;
-        return 1;
-    }
-    FmvOverlayTimer = FmvOverlayTimer - NuTimeGetFrameTime();
-    if (FmvOverlayTimer <= 0.0f) {
-        FmvOverlayTimer += 0.125;
-        if (FmvOverlayTimer <= 0.0f) {
-            FmvOverlayTimer = 0.0f;
-        }
-        return 1;
-    }
-    return 0;
-}
