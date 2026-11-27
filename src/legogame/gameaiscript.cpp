@@ -163,6 +163,46 @@ u32 LEGO_AIPATHCNX_DONT_JUMP_NOW = 0;
 i32 turret_gizmotype_id = -1;
 const f64 MoveSplineRunSpeedSentinel = 1000000000.0;
 
+/* The SDK's inline NuFabs: the float with its sign bit cleared. */
+static f32 GameaiscriptFabs(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
+i16 id_PENGUIN_GOON = -1;
+i16 id_PENGUIN_GOON_GUN = -1;
+i16 id_JOKER_GOON = -1;
+i16 id_JOKER_GOON_GUN = -1;
+i16 id_RIDDLER_GOON = -1;
+i16 id_RIDDLER_GOON_GUN = -1;
+
+i16 GetGenericGoon(i32 armed) {
+    if (armed) {
+        if (id_PENGUIN_GOON_GUN != -1 && APICharacterLoaded(id_PENGUIN_GOON_GUN)) {
+            return id_PENGUIN_GOON_GUN;
+        }
+        if (id_JOKER_GOON_GUN != -1 && APICharacterLoaded(id_JOKER_GOON_GUN)) {
+            return id_JOKER_GOON_GUN;
+        }
+        if (id_RIDDLER_GOON_GUN != -1 && APICharacterLoaded(id_RIDDLER_GOON_GUN)) {
+            return id_RIDDLER_GOON_GUN;
+        }
+    } else {
+        if (id_PENGUIN_GOON != -1 && APICharacterLoaded(id_PENGUIN_GOON)) {
+            return id_PENGUIN_GOON;
+        }
+        if (id_JOKER_GOON != -1 && APICharacterLoaded(id_JOKER_GOON)) {
+            return id_JOKER_GOON;
+        }
+        if (id_RIDDLER_GOON != -1 && APICharacterLoaded(id_RIDDLER_GOON)) {
+            return id_RIDDLER_GOON;
+        }
+    }
+    return -1;
+}
+
 GAMEOBJECT *GetNamedGameObject(void *sys, char *name) {
     APIOBJECT *result;
     if (GetNamedGameObjectCallback != NULL) {
@@ -173,8 +213,6 @@ GAMEOBJECT *GetNamedGameObject(void *sys, char *name) {
     }
     return NULL;
 }
-
-/* Forward declarations for functions used before their definition. */
 
 static i32 PartyMemberInWay(GAMEOBJECT *object, GAMEOBJECT *opponent) {
     NUVEC difference;
@@ -912,16 +950,6 @@ static i32 PlayerPullingLever(GAMEOBJECT *object, char *name) {
     return 0;
 }
 
-extern "C" f32 Condition_EitherPlayerPullingLever(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (PlayerPullingLever(player, name)) {
-        return 1.0f;
-    }
-    if (PlayerPullingLever(player2, name)) {
-        return 1.0f;
-    }
-    return 0.0f;
-}
-
 /* The player is in the hat machine context on a target of that name (any name when NULL). */
 static i32 PlayerUsingHatMachine(GAMEOBJECT *object, char *name) {
     HATMACHINE *target;
@@ -930,6 +958,26 @@ static i32 PlayerUsingHatMachine(GAMEOBJECT *object, char *name) {
         return 1;
     }
     return 0;
+}
+
+/* The player is in the interface context on a target of that name (any name when NULL). */
+static i32 PlayerUsingPanel(GAMEOBJECT *object, char *name) {
+    GIZPANEL_s *target;
+    if (object != NULL && object->player.character_context == CHARACTER_CONTEXT_INTERFACE &&
+        (target = (GIZPANEL_s *)object->player.grapple) != NULL && (name == NULL || NuStrICmp(target->name, name) == 0)) {
+        return 1;
+    }
+    return 0;
+}
+
+extern "C" f32 Condition_EitherPlayerPullingLever(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
+    if (PlayerPullingLever(player, name)) {
+        return 1.0f;
+    }
+    if (PlayerPullingLever(player2, name)) {
+        return 1.0f;
+    }
+    return 0.0f;
 }
 
 extern "C" f32 Condition_EitherPlayerUsingHatMachine(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name,
@@ -941,16 +989,6 @@ extern "C" f32 Condition_EitherPlayerUsingHatMachine(AISYS *system, AISCRIPTPROC
         return 1.0f;
     }
     return 0.0f;
-}
-
-/* The player is in the interface context on a target of that name (any name when NULL). */
-static i32 PlayerUsingPanel(GAMEOBJECT *object, char *name) {
-    GIZPANEL_s *target;
-    if (object != NULL && object->player.character_context == CHARACTER_CONTEXT_INTERFACE &&
-        (target = (GIZPANEL_s *)object->player.grapple) != NULL && (name == NULL || NuStrICmp(target->name, name) == 0)) {
-        return 1;
-    }
-    return 0;
 }
 
 extern "C" f32 Condition_EitherPlayerUsingPanel(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
@@ -5638,14 +5676,6 @@ i32 Action_SetCurrentSpeed(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
         NuVecRotateY(&object->velocity, &object->velocity, object->facing_angle);
     }
     return 1;
-}
-
-/* The SDK's inline NuFabs: the float with its sign bit cleared. */
-static f32 GameaiscriptFabs(f32 f) {
-    f32 rv;
-
-    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
-    return rv;
 }
 
 extern "C" i32 Action_SetRunSpeed(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 num_params,
@@ -11803,6 +11833,8 @@ extern "C" i32 Action_CreateCreatures(AISYS *sys, AISCRIPTPROCESS *processor, AI
     }
     return 1;
 }
+
+/* Forward declarations for functions used before their definition. */
 
 AIACTIONDEF lego_aiactiondefs[208] = {
     {"Activate", Action_Activate, 1, 0, 0},

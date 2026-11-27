@@ -610,7 +610,6 @@
     "src/gamelib/util/Refpack.cpp": "cf5af9440b2a8fc8d3ca6e30367587dc9d0308cb8d0ec029d0821da38c9a31b2",
     "src/gamelib/util/Utilities.cpp": "63c1afb61ae2b7139d62e232b1ddf0ed249d150187225fa118617edd814ec02c",
     "src/gamelib/util/VirtualStackAllocator.cpp": "3355062efd92c050b5307615df605101507431761794573d883a5ec1bb001b1e",
-    "src/legoapi/ai_sys.cpp": "491c87ee0fc6e04362a1d2c3ec12903eeeaa572f79094d500805189f543db926",
     "src/legoapi/aiactions_transfer.cpp": "75b0dc57da547c05047658076fe60aee3d6ea222c6cbd7276280e6e99a8b0881",
     "src/legoapi/aipathcnxhelper.cpp": "2026434f21495e7fdda6ed5444fed51b3696958ad1a7a014e4b3aadd65378ba6",
     "src/legoapi/animation.cpp": "98ac82f3d6964513dc16fb771f8d31a1b11e4102d49fe72fc1a6c0f6495833e6",
@@ -751,7 +750,7 @@
     "src/legogame/game_deb.cpp": "0ba2620d8ee653d52871f93765ab458c2ab9b75e453f16a4394df33745ed5222",
     "src/legogame/game_obj.cpp": "218ebf35300191e15c4b8c312ed73986a883bb7ead68cb8e3272ed21c8673b3c",
     "src/legogame/gameai.cpp": "dff521924aa8265419f4855f4e27b8417ccb455c4dd9de18ab80f3413604cb02",
-    "src/legogame/gameaiscript.cpp": "fb107985ff0126e9368f5e2e446f47e029145e3f78dff811fda62547a0aa306c",
+    "src/legogame/gameaiscript.cpp": "bc0c100efc29c046ba3fba0d11e8994aeadcfbb16dfdb9d1ab858507bf11378c",
     "src/legogame/gamehint.cpp": "835e79bc6e85057de239aad413135e885e397d2b5b18564b8caf4e8d51e603a0",
     "src/legogame/gamestatus.cpp": "068016920828f601d4a6588a87be11cbcb8130bc3d660e5ac02013cc1f5fc27e",
     "src/legogame/gizactions.cpp": "f54d97aa6aacff50fab070c232ebd8bdaa33f45ef36246166813f50ae6037674",
@@ -1035,7 +1034,6 @@
     "build/obj/gamelib/util/Refpack.obj": "2cf20d2df9b682d97032a83249d336570e52b9272fc3be7e00bc680d28d9f7c4",
     "build/obj/gamelib/util/Utilities.obj": "8bc348d52f69cc03a881a091b05a89ff1c90ffd2ba4debbb0b30f8fcab5effb3",
     "build/obj/gamelib/util/VirtualStackAllocator.obj": "0de957b320a019f27439be3e1e1b5430b5767fce442f0adf8dd4a4daf98cc2c8",
-    "build/obj/legoapi/ai_sys.obj": "416ab7e740dac63cdb67556d3719e3c34ca7dc6a0364a9990c8a32c0942f3aab",
     "build/obj/legoapi/aiactions_transfer.obj": "2f7f6c6fb869523dd04deb16989544cfcf231ca274f142b4c8d43037264bb7af",
     "build/obj/legoapi/aipathcnxhelper.obj": "ab350546e3ce041e402525c79bcb1849e187dec7e556acceb391f42134440895",
     "build/obj/legoapi/animation.obj": "e5fd93283a510f136139639c72e0ce24c6ae4dd3414b65c74bd9d26ec52efa49",
@@ -1196,7 +1194,7 @@
     "build/obj/legogame/game_deb.obj": "54de7ea551ee6e7f3fa14e4425926fb6c81543f26feb8829544c035b892f3b68",
     "build/obj/legogame/game_obj.obj": "157d49aa17d6311f965ecfe96bd4741c82191b533b7bbd2fa63ce028e1e22f77",
     "build/obj/legogame/gameai.obj": "898337853f36f5b67f96baabf00a2dac4c0c2b9906041f9ff842f6aee5c5fc19",
-    "build/obj/legogame/gameaiscript.obj": "12621696c2e071257f77f767bbf20ce68cb7c32aaef19566c0a0476ee0f921db",
+    "build/obj/legogame/gameaiscript.obj": "7ca98f1cced4c4e3dd06d851c6a3b09b4c94b845d2229e75e7b33f129bb18142",
     "build/obj/legogame/gamehint.obj": "54704f53550c7318419f10a650098f528b1ec77a1bd4fd737f888916fb8b2264",
     "build/obj/legogame/gamestatus.obj": "ea924d953dfacab7903d80154f3d0d224b5a5f0cf3cc4f4e99b95c73cde141e9",
     "build/obj/legogame/gizactions.obj": "2d180decde8e87bef34ad4196abe800c40e80a96c86d88bee0784f6fe94ed31a",
@@ -17358,19 +17356,19 @@
       "symbol": "_GetGenericGoon",
       "address": "0x00440030",
       "units": [
-        "src/legoapi/ai_sys.cpp"
+        "src/legogame/gameaiscript.cpp"
       ],
       "target_size": 226,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/ai_sys.cpp",
+          "unit": "src/legogame/gameaiscript.cpp",
           "base_size": 226,
           "exact_match": true,
           "target_sha256": "4a47598809e2eb3aa8a2914607fd3def73e9fdeb097fd4e1ed63301e18bf95a5",
           "base_sha256": "4a47598809e2eb3aa8a2914607fd3def73e9fdeb097fd4e1ed63301e18bf95a5",
           "relocation_count": 18,
-          "comparison_unit": "00440030-fd4fbe695970",
+          "comparison_unit": "00440030-8f9cc6a8b3db",
           "objdiff_percent": 100.0
         }
       ],
@@ -750843,13 +750841,13 @@
       "symbol": "_id_PENGUIN_GOON",
       "address": "0x007f182c",
       "units": [
-        "src/legoapi/ai_sys.cpp"
+        "src/legogame/gameaiscript.cpp"
       ],
       "target_size": 2,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/ai_sys.cpp",
+          "unit": "src/legogame/gameaiscript.cpp",
           "exact_match": true,
           "target_size": 2,
           "base_size": 4,
@@ -750865,13 +750863,13 @@
       "symbol": "_id_PENGUIN_GOON_GUN",
       "address": "0x007f1830",
       "units": [
-        "src/legoapi/ai_sys.cpp"
+        "src/legogame/gameaiscript.cpp"
       ],
       "target_size": 2,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/ai_sys.cpp",
+          "unit": "src/legogame/gameaiscript.cpp",
           "exact_match": true,
           "target_size": 2,
           "base_size": 4,
@@ -750887,13 +750885,13 @@
       "symbol": "_id_JOKER_GOON",
       "address": "0x007f1834",
       "units": [
-        "src/legoapi/ai_sys.cpp"
+        "src/legogame/gameaiscript.cpp"
       ],
       "target_size": 2,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/ai_sys.cpp",
+          "unit": "src/legogame/gameaiscript.cpp",
           "exact_match": true,
           "target_size": 2,
           "base_size": 4,
@@ -750909,13 +750907,13 @@
       "symbol": "_id_JOKER_GOON_GUN",
       "address": "0x007f1838",
       "units": [
-        "src/legoapi/ai_sys.cpp"
+        "src/legogame/gameaiscript.cpp"
       ],
       "target_size": 2,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/ai_sys.cpp",
+          "unit": "src/legogame/gameaiscript.cpp",
           "exact_match": true,
           "target_size": 2,
           "base_size": 4,
@@ -750931,13 +750929,13 @@
       "symbol": "_id_RIDDLER_GOON",
       "address": "0x007f183c",
       "units": [
-        "src/legoapi/ai_sys.cpp"
+        "src/legogame/gameaiscript.cpp"
       ],
       "target_size": 2,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/ai_sys.cpp",
+          "unit": "src/legogame/gameaiscript.cpp",
           "exact_match": true,
           "target_size": 2,
           "base_size": 4,
@@ -750953,18 +750951,19 @@
       "symbol": "_id_RIDDLER_GOON_GUN",
       "address": "0x007f1840",
       "units": [
-        "src/legoapi/ai_sys.cpp"
+        "src/legogame/gameaiscript.cpp"
       ],
       "target_size": 2,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/ai_sys.cpp",
+          "unit": "src/legogame/gameaiscript.cpp",
           "exact_match": true,
           "target_size": 2,
-          "base_size": 2,
+          "base_size": 8,
           "target_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb",
-          "base_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb"
+          "base_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb",
+          "gap_bytes": 6
         }
       ],
       "status": "exact"
@@ -778271,10 +778270,9 @@
           "unit": "src/legogame/gameaiscript.cpp",
           "exact_match": true,
           "target_size": 4,
-          "base_size": 8,
+          "base_size": 4,
           "target_sha256": "ad95131bc0b799c0b1af477fb14fcf26a6a9f76079e48bf090acb7e8367bfd0e",
-          "base_sha256": "ad95131bc0b799c0b1af477fb14fcf26a6a9f76079e48bf090acb7e8367bfd0e",
-          "gap_bytes": 4
+          "base_sha256": "ad95131bc0b799c0b1af477fb14fcf26a6a9f76079e48bf090acb7e8367bfd0e"
         }
       ],
       "status": "exact"
@@ -901705,7 +901703,7 @@
       "metadata_sha256": "525d436eee3d48951222f1fd54574554983d228c3d06f19a545ba7cab50fe057",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "1965c275230083cd0f68cfab1d3040b602858a5a1b114911f2b0c1ea2ebab779",
+      "geometry_object_sha256": "c8edbe6734a772243914b111fd1923cb6c44ae868a9ca14970e71ebbb109e995",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
