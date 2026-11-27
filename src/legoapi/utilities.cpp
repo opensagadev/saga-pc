@@ -94,6 +94,9 @@ i32 qseed = 0x3039;
 i32 dco_id = -1;
 f32 dco_reflectcoord = 2000000.0f;
 
+extern "C" void fun_0054f960() {
+}
+
 i32 qrand(void) {
     qseed = qseed * 0x24cd + 1 & 0xffff;
 
@@ -1740,9 +1743,6 @@ void SetAnimFrame(struct nuhspecial_s *special, f32 frame) {
     instance_animation->matrix.m31 = instance_matrix->m31;
     instance_animation->matrix.m32 = instance_matrix->m32;
     instance_animation->ltime = frame;
-}
-
-extern "C" void fun_00553700(void) {
 }
 
 static __inline f32 UtilitiesFabs(f32 value) {

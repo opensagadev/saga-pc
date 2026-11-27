@@ -870,6 +870,3 @@ CUSTOMISER_CONFIG *Customiser_Configure(char *filename, VARIPTR *buffer, VARIPTR
     }
     return NULL;
 }
-
-extern "C" void fun_00594210(void) {
-}

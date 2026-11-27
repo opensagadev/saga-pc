@@ -134,6 +134,9 @@ void NuMtxMulRVU0(NUMTX *result, NUMTX *left, NUMTX *right) {
     NuMtxMulR(result, left, right);
 }
 
+void fun_005c03a0(void) {
+}
+
 void NuVec4ScaleXYZVU0(NUVEC4 *out, NUVEC4 *input, f32 scale) {
     NuVec4Scale(out, input, scale);
 }
@@ -163,6 +166,9 @@ void NuVec4MtxRotateVU0(NUVEC4 *out, NUVEC4 *input, NUMTX *matrix) {
 
 void NuMtxMulVU0(NUMTX *result, NUMTX *left, NUMTX *right) {
     D3DXMatrixMultiply((D3DXMATRIX *)result, (D3DXMATRIX *)left, (D3DXMATRIX *)right);
+}
+
+void fun_005c0520(void) {
 }
 
 void NuMtxMulnVU0(NUMTX *out, NUMTX *left, NUMTX **right) {

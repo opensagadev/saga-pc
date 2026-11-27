@@ -128,6 +128,9 @@ extern "C" {
 }
 extern "C" {
 
+    void fun_0057a810() {
+    }
+
     void CutScenes_ConfigureList(char *filename, VARIPTR *buffer, VARIPTR end) {
         CUT_LOAD_LIST_ENTRY entries[1000];
         char file[128];

@@ -455,6 +455,9 @@ extern "C" __declspec(noinline) HRESULT PCDeviceUnlockIndexBuffer(PC_BUFFER_RESO
     return resource->methods->unlock(resource);
 }
 
+extern "C" void fun_006e5c10(void) {
+}
+
 extern "C" void PCDeviceSetVertexShaderMatrix(u32 start, const f32 *matrix) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_vertex_shader_constant_f(PCDeviceBackend.device, start, matrix, 4);
 }

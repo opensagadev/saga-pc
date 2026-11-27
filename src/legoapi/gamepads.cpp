@@ -561,6 +561,3 @@ i32 GamePads_SkipMovie(void) {
     }
     return skipped;
 }
-
-extern "C" void fun_0054b510(void) {
-}

@@ -472,6 +472,12 @@ extern "C" {
     PC_INPUT_RUNTIME *nu_input_state = 0;
 }
 
+extern "C" void fun_006d3560(void) {
+}
+
+extern "C" void PCInputNuError(void) {
+}
+
 extern "C" PC_INPUT_RUNTIME *PcInputGetRuntime(void) {
     return nu_input_state;
 }
@@ -1741,6 +1747,12 @@ extern "C" {
     void (*TextInputNameCallback)(i32, char *) = 0;
 }
 
+extern "C" void fun_006d3b20(void) {
+}
+
+extern "C" void fun_006d4d60(void) {
+}
+
 extern "C" void PcInput_SetStringUCGfxRemapFn(void (*callback)(i32, char *)) {
     TextInputNameCallback = callback;
 }
@@ -2151,6 +2163,9 @@ extern "C" {
     i32 dat_00824fb8 = 20;
 }
 
+extern "C" void fun_006d5860(void) {
+}
+
 extern "C" i32 fun_006d5870(void) {
     return dat_00824fb8;
 }
@@ -2161,6 +2176,12 @@ extern "C" i32 fun_006d5880(void) {
 
 extern "C" {
     u32 mbuttons = 0;
+}
+
+extern "C" void fun_006d5890(void) {
+}
+
+void NuMouseRead(void) {
 }
 
 u32 NuMouseReadButtons(void) {
@@ -2267,6 +2288,9 @@ u8 *NuKeyboardOwner::PollKeyboard() {
     page = nu_keyboard_pages + nu_keyboard_page_index * 0x100;
     memset(page, 0, nu_keyboard_owner.key_count);
     return page;
+}
+
+extern "C" void fun_006d5940(void) {
 }
 
 extern "C" f32 PcMouseGetAccumulatedX(void) {
@@ -2478,6 +2502,9 @@ extern "C" i32 GamePadReadBackend(FRAME_PAD *pad, i32 ignored) {
     return NuPadRead(pad);
 }
 
+extern "C" void fun_006d6030(void) {
+}
+
 extern "C" i32 fun_006d6040(void) {
     return 0;
 }
@@ -2502,8 +2529,14 @@ extern "C" void NuPadOpenPS(FRAME_PAD *pad) {
     pad->flags |= 4;
 }
 
+extern "C" void fun_006d60c0(void) {
+}
+
 extern "C" void NuPadClosePS(FRAME_PAD *pad) {
     pad->flags &= ~4;
+}
+
+extern "C" void NuPadInitPS(FRAME_SCANNED_PAD *pad) {
 }
 
 extern "C" i32 PcInputKeyboardDeadzone(void) {
@@ -2867,6 +2900,19 @@ extern "C" void PcKeyDown(i32 scan_code) {
 
 extern "C" {
     f32 FmvOverlayTimer = 0.0f;
+}
+
+extern "C" void MenuSetPlatformState(i32 state) {
+}
+
+/* Empty; its presentation caller consumes no return value. */
+extern "C" void PCPresentationPlatformLeaf(void) {
+}
+
+extern "C" void FmvPlatformFinish(void) {
+}
+
+extern "C" void fun_006d6b60(void) {
 }
 
 extern "C" i32 PcKeyboardKeyAutoRepeat(i32 key) {

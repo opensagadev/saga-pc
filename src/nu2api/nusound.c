@@ -913,36 +913,12 @@ void ResetSounds(void) {
     PCByteCopy(SfxBits, GlobalSfxBits, 0xc8);
 }
 
-void UpdateBackgroundMusic(void) {
-}
-
 void SetSoundVolume(f32 volume) {
     MASTERVOLUME = volume;
 }
 
 f32 GetSoundVolume(void) {
     return MASTERVOLUME;
-}
-
-void NuSound3AddRumble(void *pad, f32 strength, i32 duration, f32 priority, f32 buzz) {
-}
-
-void NuSound3SetRumblePads(void *pad_0, void *pad1) {
-}
-
-void fun_006986e0(void) {
-}
-
-void fun_006986f0(void) {
-}
-
-void fun_00698700(void) {
-}
-
-void NuSound3StopRumble(void) {
-}
-
-void NuSound3UpdateRumble(f32 frame_time) {
 }
 
 void SetSoundBitsById(const i32 *ids, void (*set_bit)(i32)) {
@@ -1583,13 +1559,6 @@ void SetLinkedCutSceneMusic(void *context, i32 state) {
         Music.state == MUSIC_PLAYBACK_DUAL_STREAM_PENDING) {
         Music.state = state == MUSIC_PLAYBACK_DUAL_STREAM_PENDING ? MUSIC_PLAYBACK_DUAL_STREAM_PENDING : MUSIC_PLAYBACK_DUAL_STREAM;
     }
-}
-
-/* A bare return that reads neither argument. */
-void NuSound3ClearLoopHold(NUVEC *position, i32 mode) {
-}
-
-void fun_00698a30(void) {
 }
 
 /* Sound error report, compiled empty. It lives outside the sound voice code so its callers keep their

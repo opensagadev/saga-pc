@@ -59,8 +59,6 @@
 #include "legoapi/gizmos/transport/grapples.h"
 #include "legoapi/menus/screens/customise.h"
 
-/* Retail unit 0x40a4b0-0x40e6fa: definitions in retail address order. */
-
 extern "C" {
     extern NUMTX CutCamMtx;
     extern f32 CamStopBlend;
@@ -331,6 +329,9 @@ f32 PodCamDist = 0;
 i32 netcamera = 0;
 
 u32 GAMEPAD_SELECT = PAD_BUTTON_SELECT;
+
+void ViewCamDraw(void) {
+}
 
 void MoveGameCamera(GAMECAMERA *camera) {
     i32 menu_id;

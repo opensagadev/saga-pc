@@ -468,6 +468,9 @@ extern "C" void Collection_Draw(COLLECTION_BUILD *collection, f32 x, f32 y, f32 
     }
 }
 
+extern "C" void fun_00594210(void) {
+}
+
 /* Native 594220 is an actual RET with no argument reads. */
 extern "C" void CollectionConfigDiagnostic(char *file, ...) {
 }

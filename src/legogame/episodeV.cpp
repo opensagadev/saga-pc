@@ -103,6 +103,9 @@ static void KilledTrooperCannon(GAMEOBJECT *object) {
     }
 }
 
+extern "C" void fun_004e5eb0(void) {
+}
+
 void InitTrooperCannons(WORLDINFO *unused) {
     memset(troopercannons, 0, sizeof(troopercannons));
 }
@@ -199,6 +202,9 @@ void HothEscapeA_Init(WORLDINFO *world) {
     troopercannons_beenReset = 0;
 }
 
+void HothEscapeA_Reset(WORLDINFO *world) {
+}
+
 void HothEscapeA_Update(WORLDINFO *world) {
     ResetTrooperCannons(world, id_SNOWTROOPER);
     UpdateTrooperCannons(world);
@@ -236,6 +242,9 @@ void HothEscapeC_Init(WORLDINFO *world) {
     troopercannons_beenReset = 0;
 }
 
+void HothEscapeC_Reset(WORLDINFO *world) {
+}
+
 void HothEscapeC_Update(WORLDINFO *world) {
     ResetTrooperCannons(world, id_SNOWTROOPER);
     UpdateTrooperCannons(world);
@@ -248,6 +257,9 @@ void HothEscapeC_AlwaysUpdate(WORLDINFO *world) {
 void HothEscapeD_Init(WORLDINFO *world) {
     memset(troopercannons, 0, sizeof(troopercannons));
     troopercannons_beenReset = 0;
+}
+
+void HothEscapeD_Reset(WORLDINFO *world) {
 }
 
 void HothEscapeD_Update(WORLDINFO *world) {

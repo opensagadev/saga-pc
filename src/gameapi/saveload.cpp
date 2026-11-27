@@ -91,9 +91,6 @@ extern "C" {
         return 1;
     }
 
-    void fun_00543ed0(void) {
-    }
-
     i32 saveloadCheckSlotsUsed(void) {
         i32 used = 0;
         for (i32 slot = 0; slot < 6; ++slot) {

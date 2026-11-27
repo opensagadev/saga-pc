@@ -458,9 +458,6 @@ void DeathStarBattleDReset(WORLDINFO *world) {
 void DeathStarBattleDDraw(WORLDINFO *world) {
 }
 
-extern "C" void fun_004e5eb0(void) {
-}
-
 /* Asteroid field. */
 
 /* Rotating rock at the end of AsteroidChase C. */

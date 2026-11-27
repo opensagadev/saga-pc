@@ -15,6 +15,9 @@
 
 #include <string.h>
 
+extern "C" void fun_00576bc0(void) {
+}
+
 extern "C" void MinicamcutNuError(void) {
 }
 

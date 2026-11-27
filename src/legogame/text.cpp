@@ -86,6 +86,10 @@ void Text_DecodeButtons(char *source, char *destination) {
     }
 }
 
+/* Empty. */
+void Text_FillInExtendedSaveInfo(void) {
+}
+
 void Text_LoadStrings(VARIPTR *buffer, VARIPTR *buffer_end) {
     char language[32];
     char path[256];

@@ -1248,6 +1248,9 @@ void *LoadGizFlow(void *world, void *system, char *path, VARIPTR *buffer, VARIPT
     return flow;
 }
 
+extern "C" void fun_0059d750() {
+}
+
 extern "C" void DynamicAddGizmoToFlow(GIZFLOW *system, GIZMO *gizmo) {
     FLOWBOX *box;
     i32 i;

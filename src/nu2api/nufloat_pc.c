@@ -22,3 +22,6 @@ f32 NuFmax(f32 a, f32 b) {
 f32 NuFmin(f32 a, f32 b) {
     return a < b ? a : b;
 }
+
+void NuVecConvertToIntVU0(void) {
+}

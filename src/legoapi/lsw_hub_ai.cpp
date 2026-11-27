@@ -20,9 +20,6 @@
 #include <stdio.h>
 #include <string.h>
 
-extern "C" void fun_00491610(void) {
-}
-
 /* HubAI producer family. */
 
 extern "C" void fun_00491b90(void) {

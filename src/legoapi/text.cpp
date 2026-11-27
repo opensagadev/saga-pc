@@ -65,6 +65,9 @@ static i32 Text_MaxStrings_Overall = 0;
 static u32 *Text_StringBits = 0;
 void (*Text_GameSetLanguageFn)(i32) = 0;
 
+extern "C" void fun_0054b510(void) {
+}
+
 void Text_InitLanguageList(LANGUAGEDATA *language_list) {
     if (language_list != NULL) {
         Text_LanguageList = language_list;
@@ -315,10 +318,6 @@ void Text_LoadAndFixUpStrings(char *path, u8 **buffer, char **table, i32 count) 
         NuFParDestroy(parser);
     }
     *buffer = out;
-}
-
-/* Empty. */
-void Text_FillInExtendedSaveInfo(void) {
 }
 
 void TextRegisterButtonMapFn(void (*fn)(char *, char *)) {

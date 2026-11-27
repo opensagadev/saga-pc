@@ -13,9 +13,6 @@
 #include <stdio.h>
 #include "nu2api/nu3d/nushaderobject.h"
 
-extern "C" void NuSound3GetStreamInfo(i32 stream_index, void *info) {
-}
-
 SoundVoiceManagerPC::~SoundVoiceManagerPC() {
     i32 i;
     NuSound3ShutdownStreams();
@@ -196,9 +193,6 @@ i32 SoundQueue::SetStreamFlags(i32 flags) {
         return 0;
     }
     return SendCommand(SOUNDQUEUE_CMD_PLAY, flags);
-}
-
-extern "C" void fun_006984b0(void) {
 }
 
 void SoundQueue::CancelPause(void) {

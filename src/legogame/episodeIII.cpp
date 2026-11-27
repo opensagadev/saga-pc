@@ -270,6 +270,9 @@ void CruiserDUpdate(WORLDINFO *world) {
     }
 }
 
+extern "C" void GrievousA_Init(WORLDINFO *world) {
+}
+
 void GrievousA_Reset(WORLDINFO *world) {
     if (netclient != 0) {
         return;
@@ -300,9 +303,15 @@ void GrievousA_Update(WORLDINFO *world) {
     }
 }
 
+extern "C" void KashyyykA_Init(WORLDINFO *world) {
+}
+
 void KashyyykA_Reset(WORLDINFO *unused0) {
     KashyyykA_msg_TotalWookies = CheckGizAIMessage(gizaimessagesys, "TotalWookies", NULL);
     KashyyykA_msg_WookiesToRescue = CheckGizAIMessage(gizaimessagesys, "WookiesToRescue", NULL);
+}
+
+extern "C" void KashyyykA_Update(WORLDINFO *world) {
 }
 
 void KashyyykA_Panel(WORLDINFO *world) {
@@ -329,6 +338,21 @@ void KashyyykA_Panel(WORLDINFO *world) {
             }
         }
     }
+}
+
+extern "C" void KashyyykB_Init(WORLDINFO *world) {
+}
+
+extern "C" void KashyyykB_Reset(WORLDINFO *world) {
+}
+
+extern "C" void KashyyykB_Update(WORLDINFO *world) {
+}
+
+extern "C" void KashyyykC_Init(WORLDINFO *world) {
+}
+
+extern "C" void KashyyykC_Update(WORLDINFO *world) {
 }
 
 void KashyyykD_Init(WORLDINFO *world) {
@@ -680,6 +704,9 @@ void VaderA_GoneThroughDoor(WORLDINFO *world, DOOR_s *door) {
     }
 }
 
+extern "C" void VaderB_Init(WORLDINFO *world) {
+}
+
 void VaderB_Reset(WORLDINFO *unused0) {
     vader_b_complete_msg = SetGizAIMessage(gizaimessagesys, "VaderBComplete", 0.0f, NULL);
     vader_b_playersDead = 0;
@@ -701,6 +728,9 @@ extern "C" void *vaderc_netpacket = NULL;
 extern "C" NUVEC boulder_old_pos[2] = {0};
 extern "C" i32 Vader_ObiWanKilledAnakin = 0;
 extern "C" f32 boulder_wait = 0.0f;
+
+extern "C" void VaderB_DrawPanel(WORLDINFO *world) {
+}
 
 void VaderC_Init(WORLDINFO *world) {
     char *names[10] = {"rock1", "rock2", "rock3", "rock4", "rock5", "rock6", "rock7", "rock8", "rock10", "rock11"};

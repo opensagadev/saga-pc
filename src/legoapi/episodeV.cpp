@@ -70,13 +70,4 @@
 
 /* Rotating rock at the end of AsteroidChase C. */
 
-void HothEscapeA_Reset(WORLDINFO *world) {
-}
-
-void HothEscapeC_Reset(WORLDINFO *world) {
-}
-
-void HothEscapeD_Reset(WORLDINFO *world) {
-}
-
 struct GIZTURRET_s *StarDestroyerTurrets[16] = {0};

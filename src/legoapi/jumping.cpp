@@ -993,6 +993,9 @@ void BigJumpCode(GAMEOBJECT *object) {
     }
 }
 
+extern "C" void fun_005644b0() {
+}
+
 FADETYPE_VALUE Fade::GetFadeType() const {
     return FADE_TYPE_SCREEN;
 }

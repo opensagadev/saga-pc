@@ -319,9 +319,6 @@ void CentreTwoPlayerCamera(NUVEC *center, NUVEC *player_a, NUVEC *player_b, NUVE
     center->z = (player_b->z - player_a->z) * blend + player_a->z;
 }
 
-void ViewCamDraw(void) {
-}
-
 void GameCam_Reset(GAMECAMERA *camera) {
     if (camera == NULL) {
         camera = GameCam;

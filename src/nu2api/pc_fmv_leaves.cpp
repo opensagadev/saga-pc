@@ -10,9 +10,3 @@ extern "C" void FmvOptionError(i32, const char *, i32) {
 
 extern "C" void FmvPlatformUpdate(void) {
 }
-
-extern "C" void FmvPlatformFinish(void) {
-}
-
-extern "C" void fun_006d6b60(void) {
-}

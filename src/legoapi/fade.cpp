@@ -261,8 +261,5 @@ void FadeStill::DrawFade() {
 void Fade::UpdateFade() {
 }
 
-extern "C" void fun_005644b0() {
-}
-
 void FadeWipe::UpdateFade() {
 }

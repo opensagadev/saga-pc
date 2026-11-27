@@ -165,6 +165,9 @@ static i32 HubChooseRandomCharacter(i16 *characters) {
     return -1;
 }
 
+extern "C" void fun_00491610(void) {
+}
+
 i32 Hub_GetRandomCharType(void) {
     i16 characters[340];
     Hub_MakeListCharactersAvailable(characters);

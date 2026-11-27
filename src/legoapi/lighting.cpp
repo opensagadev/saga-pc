@@ -62,6 +62,9 @@ static void LightingLookAtD3D(NUMTX *view, NUVEC *eye, NUVEC *target, NUVEC *up)
 
 extern "C" {
 
+    void fun_005950e0() {
+    }
+
     static void ZeroLightSetupPrivate(NUVEC *direction0, NUVEC *colour0, NUVEC *direction1, NUVEC *colour1, NUVEC *direction2,
                                       NUVEC *colour2) {
         PCGlobalLightingState.direction[0] = *direction0;
@@ -516,6 +519,9 @@ extern "C" {
     }
     struct PC_SPECIAL_SHADOW_LIGHT *PCShadowCurrentLight = 0;
     struct PC_SPECIAL_SHADOW_LIGHT *PCShadowSecondaryLight = 0;
+
+    void SetDepthOfField(void) {
+    }
 
     void InitShadowLights(void) {
         struct PC_SPECIAL_SHADOW_LIGHT *light;

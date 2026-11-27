@@ -40,6 +40,9 @@ void PC_SHADER_PARAMETER_LOCAL::SetClassValues(i32 first_element, i32 count, con
     }
 }
 
+extern "C" void NushaderobjectbaseNuError(void) {
+}
+
 void PCShaderObjectInitHLSLPc(NuShaderObject *shader, const u32 *key, i32 index, const char *vertex_source, i32 vertex_length,
                               const char *pixel_source, i32 pixel_length, i32 version) {
     NuShaderObjectInit(shader, key, index, vertex_source, vertex_length, pixel_source, pixel_length, version);
@@ -198,10 +201,4 @@ extern "C" void NuShaderObjectSetElementsfv_transpose(NuShaderObject *shader, i3
     }
 }
 
-extern "C" void NushaderobjectNuError(void) {
-}
-
 /* Minimum accessed cohort, not a whole NUMTL allocation/size claim. */
-
-extern "C" void fun_00743970(void) {
-}

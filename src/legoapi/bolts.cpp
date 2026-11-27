@@ -2956,8 +2956,4 @@ extern "C" {
 
 // Private rotation leaves take the matrix in EAX and angle in ECX (VC8 internal ABI).
 
-extern "C" {
-
-    void fun_005845a0() {
-    }
-}
+extern "C" {}

@@ -134,6 +134,3 @@ PC_SHADER_PARAMETER_LOCAL *PCShaderAllocateParameter(NuShaderObject *shader, i32
 extern "C" i32 fun_00743d50(void) {
     return 0;
 }
-
-extern "C" void NushaderobjectbaseNuError(void) {
-}

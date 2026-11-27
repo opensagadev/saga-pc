@@ -24,9 +24,6 @@ extern "C" {
     PC_NATIVE_DEBUG_STATE PCNativeWarningDebugState;
 }
 
-extern "C" void fun_006d3b20(void) {
-}
-
 extern "C" i32 PcConfigureInputGraphicsCaps() {
     if (PcCapsConfigured) {
         return 1;
@@ -138,9 +135,6 @@ extern "C" i32 PcConfigureInputGraphicsCaps() {
         }
     }
     return 1;
-}
-
-extern "C" void fun_006d4d60(void) {
 }
 
 // Append to input_runtime.cpp; declarations/mappings in B-contract.json.

@@ -34,9 +34,6 @@ extern "C" {
         {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}};
 }
 
-extern "C" void Hub_LockUnlockDoors(WORLDINFO *world) {
-}
-
 extern "C" void Hub_DrawStarField(void) {
     GetMenuID();
 }
@@ -64,7 +61,4 @@ extern "C" char *TextButtonString(i32 action, const char *player0, const char *p
         NuSPrintf(HubButtonStringBuffer, "~0%s%s~~", first, second);
     }
     return HubButtonStringBuffer;
-}
-
-extern "C" void MenuInitFreePlay(MENU *) {
 }

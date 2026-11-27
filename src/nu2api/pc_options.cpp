@@ -410,9 +410,6 @@ void PC_WINDOW_OPTIONS::Load() {
     Validate();
 }
 
-extern "C" void PcapiNuError(void) {
-}
-
 void PC_WINDOW_OPTIONS::SetDesiredBloomMethod(i32 value) {
     desiredbloommethod = value;
 }

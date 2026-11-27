@@ -57,6 +57,9 @@ i32 Techno_FindOperator(void *target, GAMEPAD **pad, GAMEOBJECT **operator_objec
     return 0;
 }
 
+extern "C" void fun_004cca50(void) {
+}
+
 TECHNO *Technos_FindControllingTechno(GAMEOBJECT *object) {
     TECHNO *techno;
     i32 i;

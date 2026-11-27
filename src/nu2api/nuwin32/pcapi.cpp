@@ -59,6 +59,9 @@ void PC_DEVICE_BACKEND::SetRequestedWindowed(u8 windowed) {
     requested_windowed = windowed;
 }
 
+extern "C" void PcapiNuError(void) {
+}
+
 extern "C" i32 PcOptionsGetHardwareVertexProcessing(void) {
     return PCDeviceHardwareVertexProcessingPC;
 }

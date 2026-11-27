@@ -11,6 +11,10 @@ i32 LevelHackDataSize = 0;
 void *OldLevelHackData = 0;
 f32 LevelHackSendTimer = 0;
 
+/* PC registers no editor helpers. */
+extern "C" void RegisterHelpers(void) {
+}
+
 void *SetLevelHack(i32 size) {
     memset(OldLevelHackData, 0, 0x80);
     memset(LevelHackData, 0, 0x80);

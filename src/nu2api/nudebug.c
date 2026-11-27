@@ -55,49 +55,6 @@ void NuDebugToggle(void) {
 void DisplayListSpecialTransformNoOp(nuhspecial_s *special, NUMTX *matrix) {
 }
 
-/* PC has no PS2 screen grab; the dump is empty. */
-void NuPs2VideoScreenDump(char *filename, i32 format, f32 scale_x, f32 scale_y, i32 face, i32 x, i32 y) {
-}
-
-void fun_006de9e0(void) {
-}
-
-void fun_006de9f0(void) {
-}
-
-void fun_006dea00(void) {
-}
-
-void fun_006dea10(void) {
-}
-
-void fun_006dea30(void) {
-}
-
-void fun_006dea40(void) {
-}
-
-void PCAnimationEffectCheckpoint(void) {
-}
-
-void fun_006dea70(void) {
-}
-
-void fun_006dea80(void) {
-}
-
-void fun_006deb00(void) {
-}
-
-void fun_006deb20(void) {
-}
-
-void fun_006debf0(void) {
-}
-
-void fun_006dec00(void) {
-}
-
 void PCCharacterModelDiagnosticNoOp() {
 }
 
@@ -116,15 +73,9 @@ void NuFileError(void) {
 void NuFileRetry(void) {
 }
 
-void fun_004ef7c0(void) {
-}
-
 /* Empty release diagnostics with an argument; the linker folds them into
    NuFileError and NuFileRetry. */
 void NuRDPIVariableError(char *name) {
-}
-
-void fun_004ef7a0(void) {
 }
 
 void NuDatFileMissing(char *filepath) {

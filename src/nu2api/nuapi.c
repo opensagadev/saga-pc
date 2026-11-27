@@ -13,10 +13,3 @@ void NuVideoSetBrightnessPS(void) {
 
 void NuVideoSetSwapModePS(i32 mode) {
 }
-
-void MenuSetPlatformState(i32 state) {
-}
-
-/* Empty; its presentation caller consumes no return value. */
-void PCPresentationPlatformLeaf(void) {
-}

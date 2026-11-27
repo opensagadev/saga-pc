@@ -41,6 +41,27 @@
 #include "legoapi/menus/screens/movies.h"
 #include "nu2api/nucore/nupad.h"
 
+extern "C" void fun_006de680(void) {
+}
+
+extern "C" void fun_006de690(void) {
+}
+
+extern "C" void StubsNuError(void) {
+}
+
+void NuPadSetDeviceMotors(FRAME_PAD *pad, i32 motor0, i32 motor1) {
+}
+
+extern "C" void fun_006de6e0(void) {
+}
+
+extern "C" void fun_006de6f0(void) {
+}
+
+extern "C" void fun_006de700(void) {
+}
+
 extern "C" i32 fun_006de710(void) {
     return 0;
 }
@@ -48,6 +69,25 @@ extern "C" i32 fun_006de710(void) {
 extern "C" {
     i32 PcHandlersRunning = 0;
     BGPROC_HANDLER *PcFrameHandlers = 0;
+
+    void fun_006de720(void) {
+    }
+
+    /* The PC build has no debug-print lock; both halves are empty. */
+    void PcDebugPrintUnlock(void) {
+    }
+
+    void PcDebugPrintLock(void) {
+    }
+
+    void PcEnableThreadSwap(void) {
+    }
+
+    void PcDisableThreadSwap(void) {
+    }
+
+    void fun_006de770(void) {
+    }
 
     i32 BgProcRunHandlers(void) {
         BGPROC_HANDLER *handler;
@@ -64,6 +104,18 @@ extern "C" {
     BGPROC_HANDLER *PcVBlankHandlers = 0;
     volatile i32 nuvideo_global_vbcnt = 0;
 
+    void fun_006de7c0(void) {
+    }
+
+    void fun_006de7d0(void) {
+    }
+
+    void fun_006de7e0(void) {
+    }
+
+    void fun_006de7f0(void) {
+    }
+
     i32 PcRunVBlankHandlers(void) {
         BGPROC_HANDLER *handler;
 
@@ -76,6 +128,12 @@ extern "C" {
         }
         PcHandlersRunning = 0;
         return 1;
+    }
+
+    void fun_006de860(void) {
+    }
+
+    void fun_006de870(void) {
     }
 
     void PcVBlankTick(void) {
@@ -94,6 +152,12 @@ extern "C" {
 }
 u8 *ps2_scratch_free = NuScratchBackingAccess;
 __declspec(align(4)) u8 NuScratchBackingAccess[0x4000] = {0};
+
+extern "C" void fun_006de8a0(void) {
+}
+
+extern "C" void fun_006de8b0(void) {
+}
 
 extern "C" void NuScratchReset(void) {
     ps2_scratch_free = NuScratchBackingAccess;
@@ -138,6 +202,19 @@ void NuScratchRelease(void) {
 
 extern "C" {
 
+    void fun_006de970(void) {
+    }
+
+    void fun_006de980(void) {
+    }
+
+    void fun_006de990(void) {
+    }
+
+    /* PC has no PS2 screen grab; the dump is empty. */
+    void NuPs2VideoScreenDump(char *filename, i32 format, f32 scale_x, f32 scale_y, i32 face, i32 x, i32 y) {
+    }
+
     i32 fun_006de9b0(void) {
         return -1;
     }
@@ -150,8 +227,26 @@ extern "C" {
         return GamePadReadBackend(pad, -1);
     }
 
+    void fun_006de9e0(void) {
+    }
+
+    void fun_006de9f0(void) {
+    }
+
+    void fun_006dea00(void) {
+    }
+
+    void fun_006dea10(void) {
+    }
+
     i32 fun_006dea20(void) {
         return 0;
+    }
+
+    void fun_006dea30(void) {
+    }
+
+    void fun_006dea40(void) {
     }
 
     i32 fun_006dea50(void) {
@@ -159,6 +254,15 @@ extern "C" {
     }
 
     u32 *dat_0297ad00 = 0;
+
+    void PCAnimationEffectCheckpoint(void) {
+    }
+
+    void fun_006dea70(void) {
+    }
+
+    void fun_006dea80(void) {
+    }
 
     u32 *fun_006dea90(u32 *end) {
         *(u16 *)dat_0297ad00 = (u16)((u32)((u8 *)end - (u8 *)dat_0297ad00) / 16 - 1);
@@ -181,8 +285,14 @@ extern "C" {
 
     i32 dat_02976ce8 = 0;
 
+    void fun_006deb00(void) {
+    }
+
     i32 fun_006deb10(void) {
         return dat_02976ce8;
+    }
+
+    void fun_006deb20(void) {
     }
 
     i32 fun_006deb30(void) {
@@ -212,6 +322,12 @@ extern "C" {
     }
 }
 
+extern "C" void fun_006debf0(void) {
+}
+
+extern "C" void fun_006dec00(void) {
+}
+
 i32 NuPs2ApplyDeadZone(i32 v, i32 deadrng) {
     i32 dx;
 
@@ -234,6 +350,12 @@ extern "C" i32 fun_006dec60(void) {
     return 1;
 }
 
+extern "C" void fun_006dec70(void) {
+}
+
+extern "C" void fun_006dec80(void) {
+}
+
 extern "C" i32 fun_006dec90(void) {
     return 0;
 }
@@ -252,6 +374,9 @@ extern "C" i32 fun_006decc0(void) {
 
 extern "C" i32 fun_006decd0(void) {
     return 0;
+}
+
+extern "C" void fun_006dece0(void) {
 }
 
 extern "C" i32 fun_006decf0(i32 *value) {

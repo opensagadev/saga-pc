@@ -1991,6 +1991,9 @@ extern "C" {
 }
 #endif
 
+extern "C" void fun_005845a0() {
+}
+
 /* Empty on PC. Defined after its callers and variadic, so CharConfig_ConfigureAll keeps the calls. */
 void CharConfigPakDiagnostic(const char *format, ...) {
 }

@@ -25,9 +25,6 @@
 #include <math.h>
 #include <stdlib.h>
 
-extern "C" void fun_006e5c10(void) {
-}
-
 extern "C" {
     HRESULT PCDeviceLastResult = 0;
 }
@@ -103,12 +100,6 @@ extern "C" void PCGraphicsDrawUnitBox(NUMTX *matrix) {
     PCDeviceDrawIndexedPrimitiveUPPc(4, 0, 8, 12, indices, 0x65, corners, sizeof(NUVEC4));
 }
 
-extern "C" void D3dCoreNuError(void) {
-}
-
-extern "C" void fun_006e1920(void) {
-}
-
 PC_DEVICE_BACKEND::~PC_DEVICE_BACKEND() {
     Shutdown();
 }
@@ -168,9 +159,6 @@ extern "C" void PCDeviceCreateDepthSurface(u32 width, u32 height, i32 format, i3
 extern "C" void PCDeviceCreateTexture(u32 width, u32 height, u32 levels, u32 usage, i32 format, i32 pool, PC_TEXTURE_RESOURCE **texture) {
     PC_TEXTURE_CREATE_DEVICE *device = reinterpret_cast<PC_TEXTURE_CREATE_DEVICE *>(PCDeviceBackend.device);
     PCDeviceLastResult = device->methods->create_texture(device, width, height, levels, usage, format, pool, texture, NULL);
-}
-
-extern "C" void fun_006e2160(void) {
 }
 
 // noinline: the original calls PCDeviceEvictManagedResources out of line from

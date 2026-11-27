@@ -111,8 +111,17 @@ i32 PC_DEVICE_BACKEND::GetDeviceType() {
     return caps.device_type;
 }
 
+extern "C" void D3dCoreNuError(void) {
+}
+
 extern "C" i32 PcDeviceGetHardwareVertexProcessing(void) {
     return PCDeviceHardwareVertexProcessingPC;
+}
+
+extern "C" void fun_006e2160(void) {
+}
+
+extern "C" void fun_006e1920(void) {
 }
 
 PC_DEVICE_BACKEND::PC_DEVICE_BACKEND() {

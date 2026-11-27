@@ -3,12 +3,6 @@
 #include "nu2api/nuwin32/d3dCalls.h"
 #include "nu2api/nuwin32/nu2api_windows.h"
 
-void NuMouseRead(void) {
-}
-
-extern "C" void fun_006d5940(void) {
-}
-
 f32 PcMouseX = 0.0f;
 
 f32 NuMouseReadX(void) {

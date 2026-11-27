@@ -231,9 +231,6 @@ void Credits_GetInfo(f32 *duration, i32 *flag, f32 *alpha) {
     }
 }
 
-extern "C" void fun_0059d750() {
-}
-
 static void CreditsDrawList(CREDIT_RECORD *credit, f32 time) {
     char percentage[32];
     f32 x;

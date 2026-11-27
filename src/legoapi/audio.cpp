@@ -886,6 +886,15 @@ extern "C" void MusicClearAll() {
 
 extern "C" {
 
+    void SfxCheckMusicOnOff(OPTIONSSAVE *options) {
+    }
+
+    void UpdateBackgroundMusic(void) {
+    }
+
+    void SetBackgroundMusic(i32 track) {
+    }
+
     void GameAudio_Init(GAMEAUDIO *audio) {
         i32 i;
         GameAudio = audio;

@@ -206,6 +206,9 @@ void PC_SHADER_PARAMETER_LOCAL::SetMatrixValue(i32 first_element, const f32 *val
     SetMatrixValues(first_element, 1, values);
 }
 
+extern "C" void NushaderobjectNuError(void) {
+}
+
 void PCShaderProbeHLSLConstants(NuShaderObject *shader, ID3DXConstantTable *vertex_constants, ID3DXConstantTable *pixel_constants) {
     i32 i;
     shader->active_parameters = NULL;
@@ -789,4 +792,7 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
         }
         parameter = parameter->next;
     }
+}
+
+extern "C" void fun_00743970(void) {
 }

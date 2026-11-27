@@ -582,6 +582,9 @@ extern "C" void RadFmvDestroyImage(RADFMV_IMAGE *image) {
 extern "C" void fun_00633390(void) {
 }
 
+extern "C" void DsplayBinkNuError(void) {
+}
+
 /* Uncalled. Seconds played of the current movie. */
 extern "C" f32 FmvGetTime(void) {
     PC_FMV_REALTIME realtime;

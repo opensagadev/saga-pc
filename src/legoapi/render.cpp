@@ -422,15 +422,6 @@ void DrawAlphaGrid(i32 rows, i32 cols, NU_POST_BLOOM_PARAMETERS *parameters) {
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
 
-void CollectCharactersOff_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-}
-
-void BonusTime_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-}
-
-void BonusWin_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-}
-
 /* Original source name unknown. The native entry is exactly RET; ReleaseTakeOver passes it the rider and
  * vehicle character names. */
 void TakeOverReleaseDiagnostic(char *rider_name, char *object_name) {

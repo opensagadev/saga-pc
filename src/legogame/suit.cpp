@@ -33,9 +33,6 @@ extern "C" void fun_004cca40(void) {
     areaSuitBits = 0xffffffff;
 }
 
-extern "C" void fun_004cca50(void) {
-}
-
 i32 Suit_GetIndex(SUIT_INITIALIZER_RECORD *suit) {
     i32 index;
     for (index = 0; index < 10; ++index) {

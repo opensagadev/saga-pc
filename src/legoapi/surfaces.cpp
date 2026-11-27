@@ -244,6 +244,3 @@ void InitSurfaceInfo(GAMEOBJECT *object) {
         extra_reflect(object);
     }
 }
-
-extern "C" void fun_00572ac0(void) {
-}

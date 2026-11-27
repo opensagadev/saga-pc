@@ -1013,6 +1013,9 @@ extern "C" i32 NuSound3SetStreamVolume(i32 index, i32 volume) {
     return NuSound3StereoStreams[index]->SetVolume(level);
 }
 
+extern "C" void fun_006984b0(void) {
+}
+
 extern "C" i32 NuSound3GetStereoStreamStatus(i32 index) {
     if (index != 0) {
         index = 1;
@@ -1126,6 +1129,15 @@ extern "C" {
     }
 }
 
+extern "C" void fun_006986e0(void) {
+}
+
+extern "C" void fun_006986f0(void) {
+}
+
+extern "C" void fun_00698700(void) {
+}
+
 void NuSound3SetRequestTable(u16 *request_bits, i32 short_count) {
     SAGA_SOUND_SETTER_BEGIN();
     if (PCSoundMixSampleCount != short_count) {
@@ -1176,6 +1188,18 @@ extern "C" {
         return 0;
     }
 
+    void NuSound3AddRumble(void *pad, f32 strength, i32 duration, f32 priority, f32 buzz) {
+    }
+
+    void NuSound3StopRumble(void) {
+    }
+
+    void NuSound3UpdateRumble(f32 frame_time) {
+    }
+
+    void NuSound3SetRumblePads(void *pad_0, void *pad1) {
+    }
+
     i32 fun_00698940(void) {
         return 1;
     }
@@ -1216,6 +1240,16 @@ extern "C" {
     void NuSound3SetLoopHoldTime(f32 time) {
         NuSound3LoopHoldTime = (i32)(time * 1000.0);
     }
+}
+
+/* A bare return that reads neither argument. */
+extern "C" void NuSound3ClearLoopHold(NUVEC *position, i32 mode) {
+}
+
+extern "C" void fun_00698a30(void) {
+}
+
+extern "C" void NuSound3GetStreamInfo(i32 stream_index, void *info) {
 }
 
 extern "C" i32 NuStreamGetStatusText(i32 stream, i32 alternate, char *text, i32 size) {

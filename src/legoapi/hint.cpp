@@ -372,6 +372,3 @@ void Hint_Process(f32 elapsed) {
         }
     }
 }
-
-extern "C" void fun_00576bc0(void) {
-}

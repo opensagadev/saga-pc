@@ -26,6 +26,8 @@ extern "C" {
 
     void PcInitializeStartupCriticalSection(void);
     extern void bgprocFrameSleep(i32 milliseconds);
+    void PcEnableThreadSwap(void);
+    void PcDisableThreadSwap(void);
 #ifdef __cplusplus
 }
 #endif

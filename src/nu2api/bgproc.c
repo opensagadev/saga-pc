@@ -11,46 +11,6 @@ NULSTHDR *bgproc_procinfo_pool = 0;
 
 volatile u32 nu_current_thread_id = 0;
 
-/* The PC build has no debug-print lock; both halves are empty. */
-void PcDebugPrintUnlock(void) {
-}
-
-void PcDebugPrintLock(void) {
-}
-
-void PcEnableThreadSwap(void) {
-}
-
-void PcDisableThreadSwap(void) {
-}
-
-void fun_006de770(void) {
-}
-
-void fun_006de7c0(void) {
-}
-
-void fun_006de7d0(void) {
-}
-
-void fun_006de7e0(void) {
-}
-
-void fun_006de7f0(void) {
-}
-
-void fun_006de860(void) {
-}
-
-void fun_006de870(void) {
-}
-
-void fun_006de8a0(void) {
-}
-
-void fun_006de8b0(void) {
-}
-
 void (*NuThreadDisableThreadSwap)(void) = PcDisableThreadSwap;
 void (*NuThreadEnableThreadSwap)(void) = PcEnableThreadSwap;
 
