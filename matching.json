@@ -654,7 +654,6 @@
     "src/legoapi/gameobjects.cpp": "9bbaec323b9c48954eb8aff4142b077bafdd881cbe3505e662072906ba9123ba",
     "src/legoapi/gamepads.cpp": "d1eaf9ac5e0b1357d7cd1ffa1cbb79a5a23c3904f3c64e9732d9a0fa0012e379",
     "src/legoapi/gamestructure.cpp": "5f4c35784c4649944c8944a3d2cbed4c1708490411ebd342bf97d6718506c78b",
-    "src/legoapi/gamethings.cpp": "fbe900884b023030c0a89f785f17e1c3f6b67898fcd304004ee9583ad9fca845",
     "src/legoapi/gizbuildit.cpp": "5d03f83e4eeb41a89e200f5f92fa0cf8aabc6373376110598853a4fffc9f11f5",
     "src/legoapi/gizflow.cpp": "3b9b7244416a9e7e6a6bdafb693f0726310717bfd2ba8e1a5f541241b9c7ec66",
     "src/legoapi/gizflow_diagnostic.cpp": "cbc5fc25322c5dc7979de6148dc368eff08f57fa8f00ec3080cfc0ab33f250c4",
@@ -722,6 +721,7 @@
     "src/legoapi/texanim_scripts.cpp": "07e6d1f5835999c5712371d99a60c537af4124d3d36a7c34b364c6c38fba4a4d",
     "src/legoapi/text.cpp": "f650282101d94a2f0bdcf7c0bf1fb5e503a59b47d29d97727c1b9f5f4b41fc86",
     "src/legoapi/text_tables.cpp": "9f4a118bc571386da54b9d988525af79008e4e58e89ffdf1d7f1a6d6742fba99",
+    "src/legoapi/things.cpp": "fbe900884b023030c0a89f785f17e1c3f6b67898fcd304004ee9583ad9fca845",
     "src/legoapi/timing.cpp": "63e725ed6f0115f73abbac2c386f4614ff0dfecefc03431a420677d54f1996e7",
     "src/legoapi/tubes.cpp": "9016b2f21598479e753986a8de01615a41c04bf4e873e830236bd38585a65ad5",
     "src/legoapi/utilities.cpp": "f1bff0ed4206fd2dd4a83533a6682e794ed8e8888980c6b91bc39b83b9aa3e5f",
@@ -1087,7 +1087,6 @@
     "build/obj/legoapi/gameobjects.obj": "1024bd2f7a0f66f4ff349663e29b20d93831ba69021518b02ca8be668490a4be",
     "build/obj/legoapi/gamepads.obj": "fa970cea08bb89f301151984f4c7214ec222a39c5b56177e358239eb4faf9475",
     "build/obj/legoapi/gamestructure.obj": "43b2d0b66cfbc86aeef172beb409f99646fa9ecb1407ab9942f889db4cdb90ee",
-    "build/obj/legoapi/gamethings.obj": "d94a166779f63e7bcc24ea2061f679f419fbb6a4b401208d93382386d2fcb894",
     "build/obj/legoapi/gcutscn.obj": "9684585ed6f4e3588cca9c0cdbd625c73e05e77036b962fa5ce53683ff51c46c",
     "build/obj/legoapi/gcutscn_locators.obj": "54fd9c2e0708335fe6fb69cf4c77f34493929c3436a616d40be5c380550c4c8f",
     "build/obj/legoapi/gizbuildit.obj": "55c9a9fd609390c04ae63db991d335cdb6ed3fe2ac97508b1e0ba956cc079adb",
@@ -1166,6 +1165,7 @@
     "build/obj/legoapi/texanim_scripts.obj": "f8154cf60585fcd25f3f0b8cf4eeb17412db18faccae5fb8ca8f471644df4fd7",
     "build/obj/legoapi/text.obj": "9f6a60f2892b3b394678000b53b615de367a6b3da9e5a808b20341dbf190b9e8",
     "build/obj/legoapi/text_tables.obj": "cb64a9c6ba096c7ad6ce57ea5de2f06a2a6f5e18369d7f56168e2918994c8934",
+    "build/obj/legoapi/things.obj": "cce81029f00751f3f78d72d486ae3f657862bc177ff590f3011041851e1b1224",
     "build/obj/legoapi/timing.obj": "e2f0f7a878236208edb1af931233fcdc03c0c47b48175f76686d18fd18ce4a8b",
     "build/obj/legoapi/tubes.obj": "d13b502e42185c76a4e84956f385035a12d4c2fa2b26dabff3f66c7232895ea4",
     "build/obj/legoapi/utilities.obj": "7678e46e657eb050393a92df2fc542ac10a97647aa337c2af9e33093e2bea17f",
@@ -168209,7 +168209,7 @@
       "address": "0x005b15e0",
       "units": [
         "src/gameapi/supportall.cpp",
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
@@ -168225,13 +168225,13 @@
           "objdiff_percent": 100.0
         },
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "base_size": 7,
           "exact_match": true,
           "target_sha256": "485f2c5c5e2edc3baefd3d33f17815153efe7901dbbfaa3c5eb57ba73911b007",
           "base_sha256": "485f2c5c5e2edc3baefd3d33f17815153efe7901dbbfaa3c5eb57ba73911b007",
           "relocation_count": 1,
-          "comparison_unit": "005b15e0-841d26ddb923",
+          "comparison_unit": "005b15e0-780d8e5f23c1",
           "objdiff_percent": 100.0
         }
       ],
@@ -168244,7 +168244,7 @@
       "address": "0x005b15f0",
       "units": [
         "src/gameapi/supportall.cpp",
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 18,
       "exact_match": true,
@@ -168260,13 +168260,13 @@
           "objdiff_percent": 100.0
         },
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "base_size": 18,
           "exact_match": true,
           "target_sha256": "a2e60e3b63139d34f13a03aaeab220f03791863e6aa52d8f4051fb85722ce70e",
           "base_sha256": "a2e60e3b63139d34f13a03aaeab220f03791863e6aa52d8f4051fb85722ce70e",
           "relocation_count": 2,
-          "comparison_unit": "005b15f0-879b93454f2f",
+          "comparison_unit": "005b15f0-f8368edba82f",
           "objdiff_percent": 100.0
         }
       ],
@@ -168289,7 +168289,7 @@
       "address": "0x005b1610",
       "units": [
         "src/gameapi/supportall.cpp",
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 35,
       "exact_match": true,
@@ -168305,13 +168305,13 @@
           "objdiff_percent": 100.0
         },
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "base_size": 35,
           "exact_match": true,
           "target_sha256": "71e9cf4252982dceb4d24536617ee4a8eff6e2a214e8697fb78c74ff747bac5c",
           "base_sha256": "71e9cf4252982dceb4d24536617ee4a8eff6e2a214e8697fb78c74ff747bac5c",
           "relocation_count": 3,
-          "comparison_unit": "005b1610-2eec81daa0b4",
+          "comparison_unit": "005b1610-feadfec6a7c6",
           "objdiff_percent": 100.0
         }
       ],
@@ -168323,19 +168323,19 @@
       "symbol": "??2GameThingManager@@SAPAXI@Z",
       "address": "0x005b1640",
       "units": [
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 18,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "base_size": 18,
           "exact_match": true,
           "target_sha256": "0b367beff491c551de3f50c551cca10e5ef794ef961e309ac44178dfbdbe276c",
           "base_sha256": "0b367beff491c551de3f50c551cca10e5ef794ef961e309ac44178dfbdbe276c",
           "relocation_count": 2,
-          "comparison_unit": "005b1640-280542a0ae9b",
+          "comparison_unit": "005b1640-0fe2e97bcab4",
           "objdiff_percent": 100.0
         }
       ],
@@ -168347,19 +168347,19 @@
       "symbol": "??0GameThingManager@@QAE@H@Z",
       "address": "0x005b1660",
       "units": [
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 31,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "base_size": 31,
           "exact_match": true,
           "target_sha256": "76714b64ecf94b885ff8728613d663312692390391844a81ce04f20fb2e5610f",
           "base_sha256": "76714b64ecf94b885ff8728613d663312692390391844a81ce04f20fb2e5610f",
           "relocation_count": 3,
-          "comparison_unit": "005b1660-cd751bcf8f1f",
+          "comparison_unit": "005b1660-9fa6b51af5ad",
           "objdiff_percent": 100.0
         }
       ],
@@ -168371,19 +168371,19 @@
       "symbol": "??3GameThingManager@@SAXPAX@Z",
       "address": "0x005b1680",
       "units": [
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 18,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "base_size": 18,
           "exact_match": true,
           "target_sha256": "26b687d58f403aa7e36c3b8b61f1f3610b820c7eb072877ed1381e0f8234e087",
           "base_sha256": "26b687d58f403aa7e36c3b8b61f1f3610b820c7eb072877ed1381e0f8234e087",
           "relocation_count": 2,
-          "comparison_unit": "005b1680-a97e56ff9958",
+          "comparison_unit": "005b1680-6392d273bfe2",
           "objdiff_percent": 100.0
         }
       ],
@@ -168395,19 +168395,19 @@
       "symbol": "??1GameThingManager@@UAE@XZ",
       "address": "0x005b16a0",
       "units": [
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 17,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "base_size": 17,
           "exact_match": true,
           "target_sha256": "2032351521fae769e3fe78c3d615bb0a890502f23ecba52efddf2283b623f8c9",
           "base_sha256": "2032351521fae769e3fe78c3d615bb0a890502f23ecba52efddf2283b623f8c9",
           "relocation_count": 2,
-          "comparison_unit": "005b16a0-2c5927c3d8f5",
+          "comparison_unit": "005b16a0-f9c7f64e3cef",
           "objdiff_percent": 100.0
         }
       ],
@@ -168419,19 +168419,19 @@
       "symbol": "?AddOnceOnlyThings@GameThingManager@@QAEXXZ",
       "address": "0x005b16c0",
       "units": [
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 1,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "base_size": 1,
           "exact_match": true,
           "target_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
           "base_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
           "relocation_count": 0,
-          "comparison_unit": "005b16c0-54c707a68dbc",
+          "comparison_unit": "005b16c0-2f821474a914",
           "objdiff_percent": 100.0
         }
       ],
@@ -168443,19 +168443,19 @@
       "symbol": "_fun_005b16d0",
       "address": "0x005b16d0",
       "units": [
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 1,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "base_size": 1,
           "exact_match": true,
           "target_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
           "base_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
           "relocation_count": 0,
-          "comparison_unit": "005b16d0-516f0c053bd2",
+          "comparison_unit": "005b16d0-a7642841502a",
           "objdiff_percent": 100.0
         }
       ],
@@ -168467,19 +168467,19 @@
       "symbol": "?CreateThingManager@@YAXXZ",
       "address": "0x005b16e0",
       "units": [
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 56,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "base_size": 56,
           "exact_match": true,
           "target_sha256": "676057b32a9be6ddcdb8afe091c027ccba0c14e23c7ee0ffe6629f9570a0ca5d",
           "base_sha256": "676057b32a9be6ddcdb8afe091c027ccba0c14e23c7ee0ffe6629f9570a0ca5d",
           "relocation_count": 6,
-          "comparison_unit": "005b16e0-842420f39739",
+          "comparison_unit": "005b16e0-6814e36cfc58",
           "objdiff_percent": 100.0
         }
       ],
@@ -168501,19 +168501,19 @@
       "symbol": "??_GGameThingManager@@UAEPAXI@Z",
       "address": "0x005b1720",
       "units": [
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 45,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "base_size": 45,
           "exact_match": true,
           "target_sha256": "e79778a4ac658627067ce07c58e1fc5c3f410397bc01e427c82f3e62f7689749",
           "base_sha256": "e79778a4ac658627067ce07c58e1fc5c3f410397bc01e427c82f3e62f7689749",
           "relocation_count": 4,
-          "comparison_unit": "005b1720-94fb5e00b33b",
+          "comparison_unit": "005b1720-478c4add311b",
           "objdiff_percent": 100.0
         }
       ],
@@ -552626,7 +552626,7 @@
       "address": "0x00763f00",
       "units": [
         "src/gameapi/supportall.cpp",
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 48,
       "exact_match": true,
@@ -552640,7 +552640,7 @@
           "base_sha256": "d7bf7d579c7a0e831c0f588fa5b19df74502d75ccebba2a44789af040e2e6cf0"
         },
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "exact_match": true,
           "target_size": 48,
           "base_size": 48,
@@ -552655,13 +552655,13 @@
       "symbol": "??_7GameThingManager@@6B@",
       "address": "0x00763f34",
       "units": [
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 48,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "exact_match": true,
           "target_size": 48,
           "base_size": 48,
@@ -734867,7 +734867,7 @@
       "address": "0x007ea6bc",
       "units": [
         "src/gameapi/supportall.cpp",
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 20,
       "exact_match": true,
@@ -734881,7 +734881,7 @@
           "base_sha256": "16c68e036a947c5a4334867e98f63e2fc5b03494fd4132e4e867288d3271d238"
         },
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "exact_match": true,
           "target_size": 20,
           "base_size": 20,
@@ -734897,7 +734897,7 @@
       "address": "0x007ea6d0",
       "units": [
         "src/gameapi/supportall.cpp",
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
@@ -734911,7 +734911,7 @@
           "base_sha256": "6929c62fb55768e371520946e0ce57a78937eb529032a061875f6083db86c9a6"
         },
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "exact_match": true,
           "target_size": 16,
           "base_size": 16,
@@ -734927,7 +734927,7 @@
       "address": "0x007ea6e0",
       "units": [
         "src/gameapi/supportall.cpp",
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
@@ -734941,7 +734941,7 @@
           "base_sha256": "69f2ff6a8085e47caa8baa203d404791b9ad61241f3e63cea122745aa03f0f4a"
         },
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -734957,7 +734957,7 @@
       "address": "0x007ea6e8",
       "units": [
         "src/gameapi/supportall.cpp",
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 28,
       "exact_match": true,
@@ -734971,7 +734971,7 @@
           "base_sha256": "fba2fdc7b820e4ea5d49f37212e68d31882f2fa24d448063bbf26bd884d84600"
         },
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "exact_match": true,
           "target_size": 28,
           "base_size": 28,
@@ -734986,13 +734986,13 @@
       "symbol": "??_R4GameThingManager@@6B@",
       "address": "0x007ea704",
       "units": [
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 20,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "exact_match": true,
           "target_size": 20,
           "base_size": 20,
@@ -735007,13 +735007,13 @@
       "symbol": "??_R3GameThingManager@@8",
       "address": "0x007ea718",
       "units": [
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "exact_match": true,
           "target_size": 16,
           "base_size": 16,
@@ -735028,13 +735028,13 @@
       "symbol": "??_R2GameThingManager@@8",
       "address": "0x007ea728",
       "units": [
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -735049,13 +735049,13 @@
       "symbol": "??_R1A@?0A@EA@GameThingManager@@8",
       "address": "0x007ea734",
       "units": [
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 28,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "exact_match": true,
           "target_size": 28,
           "base_size": 28,
@@ -786654,7 +786654,7 @@
       "address": "0x00806370",
       "units": [
         "src/gameapi/supportall.cpp",
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 27,
       "exact_match": true,
@@ -786668,7 +786668,7 @@
           "base_sha256": "4447aa704721daaa86c05a607517822c102e14d842680884f778e7ae5478812f"
         },
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "exact_match": true,
           "target_size": 27,
           "base_size": 27,
@@ -786683,13 +786683,13 @@
       "symbol": "??_R0?AVGameThingManager@@@8",
       "address": "0x0080638c",
       "units": [
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 31,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "exact_match": true,
           "target_size": 31,
           "base_size": 31,
@@ -861027,13 +861027,13 @@
       "symbol": "_theGameThings",
       "address": "0x0095e438",
       "units": [
-        "src/legoapi/gamethings.cpp"
+        "src/legoapi/things.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/gamethings.cpp",
+          "unit": "src/legoapi/things.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -901766,7 +901766,7 @@
       "metadata_sha256": "525d436eee3d48951222f1fd54574554983d228c3d06f19a545ba7cab50fe057",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "af0a7fd15b810b2195f85d46c45f6ca6ed20d8b206bea3d14009453a203bba6c",
+      "geometry_object_sha256": "2fac1e6023fa805ece4dc45a5567825a3ed98bbb04eeabf311777d6fcfdfa3d5",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
