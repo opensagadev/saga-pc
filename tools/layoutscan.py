@@ -201,7 +201,9 @@ REVIEW = {
                    "edgizshadow starts with them"),
     0x5af850: dict(name="edgizshadow", join=True, why="continues 0x5af4f0"),
     0x5b2da0: dict(name="numath_includes", conf="high", why="marker; Batman numath_includes; retail nugraph.c, nutrig.c"),
-    0x5c1360: dict(name="nu3d_includes", conf="high", why="marker; Batman nu3d_includes; retail nuanim.c, nutexanm.c ..."),
+    0x5c12e0: dict(name="nu3d_includes", conf="high",
+                   why="three bare-RET stubs open it; the static at 0x5c1330 takes arguments in EAX and ECX as compiled "
+                   "with its nu3d_includes caller; marker at 0x5c1360; Batman nu3d_includes; retail nuanim.c, nutexanm.c ..."),
     0x5e4600: dict(name="nu3d_includes", join=True, why="inside nu3d_includes, no marker"),
     0x5e4b00: dict(name="nu3d_includes", join=True, why="inside nu3d_includes, no marker"),
     0x5f7490: dict(name="nu3d_pc_includes", conf="medium",

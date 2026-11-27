@@ -12760,10 +12760,6 @@ extern "C" f32 NuPostEffectTiming(i32 *last_frame) {
 /* nulgtlaser's nu3d forwarders; the laser renderer itself is in nu3d_platform.cpp. */
 extern "C" {
 
-    void NuVec4ScaleXYZVU0(NUVEC4 *out, NUVEC4 *input, f32 scale) {
-        NuVec4Scale(out, input, scale);
-    }
-
     i32 NuRndrBeginSceneEx(i32 flags, i32 layer, i32 mode) {
         return NuRndrBeginScene(flags);
     }
@@ -17441,16 +17437,6 @@ extern "C" {
         matrix = *world;
         NuMtxPreTranslate(&matrix, &root->translation);
         return NuCameraClipTestExtents(&min, &half, &matrix, 0.0f, 0);
-    }
-
-    // noinline: the original calls NuMtxMulArrayVU0 out of line from NuHGobjRndrMtxDwa; VC8 would inline it there.
-    __declspec(noinline) void NuMtxMulArrayVU0(NUMTX *out, NUMTX *left, NUMTX *right, i32 count) {
-        while (count-- != 0) {
-            D3DXMatrixMultiply(((D3DXMATRIX *)(out)), ((D3DXMATRIX *)(left)), ((D3DXMATRIX *)(right)));
-            ++out;
-            ++left;
-            ++right;
-        }
     }
 
     i32 NuHGobjRndrMtxDwa(NUHGOBJ_EVAL *hierarchy, NUMTX *world, i32 render_count, i16 *render_indices, NUMTX *joints,

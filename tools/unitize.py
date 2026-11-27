@@ -733,6 +733,8 @@ def apply_plan(plan, note=None, write=True):
             if item.kind != "include" or not (path == target or any(i.source is source for _, i in plan.moved)):
                 continue
             line = rebase_include(item.text.strip(), path, target)
+            if not target.endswith(".cpp") and re.match(r"#\s*include\s*<[^.>]+>", line):
+                continue  # a C++ standard header such as <new> does not compile in a C target
             if line not in includes:
                 includes.append(line)
     header = f"/* Retail unit 0x{plan.lo:06x}-0x{plan.hi:06x}" + (f" ({note})" if note else "") + \

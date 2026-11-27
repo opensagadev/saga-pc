@@ -7,14 +7,6 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
-void NuVecMtxTransformVU0(NUVEC *out, NUVEC *v, NUMTX *m) {
-    f32 y = v->x * m->m01 + v->y * m->m11 + v->z * m->m21 + m->m31;
-    f32 z = v->x * m->m02 + v->y * m->m12 + v->z * m->m22 + m->m32;
-    out->x = v->x * m->m00 + v->y * m->m10 + v->z * m->m20 + m->m30;
-    out->y = y;
-    out->z = z;
-}
-
 /* NuASin polynomial; this unit carries its own instance. */
 i32 DebrisNuASin(f32 sin) {
     f32 abs;
