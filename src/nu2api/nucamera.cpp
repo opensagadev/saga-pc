@@ -883,29 +883,3 @@ void NuCameraCalcRay(f32 screen_x, f32 screen_y, NUVEC *ray_start, NUVEC *ray_en
     NuVecMtxTransform(ray_start, &near_point, &camera->mtx);
     NuVecMtxTransform(ray_end, &far_point, &camera->mtx);
 }
-
-/* Uncalled: turns a camera matrix to look at a target, keeping its position. */
-extern "C" void NuCameraLookAt(NUMTX *camera, NUVEC *target) {
-    NUVEC up = {0.0f, 1.0f, 0.0f};
-    if (camera != NULL) {
-        NUVEC position;
-        NUMTX positioned;
-        NUVEC at;
-        NUVEC eye;
-        NUMTX view;
-        NUMTX result;
-
-        NuMtxGetTranslation(camera, &position);
-        NuMtxSetTranslation(&positioned, &position);
-        at.x = target->x;
-        at.y = target->y;
-        at.z = target->z;
-        eye.x = position.x;
-        eye.y = position.y;
-        eye.z = position.z;
-        D3DXMatrixLookAtLH((D3DXMATRIX *)&view, (D3DXVECTOR3 *)&eye, (D3DXVECTOR3 *)&at, (D3DXVECTOR3 *)&up);
-        memcpy(&result, &view, sizeof(result));
-        NuMtxInv(&result, &result);
-        *camera = result;
-    }
-}

@@ -11504,9 +11504,6 @@ GRAPHICS_RENDER_TEXTURE *PC_POST_BUFFER_PROXY::GetBufferTexture() {
     return texture;
 }
 
-inline NuPostFilterGen::~NuPostFilterGen() {
-}
-
 /* Platform initializers call their generic implementations out of line. */
 void NuPostFilterGen::initResources() {
     input_fbo = PCGraphicsCreateFramebuffer();

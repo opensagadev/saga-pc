@@ -6,10 +6,6 @@
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/nustencilshadows_PC.h"
 
-void NuRndrSetParticleRotation(NUMTX *rotation) {
-    NuRndr_DebrisRotMtxPtr = rotation;
-}
-
 i32 NuRndrStopUpdate = 0;
 __declspec(align(16)) NUMTX debris_box_camera_cache = {0};
 

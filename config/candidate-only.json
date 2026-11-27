@@ -77,72 +77,72 @@
    "kind": "data"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "?assign@?$char_traits@D@std@@SAXAADABD@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "?length@?$char_traits@D@std@@SAIPBD@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??2@YAPAXIPAX@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??0?$_Ranit@UPOST_PIXEL_SHADER_CACHE_ENTRY@@HPBU1@ABU1@@std@@QAE@XZ",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??$_Destroy@UPOST_VERTEX_SHADER_CACHE_ENTRY@@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY@@@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??$_Destroy@UPOST_PIXEL_SHADER_CACHE_ENTRY@@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY@@@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??D?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY@@@std@@@std@@QBEAAUPOST_PIXEL_SHADER_CACHE_ENTRY@@XZ",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??C?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY@@@std@@@std@@QBEPAUPOST_PIXEL_SHADER_CACHE_ENTRY@@XZ",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??$copy_s@U?$char_traits@D@std@@@_Traits_helper@std@@YAPADPADIPBDI@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??$move_s@U?$char_traits@D@std@@@_Traits_helper@std@@YAPADPADIPBDI@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??$_Destroy_range@UPOST_VERTEX_SHADER_CACHE_ENTRY@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY@@@std@@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY@@0AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??$_Destroy_range@UPOST_PIXEL_SHADER_CACHE_ENTRY@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY@@@std@@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY@@0AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??$_Destroy_range@UPOST_VERTEX_SHADER_CACHE_ENTRY@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY@@@std@@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY@@0AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY@@@0@@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??$_Destroy_range@UPOST_PIXEL_SHADER_CACHE_ENTRY@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY@@@std@@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY@@0AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY@@@0@@Z",
    "kind": "function"
   },
@@ -237,12 +237,12 @@
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nu3d_platform.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "_NuQFntColumnOpaque32Inline",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nu3d_platform.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "_PCGraphicsAllocRenderTexture",
    "kind": "function"
   },
@@ -362,7 +362,7 @@
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nudlist_material.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "?PostBlurLowSetOffset@@YAXAAUPOST_BLUR_LOW_OFFSET@@MM@Z",
    "kind": "function"
   },
@@ -448,6 +448,11 @@
   },
   {
    "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
+   "symbol": "__bad_alloc_Message",
+   "kind": "data"
+  },
+  {
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "__bad_alloc_Message",
    "kind": "data"
   }

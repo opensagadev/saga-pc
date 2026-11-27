@@ -88,18 +88,6 @@ extern "C" __declspec(noinline) void PCDeviceDrawIndexedPrimitiveUPPc(i32 type, 
                                                                     index_format, vertices, stride);
 }
 
-/* Draws the [-1, 1] cube transformed by matrix as 12 untextured triangles (no caller). */
-extern "C" void PCGraphicsDrawUnitBox(NUMTX *matrix) {
-    NUVEC4 corners[8] = {{-1.0f, -1.0f, -1.0f, 1.0f}, {-1.0f, 1.0f, -1.0f, 1.0f}, {1.0f, 1.0f, -1.0f, 1.0f}, {1.0f, -1.0f, -1.0f, 1.0f},
-                         {-1.0f, -1.0f, 1.0f, 1.0f},  {-1.0f, 1.0f, 1.0f, 1.0f},  {1.0f, 1.0f, 1.0f, 1.0f},  {1.0f, -1.0f, 1.0f, 1.0f}};
-    for (i32 i = 0; i < 8; ++i) {
-        NuVec4MtxTransformH(&corners[i], &corners[i], matrix);
-    }
-    u16 indices[36] = {0, 1, 3, 3, 1, 2, 4, 0, 7, 7, 0, 3, 3, 2, 7, 7, 2, 6, 6, 2, 5, 5, 2, 1, 5, 1, 4, 4, 1, 0, 4, 7, 5, 5, 7, 6};
-    PCDeviceSetFVFPc(0x4002);
-    PCDeviceDrawIndexedPrimitiveUPPc(4, 0, 8, 12, indices, 0x65, corners, sizeof(NUVEC4));
-}
-
 PC_DEVICE_BACKEND::~PC_DEVICE_BACKEND() {
     Shutdown();
 }
@@ -414,14 +402,6 @@ extern "C" void fun_006e45d0(void) {
 }
 
 void PC_DEVICE_BACKEND::PostEffectBarrier() {
-}
-
-extern "C" void PCGraphicsDrawPostEffectQuad(void) {
-    PCDeviceBackend.DrawPostEffectQuad();
-}
-
-extern "C" void PCGraphicsDrawPostEffectIndexed(void) {
-    PCDeviceBackend.DrawPostEffectIndexed();
 }
 
 extern "C" void NuRndrEndFrameAction(void) {
