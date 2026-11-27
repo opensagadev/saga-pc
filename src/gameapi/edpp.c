@@ -3154,9 +3154,353 @@ void cbPtlCancelGSortMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     ptlgsortmenu = NULL;
 }
 
+void FileLoadSingleEffectType(DEBRIS_INFO *destination, i32 version, i8 category) {
+    DEBRIS_INFO *effect = destination;
+    i32 i;
+    char sound_name[16];
+    EdFileRead(effect->name, sizeof(effect->name));
+    effect->category = (u8)(category);
+    if (version < 28) {
+        i16 rate = EdFileReadShort();
+        if (rate > 0) {
+            effect->frequency = (i16)(rate * 60);
+        } else if (rate < 0) {
+            effect->frequency = (i16)(-60 / rate);
+        } else {
+            effect->frequency = 0;
+        }
+    } else {
+        effect->frequency = EdFileReadShort();
+    }
+    effect->max_particles = EdFileReadShort();
+    if (version < 28) {
+        effect->emission_start_offset = (f32)(EdFileReadShort()) / 60.0f;
+        effect->emission_period = (f32)(EdFileReadShort()) / 60.0f;
+        effect->emission_period_random = (f32)(EdFileReadShort()) / 60.0f;
+        effect->emission_pause = (f32)(EdFileReadShort()) / 60.0f;
+        effect->emission_pause_random = (f32)(EdFileReadShort()) / 60.0f;
+    } else {
+        effect->emission_start_offset = EdFileReadFloat();
+        effect->emission_period = EdFileReadFloat();
+        effect->emission_period_random = EdFileReadFloat();
+        effect->emission_pause = EdFileReadFloat();
+        effect->emission_pause_random = EdFileReadFloat();
+    }
+    if ((f32)effect->frequency != 0.0f && effect->emission_period < 1.0f / (f32)effect->frequency) {
+        effect->emission_period = 1.0f / (f32)effect->frequency;
+    }
+
+    effect->generator_type = (u8)(EdFileReadChar());
+    effect->momentum_adjustment_type = (u8)(EdFileReadChar());
+    if (version < 35) {
+        effect->cutscene_only = 0;
+    } else {
+        effect->cutscene_only = (u8)(EdFileReadChar());
+    }
+    effect->disabled = 0;
+    effect->particle_type = (u8)(EdFileReadChar());
+    if (version < 39) {
+        EdFileReadChar();
+    }
+    effect->status = 1;
+    if (version < 40) {
+        effect->camera_facing = 0;
+    } else {
+        effect->camera_facing = (u8)(EdFileReadChar());
+    }
+
+    effect->fade_delay = EdFileReadFloat();
+    if (version < 6) {
+        effect->cut_on = 0.0f;
+        effect->clip_extent = 25.0f;
+    } else {
+        effect->cut_on = EdFileReadFloat();
+        effect->clip_extent = EdFileReadFloat();
+    }
+    if (version < 10) {
+        effect->sound_range = 0.0f;
+    } else {
+        effect->sound_range = EdFileReadFloat();
+    }
+    if (version < 23) {
+        effect->sound_range_override = 0.0f;
+    } else {
+        effect->sound_range_override = EdFileReadFloat();
+    }
+    if (version >= 24) {
+        effect->camera_cutoff_radius = EdFileReadFloat();
+    } else {
+        effect->camera_cutoff_radius = 0.5f;
+    }
+    if (version < 7) {
+        EdFileReadInt();
+        EdFileReadInt();
+    }
+    effect->momentum_base = EdFileReadFloat();
+    effect->momentum_random_x = EdFileReadFloat();
+    effect->rotor_speed_x = EdFileReadFloat();
+    effect->rotor_speed_y = EdFileReadFloat();
+    if (version < 18) {
+        EdFileReadFloat();
+        EdFileReadFloat();
+        EdFileReadFloat();
+    }
+    effect->emitter_random_extent.x = EdFileReadFloat();
+    effect->emitter_random_extent.y = EdFileReadFloat();
+    effect->emitter_random_extent.z = EdFileReadFloat();
+    if (version < 18) {
+        EdFileReadFloat();
+        EdFileReadFloat();
+        EdFileReadFloat();
+    }
+    if ((version == 18 || version == 19) && effect->generator_type == DEBRIS_GENERATOR_RADIAL) {
+        effect->rotor_speed_y = (f32)(effect->rotor_speed_y * 2.0);
+        effect->emitter_random_extent.z = (f32)(effect->emitter_random_extent.z * 2.0);
+    }
+    if (version >= 29) {
+        effect->emitter_velocity.x = EdFileReadFloat();
+        effect->emitter_velocity.y = EdFileReadFloat();
+        effect->emitter_velocity.z = EdFileReadFloat();
+    } else {
+        effect->emitter_velocity.x = effect->emitter_velocity.y = effect->emitter_velocity.z = 0.0f;
+    }
+
+    effect->file_parameters[0] = EdFileReadFloat();
+    effect->file_parameters[1] = EdFileReadFloat();
+    effect->file_parameters[2] = EdFileReadFloat();
+    effect->file_parameters[3] = EdFileReadFloat();
+    effect->file_parameters[4] = EdFileReadFloat();
+    effect->file_parameters[5] = EdFileReadFloat();
+    effect->file_parameters[6] = EdFileReadFloat();
+    effect->file_parameters[7] = EdFileReadFloat();
+    effect->file_parameters[8] = EdFileReadFloat();
+    effect->file_parameters[9] = EdFileReadFloat();
+    effect->file_parameters[10] = EdFileReadFloat();
+    effect->file_parameters[11] = EdFileReadFloat();
+    effect->gravity = EdFileReadFloat();
+    effect->particle_lifetime = EdFileReadFloat();
+    effect->texture_frames = EdFileReadShort();
+    effect->texture_rows = (u8)(EdFileReadChar());
+    effect->frame_divisor = (u8)(EdFileReadChar());
+    effect->animation_rate.rate = EdFileReadFloat();
+    effect->jib_x_frequency = EdFileReadFloat();
+    effect->jib_x_amplitude = EdFileReadFloat();
+    effect->jib_y_frequency = EdFileReadFloat();
+    effect->jib_y_amplitude = EdFileReadFloat();
+    if (version >= 33) {
+        for (i = 0; i < 8; ++i) {
+            effect->colour_keys[i].time = EdFileReadFloat();
+            effect->colour_keys[i].red = EdFileReadUnsignedChar();
+            effect->colour_keys[i].green = EdFileReadUnsignedChar();
+            effect->colour_keys[i].blue = EdFileReadUnsignedChar();
+            effect->colour_keys[i].alpha_unused = EdFileReadUnsignedChar();
+        }
+    } else {
+        for (i = 0; i < 8; ++i) {
+            effect->colour_keys[i].time = EdFileReadFloat();
+            effect->colour_keys[i].red = (u8)((i32)(EdFileReadFloat()));
+            effect->colour_keys[i].green = (u8)((i32)(EdFileReadFloat()));
+            effect->colour_keys[i].blue = (u8)((i32)(EdFileReadFloat()));
+        }
+    }
+    for (i = 0; i < 8; ++i) {
+        effect->alpha_keys[i].time = EdFileReadFloat();
+        effect->alpha_keys[i].value = EdFileReadFloat();
+    }
+    if (version < 21) {
+        effect->particle_parameter_a = 0.125f;
+        effect->particle_parameter_b = 0.125f;
+    } else {
+        effect->particle_parameter_a = EdFileReadFloat();
+        effect->particle_parameter_b = EdFileReadFloat();
+    }
+    effect->min_size = EdFileReadFloat();
+    effect->max_size = EdFileReadFloat();
+    for (i = 0; i < 8; ++i) {
+        effect->width_keys[i].time = EdFileReadFloat();
+        effect->width_keys[i].value = EdFileReadFloat();
+    }
+    for (i = 0; i < 8; ++i) {
+        effect->height_keys[i].time = EdFileReadFloat();
+        effect->height_keys[i].value = EdFileReadFloat();
+    }
+    effect->min_rotation = EdFileReadFloat();
+    effect->max_rotation = EdFileReadFloat();
+    for (i = 0; i < 8; ++i) {
+        effect->rotation_keys[i].time = EdFileReadFloat();
+        effect->rotation_keys[i].value = EdFileReadFloat();
+    }
+    for (i = 0; i < 8; ++i) {
+        effect->scale_keys[i].time = EdFileReadFloat();
+        effect->scale_keys[i].value = EdFileReadFloat();
+    }
+    for (i = 0; i < 8; ++i) {
+        effect->extra_keys[i].time = EdFileReadFloat();
+        effect->extra_keys[i].value = EdFileReadFloat();
+    }
+    effect->texture_u0 = EdFileReadFloat();
+    effect->texture_v0 = EdFileReadFloat();
+    effect->texture_u1 = EdFileReadFloat();
+    effect->texture_v1 = EdFileReadFloat();
+
+    if (version >= 3) {
+        for (i = 0; i < 8; ++i) {
+            effect->collision_keys[i].time = EdFileReadFloat();
+            effect->collision_keys[i].value = EdFileReadFloat();
+        }
+        effect->process_spheres = (u8)(EdFileReadChar());
+    } else {
+        effect->process_spheres = 0;
+    }
+    if (version >= 17) {
+        effect->time_group = EdFileReadChar();
+    } else {
+        effect->time_group = DEBRIS_DRAW_AFTER_FOG;
+    }
+    if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
+        effect->time_group = 2;
+    }
+    if (version >= 31) {
+        effect->collision_flags = (u8)(EdFileReadChar());
+    } else {
+        effect->collision_flags = 3;
+    }
+    if (version >= 32) {
+        effect->use_explicit_clip_box = (u8)(EdFileReadChar());
+        effect->particle_box.x = EdFileReadFloat();
+        effect->particle_box.y = EdFileReadFloat();
+        effect->particle_box.z = EdFileReadFloat();
+    } else {
+        effect->use_explicit_clip_box = 0;
+        effect->particle_box.x = 1.0f;
+        effect->particle_box.y = 1.0f;
+        effect->particle_box.z = 1.0f;
+    }
+    if (version >= 36) {
+        f32 thinning = EdFileReadFloat();
+        effect->thinning = thinning;
+        if (version == 36 && thinning < 4.0f) {
+            effect->thinning = 4.0f;
+        }
+    } else {
+        effect->thinning = 4.0f;
+    }
+    if (version >= 30) {
+        effect->torus_radius1 = EdFileReadFloat();
+        effect->torus_radius2 = EdFileReadFloat();
+        effect->torus_lifetime = EdFileReadFloat();
+        for (i = 0; i < 8; ++i) {
+            effect->torus_keys1[i].time = EdFileReadFloat();
+            effect->torus_keys1[i].value = EdFileReadFloat();
+        }
+        for (i = 0; i < 8; ++i) {
+            effect->torus_keys2[i].time = EdFileReadFloat();
+            effect->torus_keys2[i].value = EdFileReadFloat();
+        }
+        for (i = 0; i < 8; ++i) {
+            effect->torus_keys3[i].time = EdFileReadFloat();
+            effect->torus_keys3[i].value = EdFileReadFloat();
+        }
+    } else {
+        effect->torus_radius1 = 1.0f;
+        effect->torus_radius2 = 0.1f;
+        effect->torus_lifetime = 0.0f;
+        effect->torus_keys1[0].time = 0.0f;
+        effect->torus_keys1[0].value = 0.0f;
+        effect->torus_keys2[0].time = 0.0f;
+        effect->torus_keys2[0].value = 0.0f;
+        effect->torus_keys3[0].time = 0.0f;
+        effect->torus_keys3[0].value = 0.0f;
+        effect->torus_keys1[1].time = 1.0f;
+        effect->torus_keys1[1].value = 1.0f;
+        effect->torus_keys2[1].time = 1.0f;
+        effect->torus_keys2[1].value = 1.0f;
+        effect->torus_keys3[1].time = 1.0f;
+        effect->torus_keys3[1].value = 1.0f;
+    }
+
+    for (i = 0; i < 8; ++i) {
+        effect->particle_keys[i] = -1;
+    }
+    if (version >= 23) {
+        const i32 sound_count = EdFileReadInt();
+        for (i = 0; i < sound_count; ++i) {
+            EdFileRead(sound_name, sizeof(sound_name));
+            effect->sound_data[i * 3] = GetSfxIdN(sound_name, sizeof(sound_name));
+            effect->sound_data[i * 3 + 1] = EdFileReadInt();
+            effect->sound_data[i * 3 + 2] = EdFileReadInt();
+        }
+        for (i = sound_count; i < 4; ++i) {
+            effect->sound_data[i * 3] = -1;
+        }
+    } else {
+        for (i = 0; i < 4; ++i) {
+            if (version >= 11) {
+                effect->sound_data[i * 3] = EdFileReadInt();
+                effect->sound_data[i * 3 + 1] = EdFileReadInt();
+                effect->sound_data[i * 3 + 2] = EdFileReadInt();
+            } else {
+                effect->sound_data[i * 3] = -1;
+                effect->sound_data[i * 3 + 1] = 0;
+                effect->sound_data[i * 3 + 2] = 0;
+            }
+        }
+    }
+    if (version >= 16) {
+        if (version >= 41) {
+            effect->trail_count = EdFileReadChar();
+        } else {
+            effect->trail_count = (i8)EdFileReadInt();
+        }
+        effect->trail_time = EdFileReadFloat();
+    } else {
+        effect->trail_count = 0;
+        effect->trail_time = 0.0f;
+    }
+    if (version >= 25) {
+        if (version >= 41) {
+            effect->radial_segments = (u8)EdFileReadChar();
+        } else {
+            effect->radial_segments = (u8)EdFileReadInt();
+        }
+        effect->radial_floor = EdFileReadFloat();
+    } else {
+        effect->radial_segments = 5;
+        effect->radial_floor = 0.5f;
+    }
+    if (version >= 26) {
+        effect->scale_in_time = EdFileReadFloat();
+    } else {
+        effect->scale_in_time = 0.0f;
+    }
+    effect->scale = 1.0f;
+    effect->base_effect_index = 0;
+}
+
 void edptlcbCancelClipboardMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(ptlclipmenu);
     ptlclipmenu = NULL;
+}
+
+void cbPtlSelReadout(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edpp_readout = item->data;
+}
+
+void cbPtlCancelReadoutMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(ptlreadoutmenu);
+    ptlreadoutmenu = NULL;
+}
+
+void cbPtlReadoutMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    ptlreadoutmenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbPtlCancelReadoutMenu, "Info Box Style");
+    if (ptlreadoutmenu != NULL) {
+        eduiMenuAddItem(ptlreadoutmenu, eduiItemCheckCreate(0, colours, edpp_readout == 0, 1, cbPtlSelReadout, "Normal"));
+        eduiMenuAddItem(ptlreadoutmenu, eduiItemCheckCreate(1, colours, edpp_readout == 1, 1, cbPtlSelReadout, "Co-ordinates"));
+    }
+    eduiMenuAttach(menu, ptlreadoutmenu);
+    ptlreadoutmenu->x = menu->x + 10;
+    ptlreadoutmenu->y = menu->y + 40;
 }
 
 void edptlcbSetMasterGroup(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
@@ -3965,6 +4309,18 @@ void cbPtlSnapToggle(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
 
 void cbPtlCancel(eduimenu_s *unused0, eduimenu_s *unused1) {
     edpp_active_menu = NULL;
+}
+
+void ParticleReset(void) {
+    i32 i;
+    for (i = 0; i < 512; ++i) {
+        edpp_ptls[i].instance_id = -1;
+    }
+    for (i = 0; i < 8; ++i) {
+        edpp_page_used[i] = 0;
+        edpp_page_on[i] = 0;
+    }
+    edpp_instances_used = 0;
 }
 
 i32 edpp_first_time_this_level = 0;

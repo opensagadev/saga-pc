@@ -6,6 +6,9 @@
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/nuvec.h"
 
+extern "C" void fun_005b1ea0(void) {
+}
+
 static void EdsplinesNuError(const char *format, ...) {
 }
 
