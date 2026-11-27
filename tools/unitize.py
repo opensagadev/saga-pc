@@ -381,7 +381,7 @@ def build_plan(lo, hi, target):
             continue
         if not found[0].startswith("src/"):
             continue
-        if r["size"] == 1:
+        if r["size"] == 1 and Path(found[0]).with_suffix("") != Path(target).with_suffix(""):
             # A bare-RET stub: VC8 drops calls to an empty body it can see, so
             # retail callers that still call it were compiled in another unit
             # (the linker folded the stub into this unit's copy).
@@ -415,7 +415,7 @@ def build_plan(lo, hi, target):
             left = [i for i in plan.sources[other].items if i.function and id(i) not in moved_ids] \
                 if other in plan.sources else [True]
             if left:
-                raise SystemExit(f"{other} keeps definitions outside the range and would share the object "
+                raise SystemExit(f"{other} keeps definitions outside the range ({', '.join(sorted(n for i in left if i is not True for n in i.names))}) and would share the object "
                                  f"name with {target}; move them first or pick another target name")
     if (ROOT / target).is_file():
         tsrc = plan.sources[target]

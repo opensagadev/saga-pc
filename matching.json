@@ -575,7 +575,7 @@
     "tools/typeimport.py": "2505d6b0ac6a6daafa7ea126feb90fee24c5d8b11392d3339c81cdef8bec84c7",
     "tools/typexfer.py": "97dd2f059b13ebd5e02ce9d928bb8fada1938826edaca82e268270d771628f3f",
     "tools/unitcache.py": "54d90e598827fa58e26d95eaf2d76c7d416bb62ac72df2c25fcbe864a0fe0ba0",
-    "tools/unitize.py": "a47d81bd981f087751d487f04cb5a405d3db3e8ff9c382eca436660cbd831681",
+    "tools/unitize.py": "d363ba3fa8841b697898c1b3cac3449fb46225824da706140300ec65fdaf2da6",
     "tools/unitmap.py": "3295e8838f848db662f87a17ff42d511fac1efd2f71beb748b8d3781f8f31621",
     "tools/unitscore.py": "4779c01b3ca32b018dcb5fe0b889d15b4f7f15929a59037cff99cc2f0ea4a8dd",
     "tools/unmapped.py": "5e462c907768a5f1e6db6cbeff64760f9c9c5e0f93c2abea718287baa4ea0913",
@@ -713,6 +713,7 @@
     "src/legoapi/snake.cpp": "21845b9907d6718c5ecc07ec8074bb528092b042f6d1d7f03c573590d854beb7",
     "src/legoapi/specialmoves.cpp": "fec048de985f4d20bd2a539d331a8e6d93f70293efc2ee07614b7e1f87eb8cb5",
     "src/legoapi/specialmoves_diagnostic.cpp": "daa0c249befd9578823e9ac494d2f59b750d9ef83d9817a28f69a5ab44085d96",
+    "src/legoapi/specialsfx.cpp": "4ba757bc552ad5eacad575dd0247df356205fdb7fe79712ed215f656ff732b41",
     "src/legoapi/status_alternate.cpp": "1c1cd9aa4f0d5b92ba8bbe27fb5b2373b78f6b789fd6e21856d96d84c7a1e1e0",
     "src/legoapi/streaks.cpp": "ab8df0b3c36fcd8a6e5886d185933f31e427c91241c55b7f9f10c9b9cc2edf24",
     "src/legoapi/surfaces.cpp": "e520aa98963d2b9c5543a3ca71d95d2206e7c04120617cf48d7ca63f0d6112d8",
@@ -894,7 +895,6 @@
     "src/legoapi/shard.c": "3798a24a6631dd27ff61bf2ba21fb9a266b2147983ee3b21fdf2002a55a1d02d",
     "src/legoapi/socksys.c": "1f35dce0dacd58c5aeb56e8157d666aec1b05da48bd77a27696d166f9ac29fdc",
     "src/legoapi/socksys_diagnostic.c": "a7730f3669bf2657dfeb5b62315c7050e11bc7b1ff4f33495f4bc0fce9448976",
-    "src/legoapi/specialsfx.c": "ba7a44a283c9dcf833774b44a9a95cc2962954716f9532ca10fa204c3b075743",
     "src/legoapi/startup_dats.c": "7aef5b9e305ade2648e27c5dcead11cd7af34b6f44cd0a4793c0a559b5514712",
     "src/legoapi/whip.c": "36bc2e6b454d291049ab572cb9675d8c3203d0b797be63b151042bfa60e7d4c7",
     "src/nu2api/bgproc.c": "38fcd1d57269d053fd38c956e5c1efd9599b5428e4d2c3598ed92249ba218aa8",
@@ -1155,7 +1155,7 @@
     "build/obj/legoapi/socksys_diagnostic.obj": "1c04ca00c1139b2e44911cba460017ae86220545a8e8b51f53af9e8718118163",
     "build/obj/legoapi/specialmoves.obj": "2c48e17d655829b3f83f7184dd0632f45953d0218c709117d28688e7b2cc9010",
     "build/obj/legoapi/specialmoves_diagnostic.obj": "1ec40761c993293a0762ae1d3cdec89c89191604c4aa23ebc7c4423849ebcde4",
-    "build/obj/legoapi/specialsfx.obj": "23f7fb8f8b51060100449c70c6e0d21ba0fad96e795f1a52d6e71b05fd585357",
+    "build/obj/legoapi/specialsfx.obj": "d73c74b9c8ec38a46d54400ae2a7c6c650130de80c1f0fa1c5ddd97072b6973d",
     "build/obj/legoapi/startup_dats.obj": "3a6cf405ad5c0bfa5e13079a96fc2a947987902572361fee8fa29bd1053bf0c7",
     "build/obj/legoapi/status_alternate.obj": "86873006489412edecb5e6904d0ab99898da0b9dcdb2cbae152b08b569de76eb",
     "build/obj/legoapi/streaks.obj": "9e121283cd2767902154dfd3466c4e340d197224bb2400eb718ba064f6f4911c",
@@ -168535,19 +168535,19 @@
       "symbol": "_InitSpecialSfx",
       "address": "0x005b1770",
       "units": [
-        "src/legoapi/specialsfx.c"
+        "src/legoapi/specialsfx.cpp"
       ],
       "target_size": 142,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/specialsfx.c",
+          "unit": "src/legoapi/specialsfx.cpp",
           "base_size": 142,
           "exact_match": true,
           "target_sha256": "ce9d547f50d13b1dfaf2df8fcc3bcf863cd25a43f41fab12d3a8b76bbe178625",
           "base_sha256": "ce9d547f50d13b1dfaf2df8fcc3bcf863cd25a43f41fab12d3a8b76bbe178625",
           "relocation_count": 2,
-          "comparison_unit": "005b1770-e265b4120ded",
+          "comparison_unit": "005b1770-a9eb7007e11e",
           "objdiff_percent": 100.0
         }
       ],
@@ -168559,19 +168559,19 @@
       "symbol": "_fun_005b1800",
       "address": "0x005b1800",
       "units": [
-        "src/legoapi/specialsfx.c"
+        "src/legoapi/specialsfx.cpp"
       ],
       "target_size": 1,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/specialsfx.c",
+          "unit": "src/legoapi/specialsfx.cpp",
           "base_size": 1,
           "exact_match": true,
           "target_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
           "base_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
           "relocation_count": 0,
-          "comparison_unit": "005b1800-969f17e217db",
+          "comparison_unit": "005b1800-8e218acd1fdc",
           "objdiff_percent": 100.0
         }
       ],
@@ -168583,19 +168583,19 @@
       "symbol": "_SpecialSfxLoad",
       "address": "0x005b1810",
       "units": [
-        "src/legoapi/specialsfx.c"
+        "src/legoapi/specialsfx.cpp"
       ],
       "target_size": 596,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/specialsfx.c",
+          "unit": "src/legoapi/specialsfx.cpp",
           "base_size": 596,
           "exact_match": true,
           "target_sha256": "21ed6924d8d426d993ca149a1ad2a700f7b93c52d0231d957a1b108d500d16e1",
           "base_sha256": "21ed6924d8d426d993ca149a1ad2a700f7b93c52d0231d957a1b108d500d16e1",
           "relocation_count": 22,
-          "comparison_unit": "005b1810-e786f96b6433",
+          "comparison_unit": "005b1810-215513138a12",
           "objdiff_percent": 100.0
         }
       ],
@@ -168607,19 +168607,19 @@
       "symbol": "_SpecialSfxAdd",
       "address": "0x005b1a70",
       "units": [
-        "src/legoapi/specialsfx.c"
+        "src/legoapi/specialsfx.cpp"
       ],
       "target_size": 150,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/specialsfx.c",
+          "unit": "src/legoapi/specialsfx.cpp",
           "base_size": 150,
           "exact_match": true,
           "target_sha256": "41708521ed112b41c0a8a14e0da063c24a1347fa068665aa12dd60b79b734c6a",
           "base_sha256": "41708521ed112b41c0a8a14e0da063c24a1347fa068665aa12dd60b79b734c6a",
           "relocation_count": 6,
-          "comparison_unit": "005b1a70-1428bd7974e3",
+          "comparison_unit": "005b1a70-9d534ab63667",
           "objdiff_percent": 100.0
         }
       ],
@@ -168631,19 +168631,19 @@
       "symbol": "_UpdateSpecialSfx",
       "address": "0x005b1b10",
       "units": [
-        "src/legoapi/specialsfx.c"
+        "src/legoapi/specialsfx.cpp"
       ],
       "target_size": 695,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/specialsfx.c",
+          "unit": "src/legoapi/specialsfx.cpp",
           "base_size": 695,
           "exact_match": true,
           "target_sha256": "2a1aac30d1829adcfcd4e9a53e23a6c53a49bcd3c45c95174f0fb5bb8ee01b24",
           "base_sha256": "2a1aac30d1829adcfcd4e9a53e23a6c53a49bcd3c45c95174f0fb5bb8ee01b24",
           "relocation_count": 7,
-          "comparison_unit": "005b1b10-4e1d9ca7a7a4",
+          "comparison_unit": "005b1b10-801be1b4f04d",
           "objdiff_percent": 100.0
         }
       ],
@@ -168655,19 +168655,19 @@
       "symbol": "_SetSpecialSfxBits",
       "address": "0x005b1dd0",
       "units": [
-        "src/legoapi/specialsfx.c"
+        "src/legoapi/specialsfx.cpp"
       ],
       "target_size": 91,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/specialsfx.c",
+          "unit": "src/legoapi/specialsfx.cpp",
           "base_size": 91,
           "exact_match": true,
           "target_sha256": "41173768e2647c6e877d62d2c7b1503bdef493dfe86947b8ed106de73794f67e",
           "base_sha256": "41173768e2647c6e877d62d2c7b1503bdef493dfe86947b8ed106de73794f67e",
           "relocation_count": 0,
-          "comparison_unit": "005b1dd0-0b25c4f733c2",
+          "comparison_unit": "005b1dd0-a92779bb79d2",
           "objdiff_percent": 100.0
         }
       ],
@@ -168679,19 +168679,19 @@
       "symbol": "_LoadSpecialSfxFile",
       "address": "0x005b1e30",
       "units": [
-        "src/legoapi/specialsfx.c"
+        "src/legoapi/specialsfx.cpp"
       ],
       "target_size": 103,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/specialsfx.c",
+          "unit": "src/legoapi/specialsfx.cpp",
           "base_size": 103,
           "exact_match": true,
           "target_sha256": "257b7d6456724a55dc88da8c6e97e3d14fc0d236940916ae331edababfe43698",
           "base_sha256": "257b7d6456724a55dc88da8c6e97e3d14fc0d236940916ae331edababfe43698",
           "relocation_count": 6,
-          "comparison_unit": "005b1e30-f0f690ec76b1",
+          "comparison_unit": "005b1e30-e0ad1ad5ff37",
           "objdiff_percent": 100.0
         }
       ],
@@ -388362,7 +388362,7 @@
         "src/legoapi/simpletons.cpp",
         "src/legoapi/snake.cpp",
         "src/legoapi/socksys.c",
-        "src/legoapi/specialsfx.c",
+        "src/legoapi/specialsfx.cpp",
         "src/legoapi/status_alternate.cpp",
         "src/legoapi/streaks.cpp",
         "src/legoapi/surfaces.cpp",
@@ -389148,7 +389148,7 @@
           "base_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
         },
         {
-          "unit": "src/legoapi/specialsfx.c",
+          "unit": "src/legoapi/specialsfx.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -393309,7 +393309,7 @@
         "src/legoapi/snake.cpp",
         "src/legoapi/socksys.c",
         "src/legoapi/specialmoves.cpp",
-        "src/legoapi/specialsfx.c",
+        "src/legoapi/specialsfx.cpp",
         "src/legoapi/status_alternate.cpp",
         "src/legoapi/streaks.cpp",
         "src/legoapi/surfaces.cpp",
@@ -394268,7 +394268,7 @@
           "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
         },
         {
-          "unit": "src/legoapi/specialsfx.c",
+          "unit": "src/legoapi/specialsfx.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -552640,13 +552640,13 @@
       "symbol": "??_C@_06NOGHJDKO@?$CFs?4sfx?$AA@",
       "address": "0x00763f64",
       "units": [
-        "src/legoapi/specialsfx.c"
+        "src/legoapi/specialsfx.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/specialsfx.c",
+          "unit": "src/legoapi/specialsfx.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -901712,7 +901712,7 @@
       "metadata_sha256": "525d436eee3d48951222f1fd54574554983d228c3d06f19a545ba7cab50fe057",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "48728075e45d95aa1b6eee4acc42f5ac98525b37c1984f32975d22fea27dc573",
+      "geometry_object_sha256": "30146844842e2ba6f48a4ed369a74808a3bb719cf883639e006420dd0dd1e32d",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
