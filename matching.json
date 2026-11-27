@@ -439,7 +439,7 @@
     "config/declscan-budget.json": "37d355a8e608c5f84dc64ccfad9ddde5b07315ba616e35820341f168ea6991a8",
     "config/header-map.csv": "8e3d4b0b92aff1316147fb6c6bb4d753c120fd50cb01b5a386a08a9953e75e0b",
     "config/layout-android-units.csv": "e746c9966cf3cb289a48dd1df1bee1e9c8fbbbf8a1891ca973f2b865a6e89fbc",
-    "config/layout-target.csv": "f863eda0174e9737754dcbf85befb581751c8b2fc578167a2748992a62290cae",
+    "config/layout-target.csv": "70384a33bb4b2c8a569efd3e5ec19c84caf96706a9c933ef2ee5f5034c44e213",
     "config/library-objects.json": "4e0e91f5abb9855a0624aa79f38e17687b47eaa447383f272352c1f024b9a872",
     "config/literalscan-budget.json": "31c786e269f1756cf35489ad41e6941a8881a76410f4579c939a0d083ea69a89",
     "config/literalscan-keep.csv": "7919326d1c419514fa11275d955381135bf23bb927f899b69a05e3b70b7b010d",
@@ -453,7 +453,7 @@
     "config/symbols.md": "3d018cc044b5a14025b0fc457df71a0c9a193cea32ceb3081e6a86bcdd4b242b",
     "config/toolchain.json": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
     "config/tools.json": "8e9a5f8077abc1bd9cce37004a47ea493e67a75ba964d8df3f13223958e6f4c8",
-    "config/units.csv": "006f040cddec1e7244923f9608f8e304a98b13a70041436e44d0c00ba28b2bb2",
+    "config/units.csv": "f34ba84a6301c45e955434fe988cb349a77717e5b6f8786d31080b5368dfb780",
     "config/warning-budget.json": "2fb62147f02c41b6f3c48da61b374099ba00403e547c81315cbe5564ebe44c54",
     "tools/altbuild.py": "030cf55976c0afdcdd8f9bc141f005827f47899761899855ed945dccca8024e3",
     "tools/binary.py": "1168154b0bf5549c93bc5fa22fc3dafb48c9529d3ea681bb447552928cc066eb",
@@ -483,7 +483,7 @@
     "tools/idiomscan.py": "eab18618f9feac46a2e3c8af7e8389423adc2dc104e5187a8f65657e02c880fc",
     "tools/langscan.py": "7bb44ac2c8802b3b03d3e025b62463c1b190cc2238f4ffdc6d554548afcd1a9c",
     "tools/layoutcheck.py": "bcb5e0c12b6d115425ca0452cf01784c7d11c3908c60cf9e0bc7751eb3ad1145",
-    "tools/layoutscan.py": "802af41b1a16b936b41eb7d606482a08330ac22ac3e3a68be049ec2ef1b906ae",
+    "tools/layoutscan.py": "bdcb6b6822056b88c4a0abd8a90241d1730cd985d570efbf57e3e16e674bce39",
     "tools/lib.py": "612b3f8cf413d2c5492a6e6a1e554c1607b72873fa88c03b837a7a8b7b5e03fd",
     "tools/libmatch.py": "3b69b9be10a1282ffea804f84c56f7cd90bce8728eb33167d5ce7712c969885f",
     "tools/lintcache.py": "5cba942b00f45058923f2a2f7c928c00d7f4f0fe92dc30fe01f37a8662fddbeb",
@@ -644,7 +644,7 @@
     "src/legoapi/episodes.cpp": "97ce86f75cd7ac37adea45f8fa8792a2cd87268e5efc2eee3cc066fa4629454f",
     "src/legoapi/episodes_diagnostic.cpp": "27b06b0487ad45334f98afddf9b6743128005a4ff6aadd717e070c9bdb8bfc8c",
     "src/legoapi/explosions.cpp": "79313938ac69136c245cd50c10ebe7507e933f7993c38cece6171e46861d110d",
-    "src/legoapi/fade.cpp": "47d821f5878bb5581bb02b4280a4d4cb1aae229e550ad4629a2f90e97c0c9a34",
+    "src/legoapi/fade.cpp": "bbf39171a13d88a30198eb291a6b95d896989da5e9ed2f72109ed9fbf129a783",
     "src/legoapi/faders.cpp": "8a152518db560774dc2898fb1e71dd6bd08a88e58ddd9730141c302d2edabcac",
     "src/legoapi/fighting.cpp": "31f5d02e5d94e1839ea8cd0aba941b3e6e31616c5804e02997a49c39f0a15075",
     "src/legoapi/flightspline_diagnostic.cpp": "2afae99ef86ba84ab1dfab229564107dfd091e49ac1fa51dde4b897c72b8050b",
@@ -659,7 +659,7 @@
     "src/legoapi/gizflow.cpp": "3b9b7244416a9e7e6a6bdafb693f0726310717bfd2ba8e1a5f541241b9c7ec66",
     "src/legoapi/gizflow_diagnostic.cpp": "cbc5fc25322c5dc7979de6148dc368eff08f57fa8f00ec3080cfc0ab33f250c4",
     "src/legoapi/gizmessage.cpp": "fdfe33600eb836c0121c8020cbce54a65ad03deaab40e060d139d0dfa1c3ef5d",
-    "src/legoapi/gizminicut.cpp": "a62e6dd51676f896a4553bf1d0dfd1eb78cbabd90140c10cc85bccfa0a8d53cc",
+    "src/legoapi/gizminicut.cpp": "0fa2c59cf3acf8ae947e94bab6ac903e249a06a50d42ce9031e9bc0d0ababfeb",
     "src/legoapi/gizmo.cpp": "3ad962a0abe347b5e8038c9eb5784c6f3c41b455930d1555e260ba0cf9effd08",
     "src/legoapi/gizmoblowups.cpp": "7be882b485f6feed0e683fa864693da98f75efcb464953408340ee5d506e8180",
     "src/legoapi/gizmopickups.cpp": "f6fedf0358cc5a2d28c7c0f975189111d2e1056e41265aded1473e323518a575",
@@ -1075,7 +1075,7 @@
     "build/obj/legoapi/episodes.obj": "8c6dad43e17d9b0eee8b67cb94a62ee89b0f87dab5c96868be65d43dd90d5b3f",
     "build/obj/legoapi/episodes_diagnostic.obj": "350386a9b7d0f0ec64ff36cd52a4ad66b750468cfe98c48cf9dabc3fabbc049a",
     "build/obj/legoapi/explosions.obj": "02bc9ce09999a902e5fb738e9516bdd42ed03fafaff14bb8dd79841a672b8739",
-    "build/obj/legoapi/fade.obj": "8d3aecdfcf86b2e0d9caf3978b7834f939901dbad95c006f0bff839f0dcbf4bf",
+    "build/obj/legoapi/fade.obj": "d5af50edf73fc1a1628d5378b8962a33c3897237f0fa89563a003ee396c38921",
     "build/obj/legoapi/faders.obj": "859d2d5d8a30d4c5b475b517dc145ae99feff26647eacd78ebff3d001c0c47d7",
     "build/obj/legoapi/fighting.obj": "04c1f75940ec172c18b5e2cff6862c728f362b78f1edc05e7db5bdb58f6306de",
     "build/obj/legoapi/flightspline_diagnostic.obj": "f7c40bbe0eae8ad22459e90f6536842ea5f1866913742ba79606039006a16979",
@@ -1094,7 +1094,7 @@
     "build/obj/legoapi/gizflow.obj": "4238419c461a765eaf5024bcccdcee0d93bf2430eed53682add614ea18c8c122",
     "build/obj/legoapi/gizflow_diagnostic.obj": "a597513196fe1e83befbf6c53739883f584473bc74b8829cbf962521b6ce2816",
     "build/obj/legoapi/gizmessage.obj": "54da197d2a17f6c8bf430ea48505326966af8eac623eec614b2b910f4d07e7a1",
-    "build/obj/legoapi/gizminicut.obj": "cce8fe71cbd549fec87b92cce4f4f54e13c8c484c4664a43c028bd401e2df1e0",
+    "build/obj/legoapi/gizminicut.obj": "517b6e9ec4a1191f702553cbdd824f0dfb0e357e52d9739da251775cbf40c12b",
     "build/obj/legoapi/gizmo.obj": "a66d9c513d58759ef8e6da490c34128ec57701486df586d6bf175b659c715985",
     "build/obj/legoapi/gizmoblowups.obj": "976908522be0874e3f137bf52a83ba74bb3bc3d50a83f7f56c47e0bca7ee585c",
     "build/obj/legoapi/gizmopickups.obj": "e7691b50561c3cd48dc670149031612f836d9913d3046b18bbea8579495820f3",
@@ -167622,19 +167622,19 @@
       "symbol": "_MiniCut_SetFramesToWait",
       "address": "0x005b1030",
       "units": [
-        "src/legoapi/gizminicut.cpp"
+        "src/legoapi/fade.cpp"
       ],
       "target_size": 10,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/gizminicut.cpp",
+          "unit": "src/legoapi/fade.cpp",
           "base_size": 10,
           "exact_match": true,
           "target_sha256": "ce7f78dd4d0739c0bfac7eb38f9aa7ab50070f3b6ea10cbd791934aeac44ecf1",
           "base_sha256": "ce7f78dd4d0739c0bfac7eb38f9aa7ab50070f3b6ea10cbd791934aeac44ecf1",
           "relocation_count": 1,
-          "comparison_unit": "005b1030-312360cdbcb7",
+          "comparison_unit": "005b1030-4beed926edf2",
           "objdiff_percent": 100.0
         }
       ],
@@ -167646,19 +167646,19 @@
       "symbol": "_MiniCut_PlayWipeSfx",
       "address": "0x005b1040",
       "units": [
-        "src/legoapi/gizminicut.cpp"
+        "src/legoapi/fade.cpp"
       ],
       "target_size": 57,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/gizminicut.cpp",
+          "unit": "src/legoapi/fade.cpp",
           "base_size": 57,
           "exact_match": true,
           "target_sha256": "7766689ec8a161532dc10ec967c8226227959fdcbb6a314d8868783ec6051ab0",
           "base_sha256": "7766689ec8a161532dc10ec967c8226227959fdcbb6a314d8868783ec6051ab0",
           "relocation_count": 5,
-          "comparison_unit": "005b1040-795ac1b73b85",
+          "comparison_unit": "005b1040-ac33c4f22d4f",
           "objdiff_percent": 100.0
         }
       ],
@@ -501671,7 +501671,6 @@
       "address": "0x0075c394",
       "units": [
         "src/legoapi/fade.cpp",
-        "src/legoapi/gizminicut.cpp",
         "src/legogame/game.cpp"
       ],
       "target_size": 11,
@@ -501679,14 +501678,6 @@
       "objects": [
         {
           "unit": "src/legoapi/fade.cpp",
-          "exact_match": true,
-          "target_size": 11,
-          "base_size": 11,
-          "target_sha256": "cfbe1916d233ae35436947a0ef5b4e87de213801c9e49ea9f247bb8037624ebe",
-          "base_sha256": "cfbe1916d233ae35436947a0ef5b4e87de213801c9e49ea9f247bb8037624ebe"
-        },
-        {
-          "unit": "src/legoapi/gizminicut.cpp",
           "exact_match": true,
           "target_size": 11,
           "base_size": 11,
@@ -901775,7 +901766,7 @@
       "metadata_sha256": "525d436eee3d48951222f1fd54574554983d228c3d06f19a545ba7cab50fe057",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "1dbe2aea5b33e8013f759d546ea03a05e31442b0e98f1684e240bb0ade86da9c",
+      "geometry_object_sha256": "af0a7fd15b810b2195f85d46c45f6ca6ed20d8b206bea3d14009453a203bba6c",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {

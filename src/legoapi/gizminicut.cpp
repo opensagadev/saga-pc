@@ -308,14 +308,3 @@ ADDGIZMOTYPE *MiniCut_RegisterGizmo(i32 type_id) {
     MiniCutAddType.fns.add_level_sfx_fn = NULL;
     return &MiniCutAddType;
 }
-
-extern "C" void MiniCut_SetFramesToWait(i32 frames) {
-    FRAMES_TO_WAIT = frames;
-}
-
-extern "C" void MiniCut_PlayWipeSfx(void) {
-    if (CUTSTOPGAME == 0 && WORLD->current_level != NULL &&
-        (WORLD->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) == 0 && WORLD->current_level != TITLES_LDATA) {
-        PlaySfx("WipeScreen", NULL);
-    }
-}

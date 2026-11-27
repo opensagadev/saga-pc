@@ -35,6 +35,94 @@ i32 fade_draw_suppressed = 0;
 FadeBase::~FadeBase() {
 }
 
+extern "C" void MiniCut_SetFramesToWait(i32 frames) {
+    FRAMES_TO_WAIT = frames;
+}
+
+extern "C" void MiniCut_PlayWipeSfx(void) {
+    if (CUTSTOPGAME == 0 && WORLD->current_level != NULL &&
+        (WORLD->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) == 0 && WORLD->current_level != TITLES_LDATA) {
+        PlaySfx("WipeScreen", NULL);
+    }
+}
+
+void FadeSystem::Init() {
+    fades[0] = 0;
+    fades[1] = 0;
+    fades[2] = 0;
+    fades[3] = 0;
+    fade_started = 1;
+    pending_type = FADE_TYPE_NONE;
+}
+
+void FadeSystem::Update() {
+    f32 old_fade = fade;
+    FADETYPE_VALUE type = pending_type;
+    if (type == FADE_TYPE_NONE) {
+        return;
+    }
+
+    fade = fade + rate * FRAMETIME;
+    if (fade > 1.0f) {
+        fade = 1.0f;
+    } else if (fade < 0.0f) {
+        fade = 0.0f;
+    }
+
+    if (old_fade < 1.0f && fade == 1.0f) {
+        busy = 1;
+    } else if (busy != 0) {
+        --busy;
+    }
+
+    if (fades[type] != 0) {
+        fades[type]->UpdateFade();
+    }
+    if (fade == 0.0f || fade == 1.0f) {
+        if (fade == 0.0f) {
+            pending_type = FADE_TYPE_NONE;
+        }
+        rate = 0.0f;
+    }
+}
+
+void FadeSystem::Draw() {
+    if (pending_type != FADE_TYPE_NONE && fade_draw_suppressed == 0 && fades[pending_type] != 0) {
+        fades[pending_type]->DrawFade();
+    }
+}
+
+void FadeSystem::SetStage(char new_stage) {
+    stage = new_stage;
+    busy = 0;
+    if (pending_type != FADE_TYPE_NONE && fades[pending_type] != 0) {
+        fades[pending_type]->InitFade();
+    }
+}
+
+i32 FadeSystem::AddFade(FadeBase *fade_object) {
+    FADETYPE_VALUE type;
+
+    if (fade_object == NULL) {
+        return 0;
+    }
+    type = fade_object->GetFadeType();
+    fade_object->Init(this);
+    fades[type] = fade_object;
+    return 1;
+}
+
+i32 FadeSystem::SetFade(FADETYPE const &type, u32 frames) {
+    FADETYPE_VALUE fade_type = type.type;
+    if (fade_type != FADE_TYPE_NONE && fades[fade_type] != 0) {
+        pending_type = fade_type;
+        direction = frames;
+        return 1;
+    }
+    pending_type = FADE_TYPE_NONE;
+    return 0;
+}
+
 void Fade::Init(FADEINFO_s *state) {
     info = state;
 }
@@ -49,9 +137,6 @@ void Fade::InitFade() {
     }
 }
 
-void Fade::UpdateFade() {
-}
-
 void Fade::DrawFade() {
     i32 index;
 
@@ -59,9 +144,6 @@ void Fade::DrawFade() {
         index = (i32)(((f64)info->fade - 0.0) * 16384.0 + 49152.0 + 16384.0) >> 1 & 0x7fff;
         NuRndrRect2di(0, 0, 0x2800, 0xe00, (i32)(NuTrigTable[index] * 128.0) << 24, ScreenFadeMtl);
     }
-}
-
-extern "C" void fun_005644b0() {
 }
 
 void FadeWipe::Init(FADEINFO_s *state) {
@@ -81,9 +163,6 @@ void FadeWipe::InitFade() {
     do {
         info->direction = 1u << (qrand() / 0x4000);
     } while (info->direction == old_direction);
-}
-
-void FadeWipe::UpdateFade() {
 }
 
 void FadeWipe::DrawFade() {
@@ -179,79 +258,11 @@ void FadeStill::DrawFade() {
     }
 }
 
-i32 FadeSystem::AddFade(FadeBase *fade_object) {
-    FADETYPE_VALUE type;
-
-    if (fade_object == NULL) {
-        return 0;
-    }
-    type = fade_object->GetFadeType();
-    fade_object->Init(this);
-    fades[type] = fade_object;
-    return 1;
+void Fade::UpdateFade() {
 }
 
-void FadeSystem::Init() {
-    fades[0] = 0;
-    fades[1] = 0;
-    fades[2] = 0;
-    fades[3] = 0;
-    fade_started = 1;
-    pending_type = FADE_TYPE_NONE;
+extern "C" void fun_005644b0() {
 }
 
-void FadeSystem::Update() {
-    f32 old_fade = fade;
-    FADETYPE_VALUE type = pending_type;
-    if (type == FADE_TYPE_NONE) {
-        return;
-    }
-
-    fade = fade + rate * FRAMETIME;
-    if (fade > 1.0f) {
-        fade = 1.0f;
-    } else if (fade < 0.0f) {
-        fade = 0.0f;
-    }
-
-    if (old_fade < 1.0f && fade == 1.0f) {
-        busy = 1;
-    } else if (busy != 0) {
-        --busy;
-    }
-
-    if (fades[type] != 0) {
-        fades[type]->UpdateFade();
-    }
-    if (fade == 0.0f || fade == 1.0f) {
-        if (fade == 0.0f) {
-            pending_type = FADE_TYPE_NONE;
-        }
-        rate = 0.0f;
-    }
-}
-
-void FadeSystem::Draw() {
-    if (pending_type != FADE_TYPE_NONE && fade_draw_suppressed == 0 && fades[pending_type] != 0) {
-        fades[pending_type]->DrawFade();
-    }
-}
-
-void FadeSystem::SetStage(char new_stage) {
-    stage = new_stage;
-    busy = 0;
-    if (pending_type != FADE_TYPE_NONE && fades[pending_type] != 0) {
-        fades[pending_type]->InitFade();
-    }
-}
-
-i32 FadeSystem::SetFade(FADETYPE const &type, u32 frames) {
-    FADETYPE_VALUE fade_type = type.type;
-    if (fade_type != FADE_TYPE_NONE && fades[fade_type] != 0) {
-        pending_type = fade_type;
-        direction = frames;
-        return 1;
-    }
-    pending_type = FADE_TYPE_NONE;
-    return 0;
+void FadeWipe::UpdateFade() {
 }

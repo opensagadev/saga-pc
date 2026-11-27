@@ -3,7 +3,7 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x401810,0x401863,src/legogame/?0x401810,,legogame,marker+review+android,none,ret ret 28,5,36,8,8,0,0,legoapi/gamepads.cpp:8
 0x401870,0x4028b4,src/legogame/aitrigger.cpp,,legogame,batman+marker,high,ret 28,10,4092,4064,1672,17,0,legogame/aitrigger.cpp:4063 nu2api/nuapi.c:1
 0x4028c0,0x403c83,src/legogame/attracto.cpp,,legogame,batman+marker,high,ret fabs 28,29,4833,4805,3175,8,0,legogame/attracto.cpp:4805
-0x403c90,0x405d4b,src/legogame/batarang.cpp,,legogame,batman+marker,high,fabs 54,24,8222,8194,4148,173,0,legoapi/batarang.cpp:8140 gameapi/aisysall.c:54
+0x403c90,0x405d4b,src/legogame/batarang.cpp,,legogame,batman+marker,high,fabs 54,24,8222,8194,4148,173,0,legogame/batarang.cpp:8194
 0x405d50,0x407e3c,src/legogame/batman_gameai.cpp,,legogame,marker+review,low,,24,8311,8255,5922,257,0,legogame/batman_gameai.cpp:8255
 0x407e40,0x408760,src/legogame/bolt.cpp,,legogame,batman,medium,,6,2300,2300,983,28,0,legogame/bolt.cpp:2300
 0x408760,0x40a4a5,src/legogame/cable.cpp,,legogame,review,medium,,12,7415,7387,1336,185,0,legogame/cable.cpp:7387
@@ -171,9 +171,9 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x5affa0,0x5b0335,src/legoapi/gizrandom.cpp,,legoapi,batman+marker,high,ret 28,12,838,810,810,0,0,legoapi/gizrandom.cpp:810
 0x5b0340,0x5b0769,src/legoapi/giztimers.cpp,,legoapi,batman+marker,high,ret 28,14,956,928,928,0,0,legoapi/giztimers.cpp:928
 0x5b0770,0x5b0fea,src/legoapi/gizminicut.cpp,,legoapi,batman+marker,high,ret 28,17,2049,2021,1691,0,0,legoapi/gizminicut.cpp:2021
-0x5b0ff0,0x5b16b1,src/legoapi/fade.cpp,,legoapi,batman+marker,high,,35,1455,1399,1399,0,0,legoapi/fade.cpp:1188 legoapi/gamethings.cpp:84 legoapi/gizminicut.cpp:67 gameapi/supportall.cpp:60
-0x5b16c0,0x5b176c,src/legoapi/things.cpp,,legoapi,batman+code,medium,,5,131,103,103,0,0,legoapi/gamethings.cpp:103
-0x5b1770,0x5b1e97,src/legoapi/specialsfx.cpp,,legoapi,batman,medium,,7,1778,1778,1778,0,0,legoapi/specialsfx.c:1778
+0x5b0ff0,0x5b15b9,src/legoapi/fade.cpp,,legoapi,batman+marker,high,,27,1283,1255,1255,0,0,legoapi/fade.cpp:1188 legoapi/gizminicut.cpp:67
+0x5b15c0,0x5b174c,src/legoapi/things.cpp,,legoapi,batman+code+review,medium,,12,275,247,247,0,0,legoapi/gamethings.cpp:187 gameapi/supportall.cpp:60
+0x5b1750,0x5b1e97,src/legoapi/specialsfx.cpp,,legoapi,batman+review,medium,,8,1806,1778,1778,0,0,legoapi/specialsfx.c:1778
 0x5b1ea0,0x5b2347,src/legoapi/edsplines.cpp,,legoapi,batman+marker,high,ret ret 28,8,1123,1095,545,57,0,legoapi/edsplines.cpp:1094 legoapi/specialsfx.c:1
 0x5b2350,0x5b2690,src/legoapi/movies.cpp,,legoapi,batman+marker,high,ret 28,5,799,771,538,6,0,legoapi/movies.cpp:770 legoapi/movies_diagnostic.cpp:1
 0x5b2690,0x5b2d93,src/legoapi/whip.cpp,,legoapi,batman+marker,high,,3,1788,1760,1760,0,0,legoapi/whip.c:1760

@@ -206,6 +206,11 @@ REVIEW = {
                    why="the Shadow_* gizmo callbacks are referenced only by EdGizShadowMachine_RegisterGizmo, so "
                    "edgizshadow starts with them"),
     0x5af850: dict(name="edgizshadow", join=True, why="continues 0x5af4f0"),
+    0x5b15c0: dict(name="things", conf="medium",
+                   why="a 28-byte static header copy opens it; CreateThingManager inlines operator new and the "
+                   "GameThingManager constructor, whose never-called out-of-line copies follow, so they are one unit"),
+    0x5b16c0: dict(name="things", join=True, why="continues 0x5b15c0"),
+    0x5b1750: dict(name="specialsfx", conf="medium", why="its static header copy SpecialsfxVuVecMake opens it; Batman specialsfx"),
     0x5b2da0: dict(name="numath_includes", conf="high", why="marker; Batman numath_includes; retail nugraph.c, nutrig.c"),
     0x5c12e0: dict(name="nu3d_includes", conf="high",
                    why="three bare-RET stubs open it; the static at 0x5c1330 takes arguments in EAX and ECX as compiled "
