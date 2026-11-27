@@ -185,7 +185,7 @@ class DatParserTests(unittest.TestCase):
             objects = []
             sources = [ROOT / f"src/nu2api/{name}" for name in
                        ("nucore_includes.c", "nualloc.c", "nudebug.c", "nufile_pc.c", "nucore_pc_includes.cpp",
-                        "nufile_mc.c", "nuthread.c")]
+                        "nufile_mc.c")]
             fixture = directory / "test_dat_fixture.c"
             defined = production_globals(sources)
             fixture.write_text(all_headers_source() +

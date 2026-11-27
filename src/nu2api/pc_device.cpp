@@ -403,6 +403,3 @@ extern "C" void fun_006e45d0(void) {
 
 void PC_DEVICE_BACKEND::PostEffectBarrier() {
 }
-
-extern "C" void NuRndrEndFrameAction(void) {
-}

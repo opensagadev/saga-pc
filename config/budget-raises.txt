@@ -405,3 +405,5 @@ config/declscan-budget.json C 447 gameliball is one retail unity: its audio, deb
 config/castscan-budget.json const 982 gameliball is a C++ unity (retail audio.c, debris.c, edanim.c, edbits.c, edgra.c, terrain.c, edptl.c): the C editor code it gathers passes string literals as char *
 config/castscan-budget.json declaration-type 853 gameliball is a C++ unity: the C code it gathers passes pointers to the declared types C converted implicitly
 config/castscan-budget.json void-pointer-cpp 1300 gameliball is a C++ unity: the C code it gathers needs explicit casts on NuAlloc and void * results
+config/oddscan-budget.json noinline 63 nu3d_includes.cpp: NuHtmlEnd is called out of line from NuDisplayListHtmlEnd but inlined into NuDisplayListDrawRenderScenes; VC8 inlines it at both once nuhtml shares the unity
+config/declscan-budget.json C 466 nu3d_includes is one retail unity now: the nurndr, nucamera, nutexanim and nuhtml parts it gathers keep forward declarations of helpers defined later in address order

@@ -367,7 +367,7 @@
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nurndr.cpp",
+   "unit": "src/nu2api/nu3d_includes.cpp",
    "symbol": "?NuRndrPrimUV@@YAXMM@Z",
    "kind": "function"
   },

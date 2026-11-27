@@ -33,25 +33,6 @@ void PCGraphicsRenderTextureAllocationError(void) {
 void NuTexBmpUnsupportedDepth(i32 bit_count, const char *path) {
 }
 
-void NuFrameEndLeaf(void) {
-}
-
-void NuDebugToggle(void) {
-    i32 enabled;
-    if (NuDebugDisabled != 0) {
-        NuDebugDisabled = 0;
-        enabled = 1;
-    } else {
-        NuDebugDisabled = 1;
-        enabled = 0;
-    }
-    NuDebugGeometrySortOutput = enabled;
-    dat_00806b90 = enabled;
-    dat_00806b8c = enabled;
-    dat_00806b88 = enabled;
-    dat_00806b84 = enabled;
-}
-
 void DisplayListSpecialTransformNoOp(nuhspecial_s *special, NUMTX *matrix) {
 }
 

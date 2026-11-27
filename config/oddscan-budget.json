@@ -6,7 +6,7 @@
   "pragma-comment": 0,
   "pragma-macro": 30,
   "pragma-other": 0,
-  "noinline": 62,
+  "noinline": 63,
   "forceinline": 19,
   "inline-keyword": 25,
   "naked": 0,

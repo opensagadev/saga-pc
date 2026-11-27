@@ -320,6 +320,14 @@ a unit, or a boundary between two:
   not an out-of-line definition in one unit.
 - **COMDAT openers.** A COMDAT that only one unit calls opens that unit: the
   `strstr` C++ overload at 0x4fe630 starts `nucore_pc_includes.cpp`.
+- **Per-call inlining.** VC8 inlines a visible helper at every call site,
+  while retail sometimes calls the same helper out of line from one caller
+  and inlines it into another (`NuHtmlEnd`: called from
+  `NuDisplayListHtmlEnd`, inlined into `NuDisplayListDrawRenderScenes`).
+  Definition order in the unity does not change this. Such helpers keep a
+  commented `__declspec(noinline)`, or a second static copy for the callers
+  that inline it (`NuRndrPrimSetColourLocal`). A unity that builds from the
+  start of its range instead fails on these first.
 - **No ICF.** Retail keeps identical function bodies at separate addresses
   (the `ShaderBuilderGen` destructor at 0x745150 and 0x745310), so two equal
   bodies are two definitions.

@@ -789,7 +789,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x005c1330,26,?Nu3dIncludesMtxGetPerspective@@YAXPAUnumtx_s@@PAM111@Z,extent,,nu2api/numaths.c,unreferenced,
 0x005c1350,6,_NuRndrIsScreenGrabbing,extent,,nu2api/numaths.c,unreferenced,
 0x005c1360,18,?Nu3dIncludesFabs@@YAMM@Z,copy,,nu2api/nu3d_includes.cpp,bytes equal _AttractoFabs,
-0x005c1380,54,?Nu3dIncludesFdiv@@YAMMM@Z,copy,,nu2api/nu3d_includes.cpp,bytes equal ?NuFdiv@@YAMMM@Z,
+0x005c1380,54,_NuFdiv,copy,,nu2api/nu3d_includes.cpp,bytes equal ?NuFdiv@@YAMMM@Z,
 0x005c1500,27,?Nu3dIncludesACos@@YAMM@Z,copy,,nu2api/nu3d_includes.cpp,bytes equal _NuACos,
 0x005c1520,11,?Nu3dIncludesVecZero@@YAXPAUnuvec_s@@@Z,extent,,nu2api/nu3d_includes.cpp,unreferenced,
 0x005c1530,49,?Nu3dIncludesMtxFlipZ@@YAXPAUnumtx_s@@@Z,extent,,nu2api/nu3d_includes.cpp,unreferenced,

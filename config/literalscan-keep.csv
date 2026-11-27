@@ -13,4 +13,4 @@ src/gameapi/objectsall.cpp,PartNullInstanceName,"named: retail keeps this char a
 src/legogame/gameai.cpp,AIProcessingOutputText,"named: retail keeps this char array in the writable .data section, so it is a data object, not a pooled literal"
 src/legogame/pcbatman.cpp,SaveUnicodeName,"named: retail keeps this char array in the writable .data section, so it is a data object, not a pooled literal"
 src/legogame/zipup.cpp,ZipUpOutputName,"named: retail keeps this char array in the writable .data section, so it is a data object, not a pooled literal"
-src/nu2api/nuhtml.cpp,NuHtmlUnknownText,"named: retail keeps this char array in the writable .data section, so it is a data object, not a pooled literal"
+src/nu2api/nu3d_includes.cpp,NuHtmlUnknownText,"named: retail keeps this char array in the writable .data section, so it is a data object, not a pooled literal"

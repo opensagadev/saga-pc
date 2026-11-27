@@ -7201,7 +7201,7 @@ address,symbol,size,ctype
 0x5c1330,?Nu3dIncludesMtxGetPerspective@@YAXPAUnumtx_s@@PAM111@Z,26,
 0x5c1350,_NuRndrIsScreenGrabbing,6,
 0x5c1360,?Nu3dIncludesFabs@@YAMM@Z,18,
-0x5c1380,?Nu3dIncludesFdiv@@YAMMM@Z,54,
+0x5c1380,_NuFdiv,54,"f32 __cdecl(f32,f32)"
 0x5c13c0,_RenderPostASin,320,i16 __cdecl(f32)
 0x5c1500,?Nu3dIncludesACos@@YAMM@Z,27,
 0x5c1520,?Nu3dIncludesVecZero@@YAXPAUnuvec_s@@@Z,11,
@@ -7259,7 +7259,7 @@ address,symbol,size,ctype
 0x5c1f10,_fun_005c1f10,22,
 0x5c1f30,_fun_005c1f30,43,
 0x5c1f60,_fun_005c1f60,1,
-0x5c1f70,?NuRndrPrimSetColourPrivate@@YAXH@Z,108,ICF-folded with the nu3d_includes.cpp copy (same static in nurndr.cpp)
+0x5c1f70,?NuRndrPrimSetColourLocal@@YAXH@Z,108,ICF-folded with NuRndrPrimSetColourPrivate (nurndr copy of the same static)
 0x5c1f70,_NuRndrPrimSetColourPrivate,108,
 0x5c1fe0,_NuPrimSetUV,22,
 0x005c2000,?NuRndrPrimPosition@@YAXMMM@Z,51,"void __cdecl(f32,f32,f32)"
