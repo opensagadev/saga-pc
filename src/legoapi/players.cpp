@@ -61,7 +61,6 @@ typedef union player_position_sock_u { // size 0x38
     } start;
 } PLAYER_POSITION_SOCK;
 
-PLAYERPROGRESS PlayerProgress[8] = {0};
 PLAYER_POSITION_RECORD PlayerStart[8] = {0};
 
 i32 RenderHubFromCutscenePlayer = 0;
@@ -167,7 +166,6 @@ void Players_InitPositions(WORLDINFO *world) {
 u32 GAMEPAD_TOGGLELEFT = PAD_BUTTON_L2 | PAD_BUTTON_L1;
 u32 GAMEPAD_TOGGLERIGHT = PAD_BUTTON_R2 | PAD_BUTTON_R1;
 i32 GAMEPAD_LIFT = PAD_BUTTON_R1;
-i32 DEFAULT_PLAYERHITPOINTS = 8;
 i32 PlayerID[2] = {-1, -1};
 f32 TOGGLEHOLDTIME = 1.0f;
 f32 TOGGLEREPEATTIME = 0.25f;
@@ -723,171 +721,6 @@ i32 CanWearHatsInFreePlay(i32 id) {
         return 0;
     }
     return 1;
-}
-
-AREA_DATA *BONUS_GUNSHIP_ADATA = 0;
-
-void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_to_surface) {
-    f32 surface_y = 2000000.0f;
-    i32 restore_hitpoints;
-    i32 player_index;
-    u16 facing;
-    PLAYER_POSITION_RECORD *starts = PlayerStart;
-    if (object == NULL) {
-        return;
-    }
-    restore_hitpoints = object->player_index != -1 && object->player.character_context == CHARACTER_CONTEXT_DOOMED;
-    if (reset_moves != 0) {
-        if (position == NULL) {
-            position = Player_StartPos(object);
-        }
-        if (position != NULL) {
-            object->position = *position;
-        }
-        if (object->player_index != -1) {
-            object->flags_ef4 |= 0x40;
-        }
-        ResetPlayerMoves(object);
-        object->collision_position = object->position;
-        object->initial_position = object->position;
-        plr_lastpos = object->collision_position;
-        object->start_position = object->collision_position;
-        object->player.reset_velocity = v000;
-        object->velocity = object->player.reset_velocity;
-        GetTopBot(object);
-        GameObjectDimensions(object);
-        object->player.flags_e20 &= ~0x08000000u;
-        object->use_model_origin = 0;
-        object->origin_joint_ready = 0;
-        GameObjectOrigin(object);
-        ResetRumble(&object->player.pad->rumble);
-        ResetLights(&object->position, &object->lighting_packet, WORLD->rtl_set);
-        ResetMiniAnimPacket(&object->player.mini_anim_packet, -1);
-        object->sock_position.sock_index = -1;
-        object->sock_position.segment = -1;
-        if (WORLD->sock_sys != NULL) {
-            if (Door_NextSock != -1 && WORLD->sock_sys->socks[Door_NextSock].valid != 0) {
-                complexsockposition_forcesock = Door_NextSock;
-                movegamecamera_forcesock = Door_NextSock;
-            }
-            ComplexSockPosition(WORLD->sock_sys, &object->position, object->sock_position.sock_index, object->sock_position.segment,
-                                &object->sock_position);
-            ComplexSockAngles(&object->player.sock_angles);
-            if (object->player_index < 2 && object->sock_position.sock_index != -1) {
-                if (BONUS_GUNSHIP_ADATA != NULL && WORLD->area == BONUS_GUNSHIP_ADATA) {
-                    object->position = object->sock_position.midpoint;
-                    surface_y = FindGunshipHoverHeight(object);
-                    snap_to_surface = 0;
-                    if (WORLD->current_level == BONUS_GUNSHIPA_LDATA && (LevFlag.words[0] & 0xff) != 0) {
-                        object->position.x = (f32)((f64)object->position.x + 12.0);
-                    }
-                } else if (DOGFIGHT_ADATA != NULL && WORLD->area == DOGFIGHT_ADATA) {
-                    if ((WORLD->sock_sys->socks[object->sock_position.sock_index].flags & SOCK_FLAG_NO_CD) == 0) {
-                        object->position = object->sock_position.midpoint;
-                        if (Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player[1] != NULL &&
-                            (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-                            NUVEC offset;
-                            f32 side = object == Player[0] ? -1.0f : 1.0f;
-                            NuVecNorm(&offset, &WORLD->sock_sys->socks[object->sock_position.sock_index]
-                                                    .segments[object->sock_position.segment]
-                                                    .planes[4]);
-                            NuVecScale(&offset, &offset, side);
-                            NuVecAdd(&object->position, &object->position, &offset);
-                        }
-                        object->collision_position = object->position;
-                        object->initial_position = object->position;
-                        plr_lastpos = object->collision_position;
-                        object->start_position = object->collision_position;
-                    }
-                    snap_to_surface = 0;
-                }
-            }
-        }
-        if (object->player_index >= 0 && object->player_index < 8) {
-            player_index = object->player_index;
-        } else {
-            player_index = object->object_id;
-        }
-        facing = (u16)starts[player_index].angle;
-        object->pitch_angle = 0;
-        object->movement_facing_angle = facing;
-        object->facing_angle = facing;
-        object->movement_angle = facing;
-        object->roll_angle = 0;
-        NuVecRotateYValZ(&object->facing_direction, 1.0f, facing);
-        object->player.current_speed_mul = 1.0f;
-        object->player.current_speed_bias = 0.0f;
-        CurrentStart(object, 0, 1);
-        object->player.flags_e20 &= ~0x08000000u;
-        object->flags_ef0 &= ~0x02040000u;
-        object->model_draw_result = 1;
-        object->use_model_origin = 0;
-        object->origin_joint_ready = 0;
-        object->contact_count = 0;
-        InitSurfaceInfo(object);
-        if ((f64)surface_y == 2000000.0) {
-            surface_y = GetHoverPosY(object);
-        }
-        if (snap_to_surface != 0 && (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0) {
-            SetObjOnSurface(object, 0);
-        } else if ((f64)surface_y != 2000000.0) {
-            object->position.y = surface_y;
-            object->collision_position = object->position;
-            object->initial_position = object->position;
-            plr_lastpos = object->collision_position;
-            object->start_position = object->collision_position;
-        }
-        GizForce_ResetLOS(object);
-        PortalGameObject(object, 1, 1, -1, WORLD->current_gscn);
-        if ((ResetBits & 2) != 0 || object->dead != 0 || restore_hitpoints != 0) {
-            object->current_hp = (i8)DEFAULT_PLAYERHITPOINTS;
-            if (object->current_hp > object->max_hitpoints) {
-                object->current_hp = (i8)object->max_hitpoints;
-            }
-            object->player.vehicle_secondary_hp = 4;
-        }
-        if ((ResetBits & 8) != 0) {
-            player_index = object->player_index;
-            if (PlayerProgress[player_index].jump_variant != 0) {
-                object->player.jump_variant_state = 1;
-            }
-            object->player.vehicle_secondary_hp = PlayerProgress[player_index].saved_hitpoints;
-        }
-        ResetPlayerAI(object);
-        object->last_safe_position = object->position;
-        object->ai_update_position = object->position;
-        if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
-            object->player.in_narrow_socket = ObjInNarrowSock(object, WORLD->sock_sys, WORLD->level_idx);
-            object->player.speed_boost = GetVehicleSpeedMul(object, 0.0f);
-        } else {
-            object->player.speed_boost = 0.0f;
-        }
-        if (object->player.speed_boost > 0.0f) {
-            object->velocity.x = NuTrigTable[object->facing_angle >> 1] * object->player.speed_boost;
-            object->velocity.z = NuTrigTable[((object->facing_angle + 0x4000) >> 1) & 0x7fff] * object->player.speed_boost;
-        }
-    } else {
-        object->player.speed_boost = 0.0f;
-    }
-    object->flags_1fc_word &= 0xfffdfa83u;
-    object->collision_scale = 1.0f;
-    object->flags_ef0 |= 0x80;
-    object->invulnerable_timer = 0.0f;
-    object->player.keep_time = 0.0f;
-    // MATCH-EXCEPTION: the original clears bit 8 as or 0x100 then xor 0x100 in a register; a plain &= ~0x100
-    // emits a memory and.
-    object->flags_1f8 |= 0x100;
-    object->flags_1f8 ^= 0x100;
-    object->player.flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
-    object->player.directional_seek_multiplier = 1.0f;
-    object->dead = 0;
-    object->player.wall_run_state = 0;
-    object->previous_floor_height = 2000000.0f;
-    object->effect_flags = 0;
-    object->player.hover_blend = 0.0f;
-    object->offscreen_time = 0.0f;
-    object->player.camera_screen_position.z = -1.0f;
-    object->player.detonator_hold_time = 0.0f;
 }
 
 static i32 Customise_FindLetter(char character) {

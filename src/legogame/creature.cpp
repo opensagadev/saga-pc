@@ -124,48 +124,10 @@ typedef struct TERRAIN_PLAYER_IMPACT { // size 0x1c
     u8 normal_flags;                   // 0x1b
 } TERRAIN_PLAYER_IMPACT;
 
-static __inline f32 PlayersFabs(f32 value) {
-    u32 bits = *(u32 *)&value & 0x7fffffff;
-    return *(f32 *)&bits;
-}
-
-extern "C" f32 DrawGameObjectsFarClip = 20.0f;
-extern "C" f32 DrawGameObjectsVehicleFarClip = 50.0f;
-f32 TerrainPlayerOtherMovementScale = 2.5f;
-f32 TerrainPlayerBikeMovementScale = 15.0f;
-i16 ID_DEFAULTCHARACTER_A = -1;
-i16 id_GLIDEPACK = -1;
-i16 PunchRangeUnitId = -1;
-i16 PunchRangeCompanionId = -1;
-i16 id_PENGUIN = -1;
-i16 id_UMBRELLA = -1;
-i16 id_HANSOLOINDY = -1;
-i16 id_HENCHMAN = -1;
-i16 id_TWOFACE = -1;
-i16 id_MOUSEDROID = -1;
-i32 waiting_for_character = -1;
-i32 hub_character_ready = -1;
+extern PLAYER_POSITION_RECORD PlayerStart[8];
+extern GAMEOBJECT *player;
+NUVEC *Player_StartPos(GAMEOBJECT *object);
 extern "C" i16 id_WOMPRAT;
-i16 id_YODA = -1;
-i16 id_YODAGHOST = -1;
-i16 id_MOSEISLEYCITIZEN = -1;
-i16 id_CANTINAALIEN = -1;
-i16 id_CLOUDCITYCITIZEN = -1;
-i16 id_GEONOSIAN = -1;
-i16 id_CHEWBACCA = -1;
-i16 id_WOOKIEE = -1;
-i16 id_REPUBLICGUNSHIP = -1;
-i16 id_REPUBLICGUNSHIP_GREEN = -1;
-f32 default_mover_extra = 0.05f;
-f32 TerrainPlayerPlatConnectTolerance = 0.01f;
-f32 spline_seek_pos = 10.0f;
-f32 spline_seek_ang = 10.0f;
-f32 spline_xoffset_speed_seek = 4.0f;
-f32 spline_xoffset_speed_roll = 16384.0f;
-i32 TerrainPlayerShadowFix = 1;
-extern "C" i32 DrawParaphernaliaEnabled = 1;
-f32 ComplexShadowBase = 25.0f;
-i32 CharacterLoadAreaModels = 1;
 
 typedef struct SPECIAL_LAYER_s {
     i16 *character_id;
@@ -179,6 +141,14 @@ typedef union DRAW_ATTACHMENTS_PACKET {
 } DRAW_ATTACHMENTS_PACKET;
 
 extern "C" i32 GameKeepMergeAction;
+
+i16 id_YODA = -1;
+i16 id_YODAGHOST = -1;
+
+static __inline f32 PlayersFabs(f32 value) {
+    u32 bits = *(u32 *)&value & 0x7fffffff;
+    return *(f32 *)&bits;
+}
 
 static void CreatureMtxSetRotationXY(NUMTX *matrix, NUANG x, NUANG y) {
     NUANGVEC angles;
@@ -208,10 +178,6 @@ static void GameDrawMtxCopy(NUMTX *destination, const NUMTX *source) {
     CreatureVuVecCopy(&destination->rows[1], &source->rows[1]);
     CreatureVuVecCopy(&destination->rows[2], &source->rows[2]);
     CreatureVuVecCopy(&destination->rows[3], &source->rows[3]);
-}
-
-static void GameDrawMtxSetIdentity(NUMTX *matrix) {
-    GameDrawMtxCopy(matrix, &ANI3_EVAL_IDENTITY_MATRIX);
 }
 
 static void GameDrawMtxSetYRotation(NUMTX *matrix, NUANG angle) {
@@ -399,6 +365,9 @@ void FixUpCharacters(CHARFIXUP *fixup) {
         }
     }
 }
+
+i16 id_REPUBLICGUNSHIP = -1;
+i16 id_REPUBLICGUNSHIP_GREEN = -1;
 
 void ExtraCharacterFixUpAfterConfig(void) {
     i32 i;
@@ -622,11 +591,10 @@ void PlayerSetCurrentHp(GAMEOBJECT *object, i8 hitpoints) {
     }
 }
 
-i32 KEEPONSCREEN_SIDESONLY = 0;
 SUIT_INITIALIZER_RECORD *PlayerSuit[8] = {0};
 i32 makeplayerlist_freeplay = 0;
 u8 PlayerTorpedoCount[8] = {0};
-NUVEC GunshipANorm = {0};
+PLAYERPROGRESS PlayerProgress[8] = {0};
 
 i32 MakePlayerList(i32 count) {
     i32 player_count = 0;
@@ -904,6 +872,8 @@ void UpdateCharacterIdle(GAMEOBJECT *object) {
     ResetCharacterIdle(object, 1, GetDefaultIdle(object));
 }
 
+NUVEC GunshipANorm = {0};
+
 static void GunshipKeepOnScreen(GAMEOBJECT *object) {
     f32 push_speed = (f32)((f64)object->character_data->game_character->run_speed * 5.0);
     f32 count = 0.0f;
@@ -943,6 +913,8 @@ static void GunshipKeepOnScreen(GAMEOBJECT *object) {
         object->movement_direction_z = response.z * count;
     }
 }
+
+i32 KEEPONSCREEN_SIDESONLY = 0;
 
 void KeepOnScreen(GAMEOBJECT *object) {
     f32 previous_keep_time = object->player.keep_time;
@@ -1046,6 +1018,11 @@ void KeepOnScreen(GAMEOBJECT *object) {
         object->player.keep_time = 0.0f;
     }
 }
+
+f32 spline_seek_pos = 10.0f;
+f32 spline_seek_ang = 10.0f;
+f32 spline_xoffset_speed_seek = 4.0f;
+f32 spline_xoffset_speed_roll = 16384.0f;
 
 void MovePlayerSpline(GAMEOBJECT *object) {
     GAMEPAD *pad = object->player.pad;
@@ -1447,6 +1424,11 @@ static i32 TerrainKillPlayer(GAMEOBJECT *object, i32 surface, NUVEC *normal) {
     KillPlayer(object, KILL_REASON_KILLED, 1, NULL);
     return 1;
 }
+
+f32 TerrainPlayerOtherMovementScale = 2.5f;
+f32 TerrainPlayerBikeMovementScale = 15.0f;
+f32 TerrainPlayerPlatConnectTolerance = 0.01f;
+i32 TerrainPlayerShadowFix = 1;
 
 void TerrainPlayer(GAMEOBJECT *object) {
     NUVEC forward;
@@ -2714,6 +2696,8 @@ static void ParaphernaliaHand(GAMEOBJECT *object, i32 reflection) {
     }
 }
 
+f32 ComplexShadowBase = 25.0f;
+
 void ConfigureComplexShadow(GAMEOBJECT *object) {
     NUVEC direction;
     f32 distance;
@@ -2729,6 +2713,10 @@ void ConfigureComplexShadow(GAMEOBJECT *object) {
     distance = VehicleArea != 0 ? 150.0f : 30.0f;
     NuRndrShadowDirCol(&direction, 0x17000000u, distance, distance);
 }
+
+i32 waiting_for_character = -1;
+i32 hub_character_ready = -1;
+i32 CharacterLoadAreaModels = 1;
 
 void LoadSingleCharacter(BGPROCINFO *info) {
     APICHARACTERMODELLIST list[2] = {{(i16)waiting_for_character, 1}, {-1, 0}};
@@ -2753,6 +2741,11 @@ void LoadSingleCharacter(BGPROCINFO *info) {
     hub_character_ready = waiting_for_character;
     waiting_for_character = -1;
 }
+
+i16 PunchRangeCompanionId = -1;
+i16 id_HANSOLOINDY = -1;
+i16 id_MOSEISLEYCITIZEN = -1;
+i16 id_CANTINAALIEN = -1;
 
 void UpdateCharacterLoad(void) {
     i32 candidates[340];
@@ -2955,6 +2948,10 @@ static void SwapSpecialLayer(u32 *mask, i32 from0, i32 to0, i32 from1, i32 to1, 
     }
 }
 
+i16 ID_DEFAULTCHARACTER_A = -1;
+i16 id_GEONOSIAN = -1;
+i16 id_CHEWBACCA = -1;
+
 u32 AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG *data = object->character_data->game_character;
     i32 cape_layer = data->cape_layer;
@@ -3137,6 +3134,10 @@ i32 Player_HasPurpleForce(GAMEOBJECT *object) {
     return object != NULL && object->player.powerup_time > 0.0f;
 }
 
+static void GameDrawMtxSetIdentity(NUMTX *matrix) {
+    GameDrawMtxCopy(matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+}
+
 void ResetPlayerMoves(GAMEOBJECT *object) {
     ResetPlayerPacket(&object->player, object->character_data);
     object->fall_acceleration_timer = 0.0f;
@@ -3289,6 +3290,172 @@ void InitPlayerAI(GAMEOBJECT *object) {
     ResetPlayerAI(object);
 }
 
+i32 DEFAULT_PLAYERHITPOINTS = 8;
+AREA_DATA *BONUS_GUNSHIP_ADATA = 0;
+
+void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_to_surface) {
+    f32 surface_y = 2000000.0f;
+    i32 restore_hitpoints;
+    i32 player_index;
+    u16 facing;
+    PLAYER_POSITION_RECORD *starts = PlayerStart;
+    if (object == NULL) {
+        return;
+    }
+    restore_hitpoints = object->player_index != -1 && object->player.character_context == CHARACTER_CONTEXT_DOOMED;
+    if (reset_moves != 0) {
+        if (position == NULL) {
+            position = Player_StartPos(object);
+        }
+        if (position != NULL) {
+            object->position = *position;
+        }
+        if (object->player_index != -1) {
+            object->flags_ef4 |= 0x40;
+        }
+        ResetPlayerMoves(object);
+        object->collision_position = object->position;
+        object->initial_position = object->position;
+        plr_lastpos = object->collision_position;
+        object->start_position = object->collision_position;
+        object->player.reset_velocity = v000;
+        object->velocity = object->player.reset_velocity;
+        GetTopBot(object);
+        GameObjectDimensions(object);
+        object->player.flags_e20 &= ~0x08000000u;
+        object->use_model_origin = 0;
+        object->origin_joint_ready = 0;
+        GameObjectOrigin(object);
+        ResetRumble(&object->player.pad->rumble);
+        ResetLights(&object->position, &object->lighting_packet, WORLD->rtl_set);
+        ResetMiniAnimPacket(&object->player.mini_anim_packet, -1);
+        object->sock_position.sock_index = -1;
+        object->sock_position.segment = -1;
+        if (WORLD->sock_sys != NULL) {
+            if (Door_NextSock != -1 && WORLD->sock_sys->socks[Door_NextSock].valid != 0) {
+                complexsockposition_forcesock = Door_NextSock;
+                movegamecamera_forcesock = Door_NextSock;
+            }
+            ComplexSockPosition(WORLD->sock_sys, &object->position, object->sock_position.sock_index, object->sock_position.segment,
+                                &object->sock_position);
+            ComplexSockAngles(&object->player.sock_angles);
+            if (object->player_index < 2 && object->sock_position.sock_index != -1) {
+                if (BONUS_GUNSHIP_ADATA != NULL && WORLD->area == BONUS_GUNSHIP_ADATA) {
+                    object->position = object->sock_position.midpoint;
+                    surface_y = FindGunshipHoverHeight(object);
+                    snap_to_surface = 0;
+                    if (WORLD->current_level == BONUS_GUNSHIPA_LDATA && (LevFlag.words[0] & 0xff) != 0) {
+                        object->position.x = (f32)((f64)object->position.x + 12.0);
+                    }
+                } else if (DOGFIGHT_ADATA != NULL && WORLD->area == DOGFIGHT_ADATA) {
+                    if ((WORLD->sock_sys->socks[object->sock_position.sock_index].flags & SOCK_FLAG_NO_CD) == 0) {
+                        object->position = object->sock_position.midpoint;
+                        if (Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player[1] != NULL &&
+                            (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
+                            NUVEC offset;
+                            f32 side = object == Player[0] ? -1.0f : 1.0f;
+                            NuVecNorm(&offset, &WORLD->sock_sys->socks[object->sock_position.sock_index]
+                                                    .segments[object->sock_position.segment]
+                                                    .planes[4]);
+                            NuVecScale(&offset, &offset, side);
+                            NuVecAdd(&object->position, &object->position, &offset);
+                        }
+                        object->collision_position = object->position;
+                        object->initial_position = object->position;
+                        plr_lastpos = object->collision_position;
+                        object->start_position = object->collision_position;
+                    }
+                    snap_to_surface = 0;
+                }
+            }
+        }
+        if (object->player_index >= 0 && object->player_index < 8) {
+            player_index = object->player_index;
+        } else {
+            player_index = object->object_id;
+        }
+        facing = (u16)starts[player_index].angle;
+        object->pitch_angle = 0;
+        object->movement_facing_angle = facing;
+        object->facing_angle = facing;
+        object->movement_angle = facing;
+        object->roll_angle = 0;
+        NuVecRotateYValZ(&object->facing_direction, 1.0f, facing);
+        object->player.current_speed_mul = 1.0f;
+        object->player.current_speed_bias = 0.0f;
+        CurrentStart(object, 0, 1);
+        object->player.flags_e20 &= ~0x08000000u;
+        object->flags_ef0 &= ~0x02040000u;
+        object->model_draw_result = 1;
+        object->use_model_origin = 0;
+        object->origin_joint_ready = 0;
+        object->contact_count = 0;
+        InitSurfaceInfo(object);
+        if ((f64)surface_y == 2000000.0) {
+            surface_y = GetHoverPosY(object);
+        }
+        if (snap_to_surface != 0 && (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0) {
+            SetObjOnSurface(object, 0);
+        } else if ((f64)surface_y != 2000000.0) {
+            object->position.y = surface_y;
+            object->collision_position = object->position;
+            object->initial_position = object->position;
+            plr_lastpos = object->collision_position;
+            object->start_position = object->collision_position;
+        }
+        GizForce_ResetLOS(object);
+        PortalGameObject(object, 1, 1, -1, WORLD->current_gscn);
+        if ((ResetBits & 2) != 0 || object->dead != 0 || restore_hitpoints != 0) {
+            object->current_hp = (i8)DEFAULT_PLAYERHITPOINTS;
+            if (object->current_hp > object->max_hitpoints) {
+                object->current_hp = (i8)object->max_hitpoints;
+            }
+            object->player.vehicle_secondary_hp = 4;
+        }
+        if ((ResetBits & 8) != 0) {
+            player_index = object->player_index;
+            if (PlayerProgress[player_index].jump_variant != 0) {
+                object->player.jump_variant_state = 1;
+            }
+            object->player.vehicle_secondary_hp = PlayerProgress[player_index].saved_hitpoints;
+        }
+        ResetPlayerAI(object);
+        object->last_safe_position = object->position;
+        object->ai_update_position = object->position;
+        if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
+            object->player.in_narrow_socket = ObjInNarrowSock(object, WORLD->sock_sys, WORLD->level_idx);
+            object->player.speed_boost = GetVehicleSpeedMul(object, 0.0f);
+        } else {
+            object->player.speed_boost = 0.0f;
+        }
+        if (object->player.speed_boost > 0.0f) {
+            object->velocity.x = NuTrigTable[object->facing_angle >> 1] * object->player.speed_boost;
+            object->velocity.z = NuTrigTable[((object->facing_angle + 0x4000) >> 1) & 0x7fff] * object->player.speed_boost;
+        }
+    } else {
+        object->player.speed_boost = 0.0f;
+    }
+    object->flags_1fc_word &= 0xfffdfa83u;
+    object->collision_scale = 1.0f;
+    object->flags_ef0 |= 0x80;
+    object->invulnerable_timer = 0.0f;
+    object->player.keep_time = 0.0f;
+    // MATCH-EXCEPTION: the original clears bit 8 as or 0x100 then xor 0x100 in a register; a plain &= ~0x100
+    // emits a memory and.
+    object->flags_1f8 |= 0x100;
+    object->flags_1f8 ^= 0x100;
+    object->player.flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
+    object->player.directional_seek_multiplier = 1.0f;
+    object->dead = 0;
+    object->player.wall_run_state = 0;
+    object->previous_floor_height = 2000000.0f;
+    object->effect_flags = 0;
+    object->player.hover_blend = 0.0f;
+    object->offscreen_time = 0.0f;
+    object->player.camera_screen_position.z = -1.0f;
+    object->player.detonator_hold_time = 0.0f;
+}
+
 extern "C" void SetPlayerGroupPosition(f32 x, f32 y, f32 z) {
     i32 i;
     NUVEC offset = {0.0f, 0.0f, 0.2f};
@@ -3299,6 +3466,8 @@ extern "C" void SetPlayerGroupPosition(f32 x, f32 y, f32 z) {
         NuVecRotateY(&offset, &offset, 0x2000);
     }
 }
+
+i16 id_CLOUDCITYCITIZEN = -1;
 
 i32 NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unused) {
     PLAYERCHARACTERCONFIG *config;
@@ -3566,6 +3735,7 @@ void ResetAICreatures(AISYS *system) {
     }
 }
 
+f32 default_mover_extra = 0.05f;
 i32 addcreature_override_id_check = 0;
 
 i32 InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
@@ -3652,6 +3822,7 @@ i32 InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     return 1;
 }
 
+i16 id_MOUSEDROID = -1;
 /* Place actual owners in canonical data.cpp extern-C cohort. */
 extern "C" i32 GameKeepMergeAction = 0;
 
@@ -3941,6 +4112,8 @@ i32 DrawGameObjectsProcess(void) {
     return 0;
 }
 
+i16 id_HENCHMAN = -1;
+
 extern "C" void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
     PLAYERCHARACTERCONFIG *data;
     NUMTX blade_matrix;
@@ -4161,6 +4334,11 @@ static void DrawExtraCharacterLayerBits(GAMEOBJECT *object, i32 character_id, NU
     GameDrawCharacterModel(model, animation, &matrix, NULL, reflection, NULL, NULL, 0xffffffffu);
 }
 
+i16 id_GLIDEPACK = -1;
+i16 PunchRangeUnitId = -1;
+i16 id_PENGUIN = -1;
+i16 id_UMBRELLA = -1;
+
 extern "C" void DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices) {
     i32 character_id;
     i32 current_animation;
@@ -4207,6 +4385,10 @@ extern "C" void DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matric
     DrawExtraCharacterLayerBits(object, character_id, joint_matrices, &animation.packet,
                                 object->character_data->game_character->extra_character_locator, override_matrix);
 }
+
+i16 id_TWOFACE = -1;
+i16 id_WOOKIEE = -1;
+extern "C" i32 DrawParaphernaliaEnabled = 1;
 
 extern "C" void DrawParaphernalia(GAMEOBJECT *object) {
     i32 i;
@@ -4529,6 +4711,9 @@ void DrawGameObjectsDraw(i32 pass) {
     }
     ResetShadowMapRendering();
 }
+
+extern "C" f32 DrawGameObjectsFarClip = 20.0f;
+extern "C" f32 DrawGameObjectsVehicleFarClip = 50.0f;
 
 void DrawGameObjects() {
     const f32 saved_far_clip = global_camera.far_clip_override;
