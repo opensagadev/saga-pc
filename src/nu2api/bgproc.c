@@ -15,13 +15,7 @@ typedef struct BGPROC_HANDLER {
     void (*handler)(void);
 } BGPROC_HANDLER;
 
-i32 PcHandlersRunning = 0;
-BGPROC_HANDLER *PcFrameHandlers = 0;
-i32 PcFrameHandlersEnabled = 0;
-i32 PcVBlankHandlersEnabled = 0;
-BGPROC_HANDLER *PcVBlankHandlers = 0;
 volatile u32 nu_current_thread_id = 0;
-volatile i32 nuvideo_global_vbcnt = 0;
 
 /* The PC build has no debug-print lock; both halves are empty. */
 void PcDebugPrintUnlock(void) {
@@ -39,17 +33,6 @@ void PcDisableThreadSwap(void) {
 void fun_006de770(void) {
 }
 
-i32 BgProcRunHandlers(void) {
-    BGPROC_HANDLER *handler;
-
-    PcHandlersRunning = 1;
-    for (handler = PcFrameHandlers; handler != NULL; handler = handler->next) {
-        handler->handler();
-    }
-    PcHandlersRunning = 0;
-    return 1;
-}
-
 void fun_006de7c0(void) {
 }
 
@@ -62,36 +45,10 @@ void fun_006de7e0(void) {
 void fun_006de7f0(void) {
 }
 
-i32 PcRunVBlankHandlers(void) {
-    BGPROC_HANDLER *handler;
-
-    PcHandlersRunning = 1;
-    ++nuvideo_global_vbcnt;
-    if (PcVBlankHandlersEnabled) {
-        for (handler = PcVBlankHandlers; handler != NULL; handler = handler->next) {
-            handler->handler();
-        }
-    }
-    PcHandlersRunning = 0;
-    return 1;
-}
-
 void fun_006de860(void) {
 }
 
 void fun_006de870(void) {
-}
-
-void PcVBlankTick(void) {
-    if (PcVBlankHandlersEnabled) {
-        PcRunVBlankHandlers();
-    }
-}
-
-void PcFrameTick(void) {
-    if (PcFrameHandlersEnabled) {
-        BgProcRunHandlers();
-    }
 }
 
 void fun_006de8a0(void) {

@@ -686,7 +686,7 @@
     "src/legoapi/memorymanager.cpp": "f3f6b3dc9993711c5cd6958a2148fa9b228018545a51c95b4ca534f833adf039",
     "src/legoapi/menu.cpp": "10f43d636471b9e69fe31a01b999fab9369d11c8a2b1ea257222d015303fb4c0",
     "src/legoapi/menu_pause.cpp": "b4fa54a35fb32b79e896b8987bcaa658fa9cda1279e3e5a772cfbbcf2985a68e",
-    "src/legoapi/menu_titles.cpp": "08669171f92c52431dd6e2b098ecba8daf46fde93590fa4ab85dcfbfd2ac310b",
+    "src/legoapi/menu_titles.cpp": "b167d302fe37d7bd247b1aaf99870b41c24a0685d11e82527f64352cb629989d",
     "src/legoapi/menu_video.cpp": "46ad6ae415ef6f09806b3ef8a2c9cc0d7683d46fafb8cd47cc2946b5ee53cdfe",
     "src/legoapi/menus.cpp": "6e124a77df85bb93579a0f8b7304ea655fef746f533ba0b1f8992890b875fe46",
     "src/legoapi/minicamcut.cpp": "b9c949340c64c8df7b4fb3daf2ae66d53fcae48edb2c45356b578730fb0e30e5",
@@ -811,11 +811,11 @@
     "src/nu2api/nuhtml.cpp": "6b8bdc4c7e61c547955120fcea37c3aae104d7a5ffabca68651286d9e70bd035",
     "src/nu2api/numouse.cpp": "5a9c50912b5484c871093b716f5646d5e603bb2cd136a7d1307701f68673d4d1",
     "src/nu2api/nunetemu.cpp": "f1a5a9440de3df508e66dbb45310b9c209e85e0792ed589d56b157357cbfa93d",
-    "src/nu2api/nupad_pc.cpp": "aedcb9bcdca7435b0af2fbba96dfe99c1de0ea177fb1ff73fbf6505deb88d784",
+    "src/nu2api/nupad_pc.cpp": "6ea8f82d2b0a664777e67834ca0777950e7b2fa782517148ff7499c226b33f2a",
     "src/nu2api/nuparticle_state.cpp": "ea6a1109e71297502417cbe2d71a9f7985d4ca68d5ee82941f04570f5fe8b636",
     "src/nu2api/nurndr.cpp": "bf18475741055b08ca6b09cc9b269ae898ef3221c104cdc81d739c1f9ba6d4b7",
     "src/nu2api/nurndr_swap.cpp": "720f168a7a136ba9671e386617b3ac4370c57197ac87770c94288cb2374fa62d",
-    "src/nu2api/nuscratch.cpp": "da4fac2bcf1eb6441c040b2232eaa262fe54bff6d291ee5a3acf1e3d7d7e364f",
+    "src/nu2api/nuscratch.cpp": "a63bf92ffcd9ca195a0ebc0d226722468eaec8a536cb2147f07c7fb674f078ae",
     "src/nu2api/nushader.cpp": "cfbc6466a6cc58d3fee84df95e49ff1774eb1e443e6a216529df9afedc8c661d",
     "src/nu2api/nushaderkey.cpp": "6ca5052e04d4210428ada22ba85303537f7b8c44a2417b20ba6665ac407418a7",
     "src/nu2api/nushadermanager.cpp": "c5afdef0d0fb76755d2fb94bfaefdba3d371e04d78b7b2ce0cdf120787a29f9a",
@@ -828,6 +828,7 @@
     "src/nu2api/nustateanim.cpp": "acd6f007839358075e8c14f58f3fedf8147935d983604904081364e789f1096c",
     "src/nu2api/nustream.cpp": "420e4589cd8162811050a16fb79665f791d4ee085fae9b94b1bd8dcc5c7b608a",
     "src/nu2api/nutexanim.cpp": "df1a7a3bba4902dc35ebcd48ade0924965f2e8c509a7fbae9dbef12e67e0198b",
+    "src/nu2api/nuwin32/Stubs.cpp": "904a2e0f9f879e7257e20c510166bf6ed35529d497e4e1b5196da1dc91901ee0",
     "src/nu2api/nuwin32/d3dApiCalls.cpp": "a4d7a5fe2e5ec8293050859c84440635161833e2a38d2e73e32aab4476d5c78f",
     "src/nu2api/nuwin32/d3dCalls.cpp": "ee6c884e4e02b5f416a46f51017c4079391ac8a3e77a6e8698623d38952d4819",
     "src/nu2api/nuwin32/pcapi.cpp": "5dff9ecd7700e57d046ea563e421dd809ae6b91ddd8cb9b163e5c4940cc4408b",
@@ -897,7 +898,7 @@
     "src/legoapi/specialsfx.c": "f19f1d03212de0ec5c7522a6acd570b66aa18fb01726234fc30db9d119667098",
     "src/legoapi/startup_dats.c": "7aef5b9e305ade2648e27c5dcead11cd7af34b6f44cd0a4793c0a559b5514712",
     "src/legoapi/whip.c": "36bc2e6b454d291049ab572cb9675d8c3203d0b797be63b151042bfa60e7d4c7",
-    "src/nu2api/bgproc.c": "39e86a149a5f3336d57a693b918fbd0d552ca127616c156870c6b77d56af8112",
+    "src/nu2api/bgproc.c": "673bddb9f5dbbf0ecd055f301a0d6f4105beac82009f4288c5f8f3c933e1fcda",
     "src/nu2api/glutils.c": "4b227b6eb384cec954d180e11511d83fb6353c2d995004ea1de4a051c176769c",
     "src/nu2api/keyboard_read.c": "a5d044e413ee15476d9eea209890b0ad86d2f9f5c9af7def7981936ebfd0b177",
     "src/nu2api/listman.c": "09c49898e01f4834f9acb507e9a1399430d63826dfa63bbd826816031fdf663a",
@@ -905,9 +906,9 @@
     "src/nu2api/nuapi.c": "de0c2e4db48ca8536c35f2a62f46278b73ca2a07411e7d4071b497b7eacd3bc7",
     "src/nu2api/nubridge.c": "9c1d5590cb4cef5cba96714fca660ca768cc6fb7b07dbbcea4166aac43db44ce",
     "src/nu2api/nucore_includes.c": "f52dd4f0e46fe32647fc3717aa59809b82fc39aa78ef7ed979533b405f45510d",
-    "src/nu2api/nudebug.c": "2ecae684ae9ed31298dca8ef87648b4612186f557ad804b51777e64febaf5081",
+    "src/nu2api/nudebug.c": "d1d0743b3393f1057d28414f8816b73254d627d8f8869167a7b3d314d677addf",
     "src/nu2api/nuerror.c": "68c1ba7d889d0a68128a10289c16e4261414918b704b6ccc9bef01270fd52377",
-    "src/nu2api/nufile_mc.c": "a1ecc36ebe0de80bf80e53de06aee78675f12c2f988abf4bd0f88b5b85e7eeb1",
+    "src/nu2api/nufile_mc.c": "eb462e49d093a9b1c80384607e054a0ef7cffea8b67e28fccaaaae20b78ea966",
     "src/nu2api/nufile_pc.c": "5e2373a9ea6a9e34cde775207c6febe3a99a34ba0d9bf34425f550e910942d98",
     "src/nu2api/nufloat.c": "577f3d468196b2a8d4191ee628a24875227f993ddedd5d1bcd0045fb203342e9",
     "src/nu2api/numath_includes.c": "dcdcd7787a35a559838e12e6498a013be2eadb4f7cecd03754915e6c7994f319",
@@ -1016,7 +1017,7 @@
     "build/obj/gameapi/edpart.obj": "57ae5a2f8af06b69e085f0dc446df0601fb7d0c901bc4b1f88067c730a3087c2",
     "build/obj/gameapi/edpp.obj": "a438b53dae6afc7cb9a2c7861d2993e4869a2e5b65efdee3563f5ece98c81dbe",
     "build/obj/gameapi/edpp_load.obj": "3897dabf8efb6e71a00b8a4b7c5270160cba8fc6c49831787aeca902ef456c03",
-    "build/obj/gameapi/edspline_load.obj": "58d5b282eb446c32529ac23510c5d7d3253d1d3694898fd5b56f8dbcc941ae07",
+    "build/obj/gameapi/edspline_load.obj": "7aed10296c2d9096a63d44213b92c17af50246998779f968cbccc6d0641477c0",
     "build/obj/gameapi/edtools_outline.obj": "45c95225efebdf88788f96451b2fc54c651441a5afda10f925c9ac93519e5279",
     "build/obj/gameapi/edui_widget_render.obj": "be85fe6ab85100ebeec0104d0ef0719bdb567b79a34f53d627970fa1c6ac6670",
     "build/obj/gameapi/message.obj": "b979efca0ba635d34372911c5dc0f9fa5f3c1b4ee7e03b6ee635d9f6b8828087",
@@ -1053,8 +1054,8 @@
     "build/obj/legoapi/charshadows.obj": "301710353b8a913c3c3422c6ff2cf722364e1705220edf2e148e097b83eacfc3",
     "build/obj/legoapi/cheats.obj": "ca2b74645495a1afbc3633b911a0af60768f32c0f7c97eda66961fa25681f44f",
     "build/obj/legoapi/climbing.obj": "30d29aa144e1d461749f92630ffd27c160a7c37258fe6be4effc94e937a9344d",
-    "build/obj/legoapi/collection.obj": "7689358cc19be374e73f29f612bca17657c9eb7a65966f04d02aab9cf14a7b3e",
-    "build/obj/legoapi/collection_render.obj": "2a9d70d9fc363c4ebc3c89617d71cdefabbb4bffc25315c2d3441c5d6a0414dd",
+    "build/obj/legoapi/collection.obj": "9c2b32c259c9d345500915fbeaa684c7d9b1de6291621188d81eab3164d6979c",
+    "build/obj/legoapi/collection_render.obj": "d005e300639021ce9c134df237d19e7e2cd5de7590eef833bfd197a59839a405",
     "build/obj/legoapi/control_setup.obj": "a5ad2f6145ffd13c4fcc9ad1d8bb25ac1f55052a8aa27d1a686176ff2a44d051",
     "build/obj/legoapi/credits.obj": "7b250b56dcc42aec4b379b35880cfb551bf155aaeb050fde9bb304435048a87e",
     "build/obj/legoapi/customise_diagnostic.obj": "cea78e170d14314e9aed3a0511de55cf010cc5f13b7c374911e4af8c6b582d8a",
@@ -1115,12 +1116,12 @@
     "build/obj/legoapi/leveldata.obj": "8e1a517defbe2135bb2b572f059167b6d44f70df2087eba13643917a7a16d782",
     "build/obj/legoapi/levels.obj": "a24571f6f08a4590a69506e6a73f05c499206fd24ea1dfcd3c23a63e20674ce1",
     "build/obj/legoapi/levels_diagnostic.obj": "c8fa818e050b152c7f2da8362364856ffc75db0aaf08a1acc96228bbf3da348e",
-    "build/obj/legoapi/lighting_unit.obj": "9eaa955b0af17ef8f5ed1b7bddb319278991b69d5f75db2a2f425689728cb307",
+    "build/obj/legoapi/lighting_unit.obj": "bd08319e331bfa282a717aa45dde0feff11220a61bcf9df07daee80f255dcba7",
     "build/obj/legoapi/lsw_hub_ai.obj": "f1189a798bbdc1a2c347257afd565027326bd942e6ae519434f6418377990b02",
     "build/obj/legoapi/memorymanager.obj": "a319856452bb105fa4de0764e34b2ff54e91fe1a4071cd5eddc9e351d76473a8",
     "build/obj/legoapi/menu.obj": "30831f22837a0bf2cd711033cda3f45926b3cd7eca4a9d553f903dac54bb9435",
     "build/obj/legoapi/menu_pause.obj": "2d48f24bbf757b5e82ebc29bbd83dab8f028e5e2cec595781194ddb30410aba5",
-    "build/obj/legoapi/menu_titles.obj": "1dd2bfce506ba59a4e8ce2ee749fc31d4d3908a4ccad72f0ca42c3930051b042",
+    "build/obj/legoapi/menu_titles.obj": "3566d953efdfb95a455dae3255682170f8f48d43150f6fedab5ee8fef41d15cd",
     "build/obj/legoapi/menu_video.obj": "14285bc082286b281e0e84367485c8c0e79325f790004b09adc299a61fbaf6e0",
     "build/obj/legoapi/menus.obj": "c2a6fc99c77533922dd69407f4b01f3593bd4a56f5713bc954fc3dd6bb884b6c",
     "build/obj/legoapi/minicamcut.obj": "1862454331a1ecc6725476ea5cd534d0d40e63cc69281400194a1d07cf6403df",
@@ -1240,7 +1241,7 @@
     "build/obj/legogame/transform.obj": "5e82bf4c586cc3d7cfddb3aba8aa6f2cce62884965abd5364cd95ecb0df067b2",
     "build/obj/legogame/zipup.obj": "7160663df30c7237933fbd4b24d723ca59ff069fff39cd57a0c95d0b5ec24135",
     "build/obj/nu2api/PCInput.obj": "4d71c3c52a56a9eef3446dff6c3d1cdad8e3b56e833679d22bc9cf6a4494378e",
-    "build/obj/nu2api/bgproc.obj": "e9a43084a39718eadc0f15cca099956406dfa9d7459b6ff313f03f191b454f84",
+    "build/obj/nu2api/bgproc.obj": "f00572f178272a385c3b93fa172813ce807ae89585c48b92fe6c64aa502fce41",
     "build/obj/nu2api/crc16.obj": "db618c15b0b78c34df8fdf0a5a0742e09fe9e7e41c66c65a8b75276d1a33aaeb",
     "build/obj/nu2api/geometry_publish.obj": "d9c36e6ca4b30fcfc6e699cde03eddfc444ec311aeac6cc93cd0e7691d445453",
     "build/obj/nu2api/glutils.obj": "d98aa20497b9e15d5e93475ed926e6e6e2f03c8afa87874931ab42e2299ab6d7",
@@ -1257,11 +1258,11 @@
     "build/obj/nu2api/nubridge.obj": "65b30a19670cde7987c21b483ee8ad8fb90945da84d1a99a5390709d816e71a6",
     "build/obj/nu2api/nucamera.obj": "87542276e462ef343e9ee5a23ec671b013d24f153351e6986cc6b5bbb437be9c",
     "build/obj/nu2api/nucore_includes.obj": "292d87a608fc0894dde8c969bd2acfdb48e70022d378d58cb266928763548db1",
-    "build/obj/nu2api/nudebug.obj": "126954ae6e081fa72db8d3eb7c41126be57b644c5d6072c0be569e996f5b8e4f",
+    "build/obj/nu2api/nudebug.obj": "0c5fdfdbaa1d9896b7b083a3cc73d684468677a26abf4fac2e27223e394b6372",
     "build/obj/nu2api/nudebug_pc.obj": "292315022bb312b5287de5ad775fa164ccbf016d1a63d81727df2d87c5afc1cd",
     "build/obj/nu2api/nudlist_material.obj": "b02c16f6def18ca2487daf5f9069932a8e8bc197fd27f66422f7e91a8a25e03e",
     "build/obj/nu2api/nuerror.obj": "1ee73b16342c763cf93f6467f69826177a5896bc5730ffda29ee7d1275d0c956",
-    "build/obj/nu2api/nufile_mc.obj": "a02f0965e15bad40752fa296238ba4b0603db4438f9699a5f570b9d4fd44e051",
+    "build/obj/nu2api/nufile_mc.obj": "d1c166e6b2cea31c6008d4249daa46fca47b7ba4494735654cbc261cc08c4184",
     "build/obj/nu2api/nufile_pc.obj": "a790cf650e00950ea436dad3987978762cce982b236c906947479620049ee995",
     "build/obj/nu2api/nufloat.obj": "737c4f2e6f47cb48fd34b83944b787c099ed0ea63b13e1088eeee76e5fde0a29",
     "build/obj/nu2api/nufmv/pc/Bink/dsplay_bink.obj": "a4ad6986c03039dbd5c30e3d2e31e25ae71bdc45a774f24c9bc46785065cb647",
@@ -1271,25 +1272,25 @@
     "build/obj/nu2api/numtx.obj": "d338a83a13a0571c9fff4891a392528ae89f9f1fb214a64ce4a88136cb15e28e",
     "build/obj/nu2api/nunetemu.obj": "003794864d1ba03eb948ae74521556236962139ff42778db899e4c8871df6ef0",
     "build/obj/nu2api/nuobject.obj": "e6994d791420f36bc2bd8e17df6f1bf4f188b2235cd599a1b754d753e911b21f",
-    "build/obj/nu2api/nupad_pc.obj": "c51ca19510a3d6e64572e5f52679916c78ad1f5e10571719de8e07ef1c95cab1",
+    "build/obj/nu2api/nupad_pc.obj": "cdb00969a42103b86bc2e95073a54bead195a531a4e5585273870b64b2b57f0c",
     "build/obj/nu2api/nuparticle_state.obj": "8cb6f00773ca24ce759c69a78e9a59491c03b4d73c2da6f855c8024d81683c02",
     "build/obj/nu2api/nupsfile.obj": "ea71428127bb3e8fb38e24df3c2c0bb4611a2854398828ea6ff7b861fcf7f3ac",
     "build/obj/nu2api/nurain.obj": "d3ea265401dd594bbc832a46c1dcfc873c9e2200cef65bb89429d0d1f17415da",
     "build/obj/nu2api/nurndr.obj": "89974bfa95cddacac5cf3de868307a5ad935c516ad4ac1722a1ad2fbe0656fd0",
     "build/obj/nu2api/nurndr_swap.obj": "508133aae1917ab5d5433d9d7527aaed97f1c24d8164990482c3442bb7709658",
-    "build/obj/nu2api/nuscratch.obj": "fef1d43d83f9b201d3bb4f79aa6191a5c87a653a6301a105ef6ab336e89c8cf4",
+    "build/obj/nu2api/nuscratch.obj": "bde1499670a1c1cfcddb29dc18025a5c0d8fd387b6ace58ba0ee6a7d1950da85",
     "build/obj/nu2api/nushader.obj": "aaf56854ca350c2d86d4a858440a151f2cf7bb786afc8c19782739db43c2f7de",
-    "build/obj/nu2api/nushaderkey.obj": "e9e927d63c01398cb5789ada9649db8691df22d8f063b974da2dc6f3dca3fb78",
-    "build/obj/nu2api/nushadermanager.obj": "38c1443b31ff23e437f882bf608a3fc4c64c119a426ddaaec3af2a13833cb400",
+    "build/obj/nu2api/nushaderkey.obj": "0de6d8e4ebc85e0b1c93903e52a2b3542000f6a71e78bd64df41cf0da3dbf5cd",
+    "build/obj/nu2api/nushadermanager.obj": "7b6bfa32107cc499555ca2587fc97bf69ea5fb1c5129ce7043fc4221f6d9d6cc",
     "build/obj/nu2api/nushadermanager_gen.obj": "2116a4a9a2805a69adef1d50005bc45763e6b3f47422119f4b8cb9aa566c6ac8",
-    "build/obj/nu2api/nushaderobject.obj": "7e1d7f0e94a268d056458495db3f2596e1dea10a39f4d07023b7bcfbb11a30df",
-    "build/obj/nu2api/nushaderobject_pc.obj": "57099ca59f1178600276a29101e064aa921449d0d86cb22f88e1736c08ae0599",
+    "build/obj/nu2api/nushaderobject.obj": "2a01eb98fbd2b4477bce4bb29d0afc1a59df7cb64f33907b4f4dc110a7f0886c",
+    "build/obj/nu2api/nushaderobject_pc.obj": "46b94775719af2d6477c8b940c74a3801285eec407d38f998b49e8c2a50616be",
     "build/obj/nu2api/nushaderobjectbase.obj": "8e04e8663c29a37662308ba66fe4af9c87fd8bcb6595ab76156ea5268cdb289d",
-    "build/obj/nu2api/nusound.obj": "e8d830726b52bc0ac9265ac9786199fd634fbfe1f934ce4df6b1b9fd3a892069",
-    "build/obj/nu2api/nusound3/pc/nusound.obj": "4cf4d4f7d7cab9dfeca74208c24b03b57001d56003767ff4dfa0eb9a9104bafa",
+    "build/obj/nu2api/nusound.obj": "ab22fed17d6222ef09a132978b247de419b6819f8cc1418d15ce4ccf9718dccd",
+    "build/obj/nu2api/nusound3/pc/nusound.obj": "7f57ab69c85e8b4c169eec538c4ee79b71ef75ccedb8a9b4a7094cffab8b806f",
     "build/obj/nu2api/nusound_music.obj": "3f2bc674fa1f70b273d85e7d98bf9e2446f246027f62106e59f4e66a1d0e0890",
     "build/obj/nu2api/nustateanim.obj": "f870ba1aa15159b3a3c8c9f1801431bb471fc5bc19572515d19ceb8a67366132",
-    "build/obj/nu2api/nustream.obj": "c7165c2b9eff427bf65f6e150e0b443a11fd8bdef4f0b6ec574fd4fa5ba71aeb",
+    "build/obj/nu2api/nustream.obj": "eb1b99293f8d49717baaf089e8a74af575d2e7930b7c873157db5de07d0fd193",
     "build/obj/nu2api/nuterrain.obj": "0a5bbf8383217c33b7ff5a3e1cae5f57f2f75bbfeda6cc5c332c141da7d7f644",
     "build/obj/nu2api/nutexanim.obj": "e9be57fb7e7fc5272362773abfc223f8e8bdc2a3da1fae96de420a51a3ce8c6d",
     "build/obj/nu2api/nuthread.obj": "599c89b0888c2d76ea861f525635fd43be62c8dc04e2f14a3f96628c5368fd48",
@@ -1298,6 +1299,7 @@
     "build/obj/nu2api/nuvertexdecl.obj": "628ec1c1ac4a1800c5970ed7f4dc401b7a0987986255bc5705ea07d71c982d1d",
     "build/obj/nu2api/nuvideo.obj": "aad7ecaff372d53cf2a3bbf014693c819c565a6539f56d28bd0e17a79bba0532",
     "build/obj/nu2api/nuwin.obj": "e8b8f425930bfd70137bbb0ed6a749f68f41c12b89ef7c93d79e25d23c708070",
+    "build/obj/nu2api/nuwin32/Stubs.obj": "8040ea1b5e287b26672f6a311ec214f1d96b2b25c3518c47288bf406586a7843",
     "build/obj/nu2api/nuwin32/d3dApiCalls.obj": "4655833edcd4d11ff6c2437886c72d49bf783bfa3336c81f00558cdf3da73a2d",
     "build/obj/nu2api/nuwin32/d3dCalls.obj": "a6abec81763cebd66c75625d29cdfa3799d772445f5cc3803051fbd218313e6f",
     "build/obj/nu2api/nuwin32/pcapi.obj": "24829733e52a1dbcc4818d5c9f3efd007b50f34c38fa471591c7feb93d172209",
@@ -333177,19 +333179,19 @@
       "symbol": "_fun_006de710",
       "address": "0x006de710",
       "units": [
-        "src/nu2api/nupad_pc.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nupad_pc.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "006de710-007ff293df52",
+          "comparison_unit": "006de710-72a77045679d",
           "objdiff_percent": 100.0
         }
       ],
@@ -333345,19 +333347,19 @@
       "symbol": "_BgProcRunHandlers",
       "address": "0x006de780",
       "units": [
-        "src/nu2api/bgproc.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 49,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/bgproc.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 49,
           "exact_match": true,
           "target_sha256": "ceccedbea7c5a0c91f8afb3ccd49f3808d7776245334df3842835f574bb8edbd",
           "base_sha256": "ceccedbea7c5a0c91f8afb3ccd49f3808d7776245334df3842835f574bb8edbd",
           "relocation_count": 3,
-          "comparison_unit": "006de780-82c9d042cd05",
+          "comparison_unit": "006de780-aaa834449bb0",
           "objdiff_percent": 100.0
         }
       ],
@@ -333465,19 +333467,19 @@
       "symbol": "_PcRunVBlankHandlers",
       "address": "0x006de800",
       "units": [
-        "src/nu2api/bgproc.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 81,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/bgproc.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 81,
           "exact_match": true,
           "target_sha256": "86cc716fbf9382ee27492c92347e42600e84f5856ec150a3b1e441f79d5edac4",
           "base_sha256": "86cc716fbf9382ee27492c92347e42600e84f5856ec150a3b1e441f79d5edac4",
           "relocation_count": 6,
-          "comparison_unit": "006de800-96104da98247",
+          "comparison_unit": "006de800-352d93373c10",
           "objdiff_percent": 100.0
         }
       ],
@@ -333537,19 +333539,19 @@
       "symbol": "_PcVBlankTick",
       "address": "0x006de880",
       "units": [
-        "src/nu2api/bgproc.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 15,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/bgproc.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 15,
           "exact_match": true,
           "target_sha256": "47c728a6fd29a5a9b60628fb7ef59f19808f43bbc197f86768cae72a1d549449",
           "base_sha256": "47c728a6fd29a5a9b60628fb7ef59f19808f43bbc197f86768cae72a1d549449",
           "relocation_count": 2,
-          "comparison_unit": "006de880-f81dc03a1d55",
+          "comparison_unit": "006de880-5b8323243873",
           "objdiff_percent": 100.0
         }
       ],
@@ -333561,19 +333563,19 @@
       "symbol": "_PcFrameTick",
       "address": "0x006de890",
       "units": [
-        "src/nu2api/bgproc.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 15,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/bgproc.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 15,
           "exact_match": true,
           "target_sha256": "5e475d7c36f160b26a23c2525c9a86a770b585f20b015ecfafd16db62566275a",
           "base_sha256": "5e475d7c36f160b26a23c2525c9a86a770b585f20b015ecfafd16db62566275a",
           "relocation_count": 2,
-          "comparison_unit": "006de890-f5c87e9666e2",
+          "comparison_unit": "006de890-79f18846bf19",
           "objdiff_percent": 100.0
         }
       ],
@@ -333633,19 +333635,19 @@
       "symbol": "_NuScratchReset",
       "address": "0x006de8c0",
       "units": [
-        "src/nu2api/nuscratch.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 11,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nuscratch.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 11,
           "exact_match": true,
           "target_sha256": "ec2f8f1040e470d0140dc0d8b70e8de2a4858095014ba1f579d812c6afa4a62b",
           "base_sha256": "ec2f8f1040e470d0140dc0d8b70e8de2a4858095014ba1f579d812c6afa4a62b",
           "relocation_count": 2,
-          "comparison_unit": "006de8c0-4884571efd7a",
+          "comparison_unit": "006de8c0-7651549626b6",
           "objdiff_percent": 100.0
         }
       ],
@@ -333657,19 +333659,19 @@
       "symbol": "_NuScratchAlloc32",
       "address": "0x006de8d0",
       "units": [
-        "src/nu2api/nuscratch.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 37,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nuscratch.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 37,
           "exact_match": true,
           "target_sha256": "4c60c5b8bf57908b6f03fefbde042ea5527a6ea3ec7bea0562c3920463fea7db",
           "base_sha256": "4c60c5b8bf57908b6f03fefbde042ea5527a6ea3ec7bea0562c3920463fea7db",
           "relocation_count": 2,
-          "comparison_unit": "006de8d0-37459eef3e0b",
+          "comparison_unit": "006de8d0-0991761a88d3",
           "objdiff_percent": 100.0
         }
       ],
@@ -333681,19 +333683,19 @@
       "symbol": "_NuScratchAlloc64",
       "address": "0x006de900",
       "units": [
-        "src/nu2api/nuscratch.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 37,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nuscratch.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 37,
           "exact_match": true,
           "target_sha256": "ecf58b14ec3e9d88dc75f247bbf424a8daba0cb390c82110726f0c2a257f77e8",
           "base_sha256": "ecf58b14ec3e9d88dc75f247bbf424a8daba0cb390c82110726f0c2a257f77e8",
           "relocation_count": 2,
-          "comparison_unit": "006de900-745d6f8927e6",
+          "comparison_unit": "006de900-828fc104b8e5",
           "objdiff_percent": 100.0
         }
       ],
@@ -333705,19 +333707,19 @@
       "symbol": "_NuScratchAlloc128",
       "address": "0x006de930",
       "units": [
-        "src/nu2api/nuscratch.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 37,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nuscratch.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 37,
           "exact_match": true,
           "target_sha256": "b1ed6cbfe683f6d5c505a6087824367da6421472cf791fc6c8f2f31c9628bec9",
           "base_sha256": "b1ed6cbfe683f6d5c505a6087824367da6421472cf791fc6c8f2f31c9628bec9",
           "relocation_count": 2,
-          "comparison_unit": "006de930-bfb58caa6c5d",
+          "comparison_unit": "006de930-34a02899be3c",
           "objdiff_percent": 100.0
         }
       ],
@@ -333729,19 +333731,19 @@
       "symbol": "_NuScratchRelease",
       "address": "0x006de960",
       "units": [
-        "src/nu2api/nuscratch.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 15,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nuscratch.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 15,
           "exact_match": true,
           "target_sha256": "0e1e6417d6b0e7748854564942255a4db430e86e7bd2fa591cf1c97f75e385fc",
           "base_sha256": "0e1e6417d6b0e7748854564942255a4db430e86e7bd2fa591cf1c97f75e385fc",
           "relocation_count": 2,
-          "comparison_unit": "006de960-ba4c3096622e",
+          "comparison_unit": "006de960-a26218aaa399",
           "objdiff_percent": 100.0
         }
       ],
@@ -333849,19 +333851,19 @@
       "symbol": "_fun_006de9b0",
       "address": "0x006de9b0",
       "units": [
-        "src/nu2api/nudebug.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nudebug.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 4,
           "exact_match": true,
           "target_sha256": "031a1d90a8a2c46993613c8b2828efd0c52f20f2852d5f2ff930bc6acc0090c8",
           "base_sha256": "031a1d90a8a2c46993613c8b2828efd0c52f20f2852d5f2ff930bc6acc0090c8",
           "relocation_count": 0,
-          "comparison_unit": "006de9b0-35b6b611a1f3",
+          "comparison_unit": "006de9b0-c4a01d6f0a8e",
           "objdiff_percent": 100.0
         }
       ],
@@ -333873,19 +333875,19 @@
       "symbol": "_fun_006de9c0",
       "address": "0x006de9c0",
       "units": [
-        "src/nu2api/nudebug.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nudebug.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 6,
           "exact_match": true,
           "target_sha256": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67",
           "base_sha256": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67",
           "relocation_count": 0,
-          "comparison_unit": "006de9c0-40df31f725a3",
+          "comparison_unit": "006de9c0-a4fa28842706",
           "objdiff_percent": 100.0
         }
       ],
@@ -333897,19 +333899,19 @@
       "symbol": "_NuDebugPadRead",
       "address": "0x006de9d0",
       "units": [
-        "src/nu2api/nudebug.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nudebug.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 16,
           "exact_match": true,
           "target_sha256": "5c11871343cf1ba358d6ecf845dd88c69a0f3fc04221ec327c63e477d7a6a7bd",
           "base_sha256": "5c11871343cf1ba358d6ecf845dd88c69a0f3fc04221ec327c63e477d7a6a7bd",
           "relocation_count": 1,
-          "comparison_unit": "006de9d0-10a0d8c3ebba",
+          "comparison_unit": "006de9d0-db8c3778a273",
           "objdiff_percent": 100.0
         }
       ],
@@ -334017,19 +334019,19 @@
       "symbol": "_fun_006dea20",
       "address": "0x006dea20",
       "units": [
-        "src/nu2api/nudebug.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nudebug.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "006dea20-48a5a03b3689",
+          "comparison_unit": "006dea20-51f6fa7544e3",
           "objdiff_percent": 100.0
         }
       ],
@@ -334089,19 +334091,19 @@
       "symbol": "_fun_006dea50",
       "address": "0x006dea50",
       "units": [
-        "src/nu2api/nudebug.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nudebug.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "006dea50-647df599d3c1",
+          "comparison_unit": "006dea50-3624181dcdcd",
           "objdiff_percent": 100.0
         }
       ],
@@ -334185,19 +334187,19 @@
       "symbol": "_fun_006dea90",
       "address": "0x006dea90",
       "units": [
-        "src/nu2api/nudebug.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 34,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nudebug.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 34,
           "exact_match": true,
           "target_sha256": "17f3183cbc412542ec3db68e03eda4dbe5adb9b2f18a2a12cd652b8c0fa3a233",
           "base_sha256": "17f3183cbc412542ec3db68e03eda4dbe5adb9b2f18a2a12cd652b8c0fa3a233",
           "relocation_count": 2,
-          "comparison_unit": "006dea90-c3a9a628309c",
+          "comparison_unit": "006dea90-fcdbb3c581c5",
           "objdiff_percent": 100.0
         }
       ],
@@ -334209,19 +334211,19 @@
       "symbol": "_fun_006deac0",
       "address": "0x006deac0",
       "units": [
-        "src/nu2api/nudebug.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 58,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/nu2api/nudebug.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 56,
           "exact_match": false,
           "target_sha256": "8506878a1e947288681efa93404e47f41e91c0902cc544500982507b52c01d25",
           "base_sha256": "35aeb6ad703ae4afb67e97eca6287503f90694604dc2b3cb9ce8b1c01234c767",
           "relocation_count": 5,
-          "comparison_unit": "006deac0-02c5cc30ce57",
+          "comparison_unit": "006deac0-b17bcdaf4d91",
           "objdiff_percent": 70.75
         }
       ],
@@ -334263,19 +334265,19 @@
       "symbol": "_fun_006deb10",
       "address": "0x006deb10",
       "units": [
-        "src/nu2api/nudebug.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nudebug.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 6,
           "exact_match": true,
           "target_sha256": "61c395e813bb53b4910f2f71318e3093465ee4dc7b0d736cb0e0b783a9a347d9",
           "base_sha256": "61c395e813bb53b4910f2f71318e3093465ee4dc7b0d736cb0e0b783a9a347d9",
           "relocation_count": 1,
-          "comparison_unit": "006deb10-9f89c1ccf189",
+          "comparison_unit": "006deb10-789ef7c5481a",
           "objdiff_percent": 100.0
         }
       ],
@@ -334311,19 +334313,19 @@
       "symbol": "_fun_006deb30",
       "address": "0x006deb30",
       "units": [
-        "src/nu2api/nudebug.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nudebug.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "006deb30-c2ec8104a0e3",
+          "comparison_unit": "006deb30-1d0c42520737",
           "objdiff_percent": 100.0
         }
       ],
@@ -334335,19 +334337,19 @@
       "symbol": "_fun_006deb40",
       "address": "0x006deb40",
       "units": [
-        "src/nu2api/nudebug.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 11,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nudebug.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 11,
           "exact_match": true,
           "target_sha256": "8ffc0dd6d9fdfb9e0a939eab916bcc6a4b678be90c4f12a1f857bc9bb566b40f",
           "base_sha256": "8ffc0dd6d9fdfb9e0a939eab916bcc6a4b678be90c4f12a1f857bc9bb566b40f",
           "relocation_count": 1,
-          "comparison_unit": "006deb40-b23117dfee38",
+          "comparison_unit": "006deb40-10b11649edb6",
           "objdiff_percent": 100.0
         }
       ],
@@ -334359,19 +334361,19 @@
       "symbol": "_fun_006deb50",
       "address": "0x006deb50",
       "units": [
-        "src/nu2api/nudebug.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 125,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/nu2api/nudebug.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 125,
           "exact_match": false,
           "target_sha256": "8ab3281df76c34e5a59b152e0e24d1ee2e46c2375309b72e0b8ec7ec938db7b0",
           "base_sha256": "682051986e23aae20429116fd4603493bef2949b3b8a4518316a72f4019b5274",
           "relocation_count": 12,
-          "comparison_unit": "006deb50-ce9b8d1048dd",
+          "comparison_unit": "006deb50-f1388b51ea67",
           "objdiff_percent": 89.09091
         }
       ],
@@ -334389,19 +334391,19 @@
       "symbol": "_fun_006debd0",
       "address": "0x006debd0",
       "units": [
-        "src/nu2api/nudebug.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nudebug.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "006debd0-3c058a6a5272",
+          "comparison_unit": "006debd0-d2604d922675",
           "objdiff_percent": 100.0
         }
       ],
@@ -334413,19 +334415,19 @@
       "symbol": "_fun_006debe0",
       "address": "0x006debe0",
       "units": [
-        "src/nu2api/nudebug.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nudebug.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "006debe0-ea8269c4ec11",
+          "comparison_unit": "006debe0-6cc816dd2e7b",
           "objdiff_percent": 100.0
         }
       ],
@@ -334485,19 +334487,19 @@
       "symbol": "_NuPs2ApplyDeadZone",
       "address": "0x006dec10",
       "units": [
-        "src/nu2api/nupad_pc.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 64,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nupad_pc.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 64,
           "exact_match": true,
           "target_sha256": "068e11c66968b17909f7a6a3f71b6609c445cc170420d6ba07e09d8d63c69055",
           "base_sha256": "068e11c66968b17909f7a6a3f71b6609c445cc170420d6ba07e09d8d63c69055",
           "relocation_count": 0,
-          "comparison_unit": "006dec10-32be5e68da84",
+          "comparison_unit": "006dec10-845ee447b866",
           "objdiff_percent": 100.0
         }
       ],
@@ -334509,19 +334511,19 @@
       "symbol": "_fun_006dec50",
       "address": "0x006dec50",
       "units": [
-        "src/nu2api/nupad_pc.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nupad_pc.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 6,
           "exact_match": true,
           "target_sha256": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67",
           "base_sha256": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67",
           "relocation_count": 0,
-          "comparison_unit": "006dec50-cf4408f6e203",
+          "comparison_unit": "006dec50-19e62396535b",
           "objdiff_percent": 100.0
         }
       ],
@@ -334533,19 +334535,19 @@
       "symbol": "_fun_006dec60",
       "address": "0x006dec60",
       "units": [
-        "src/nu2api/nupad_pc.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nupad_pc.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 6,
           "exact_match": true,
           "target_sha256": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67",
           "base_sha256": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67",
           "relocation_count": 0,
-          "comparison_unit": "006dec60-0c5f806acd17",
+          "comparison_unit": "006dec60-bbb5a40fd9bb",
           "objdiff_percent": 100.0
         }
       ],
@@ -334605,19 +334607,19 @@
       "symbol": "_fun_006dec90",
       "address": "0x006dec90",
       "units": [
-        "src/nu2api/nupad_pc.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nupad_pc.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "006dec90-7cbf02690af8",
+          "comparison_unit": "006dec90-5c33291f3fc4",
           "objdiff_percent": 100.0
         }
       ],
@@ -334629,19 +334631,19 @@
       "symbol": "_fun_006deca0",
       "address": "0x006deca0",
       "units": [
-        "src/nu2api/nupad_pc.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nupad_pc.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "006deca0-493ed9a6aa66",
+          "comparison_unit": "006deca0-ebb60bfa112d",
           "objdiff_percent": 100.0
         }
       ],
@@ -334653,19 +334655,19 @@
       "symbol": "_fun_006decb0",
       "address": "0x006decb0",
       "units": [
-        "src/nu2api/nupad_pc.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nupad_pc.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "006decb0-255b42a99366",
+          "comparison_unit": "006decb0-6dc43d25989a",
           "objdiff_percent": 100.0
         }
       ],
@@ -334677,19 +334679,19 @@
       "symbol": "_fun_006decc0",
       "address": "0x006decc0",
       "units": [
-        "src/nu2api/nupad_pc.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nupad_pc.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "006decc0-2e74abdd4262",
+          "comparison_unit": "006decc0-923c9c0f1e4b",
           "objdiff_percent": 100.0
         }
       ],
@@ -334701,19 +334703,19 @@
       "symbol": "_fun_006decd0",
       "address": "0x006decd0",
       "units": [
-        "src/nu2api/nupad_pc.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nupad_pc.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "006decd0-c1ddce21b2f0",
+          "comparison_unit": "006decd0-f4d51bb22cf7",
           "objdiff_percent": 100.0
         }
       ],
@@ -334749,19 +334751,19 @@
       "symbol": "_fun_006decf0",
       "address": "0x006decf0",
       "units": [
-        "src/nu2api/nupad_pc.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 13,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nupad_pc.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 13,
           "exact_match": true,
           "target_sha256": "588744ccf1ce59f7f027ece65156946cdcfb93edd9cf06b43a785dc230cf8cbe",
           "base_sha256": "588744ccf1ce59f7f027ece65156946cdcfb93edd9cf06b43a785dc230cf8cbe",
           "relocation_count": 0,
-          "comparison_unit": "006decf0-6cb92817069e",
+          "comparison_unit": "006decf0-6c8943eb02de",
           "objdiff_percent": 100.0
         }
       ],
@@ -334783,19 +334785,19 @@
       "symbol": "_MenuSettingsStringsInit",
       "address": "0x006ded20",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 177,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 177,
           "exact_match": true,
           "target_sha256": "6ba5e634a2a7ba1a74c40b990896a926842ba8809eef7ffba98c75fd258b4223",
           "base_sha256": "6ba5e634a2a7ba1a74c40b990896a926842ba8809eef7ffba98c75fd258b4223",
           "relocation_count": 21,
-          "comparison_unit": "006ded20-9a552c03f1f6",
+          "comparison_unit": "006ded20-881f2647967e",
           "objdiff_percent": 100.0
         }
       ],
@@ -334807,19 +334809,19 @@
       "symbol": "_NuMcCheckCardPresent",
       "address": "0x006dede0",
       "units": [
-        "src/nu2api/nufile_mc.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nufile_mc.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "006dede0-d38726b828c0",
+          "comparison_unit": "006dede0-bd84264579e6",
           "objdiff_percent": 100.0
         }
       ],
@@ -334831,19 +334833,19 @@
       "symbol": "_NuMcCheckCardChanged",
       "address": "0x006dedf0",
       "units": [
-        "src/nu2api/nufile_mc.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nufile_mc.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "006dedf0-59581784c499",
+          "comparison_unit": "006dedf0-3f34ea809dd0",
           "objdiff_percent": 100.0
         }
       ],
@@ -334855,19 +334857,19 @@
       "symbol": "_NuMcCheckCardFormatted",
       "address": "0x006dee00",
       "units": [
-        "src/nu2api/nufile_mc.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nufile_mc.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "006dee00-659cc734d927",
+          "comparison_unit": "006dee00-b6f5fd511173",
           "objdiff_percent": 100.0
         }
       ],
@@ -334879,19 +334881,19 @@
       "symbol": "_NuMcCheckCardFreeSpace",
       "address": "0x006dee10",
       "units": [
-        "src/nu2api/nufile_mc.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nufile_mc.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "006dee10-d21267eed84b",
+          "comparison_unit": "006dee10-5bcbcf3e6735",
           "objdiff_percent": 100.0
         }
       ],
@@ -334903,19 +334905,19 @@
       "symbol": "_NuMcFormat",
       "address": "0x006dee20",
       "units": [
-        "src/nu2api/nufile_mc.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nufile_mc.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "base_size": 3,
           "exact_match": true,
           "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
           "relocation_count": 0,
-          "comparison_unit": "006dee20-8bd447d8f242",
+          "comparison_unit": "006dee20-e401d0cdc9b8",
           "objdiff_percent": 100.0
         }
       ],
@@ -521640,8 +521642,8 @@
       "address": "0x0075f0b0",
       "units": [
         "src/legoapi/menu.cpp",
-        "src/legoapi/menu_titles.cpp",
-        "src/nu2api/input_key_names.cpp"
+        "src/nu2api/input_key_names.cpp",
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
@@ -521655,7 +521657,7 @@
           "base_sha256": "b6238c9e719608fe7b85a6ab37d918e248681d1e2d0828c260f8a1bb4b7e9db8"
         },
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/input_key_names.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -521663,7 +521665,7 @@
           "base_sha256": "b6238c9e719608fe7b85a6ab37d918e248681d1e2d0828c260f8a1bb4b7e9db8"
         },
         {
-          "unit": "src/nu2api/input_key_names.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -522294,14 +522296,14 @@
       "symbol": "??_C@_06FMBNCPDL@Cancel?$AA@",
       "address": "0x0075f2b4",
       "units": [
-        "src/legoapi/menu_titles.cpp",
-        "src/legoapi/text.cpp"
+        "src/legoapi/text.cpp",
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/legoapi/text.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -522309,7 +522311,7 @@
           "base_sha256": "89a86adcc18130addb8ea43bfcdf3206b7daf5eeb1ab6c7b75a549513cae4464"
         },
         {
-          "unit": "src/legoapi/text.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -522334,14 +522336,14 @@
       "symbol": "??_C@_02GIPFHKNO@OK?$AA@",
       "address": "0x0075f2bc",
       "units": [
-        "src/legoapi/menu_titles.cpp",
-        "src/legoapi/text.cpp"
+        "src/legoapi/text.cpp",
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/legoapi/text.cpp",
           "exact_match": true,
           "target_size": 3,
           "base_size": 3,
@@ -522349,7 +522351,7 @@
           "base_sha256": "70eb24fb108b03fd7fd900aa81be73330c22489f9c8df0829baa80966fff69d5"
         },
         {
-          "unit": "src/legoapi/text.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 3,
           "base_size": 3,
@@ -586718,13 +586720,13 @@
       "symbol": "??_C@_02IAAGKKDJ@On?$AA@",
       "address": "0x0076f660",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 3,
           "base_size": 3,
@@ -595301,14 +595303,14 @@
       "symbol": "??_C@_04CFGDKDPF@Ende?$AA@",
       "address": "0x00770fbc",
       "units": [
-        "src/legoapi/menu_titles.cpp",
-        "src/nu2api/input_key_names.cpp"
+        "src/nu2api/input_key_names.cpp",
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/input_key_names.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -595316,7 +595318,7 @@
           "base_sha256": "3b767d32f26547bb4aa72d6d30d20ce8d981f5f47053f187de807cc069f45b1f"
         },
         {
-          "unit": "src/nu2api/input_key_names.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -606197,14 +606199,14 @@
       "symbol": "??_C@_07BPNDONLB@Tilbage?$AA@",
       "address": "0x00772c44",
       "units": [
-        "src/legoapi/menu_titles.cpp",
-        "src/nu2api/input_key_names.cpp"
+        "src/nu2api/input_key_names.cpp",
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/input_key_names.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -606212,7 +606214,7 @@
           "base_sha256": "2d8aeec0a64d3fa9df60b73aec3741d696c8360d6c48fcf4f63401933a437a69"
         },
         {
-          "unit": "src/nu2api/input_key_names.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -606710,14 +606712,14 @@
       "symbol": "??_C@_04GBPJHGAH@H?C?$LIj?$AA@",
       "address": "0x00772dd4",
       "units": [
-        "src/legoapi/menu_titles.cpp",
-        "src/nu2api/input_key_names.cpp"
+        "src/nu2api/input_key_names.cpp",
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/input_key_names.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -606725,7 +606727,7 @@
           "base_sha256": "34246aa9df20060e055ec9ae0a10a3558e309b57f619c252cdd00bf78c4e6944"
         },
         {
-          "unit": "src/nu2api/input_key_names.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -607706,14 +607708,14 @@
       "symbol": "??_C@_04KBNCIHLN@Baja?$AA@",
       "address": "0x00773210",
       "units": [
-        "src/legoapi/menu_titles.cpp",
-        "src/nu2api/input_key_names.cpp"
+        "src/nu2api/input_key_names.cpp",
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/input_key_names.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -607721,7 +607723,7 @@
           "base_sha256": "4e2ec128e86f976ba06de5c5af9ea2c4ca25337d6065dbcaa15cee7c9daa8846"
         },
         {
-          "unit": "src/nu2api/input_key_names.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -608135,14 +608137,14 @@
       "symbol": "??_C@_07JDAIDIOC@Zur?C?$LMck?$AA@",
       "address": "0x007733f0",
       "units": [
-        "src/legoapi/menu_titles.cpp",
-        "src/nu2api/input_key_names.cpp"
+        "src/nu2api/input_key_names.cpp",
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/input_key_names.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -608150,7 +608152,7 @@
           "base_sha256": "fe8a208fe26a4fe02c8fff9a783becbb8bd633fa7aee8b81fb43380b3821d7ae"
         },
         {
-          "unit": "src/nu2api/input_key_names.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -608669,14 +608671,14 @@
       "symbol": "??_C@_04NFKOGIOJ@Hoch?$AA@",
       "address": "0x00773568",
       "units": [
-        "src/legoapi/menu_titles.cpp",
-        "src/nu2api/input_key_names.cpp"
+        "src/nu2api/input_key_names.cpp",
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/input_key_names.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -608684,7 +608686,7 @@
           "base_sha256": "d57aae2e2c8a05327675efb8835357046bcf1e685e7b895e190d916448501ac0"
         },
         {
-          "unit": "src/nu2api/input_key_names.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -609056,14 +609058,14 @@
       "symbol": "??_C@_08PODLNOEA@Indietro?$AA@",
       "address": "0x0077375c",
       "units": [
-        "src/legoapi/menu_titles.cpp",
-        "src/nu2api/input_key_names.cpp"
+        "src/nu2api/input_key_names.cpp",
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/input_key_names.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -609071,7 +609073,7 @@
           "base_sha256": "f56dc3b9c4179b8d04ca3117cc4d65753af89d9bc62442083bd43ca8f4c2c6ce"
         },
         {
-          "unit": "src/nu2api/input_key_names.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -609590,14 +609592,14 @@
       "symbol": "??_C@_04CKAKLMK@Alta?$AA@",
       "address": "0x00773934",
       "units": [
-        "src/legoapi/menu_titles.cpp",
-        "src/nu2api/input_key_names.cpp"
+        "src/nu2api/input_key_names.cpp",
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/input_key_names.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -609605,7 +609607,7 @@
           "base_sha256": "3efcd8c96e9b17225be9daa29e26437e8f689d2f01cecf480e085a0b526e8b29"
         },
         {
-          "unit": "src/nu2api/input_key_names.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -609620,14 +609622,14 @@
       "symbol": "??_C@_05PLCECIFL@Bassa?$AA@",
       "address": "0x0077393c",
       "units": [
-        "src/legoapi/menu_titles.cpp",
-        "src/nu2api/input_key_names.cpp"
+        "src/nu2api/input_key_names.cpp",
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/input_key_names.cpp",
           "exact_match": true,
           "target_size": 6,
           "base_size": 6,
@@ -609635,7 +609637,7 @@
           "base_sha256": "2ad5d3955ab17092b38e17aad1904445b6d33f04d1773fc6bbab32d67426dd78"
         },
         {
-          "unit": "src/nu2api/input_key_names.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 6,
           "base_size": 6,
@@ -610049,14 +610051,14 @@
       "symbol": "??_C@_06KOMEFGGD@Retour?$AA@",
       "address": "0x00773b98",
       "units": [
-        "src/legoapi/menu_titles.cpp",
-        "src/nu2api/input_key_names.cpp"
+        "src/nu2api/input_key_names.cpp",
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/input_key_names.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -610064,7 +610066,7 @@
           "base_sha256": "594c8d4488b1a7b6aeb04f89a5aa1ec749778dd19cb9776a508808f313787ae3"
         },
         {
-          "unit": "src/nu2api/input_key_names.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -614468,14 +614470,14 @@
       "symbol": "??_C@_03DPAJLIAB@Lav?$AA@",
       "address": "0x00774bb4",
       "units": [
-        "src/legoapi/menu_titles.cpp",
-        "src/nu2api/input_key_names.cpp"
+        "src/nu2api/input_key_names.cpp",
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/input_key_names.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -614483,7 +614485,7 @@
           "base_sha256": "39e884d3816a2378f8952097d8ae6b59a78e484555c9e1b2c5c0d726887e0b08"
         },
         {
-          "unit": "src/nu2api/input_key_names.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -617417,14 +617419,14 @@
       "symbol": "??_C@_04PHMMJPOJ@High?$AA@",
       "address": "0x0077565c",
       "units": [
-        "src/legoapi/menu_titles.cpp",
-        "src/nu2api/input_key_names.cpp"
+        "src/nu2api/input_key_names.cpp",
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/input_key_names.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -617432,7 +617434,7 @@
           "base_sha256": "07a656884db1d16cf77d35059ab107f288e048779eddc819fbbd685b51a44d2b"
         },
         {
-          "unit": "src/nu2api/input_key_names.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -617447,14 +617449,14 @@
       "symbol": "??_C@_03CMIMKEEK@Low?$AA@",
       "address": "0x00775664",
       "units": [
-        "src/legoapi/menu_titles.cpp",
-        "src/nu2api/input_key_names.cpp"
+        "src/nu2api/input_key_names.cpp",
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/input_key_names.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -617462,7 +617464,7 @@
           "base_sha256": "d2be4c2926082aad827f2e4c3f2a6607e1bf5cc520feaa161d94a17bd0204494"
         },
         {
-          "unit": "src/nu2api/input_key_names.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -619166,14 +619168,14 @@
       "symbol": "??_C@_04KPOMJMPE@FSAA?$AA@",
       "address": "0x00775b04",
       "units": [
-        "src/legoapi/menu_titles.cpp",
+        "src/nu2api/nuwin32/Stubs.cpp",
         "src/nu2api/pc_options.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -620403,13 +620405,13 @@
       "symbol": "??_C@_07DHCFHPAJ@Kant?9AA?$AA@",
       "address": "0x0077601c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -620424,13 +620426,13 @@
       "symbol": "??_C@_0BG@BLHKBLCP@Dynamisk?5lys?9kvalitet?$AA@",
       "address": "0x00776024",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 22,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 22,
           "base_size": 22,
@@ -620445,13 +620447,13 @@
       "symbol": "??_C@_08HDMICHHE@Sl?C?$LIring?$AA@",
       "address": "0x0077603c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -620466,13 +620468,13 @@
       "symbol": "??_C@_09KLGLKLBH@Synsdybde?$AA@",
       "address": "0x00776048",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 10,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 10,
           "base_size": 10,
@@ -620487,13 +620489,13 @@
       "symbol": "??_C@_07DKBOOGPN@Skygger?$AA@",
       "address": "0x00776054",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -620508,13 +620510,13 @@
       "symbol": "??_C@_07FDAGDAEG@Ekstern?$AA@",
       "address": "0x0077605c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -620529,13 +620531,13 @@
       "symbol": "??_C@_0BL@PIBBEMGJ@Anti?9aliasing?0?5fuld?5sk?C?$KGrm?$AA@",
       "address": "0x00776064",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 27,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 27,
           "base_size": 27,
@@ -620550,13 +620552,13 @@
       "symbol": "??_C@_0BC@CNODKMKB@Effektindstilling?$AA@",
       "address": "0x00776080",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 18,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 18,
           "base_size": 18,
@@ -620571,13 +620573,13 @@
       "symbol": "??_C@_0DP@NFDAPIN@Du?5skal?5genstarte?5spillet?5for?5at@",
       "address": "0x00776094",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 63,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 63,
           "base_size": 63,
@@ -620592,13 +620594,13 @@
       "symbol": "??_C@_0N@MNDCHOCP@Vend?5tilbage?$AA@",
       "address": "0x007760d4",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 13,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 13,
           "base_size": 13,
@@ -620613,13 +620615,13 @@
       "symbol": "??_C@_0BA@HDAFOGOA@Teksturkvalitet?$AA@",
       "address": "0x007760e4",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 16,
           "base_size": 16,
@@ -620634,13 +620636,13 @@
       "symbol": "??_C@_0CE@KNLILDFC@Brug?5nuv?C?$KGrende?5grafikindstillin@",
       "address": "0x007760f4",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 36,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 36,
           "base_size": 36,
@@ -620655,13 +620657,13 @@
       "symbol": "??_C@_0BF@KONIJGDB@Fra?5sk?C?$KGrmopl?C?$LIsning?$AA@",
       "address": "0x00776118",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 21,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 21,
           "base_size": 21,
@@ -620676,13 +620678,13 @@
       "symbol": "??_C@_0BB@DGHKJGEJ@Forbedret?5grafik?$AA@",
       "address": "0x00776130",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 17,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 17,
           "base_size": 17,
@@ -620697,13 +620699,13 @@
       "symbol": "??_C@_0BD@NFDJMIJG@St?C?$LIrrelsesforhold?$AA@",
       "address": "0x00776144",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 19,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 19,
           "base_size": 19,
@@ -620718,13 +620720,13 @@
       "symbol": "??_C@_0BB@MGPKHLDJ@Sk?C?$KGrmopdatering?$AA@",
       "address": "0x00776158",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 17,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 17,
           "base_size": 17,
@@ -620739,13 +620741,13 @@
       "symbol": "??_C@_0P@GOMELGJI@Billedfrekvens?$AA@",
       "address": "0x0077616c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 15,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 15,
           "base_size": 15,
@@ -620760,13 +620762,13 @@
       "symbol": "??_C@_0BB@OOGIFHCK@Sk?C?$KGrmopl?C?$LIsning?$AA@",
       "address": "0x0077617c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 17,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 17,
           "base_size": 17,
@@ -620781,13 +620783,13 @@
       "symbol": "??_C@_0BE@COHDDFAC@Grafikindstillinger?$AA@",
       "address": "0x00776190",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 20,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 20,
           "base_size": 20,
@@ -620802,13 +620804,13 @@
       "symbol": "??_C@_07LDMNLJDE@Nulstil?$AA@",
       "address": "0x007761a4",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -620823,13 +620825,13 @@
       "symbol": "??_C@_03ELFHMBNK@Fra?$AA@",
       "address": "0x007761ac",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -620844,13 +620846,13 @@
       "symbol": "??_C@_03BEJKGMBC@Til?$AA@",
       "address": "0x007761b0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -620865,13 +620867,13 @@
       "symbol": "??_C@_08OLDPCFBO@Annuller?$AA@",
       "address": "0x007761b4",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -620886,13 +620888,13 @@
       "symbol": "??_C@_03HEHOIFAL@Nej?$AA@",
       "address": "0x007761c0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -620907,13 +620909,13 @@
       "symbol": "??_C@_06NBFJAABK@Afsl?C?$KF?$AA@",
       "address": "0x007761c4",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -620928,13 +620930,13 @@
       "symbol": "??_C@_08GHADCKAE@Genoptag?$AA@",
       "address": "0x007761cc",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -620949,13 +620951,13 @@
       "symbol": "??_C@_06KMALGEAH@Mellem?$AA@",
       "address": "0x007761d8",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -620970,13 +620972,13 @@
       "symbol": "??_C@_0BJ@NMMPMLPM@Vend?5tilbage?5til?5spillet?$AA@",
       "address": "0x007761e0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 25,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 25,
           "base_size": 25,
@@ -620991,13 +620993,13 @@
       "symbol": "??_C@_0BM@OAFLDHP@Slut?5og?5g?C?$KF?5til?5Demo?9menuen?$AA@",
       "address": "0x007761fc",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 28,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 28,
           "base_size": 28,
@@ -621012,13 +621014,13 @@
       "symbol": "??_C@_0BD@HLCBODDE@Forlad?5til?5Windows?$AA@",
       "address": "0x00776218",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 19,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 19,
           "base_size": 19,
@@ -621033,13 +621035,13 @@
       "symbol": "??_C@_06GIMCJON@Forlad?$AA@",
       "address": "0x0077622c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -621054,13 +621056,13 @@
       "symbol": "??_C@_0BE@COBGJNOG@Suavizado?5de?5bordes?$AA@",
       "address": "0x00776234",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 20,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 20,
           "base_size": 20,
@@ -621075,13 +621077,13 @@
       "symbol": "??_C@_0BJ@JPHPFKBI@Calidad?5de?5luz?5din?C?$KBmica?$AA@",
       "address": "0x00776248",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 25,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 25,
           "base_size": 25,
@@ -621096,13 +621098,13 @@
       "symbol": "??_C@_0BJ@KPDFNFPJ@Distorsi?C?$LDn?5de?5velocidad?$AA@",
       "address": "0x00776264",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 25,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 25,
           "base_size": 25,
@@ -621117,13 +621119,13 @@
       "symbol": "??_C@_0BF@HHHIBLAB@Profundidad?5de?5campo?$AA@",
       "address": "0x00776280",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 21,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 21,
           "base_size": 21,
@@ -621138,13 +621140,13 @@
       "symbol": "??_C@_07OHCDDDCD@Sombras?$AA@",
       "address": "0x00776298",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -621159,13 +621161,13 @@
       "symbol": "??_C@_0BG@BMDHHAEJ@Ajustado?5externamente?$AA@",
       "address": "0x007762a0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 22,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 22,
           "base_size": 22,
@@ -621180,13 +621182,13 @@
       "symbol": "??_C@_04MIAOHEDF@AAPC?$AA@",
       "address": "0x007762b8",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -621201,13 +621203,13 @@
       "symbol": "??_C@_0BD@LHIGJKKI@Ajustes?5de?5efectos?$AA@",
       "address": "0x007762c0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 19,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 19,
           "base_size": 19,
@@ -621222,13 +621224,13 @@
       "symbol": "??_C@_0DO@JCIFLIAE@Debes?5reiniciar?5el?5juego?5para?5qu@",
       "address": "0x007762d4",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 62,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 62,
           "base_size": 62,
@@ -621243,13 +621245,13 @@
       "symbol": "??_C@_08DHJIDIDJ@Revertir?$AA@",
       "address": "0x00776314",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -621264,13 +621266,13 @@
       "symbol": "??_C@_0BD@PGOLJAJJ@Calidad?5de?5textura?$AA@",
       "address": "0x00776320",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 19,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 19,
           "base_size": 19,
@@ -621285,13 +621287,13 @@
       "symbol": "??_C@_0BJ@POLFPOP@Usar?5ajustes?5de?5actuales?$AA@",
       "address": "0x00776334",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 25,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 25,
           "base_size": 25,
@@ -621306,13 +621308,13 @@
       "symbol": "??_C@_0M@IAIMDPHJ@R?4?5pantalla?$AA@",
       "address": "0x00776350",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -621327,13 +621329,13 @@
       "symbol": "??_C@_0BE@IILDIMFI@Gr?C?$KBficos?5mejorados?$AA@",
       "address": "0x0077635c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 20,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 20,
           "base_size": 20,
@@ -621348,13 +621350,13 @@
       "symbol": "??_C@_0BF@NNMBIFEA@Relaci?C?$LDn?5de?5aspecto?$AA@",
       "address": "0x00776370",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 21,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 21,
           "base_size": 21,
@@ -621369,13 +621371,13 @@
       "symbol": "??_C@_0BJ@DGFKNELO@Sincronizaci?C?$LDn?5vertical?$AA@",
       "address": "0x00776388",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 25,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 25,
           "base_size": 25,
@@ -621390,13 +621392,13 @@
       "symbol": "??_C@_0BH@KKHAABOP@Tasa?5de?5actualizaci?C?$LDn?$AA@",
       "address": "0x007763a4",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 23,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 23,
           "base_size": 23,
@@ -621411,13 +621413,13 @@
       "symbol": "??_C@_0M@JAIFNCKP@Resoluci?C?$LDn?$AA@",
       "address": "0x007763bc",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -621432,13 +621434,13 @@
       "symbol": "??_C@_0BC@LEHLOHBC@Ajustes?5de?5v?C?$KNdeo?$AA@",
       "address": "0x007763c8",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 18,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 18,
           "base_size": 18,
@@ -621453,13 +621455,13 @@
       "symbol": "??_C@_0BM@PNFDEGDF@Restablecer?5predeterminados?$AA@",
       "address": "0x007763dc",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 28,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 28,
           "base_size": 28,
@@ -621474,13 +621476,13 @@
       "symbol": "??_C@_08MDHPDEBP@Cancelar?$AA@",
       "address": "0x007763f8",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -621495,13 +621497,13 @@
       "symbol": "??_C@_03IPEDGKBC@S?C?$KN?$AA@",
       "address": "0x00776404",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -621516,13 +621518,13 @@
       "symbol": "??_C@_06CLBOPOLO@Atr?C?$KBs?$AA@",
       "address": "0x00776408",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -621537,13 +621539,13 @@
       "symbol": "??_C@_08HHGMFDFH@Rechazar?$AA@",
       "address": "0x00776410",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -621558,13 +621560,13 @@
       "symbol": "??_C@_07NEBOEHBD@Aceptar?$AA@",
       "address": "0x0077641c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -621579,13 +621581,13 @@
       "symbol": "??_C@_08BDAMLAIN@Reanudar?$AA@",
       "address": "0x00776424",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -621600,13 +621602,13 @@
       "symbol": "??_C@_0BA@EDFICKAD@Volver?5al?5juego?$AA@",
       "address": "0x00776430",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 16,
           "base_size": 16,
@@ -621621,13 +621623,13 @@
       "symbol": "??_C@_0BH@KDBGEDGH@Salir?5al?5menu?5del?5demo?$AA@",
       "address": "0x00776440",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 23,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 23,
           "base_size": 23,
@@ -621642,13 +621644,13 @@
       "symbol": "??_C@_0BA@PNAPBKCP@Salir?5a?5Windows?$AA@",
       "address": "0x00776458",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 16,
           "base_size": 16,
@@ -621663,13 +621665,13 @@
       "symbol": "??_C@_05ELIKNJJI@Salir?$AA@",
       "address": "0x00776468",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 6,
           "base_size": 6,
@@ -621684,13 +621686,13 @@
       "symbol": "??_C@_0BI@FNMLKJNB@Qualit?C?$KA?5luci?5dinamiche?$AA@",
       "address": "0x00776470",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 24,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 24,
           "base_size": 24,
@@ -621705,13 +621707,13 @@
       "symbol": "??_C@_0BE@PGCMCJGA@Sfumatura?5movimento?$AA@",
       "address": "0x00776488",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 20,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 20,
           "base_size": 20,
@@ -621726,13 +621728,13 @@
       "symbol": "??_C@_0BF@DEBAJLMF@Profondit?C?$KA?5di?5campo?$AA@",
       "address": "0x0077649c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 21,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 21,
           "base_size": 21,
@@ -621747,13 +621749,13 @@
       "symbol": "??_C@_0M@JCFHMCIC@Luminosit?C?$KA?$AA@",
       "address": "0x007764b4",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -621768,13 +621770,13 @@
       "symbol": "??_C@_05PEBEJEN@Ombre?$AA@",
       "address": "0x007764c0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 6,
           "base_size": 6,
@@ -621789,13 +621791,13 @@
       "symbol": "??_C@_0BH@JPHHPJIA@Impostato?5esternamente?$AA@",
       "address": "0x007764c8",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 23,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 23,
           "base_size": 23,
@@ -621810,13 +621812,13 @@
       "symbol": "??_C@_07JPCDKGBD@Effetti?$AA@",
       "address": "0x007764e0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -621831,13 +621833,13 @@
       "symbol": "??_C@_0EA@JBIGJEPB@Devi?5riavviare?5il?5gioco?5affinch?C@",
       "address": "0x007764e8",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 64,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 64,
           "base_size": 64,
@@ -621852,13 +621854,13 @@
       "symbol": "??_C@_0L@GAMFGEGH@Ripristina?$AA@",
       "address": "0x00776528",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 11,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 11,
           "base_size": 11,
@@ -621873,13 +621875,13 @@
       "symbol": "??_C@_0BB@LHBCDJEP@Qualit?C?$KA?5texture?$AA@",
       "address": "0x00776534",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 17,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 17,
           "base_size": 17,
@@ -621894,13 +621896,13 @@
       "symbol": "??_C@_0BJ@DLMEFJOF@Usa?5impostazioni?5attuali?$AA@",
       "address": "0x00776548",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 25,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 25,
           "base_size": 25,
@@ -621915,13 +621917,13 @@
       "symbol": "??_C@_0P@IJECOPOK@Da?5risoluzione?$AA@",
       "address": "0x00776564",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 15,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 15,
           "base_size": 15,
@@ -621936,13 +621938,13 @@
       "symbol": "??_C@_0BD@LOKEFGEN@Grafica?5migliorata?$AA@",
       "address": "0x00776574",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 19,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 19,
           "base_size": 19,
@@ -621957,13 +621959,13 @@
       "symbol": "??_C@_08NFJAMAAB@Rapporto?$AA@",
       "address": "0x00776588",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -621978,13 +621980,13 @@
       "symbol": "??_C@_0BL@JAHMKDDN@Sincronizzazione?5verticale?$AA@",
       "address": "0x00776594",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 27,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 27,
           "base_size": 27,
@@ -621999,13 +622001,13 @@
       "symbol": "??_C@_0BL@MBPMOOMM@Frequenza?5di?5aggiornamento?$AA@",
       "address": "0x007765b0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 27,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 27,
           "base_size": 27,
@@ -622020,13 +622022,13 @@
       "symbol": "??_C@_0BE@HFOJEBAA@Risoluzione?5schermo?$AA@",
       "address": "0x007765cc",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 20,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 20,
           "base_size": 20,
@@ -622041,13 +622043,13 @@
       "symbol": "??_C@_05BIPFLOHN@Video?$AA@",
       "address": "0x007765e0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 6,
           "base_size": 6,
@@ -622062,13 +622064,13 @@
       "symbol": "??_C@_0BJ@LABNBOBK@Impostazioni?5predefinite?$AA@",
       "address": "0x007765e8",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 25,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 25,
           "base_size": 25,
@@ -622083,13 +622085,13 @@
       "symbol": "??_C@_03JGFIFLFD@S?C?$KM?$AA@",
       "address": "0x00776604",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -622104,13 +622106,13 @@
       "symbol": "??_C@_07OLHEPENB@Annulla?$AA@",
       "address": "0x00776608",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -622125,13 +622127,13 @@
       "symbol": "??_C@_07NBEFJMPF@Accetta?$AA@",
       "address": "0x00776610",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -622146,13 +622148,13 @@
       "symbol": "??_C@_08FBLOIOMP@Riprendi?$AA@",
       "address": "0x00776618",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -622167,13 +622169,13 @@
       "symbol": "??_C@_05CDINHFMO@Media?$AA@",
       "address": "0x00776624",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 6,
           "base_size": 6,
@@ -622188,13 +622190,13 @@
       "symbol": "??_C@_0P@HKMPKMHC@Torna?5al?5gioco?$AA@",
       "address": "0x0077662c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 15,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 15,
           "base_size": 15,
@@ -622209,13 +622211,13 @@
       "symbol": "??_C@_0BC@GCHBNMAN@Esci?5al?5Menu?5Demo?$AA@",
       "address": "0x0077663c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 18,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 18,
           "base_size": 18,
@@ -622230,13 +622232,13 @@
       "symbol": "??_C@_0BA@EGFJKKJH@Torna?5a?5Windows?$AA@",
       "address": "0x00776650",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 16,
           "base_size": 16,
@@ -622251,13 +622253,13 @@
       "symbol": "??_C@_04COOKHFDO@Esci?$AA@",
       "address": "0x00776660",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -622272,13 +622274,13 @@
       "symbol": "??_C@_0BA@HFCIAFFH@Kantengl?C?$KEttung?$AA@",
       "address": "0x00776668",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 16,
           "base_size": 16,
@@ -622293,13 +622295,13 @@
       "symbol": "??_C@_0DE@GPLDEDFG@Qualit?C?$KEt?5der?5dynamischen?5Beleuc@",
       "address": "0x00776678",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 52,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 52,
           "base_size": 52,
@@ -622314,13 +622316,13 @@
       "symbol": "??_C@_0BL@KMBDAFFD@Geschwindigkeitsunsch?C?$KErfe?$AA@",
       "address": "0x007766ac",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 27,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 27,
           "base_size": 27,
@@ -622335,13 +622337,13 @@
       "symbol": "??_C@_0P@LHOEFDPO@Sch?C?$KErfentiefe?$AA@",
       "address": "0x007766c8",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 15,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 15,
           "base_size": 15,
@@ -622356,13 +622358,13 @@
       "symbol": "??_C@_0M@PIBMCCAI@Bloomeffekt?$AA@",
       "address": "0x007766d8",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -622377,13 +622379,13 @@
       "symbol": "??_C@_08CKNBNBOB@Schatten?$AA@",
       "address": "0x007766e4",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -622398,13 +622400,13 @@
       "symbol": "??_C@_0BE@NLFMGDGH@Extern?5konfiguriert?$AA@",
       "address": "0x007766f0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 20,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 20,
           "base_size": 20,
@@ -622419,13 +622421,13 @@
       "symbol": "??_C@_0BE@PCIPEOIK@Effekteinstellungen?$AA@",
       "address": "0x00776704",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 20,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 20,
           "base_size": 20,
@@ -622440,13 +622442,13 @@
       "symbol": "??_C@_0EM@LEADEKAO@Du?5musst?5das?5Spiel?5erneut?5starte@",
       "address": "0x00776718",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 76,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 76,
           "base_size": 76,
@@ -622461,13 +622463,13 @@
       "symbol": "??_C@_08GGEDMHIN@Umkehren?$AA@",
       "address": "0x00776764",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -622482,13 +622484,13 @@
       "symbol": "??_C@_0BH@IFFNEMLP@Qualit?C?$KEt?5der?5Texturen?$AA@",
       "address": "0x00776770",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 23,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 23,
           "base_size": 23,
@@ -622503,13 +622505,13 @@
       "symbol": "??_C@_0CB@HCKIINIA@Aktuelle?5Einstellungen?5verwenden@",
       "address": "0x00776788",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 33,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 33,
           "base_size": 33,
@@ -622524,13 +622526,13 @@
       "symbol": "??_C@_0L@IAODCPLP@Aufl?C?$LGsung?$AA@",
       "address": "0x007767ac",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 11,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 11,
           "base_size": 11,
@@ -622545,13 +622547,13 @@
       "symbol": "??_C@_0BC@OMAJPON@Erh?C?$LGhte?5Grafiken?$AA@",
       "address": "0x007767b8",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 18,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 18,
           "base_size": 18,
@@ -622566,13 +622568,13 @@
       "symbol": "??_C@_0BC@KGMBHNEM@Seitenverh?C?$KEltnis?$AA@",
       "address": "0x007767cc",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 18,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 18,
           "base_size": 18,
@@ -622587,13 +622589,13 @@
       "symbol": "??_C@_0BD@FMCMIPA@Vertikales?5Synchr?4?$AA@",
       "address": "0x007767e0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 19,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 19,
           "base_size": 19,
@@ -622608,13 +622610,13 @@
       "symbol": "??_C@_0BG@CDIAFJBP@Bildwiederholfrequenz?$AA@",
       "address": "0x007767f4",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 22,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 22,
           "base_size": 22,
@@ -622629,13 +622631,13 @@
       "symbol": "??_C@_0BF@GIIJOBMB@Bildschirmaufl?C?$LGsung?$AA@",
       "address": "0x0077680c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 21,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 21,
           "base_size": 21,
@@ -622650,13 +622652,13 @@
       "symbol": "??_C@_0BE@OHJFCGLP@Grafikeinstellungen?$AA@",
       "address": "0x00776824",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 20,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 20,
           "base_size": 20,
@@ -622671,13 +622673,13 @@
       "symbol": "??_C@_0CA@DPHLOPO@Zur?C?$LMcksetzen?5auf?5Standardwerte?$AA@",
       "address": "0x00776838",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 32,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 32,
           "base_size": 32,
@@ -622692,13 +622694,13 @@
       "symbol": "??_C@_03KLDLJPDF@Aus?$AA@",
       "address": "0x00776858",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -622713,13 +622715,13 @@
       "symbol": "??_C@_03MOAJDOGK@Ein?$AA@",
       "address": "0x0077685c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -622734,13 +622736,13 @@
       "symbol": "??_C@_09DLPKDHIL@Abbrechen?$AA@",
       "address": "0x00776860",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 10,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 10,
           "base_size": 10,
@@ -622755,13 +622757,13 @@
       "symbol": "??_C@_04GOJOFPHN@Nein?$AA@",
       "address": "0x0077686c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -622776,13 +622778,13 @@
       "symbol": "??_C@_02BFFHEBN@Ja?$AA@",
       "address": "0x00776874",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 3,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 3,
           "base_size": 3,
@@ -622797,13 +622799,13 @@
       "symbol": "??_C@_08JBCHBAPF@Ablehnen?$AA@",
       "address": "0x00776878",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -622818,13 +622820,13 @@
       "symbol": "??_C@_08EDKCLLHN@Annehmen?$AA@",
       "address": "0x00776884",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -622839,13 +622841,13 @@
       "symbol": "??_C@_0L@EECNKLDB@Fortsetzen?$AA@",
       "address": "0x00776890",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 11,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 11,
           "base_size": 11,
@@ -622860,13 +622862,13 @@
       "symbol": "??_C@_06HOPDGAO@Mittel?$AA@",
       "address": "0x0077689c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -622881,13 +622883,13 @@
       "symbol": "??_C@_06BGMPOFPD@Gering?$AA@",
       "address": "0x007768a4",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -622902,13 +622904,13 @@
       "symbol": "??_C@_0BC@EABJFHAH@Zur?C?$LMck?5zum?5Spiel?$AA@",
       "address": "0x007768ac",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 18,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 18,
           "base_size": 18,
@@ -622923,13 +622925,13 @@
       "symbol": "??_C@_0BO@DFLOKEKN@Schlie?C?$JPen?5und?5zum?5Demo?9Men?C?$LM?$AA@",
       "address": "0x007768c0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 30,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 30,
           "base_size": 30,
@@ -622944,13 +622946,13 @@
       "symbol": "??_C@_0BD@KBOPCLKL@Zur?C?$LMck?5zu?5Windows?$AA@",
       "address": "0x007768e0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 19,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 19,
           "base_size": 19,
@@ -622965,13 +622967,13 @@
       "symbol": "??_C@_0BE@LDKLJBOH@Lissage?5des?5ar?C?$KKtes?$AA@",
       "address": "0x007768f4",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 20,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 20,
           "base_size": 20,
@@ -622986,13 +622988,13 @@
       "symbol": "??_C@_0BM@PBPCJIKO@Qualit?C?$KJ?5lumi?C?$KIre?5dynamique?$AA@",
       "address": "0x00776908",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 28,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 28,
           "base_size": 28,
@@ -623007,13 +623009,13 @@
       "symbol": "??_C@_0BI@MLHGCCIG@Flou?5?$CIeffet?5de?5vitesse?$CJ?$AA@",
       "address": "0x00776924",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 24,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 24,
           "base_size": 24,
@@ -623028,13 +623030,13 @@
       "symbol": "??_C@_0BF@PPGPABFM@Distance?5d?8affichage?$AA@",
       "address": "0x0077693c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 21,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 21,
           "base_size": 21,
@@ -623049,13 +623051,13 @@
       "symbol": "??_C@_0M@EDJFHJML@Luminosit?C?$KJ?$AA@",
       "address": "0x00776954",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -623070,13 +623072,13 @@
       "symbol": "??_C@_06MHAFGFB@Ombres?$AA@",
       "address": "0x00776960",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -623091,13 +623093,13 @@
       "symbol": "??_C@_0BD@HDKHJMKC@D?C?$KJfini?5en?5externe?$AA@",
       "address": "0x00776968",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 19,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 19,
           "base_size": 19,
@@ -623112,13 +623114,13 @@
       "symbol": "??_C@_0BF@HFNNKMCK@Param?C?$KItres?5d?8effets?$AA@",
       "address": "0x0077697c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 21,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 21,
           "base_size": 21,
@@ -623133,13 +623135,13 @@
       "symbol": "??_C@_0EH@PJNENKEK@Vous?5devez?5red?C?$KJmarrer?5le?5jeu?5po@",
       "address": "0x00776998",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 71,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 71,
           "base_size": 71,
@@ -623154,13 +623156,13 @@
       "symbol": "??_C@_08NAKKDJBO@Inverser?$AA@",
       "address": "0x007769e0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -623175,13 +623177,13 @@
       "symbol": "??_C@_0BC@BLHKNICL@Qualit?C?$KJ?5Textures?$AA@",
       "address": "0x007769ec",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 18,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 18,
           "base_size": 18,
@@ -623196,13 +623198,13 @@
       "symbol": "??_C@_0CB@BDGGNDJM@Utiliser?5les?5param?C?$KItres?5actuels@",
       "address": "0x00776a00",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 33,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 33,
           "base_size": 33,
@@ -623217,13 +623219,13 @@
       "symbol": "??_C@_0BD@MKNMLDCG@R?C?$KJsolution?5?C?$KJcran?$AA@",
       "address": "0x00776a24",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 19,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 19,
           "base_size": 19,
@@ -623238,13 +623240,13 @@
       "symbol": "??_C@_0BH@IAMDDGNM@Graphismes?5am?C?$KJlior?C?$KJs?$AA@",
       "address": "0x00776a38",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 23,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 23,
           "base_size": 23,
@@ -623259,13 +623261,13 @@
       "symbol": "??_C@_06PEPCFMNJ@Format?$AA@",
       "address": "0x00776a50",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -623280,13 +623282,13 @@
       "symbol": "??_C@_0BK@JAEFDHM@Synchronisation?5verticale?$AA@",
       "address": "0x00776a58",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 26,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 26,
           "base_size": 26,
@@ -623301,13 +623303,13 @@
       "symbol": "??_C@_0BK@MMEJMEOE@Taux?5de?5rafra?C?$KOchissement?$AA@",
       "address": "0x00776a74",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 26,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 26,
           "base_size": 26,
@@ -623322,13 +623324,13 @@
       "symbol": "??_C@_0M@BMPJFFDP@R?C?$KJsolution?$AA@",
       "address": "0x00776a90",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -623343,13 +623345,13 @@
       "symbol": "??_C@_0BD@HFIFDKD@Param?C?$KItres?5vid?C?$KJo?$AA@",
       "address": "0x00776a9c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 19,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 19,
           "base_size": 19,
@@ -623364,13 +623366,13 @@
       "symbol": "??_C@_0BI@GMBOALPJ@Param?C?$KItres?5par?5d?C?$KJfaut?$AA@",
       "address": "0x00776ab0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 24,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 24,
           "base_size": 24,
@@ -623385,13 +623387,13 @@
       "symbol": "??_C@_04IDKPOBIA@Sans?$AA@",
       "address": "0x00776ac8",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -623406,13 +623408,13 @@
       "symbol": "??_C@_04BCNGLHPE@Avec?$AA@",
       "address": "0x00776ad0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -623427,13 +623429,13 @@
       "symbol": "??_C@_07IFEKIOMM@Annuler?$AA@",
       "address": "0x00776ad8",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -623448,13 +623450,13 @@
       "symbol": "??_C@_03BNIFMFNJ@Non?$AA@",
       "address": "0x00776ae0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -623469,13 +623471,13 @@
       "symbol": "??_C@_03PLMJBCNN@Oui?$AA@",
       "address": "0x00776ae4",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -623490,13 +623492,13 @@
       "symbol": "??_C@_07JBFACJFK@Refuser?$AA@",
       "address": "0x00776ae8",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -623511,13 +623513,13 @@
       "symbol": "??_C@_08CCIGFGGH@Accepter?$AA@",
       "address": "0x00776af0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -623532,13 +623534,13 @@
       "symbol": "??_C@_09OFEHEBMI@Reprendre?$AA@",
       "address": "0x00776afc",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 10,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 10,
           "base_size": 10,
@@ -623553,13 +623555,13 @@
       "symbol": "??_C@_07DDMGPJON@Elev?C?$KJe?$AA@",
       "address": "0x00776b08",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -623574,13 +623576,13 @@
       "symbol": "??_C@_07KJHOJGGK@Moyenne?$AA@",
       "address": "0x00776b10",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -623595,13 +623597,13 @@
       "symbol": "??_C@_06NKKKDLCP@Faible?$AA@",
       "address": "0x00776b18",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -623616,13 +623618,13 @@
       "symbol": "??_C@_0BE@DIGLGADA@Reprendre?5la?5partie?$AA@",
       "address": "0x00776b20",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 20,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 20,
           "base_size": 20,
@@ -623637,13 +623639,13 @@
       "symbol": "??_C@_0BG@EAFAGOCM@Quitter?5au?5menu?5D?C?$KJmo?$AA@",
       "address": "0x00776b34",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 22,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 22,
           "base_size": 22,
@@ -623658,13 +623660,13 @@
       "symbol": "??_C@_0BF@NGLICGOB@Revenir?5sous?5Windows?$AA@",
       "address": "0x00776b4c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 21,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 21,
           "base_size": 21,
@@ -623679,13 +623681,13 @@
       "symbol": "??_C@_07CJOABBKL@Quitter?$AA@",
       "address": "0x00776b64",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -623710,13 +623712,13 @@
       "symbol": "??_C@_0BD@BIBIKDPJ@Show?5Game?5Controls?$AA@",
       "address": "0x00776b6c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 19,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 19,
           "base_size": 19,
@@ -623731,13 +623733,13 @@
       "symbol": "??_C@_07PIHCHFLL@Edge?5AA?$AA@",
       "address": "0x00776b80",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -623752,13 +623754,13 @@
       "symbol": "??_C@_0BG@DNAIGPGE@Dynamic?5Light?5Quality?$AA@",
       "address": "0x00776b88",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 22,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 22,
           "base_size": 22,
@@ -623773,13 +623775,13 @@
       "symbol": "??_C@_0L@GJDHIFAH@Speed?5Blur?$AA@",
       "address": "0x00776ba0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 11,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 11,
           "base_size": 11,
@@ -623794,13 +623796,13 @@
       "symbol": "??_C@_0P@DEDAIKO@Depth?5of?5Field?$AA@",
       "address": "0x00776bac",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 15,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 15,
           "base_size": 15,
@@ -623825,13 +623827,13 @@
       "symbol": "??_C@_05KAPCBBNF@Bloom?$AA@",
       "address": "0x00776bbc",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 6,
           "base_size": 6,
@@ -623846,13 +623848,13 @@
       "symbol": "??_C@_07GANOGIPG@Shadows?$AA@",
       "address": "0x00776bc4",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -623867,13 +623869,13 @@
       "symbol": "??_C@_0P@BKOLCGJM@Externally?5Set?$AA@",
       "address": "0x00776bcc",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 15,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 15,
           "base_size": 15,
@@ -623888,13 +623890,13 @@
       "symbol": "??_C@_0BB@HMGLCCCK@Effects?5Settings?$AA@",
       "address": "0x00776bdc",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 17,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 17,
           "base_size": 17,
@@ -623909,13 +623911,13 @@
       "symbol": "??_C@_0DM@CNGBLHNB@You?5must?5restart?5the?5game?5for?5th@",
       "address": "0x00776bf0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 60,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 60,
           "base_size": 60,
@@ -623930,13 +623932,13 @@
       "symbol": "??_C@_06OIKMFEGE@Revert?$AA@",
       "address": "0x00776c2c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -623951,13 +623953,13 @@
       "symbol": "??_C@_0BA@CBOLNANM@Texture?5Quality?$AA@",
       "address": "0x00776c34",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 16,
           "base_size": 16,
@@ -623972,13 +623974,13 @@
       "symbol": "??_C@_0BF@MIJEFJBO@Use?5current?5settings?$AA@",
       "address": "0x00776c44",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 21,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 21,
           "base_size": 21,
@@ -623993,13 +623995,13 @@
       "symbol": "??_C@_0BA@CPCPFJFO@From?5Screen?9Res?$AA@",
       "address": "0x00776c5c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 16,
           "base_size": 16,
@@ -624014,13 +624016,13 @@
       "symbol": "??_C@_0BC@HNJBPKNP@Enhanced?5Graphics?$AA@",
       "address": "0x00776c6c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 18,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 18,
           "base_size": 18,
@@ -624035,13 +624037,13 @@
       "symbol": "??_C@_0N@CMMLGDAK@Aspect?5Ratio?$AA@",
       "address": "0x00776c80",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 13,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 13,
           "base_size": 13,
@@ -624056,13 +624058,13 @@
       "symbol": "??_C@_0O@BOCBMEFO@Vertical?5Sync?$AA@",
       "address": "0x00776c90",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 14,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 14,
           "base_size": 14,
@@ -624077,13 +624079,13 @@
       "symbol": "??_C@_0N@GCJECPAO@Refresh?5Rate?$AA@",
       "address": "0x00776ca0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 13,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 13,
           "base_size": 13,
@@ -624098,13 +624100,13 @@
       "symbol": "??_C@_0BC@DJJPCEOF@Screen?5Resolution?$AA@",
       "address": "0x00776cb0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 18,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 18,
           "base_size": 18,
@@ -624119,13 +624121,13 @@
       "symbol": "??_C@_0P@JBPHMFA@Video?5Settings?$AA@",
       "address": "0x00776cc4",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 15,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 15,
           "base_size": 15,
@@ -624140,13 +624142,13 @@
       "symbol": "??_C@_0BC@NNGANDPH@Reset?5To?5Defaults?$AA@",
       "address": "0x00776cd4",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 18,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 18,
           "base_size": 18,
@@ -624161,13 +624163,13 @@
       "symbol": "??_C@_07CAMLKJDK@Decline?$AA@",
       "address": "0x00776ce8",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -624182,13 +624184,13 @@
       "symbol": "??_C@_06MDEHPNLG@Accept?$AA@",
       "address": "0x00776cf0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -624203,13 +624205,13 @@
       "symbol": "??_C@_06DEPGELNG@Resume?$AA@",
       "address": "0x00776cf8",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -624224,13 +624226,13 @@
       "symbol": "??_C@_06LHIDHMIE@Medium?$AA@",
       "address": "0x00776d00",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -624245,13 +624247,13 @@
       "symbol": "??_C@_0P@IJDNKPKB@Return?5to?5game?$AA@",
       "address": "0x00776d08",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 15,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 15,
           "base_size": 15,
@@ -624266,13 +624268,13 @@
       "symbol": "??_C@_0BD@EBHDCADG@Quit?5to?5Demos?5Menu?$AA@",
       "address": "0x00776d18",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 19,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 19,
           "base_size": 19,
@@ -624287,13 +624289,13 @@
       "symbol": "??_C@_0BA@MFNHDHCP@Quit?5to?5Windows?$AA@",
       "address": "0x00776d2c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 16,
           "base_size": 16,
@@ -624308,13 +624310,13 @@
       "symbol": "??_C@_04GMBKPCGK@Quit?$AA@",
       "address": "0x00776d3c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -799742,13 +799744,13 @@
       "symbol": "_ps2_scratch_free",
       "address": "0x00827730",
       "units": [
-        "src/nu2api/nuscratch.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nuscratch.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -799763,18 +799765,19 @@
       "symbol": "_dat_008277f0",
       "address": "0x008277f0",
       "units": [
-        "src/nu2api/nudebug.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nudebug.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 16,
-          "base_size": 16,
+          "base_size": 20,
           "target_sha256": "38982076e29cd4ef6692af0e2d78c5feb033559ecf35313b1982e8526fd5d13f",
-          "base_sha256": "38982076e29cd4ef6692af0e2d78c5feb033559ecf35313b1982e8526fd5d13f"
+          "base_sha256": "38982076e29cd4ef6692af0e2d78c5feb033559ecf35313b1982e8526fd5d13f",
+          "gap_bytes": 4
         }
       ],
       "status": "exact"
@@ -799784,13 +799787,13 @@
       "symbol": "_MenuSettingsStringsUS",
       "address": "0x00827800",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 320,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 320,
           "base_size": 320,
@@ -799805,13 +799808,13 @@
       "symbol": "_MenuSettingsStringsEnglish",
       "address": "0x00827940",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 320,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 320,
           "base_size": 320,
@@ -799826,13 +799829,13 @@
       "symbol": "_MenuSettingsStringsFrench",
       "address": "0x00827a80",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 320,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 320,
           "base_size": 320,
@@ -799847,13 +799850,13 @@
       "symbol": "_MenuSettingsStringsGerman",
       "address": "0x00827bc0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 320,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 320,
           "base_size": 320,
@@ -799868,13 +799871,13 @@
       "symbol": "_MenuSettingsStringsItalian",
       "address": "0x00827d00",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 320,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 320,
           "base_size": 320,
@@ -799889,13 +799892,13 @@
       "symbol": "_MenuSettingsStringsSpanish",
       "address": "0x00827e40",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 320,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 320,
           "base_size": 320,
@@ -799910,13 +799913,13 @@
       "symbol": "_MenuSettingsStringsDanish",
       "address": "0x00827f80",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 320,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 320,
           "base_size": 320,
@@ -891684,13 +891687,13 @@
       "symbol": "_dat_02976ce8",
       "address": "0x02976ce8",
       "units": [
-        "src/nu2api/nudebug.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nudebug.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -891705,13 +891708,13 @@
       "symbol": "_NuScratchBackingAccess",
       "address": "0x02976d00",
       "units": [
-        "src/nu2api/nuscratch.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 16384,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nuscratch.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 16384,
           "base_size": 16384,
@@ -891726,13 +891729,13 @@
       "symbol": "_dat_0297ad00",
       "address": "0x0297ad00",
       "units": [
-        "src/nu2api/nudebug.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nudebug.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -891747,13 +891750,13 @@
       "symbol": "_dat_0297ad08",
       "address": "0x0297ad08",
       "units": [
-        "src/nu2api/nudebug.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 64,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nudebug.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 64,
           "base_size": 64,
@@ -891768,13 +891771,13 @@
       "symbol": "_PcHandlersRunning",
       "address": "0x0297ad4c",
       "units": [
-        "src/nu2api/bgproc.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/bgproc.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -891789,13 +891792,13 @@
       "symbol": "_PcFrameHandlers",
       "address": "0x0297ad58",
       "units": [
-        "src/nu2api/bgproc.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/bgproc.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -891810,13 +891813,13 @@
       "symbol": "_PcFrameHandlersEnabled",
       "address": "0x0297ad5c",
       "units": [
-        "src/nu2api/bgproc.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/bgproc.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -891831,13 +891834,13 @@
       "symbol": "_PcVBlankHandlersEnabled",
       "address": "0x0297ad60",
       "units": [
-        "src/nu2api/bgproc.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/bgproc.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -891852,13 +891855,13 @@
       "symbol": "_PcVBlankHandlers",
       "address": "0x0297ad68",
       "units": [
-        "src/nu2api/bgproc.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/bgproc.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -891894,19 +891897,18 @@
       "symbol": "_dat_0297ad84",
       "address": "0x0297ad84",
       "units": [
-        "src/nu2api/nudebug.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/nudebug.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
-          "base_size": 8,
+          "base_size": 4,
           "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
-          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
-          "gap_bytes": 4
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
         }
       ],
       "status": "exact"
@@ -891916,13 +891918,13 @@
       "symbol": "_nuvideo_global_vbcnt",
       "address": "0x0297ad94",
       "units": [
-        "src/nu2api/bgproc.c"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/bgproc.c",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -891937,13 +891939,13 @@
       "symbol": "_MenuSettingsStrings",
       "address": "0x0297ada0",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 156,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 156,
           "base_size": 156,
@@ -891958,13 +891960,13 @@
       "symbol": "_MenuSettingsStringsInitialized",
       "address": "0x0297ae3c",
       "units": [
-        "src/legoapi/menu_titles.cpp"
+        "src/nu2api/nuwin32/Stubs.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/menu_titles.cpp",
+          "unit": "src/nu2api/nuwin32/Stubs.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -901730,7 +901732,7 @@
       "metadata_sha256": "525d436eee3d48951222f1fd54574554983d228c3d06f19a545ba7cab50fe057",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "e40a7a3cced720d69be332b6a28dd5b931de2ad0dc5404bd6f42e181d7cc11e8",
+      "geometry_object_sha256": "2abeceafd998bf6208204f55a697b03bdee6cbc8d2664fe39c127bc36fb52a0a",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
