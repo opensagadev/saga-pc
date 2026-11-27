@@ -267,7 +267,7 @@
     "src/legogame/batman_gameai.h": "dffe1ee6b3b207b8d5a8da8d490e1c2b4ee14bd687dc31f2ca60c6144439ea3c",
     "src/legogame/game.h": "934b5212dede1c292d058197ee7d04b760e04f3e2a64b3a75a55dbb23d14d631",
     "src/legogame/gamestatus.h": "b38af1fa65aee1f4cc6930b3b97debe9e2f76d8c93ce3bfb6c37f0144ee4e403",
-    "src/legogame/pcbatman.h": "4dac91bb8d8fa7e5a24b35fb5094ac0a9861ffff24918237ba5afa0ea6ee67b4",
+    "src/legogame/pcbatman.h": "d892a0bb73812a99594dc05ad00f7fae3cf87a8daf03a87120bcfcf5ceb97be2",
     "src/legogame/startup.h": "5818c4121edc7c1fd5f105fa43f7d4678aa648adb42b6d74ea291cdcf77b0291",
     "src/nu2api/NuEffectTex_pc.h": "082537b419cd0043774cfcdbfaccb412d5970ba97c7c41a0f9d6c7dbc6bf7eb2",
     "src/nu2api/PCInput.h": "51a8a5045671873e78e5431249a5a13a23406b119145ccbf0646e58cef8a93b7",
@@ -630,7 +630,7 @@
     "src/legoapi/climbing.cpp": "91d9f6c04017137802d565f01e78a2fa16665b01b34de4ae92603bfb78d976c6",
     "src/legoapi/collection.cpp": "f01219127f674f41d0da5e87453d12d293790ce81e2682f44663e2ef78c98950",
     "src/legoapi/collection_render.cpp": "7171e84b0a9a1610226a5074404dddb9236f6c742abdc139670d2096d1340bdd",
-    "src/legoapi/control_setup.cpp": "a1c4391ebd876453d8a5fdcfd84fad3703dc06d21fcc74b888ed53b1e6031b29",
+    "src/legoapi/control_setup.cpp": "0fe25cf014b65103ddc30f62380ccddba52003b0095e4f8ba91322f83f366108",
     "src/legoapi/credits.cpp": "bf6f5efc40b4eaee7c753edba1dceda015fcff9a313cde8ff133f6f122186950",
     "src/legoapi/customise_diagnostic.cpp": "344f775bcf89fced707bea4eb269ab791ff6241a396d34c53125e86b6ce24c5e",
     "src/legoapi/customiser.cpp": "1d162f4756fa6beff77bfd2b9e3f0dfe08f6322a5e238d23e9fcb8de39aff0e9",
@@ -653,7 +653,7 @@
     "src/legoapi/gameantinode.cpp": "93aa718d722ff26069ccf20a09456916c60b27a478e8ac503b8b85e096badf81",
     "src/legoapi/gamemessages.cpp": "f0832cda0ddac0b94c85336cbea38a6d0a391afa32cf4ca784db367d6e2e8dfb",
     "src/legoapi/gameobjects.cpp": "9bbaec323b9c48954eb8aff4142b077bafdd881cbe3505e662072906ba9123ba",
-    "src/legoapi/gamepads.cpp": "e8bdebaebf86c84c160d189c936c6787864cd4a7f375dcac571f7c90fb37fba4",
+    "src/legoapi/gamepads.cpp": "d1eaf9ac5e0b1357d7cd1ffa1cbb79a5a23c3904f3c64e9732d9a0fa0012e379",
     "src/legoapi/gamestructure.cpp": "5f4c35784c4649944c8944a3d2cbed4c1708490411ebd342bf97d6718506c78b",
     "src/legoapi/gamethings.cpp": "fbe900884b023030c0a89f785f17e1c3f6b67898fcd304004ee9583ad9fca845",
     "src/legoapi/gizbuildit.cpp": "5d03f83e4eeb41a89e200f5f92fa0cf8aabc6373376110598853a4fffc9f11f5",
@@ -675,7 +675,7 @@
     "src/legoapi/guidelines.cpp": "9fb0fa9ef160e49fc66b41047fa4b617408e32123d867fc600c0b0c5d3c406ae",
     "src/legoapi/hint.cpp": "30bc664dc6fac1a4dbd48ccde70f5391d09cc01e1e7f0ddf7328c2010f5e711c",
     "src/legoapi/hits.cpp": "cf0efc1ecde8c178f2402736ae3f9a6eb0ba25af7b006640810ef508928713d0",
-    "src/legoapi/hub.cpp": "a987cbdc42d0352a306e3259ff9c04ff72f8b796e1ccd2dd470362396029f3aa",
+    "src/legoapi/hub.cpp": "993478f97c34f3cff62ba22891ab51111f8988773667f4c77ceb8f382a0ec957",
     "src/legoapi/jumping.cpp": "6a885a5d8a5dc22998fc88ffc00bdb723f8abd6b7e9edcd808d55036858fb53e",
     "src/legoapi/leveldata.cpp": "8a57dc331679d80aeb93feaf55b9d321b5f65f91e55dc6482c762580abe9f040",
     "src/legoapi/levels.cpp": "16ab613ae7c7b5ca928f4a3df2e2845906ad8877f73a7ff06f43a3dec5abad19",
@@ -773,7 +773,7 @@
     "src/legogame/missions.cpp": "aac3f1b4e0a853b027a9869d412d538fc1b415520829ec7574fe66a7ffaeb7de",
     "src/legogame/move.cpp": "d67a52d074f904ba2dd1eabf3640cd6128f9c5b9b055c99ab12b4c5bd364f9e6",
     "src/legogame/panel.cpp": "b52d0a8bf36926dc5340aeac75e3151c5754249b8b65fd5c8930b8634bdcf132",
-    "src/legogame/pcbatman.cpp": "cab515d134f0c783a6cecc6491399e41022a36b6cb6c0026c35dec8e8c16f9f9",
+    "src/legogame/pcbatman.cpp": "c1077f9f6b6c0c71ce4cf6780503a9f35a12de32393f5dd22672cc066c8977ab",
     "src/legogame/pursuit.cpp": "2d0f9c02ee8b2be0ea7b7934d3bcf9eb4566236999d77a6ed3a1ae01a5b6de1a",
     "src/legogame/radio.cpp": "43601292201c3b20a0f298b7b7e74470245eb75fd4d9b72740aaee25a12cb7a6",
     "src/legogame/securitydoor.cpp": "80b9a6bf05f34fa2b84e128a44f5208cb89812cfa6472020d8cccf3c8a262992",
@@ -782,7 +782,7 @@
     "src/legogame/shop.cpp": "62b8be9ac82ac71dab3225831ce18d4da8d2f4a23d9edc3a490ca590e37c0339",
     "src/legogame/signal.cpp": "f1af91540e23b4c54bada72d46162da8ea064afbd95361b3f0aeffd53e19a140",
     "src/legogame/speederchase.cpp": "c6fcf8a05e26c2eb085dbe9683390167d62625cae5727fec183a32cce37235fb",
-    "src/legogame/startup.cpp": "4937f1929b324fc3ac678d7997f7878787d77dc16805762660429a72350f21a3",
+    "src/legogame/startup.cpp": "e68261caf66175685359d4be0736024a29c7f2aab5a965509c59305f7bc514c7",
     "src/legogame/starwars_gameai.cpp": "5cf91d06c473241f64f5ea0062ffc93718a823be40779025a4d015651ceb0722",
     "src/legogame/suit.cpp": "4f412a06b9564b8684835579279990d016b7628ad39c635ec90c9acd2d01c3f8",
     "src/legogame/techno.cpp": "201c49ed3891409d1ff5f64caf690ade972f56608b5959657cc3ddfcfa58d5d2",
@@ -1043,7 +1043,7 @@
     "build/obj/legoapi/audio.obj": "38b37162063f615a61252718b08d59ca3985ec7c5cad8eaa5e4650c06d89e3fb",
     "build/obj/legoapi/batarang.obj": "a7e7354eac0709001ff5afee8f1ea45fc6a70bf2047793c8d9fa8b99c1185e3b",
     "build/obj/legoapi/bolts.obj": "bdaa9b4deca4848dcd6ba7ef3d68fb9e95095ec1b6884ca6f391375772d12c7c",
-    "build/obj/legoapi/buffers.obj": "ea42a7e59aca328164875b94f6326f17f3aef57d0797ea9b97de8d8fe75424b7",
+    "build/obj/legoapi/buffers.obj": "a8501e1469feeb576c19b77cb81230b5ba8caf63f214273f68a201fb338934cd",
     "build/obj/legoapi/camera.obj": "cbdada7505c3116ebf5c0d9c6a6858098a416bcc344820d8f82fc11fa1aed9e3",
     "build/obj/legoapi/carrying.obj": "8688f16bd156787a9106fce6fb3a9225e14363cbb44a42b2fd37710d914c1405",
     "build/obj/legoapi/characters.obj": "1dfb05eb3f30ca0d8c1153f1fecf050c1ce64e7826ae536e6a8223f2b3231c23",
@@ -1055,7 +1055,7 @@
     "build/obj/legoapi/climbing.obj": "30d29aa144e1d461749f92630ffd27c160a7c37258fe6be4effc94e937a9344d",
     "build/obj/legoapi/collection.obj": "9c2b32c259c9d345500915fbeaa684c7d9b1de6291621188d81eab3164d6979c",
     "build/obj/legoapi/collection_render.obj": "d005e300639021ce9c134df237d19e7e2cd5de7590eef833bfd197a59839a405",
-    "build/obj/legoapi/control_setup.obj": "d6ae2e462ab7934a9db21cd10a4a85fd259747cd33c56531a95d3cd15b3373df",
+    "build/obj/legoapi/control_setup.obj": "b05f591d12babda0c6e8aa75dac8f78d11d991ff346a31fd1842fc340bf77ee1",
     "build/obj/legoapi/credits.obj": "7b250b56dcc42aec4b379b35880cfb551bf155aaeb050fde9bb304435048a87e",
     "build/obj/legoapi/customise_diagnostic.obj": "cea78e170d14314e9aed3a0511de55cf010cc5f13b7c374911e4af8c6b582d8a",
     "build/obj/legoapi/customiser.obj": "03905e87d9d4456e55982ae08353e0005e1163e4c11f9ac50ff5157bc47e7422",
@@ -1086,7 +1086,7 @@
     "build/obj/legoapi/gameantinode.obj": "59694f0bf3c53f2a9b6fcf8478d5fcc4163c5ceb03af59f9cf0ddadc30d2cbc5",
     "build/obj/legoapi/gamemessages.obj": "7062bb10e3f893b269d0613f481a828cd76d4f714f7c1fee5c1590964a6adc1b",
     "build/obj/legoapi/gameobjects.obj": "f948a93901a16d663526eb8fe310debb37505d1e80be63d282fbcbeda7a64fe2",
-    "build/obj/legoapi/gamepads.obj": "30a8973a2040394b93b852ebcea02b7bd985c181c95cc67c80b606f7deab90db",
+    "build/obj/legoapi/gamepads.obj": "0850fe89592dafc037c805f7c78ee57026c48a66924036a676b2b5783dfdd614",
     "build/obj/legoapi/gamestructure.obj": "4d3b788b50c9df6ff77b46a52b7c9a22f18eeb5db624d0026be8353354982911",
     "build/obj/legoapi/gamethings.obj": "83a82d32603afb5f630fd193b38f0c2ce00a7587d82e8e3c4343751d4735efa5",
     "build/obj/legoapi/gcutscn.obj": "c8e28c56b5c0d0c38895d234b7afeb499447ad3c7df230a2fa66c6772dce91a8",
@@ -1110,7 +1110,7 @@
     "build/obj/legoapi/guidelines.obj": "8e1480507926c977d972c5f39ee8f646681da6c18a0ad3874cac247d1fa59c75",
     "build/obj/legoapi/hint.obj": "51310e525512f8f48fa5adef31fbbde0b3dae186d6fc8034f66d23db46a905c3",
     "build/obj/legoapi/hits.obj": "86455938309f0630a141cfe21c3361b4c9f44b7081a4118d894273efe58cc07d",
-    "build/obj/legoapi/hub.obj": "e4b4c76359f2520ed887ab532d2ed1220bdb33ae14edd5b30af90e15199e0ace",
+    "build/obj/legoapi/hub.obj": "bad2edb907eed9eaa98ba81e1cc7f2384d77b59fde97f4a02290ba978f01384d",
     "build/obj/legoapi/jumping.obj": "bc6b2c13cdc748a068d06d5ccf8b2b87d5c860b1542e7f31f79ac79aaae8553a",
     "build/obj/legoapi/leveldata.obj": "8e1a517defbe2135bb2b572f059167b6d44f70df2087eba13643917a7a16d782",
     "build/obj/legoapi/levels.obj": "a24571f6f08a4590a69506e6a73f05c499206fd24ea1dfcd3c23a63e20674ce1",
@@ -1166,7 +1166,7 @@
     "build/obj/legoapi/tagging.obj": "bac7325ed0e8b50a22e5551a0fed4bb77362354061f3b0854a6c463f99766338",
     "build/obj/legoapi/techno_diagnostic.obj": "de6e8b80732918e5672d141e4844a52ab25627e9fc2b223b970d0886b4a1dfd6",
     "build/obj/legoapi/texanim_scripts.obj": "f8154cf60585fcd25f3f0b8cf4eeb17412db18faccae5fb8ca8f471644df4fd7",
-    "build/obj/legoapi/text.obj": "5b07cb91e9912f6ae63012f5bdbb8c9b83222a4e31ec5d5ce5e95b31d7a68596",
+    "build/obj/legoapi/text.obj": "6fffe37d45ec9966dc5c21052da6b0b9998efbca4eac0050bf2e8a9b9dc52f12",
     "build/obj/legoapi/text_tables.obj": "e80f92f8fdbc1ef18462bdfdc070bf11da2415fc5a91a0b6d7cbb89c6016b6f7",
     "build/obj/legoapi/timing.obj": "454a6b24167d16e331f17a7758975adff99704e8281239911cfac4ae22471656",
     "build/obj/legoapi/tubes.obj": "13d2c9afbe3080fd504eaf491812d1287a65550df07a3da19affab156ee3c9fc",
@@ -1178,10 +1178,10 @@
     "build/obj/legogame/batman_gameai.obj": "70f3dcbf08efec102fb6e736f8481ddc8f3399fb578d41982188d563e30415f8",
     "build/obj/legogame/bolt.obj": "84acce401f19ea04cba1ff770ce228d487570c97c5b32bc80efbe392e3c4f85d",
     "build/obj/legogame/cable.obj": "9cd261c4b7d55fbd2ed22da3d049600e803b74a2b5d14b2530ae5faf0178092c",
-    "build/obj/legogame/camera.obj": "0d0fcd11e2a4d2491e0c39b5f572f7ec4b6058a8a87419d63c6c50e54fe8eff0",
+    "build/obj/legogame/camera.obj": "8d8edb13fcbf30f0caa365f885f188f533f99953a2309a060be6e5b3de98ada5",
     "build/obj/legogame/chris.obj": "9c71289a04dc7b749ba05ee67e880015267e51b87c938ad7389bd68a5d8b40fb",
     "build/obj/legogame/config.obj": "04c010e87530288ebee3471ea1db25bf1c8607f22bed44aadf8adbe748e18d38",
-    "build/obj/legogame/creature.obj": "dc595e656564db42d3df11f23495935d5b98e2c37d6d0ff202d78828a42a17d5",
+    "build/obj/legogame/creature.obj": "216e3980c5ff1a6fe83271c3dbbadc1f432cc3fda6533fc15384567388745ed4",
     "build/obj/legogame/customise.obj": "31bb2df9ef1f63a4f7f6bd0f53c056db4528ecbfda931bab0241e379a37204ba",
     "build/obj/legogame/detonator.obj": "29c983c8f28026bab76eb5c80630d2c92d53924b2c231422065129367e958435",
     "build/obj/legogame/dropinout.obj": "bb306496793de2efec0140cbbb448dd0c118503f186e813d9b7497bdd9f5b6a4",
@@ -1218,7 +1218,7 @@
     "build/obj/legogame/missions.obj": "f6d9c9d761b3d40886ad28d0f00074fa6864c19ec3a6f381300a59315cecf74b",
     "build/obj/legogame/move.obj": "c6fb3eba053da43f717432ff7dd30143063f605d5b9598374e41f709cbc751c9",
     "build/obj/legogame/panel.obj": "dbddb4c92637f1ce93973dc2faff4ba988a0395caafb42ff2f1d386eb9f2809a",
-    "build/obj/legogame/pcbatman.obj": "240980d6bcf7e21759fa1ab5ac313211135b6378f90795c64d892b9b59c2efeb",
+    "build/obj/legogame/pcbatman.obj": "8059b702dac2963ff7f2291f1dc0a2e10d1d007f7323794a53afbb0d596613ae",
     "build/obj/legogame/pursuit.obj": "4d84d3432fe3f6f67790a83451dda5913e05a02d4f3b8f7813edcf955304cef4",
     "build/obj/legogame/radio.obj": "a34c17898bb4f2cf8aa8c272f3ccad4aa0ecc182549df47fe5b88e9f20b7a8bc",
     "build/obj/legogame/securitydoor.obj": "a8af81872151cdcd8298bf4eeba90a08f38fb8327c0e7b98c762b71c5ee20bbf",
@@ -1227,7 +1227,7 @@
     "build/obj/legogame/shop.obj": "b68c37ac29b75d783adb2a65179d167bc51035d33a935053db33793f11198376",
     "build/obj/legogame/signal.obj": "40d99dddc7d847e8ebe1b484f4be35d8cf1aac8bf666d96efbd413f5d3a07c85",
     "build/obj/legogame/speederchase.obj": "97720fafd3f01bee36a8e7fb184daaa42296805b108020e98f039a1ad4e39d92",
-    "build/obj/legogame/startup.obj": "f86acff4dfe8f328809f8194fac685aa8e304f6a6342c6007fb117917ae79956",
+    "build/obj/legogame/startup.obj": "e0d5b2e28c2237d451f7b230d9596b09eab4129fd1606a34d4c8fd33f8162544",
     "build/obj/legogame/starwars_gameai.obj": "8e0add881a61cdefdbaf952081034d12bfe09b0fb1211d612e2c78c9ae696331",
     "build/obj/legogame/suit.obj": "e1f07c509aefa357efbc31a525a5d1d13e972ab6a67059dda537d65161b1c922",
     "build/obj/legogame/techno.obj": "8ad4a887333ae663236b994ca400a34cddc69510f59bf339012300aaea679c37",
@@ -1239,7 +1239,7 @@
     "build/obj/legogame/traffic.obj": "66abb0e7b6a19bcef095b0900ae4ece0cfd6e76781a517e4a5bcb1f3a83a82bd",
     "build/obj/legogame/transform.obj": "5e82bf4c586cc3d7cfddb3aba8aa6f2cce62884965abd5364cd95ecb0df067b2",
     "build/obj/legogame/zipup.obj": "7160663df30c7237933fbd4b24d723ca59ff069fff39cd57a0c95d0b5ec24135",
-    "build/obj/nu2api/PCInput.obj": "4d71c3c52a56a9eef3446dff6c3d1cdad8e3b56e833679d22bc9cf6a4494378e",
+    "build/obj/nu2api/PCInput.obj": "9e17b6dcda8d8ed789876234b53a76a7fcda015514efb702e3c641729287315f",
     "build/obj/nu2api/bgproc.obj": "f00572f178272a385c3b93fa172813ce807ae89585c48b92fe6c64aa502fce41",
     "build/obj/nu2api/crc16.obj": "db618c15b0b78c34df8fdf0a5a0742e09fe9e7e41c66c65a8b75276d1a33aaeb",
     "build/obj/nu2api/geometry_publish.obj": "d9c36e6ca4b30fcfc6e699cde03eddfc444ec311aeac6cc93cd0e7691d445453",
@@ -1253,7 +1253,7 @@
     "build/obj/nu2api/nu3d_includes.obj": "19ce53ff06e9b8eeee51a9c8b0d6631aabff82dcb34f28c83c8dca4475de883b",
     "build/obj/nu2api/nu3d_platform.obj": "8af03fab380f24cf95bbfd7069b0d6b38d5f4c1727f93bc594bf58b6fc3179ea",
     "build/obj/nu2api/nualloc.obj": "6947818d2c8338a48a38d68ca26c7ee2e9f57611c09199ff502ac170d30b1cad",
-    "build/obj/nu2api/nuapi.obj": "961421d6b9a41ffb2b0ba5a5d646aca59d7f168cc45d355479ea4676ca087a87",
+    "build/obj/nu2api/nuapi.obj": "fed004fe4264fed9bd9d11c86c016bf529cc92b25f39cb126c294b143f7535bc",
     "build/obj/nu2api/nubridge.obj": "65b30a19670cde7987c21b483ee8ad8fb90945da84d1a99a5390709d816e71a6",
     "build/obj/nu2api/nucamera.obj": "87542276e462ef343e9ee5a23ec671b013d24f153351e6986cc6b5bbb437be9c",
     "build/obj/nu2api/nucore_includes.obj": "292d87a608fc0894dde8c969bd2acfdb48e70022d378d58cb266928763548db1",
@@ -1614,19 +1614,19 @@
       "symbol": "_PcControlPlaySound",
       "address": "0x00401140",
       "units": [
-        "src/legoapi/control_setup.cpp"
+        "src/legogame/pcbatman.cpp"
       ],
       "target_size": 112,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/control_setup.cpp",
+          "unit": "src/legogame/pcbatman.cpp",
           "base_size": 112,
           "exact_match": true,
           "target_sha256": "8ae32abab21cea484366c4e31a81f1b81add681fc122a9946e1bc85d94f45f94",
           "base_sha256": "8ae32abab21cea484366c4e31a81f1b81add681fc122a9946e1bc85d94f45f94",
           "relocation_count": 12,
-          "comparison_unit": "00401140-93b8e07f26bc",
+          "comparison_unit": "00401140-36b4e4ab933d",
           "objdiff_percent": 100.0
         }
       ],
@@ -1638,19 +1638,19 @@
       "symbol": "?PcInputCommandAllowed@@YAHHH@Z",
       "address": "0x004011b0",
       "units": [
-        "src/legogame/startup.cpp"
+        "src/legogame/pcbatman.cpp"
       ],
       "target_size": 48,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legogame/startup.cpp",
+          "unit": "src/legogame/pcbatman.cpp",
           "base_size": 48,
           "exact_match": true,
           "target_sha256": "aed941719fd7f6f5aec45b3408e2a8733b7052d6b743c917bc2f08cbbb42b02a",
           "base_sha256": "aed941719fd7f6f5aec45b3408e2a8733b7052d6b743c917bc2f08cbbb42b02a",
           "relocation_count": 1,
-          "comparison_unit": "004011b0-87bef5057781",
+          "comparison_unit": "004011b0-1e94bca95824",
           "objdiff_percent": 100.0
         }
       ],
@@ -1686,19 +1686,19 @@
       "symbol": "_Text_ExpandButtonString",
       "address": "0x004015e0",
       "units": [
-        "src/legoapi/hub.cpp"
+        "src/legogame/pcbatman.cpp"
       ],
       "target_size": 462,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/hub.cpp",
+          "unit": "src/legogame/pcbatman.cpp",
           "base_size": 462,
           "exact_match": true,
           "target_sha256": "4644d47b587101ff0a552472bb153665dfa4903b40e6c31003c7bd4c8a821f2b",
           "base_sha256": "4644d47b587101ff0a552472bb153665dfa4903b40e6c31003c7bd4c8a821f2b",
           "relocation_count": 36,
-          "comparison_unit": "004015e0-32aa3de75223",
+          "comparison_unit": "004015e0-22c476dc103b",
           "objdiff_percent": 100.0
         }
       ],
@@ -1734,19 +1734,19 @@
       "symbol": "_GamePad_InitButtons",
       "address": "0x004017c0",
       "units": [
-        "src/legoapi/gamepads.cpp"
+        "src/legogame/pcbatman.cpp"
       ],
       "target_size": 66,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/gamepads.cpp",
+          "unit": "src/legogame/pcbatman.cpp",
           "base_size": 66,
           "exact_match": true,
           "target_sha256": "f2ffc23b26159d7e86c92d0917cd0ec978a19f5910fc8f7856ea9fdbc836ac84",
           "base_sha256": "f2ffc23b26159d7e86c92d0917cd0ec978a19f5910fc8f7856ea9fdbc836ac84",
           "relocation_count": 7,
-          "comparison_unit": "004017c0-9ddc7b2f0427",
+          "comparison_unit": "004017c0-c31e4250b03b",
           "objdiff_percent": 100.0
         }
       ],
@@ -391123,13 +391123,13 @@
       "symbol": "??_C@_0O@FLLDNNMF@?$FLTOGGLERIGHT?$FN?$AA@",
       "address": "0x007515b4",
       "units": [
-        "src/legoapi/hub.cpp"
+        "src/legogame/pcbatman.cpp"
       ],
       "target_size": 14,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/hub.cpp",
+          "unit": "src/legogame/pcbatman.cpp",
           "exact_match": true,
           "target_size": 14,
           "base_size": 14,
@@ -391144,13 +391144,13 @@
       "symbol": "??_C@_0N@PIMHPNCE@?$FLTOGGLELEFT?$FN?$AA@",
       "address": "0x007515c4",
       "units": [
-        "src/legoapi/hub.cpp"
+        "src/legogame/pcbatman.cpp"
       ],
       "target_size": 13,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/hub.cpp",
+          "unit": "src/legogame/pcbatman.cpp",
           "exact_match": true,
           "target_size": 13,
           "base_size": 13,
@@ -391165,13 +391165,13 @@
       "symbol": "??_C@_03KPANPEFB@?$FLX?$FN?$AA@",
       "address": "0x007515d4",
       "units": [
-        "src/legoapi/hub.cpp"
+        "src/legogame/pcbatman.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/hub.cpp",
+          "unit": "src/legogame/pcbatman.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -391186,13 +391186,13 @@
       "symbol": "??_C@_07MEMANFDK@?$FLCROSS?$FN?$AA@",
       "address": "0x007515d8",
       "units": [
-        "src/legoapi/hub.cpp"
+        "src/legogame/pcbatman.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/hub.cpp",
+          "unit": "src/legogame/pcbatman.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -391207,13 +391207,13 @@
       "symbol": "??_C@_06BHKGHJDE@?$FLJUMP?$FN?$AA@",
       "address": "0x007515e0",
       "units": [
-        "src/legoapi/hub.cpp"
+        "src/legogame/pcbatman.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/hub.cpp",
+          "unit": "src/legogame/pcbatman.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -391228,14 +391228,14 @@
       "symbol": "??_C@_03LGGEEBKE@?$FLO?$FN?$AA@",
       "address": "0x007515e8",
       "units": [
-        "src/legoapi/hub.cpp",
-        "src/legogame/panel.cpp"
+        "src/legogame/panel.cpp",
+        "src/legogame/pcbatman.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/hub.cpp",
+          "unit": "src/legogame/panel.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -391243,7 +391243,7 @@
           "base_sha256": "44b5880c2f149aaa771b7e301ad7ecb95ad1fb245a8e32db0365f7454b54eecd"
         },
         {
-          "unit": "src/legogame/panel.cpp",
+          "unit": "src/legogame/pcbatman.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -391258,13 +391258,13 @@
       "symbol": "??_C@_08GJODMBIM@?$FLCIRCLE?$FN?$AA@",
       "address": "0x007515ec",
       "units": [
-        "src/legoapi/hub.cpp"
+        "src/legogame/pcbatman.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/hub.cpp",
+          "unit": "src/legogame/pcbatman.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -391279,13 +391279,13 @@
       "symbol": "??_C@_09NMFJBEIC@?$FLSPECIAL?$FN?$AA@",
       "address": "0x007515f8",
       "units": [
-        "src/legoapi/hub.cpp"
+        "src/legogame/pcbatman.cpp"
       ],
       "target_size": 10,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/hub.cpp",
+          "unit": "src/legogame/pcbatman.cpp",
           "exact_match": true,
           "target_size": 10,
           "base_size": 10,
@@ -391300,14 +391300,14 @@
       "symbol": "??_C@_03KDFIBLLA@?$FLS?$FN?$AA@",
       "address": "0x00751604",
       "units": [
-        "src/legoapi/hub.cpp",
-        "src/legogame/panel.cpp"
+        "src/legogame/panel.cpp",
+        "src/legogame/pcbatman.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/hub.cpp",
+          "unit": "src/legogame/panel.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -391315,7 +391315,7 @@
           "base_sha256": "a33c45d420bf1193fc090446610d3b258251814b580cdfdc46d466c09e3bfd14"
         },
         {
-          "unit": "src/legogame/panel.cpp",
+          "unit": "src/legogame/pcbatman.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -391330,13 +391330,13 @@
       "symbol": "??_C@_08JGGKGBHK@?$FLSQUARE?$FN?$AA@",
       "address": "0x00751608",
       "units": [
-        "src/legoapi/hub.cpp"
+        "src/legogame/pcbatman.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/hub.cpp",
+          "unit": "src/legogame/pcbatman.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -391351,13 +391351,13 @@
       "symbol": "??_C@_08NLPCCAM@?$FLACTION?$FN?$AA@",
       "address": "0x00751614",
       "units": [
-        "src/legoapi/hub.cpp"
+        "src/legogame/pcbatman.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/hub.cpp",
+          "unit": "src/legogame/pcbatman.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -391372,14 +391372,14 @@
       "symbol": "??_C@_03KGBHANDF@?$FLT?$FN?$AA@",
       "address": "0x00751620",
       "units": [
-        "src/legoapi/hub.cpp",
-        "src/legogame/panel.cpp"
+        "src/legogame/panel.cpp",
+        "src/legogame/pcbatman.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/hub.cpp",
+          "unit": "src/legogame/panel.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -391387,7 +391387,7 @@
           "base_sha256": "a3ea26bac092f69a9f5be3adab6ae4a3f55136b5c1bb20a626b8f0f42baddb0b"
         },
         {
-          "unit": "src/legogame/panel.cpp",
+          "unit": "src/legogame/pcbatman.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -391402,13 +391402,13 @@
       "symbol": "??_C@_0L@IABFJIEI@?$FLTRIANGLE?$FN?$AA@",
       "address": "0x00751624",
       "units": [
-        "src/legoapi/hub.cpp"
+        "src/legogame/pcbatman.cpp"
       ],
       "target_size": 11,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/hub.cpp",
+          "unit": "src/legogame/pcbatman.cpp",
           "exact_match": true,
           "target_size": 11,
           "base_size": 11,
@@ -391423,13 +391423,13 @@
       "symbol": "??_C@_05LMIPEIGH@?$FLTAG?$FN?$AA@",
       "address": "0x00751630",
       "units": [
-        "src/legoapi/hub.cpp"
+        "src/legogame/pcbatman.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/hub.cpp",
+          "unit": "src/legogame/pcbatman.cpp",
           "exact_match": true,
           "target_size": 6,
           "base_size": 6,
@@ -776975,13 +776975,13 @@
       "symbol": "_GAMEPAD_TAG",
       "address": "0x00802284",
       "units": [
-        "src/legoapi/gamepads.cpp"
+        "src/legogame/pcbatman.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/gamepads.cpp",
+          "unit": "src/legogame/pcbatman.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -777206,13 +777206,13 @@
       "symbol": "_GAMEPAD_MENUCANCEL",
       "address": "0x008022c8",
       "units": [
-        "src/legoapi/gamepads.cpp"
+        "src/legogame/pcbatman.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/gamepads.cpp",
+          "unit": "src/legogame/pcbatman.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -901702,7 +901702,7 @@
       "metadata_sha256": "525d436eee3d48951222f1fd54574554983d228c3d06f19a545ba7cab50fe057",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "15425e6c9d8b6ee4d7db8a9bb678953f01a97050f72933bd45f4860c34f3e9f9",
+      "geometry_object_sha256": "cd58757b7b08c59fcd2d5f2feaae73a89ef1d21da6214757963d0250cff8f2c4",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
@@ -901968,7 +901968,7 @@
         "src/legogame/batman_gameai.h": "dffe1ee6b3b207b8d5a8da8d490e1c2b4ee14bd687dc31f2ca60c6144439ea3c",
         "src/legogame/game.h": "934b5212dede1c292d058197ee7d04b760e04f3e2a64b3a75a55dbb23d14d631",
         "src/legogame/gamestatus.h": "b38af1fa65aee1f4cc6930b3b97debe9e2f76d8c93ce3bfb6c37f0144ee4e403",
-        "src/legogame/pcbatman.h": "4dac91bb8d8fa7e5a24b35fb5094ac0a9861ffff24918237ba5afa0ea6ee67b4",
+        "src/legogame/pcbatman.h": "d892a0bb73812a99594dc05ad00f7fae3cf87a8daf03a87120bcfcf5ceb97be2",
         "src/legogame/startup.h": "5818c4121edc7c1fd5f105fa43f7d4678aa648adb42b6d74ea291cdcf77b0291",
         "src/nu2api/NuEffectTex_pc.h": "082537b419cd0043774cfcdbfaccb412d5970ba97c7c41a0f9d6c7dbc6bf7eb2",
         "src/nu2api/PCInput.h": "51a8a5045671873e78e5431249a5a13a23406b119145ccbf0646e58cef8a93b7",

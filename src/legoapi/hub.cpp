@@ -27,7 +27,6 @@ struct GIZBUILDIT;
  * for nonzero rather than string contents. */
 extern "C" char *TextInputActionLabel(i32 device, i32 action, i32, i32);
 extern "C" char HubButtonStringBuffer[];
-extern "C" {}
 
 extern "C" {
     LEVELFIXUP LevelFixupStartup[2] = {
@@ -65,29 +64,6 @@ extern "C" char *TextButtonString(i32 action, const char *player0, const char *p
         NuSPrintf(HubButtonStringBuffer, "~0%s%s~~", first, second);
     }
     return HubButtonStringBuffer;
-}
-
-extern "C" i32 Text_ExpandButtonString(char *command, char *output) {
-    if (NuStrICmp(command, "[TAG]") == 0 || NuStrICmp(command, "[TRIANGLE]") == 0 || NuStrICmp(command, "[T]") == 0) {
-        NuStrCpy(output, TextButtonString(12, TTab[816], TTab[817]));
-        return 1;
-    } else if (NuStrICmp(command, "[ACTION]") == 0 || NuStrICmp(command, "[SQUARE]") == 0 || NuStrICmp(command, "[S]") == 0) {
-        NuStrCpy(output, TextButtonString(15, TTab[816], TTab[817]));
-        return 1;
-    } else if (NuStrICmp(command, "[SPECIAL]") == 0 || NuStrICmp(command, "[CIRCLE]") == 0 || NuStrICmp(command, "[O]") == 0) {
-        NuStrCpy(output, TextButtonString(13, TTab[816], TTab[817]));
-        return 1;
-    } else if (NuStrICmp(command, "[JUMP]") == 0 || NuStrICmp(command, "[CROSS]") == 0 || NuStrICmp(command, "[X]") == 0) {
-        NuStrCpy(output, TextButtonString(14, TTab[816], TTab[817]));
-        return 1;
-    } else if (NuStrICmp(command, "[TOGGLELEFT]") == 0) {
-        NuStrCpy(output, TextButtonString(16, TTab[816], TTab[817]));
-        return 1;
-    } else if (NuStrICmp(command, "[TOGGLERIGHT]") == 0) {
-        NuStrCpy(output, TextButtonString(18, TTab[816], TTab[817]));
-        return 1;
-    }
-    return 0;
 }
 
 extern "C" void MenuInitFreePlay(MENU *) {

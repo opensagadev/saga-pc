@@ -497,26 +497,6 @@ extern "C" {
     void PcControlDraw(void) {
         PcControlScreen.Draw();
     }
-
-    void PcControlPlaySound(i32 sound) {
-        switch (sound) {
-            case 6:
-                GameAudio_PlaySfx(0x32, NULL, 0, 0);
-                break;
-            case 0:
-                GameAudio_PlaySfx(0x31, NULL, 0, 0);
-                break;
-            case 1:
-            case 2:
-                GameAudio_PlaySfx(0x30, NULL, 0, 0);
-                break;
-            case 3:
-            case 4:
-            case 5:
-                GameAudio_PlaySfx(0x2f, NULL, 0, 0);
-                break;
-        }
-    }
 }
 
 /* Native421720; append to ControlSetup source after API declarations. */
