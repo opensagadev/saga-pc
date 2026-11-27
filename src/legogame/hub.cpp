@@ -1899,6 +1899,10 @@ static void Hub_DrawMiniKitCount(f32 x, f32 y, i32 count, i32 total, f32 alpha) 
 extern "C" void Hub_LockUnlockDoors(WORLDINFO *world) {
 }
 
+extern "C" void Hub_DrawStarField(void) {
+    GetMenuID();
+}
+
 extern "C" void Hub_DrawImportantBrick(i32 object, f32 x, f32 y, f32 alpha, i32 count, i32 total) {
     char text[32];
     const u16 rotation = (u16)(i32)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);

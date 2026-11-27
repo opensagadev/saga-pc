@@ -270,6 +270,15 @@ void MakePlayPlanes(GAMECAMERA *camera) {
     MakePlayPlane(&PlayPlane[5], &corners[0].far_point, &corners[1].far_point, &corners[3].far_point, &corners[2].far_point);
 }
 
+extern "C" void GameCam_NewShake(GAMECAMERA *camera, f32 intensity, f32 decay, f32 freq) {
+    if (camera == NULL) {
+        camera = GameCam;
+    }
+    camera->shake_intensity = intensity;
+    camera->shake_decay = decay;
+    camera->shake_freq = freq;
+}
+
 void GameCam_UpdateShake(GAMECAMERA *camera, f32 ambient_amount) {
     NUVEC offset;
     f32 amount;

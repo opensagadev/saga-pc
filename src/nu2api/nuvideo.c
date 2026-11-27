@@ -158,12 +158,3 @@ void (*PCWarningHandler)(char *) = 0;
 GAMECAMERA GameCamera = {0};
 GAMECAMERA *GameCam = &GameCamera;
 i32 part_debris_count = 0;
-
-void GameCam_NewShake(GAMECAMERA *camera, f32 intensity, f32 decay, f32 freq) {
-    if (camera == NULL) {
-        camera = GameCam;
-    }
-    camera->shake_intensity = intensity;
-    camera->shake_decay = decay;
-    camera->shake_freq = freq;
-}

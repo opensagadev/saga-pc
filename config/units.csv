@@ -33,7 +33,7 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x46f890,0x47000e,src/legogame/giztorpedo.cpp,,legogame,batman+marker,high,ret 28,18,1783,1755,1755,0,0,legogame/giztorpedo.cpp:1755
 0x470010,0x47276c,src/legogame/grabber.cpp,,legogame,marker+review,medium,,24,9927,9927,5547,8,0,legogame/grabber.cpp:9927
 0x472770,0x47482a,src/legogame/hatmachine.cpp,,legogame,marker+review,medium,ret fabs 54 28,28,8156,8128,4072,269,0,legogame/hatmachine.cpp:8128
-0x474830,0x47f5f5,src/legogame/hub.cpp,,legogame,batman+code+marker,high,ret fabs 23 28,92,43769,43756,18577,2290,0,legogame/hub.cpp:43751 legoapi/hub.cpp:5
+0x474830,0x47f5f5,src/legogame/hub.cpp,,legogame,batman+code+marker,high,ret fabs 23 28,92,43769,43756,18577,2290,0,legogame/hub.cpp:43756
 0x47f600,0x481a6f,src/legogame/?0x47f600,,legogame,marker+android,none,,27,9162,9134,5077,99,0,legogame/hub.cpp:9134
 0x481a70,0x482bf1,src/legogame/ledge.cpp,,legogame,batman+marker,high,ret fabs 28,24,4301,4273,2946,38,0,legogame/ledge.cpp:4273
 0x482c00,0x486f1a,src/legogame/legoapi_status.cpp,,legogame,batman+code+marker,high,ret 54 28,32,16927,16899,4132,1061,0,legogame/legoapi_status.cpp:16899
@@ -45,8 +45,8 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x493c30,0x496e11,src/legogame/menu.cpp,,legogame,batman+code+marker,high,fabs 28,48,12356,12328,8507,270,0,legogame/menu.cpp:12328
 0x496e20,0x497c05,src/legogame/missions.cpp,,legogame,batman+marker,high,fabs 28,12,3461,3433,1384,16,0,legogame/missions.cpp:3433
 0x497c10,0x4b7051,src/legogame/move.cpp,,legogame,batman+marker+review,high,ret fabs,231,126224,126224,51851,3437,0,legogame/move.cpp:126224
-0x4b7060,0x4bc2ea,src/legogame/panel.cpp,,legogame,batman+code+marker+review,medium,,34,20930,20874,6550,1214,0,legogame/panel.cpp:20832 legogame/pursuit.cpp:42
-0x4bc2f0,0x4bcaec,src/legogame/pursuit.cpp,,legogame,review,medium,,14,1921,1893,1893,0,0,legogame/pursuit.cpp:1893
+0x4b7060,0x4bc29b,src/legogame/panel.cpp,,legogame,batman+code+marker+review,medium,,32,20860,20832,6508,1214,0,legogame/panel.cpp:20832
+0x4bc2a0,0x4bcaec,src/legogame/pursuit.cpp,,legogame,review,medium,,16,1991,1935,1935,0,0,legogame/pursuit.cpp:1935
 0x4bcaf0,0x4bce21,src/legogame/radio.cpp,,legogame,batman,medium,,3,805,805,805,0,0,legogame/radio.cpp:805
 0x4bce30,0x4bdca4,src/legogame/securitydoor.cpp,,legogame,batman+marker,high,ret 28,26,3473,3445,3340,0,0,legogame/securitydoor.cpp:3445
 0x4bdcb0,0x4c00fc,src/legogame/sfx.cpp,,legogame,batman+marker+review,high,,6,9259,9203,358,343,0,legogame/sfx.cpp:9203
@@ -91,7 +91,7 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x5476e0,0x5477d7,src/legoapi/buffers.cpp,,legoapi,batman,medium,,3,234,234,234,0,0,legoapi/buffers.cpp:234
 0x5477e0,0x548f85,src/legoapi/audio.cpp,,legoapi,batman+code+marker,high,fabs 28,49,5595,5567,4965,40,0,legoapi/audio.cpp:5567
 0x548f90,0x5494c7,src/legoapi/timing.cpp,,legoapi,batman+marker,high,,6,1307,1279,1279,0,0,legoapi/timing.cpp:1279
-0x5494d0,0x54a54c,src/legoapi/camera.cpp,,legoapi,batman+marker,high,fabs,21,4063,4035,3980,6,0,legoapi/camera.cpp:3991 nu2api/nuvideo.c:44
+0x5494d0,0x54a54c,src/legoapi/camera.cpp,,legoapi,batman+marker,high,fabs,21,4063,4035,3980,6,0,legoapi/camera.cpp:4035
 0x54a550,0x54b50c,src/legoapi/gamepads.cpp,,legoapi,batman+marker,high,ret fabs 28,29,3778,3750,2373,52,0,legoapi/gamepads.cpp:3750
 0x54b510,0x54cd2d,src/legoapi/text.cpp,,legoapi,batman+marker,high,ret 28,23,6019,5991,2212,228,0,legoapi/text.cpp:5991
 0x54cd30,0x54f957,src/legoapi/grapples.cpp,,legoapi,batman+marker,high,ret fabs 28,42,10999,10971,6122,115,0,legoapi/grapples.cpp:10971

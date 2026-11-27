@@ -34,10 +34,6 @@ extern "C" {
         {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}};
 }
 
-extern "C" void Hub_DrawStarField(void) {
-    GetMenuID();
-}
-
 /* Lives in the menu unit and is never inlined into hub callers. */
 extern "C" void SmartText(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, i32 align, i32 red, i32 green, i32 blue, f32 max_width,
                           i32 center) {

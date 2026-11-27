@@ -147,7 +147,10 @@ REVIEW = {
     0x4b7080: dict(name="panel", conf="medium",
                    why="NuRndrPrimSetColour opens panel: PanelRender calls it, and its retail register use is "
                    "that of a static compiled with its only caller (exact only when it shares PanelRender's file)"),
-    0x4bc2f0: dict(name="pursuit", conf="medium", why="TCS only; Android pursuit.c fits panel < pursuit < radio"),
+    0x4bc2a0: dict(name="pursuit", conf="medium",
+                   why="its static header copy PursuitVuVecMake opens it, and the function at 0x4bc2c0 resets the "
+                   "static zamarrow of UpdateZamArrow; TCS only; Android pursuit.c fits panel < pursuit < radio"),
+    0x4bc2f0: dict(name="pursuit", join=True, why="continues 0x4bc2a0"),
     0x4c00c0: dict(name=None, join=True, why="one function between sfx and shard"),
     0x4c0d50: dict(name="shop", conf="medium",
                    why="ShopMtxCopy, the NuMtxRotate*Inline copies, Shop_CharacterUnlocked and Shop_GetInput are "
