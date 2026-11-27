@@ -139,6 +139,13 @@ typedef struct podrace_netpacket_s {
 static NUVEC pod_old_pos[2];
 
 /* The engine's VuVec helpers; this unit carries its own copies. */
+static void EpisodeIVuVecSet(NUVEC4 *out, f32 x, f32 y, f32 z, f32 w) {
+    out->x = x;
+    out->y = y;
+    out->z = z;
+    out->w = w;
+}
+
 static void EpisodeIVuVecSetOrigin(NUVEC4 *v) {
     v->x = 0.0f;
     v->y = 0.0f;
@@ -676,10 +683,7 @@ static void RacePodAlignPrivate(RACEPOD_RESOURCE *pod, NUVEC4 *direction, f32 bl
     direction_yaw = NuAtan2D(direction->x, direction->z);
     NuVecRotateY(&axis.xyz, &direction->xyz, -direction_yaw);
     direction_pitch = NuAtan2D(axis.y, axis.z);
-    axis.x = 1.0f;
-    axis.y = 0.0f;
-    axis.z = 0.0f;
-    axis.w = 0.0f;
+    EpisodeIVuVecSet(&axis, 1.0f, 0.0f, 0.0f, 0.0f);
     NuVecRotateZ(&axis.xyz, &axis.xyz, (i16)(i32)pod->previous_position.w + 0x4000);
     NuVecRotateX(&axis.xyz, &axis.xyz, -direction_pitch);
     NuVecRotateY(&axis.xyz, &axis.xyz, direction_yaw);

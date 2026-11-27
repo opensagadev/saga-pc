@@ -146,7 +146,7 @@ address,symbol,size,ctype
 0x40e690,_GoingForwardsAlongNarrowSock,106,i32 __cdecl (GAMEOBJECT *)
 0x40e700,_FlightSplineCapacityDiagnostic,1,void __cdecl (char *)
 0x40e710,?ChrisFabs@@YAMM@Z,18,
-0x40e730,?ChrisVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
+0x40e730,?ChrisVuVecSet@@YAXPAUNUVEC4@@MMMM@Z,28,"void __cdecl (NUVEC4 *, f32, f32, f32, f32)"
 0x40e750,?ChrisVuVecSetOrigin@@YAXAAUNUVEC4@@@Z,16,"void __cdecl (NUVEC4 &)"
 0x40e760,?ChrisVuVecAdd@@YAXAAUNUVEC4@@ABU1@1@Z,29,"void __cdecl (NUVEC4 &, const NUVEC4 &, const NUVEC4 &)"
 0x40e780,?ChrisVuVecSub@@YAXAAUNUVEC4@@ABU1@1@Z,29,"void __cdecl (NUVEC4 &, const NUVEC4 &, const NUVEC4 &)"
@@ -2534,7 +2534,7 @@ address,symbol,size,ctype
 0x4d7930,_DrawRopeSingle,1675,"void __cdecl(NUVEC *,NUVEC *,f32,NUMTL *,f32,f32,f32,f32)"
 0x4d7fc0,_ZipUps_DrawLines,453,void __cdecl(void)
 0x4d8190,_EpisodeINuError,1,
-0x4d81a0,_EpisodeIVuVecMake,28,
+0x4d81a0,_EpisodeIVuVecSet,28,"void __cdecl (NUVEC4 *, f32, f32, f32, f32)"
 0x4d81c0,_EpisodeIVuVecSetOrigin,16,
 0x4d81d0,_EpisodeIVuVecAdd,29,
 0x4d81f0,_EpisodeIVuVecSub,29,

@@ -70,6 +70,13 @@ static f32 ChrisFabs(f32 f) {
     return rv;
 }
 
+static void ChrisVuVecSet(NUVEC4 *out, f32 x, f32 y, f32 z, f32 w) {
+    out->x = x;
+    out->y = y;
+    out->z = z;
+    out->w = w;
+}
+
 static void ChrisVuVecSetOrigin(NUVEC4 &v) {
     v.x = 0.0f;
     v.y = 0.0f;
@@ -1090,10 +1097,7 @@ extern "C" {
     }
 
     static void DogfightResetWorldRecords(WORLDINFO *world, DOGFIGHT_SPACE *space) {
-        DogfightDrawScale.x = 4.0f;
-        DogfightDrawScale.y = 4.0f;
-        DogfightDrawScale.z = 4.0f;
-        DogfightDrawScale.w = 1.0f;
+        ChrisVuVecSet(&DogfightDrawScale, 4.0f, 4.0f, 4.0f, 1.0f);
         space->formation.draw_scale.x = DogfightOriginEndXPc;
         space->formation.draw_scale.y = DogfightOriginEndY;
         space->formation.draw_scale.z = DogfightOriginEndZ;
