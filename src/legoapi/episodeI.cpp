@@ -10,35 +10,6 @@
 #include "nu2api/numath/nuvec4.h"
 #include <math.h>
 
-/* Episode I level callbacks installed by FixUpLevels. */
-
-void RetakeG_Reset(WORLDINFO *world) {
-}
-
-void MaulA_Update(WORLDINFO *world) {
-}
-
-void MaulD_Init(WORLDINFO *world) {
-}
-
-void MaulD_Update(WORLDINFO *world) {
-}
-
-void MaulE_Init(WORLDINFO *world) {
-}
-
-void MaulE_Update(WORLDINFO *world) {
-}
-
-void MaulF_Update(WORLDINFO *world) {
-}
-
-void AnakinsFlightB_Update(WORLDINFO *world) {
-}
-
-void AnakinsFlightB_Draw(WORLDINFO *world) {
-}
-
 /* Empty level debug hook shared with the Episode II callbacks. */
 void KaminoEGizmoMissing(char *name) {
 }

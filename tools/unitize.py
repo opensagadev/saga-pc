@@ -367,6 +367,27 @@ class Plan:
         self.renames = {}        # helper name -> equivalent helper kept
 
 
+_TEXT = None
+
+
+def called_from(address, lo, hi):
+    """True when retail code in [lo, hi] has a direct call or jump (rel32) to `address`."""
+    global _TEXT
+    if _TEXT is None:
+        from tools.lib import project, retail
+        target = project()["target"]
+        pe = retail(target)
+        text_va = int(str(target["text_va"]), 0)
+        _TEXT = (text_va, pe.read_va(text_va, int(str(target["text_size"]), 0)))
+    text_va, code = _TEXT
+    start, end = max(lo, text_va), min(hi + 1, text_va + len(code))
+    for offset in range(start - text_va, end - text_va - 4):
+        if code[offset] in (0xE8, 0xE9) and \
+                text_va + offset + 5 + int.from_bytes(code[offset + 1:offset + 5], "little", signed=True) == address:
+            return True
+    return False
+
+
 def build_plan(lo, hi, target):
     plan = Plan(lo, hi, target)
     rows = range_symbols(lo, hi)
@@ -381,9 +402,10 @@ def build_plan(lo, hi, target):
             continue
         if not found[0].startswith("src/"):
             continue
-        if r["size"] == 1 and Path(found[0]).with_suffix("") != Path(target).with_suffix(""):
-            # A bare-RET stub: VC8 drops calls to an empty body it can see, so
-            # retail callers that still call it were compiled in another unit
+        if r["size"] == 1 and Path(found[0]).with_suffix("") != Path(target).with_suffix("") \
+                and called_from(r["address"], lo, hi):
+            # A bare-RET stub called from inside the range: VC8 drops calls to an
+            # empty body it can see, so those callers were compiled without it
             # (the linker folded the stub into this unit's copy).
             plan.notes.append(f"left bare-ret stub {r['symbol']} in {found[0]}")
             continue
