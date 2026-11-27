@@ -57,7 +57,7 @@
    "kind": "data"
   },
   {
-   "unit": "src/legoapi/episodeV.cpp",
+   "unit": "src/legogame/episodeV.cpp",
    "symbol": "_AsteroidChaseD_SetTurretTarget",
    "kind": "function"
   },

@@ -61,7 +61,7 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x4cca50,0x4cdd0c,src/legogame/techno.cpp,,legogame,batman+marker,high,ret ret 28,32,4514,4486,3962,17,0,legogame/techno.cpp:4484 legogame/suit.cpp:1 legoapi/techno_diagnostic.cpp:1
 0x4cdd10,0x4cf291,src/legogame/teleport.cpp,,legogame,batman+marker,high,ret fabs 28,32,5269,5241,2415,69,0,legogame/teleport.cpp:5241
 0x4cf2a0,0x4cf653,src/legogame/text.cpp,,legogame,batman+marker,high,ret 28,7,879,851,851,0,0,legogame/text.cpp:850 legoapi/text.cpp:1
-0x4cf660,0x4d0646,src/legogame/thermaldetonators.cpp,,legogame,batman+marker,high,,9,4007,3979,2839,145,0,legoapi/thermaldetonators.cpp:3979
+0x4cf660,0x4d0646,src/legogame/thermaldetonators.cpp,,legogame,batman+marker,high,,9,4007,3979,2839,145,0,legogame/thermaldetonators.cpp:3979
 0x4d0650,0x4d1e70,src/legogame/tightrope.cpp,,legogame,batman+marker,high,ret fabs 28,28,5957,5929,4438,258,0,legogame/tightrope.cpp:5929
 0x4d1e70,0x4d41b7,src/legogame/torpedo.cpp,,legogame,batman+marker,high,ret fabs 54,35,8743,8743,5817,87,0,legogame/torpedo.cpp:8743
 0x4d41c0,0x4d4cb2,src/legogame/traffic.cpp,,legogame,batman+marker,high,ret 28,15,2684,2656,1209,64,0,legogame/traffic.cpp:2656
@@ -70,9 +70,9 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x4d8190,0x4ddc7f,src/legogame/episodeI.cpp,,legogame,marker+review,high,ret 28,91,22614,22586,17328,278,0,legogame/episodeI.cpp:22577 legoapi/episodeI.cpp:9
 0x4ddc80,0x4e2cce,src/legogame/episodeII.cpp,,legogame,marker+review,high,ret 28,56,20104,20076,15062,51,0,legogame/episodeII.cpp:20075 legoapi/episodeI.cpp:1
 0x4e2cd0,0x4e4a3c,src/legogame/episodeIII.cpp,,legogame,marker+review,medium,,44,7122,7066,6816,42,0,legogame/episodeIII.cpp:7056 legoapi/episodeIII.cpp:10
-0x4e4a40,0x4e5f0c,src/legogame/episodeIV.cpp,,legogame,review,medium,,38,5035,5007,3858,45,0,legogame/episodeIV.cpp:4971 legoapi/episodeV.cpp:36
-0x4e5f10,0x4e9f2c,src/legogame/episodeV.cpp,,legogame,review,medium,,79,15843,15815,11829,596,0,legoapi/episodeV.cpp:15815
-0x4e9f30,0x4eead7,src/legogame/episodeVI.cpp,,legogame,review,medium,,46,19089,19061,8980,643,0,legoapi/episodeVI.c:19061
+0x4e4a40,0x4e5eac,src/legogame/episodeIV.cpp,,legogame,review,medium,,35,4970,4970,3821,45,0,legogame/episodeIV.cpp:4970
+0x4e5eb0,0x4e9f2c,src/legogame/episodeV.cpp,,legogame,review,medium,,82,15908,15852,11866,596,0,legoapi/episodeV.cpp:15851 legogame/episodeIV.cpp:1
+0x4e9f30,0x4eead7,src/legogame/episodeVI.cpp,,legogame,review,medium,,46,19089,19061,8980,643,0,legogame/episodeVI.cpp:19061
 0x4eeae0,0x4eed91,src/nu2api/?0x4eeae0,,nu2api,marker+review+android,none,ret 28,3,670,642,1,114,0,legoapi/grapples.cpp:641 legoapi/episodeVI.c:1
 0x4eeda0,0x4ef6d6,src/nu2api/?0x4eeda0,,nu2api,android,none,,19,2163,2163,447,435,0,nu2api/nualloc.c:2067 nu2api/nucore_includes.c:93 nu2api/nudebug.c:3
 0x4ef6e0,0x4fe635,src/nu2api/nucore_includes.c,numem.c ? nufile.c nufilepak_gen.cpp nufpar_gen.cpp numemblk.c numemhi_gen.cpp ? nuqt_gen.cpp ? VirtualStackAllocator_gen.cpp ? rnc_gen.cpp nutime_gen.cpp ? nuapi_gen.cpp nupad.cpp nuptrblock_gen.cpp nuvideo_gen.cpp nuonline_gen.cpp nurdpi_gen.cpp ? maketree.c ? nufiledecode_gen.cpp ? nufile.c ? huffdecode.c nupad.cpp nufile.c ?,nu2api,review,high,,462,57620,57620,43933,1050,0,nu2api/nucore_includes.c:57616 nu2api/nudebug.c:4
@@ -225,8 +225,8 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x69a180,0x69a7e4,src/nu2api/wavreader.cpp,,nu2api,batman+marker,high,ret 28,17,1491,1463,1172,13,0,nu2api/wavreader.cpp:1463
 0x69a7f0,0x69b240,src/nu2api/oggreader.cpp,,nu2api,batman+file+marker,high,ret ret 28,19,2473,2444,2444,0,0,nu2api/oggreader.cpp:2444
 0x6b7c40,0x6d306f,src/editor/edlevelall.cpp,,editor,code+marker+review,medium,ret ret fabs 22 23 28,884,104548,103938,72093,3288,0,editor/edlevelall.cpp:103938
-0x6d3070,0x6d3555,src/nu2api/?0x6d3070,,nu2api,marker+android,none,ret ret ret 28,22,1030,961,329,77,0,nu2api/input_runtime.cpp:632 legoapi/startup_dats.c:230 nu2api/keyboard_read.c:62 nu2api/pc_device.cpp:18 editor/edlevelall.cpp:10 nu2api/input_detection.cpp:5 nu2api/nuapi.c:3 nu2api/pc_fmv_leaves.cpp:1
-0x6d3560,0x6daeb1,src/nu2api/PCInput.cpp,,nu2api,batman+code+marker,high,ret ret fabs 28,236,29158,29091,12559,2815,681,nu2api/input_runtime.cpp:18068 nu2api/pc_input.cpp:6335 nu2api/nupad_text.cpp:2099 nu2api/input_detection.cpp:1208 nu2api/key_events.cpp:465 nu2api/input_descriptors.cpp:316 nu2api/keyboard_read.c:261 nu2api/pc_fmv_leaves.cpp:164 nu2api/keyboard_init.cpp:112 nu2api/numouse.cpp:38 nu2api/nuapi.c:25
+0x6d3070,0x6d3555,src/nu2api/?0x6d3070,,nu2api,marker+android,none,ret ret ret 28,22,1030,961,329,77,0,nu2api/input_runtime.cpp:632 legoapi/startup_dats.c:230 nu2api/keyboard_read.c:62 nu2api/pc_device.cpp:18 editor/edlevelall.cpp:10 nu2api/PCInput.cpp:5 nu2api/nuapi.c:3 nu2api/pc_fmv_leaves.cpp:1
+0x6d3560,0x6daeb1,src/nu2api/PCInput.cpp,,nu2api,batman+code+marker,high,ret ret fabs 28,236,29158,29091,12559,2815,0,nu2api/PCInput.cpp:29076 nu2api/pc_input.cpp:6 nu2api/input_runtime.cpp:2 nu2api/numouse.cpp:2 nu2api/nuapi.c:2 nu2api/pc_fmv_leaves.cpp:2 nu2api/input_detection.cpp:1
 0x6daec0,0x6daf9d,src/nu2api/?0x6daec0,,nu2api,marker+android,none,,13,178,150,150,0,0,nu2api/pc_options.cpp:150
 0x6dafa0,0x6db1b3,src/nu2api/?0x6dafa0,,nu2api,android,none,,18,470,470,227,50,0,nu2api/pc_options.cpp:470
 0x6db1c0,0x6db793,src/nu2api/?0x6db1c0,,nu2api,android,none,,29,1182,1182,1182,0,0,nu2api/pc_options.cpp:1182

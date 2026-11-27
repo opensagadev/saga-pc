@@ -429,7 +429,7 @@
     "src/nu2api/shader_parser.h": "e192219dd005bfa8c46c46ec47e32593905d0ef38c101aac79e77fa4a49b6a12",
     "src/nu2api/wavreader.h": "6acb0f5ca7ccbcef5945e705cc918a66f14f3af9f07cc9b5ce7fa31e78f05043",
     "config/budget-raises.txt": "9c109f286f93ceb901d075732e9276ac2bc811912f5905fdbcf2ca58e1c8bba7",
-    "config/candidate-only.json": "bdeea9092c128f7dec0dcb5880ed23672da6b1c2dbbefe8135e88a6e889bfdf8",
+    "config/candidate-only.json": "a998dba7a35e0de046137d02fcd87e41af3f0c8029c59ababd5bec5382491c72",
     "config/castscan-budget.json": "01ad088c261c0cdf6ff1ce8dfd43b25a7de45b844acb9acba81b6cebfbf0dedf",
     "config/castscan-keep.csv": "cb5e0f24bcae043979afd37568718947ed78ad1cff89a93d1dedc62c4035f45c",
     "config/clang-format-vendored": "726e4d44212725e1d294bd517c38a52eca9d7f41b505d7246c433e30a749f683",
@@ -439,7 +439,7 @@
     "config/declscan-budget.json": "5d4254990908054a613575e4ea492c8b1d4a0ecce4492a63318dbbe5e43b0bc6",
     "config/header-map.csv": "8e3d4b0b92aff1316147fb6c6bb4d753c120fd50cb01b5a386a08a9953e75e0b",
     "config/layout-android-units.csv": "e746c9966cf3cb289a48dd1df1bee1e9c8fbbbf8a1891ca973f2b865a6e89fbc",
-    "config/layout-target.csv": "a4c4f15f7978e935d89d961b00a3f1aeb05e661efcccf2552b94737b82842f9b",
+    "config/layout-target.csv": "3c728986b123e519909089d65bf4b14d67253b790ebb68755f14a4d84691450e",
     "config/library-objects.json": "4e0e91f5abb9855a0624aa79f38e17687b47eaa447383f272352c1f024b9a872",
     "config/literalscan-budget.json": "31c786e269f1756cf35489ad41e6941a8881a76410f4579c939a0d083ea69a89",
     "config/literalscan-keep.csv": "7919326d1c419514fa11275d955381135bf23bb927f899b69a05e3b70b7b010d",
@@ -453,7 +453,7 @@
     "config/symbols.md": "3d018cc044b5a14025b0fc457df71a0c9a193cea32ceb3081e6a86bcdd4b242b",
     "config/toolchain.json": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
     "config/tools.json": "8e9a5f8077abc1bd9cce37004a47ea493e67a75ba964d8df3f13223958e6f4c8",
-    "config/units.csv": "1a20ab8648366fad5546a87d2888dd8ba35a9694296c20dad585debbcc09e53f",
+    "config/units.csv": "e9c113c235824d104d9f0f3edb4c4779b0e2b7c4e9881987c00ad5f4fb02ff41",
     "config/warning-budget.json": "2fb62147f02c41b6f3c48da61b374099ba00403e547c81315cbe5564ebe44c54",
     "tools/altbuild.py": "bf4e210afbe779e689abd7b160d5deae2948913c5b8b5020ad9a16c3b612b02a",
     "tools/binary.py": "1168154b0bf5549c93bc5fa22fc3dafb48c9529d3ea681bb447552928cc066eb",
@@ -483,7 +483,7 @@
     "tools/idiomscan.py": "eab18618f9feac46a2e3c8af7e8389423adc2dc104e5187a8f65657e02c880fc",
     "tools/langscan.py": "7bb44ac2c8802b3b03d3e025b62463c1b190cc2238f4ffdc6d554548afcd1a9c",
     "tools/layoutcheck.py": "bcb5e0c12b6d115425ca0452cf01784c7d11c3908c60cf9e0bc7751eb3ad1145",
-    "tools/layoutscan.py": "711d0abbdbe6aa6c786ec15fa0984671e732955accd760ddea6d207c55ff77b8",
+    "tools/layoutscan.py": "9fb2c3efbe11a8c021339057e8ce17587743b12ded655fc6e1c553bd0113a73f",
     "tools/lib.py": "612b3f8cf413d2c5492a6e6a1e554c1607b72873fa88c03b837a7a8b7b5e03fd",
     "tools/libmatch.py": "3b69b9be10a1282ffea804f84c56f7cd90bce8728eb33167d5ce7712c969885f",
     "tools/lintcache.py": "5cba942b00f45058923f2a2f7c928c00d7f4f0fe92dc30fe01f37a8662fddbeb",
@@ -641,7 +641,7 @@
     "src/legoapi/edgizshadow.cpp": "4bb3e9a3c10aecf61c81d6def00464fba8a54c97c418aee1c7d974688efe6015",
     "src/legoapi/episodeI.cpp": "4ab365798dc7c0c6bfbd478abff2ec59d4c2ab140494dd83f5bd708a31aa5be0",
     "src/legoapi/episodeIII.cpp": "c63ceba0eb0e85e98e2dcd8631ceed398f2a4fe87c30e0032d4e2abbd47ae8ac",
-    "src/legoapi/episodeV.cpp": "10e2515142ef0848b0764d1852d46fae17a2db7c35b691ae648d043f7a3a38d3",
+    "src/legoapi/episodeV.cpp": "983c321cae51e891adffc34c37121d2c4915f64490f62f8c9abe3fc7088a0f0e",
     "src/legoapi/episodes.cpp": "97ce86f75cd7ac37adea45f8fa8792a2cd87268e5efc2eee3cc066fa4629454f",
     "src/legoapi/episodes_diagnostic.cpp": "27b06b0487ad45334f98afddf9b6743128005a4ff6aadd717e070c9bdb8bfc8c",
     "src/legoapi/explosions.cpp": "79313938ac69136c245cd50c10ebe7507e933f7993c38cece6171e46861d110d",
@@ -743,6 +743,7 @@
     "src/legogame/episodeII.cpp": "81e4f56e8607447e1f9b73c1de986acb315e57f6667481d00ea83e6f03caaf51",
     "src/legogame/episodeIII.cpp": "acd239c6c309d1ea8e9aa341ae68abe050d6f4c79a44e5375ccd21d29c8190f8",
     "src/legogame/episodeIV.cpp": "17330c3b87598bba359d2f04879cc7d9df01760ebf8611435b213b6eae0d2009",
+    "src/legogame/episodeV.cpp": "3aea1fd5e1b5e570c24f88c9f0f0ff7633f83dd4fba1254b2b1c22ed0918cedd",
     "src/legogame/episodeVI.cpp": "b988ab381f9a56986b033fcd91a92567d1be8df38883679b869cc3a934f99649",
     "src/legogame/game.cpp": "dbcf5bedf428debba2ed9a31aa7db197bfb23c93a249706efdf4d1ca65f884a1",
     "src/legogame/game_deb.cpp": "0ba2620d8ee653d52871f93765ab458c2ab9b75e453f16a4394df33745ed5222",
@@ -1065,7 +1066,7 @@
     "build/obj/legoapi/edgizshadow.obj": "132cd7f06ca3dd4147579d0f067ebec9b23e0167d685ec7a16861a60683b791f",
     "build/obj/legoapi/episodeI.obj": "0fa61dc3f734baed33808cea004e92ef0a92677f460f2c85edcd006d8596c122",
     "build/obj/legoapi/episodeIII.obj": "047440b57a3647b425fad345cae20b9e5c0cdd68a067e4d4fe21373218ccaea3",
-    "build/obj/legoapi/episodeV.obj": "4bdc3bb2ff46228f7545fafd44e4b5f5aade350d158a4afd303c3f93b196ed03",
+    "build/obj/legoapi/episodeV.obj": "0b42c343e3f9d868ff328fe6994517d835e4b967b604c87486c3fd1ca422da7f",
     "build/obj/legoapi/episodeVI.obj": "97690f6adc9c030562a75fa4b2a017771b8ad31752c525d83466b1e8390dd457",
     "build/obj/legoapi/episodes.obj": "48e7ccc630c17526a2c451ce758746e30d83860791daabcf23123e36c34c858c",
     "build/obj/legoapi/episodes_diagnostic.obj": "350386a9b7d0f0ec64ff36cd52a4ad66b750468cfe98c48cf9dabc3fabbc049a",
@@ -1182,6 +1183,7 @@
     "build/obj/legogame/episodeII.obj": "d47896c284094bf3cc843c8559f1bea06299b02aa8768c3e834f6c642a180ca8",
     "build/obj/legogame/episodeIII.obj": "0d3f421876940b9d9dd229eeb2ce830d32552bd7474cb6aecfa76ca3eda48a5b",
     "build/obj/legogame/episodeIV.obj": "0a122d2679e9a0e176b6120b7f4250f34bb5307afa0213a7f4a2f0e4f5c00bbb",
+    "build/obj/legogame/episodeV.obj": "e7bd37161445041e9b50cbddf5dc04f674e608f042984f85eefcd85a18b5da7f",
     "build/obj/legogame/episodeVI.obj": "97a1f8295949e3185fe38064011dbdc055fe0f05d526b65810f189b7d019f45f",
     "build/obj/legogame/game.obj": "7ca180abdb0c1e4fdd71c4ad5c08cf1d74c80c12e6c57063ebb9e879ab59dbaf",
     "build/obj/legogame/game_deb.obj": "54de7ea551ee6e7f3fa14e4425926fb6c81543f26feb8829544c035b892f3b68",
@@ -69362,19 +69364,19 @@
       "symbol": "?AsteroidMtxSetRotateXYZ@@YAXPAUnumtx_s@@HHH@Z",
       "address": "0x004e5ec0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 36,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 36,
           "exact_match": true,
           "target_sha256": "b6bfafb458b0b7a95b9af93d3a3e6fec31ab5bebf603a167af2943f735143b8f",
           "base_sha256": "b6bfafb458b0b7a95b9af93d3a3e6fec31ab5bebf603a167af2943f735143b8f",
           "relocation_count": 1,
-          "comparison_unit": "004e5ec0-7f9a3fcb67d3",
+          "comparison_unit": "004e5ec0-2f737ce528cc",
           "objdiff_percent": 100.0
         }
       ],
@@ -69396,19 +69398,19 @@
       "symbol": "?KilledTrooperCannon@@YAXPAUgameobject_s@@@Z",
       "address": "0x004e5f10",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 198,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 198,
           "exact_match": true,
           "target_sha256": "5a555bfa7b690df3ea7dcc6649a7aca1584812ed3518d1d7454cb688e6eb9028",
           "base_sha256": "5a555bfa7b690df3ea7dcc6649a7aca1584812ed3518d1d7454cb688e6eb9028",
           "relocation_count": 17,
-          "comparison_unit": "004e5f10-d6ec49ecd39e",
+          "comparison_unit": "004e5f10-3e9d48f588fd",
           "objdiff_percent": 100.0
         }
       ],
@@ -69420,19 +69422,19 @@
       "symbol": "_InitTrooperCannons",
       "address": "0x004e5fe0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 21,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 21,
           "exact_match": true,
           "target_sha256": "8f9af80f65492d60e4ad9212941e84e83cdaf771965099579911024435a3c4f4",
           "base_sha256": "8f9af80f65492d60e4ad9212941e84e83cdaf771965099579911024435a3c4f4",
           "relocation_count": 2,
-          "comparison_unit": "004e5fe0-46de4ae1f78a",
+          "comparison_unit": "004e5fe0-ea13604b83af",
           "objdiff_percent": 100.0
         }
       ],
@@ -69444,19 +69446,19 @@
       "symbol": "_ResetTrooperCannons",
       "address": "0x004e6000",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 600,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 594,
           "exact_match": false,
           "target_sha256": "54ab02ca16b86231e98b5dfb1f728d4625ab79c380ee05de17e04dd7297ccd14",
           "base_sha256": "f680b858dab09eabb513d5fc02b709ee8d83bbc371a4bc6cb460f3c52fe80d4c",
           "relocation_count": 34,
-          "comparison_unit": "004e6000-5a2c96545a1f",
+          "comparison_unit": "004e6000-3d0a5ee9e79e",
           "objdiff_percent": 87.62637
         }
       ],
@@ -69478,19 +69480,19 @@
       "symbol": "_UpdateTrooperCannons",
       "address": "0x004e6260",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 250,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 250,
           "exact_match": true,
           "target_sha256": "16e6f301e8d5c22833174ed9cd5150af7535813192ff20b7a223b27e1b16d014",
           "base_sha256": "16e6f301e8d5c22833174ed9cd5150af7535813192ff20b7a223b27e1b16d014",
           "relocation_count": 13,
-          "comparison_unit": "004e6260-65a2f4de5513",
+          "comparison_unit": "004e6260-d2ecbb9f0fab",
           "objdiff_percent": 100.0
         }
       ],
@@ -69502,19 +69504,19 @@
       "symbol": "_HothEscapeA_Init",
       "address": "0x004e6360",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 28,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 28,
           "exact_match": true,
           "target_sha256": "206f9738530d0bc0e99c640a70ddddd50d334da98d58b3c7792f43ce6f794d53",
           "base_sha256": "206f9738530d0bc0e99c640a70ddddd50d334da98d58b3c7792f43ce6f794d53",
           "relocation_count": 3,
-          "comparison_unit": "004e6360-9b3755d1febb",
+          "comparison_unit": "004e6360-04e0dfec4c4d",
           "objdiff_percent": 100.0
         }
       ],
@@ -69550,19 +69552,19 @@
       "symbol": "_HothEscapeA_Update",
       "address": "0x004e6390",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 30,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 30,
           "exact_match": true,
           "target_sha256": "b6c2d6a5698f858f3d32fa1da05abe47a9455be2ae3b2d5e0c8a9ad2d730dcfa",
           "base_sha256": "b6c2d6a5698f858f3d32fa1da05abe47a9455be2ae3b2d5e0c8a9ad2d730dcfa",
           "relocation_count": 3,
-          "comparison_unit": "004e6390-07904c445193",
+          "comparison_unit": "004e6390-df04885dfb7a",
           "objdiff_percent": 100.0
         }
       ],
@@ -69574,19 +69576,19 @@
       "symbol": "_HothEscapeB_Init",
       "address": "0x004e63b0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 90,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 90,
           "exact_match": true,
           "target_sha256": "83aa437ff6b343a4587ef8234c3cd59304befe3852c9f8dea21df96cae94c058",
           "base_sha256": "83aa437ff6b343a4587ef8234c3cd59304befe3852c9f8dea21df96cae94c058",
           "relocation_count": 10,
-          "comparison_unit": "004e63b0-2c2684824027",
+          "comparison_unit": "004e63b0-3454a5bffad0",
           "objdiff_percent": 100.0
         }
       ],
@@ -69598,19 +69600,19 @@
       "symbol": "_HothEscapeB_Reset",
       "address": "0x004e6410",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 81,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 81,
           "exact_match": true,
           "target_sha256": "1254d384a7783b68c73356fc1840e472fdb9360a4376d648de58cfe13e14a1cc",
           "base_sha256": "1254d384a7783b68c73356fc1840e472fdb9360a4376d648de58cfe13e14a1cc",
           "relocation_count": 10,
-          "comparison_unit": "004e6410-7c1095145e88",
+          "comparison_unit": "004e6410-73a3a24140af",
           "objdiff_percent": 100.0
         }
       ],
@@ -69622,19 +69624,19 @@
       "symbol": "_HothEscapeB_Update",
       "address": "0x004e6470",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 86,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 86,
           "exact_match": true,
           "target_sha256": "e64b69b51dffd1da809856b7b16b17587dba8f032bd8e55b728d42977f9ebc26",
           "base_sha256": "e64b69b51dffd1da809856b7b16b17587dba8f032bd8e55b728d42977f9ebc26",
           "relocation_count": 6,
-          "comparison_unit": "004e6470-2f52d671d62e",
+          "comparison_unit": "004e6470-7d0782ae1c6b",
           "objdiff_percent": 100.0
         }
       ],
@@ -69646,19 +69648,19 @@
       "symbol": "_HothEscapeC_Init",
       "address": "0x004e64d0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 28,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 28,
           "exact_match": true,
           "target_sha256": "9865fd74102d68a52580e67effe0d250b5b2b8aab2f0a74a00a4739ef3cfb357",
           "base_sha256": "9865fd74102d68a52580e67effe0d250b5b2b8aab2f0a74a00a4739ef3cfb357",
           "relocation_count": 3,
-          "comparison_unit": "004e64d0-fcf87bf37b6f",
+          "comparison_unit": "004e64d0-7e44f531949e",
           "objdiff_percent": 100.0
         }
       ],
@@ -69694,19 +69696,19 @@
       "symbol": "_HothEscapeC_Update",
       "address": "0x004e6500",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 30,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 30,
           "exact_match": true,
           "target_sha256": "d72ae1fcf306b28d7c27b2ca85e8067246481c48937b8e0d56970fb41f98a64e",
           "base_sha256": "d72ae1fcf306b28d7c27b2ca85e8067246481c48937b8e0d56970fb41f98a64e",
           "relocation_count": 3,
-          "comparison_unit": "004e6500-6c52413b318c",
+          "comparison_unit": "004e6500-756f92de7dba",
           "objdiff_percent": 100.0
         }
       ],
@@ -69718,19 +69720,19 @@
       "symbol": "_HothEscapeC_AlwaysUpdate",
       "address": "0x004e6520",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 32,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 32,
           "exact_match": true,
           "target_sha256": "23221542d2e99ccfea55d58c6df1ab79ee9f89dad35f944f59385ffd824bd2ec",
           "base_sha256": "23221542d2e99ccfea55d58c6df1ab79ee9f89dad35f944f59385ffd824bd2ec",
           "relocation_count": 3,
-          "comparison_unit": "004e6520-a3af1d0a7f61",
+          "comparison_unit": "004e6520-6aca761e3ab6",
           "objdiff_percent": 100.0
         }
       ],
@@ -69742,19 +69744,19 @@
       "symbol": "_HothEscapeD_Init",
       "address": "0x004e6540",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 28,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 28,
           "exact_match": true,
           "target_sha256": "d027695062e65187488d6b7bb0d73e816c0bee2b13cf308b6b1b2938faf42d90",
           "base_sha256": "d027695062e65187488d6b7bb0d73e816c0bee2b13cf308b6b1b2938faf42d90",
           "relocation_count": 3,
-          "comparison_unit": "004e6540-4fc0340cb3f0",
+          "comparison_unit": "004e6540-aa8da15ddaad",
           "objdiff_percent": 100.0
         }
       ],
@@ -69790,19 +69792,19 @@
       "symbol": "_HothEscapeD_Update",
       "address": "0x004e6570",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 30,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 30,
           "exact_match": true,
           "target_sha256": "eeb8b8fd495fbd356f8fb9ee37a3f560793172b7b05a7dc995be2f35c2c64d7e",
           "base_sha256": "eeb8b8fd495fbd356f8fb9ee37a3f560793172b7b05a7dc995be2f35c2c64d7e",
           "relocation_count": 3,
-          "comparison_unit": "004e6570-4bd5bd06e857",
+          "comparison_unit": "004e6570-94985c562f6c",
           "objdiff_percent": 100.0
         }
       ],
@@ -69814,19 +69816,19 @@
       "symbol": "?AsteroidChase_FindPopBits@@YAXPAUWORLDINFO_s@@@Z",
       "address": "0x004e6590",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 100,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 100,
           "exact_match": true,
           "target_sha256": "5ebeec5f2e69b62bf6fcc437eb91c4bc362becaa8403eda7a89272b94f1091ea",
           "base_sha256": "5ebeec5f2e69b62bf6fcc437eb91c4bc362becaa8403eda7a89272b94f1091ea",
           "relocation_count": 12,
-          "comparison_unit": "004e6590-8071aede359f",
+          "comparison_unit": "004e6590-4aec395e0023",
           "objdiff_percent": 100.0
         }
       ],
@@ -69838,19 +69840,19 @@
       "symbol": "_Asteroid_PartKill",
       "address": "0x004e6600",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 181,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 181,
           "exact_match": true,
           "target_sha256": "07c53b699059ff550757047c875249441d29fd9d026a43ed4f3fc92313e15dd9",
           "base_sha256": "07c53b699059ff550757047c875249441d29fd9d026a43ed4f3fc92313e15dd9",
           "relocation_count": 11,
-          "comparison_unit": "004e6600-d6d719e5cefb",
+          "comparison_unit": "004e6600-488d65fda529",
           "objdiff_percent": 100.0
         }
       ],
@@ -69862,19 +69864,19 @@
       "symbol": "_Asteroid_AddParts",
       "address": "0x004e66c0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 546,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 546,
           "exact_match": false,
           "target_sha256": "6a8cb8bd08ad9926d38e924cc49373fdfcfa08b64073ca5c5f647ffe9cfdc67d",
           "base_sha256": "42f5c9d7ee8627830cc14bc262e3d990dda229b4998fdd17b60daccdae779f51",
           "relocation_count": 25,
-          "comparison_unit": "004e66c0-48ad28a085dc",
+          "comparison_unit": "004e66c0-5f6109d19576",
           "objdiff_percent": 99.479164
         }
       ],
@@ -69891,19 +69893,19 @@
       "symbol": "_Asteroids_Reset",
       "address": "0x004e68f0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 630,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 630,
           "exact_match": true,
           "target_sha256": "65f6d2992ead15e3223ac40e2de43a1a32e9039c3f636a8a8819752880a01d37",
           "base_sha256": "65f6d2992ead15e3223ac40e2de43a1a32e9039c3f636a8a8819752880a01d37",
           "relocation_count": 35,
-          "comparison_unit": "004e68f0-925fcdab2fbd",
+          "comparison_unit": "004e68f0-e41a5761f9e0",
           "objdiff_percent": 100.0
         }
       ],
@@ -69915,19 +69917,19 @@
       "symbol": "_Asteroids_Update",
       "address": "0x004e6b70",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 450,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 450,
           "exact_match": true,
           "target_sha256": "37c1c2ed7718ef6393f1b50bd165a9a48f993e04027bceebea1fe0bcbcc0609e",
           "base_sha256": "37c1c2ed7718ef6393f1b50bd165a9a48f993e04027bceebea1fe0bcbcc0609e",
           "relocation_count": 17,
-          "comparison_unit": "004e6b70-d1a2b7a3b91e",
+          "comparison_unit": "004e6b70-51f72828f067",
           "objdiff_percent": 100.0
         }
       ],
@@ -69939,19 +69941,19 @@
       "symbol": "_DrawFalconSpotLights",
       "address": "0x004e6d40",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 505,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 505,
           "exact_match": true,
           "target_sha256": "a4f22bd479b3394eac708bc4092a4fa35266d2363ae6024cd5af5905bdc3b05b",
           "base_sha256": "a4f22bd479b3394eac708bc4092a4fa35266d2363ae6024cd5af5905bdc3b05b",
           "relocation_count": 29,
-          "comparison_unit": "004e6d40-dab9b1cef24a",
+          "comparison_unit": "004e6d40-fc1c3fadbce8",
           "objdiff_percent": 100.0
         }
       ],
@@ -69963,19 +69965,19 @@
       "symbol": "_AsteroidChaseA_Init",
       "address": "0x004e6f40",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 12,
           "exact_match": true,
           "target_sha256": "ff7da826e1adc7a9f00fce20972fe4ae289d1dba9278f0e0d26cc720f127e61c",
           "base_sha256": "ff7da826e1adc7a9f00fce20972fe4ae289d1dba9278f0e0d26cc720f127e61c",
           "relocation_count": 1,
-          "comparison_unit": "004e6f40-f9183aea6a95",
+          "comparison_unit": "004e6f40-ffc9124e097b",
           "objdiff_percent": 100.0
         }
       ],
@@ -69987,19 +69989,19 @@
       "symbol": "_AsteroidChaseA_Reset",
       "address": "0x004e6f50",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 5,
           "exact_match": true,
           "target_sha256": "a94ab3cdf1303b3faa5bdfc7b1b72ecc79f03455f9b93b54d246f30bdcbf58d3",
           "base_sha256": "a94ab3cdf1303b3faa5bdfc7b1b72ecc79f03455f9b93b54d246f30bdcbf58d3",
           "relocation_count": 1,
-          "comparison_unit": "004e6f50-519c1882098e",
+          "comparison_unit": "004e6f50-974648d027b5",
           "objdiff_percent": 100.0
         }
       ],
@@ -70011,19 +70013,19 @@
       "symbol": "_AsteroidChaseA_Update",
       "address": "0x004e6f60",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 5,
           "exact_match": true,
           "target_sha256": "3ee0fb47669f97c440cd2d3bc57f6e5efd103b226ccb90e86791b321593d8134",
           "base_sha256": "3ee0fb47669f97c440cd2d3bc57f6e5efd103b226ccb90e86791b321593d8134",
           "relocation_count": 1,
-          "comparison_unit": "004e6f60-691d9caa6e84",
+          "comparison_unit": "004e6f60-8aa1d0434dc9",
           "objdiff_percent": 100.0
         }
       ],
@@ -70035,19 +70037,19 @@
       "symbol": "_AsteroidChaseB_Init",
       "address": "0x004e6f70",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 270,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 270,
           "exact_match": true,
           "target_sha256": "db58f6d02ac0a5730ef7990cdd259fad62ba722a2f98411466fc7b52f84feb41",
           "base_sha256": "db58f6d02ac0a5730ef7990cdd259fad62ba722a2f98411466fc7b52f84feb41",
           "relocation_count": 30,
-          "comparison_unit": "004e6f70-601f2f927e81",
+          "comparison_unit": "004e6f70-a1ab12e6421d",
           "objdiff_percent": 100.0
         }
       ],
@@ -70059,19 +70061,19 @@
       "symbol": "_AsteroidChaseB_Reset",
       "address": "0x004e7080",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 5,
           "exact_match": true,
           "target_sha256": "0459e67d91c9a92e05955c4c4a26031c9f5a934c59798d1fb2743265f368d1ac",
           "base_sha256": "0459e67d91c9a92e05955c4c4a26031c9f5a934c59798d1fb2743265f368d1ac",
           "relocation_count": 1,
-          "comparison_unit": "004e7080-fb78da83c694",
+          "comparison_unit": "004e7080-407349d98a2a",
           "objdiff_percent": 100.0
         }
       ],
@@ -70083,19 +70085,19 @@
       "symbol": "_AsteroidChaseB_Update",
       "address": "0x004e7090",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 409,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 409,
           "exact_match": true,
           "target_sha256": "1cd2236be5faa0e997653e1c37644cc7ceb12187adbbb5bca1b8c54bd220ae5e",
           "base_sha256": "1cd2236be5faa0e997653e1c37644cc7ceb12187adbbb5bca1b8c54bd220ae5e",
           "relocation_count": 27,
-          "comparison_unit": "004e7090-e4aab60013d0",
+          "comparison_unit": "004e7090-e5d2eb782268",
           "objdiff_percent": 100.0
         }
       ],
@@ -70107,19 +70109,19 @@
       "symbol": "_AsteroidChaseB_Draw",
       "address": "0x004e7230",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 43,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 43,
           "exact_match": true,
           "target_sha256": "6b7a0680f1f99f707ed4496f5264fe24fb935ee1f9e6f6cf3c313cac328467d6",
           "base_sha256": "6b7a0680f1f99f707ed4496f5264fe24fb935ee1f9e6f6cf3c313cac328467d6",
           "relocation_count": 4,
-          "comparison_unit": "004e7230-4d7ba0b2e2ee",
+          "comparison_unit": "004e7230-6ebcf7c7c40b",
           "objdiff_percent": 100.0
         }
       ],
@@ -70131,19 +70133,19 @@
       "symbol": "_AsteroidChaseC_Init",
       "address": "0x004e7260",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 346,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 346,
           "exact_match": true,
           "target_sha256": "ab0b1c9db483ba1af74557c08dd1481881388642ae63e6159d40297ff84cb210",
           "base_sha256": "ab0b1c9db483ba1af74557c08dd1481881388642ae63e6159d40297ff84cb210",
           "relocation_count": 34,
-          "comparison_unit": "004e7260-8c3e063f1042",
+          "comparison_unit": "004e7260-e94b42f2c7de",
           "objdiff_percent": 100.0
         }
       ],
@@ -70155,19 +70157,19 @@
       "symbol": "_AsteroidChaseC_Reset",
       "address": "0x004e73c0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 5,
           "exact_match": true,
           "target_sha256": "d74b70a66501ab8032a9c60af4e4f8a174ba07029708590e2bb09640272aee54",
           "base_sha256": "d74b70a66501ab8032a9c60af4e4f8a174ba07029708590e2bb09640272aee54",
           "relocation_count": 1,
-          "comparison_unit": "004e73c0-1dfbead95ec3",
+          "comparison_unit": "004e73c0-4360822816cc",
           "objdiff_percent": 100.0
         }
       ],
@@ -70179,19 +70181,19 @@
       "symbol": "_AsteroidChaseC_Update",
       "address": "0x004e73d0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 595,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 595,
           "exact_match": true,
           "target_sha256": "b0d664576b87c41b88f290ff4933dcc94f5b4f1661d95ae82dbd0c24a6eabcec",
           "base_sha256": "b0d664576b87c41b88f290ff4933dcc94f5b4f1661d95ae82dbd0c24a6eabcec",
           "relocation_count": 59,
-          "comparison_unit": "004e73d0-55213c7c9401",
+          "comparison_unit": "004e73d0-f515a9d6e22f",
           "objdiff_percent": 100.0
         }
       ],
@@ -70203,19 +70205,19 @@
       "symbol": "_AsteroidChaseD_Init",
       "address": "0x004e7630",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 425,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 425,
           "exact_match": true,
           "target_sha256": "4c968fda9593ee57aef72054a908023944dbf2cb41bb9a4ea251e2052d1e6c9d",
           "base_sha256": "4c968fda9593ee57aef72054a908023944dbf2cb41bb9a4ea251e2052d1e6c9d",
           "relocation_count": 48,
-          "comparison_unit": "004e7630-3dc5dd7957f6",
+          "comparison_unit": "004e7630-bae33d041972",
           "objdiff_percent": 100.0
         }
       ],
@@ -70227,19 +70229,19 @@
       "symbol": "_AsteroidChaseD_Update",
       "address": "0x004e77e0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 1151,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 1151,
           "exact_match": true,
           "target_sha256": "a4e8d84479e75ab02172462172fedfbc10dc2a753ffcac03169153811afcce33",
           "base_sha256": "a4e8d84479e75ab02172462172fedfbc10dc2a753ffcac03169153811afcce33",
           "relocation_count": 89,
-          "comparison_unit": "004e77e0-0d82415e7f68",
+          "comparison_unit": "004e77e0-e595950973bf",
           "objdiff_percent": 100.0
         }
       ],
@@ -70251,19 +70253,19 @@
       "symbol": "_AsteroidChaseD_Panel",
       "address": "0x004e7c60",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 37,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 37,
           "exact_match": true,
           "target_sha256": "3cb1cab0513d574e3d74a40351da59faf22166cdd56e127b4e1d024227e685bb",
           "base_sha256": "3cb1cab0513d574e3d74a40351da59faf22166cdd56e127b4e1d024227e685bb",
           "relocation_count": 3,
-          "comparison_unit": "004e7c60-655283e69bef",
+          "comparison_unit": "004e7c60-0b3d4a9c60b9",
           "objdiff_percent": 100.0
         }
       ],
@@ -70275,19 +70277,19 @@
       "symbol": "_CloudCityTrapA_Init",
       "address": "0x004e7c90",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 89,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 89,
           "exact_match": true,
           "target_sha256": "49266398cafc2df41e9d2531f6b4b883388b8a40c4aa0159bccad24bf55681ed",
           "base_sha256": "49266398cafc2df41e9d2531f6b4b883388b8a40c4aa0159bccad24bf55681ed",
           "relocation_count": 11,
-          "comparison_unit": "004e7c90-72bb0a9236df",
+          "comparison_unit": "004e7c90-ccc462c6c83d",
           "objdiff_percent": 100.0
         }
       ],
@@ -70299,19 +70301,19 @@
       "symbol": "_CloudCityTrapA_Reset",
       "address": "0x004e7cf0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 17,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 17,
           "exact_match": true,
           "target_sha256": "8fbe041c5033f5e97eda20d277afd56e1f74f4413ee0cd848c89820488f4b2c4",
           "base_sha256": "8fbe041c5033f5e97eda20d277afd56e1f74f4413ee0cd848c89820488f4b2c4",
           "relocation_count": 2,
-          "comparison_unit": "004e7cf0-15c5b531aa8a",
+          "comparison_unit": "004e7cf0-0bfceedce4e3",
           "objdiff_percent": 100.0
         }
       ],
@@ -70323,19 +70325,19 @@
       "symbol": "_CloudCityTrapA_Update",
       "address": "0x004e7d10",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 170,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 170,
           "exact_match": true,
           "target_sha256": "bf3c5fe1c7c606edb82495d63e42753955688016feac758e78cc569166629e22",
           "base_sha256": "bf3c5fe1c7c606edb82495d63e42753955688016feac758e78cc569166629e22",
           "relocation_count": 15,
-          "comparison_unit": "004e7d10-fa0b6fbf63bd",
+          "comparison_unit": "004e7d10-3da6dc50c27e",
           "objdiff_percent": 100.0
         }
       ],
@@ -70347,19 +70349,19 @@
       "symbol": "_CloudCityTrapB_Init",
       "address": "0x004e7dc0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 77,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 77,
           "exact_match": true,
           "target_sha256": "e8b4560b7d434c7e4514dcd8a07a528f35543c54c27f36b8f5ccb69c56d08d8e",
           "base_sha256": "e8b4560b7d434c7e4514dcd8a07a528f35543c54c27f36b8f5ccb69c56d08d8e",
           "relocation_count": 11,
-          "comparison_unit": "004e7dc0-cf222188eaf7",
+          "comparison_unit": "004e7dc0-2049df52c815",
           "objdiff_percent": 100.0
         }
       ],
@@ -70371,19 +70373,19 @@
       "symbol": "_CloudCityTrapB_Update",
       "address": "0x004e7e10",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 183,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 183,
           "exact_match": true,
           "target_sha256": "6ff5c4d858f1ccb81d155b807fb44feb35b2b0899cb9fd8c490d8db0be48f9a8",
           "base_sha256": "6ff5c4d858f1ccb81d155b807fb44feb35b2b0899cb9fd8c490d8db0be48f9a8",
           "relocation_count": 14,
-          "comparison_unit": "004e7e10-f85fe6a390fd",
+          "comparison_unit": "004e7e10-587d9a011d57",
           "objdiff_percent": 100.0
         }
       ],
@@ -70395,19 +70397,19 @@
       "symbol": "_CloudCityTrapC_Reset",
       "address": "0x004e7ed0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 190,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 190,
           "exact_match": true,
           "target_sha256": "c540efd23d586f8419b5ec1af5b2f3d00f3514b87fb024dc326cc93df00f4666",
           "base_sha256": "c540efd23d586f8419b5ec1af5b2f3d00f3514b87fb024dc326cc93df00f4666",
           "relocation_count": 22,
-          "comparison_unit": "004e7ed0-a81bc1659ccf",
+          "comparison_unit": "004e7ed0-a7f454c8f78a",
           "objdiff_percent": 100.0
         }
       ],
@@ -70419,19 +70421,19 @@
       "symbol": "_CloudCityTrapC_Update",
       "address": "0x004e7f90",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 173,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 173,
           "exact_match": true,
           "target_sha256": "2e33611f76364a3562d688ccf1631bbc94cf3f77d26347f754c0287b0b540813",
           "base_sha256": "2e33611f76364a3562d688ccf1631bbc94cf3f77d26347f754c0287b0b540813",
           "relocation_count": 14,
-          "comparison_unit": "004e7f90-9b094734b79e",
+          "comparison_unit": "004e7f90-f5c998dfeca5",
           "objdiff_percent": 100.0
         }
       ],
@@ -70443,19 +70445,19 @@
       "symbol": "_CloudCityTrapC_Panel",
       "address": "0x004e8040",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 63,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 63,
           "exact_match": true,
           "target_sha256": "bf74c2748a19c528207faa7a39bc4d22b15de07aaa2267930d1d15bfa014de25",
           "base_sha256": "bf74c2748a19c528207faa7a39bc4d22b15de07aaa2267930d1d15bfa014de25",
           "relocation_count": 5,
-          "comparison_unit": "004e8040-06d2f2796585",
+          "comparison_unit": "004e8040-d596e2ce80ec",
           "objdiff_percent": 100.0
         }
       ],
@@ -70467,19 +70469,19 @@
       "symbol": "_CloudCityEscapeA_Init",
       "address": "0x004e8080",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 128,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 128,
           "exact_match": true,
           "target_sha256": "cd969d8913b0d802e5ea5e9d1d740f1305f926c3364f10ee0d1c842b91828abc",
           "base_sha256": "cd969d8913b0d802e5ea5e9d1d740f1305f926c3364f10ee0d1c842b91828abc",
           "relocation_count": 17,
-          "comparison_unit": "004e8080-8bffe127841b",
+          "comparison_unit": "004e8080-47798c63279e",
           "objdiff_percent": 100.0
         }
       ],
@@ -70491,19 +70493,19 @@
       "symbol": "_CloudCityEscapeA_Reset",
       "address": "0x004e8100",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 84,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 84,
           "exact_match": true,
           "target_sha256": "f6a73041bed0af58e2dfb7c39a06104b5ca134f88e637c08f9662aa3f518a2bc",
           "base_sha256": "f6a73041bed0af58e2dfb7c39a06104b5ca134f88e637c08f9662aa3f518a2bc",
           "relocation_count": 12,
-          "comparison_unit": "004e8100-d866176b6bfa",
+          "comparison_unit": "004e8100-8522a633b898",
           "objdiff_percent": 100.0
         }
       ],
@@ -70515,19 +70517,19 @@
       "symbol": "_CloudCityEscapeA_Update",
       "address": "0x004e8160",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 218,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 218,
           "exact_match": true,
           "target_sha256": "0e437a77c30560cb192747ff2d8280de1adac30b70b9cd1494eca0d9b9b17a5c",
           "base_sha256": "0e437a77c30560cb192747ff2d8280de1adac30b70b9cd1494eca0d9b9b17a5c",
           "relocation_count": 20,
-          "comparison_unit": "004e8160-8b9eebe641cb",
+          "comparison_unit": "004e8160-a3e9dd136aec",
           "objdiff_percent": 100.0
         }
       ],
@@ -70539,19 +70541,19 @@
       "symbol": "_CloudCityEscapeA_Panel",
       "address": "0x004e8240",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 100,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 100,
           "exact_match": true,
           "target_sha256": "b7b0a805bed00b0ed097413e7c77fd0857dff576bae6e3d31ca2f79f6487702e",
           "base_sha256": "b7b0a805bed00b0ed097413e7c77fd0857dff576bae6e3d31ca2f79f6487702e",
           "relocation_count": 6,
-          "comparison_unit": "004e8240-0a9a4151160a",
+          "comparison_unit": "004e8240-dc9ce1cb6c2b",
           "objdiff_percent": 100.0
         }
       ],
@@ -70563,19 +70565,19 @@
       "symbol": "_CloudCityEscapeC_Init",
       "address": "0x004e82b0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 82,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 82,
           "exact_match": true,
           "target_sha256": "fb7a3b9d5106c526bb076154936fa9db62dfbf200180053a149c6083855719ee",
           "base_sha256": "fb7a3b9d5106c526bb076154936fa9db62dfbf200180053a149c6083855719ee",
           "relocation_count": 9,
-          "comparison_unit": "004e82b0-b3e42a170372",
+          "comparison_unit": "004e82b0-68622da1d396",
           "objdiff_percent": 100.0
         }
       ],
@@ -70587,19 +70589,19 @@
       "symbol": "_CloudCityEscapeC_Update",
       "address": "0x004e8310",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 97,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 97,
           "exact_match": true,
           "target_sha256": "7b32ca93bbede189f3254cb7accf28aa5b0c41ac9db145cdfcf2df73b6467eee",
           "base_sha256": "7b32ca93bbede189f3254cb7accf28aa5b0c41ac9db145cdfcf2df73b6467eee",
           "relocation_count": 9,
-          "comparison_unit": "004e8310-ff041c48d96f",
+          "comparison_unit": "004e8310-3ff09da962a3",
           "objdiff_percent": 100.0
         }
       ],
@@ -70611,19 +70613,19 @@
       "symbol": "_TakeOverYodaSeekDistanceHack",
       "address": "0x004e8380",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 129,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 129,
           "exact_match": true,
           "target_sha256": "34fcfe10519fe7720e40a9b592d58c22ab6e69ee4cf15c569e7205dbbae8afcf",
           "base_sha256": "34fcfe10519fe7720e40a9b592d58c22ab6e69ee4cf15c569e7205dbbae8afcf",
           "relocation_count": 4,
-          "comparison_unit": "004e8380-7c0eb3d953bf",
+          "comparison_unit": "004e8380-5077884593df",
           "objdiff_percent": 100.0
         }
       ],
@@ -70635,19 +70637,19 @@
       "symbol": "_DagobahB_Init",
       "address": "0x004e8410",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 11,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 11,
           "exact_match": true,
           "target_sha256": "3c6ce024c01528af9053271d5f314b4b717b12b0f45501d944b5fda3afa0d69b",
           "base_sha256": "3c6ce024c01528af9053271d5f314b4b717b12b0f45501d944b5fda3afa0d69b",
           "relocation_count": 1,
-          "comparison_unit": "004e8410-6d60729f0105",
+          "comparison_unit": "004e8410-d9c2c1107c1d",
           "objdiff_percent": 100.0
         }
       ],
@@ -70659,19 +70661,19 @@
       "symbol": "_DagobahB_Reset",
       "address": "0x004e8420",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 148,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 148,
           "exact_match": true,
           "target_sha256": "701efc8f03ccabc33763e9acc8ddeb0a32dcb1c454b70da7cd6d41d8f72aacd9",
           "base_sha256": "701efc8f03ccabc33763e9acc8ddeb0a32dcb1c454b70da7cd6d41d8f72aacd9",
           "relocation_count": 16,
-          "comparison_unit": "004e8420-5d34d9fe9928",
+          "comparison_unit": "004e8420-5252ab109b15",
           "objdiff_percent": 100.0
         }
       ],
@@ -70683,19 +70685,19 @@
       "symbol": "_DagobahE_Init",
       "address": "0x004e84c0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 239,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 239,
           "exact_match": true,
           "target_sha256": "f20ed02f0a583ae769d57c6224ee9199e30b626dfb5d562c57452e007ca42b0d",
           "base_sha256": "f20ed02f0a583ae769d57c6224ee9199e30b626dfb5d562c57452e007ca42b0d",
           "relocation_count": 20,
-          "comparison_unit": "004e84c0-a9cfab316c2f",
+          "comparison_unit": "004e84c0-80fb0f86ddab",
           "objdiff_percent": 100.0
         }
       ],
@@ -70707,19 +70709,19 @@
       "symbol": "_DagobahC_Init",
       "address": "0x004e85b0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 63,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 63,
           "exact_match": true,
           "target_sha256": "dcfe4b541965dc4282d5f44922d4e5190257341651a7a1863b424f3f398dfd43",
           "base_sha256": "dcfe4b541965dc4282d5f44922d4e5190257341651a7a1863b424f3f398dfd43",
           "relocation_count": 7,
-          "comparison_unit": "004e85b0-623796d84276",
+          "comparison_unit": "004e85b0-c0f698b91ca2",
           "objdiff_percent": 100.0
         }
       ],
@@ -70731,19 +70733,19 @@
       "symbol": "_DagobahC_Panel",
       "address": "0x004e85f0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 71,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 71,
           "exact_match": true,
           "target_sha256": "1f991c666975da0a13a01b5511d021d768486f5df7becce1ceb0a2eb13352577",
           "base_sha256": "1f991c666975da0a13a01b5511d021d768486f5df7becce1ceb0a2eb13352577",
           "relocation_count": 7,
-          "comparison_unit": "004e85f0-8b1e149b3f0e",
+          "comparison_unit": "004e85f0-6d555344a148",
           "objdiff_percent": 100.0
         }
       ],
@@ -70755,19 +70757,19 @@
       "symbol": "_ResetMinikitCounter",
       "address": "0x004e8640",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 13,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 13,
           "exact_match": true,
           "target_sha256": "a0a525a7244d2476e834f407587c99aad66afc27651fcd6435811ff36415992f",
           "base_sha256": "a0a525a7244d2476e834f407587c99aad66afc27651fcd6435811ff36415992f",
           "relocation_count": 2,
-          "comparison_unit": "004e8640-fe728ae694d5",
+          "comparison_unit": "004e8640-fc794f6e9a49",
           "objdiff_percent": 100.0
         }
       ],
@@ -70779,19 +70781,19 @@
       "symbol": "_IncrementMinikitCounter",
       "address": "0x004e8650",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 624,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 624,
           "exact_match": true,
           "target_sha256": "6bb587c7336d31e619cb8455269b670235efa4c42c3e948708c01024b600df17",
           "base_sha256": "6bb587c7336d31e619cb8455269b670235efa4c42c3e948708c01024b600df17",
           "relocation_count": 34,
-          "comparison_unit": "004e8650-627e21843f79",
+          "comparison_unit": "004e8650-70ec49574dde",
           "objdiff_percent": 100.0
         }
       ],
@@ -70803,19 +70805,19 @@
       "symbol": "_HothBattleA_Init",
       "address": "0x004e88c0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 294,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 294,
           "exact_match": true,
           "target_sha256": "f7986e4251d9e48f70c1ed9f5c9443d703ead01d7198b01d89abae7fe79015a6",
           "base_sha256": "f7986e4251d9e48f70c1ed9f5c9443d703ead01d7198b01d89abae7fe79015a6",
           "relocation_count": 34,
-          "comparison_unit": "004e88c0-021dde11e422",
+          "comparison_unit": "004e88c0-7bff13dab9bb",
           "objdiff_percent": 100.0
         }
       ],
@@ -70827,19 +70829,19 @@
       "symbol": "_HothBattleA_Reset",
       "address": "0x004e89f0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 80,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 80,
           "exact_match": true,
           "target_sha256": "83678b9c44d355f628b2397d3ec9eb06ba2ba496fc9cb626bf52387b02e84146",
           "base_sha256": "83678b9c44d355f628b2397d3ec9eb06ba2ba496fc9cb626bf52387b02e84146",
           "relocation_count": 4,
-          "comparison_unit": "004e89f0-da6f0e07ad07",
+          "comparison_unit": "004e89f0-51d55226b5c2",
           "objdiff_percent": 100.0
         }
       ],
@@ -70851,19 +70853,19 @@
       "symbol": "_HothBattleA_Update",
       "address": "0x004e8a40",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 5,
           "exact_match": true,
           "target_sha256": "196fdb2779099a2241c69e61a17ac24a3e2c744a08c9d5c5a9d4945c5cbfa0aa",
           "base_sha256": "196fdb2779099a2241c69e61a17ac24a3e2c744a08c9d5c5a9d4945c5cbfa0aa",
           "relocation_count": 1,
-          "comparison_unit": "004e8a40-2a1368174e72",
+          "comparison_unit": "004e8a40-1f83baf648c2",
           "objdiff_percent": 100.0
         }
       ],
@@ -70875,19 +70877,19 @@
       "symbol": "_HothBattleA_Draw",
       "address": "0x004e8a50",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 5,
           "exact_match": true,
           "target_sha256": "60b908462a01c7f9409f7503943297858e0a51abc0bf604474d189b65b91cb3d",
           "base_sha256": "60b908462a01c7f9409f7503943297858e0a51abc0bf604474d189b65b91cb3d",
           "relocation_count": 1,
-          "comparison_unit": "004e8a50-f45380795d52",
+          "comparison_unit": "004e8a50-c5fedde05380",
           "objdiff_percent": 100.0
         }
       ],
@@ -70899,19 +70901,19 @@
       "symbol": "_HothBattleB_Init",
       "address": "0x004e8a60",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 106,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 106,
           "exact_match": true,
           "target_sha256": "b005eafd49abd2ce5322b58633ed73336ec4524502bf58f6ad6b1d366b190a14",
           "base_sha256": "b005eafd49abd2ce5322b58633ed73336ec4524502bf58f6ad6b1d366b190a14",
           "relocation_count": 12,
-          "comparison_unit": "004e8a60-d7a3913113c3",
+          "comparison_unit": "004e8a60-8aa35781128a",
           "objdiff_percent": 100.0
         }
       ],
@@ -70923,19 +70925,19 @@
       "symbol": "_HothBattleC_Init",
       "address": "0x004e8ad0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 383,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 383,
           "exact_match": true,
           "target_sha256": "b9fe9273702eec03bc0c43a2d55fbc86546c3f089852ae0684da66cc65f108dd",
           "base_sha256": "b9fe9273702eec03bc0c43a2d55fbc86546c3f089852ae0684da66cc65f108dd",
           "relocation_count": 47,
-          "comparison_unit": "004e8ad0-3e014f6bab20",
+          "comparison_unit": "004e8ad0-bdf213292045",
           "objdiff_percent": 100.0
         }
       ],
@@ -70947,19 +70949,19 @@
       "symbol": "_HothBattleC_Reset",
       "address": "0x004e8c50",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 120,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 120,
           "exact_match": true,
           "target_sha256": "523ec9ce728a5f9f4008eff47d551495be48cec264912028a085663d1d224517",
           "base_sha256": "523ec9ce728a5f9f4008eff47d551495be48cec264912028a085663d1d224517",
           "relocation_count": 8,
-          "comparison_unit": "004e8c50-7270ea964afc",
+          "comparison_unit": "004e8c50-e1a3a5ed9731",
           "objdiff_percent": 100.0
         }
       ],
@@ -70971,19 +70973,19 @@
       "symbol": "_HothBattleC_Update",
       "address": "0x004e8cd0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 59,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 59,
           "exact_match": true,
           "target_sha256": "c6a1ef6e4e2d7631c77763918eab7f3fa716a299078eab8ceae22051d032fdb7",
           "base_sha256": "c6a1ef6e4e2d7631c77763918eab7f3fa716a299078eab8ceae22051d032fdb7",
           "relocation_count": 4,
-          "comparison_unit": "004e8cd0-19660d7d2f44",
+          "comparison_unit": "004e8cd0-03005e6dba6f",
           "objdiff_percent": 100.0
         }
       ],
@@ -70995,19 +70997,19 @@
       "symbol": "_HothBattleC_Draw",
       "address": "0x004e8d10",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 5,
           "exact_match": true,
           "target_sha256": "69025c480d9b576b534a31b6a0fa4055da2393ccc30bde034cc12e2a6c58bbc1",
           "base_sha256": "69025c480d9b576b534a31b6a0fa4055da2393ccc30bde034cc12e2a6c58bbc1",
           "relocation_count": 1,
-          "comparison_unit": "004e8d10-c34605085cae",
+          "comparison_unit": "004e8d10-0c342acec1b5",
           "objdiff_percent": 100.0
         }
       ],
@@ -71019,19 +71021,19 @@
       "symbol": "_HothBattleMelee_Reset",
       "address": "0x004e8d20",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 29,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 29,
           "exact_match": true,
           "target_sha256": "3b449f5b16fba581ac99b7e7c8b278954930f038e9365c336f27a3640ffe898e",
           "base_sha256": "3b449f5b16fba581ac99b7e7c8b278954930f038e9365c336f27a3640ffe898e",
           "relocation_count": 0,
-          "comparison_unit": "004e8d20-0af9b9ed466c",
+          "comparison_unit": "004e8d20-df6624ef3b45",
           "objdiff_percent": 100.0
         }
       ],
@@ -71043,19 +71045,19 @@
       "symbol": "_HothBattleE_Draw",
       "address": "0x004e8d40",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 5,
           "exact_match": true,
           "target_sha256": "c4ef8ab5ffd991316f3c9d5f5e0e7df2abfbd2439670be57025d2f3b4c695c14",
           "base_sha256": "c4ef8ab5ffd991316f3c9d5f5e0e7df2abfbd2439670be57025d2f3b4c695c14",
           "relocation_count": 1,
-          "comparison_unit": "004e8d40-563f4d3b6a51",
+          "comparison_unit": "004e8d40-24f712fb67aa",
           "objdiff_percent": 100.0
         }
       ],
@@ -71067,19 +71069,19 @@
       "symbol": "_HothBattleE_Panel",
       "address": "0x004e8d50",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 624,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 612,
           "exact_match": false,
           "target_sha256": "0b4fe5f67eafe88f70e30587ee2745d7782ea2bd57560fe49a95d659fe92b119",
           "base_sha256": "0166a44f425b7521c4f443e33b2257953a82b5b34395e5f879ea89d92c4fdd56",
           "relocation_count": 34,
-          "comparison_unit": "004e8d50-9ed5dcc41810",
+          "comparison_unit": "004e8d50-7d06c38a55aa",
           "objdiff_percent": 93.46032
         }
       ],
@@ -71098,19 +71100,19 @@
       "symbol": "_HothBattleMelee_IsWaveCreature",
       "address": "0x004e8fc0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 57,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 57,
           "exact_match": true,
           "target_sha256": "e4264b8abf49757634f1e9cde82007f3c447bdac06d0e6e458c1e3a6c2e83c42",
           "base_sha256": "e4264b8abf49757634f1e9cde82007f3c447bdac06d0e6e458c1e3a6c2e83c42",
           "relocation_count": 2,
-          "comparison_unit": "004e8fc0-324db8414942",
+          "comparison_unit": "004e8fc0-a3c578831372",
           "objdiff_percent": 100.0
         }
       ],
@@ -71122,19 +71124,19 @@
       "symbol": "_getSpawnLocator",
       "address": "0x004e9000",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 220,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 220,
           "exact_match": true,
           "target_sha256": "22c25e3cfbf3b2fc88b22f6b7b81322993ace8ce76533c0dc889b9d3abc40ecb",
           "base_sha256": "22c25e3cfbf3b2fc88b22f6b7b81322993ace8ce76533c0dc889b9d3abc40ecb",
           "relocation_count": 8,
-          "comparison_unit": "004e9000-146f6a21793f",
+          "comparison_unit": "004e9000-084113ea6766",
           "objdiff_percent": 100.0
         }
       ],
@@ -71146,19 +71148,19 @@
       "symbol": "_HothBattle_ManageBackgroundCreatures",
       "address": "0x004e90e0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 987,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 978,
           "exact_match": false,
           "target_sha256": "a1c49ee4050197c9aecca52a71de276ac7e9c5e18d5bb9e7407444b49dcda3b4",
           "base_sha256": "258636a55987d33e9d6a2a3bf5cc023c63a55d44db987164238d194ce87e1e2e",
           "relocation_count": 45,
-          "comparison_unit": "004e90e0-75abed4918b0",
+          "comparison_unit": "004e90e0-ed069476b9d6",
           "objdiff_percent": 79.2028
         }
       ],
@@ -71182,19 +71184,19 @@
       "symbol": "_SpawnMeleeCreatureType",
       "address": "0x004e94c0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 829,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 812,
           "exact_match": false,
           "target_sha256": "5d96712615697a192db94589736174a3707afa675ec15df9ae5c29afd8876771",
           "base_sha256": "e5a548c21ee10f8edc6350780267ed3a1f493d20c4725de1333eff10f124aaa8",
           "relocation_count": 57,
-          "comparison_unit": "004e94c0-58505c50e271",
+          "comparison_unit": "004e94c0-e482d367b553",
           "objdiff_percent": 79.025536
         }
       ],
@@ -71216,19 +71218,19 @@
       "symbol": "_HothBattleE_Init",
       "address": "0x004e9800",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 378,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 378,
           "exact_match": true,
           "target_sha256": "d95c330555315bd59d1cb00b3dc8a6cf7f77a2521695b29e7b4cd47280fad5d7",
           "base_sha256": "d95c330555315bd59d1cb00b3dc8a6cf7f77a2521695b29e7b4cd47280fad5d7",
           "relocation_count": 48,
-          "comparison_unit": "004e9800-0c9b0afa4a4f",
+          "comparison_unit": "004e9800-3303741db753",
           "objdiff_percent": 100.0
         }
       ],
@@ -71240,19 +71242,19 @@
       "symbol": "_HothBattle_StartNewWave",
       "address": "0x004e9980",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 400,
       "exact_match": false,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 348,
           "exact_match": false,
           "target_sha256": "a6770276f94cfe7c56875a7a9df8411ae01e2f50406cfa6b82a97df6154e282c",
           "base_sha256": "b06964fe1080c307b1fc176b7f2d0949c9ab86251d2c2a809d90962f24bc52fb",
           "relocation_count": 48,
-          "comparison_unit": "004e9980-011afe451605",
+          "comparison_unit": "004e9980-816ae2fc5070",
           "objdiff_percent": 75.270836
         }
       ],
@@ -71270,19 +71272,19 @@
       "symbol": "_HothBattleE_UpdateWave",
       "address": "0x004e9b10",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 977,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 977,
           "exact_match": true,
           "target_sha256": "f74ff9ab5da8ec5c2bcb1f4cf522f3bfa59450e0ef6e164ff52e66f4b81c3705",
           "base_sha256": "f74ff9ab5da8ec5c2bcb1f4cf522f3bfa59450e0ef6e164ff52e66f4b81c3705",
           "relocation_count": 74,
-          "comparison_unit": "004e9b10-ad57522d6705",
+          "comparison_unit": "004e9b10-2386da5a6060",
           "objdiff_percent": 100.0
         }
       ],
@@ -71294,19 +71296,19 @@
       "symbol": "_HothBattleE_Update",
       "address": "0x004e9ef0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 28,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "base_size": 28,
           "exact_match": true,
           "target_sha256": "233dcbb3df95eb1914862b63734ec493725c058bba9fd45ef9d3021e4f169a2d",
           "base_sha256": "233dcbb3df95eb1914862b63734ec493725c058bba9fd45ef9d3021e4f169a2d",
           "relocation_count": 3,
-          "comparison_unit": "004e9ef0-38fd6ba72d9a",
+          "comparison_unit": "004e9ef0-88640394725b",
           "objdiff_percent": 100.0
         }
       ],
@@ -388291,7 +388293,6 @@
         "src/legoapi/debris_engine.c",
         "src/legoapi/debris_generators.cpp",
         "src/legoapi/doors.cpp",
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/explosions.cpp",
         "src/legoapi/fade.cpp",
         "src/legoapi/faders.cpp",
@@ -388360,6 +388361,7 @@
         "src/legogame/episodeII.cpp",
         "src/legogame/episodeIII.cpp",
         "src/legogame/episodeIV.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/episodeVI.cpp",
         "src/legogame/game.cpp",
         "src/legogame/game_deb.cpp",
@@ -388769,14 +388771,6 @@
         },
         {
           "unit": "src/legoapi/doors.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c",
-          "base_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
-        },
-        {
-          "unit": "src/legoapi/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -389321,6 +389315,14 @@
         },
         {
           "unit": "src/legogame/episodeIV.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c",
+          "base_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -389959,7 +389961,6 @@
         "src/legoapi/control_setup.cpp",
         "src/legoapi/doors.cpp",
         "src/legoapi/edgizshadow.cpp",
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/explosions.cpp",
         "src/legoapi/faders.cpp",
         "src/legoapi/fighting.cpp",
@@ -389997,6 +389998,7 @@
         "src/legogame/dropinout.cpp",
         "src/legogame/episodeII.cpp",
         "src/legogame/episodeIII.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/episodeVI.cpp",
         "src/legogame/game.cpp",
         "src/legogame/game_deb.cpp",
@@ -390235,14 +390237,6 @@
         },
         {
           "unit": "src/legoapi/edgizshadow.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "d99e58435243d9fef9c88273b8d553b4fba4d0baf8009d29eae74fa99e0d9f57",
-          "base_sha256": "d99e58435243d9fef9c88273b8d553b4fba4d0baf8009d29eae74fa99e0d9f57"
-        },
-        {
-          "unit": "src/legoapi/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -390539,6 +390533,14 @@
         },
         {
           "unit": "src/legogame/episodeIII.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "d99e58435243d9fef9c88273b8d553b4fba4d0baf8009d29eae74fa99e0d9f57",
+          "base_sha256": "d99e58435243d9fef9c88273b8d553b4fba4d0baf8009d29eae74fa99e0d9f57"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -391883,7 +391885,6 @@
         "src/legoapi/climbing.cpp",
         "src/legoapi/control_setup.cpp",
         "src/legoapi/cutscenes.cpp",
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/fighting.cpp",
         "src/legoapi/gameanim.c",
         "src/legoapi/gizbuildit.cpp",
@@ -391916,6 +391917,7 @@
         "src/legogame/episodeII.cpp",
         "src/legogame/episodeIII.cpp",
         "src/legogame/episodeIV.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/game.cpp",
         "src/legogame/game_obj.cpp",
         "src/legogame/gameai.cpp",
@@ -392023,14 +392025,6 @@
         },
         {
           "unit": "src/legoapi/cutscenes.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d",
-          "base_sha256": "fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d"
-        },
-        {
-          "unit": "src/legoapi/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -392287,6 +392281,14 @@
         },
         {
           "unit": "src/legogame/episodeIV.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d",
+          "base_sha256": "fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -392556,7 +392558,6 @@
       "units": [
         "src/editor/edlevelall.cpp",
         "src/legoapi/areas.cpp",
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/gameanim.c",
         "src/legoapi/gizbuildit.cpp",
         "src/legoapi/gizmopickups.cpp",
@@ -392579,6 +392580,7 @@
         "src/legogame/creature.cpp",
         "src/legogame/episodeI.cpp",
         "src/legogame/episodeII.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/episodeVI.cpp",
         "src/legogame/game_obj.cpp",
         "src/legogame/gameai.cpp",
@@ -392613,14 +392615,6 @@
         },
         {
           "unit": "src/legoapi/areas.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "87de9f551024f5990e80638703a56b1d54327e7097342f37f26a819e7825f272",
-          "base_sha256": "87de9f551024f5990e80638703a56b1d54327e7097342f37f26a819e7825f272"
-        },
-        {
-          "unit": "src/legoapi/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -392797,6 +392791,14 @@
         },
         {
           "unit": "src/legogame/episodeII.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "87de9f551024f5990e80638703a56b1d54327e7097342f37f26a819e7825f272",
+          "base_sha256": "87de9f551024f5990e80638703a56b1d54327e7097342f37f26a819e7825f272"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -393228,7 +393230,6 @@
         "src/legoapi/debris_generators.cpp",
         "src/legoapi/doors.cpp",
         "src/legoapi/edgizshadow.cpp",
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/explosions.cpp",
         "src/legoapi/fade.cpp",
         "src/legoapi/faders.cpp",
@@ -393308,6 +393309,7 @@
         "src/legogame/episodeII.cpp",
         "src/legogame/episodeIII.cpp",
         "src/legogame/episodeIV.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/episodeVI.cpp",
         "src/legogame/game.cpp",
         "src/legogame/game_deb.cpp",
@@ -393809,14 +393811,6 @@
         },
         {
           "unit": "src/legoapi/edgizshadow.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
-          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
-        },
-        {
-          "unit": "src/legoapi/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -394449,6 +394443,14 @@
         },
         {
           "unit": "src/legogame/episodeIV.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -396856,7 +396858,6 @@
         "src/legoapi/debris_callbacks.c",
         "src/legoapi/debris_engine.c",
         "src/legoapi/debris_generators.cpp",
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/explosions.cpp",
         "src/legoapi/faders.cpp",
         "src/legoapi/fighting.cpp",
@@ -396906,6 +396907,7 @@
         "src/legogame/episodeII.cpp",
         "src/legogame/episodeIII.cpp",
         "src/legogame/episodeIV.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/episodeVI.cpp",
         "src/legogame/game.cpp",
         "src/legogame/game_deb.cpp",
@@ -397234,14 +397236,6 @@
         },
         {
           "unit": "src/legoapi/debris_generators.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712",
-          "base_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712"
-        },
-        {
-          "unit": "src/legoapi/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -397634,6 +397628,14 @@
         },
         {
           "unit": "src/legogame/episodeIV.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712",
+          "base_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -399014,7 +399016,6 @@
         "src/legoapi/batarang.cpp",
         "src/legoapi/control_setup.cpp",
         "src/legoapi/debris_engine.c",
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/gizbuildit.cpp",
         "src/legoapi/grapples.cpp",
         "src/legoapi/parts.c",
@@ -399024,6 +399025,7 @@
         "src/legogame/creature.cpp",
         "src/legogame/customise.cpp",
         "src/legogame/episodeI.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/episodeVI.cpp",
         "src/legogame/game_obj.cpp",
         "src/legogame/gizpanel.cpp",
@@ -399101,14 +399103,6 @@
           "base_sha256": "a7ca1349517e14c0690dccc98bf9a515019b2018116a3191f6c7d53831c0432a"
         },
         {
-          "unit": "src/legoapi/episodeV.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "a7ca1349517e14c0690dccc98bf9a515019b2018116a3191f6c7d53831c0432a",
-          "base_sha256": "a7ca1349517e14c0690dccc98bf9a515019b2018116a3191f6c7d53831c0432a"
-        },
-        {
           "unit": "src/legoapi/gizbuildit.cpp",
           "exact_match": true,
           "target_size": 8,
@@ -399174,6 +399168,14 @@
         },
         {
           "unit": "src/legogame/episodeI.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "a7ca1349517e14c0690dccc98bf9a515019b2018116a3191f6c7d53831c0432a",
+          "base_sha256": "a7ca1349517e14c0690dccc98bf9a515019b2018116a3191f6c7d53831c0432a"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -402920,7 +402922,6 @@
         "src/legoapi/carrying.cpp",
         "src/legoapi/climbing.cpp",
         "src/legoapi/control_setup.cpp",
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/gizminicut.cpp",
         "src/legoapi/gizmopickups.cpp",
         "src/legoapi/minicamcut.cpp",
@@ -402934,6 +402935,7 @@
         "src/legogame/customise.cpp",
         "src/legogame/detonator.cpp",
         "src/legogame/episodeI.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/episodeVI.cpp",
         "src/legogame/game.cpp",
         "src/legogame/game_deb.cpp",
@@ -403029,14 +403031,6 @@
         },
         {
           "unit": "src/legoapi/control_setup.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "80c8a717ccd70c8809eb78e6a9591c003e11c721fe0ccaf62fd592abda1a5593",
-          "base_sha256": "80c8a717ccd70c8809eb78e6a9591c003e11c721fe0ccaf62fd592abda1a5593"
-        },
-        {
-          "unit": "src/legoapi/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -403141,6 +403135,14 @@
         },
         {
           "unit": "src/legogame/episodeI.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "80c8a717ccd70c8809eb78e6a9591c003e11c721fe0ccaf62fd592abda1a5593",
+          "base_sha256": "80c8a717ccd70c8809eb78e6a9591c003e11c721fe0ccaf62fd592abda1a5593"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -407166,7 +407168,6 @@
         "src/legoapi/batarang.cpp",
         "src/legoapi/cutscene_lifecycle.c",
         "src/legoapi/debris_callbacks.c",
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/gamepads.cpp",
         "src/legoapi/levels.cpp",
         "src/legoapi/lighting_unit.cpp",
@@ -407178,6 +407179,7 @@
         "src/legoapi/utilities.cpp",
         "src/legogame/chris.cpp",
         "src/legogame/episodeI.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/game_obj.cpp",
         "src/legogame/gameaiscript.cpp",
         "src/legogame/gamehint.cpp",
@@ -407292,14 +407294,6 @@
           "base_sha256": "3f710ac088db33363087de2b9a657541fe5447821debaa9fe5cbd538eb1a5f29"
         },
         {
-          "unit": "src/legoapi/episodeV.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "3f710ac088db33363087de2b9a657541fe5447821debaa9fe5cbd538eb1a5f29",
-          "base_sha256": "3f710ac088db33363087de2b9a657541fe5447821debaa9fe5cbd538eb1a5f29"
-        },
-        {
           "unit": "src/legoapi/gamepads.cpp",
           "exact_match": true,
           "target_size": 8,
@@ -407381,6 +407375,14 @@
         },
         {
           "unit": "src/legogame/episodeI.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "3f710ac088db33363087de2b9a657541fe5447821debaa9fe5cbd538eb1a5f29",
+          "base_sha256": "3f710ac088db33363087de2b9a657541fe5447821debaa9fe5cbd538eb1a5f29"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -407677,7 +407679,6 @@
         "src/gameapi/edbri.c",
         "src/gameapi/rtl.c",
         "src/legoapi/batarang.cpp",
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/gizmopickups.cpp",
         "src/legoapi/minikits.cpp",
         "src/legoapi/rtlhelper.cpp",
@@ -407687,6 +407688,7 @@
         "src/legogame/cable.cpp",
         "src/legogame/chris.cpp",
         "src/legogame/episodeII.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/game.cpp",
         "src/legogame/game_obj.cpp",
         "src/legogame/gamestatus.cpp",
@@ -407725,14 +407727,6 @@
         },
         {
           "unit": "src/legoapi/batarang.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "4f4b9b7d8b86633e2824e2f439819357b0cd010ab410ea1a691b12c5f94e91e0",
-          "base_sha256": "4f4b9b7d8b86633e2824e2f439819357b0cd010ab410ea1a691b12c5f94e91e0"
-        },
-        {
-          "unit": "src/legoapi/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -407805,6 +407799,14 @@
         },
         {
           "unit": "src/legogame/episodeII.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "4f4b9b7d8b86633e2824e2f439819357b0cd010ab410ea1a691b12c5f94e91e0",
+          "base_sha256": "4f4b9b7d8b86633e2824e2f439819357b0cd010ab410ea1a691b12c5f94e91e0"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -407959,7 +407961,6 @@
         "src/legoapi/control_setup.cpp",
         "src/legoapi/doors.cpp",
         "src/legoapi/edgizshadow.cpp",
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/fade.cpp",
         "src/legoapi/faders.cpp",
         "src/legoapi/gizbuildit.cpp",
@@ -407986,6 +407987,7 @@
         "src/legogame/episodeI.cpp",
         "src/legogame/episodeII.cpp",
         "src/legogame/episodeIII.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/episodeVI.cpp",
         "src/legogame/game.cpp",
         "src/legogame/game_obj.cpp",
@@ -408111,14 +408113,6 @@
         },
         {
           "unit": "src/legoapi/edgizshadow.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d",
-          "base_sha256": "d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d"
-        },
-        {
-          "unit": "src/legoapi/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -408327,6 +408321,14 @@
         },
         {
           "unit": "src/legogame/episodeIII.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d",
+          "base_sha256": "d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -409580,7 +409582,6 @@
         "src/legoapi/areas.cpp",
         "src/legoapi/cheats.cpp",
         "src/legoapi/edgizshadow.cpp",
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/gizbuildit.cpp",
         "src/legoapi/gizmopickups.cpp",
         "src/legoapi/grapples.cpp",
@@ -409596,6 +409597,7 @@
         "src/legogame/detonator.cpp",
         "src/legogame/episodeI.cpp",
         "src/legogame/episodeII.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/game.cpp",
         "src/legogame/game_obj.cpp",
         "src/legogame/gameai.cpp",
@@ -409640,14 +409642,6 @@
         },
         {
           "unit": "src/legoapi/edgizshadow.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "9a8208635e00348ab64aac2b759e76391fd47089e9a749bbcec770d9eb5c6421",
-          "base_sha256": "9a8208635e00348ab64aac2b759e76391fd47089e9a749bbcec770d9eb5c6421"
-        },
-        {
-          "unit": "src/legoapi/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -409768,6 +409762,14 @@
         },
         {
           "unit": "src/legogame/episodeII.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "9a8208635e00348ab64aac2b759e76391fd47089e9a749bbcec770d9eb5c6421",
+          "base_sha256": "9a8208635e00348ab64aac2b759e76391fd47089e9a749bbcec770d9eb5c6421"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -411247,7 +411249,6 @@
         "src/editor/edlevelall.cpp",
         "src/legoapi/audio.cpp",
         "src/legoapi/bolts.cpp",
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/gizmopickups.cpp",
         "src/legoapi/grapples.cpp",
         "src/legoapi/hint.cpp",
@@ -411258,6 +411259,7 @@
         "src/legoapi/text.cpp",
         "src/legogame/camera.cpp",
         "src/legogame/chris.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/episodeVI.cpp",
         "src/legogame/game_obj.cpp",
         "src/legogame/gamestatus.cpp",
@@ -411297,14 +411299,6 @@
         },
         {
           "unit": "src/legoapi/bolts.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "161f4c0b1a18a0501127332c387e782b5acc10c6c7a9f7e494c1e3394c49bad5",
-          "base_sha256": "161f4c0b1a18a0501127332c387e782b5acc10c6c7a9f7e494c1e3394c49bad5"
-        },
-        {
-          "unit": "src/legoapi/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -411385,6 +411379,14 @@
         },
         {
           "unit": "src/legogame/chris.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "161f4c0b1a18a0501127332c387e782b5acc10c6c7a9f7e494c1e3394c49bad5",
+          "base_sha256": "161f4c0b1a18a0501127332c387e782b5acc10c6c7a9f7e494c1e3394c49bad5"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -412447,7 +412449,6 @@
         "src/legoapi/climbing.cpp",
         "src/legoapi/customiser.cpp",
         "src/legoapi/edgizshadow.cpp",
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/explosions.cpp",
         "src/legoapi/fighting.cpp",
         "src/legoapi/gameantinode.cpp",
@@ -412475,6 +412476,7 @@
         "src/legogame/customise.cpp",
         "src/legogame/detonator.cpp",
         "src/legogame/episodeI.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/episodeVI.cpp",
         "src/legogame/game.cpp",
         "src/legogame/game_obj.cpp",
@@ -412616,14 +412618,6 @@
         },
         {
           "unit": "src/legoapi/edgizshadow.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "fb360f7241a770dc32cade9a1d1273c92b13bd4959b1c130931312b7fe95e63f",
-          "base_sha256": "fb360f7241a770dc32cade9a1d1273c92b13bd4959b1c130931312b7fe95e63f"
-        },
-        {
-          "unit": "src/legoapi/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -412840,6 +412834,14 @@
         },
         {
           "unit": "src/legogame/episodeI.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "fb360f7241a770dc32cade9a1d1273c92b13bd4959b1c130931312b7fe95e63f",
+          "base_sha256": "fb360f7241a770dc32cade9a1d1273c92b13bd4959b1c130931312b7fe95e63f"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -414229,7 +414231,6 @@
         "src/gameapi/aisysall.c",
         "src/gameapi/apisave.cpp",
         "src/legoapi/control_setup.cpp",
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/gizmoblowups.cpp",
         "src/legoapi/grapples.cpp",
         "src/legoapi/menu.cpp",
@@ -414241,6 +414242,7 @@
         "src/legogame/customise.cpp",
         "src/legogame/episodeI.cpp",
         "src/legogame/episodeII.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/episodeVI.cpp",
         "src/legogame/game.cpp",
         "src/legogame/game_obj.cpp",
@@ -414276,14 +414278,6 @@
         },
         {
           "unit": "src/legoapi/control_setup.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "c0e336a5f371ef22cd534e094269f2c1a9635cd080b71ffa671086832d3b60b7",
-          "base_sha256": "c0e336a5f371ef22cd534e094269f2c1a9635cd080b71ffa671086832d3b60b7"
-        },
-        {
-          "unit": "src/legoapi/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -414372,6 +414366,14 @@
         },
         {
           "unit": "src/legogame/episodeII.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "c0e336a5f371ef22cd534e094269f2c1a9635cd080b71ffa671086832d3b60b7",
+          "base_sha256": "c0e336a5f371ef22cd534e094269f2c1a9635cd080b71ffa671086832d3b60b7"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -416150,13 +416152,13 @@
       "address": "0x00751c40",
       "units": [
         "src/legoapi/control_setup.cpp",
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/gizminicut.cpp",
         "src/legoapi/jumping.cpp",
         "src/legoapi/parts.c",
         "src/legoapi/status_alternate.cpp",
         "src/legogame/chris.cpp",
         "src/legogame/episodeII.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/game.cpp",
         "src/legogame/game_obj.cpp",
         "src/legogame/gamehint.cpp",
@@ -416170,14 +416172,6 @@
       "objects": [
         {
           "unit": "src/legoapi/control_setup.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "072e3304b03423a4767d28c5fed09f81d5190ff60a3d078c6c1350eeb8bee28b",
-          "base_sha256": "072e3304b03423a4767d28c5fed09f81d5190ff60a3d078c6c1350eeb8bee28b"
-        },
-        {
-          "unit": "src/legoapi/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -416226,6 +416220,14 @@
         },
         {
           "unit": "src/legogame/episodeII.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "072e3304b03423a4767d28c5fed09f81d5190ff60a3d078c6c1350eeb8bee28b",
+          "base_sha256": "072e3304b03423a4767d28c5fed09f81d5190ff60a3d078c6c1350eeb8bee28b"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -425655,10 +425657,10 @@
         "src/gameapi/edfile.c",
         "src/legoapi/carrying.cpp",
         "src/legoapi/control_setup.cpp",
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/status_alternate.cpp",
         "src/legoapi/streaks.cpp",
         "src/legogame/creature.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/move.cpp",
         "src/legogame/shop.cpp",
         "src/nu2api/nurain.c",
@@ -425708,14 +425710,6 @@
           "base_sha256": "2d311251337c35e4d3628720f349d4133233ed476372432e57314e0ab316bc35"
         },
         {
-          "unit": "src/legoapi/episodeV.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "2d311251337c35e4d3628720f349d4133233ed476372432e57314e0ab316bc35",
-          "base_sha256": "2d311251337c35e4d3628720f349d4133233ed476372432e57314e0ab316bc35"
-        },
-        {
           "unit": "src/legoapi/status_alternate.cpp",
           "exact_match": true,
           "target_size": 8,
@@ -425733,6 +425727,14 @@
         },
         {
           "unit": "src/legogame/creature.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "2d311251337c35e4d3628720f349d4133233ed476372432e57314e0ab316bc35",
+          "base_sha256": "2d311251337c35e4d3628720f349d4133233ed476372432e57314e0ab316bc35"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -425781,10 +425783,10 @@
       "units": [
         "lib/ogg-vorbis/vorbis/bitrate.c",
         "src/legoapi/control_setup.cpp",
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/gizbuildit.cpp",
         "src/legogame/creature.cpp",
         "src/legogame/customise.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/game_obj.cpp",
         "src/nu2api/nu3d_includes.cpp"
       ],
@@ -425801,14 +425803,6 @@
         },
         {
           "unit": "src/legoapi/control_setup.cpp",
-          "exact_match": true,
-          "target_size": 8,
-          "base_size": 8,
-          "target_sha256": "f52df18731eea8d020801fe2c6b3164648d9d81256a6c37964533a25999961d3",
-          "base_sha256": "f52df18731eea8d020801fe2c6b3164648d9d81256a6c37964533a25999961d3"
-        },
-        {
-          "unit": "src/legoapi/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -425833,6 +425827,14 @@
         },
         {
           "unit": "src/legogame/customise.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "f52df18731eea8d020801fe2c6b3164648d9d81256a6c37964533a25999961d3",
+          "base_sha256": "f52df18731eea8d020801fe2c6b3164648d9d81256a6c37964533a25999961d3"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -429418,7 +429420,6 @@
         "src/gameapi/edfile.c",
         "src/legoapi/bolts.cpp",
         "src/legoapi/control_setup.cpp",
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/gizbuildit.cpp",
         "src/legoapi/gizmoblowups.cpp",
         "src/legoapi/gizobstacle.cpp",
@@ -429428,6 +429429,7 @@
         "src/legoapi/pushing.cpp",
         "src/legoapi/status_alternate.cpp",
         "src/legogame/episodeIV.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/game.cpp",
         "src/legogame/game_obj.cpp",
         "src/legogame/gamestatus.cpp",
@@ -429479,14 +429481,6 @@
         },
         {
           "unit": "src/legoapi/control_setup.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "e0fb2d87992a9fc79e7729163ad2aea5efbf14806711292c8c46e873bac1a253",
-          "base_sha256": "e0fb2d87992a9fc79e7729163ad2aea5efbf14806711292c8c46e873bac1a253"
-        },
-        {
-          "unit": "src/legoapi/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -429559,6 +429553,14 @@
         },
         {
           "unit": "src/legogame/episodeIV.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "e0fb2d87992a9fc79e7729163ad2aea5efbf14806711292c8c46e873bac1a253",
+          "base_sha256": "e0fb2d87992a9fc79e7729163ad2aea5efbf14806711292c8c46e873bac1a253"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -442488,11 +442490,11 @@
       "address": "0x00755004",
       "units": [
         "src/legoapi/carrying.cpp",
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/gizbuildit.cpp",
         "src/legoapi/gizobstacle.cpp",
         "src/legoapi/gizturret.cpp",
         "src/legoapi/text.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/game.cpp",
         "src/legogame/gizforce.cpp",
         "src/legogame/move.cpp"
@@ -442502,14 +442504,6 @@
       "objects": [
         {
           "unit": "src/legoapi/carrying.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "d9fc8a51763953481a1808af3156bcb8144c2f925e96dec623c886f6d9d975b2",
-          "base_sha256": "d9fc8a51763953481a1808af3156bcb8144c2f925e96dec623c886f6d9d975b2"
-        },
-        {
-          "unit": "src/legoapi/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -442549,6 +442543,14 @@
           "base_sha256": "d9fc8a51763953481a1808af3156bcb8144c2f925e96dec623c886f6d9d975b2"
         },
         {
+          "unit": "src/legogame/episodeV.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "d9fc8a51763953481a1808af3156bcb8144c2f925e96dec623c886f6d9d975b2",
+          "base_sha256": "d9fc8a51763953481a1808af3156bcb8144c2f925e96dec623c886f6d9d975b2"
+        },
+        {
           "unit": "src/legogame/game.cpp",
           "exact_match": true,
           "target_size": 4,
@@ -442580,15 +442582,15 @@
       "symbol": "__real@40f00000",
       "address": "0x00755008",
       "units": [
-        "src/legoapi/episodeV.cpp",
         "src/legogame/episodeIV.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/game.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeIV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -442596,7 +442598,7 @@
           "base_sha256": "5166e7145614c748d91de83d1f3aaf5032e9d6d3aada3ac041ec7550ad08e1c0"
         },
         {
-          "unit": "src/legogame/episodeIV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -442849,10 +442851,10 @@
       "units": [
         "src/gameapi/edgrass.c",
         "src/legoapi/edgizshadow.cpp",
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/jumping.cpp",
         "src/legoapi/parts.c",
         "src/legoapi/specialsfx.c",
+        "src/legogame/episodeV.cpp",
         "src/legogame/game.cpp",
         "src/nu2api/nucore_includes.c"
       ],
@@ -442869,14 +442871,6 @@
         },
         {
           "unit": "src/legoapi/edgizshadow.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "7b5162138ba6d8ae67efbf14d2266a9b11a531bf8e8b090e4bb2586f8f87a52e",
-          "base_sha256": "7b5162138ba6d8ae67efbf14d2266a9b11a531bf8e8b090e4bb2586f8f87a52e"
-        },
-        {
-          "unit": "src/legoapi/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -442901,6 +442895,14 @@
         },
         {
           "unit": "src/legoapi/specialsfx.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "7b5162138ba6d8ae67efbf14d2266a9b11a531bf8e8b090e4bb2586f8f87a52e",
+          "base_sha256": "7b5162138ba6d8ae67efbf14d2266a9b11a531bf8e8b090e4bb2586f8f87a52e"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -443111,14 +443113,14 @@
       "symbol": "__real@40e00000",
       "address": "0x00755038",
       "units": [
-        "src/legoapi/episodeV.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/game.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -469154,8 +469156,8 @@
       "symbol": "??_C@_0P@KMHAGGAM@TrueJedi_100pc?$AA@",
       "address": "0x00758708",
       "units": [
-        "src/legoapi/episodeV.cpp",
         "src/legoapi/status_alternate.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/game.cpp",
         "src/legogame/gamestatus.cpp",
         "src/legogame/sfx.cpp"
@@ -469164,7 +469166,7 @@
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legoapi/status_alternate.cpp",
           "exact_match": true,
           "target_size": 15,
           "base_size": 15,
@@ -469172,7 +469174,7 @@
           "base_sha256": "dfb40bff90602c4ff7b4fc745dabbd6587e4749bcebc19c0f6cf0a5c30c7bd83"
         },
         {
-          "unit": "src/legoapi/status_alternate.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 15,
           "base_size": 15,
@@ -479571,14 +479573,14 @@
       "symbol": "__real@40b1c70000000000",
       "address": "0x00759750",
       "units": [
-        "src/legoapi/episodeV.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/hub.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -497565,14 +497567,14 @@
       "symbol": "__real@3fdf5c28e0000000",
       "address": "0x0075bda8",
       "units": [
-        "src/legoapi/episodeV.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/move.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -502827,14 +502829,14 @@
       "symbol": "??_C@_0N@BLJABCCO@env_steam_lp?$AA@",
       "address": "0x0075c660",
       "units": [
-        "src/legoapi/episodeV.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/sfx.cpp"
       ],
       "target_size": 13,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 13,
           "base_size": 13,
@@ -502857,13 +502859,13 @@
       "symbol": "_CloudCityEscapeSteamSfx",
       "address": "0x0075c660",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 16,
           "base_size": 16,
@@ -509940,22 +509942,14 @@
       "symbol": "??_C@_0L@IPAIBOOK@ShowHearts?$AA@",
       "address": "0x0075d7a8",
       "units": [
-        "src/legoapi/episodeV.cpp",
         "src/legogame/episodeI.cpp",
         "src/legogame/episodeII.cpp",
+        "src/legogame/episodeV.cpp",
         "src/legogame/episodeVI.cpp"
       ],
       "target_size": 11,
       "exact_match": true,
       "objects": [
-        {
-          "unit": "src/legoapi/episodeV.cpp",
-          "exact_match": true,
-          "target_size": 11,
-          "base_size": 11,
-          "target_sha256": "f343a2a476180f72f488bbbca5433e8362181530ef75f1875d3358fa0fd54e1b",
-          "base_sha256": "f343a2a476180f72f488bbbca5433e8362181530ef75f1875d3358fa0fd54e1b"
-        },
         {
           "unit": "src/legogame/episodeI.cpp",
           "exact_match": true,
@@ -509966,6 +509960,14 @@
         },
         {
           "unit": "src/legogame/episodeII.cpp",
+          "exact_match": true,
+          "target_size": 11,
+          "base_size": 11,
+          "target_sha256": "f343a2a476180f72f488bbbca5433e8362181530ef75f1875d3358fa0fd54e1b",
+          "base_sha256": "f343a2a476180f72f488bbbca5433e8362181530ef75f1875d3358fa0fd54e1b"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 11,
           "base_size": 11,
@@ -509988,14 +509990,14 @@
       "symbol": "??_C@_0M@FKKEKLHM@minifig_1_3?$AA@",
       "address": "0x0075d7b4",
       "units": [
-        "src/legoapi/episodeV.cpp",
-        "src/legogame/episodeI.cpp"
+        "src/legogame/episodeI.cpp",
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeI.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -510003,7 +510005,7 @@
           "base_sha256": "510a719028215a7bf0d213550ae77098dcda92bcb5c7b874bc6818782c111e4d"
         },
         {
-          "unit": "src/legogame/episodeI.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -510018,14 +510020,14 @@
       "symbol": "??_C@_0M@EDLPJKDN@minifig_1_2?$AA@",
       "address": "0x0075d7c0",
       "units": [
-        "src/legoapi/episodeV.cpp",
-        "src/legogame/episodeI.cpp"
+        "src/legogame/episodeI.cpp",
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeI.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -510033,7 +510035,7 @@
           "base_sha256": "61ea7b58b8261c504c238b4b70227d04896a4d633a5909941b48792f59dbfaab"
         },
         {
-          "unit": "src/legogame/episodeI.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -510048,14 +510050,14 @@
       "symbol": "??_C@_0M@GIJCMJPO@minifig_1_1?$AA@",
       "address": "0x0075d7cc",
       "units": [
-        "src/legoapi/episodeV.cpp",
-        "src/legogame/episodeI.cpp"
+        "src/legogame/episodeI.cpp",
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeI.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -510063,7 +510065,7 @@
           "base_sha256": "f803ce160e3c285b60ce5fa29646b3cc45d27309dbfd4ef5f28276798ac7774b"
         },
         {
-          "unit": "src/legogame/episodeI.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -510078,21 +510080,13 @@
       "symbol": "??_C@_0M@KBNCLANM@trooper_red?$AA@",
       "address": "0x0075d7d8",
       "units": [
-        "src/legoapi/episodeV.cpp",
         "src/legogame/episodeI.cpp",
-        "src/legogame/episodeII.cpp"
+        "src/legogame/episodeII.cpp",
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
-        {
-          "unit": "src/legoapi/episodeV.cpp",
-          "exact_match": true,
-          "target_size": 12,
-          "base_size": 12,
-          "target_sha256": "64ad59ea9bc16b0a4f7550c83b8ef172ba3367e819e39fff0ef50acd291c5704",
-          "base_sha256": "64ad59ea9bc16b0a4f7550c83b8ef172ba3367e819e39fff0ef50acd291c5704"
-        },
         {
           "unit": "src/legogame/episodeI.cpp",
           "exact_match": true,
@@ -510103,6 +510097,14 @@
         },
         {
           "unit": "src/legogame/episodeII.cpp",
+          "exact_match": true,
+          "target_size": 12,
+          "base_size": 12,
+          "target_sha256": "64ad59ea9bc16b0a4f7550c83b8ef172ba3367e819e39fff0ef50acd291c5704",
+          "base_sha256": "64ad59ea9bc16b0a4f7550c83b8ef172ba3367e819e39fff0ef50acd291c5704"
+        },
+        {
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -512037,14 +512039,14 @@
       "symbol": "??_C@_08OHIMGOOK@turret?$CFd?$AA@",
       "address": "0x0075dc64",
       "units": [
-        "src/legoapi/episodeV.cpp",
-        "src/legogame/episodeII.cpp"
+        "src/legogame/episodeII.cpp",
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeII.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -512052,7 +512054,7 @@
           "base_sha256": "3b3b66eda9349ab60eeb6093bf69cb436f3f6d0ae4636c318bf88104c268540f"
         },
         {
-          "unit": "src/legogame/episodeII.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -512422,13 +512424,13 @@
       "symbol": "??_C@_0O@GKOJGIHA@trooper_green?$AA@",
       "address": "0x0075dcf0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 14,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 14,
           "base_size": 14,
@@ -512443,13 +512445,13 @@
       "symbol": "_HothBattleCGreenBolt",
       "address": "0x0075dcf0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 16,
           "base_size": 16,
@@ -513157,14 +513159,14 @@
       "symbol": "??_C@_06GDKBGDGI@force3?$AA@",
       "address": "0x0075de88",
       "units": [
-        "src/legoapi/episodeV.cpp",
-        "src/legogame/episodeIII.cpp"
+        "src/legogame/episodeIII.cpp",
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeIII.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -513172,7 +513174,7 @@
           "base_sha256": "63bd34fbb8b7c5ec6857d413c81e24c593a0bd40b96bcdb4db5ebd4963e4bad1"
         },
         {
-          "unit": "src/legogame/episodeIII.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -514402,13 +514404,13 @@
       "symbol": "??_C@_0O@MHAEIDCE@CannonTrooper?$AA@",
       "address": "0x0075e108",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 14,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 14,
           "base_size": 14,
@@ -514423,13 +514425,13 @@
       "symbol": "??_C@_06JJGNKKKE@BASE?$CFd?$AA@",
       "address": "0x0075e118",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -514444,13 +514446,13 @@
       "symbol": "??_C@_0BB@FCHKONB@troopercannon_?$CFd?$AA@",
       "address": "0x0075e120",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 17,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 17,
           "base_size": 17,
@@ -514465,13 +514467,13 @@
       "symbol": "??_C@_0BB@DOJFJDJM@trooper_cannon?$CFd?$AA@",
       "address": "0x0075e134",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 17,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 17,
           "base_size": 17,
@@ -514486,13 +514488,13 @@
       "symbol": "??_C@_09CKDEACDJ@snowmob_1?$AA@",
       "address": "0x0075e148",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 10,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 10,
           "base_size": 10,
@@ -514507,13 +514509,13 @@
       "symbol": "??_C@_08BJCPFFEB@snow_mob?$AA@",
       "address": "0x0075e154",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -514528,13 +514530,13 @@
       "symbol": "??_C@_0P@ENBAPMMD@small_pop_bit4?$AA@",
       "address": "0x0075e160",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 15,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 15,
           "base_size": 15,
@@ -514549,13 +514551,13 @@
       "symbol": "??_C@_0P@CFBGKAE@small_pop_bit3?$AA@",
       "address": "0x0075e170",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 15,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 15,
           "base_size": 15,
@@ -514570,13 +514572,13 @@
       "symbol": "??_C@_0P@BLEKFLEF@small_pop_bit2?$AA@",
       "address": "0x0075e180",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 15,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 15,
           "base_size": 15,
@@ -514591,13 +514593,13 @@
       "symbol": "??_C@_0P@DAGHAIIG@small_pop_bit1?$AA@",
       "address": "0x0075e190",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 15,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 15,
           "base_size": 15,
@@ -514612,13 +514614,13 @@
       "symbol": "??_C@_0N@GGECDDBB@asteroid_mid?$AA@",
       "address": "0x0075e1a0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 13,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 13,
           "base_size": 13,
@@ -514633,13 +514635,13 @@
       "symbol": "??_C@_0L@KGBLFNHK@asteroid_c?$AA@",
       "address": "0x0075e1b0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 11,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 11,
           "base_size": 11,
@@ -514654,13 +514656,13 @@
       "symbol": "??_C@_0L@LPAAGMDL@asteroid_b?$AA@",
       "address": "0x0075e1bc",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 11,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 11,
           "base_size": 11,
@@ -514675,13 +514677,13 @@
       "symbol": "??_C@_0N@OOBCBHLE@asteroid_pop?$AA@",
       "address": "0x0075e1c8",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 13,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 13,
           "base_size": 13,
@@ -514696,13 +514698,13 @@
       "symbol": "??_C@_0L@JECNDPPI@asteroid_a?$AA@",
       "address": "0x0075e1d8",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 11,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 11,
           "base_size": 11,
@@ -514717,13 +514719,13 @@
       "symbol": "??_C@_08JGOPIIOC@asteroid?$AA@",
       "address": "0x0075e1e4",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 9,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 9,
           "base_size": 9,
@@ -514738,13 +514740,13 @@
       "symbol": "??_C@_07FOGBENDF@In_Cave?$AA@",
       "address": "0x0075e1f0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -514759,13 +514761,13 @@
       "symbol": "??_C@_07IFCJCAAG@classic?$AA@",
       "address": "0x0075e1f8",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -514780,13 +514782,13 @@
       "symbol": "??_C@_04MLNMJPNF@targ?$AA@",
       "address": "0x0075e200",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -514801,13 +514803,13 @@
       "symbol": "__real@4020666f0a4b43ac",
       "address": "0x0075e208",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -514822,13 +514824,13 @@
       "symbol": "??_C@_09IOFJLJGN@blockrock?$AA@",
       "address": "0x0075e210",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 10,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 10,
           "base_size": 10,
@@ -514843,13 +514845,13 @@
       "symbol": "??_C@_0L@ECGCGBCO@transport4?$AA@",
       "address": "0x0075e21c",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 11,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 11,
           "base_size": 11,
@@ -514864,13 +514866,13 @@
       "symbol": "??_C@_0O@CBDKBILO@rebelcruiser1?$AA@",
       "address": "0x0075e228",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 14,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 14,
           "base_size": 14,
@@ -514885,13 +514887,13 @@
       "symbol": "??_C@_0L@DPBFJFGL@transport1?$AA@",
       "address": "0x0075e238",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 11,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 11,
           "base_size": 11,
@@ -514906,13 +514908,13 @@
       "symbol": "??_C@_0L@BEDIMGKI@transport2?$AA@",
       "address": "0x0075e244",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 11,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 11,
           "base_size": 11,
@@ -514927,13 +514929,13 @@
       "symbol": "??_C@_0L@NCDPHOJ@transport3?$AA@",
       "address": "0x0075e250",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 11,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 11,
           "base_size": 11,
@@ -514948,13 +514950,13 @@
       "symbol": "??_C@_0O@KBHELHN@rebelcruiser2?$AA@",
       "address": "0x0075e25c",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 14,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 14,
           "base_size": 14,
@@ -514969,13 +514971,13 @@
       "symbol": "??_C@_0BA@HIPFKAPL@Gun_Turret_icon?$AA@",
       "address": "0x0075e26c",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 16,
           "base_size": 16,
@@ -514990,13 +514992,13 @@
       "symbol": "??_C@_0O@NFAJCHNC@TrapBEndFight?$AA@",
       "address": "0x0075e27c",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 14,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 14,
           "base_size": 14,
@@ -515011,13 +515013,13 @@
       "symbol": "??_C@_03BBKEAIF@?$DP?$DP?$DP?$AA@",
       "address": "0x0075e28c",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -515032,13 +515034,13 @@
       "symbol": "??_C@_09KCEJPGDP@obstacle3?$AA@",
       "address": "0x0075e290",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 10,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 10,
           "base_size": 10,
@@ -515053,13 +515055,13 @@
       "symbol": "_HothBattleCObstacle",
       "address": "0x0075e290",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -515074,13 +515076,13 @@
       "symbol": "??_C@_06EFGJMCHF@gap1_a?$AA@",
       "address": "0x0075e29c",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -515095,13 +515097,13 @@
       "symbol": "??_C@_06GOEEJBLG@gap1_b?$AA@",
       "address": "0x0075e2a4",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 7,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 7,
           "base_size": 7,
@@ -515116,13 +515118,13 @@
       "symbol": "__real@c1a80000",
       "address": "0x0075e2ac",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -515138,8 +515140,8 @@
       "address": "0x0075e2b0",
       "units": [
         "src/legoapi/bolts.cpp",
-        "src/legoapi/episodeV.cpp",
-        "src/legoapi/gizmopickups.cpp"
+        "src/legoapi/gizmopickups.cpp",
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
@@ -515153,7 +515155,7 @@
           "base_sha256": "58e24f53d44d36672c21ebd6d54e2808dd013586c6a53ee2dd37ede19858d3c3"
         },
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legoapi/gizmopickups.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -515161,7 +515163,7 @@
           "base_sha256": "58e24f53d44d36672c21ebd6d54e2808dd013586c6a53ee2dd37ede19858d3c3"
         },
         {
-          "unit": "src/legoapi/gizmopickups.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -515176,13 +515178,13 @@
       "symbol": "_CloudCityEscapePanelName",
       "address": "0x0075e2b4",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -515197,13 +515199,13 @@
       "symbol": "_CloudCityEscapeGas3",
       "address": "0x0075e2bc",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -515218,13 +515220,13 @@
       "symbol": "_CloudCityEscapeGas2",
       "address": "0x0075e2c4",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -515239,13 +515241,13 @@
       "symbol": "_CloudCityEscapeGas1",
       "address": "0x0075e2cc",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -515281,13 +515283,13 @@
       "symbol": "_CloudCityEscapeFightMessage",
       "address": "0x0075e2d4",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 20,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 20,
           "base_size": 20,
@@ -515302,13 +515304,13 @@
       "symbol": "_CloudCityEscapeBuilditName",
       "address": "0x0075e2e8",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -515323,13 +515325,13 @@
       "symbol": "_CloudCityEscapeBuiltMessage",
       "address": "0x0075e2f4",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -515344,13 +515346,13 @@
       "symbol": "_CloudCityEscapeDeskSfx",
       "address": "0x0075e300",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 20,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 20,
           "base_size": 20,
@@ -515365,13 +515367,13 @@
       "symbol": "??_C@_0N@HKLABEEJ@gas_3_animin?$AA@",
       "address": "0x0075e314",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 13,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 13,
           "base_size": 13,
@@ -515386,13 +515388,13 @@
       "symbol": "??_C@_0N@GNMLAAAK@gas_2_animin?$AA@",
       "address": "0x0075e324",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 13,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 13,
           "base_size": 13,
@@ -515407,13 +515409,13 @@
       "symbol": "??_C@_0N@FEEGDMMP@gas_1_animin?$AA@",
       "address": "0x0075e334",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 13,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 13,
           "base_size": 13,
@@ -515428,13 +515430,13 @@
       "symbol": "??_C@_0N@EJNKIMLE@pad_4_base_2?$AA@",
       "address": "0x0075e344",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 13,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 13,
           "base_size": 13,
@@ -515449,13 +515451,13 @@
       "symbol": "??_C@_0N@DKMAPFDO@pad_2_base_2?$AA@",
       "address": "0x0075e354",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 13,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 13,
           "base_size": 13,
@@ -515470,13 +515472,13 @@
       "symbol": "??_C@_0BA@IOHGLAAO@DagobahTraining?$AA@",
       "address": "0x0075e364",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 16,
           "base_size": 16,
@@ -515491,13 +515493,13 @@
       "symbol": "??_C@_0M@OPGBOJAG@door_b_to_e?$AA@",
       "address": "0x0075e374",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -515512,13 +515514,13 @@
       "symbol": "??_C@_0M@GFIHEBEP@door_e_to_b?$AA@",
       "address": "0x0075e380",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -515533,13 +515535,13 @@
       "symbol": "??_C@_0BC@OLMAEKBA@CompletedTraining?$AA@",
       "address": "0x0075e38c",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 18,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 18,
           "base_size": 18,
@@ -515554,13 +515556,13 @@
       "symbol": "??_C@_07JNIOBEMN@force20?$AA@",
       "address": "0x0075e3a0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -515575,13 +515577,13 @@
       "symbol": "??_C@_0M@EIBBAEJC@minifig_2_3?$AA@",
       "address": "0x0075e3a8",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -515596,13 +515598,13 @@
       "symbol": "??_C@_0M@FBAKDFND@minifig_2_2?$AA@",
       "address": "0x0075e3b4",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -515617,13 +515619,13 @@
       "symbol": "??_C@_0M@HKCHGGBA@minifig_2_1?$AA@",
       "address": "0x0075e3c0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -515638,13 +515640,13 @@
       "symbol": "_HothBattleAPickup",
       "address": "0x0075e3cc",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -515659,13 +515661,13 @@
       "symbol": "??_C@_0M@MDANAOJP@snow_ball_4?$AA@",
       "address": "0x0075e3d4",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -515680,13 +515682,13 @@
       "symbol": "??_C@_0M@IMEMJIFI@snow_ball_3?$AA@",
       "address": "0x0075e3e0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -515701,13 +515703,13 @@
       "symbol": "??_C@_0M@JFFHKJBJ@snow_ball_2?$AA@",
       "address": "0x0075e3ec",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -515722,13 +515724,13 @@
       "symbol": "??_C@_0M@LOHKPKNK@snow_ball_1?$AA@",
       "address": "0x0075e3f8",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -515753,13 +515755,13 @@
       "symbol": "_HothBattleCPickup",
       "address": "0x0075e404",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -515784,13 +515786,13 @@
       "symbol": "_HothBattleCIceA",
       "address": "0x0075e40c",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -515815,13 +515817,13 @@
       "symbol": "_HothBattleCIceB",
       "address": "0x0075e414",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -515836,13 +515838,13 @@
       "symbol": "??_C@_0BE@OFBNHBFL@BombGen_ATAT_Killed?$AA@",
       "address": "0x0075e41c",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 20,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 20,
           "base_size": 20,
@@ -515857,13 +515859,13 @@
       "symbol": "??_C@_0BA@KEJPHAGH@bomb_generator1?$AA@",
       "address": "0x0075e430",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 16,
           "base_size": 16,
@@ -515878,13 +515880,13 @@
       "symbol": "??_C@_05HLKEJFEB@rider?$AA@",
       "address": "0x0075e440",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 6,
           "base_size": 6,
@@ -515899,13 +515901,13 @@
       "symbol": "??_C@_05PBDNICPN@Probe?$AA@",
       "address": "0x0075e448",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 6,
           "base_size": 6,
@@ -515920,13 +515922,13 @@
       "symbol": "??_C@_05BDADGJGG@spawn?$AA@",
       "address": "0x0075e450",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 6,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 6,
           "base_size": 6,
@@ -515941,13 +515943,13 @@
       "symbol": "??_C@_09KIDPGINE@ATAT_EDIT?$AA@",
       "address": "0x0075e458",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 10,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 10,
           "base_size": 10,
@@ -515962,13 +515964,13 @@
       "symbol": "??_C@_04LHKOJOEJ@ATAT?$AA@",
       "address": "0x0075e464",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 5,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 5,
           "base_size": 5,
@@ -515983,13 +515985,13 @@
       "symbol": "??_C@_09OHCJILGC@CamCut_?$CFd?$AA@",
       "address": "0x0075e46c",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 10,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 10,
           "base_size": 10,
@@ -751533,18 +751535,19 @@
       "symbol": "_id_PROBEDROID",
       "address": "0x007f18b4",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 2,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 2,
-          "base_size": 2,
+          "base_size": 4,
           "target_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb",
-          "base_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb"
+          "base_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb",
+          "gap_bytes": 2
         }
       ],
       "status": "exact"
@@ -751906,13 +751909,13 @@
       "symbol": "_id_ATST_LOWRES",
       "address": "0x007f18f8",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 2,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 2,
           "base_size": 4,
@@ -751994,13 +751997,13 @@
       "symbol": "_id_BOBAFETT",
       "address": "0x007f1908",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 2,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 2,
           "base_size": 4,
@@ -752060,13 +752063,13 @@
       "symbol": "_id_ATAT",
       "address": "0x007f1914",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 2,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 2,
           "base_size": 4,
@@ -752852,19 +752855,18 @@
       "symbol": "_id_MILLENNIUMFALCON",
       "address": "0x007f19a4",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 2,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 2,
-          "base_size": 4,
+          "base_size": 2,
           "target_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb",
-          "base_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb",
-          "gap_bytes": 2
+          "base_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb"
         }
       ],
       "status": "exact"
@@ -752874,19 +752876,18 @@
       "symbol": "_id_SPEEDERBIKESNOW",
       "address": "0x007f19a8",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 2,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 2,
-          "base_size": 4,
+          "base_size": 2,
           "target_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb",
-          "base_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb",
-          "gap_bytes": 2
+          "base_sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb"
         }
       ],
       "status": "exact"
@@ -771497,13 +771498,13 @@
       "symbol": "_spotLightB_yrot",
       "address": "0x00800214",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -771518,13 +771519,13 @@
       "symbol": "_spotLightB_zrot",
       "address": "0x0080021c",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -771539,13 +771540,13 @@
       "symbol": "_melee_wavePhase",
       "address": "0x00800224",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 1,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 1,
           "base_size": 2,
@@ -771561,13 +771562,13 @@
       "symbol": "_maxrotspd",
       "address": "0x00800290",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -771582,13 +771583,13 @@
       "symbol": "?pos@?1??CloudCityTrapA_Update@@9@4Unuvec_s@@A",
       "address": "0x0080029c",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -779408,13 +779409,13 @@
       "symbol": "_WORLD",
       "address": "0x00802c54",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -804482,18 +804483,19 @@
       "symbol": "_aicreature_sets_alive",
       "address": "0x00876868",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 16,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 16,
-          "base_size": 16,
+          "base_size": 20,
           "target_sha256": "374708fff7719dd5979ec875d56cd2286f6d3cf7ec317a3b25632aab28ec37bb",
-          "base_sha256": "374708fff7719dd5979ec875d56cd2286f6d3cf7ec317a3b25632aab28ec37bb"
+          "base_sha256": "374708fff7719dd5979ec875d56cd2286f6d3cf7ec317a3b25632aab28ec37bb",
+          "gap_bytes": 4
         }
       ],
       "status": "exact"
@@ -807698,13 +807700,13 @@
       "symbol": "_LevGameObject",
       "address": "0x0087a810",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 32,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 32,
           "base_size": 32,
@@ -807846,13 +807848,13 @@
       "symbol": "_LevGizPanel",
       "address": "0x0087a954",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -837161,13 +837163,13 @@
       "symbol": "_asteroids",
       "address": "0x00889660",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 3072,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 3072,
           "base_size": 3072,
@@ -837182,13 +837184,13 @@
       "symbol": "_asteroidc_netpacket",
       "address": "0x0088a260",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -837203,19 +837205,18 @@
       "symbol": "_HothBattleENetPacket",
       "address": "0x0088a264",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
-          "base_size": 8,
+          "base_size": 4,
           "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
-          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
-          "gap_bytes": 4
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
         }
       ],
       "status": "exact"
@@ -837225,13 +837226,13 @@
       "symbol": "_finalAsteroid",
       "address": "0x0088a268",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 60,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 60,
           "base_size": 60,
@@ -837246,13 +837247,13 @@
       "symbol": "_nasteroids",
       "address": "0x0088a2a4",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -837267,13 +837268,13 @@
       "symbol": "_minikitCounter_A",
       "address": "0x0088a2a8",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 1,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 1,
           "base_size": 1,
@@ -837288,18 +837289,19 @@
       "symbol": "_minikitCounter_C",
       "address": "0x0088a2a9",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 1,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 1,
-          "base_size": 1,
+          "base_size": 4,
           "target_sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
-          "base_sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d"
+          "base_sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+          "gap_bytes": 3
         }
       ],
       "status": "exact"
@@ -837309,13 +837311,13 @@
       "symbol": "_escape",
       "address": "0x0088a2b0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 96,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 96,
           "base_size": 96,
@@ -837330,13 +837332,13 @@
       "symbol": "_lastPlaying",
       "address": "0x0088a310",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -837351,13 +837353,13 @@
       "symbol": "_specialIcon",
       "address": "0x0088a314",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 12,
           "base_size": 12,
@@ -837372,13 +837374,13 @@
       "symbol": "_melee",
       "address": "0x0088a320",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 200,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 200,
           "base_size": 200,
@@ -837414,13 +837416,13 @@
       "symbol": "_HothEscapeBLocator",
       "address": "0x0088a428",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -837435,13 +837437,13 @@
       "symbol": "_HothEscapeBSnowmob",
       "address": "0x0088a42c",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -837456,13 +837458,13 @@
       "symbol": "_troopercannons",
       "address": "0x0088a430",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 192,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 192,
           "base_size": 192,
@@ -837477,13 +837479,13 @@
       "symbol": "_classicBlowups",
       "address": "0x0088a4f0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 32,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 32,
           "base_size": 32,
@@ -837498,13 +837500,13 @@
       "symbol": "_HothBattleEPanelAlpha",
       "address": "0x0088a510",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 64,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 64,
           "base_size": 64,
@@ -837519,19 +837521,18 @@
       "symbol": "_troopercannons_beenReset",
       "address": "0x0088a550",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 1,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 1,
-          "base_size": 4,
+          "base_size": 1,
           "target_sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
-          "base_sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
-          "gap_bytes": 3
+          "base_sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d"
         }
       ],
       "status": "exact"
@@ -837541,13 +837542,13 @@
       "symbol": "_drawLights",
       "address": "0x0088a551",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 1,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 1,
           "base_size": 1,
@@ -837562,13 +837563,13 @@
       "symbol": "_turretAliveCount",
       "address": "0x0088a552",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 1,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 1,
           "base_size": 1,
@@ -837583,13 +837584,13 @@
       "symbol": "_spotLightA_yrot",
       "address": "0x0088a554",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -837604,13 +837605,13 @@
       "symbol": "_spotLightA_zrot",
       "address": "0x0088a55c",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 8,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -837625,13 +837626,13 @@
       "symbol": "_mtxOrig",
       "address": "0x0088a564",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -837646,13 +837647,13 @@
       "symbol": "_melee_waveDelay",
       "address": "0x0088a568",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -837667,13 +837668,13 @@
       "symbol": "_dagobah_training",
       "address": "0x0088a56c",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -837688,13 +837689,13 @@
       "symbol": "_Vader_obj",
       "address": "0x0088a570",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -837709,13 +837710,13 @@
       "symbol": "_Vader_ai_message",
       "address": "0x0088a574",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -837730,13 +837731,13 @@
       "symbol": "_HothBattleC_BombGenerator",
       "address": "0x0088a578",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -848743,13 +848744,13 @@
       "symbol": "_PlayPlane",
       "address": "0x009250f0",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 144,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 144,
           "base_size": 144,
@@ -853476,13 +853477,13 @@
       "symbol": "_LEGO_AIPATHCNX_R2D2GLIDE",
       "address": "0x00950d7c",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -853539,7 +853540,7 @@
       "symbol": "_LEGO_AIPATHCNX_BIGJUMP",
       "address": "0x00950d88",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": null,
       "exact_match": false,
@@ -855431,13 +855432,13 @@
       "symbol": "_netclient",
       "address": "0x00951b70",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -855452,13 +855453,13 @@
       "symbol": "_nethost",
       "address": "0x00951b74",
       "units": [
-        "src/legoapi/episodeV.cpp"
+        "src/legogame/episodeV.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/legoapi/episodeV.cpp",
+          "unit": "src/legogame/episodeV.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -899660,7 +899661,7 @@
       "kind": "data"
     },
     {
-      "unit": "src/legoapi/episodeV.cpp",
+      "unit": "src/legogame/episodeV.cpp",
       "symbol": "_AsteroidChaseD_SetTurretTarget",
       "kind": "function"
     },
@@ -901650,7 +901651,7 @@
       "metadata_sha256": "525d436eee3d48951222f1fd54574554983d228c3d06f19a545ba7cab50fe057",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "f651078677cbf13db5336422eb42787e8126529d720e012861445b3403bd6bab",
+      "geometry_object_sha256": "912efc6649fe911b38c61022ae99797ed5e76fada2dabefb22c7b9b71cd0b3be",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
