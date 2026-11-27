@@ -27,7 +27,7 @@
 extern "C" {
 
     i32 InitSpecialSfx(void *world_ptr) {
-        SPECIAL_RESOURCE_WORLD *world = (SPECIAL_RESOURCE_WORLD *)((SPECIAL_RESOURCE_WORLD *)world_ptr);
+        SPECIAL_RESOURCE_WORLD *world = (SPECIAL_RESOURCE_WORLD *)world_ptr;
         if (!world) {
             return 0;
         }
@@ -48,7 +48,7 @@ extern "C" {
     }
 
     i32 SpecialSfxLoad(char *path, void *world_ptr) {
-        WORLDINFO *world = (WORLDINFO *)((WORLDINFO *)world_ptr);
+        WORLDINFO *world = (WORLDINFO *)world_ptr;
         i32 version;
         i32 count;
         i32 i;
@@ -163,7 +163,7 @@ extern "C" {
             if (NuSpecialExistsFn(&entry->special) == 0 || NuSpecialGetVisibilityFn(&entry->special) == 0) {
                 continue;
             }
-            animation = (NUINSTANIM *)((NUINSTANIM *)NuSpecialGetInstAnim(&entry->special));
+            animation = (NUINSTANIM *)NuSpecialGetInstAnim(&entry->special);
             if (animation == NULL) {
                 continue;
             }
@@ -246,7 +246,7 @@ extern "C" {
     }
 
     void LoadSpecialSfxFile(void *world_ptr) {
-        SPECIAL_RESOURCE_WORLD *world = (SPECIAL_RESOURCE_WORLD *)((SPECIAL_RESOURCE_WORLD *)world_ptr);
+        SPECIAL_RESOURCE_WORLD *world = (SPECIAL_RESOURCE_WORLD *)world_ptr;
         char path[256];
         sprintf(path, "%s.sfx", world->config_file);
         if (NuFileExists(path)) {

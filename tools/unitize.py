@@ -1076,6 +1076,8 @@ def cast_void_conversions(log):
         lines = path.read_text(encoding="latin-1").split("\n")
         for number, cast in items:
             line = lines[number - 1]
+            if f"= ({cast})" in line:
+                continue  # already cast on an earlier pass; the error is elsewhere on the line
             fixed = re.sub(r"(?<![=!<>])=\s*(?!=)", lambda m: f"= ({cast})", line, count=1)
             if fixed != line:
                 lines[number - 1], count = fixed, count + 1

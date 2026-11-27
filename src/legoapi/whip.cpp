@@ -40,7 +40,7 @@ extern "C" {
                 if (object->player.context_timer >= object->player.context_duration) {
                     switch (object->player.whip_action) {
                         case WHIP_GRAB:
-                            target = (GIZMOBLOWUP *)((GIZMOBLOWUP *)object->player.grapple);
+                            target = (GIZMOBLOWUP *)object->player.grapple;
                             if (target != NULL && (target->status_flags & BLOWUP_STATUS_VISIBLE) &&
                                 (target->status_flags & BLOWUP_STATUS_ACTIVE)) {
                                 object->player.context_animation = LEGOACT_WHIP_GRAB;
@@ -49,14 +49,14 @@ extern "C" {
                                 object->player.context_duration =
                                     AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1);
                                 object->player.context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
-                                target = (GIZMOBLOWUP *)((GIZMOBLOWUP *)object->player.grapple);
+                                target = (GIZMOBLOWUP *)object->player.grapple;
                                 object->movement_facing_angle =
                                     NuAtan2D(target->position.x - object->position.x, target->position.z - object->position.z);
                                 return;
                             }
                             break;
                         case WHIP_BREAK:
-                            target = (GIZMOBLOWUP *)((GIZMOBLOWUP *)object->player.grapple);
+                            target = (GIZMOBLOWUP *)object->player.grapple;
                             if (target != NULL && (target->status_flags & BLOWUP_STATUS_VISIBLE) &&
                                 (target->status_flags & BLOWUP_STATUS_ACTIVE)) {
                                 object->player.context_animation = LEGOACT_WHIP_BREAK;
@@ -65,7 +65,7 @@ extern "C" {
                                 object->player.context_duration =
                                     AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1);
                                 object->player.context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
-                                target = (GIZMOBLOWUP *)((GIZMOBLOWUP *)object->player.grapple);
+                                target = (GIZMOBLOWUP *)object->player.grapple;
                                 object->movement_facing_angle =
                                     NuAtan2D(target->position.x - object->position.x, target->position.z - object->position.z);
                                 return;

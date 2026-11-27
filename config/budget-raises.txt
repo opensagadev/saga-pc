@@ -385,3 +385,5 @@ config/declscan-budget.json D 30 gathering retail compilands moves a cross-unit 
 config/declscan-budget.json C 366 gathering retail compiland nushaderobject turns a cross-unit declaration into a forward declaration inside the unit (docs/declarations.md: classes C and D wait for the layout move to finish)
 config/declscan-budget.json D 31 VertexDeclarations.cpp is its own compiland and keeps the declaration of PCVertexDeclarationFindSlot, which nuvertexdecl.c defines (docs/declarations.md: classes C and D wait for the layout move to finish)
 config/castscan-budget.json record-pun 356 gathering retail compilands moves code between C and C++ units, where the same record conversions are counted per unit and language
+config/castscan-budget.json declaration-type 828 specialsfx and whip are C++ compilands now (retail language): their void * conversions need explicit casts
+config/castscan-budget.json void-pointer-cpp 1249 specialsfx and whip are C++ compilands now (retail language): their void * conversions need explicit casts
