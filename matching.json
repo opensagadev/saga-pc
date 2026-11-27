@@ -807,7 +807,7 @@
     "src/nu2api/nucamera.cpp": "f9c8a04e9971b44452ee3e7bb158a486ace8120d6260ff86d905967039c8a48c",
     "src/nu2api/nudebug_pc.cpp": "f750e0a54640fc8f51471e3da5e1557ffad1ca4704195da7cc85aa15c0c4f262",
     "src/nu2api/nudlist_material.cpp": "b4cff5c4e38ba7b1388b692044919cb52d208533e7c8bf1d7ffe9aef09cecb6d",
-    "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp": "980c3b70478a607b1c0f73d08902363f5167ead49a0735ac18fd2681e5435793",
+    "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp": "89fb0875bc7bd9db612bb5bbb217f857e66904ff0157476b4c81b67d60277492",
     "src/nu2api/nuhtml.cpp": "6b8bdc4c7e61c547955120fcea37c3aae104d7a5ffabca68651286d9e70bd035",
     "src/nu2api/numouse.cpp": "5a9c50912b5484c871093b716f5646d5e603bb2cd136a7d1307701f68673d4d1",
     "src/nu2api/nunetemu.cpp": "f1a5a9440de3df508e66dbb45310b9c209e85e0792ed589d56b157357cbfa93d",
@@ -835,7 +835,7 @@
     "src/nu2api/oggreader.cpp": "90c9a00f33964a13896e474c77fbe03c485db65c240cb3ffe435e222c8e2041e",
     "src/nu2api/pc_device.cpp": "3097c031ff48d609e1f6d4a15b8c2162d7ed4ed9bf348feb5782dc3229306661",
     "src/nu2api/pc_fmv.cpp": "07e6cee39825e5aee7a06decbef2bbf2c6837db0e5f8aaec158332d904f45cf5",
-    "src/nu2api/pc_fmv_control.cpp": "89cea4f7437029fbe750f44bc065a0e5022cccd9d7913b60a710bd0d1dc438ce",
+    "src/nu2api/pc_fmv_control.cpp": "7c1e9a63664ade78dcf1978fe3b50a8df50a658af550682d4bee9c14076421a9",
     "src/nu2api/pc_fmv_leaves.cpp": "2ebdf7d48262f55cf9a8b5d7a0b91c2962fd3f346272637a188795ca6d103046",
     "src/nu2api/pc_fmv_player.cpp": "44468769aae1b14371430a6aad23f142bd3b6c7139888497c4b936390310c121",
     "src/nu2api/pc_fmv_texture.cpp": "17a4d673f1d54eab782e0d7fe78a368b5552a4795626ca1cb280a12f7fde2a14",
@@ -1265,7 +1265,7 @@
     "build/obj/nu2api/nufile_mc.obj": "d1c166e6b2cea31c6008d4249daa46fca47b7ba4494735654cbc261cc08c4184",
     "build/obj/nu2api/nufile_pc.obj": "a790cf650e00950ea436dad3987978762cce982b236c906947479620049ee995",
     "build/obj/nu2api/nufloat.obj": "737c4f2e6f47cb48fd34b83944b787c099ed0ea63b13e1088eeee76e5fde0a29",
-    "build/obj/nu2api/nufmv/pc/Bink/dsplay_bink.obj": "a4ad6986c03039dbd5c30e3d2e31e25ae71bdc45a774f24c9bc46785065cb647",
+    "build/obj/nu2api/nufmv/pc/Bink/dsplay_bink.obj": "435b6274692f81fa6c968b876dcaa540939b3317feb3db223b1e4eb9368a00bb",
     "build/obj/nu2api/nuhtml.obj": "7c9cf9562097747f3c2eb96668f7d78783405709061ea947dc3adf4c3d5fcfdb",
     "build/obj/nu2api/numath_includes.obj": "168e3c9fe3ebbeb1e9c90a0428a3e6ebbf1d788f86e6f5cd2f500ab0fcad8b78",
     "build/obj/nu2api/numouse.obj": "c351f484b422625f4861e138fc739754785a6d59f98a064c0bf85cb7d7dd2cbe",
@@ -1307,7 +1307,7 @@
     "build/obj/nu2api/oggreader.obj": "cbcd120f83c4345d34b9173baa42f05b631665a59342f812f61f26a7c4e18301",
     "build/obj/nu2api/pc_device.obj": "9e2286b156f545df8e3f1024968a3c4683b8aa3cda5ca4b3205e26aa9ef9a793",
     "build/obj/nu2api/pc_fmv.obj": "d60c57e21dd8db82bfef2f9acf8db005f5e6e8543529acdcaa2087efa38b46f6",
-    "build/obj/nu2api/pc_fmv_control.obj": "5e5f9b62607c4925c067da9953c2e52340a0e65c2b72ac3ae2680825ee76818e",
+    "build/obj/nu2api/pc_fmv_control.obj": "9b2da8ae0daf7d5e0a9192949819e16f4c7ef02db12bef403b1b91e0060253e1",
     "build/obj/nu2api/pc_fmv_leaves.obj": "6bdc83633fceb2bf047e9db4213fd852205824dc66988776ee40d029801ff78a",
     "build/obj/nu2api/pc_fmv_player.obj": "e9214f8efebba373c71886e7920114a2e00310c83d63d8822772b9e628b664fe",
     "build/obj/nu2api/pc_fmv_texture.obj": "dc90f5ebed116f0963426fdd5b78c381a10578ff0fab9abeb0b8369a193876b0",
@@ -248021,19 +248021,19 @@
       "symbol": "_FmvGetTime",
       "address": "0x00631110",
       "units": [
-        "src/nu2api/pc_fmv_control.cpp"
+        "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp"
       ],
       "target_size": 78,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_fmv_control.cpp",
+          "unit": "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp",
           "base_size": 78,
           "exact_match": true,
           "target_sha256": "211d5d5b4002d4f35a09ade2b048bd5acce184f5535ce6cb0f493c0eb431d69d",
           "base_sha256": "211d5d5b4002d4f35a09ade2b048bd5acce184f5535ce6cb0f493c0eb431d69d",
           "relocation_count": 4,
-          "comparison_unit": "00631110-adede0f3cbe3",
+          "comparison_unit": "00631110-aa27311177fa",
           "objdiff_percent": 100.0
         }
       ],
@@ -248045,19 +248045,19 @@
       "symbol": "_FmvStop",
       "address": "0x00631160",
       "units": [
-        "src/nu2api/pc_fmv_control.cpp"
+        "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp"
       ],
       "target_size": 12,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_fmv_control.cpp",
+          "unit": "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp",
           "base_size": 12,
           "exact_match": true,
           "target_sha256": "a4c72f2d3bf9bd55326b4201e2e4b0f26f848bd566edf39af9d617c60b0cf089",
           "base_sha256": "a4c72f2d3bf9bd55326b4201e2e4b0f26f848bd566edf39af9d617c60b0cf089",
           "relocation_count": 2,
-          "comparison_unit": "00631160-fc6a677fc156",
+          "comparison_unit": "00631160-9614a6cc0538",
           "objdiff_percent": 100.0
         }
       ],
@@ -248069,19 +248069,19 @@
       "symbol": "_FmvStart",
       "address": "0x00631170",
       "units": [
-        "src/nu2api/pc_fmv_control.cpp"
+        "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp"
       ],
       "target_size": 151,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_fmv_control.cpp",
+          "unit": "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp",
           "base_size": 151,
           "exact_match": true,
           "target_sha256": "860165b92e1e5990fe6a1023fde2e2c97e2343279a1e01ce61bbf434853e6353",
           "base_sha256": "860165b92e1e5990fe6a1023fde2e2c97e2343279a1e01ce61bbf434853e6353",
           "relocation_count": 15,
-          "comparison_unit": "00631170-787a01d6fda2",
+          "comparison_unit": "00631170-27cbd2b55fb5",
           "objdiff_percent": 100.0
         }
       ],
@@ -248093,19 +248093,19 @@
       "symbol": "_FmvStep",
       "address": "0x00631210",
       "units": [
-        "src/nu2api/pc_fmv_control.cpp"
+        "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp"
       ],
       "target_size": 27,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_fmv_control.cpp",
+          "unit": "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp",
           "base_size": 27,
           "exact_match": true,
           "target_sha256": "590bbb0bc1ea289b9cacb5522b660c36e4134eef3df38e6a05223fecc233b053",
           "base_sha256": "590bbb0bc1ea289b9cacb5522b660c36e4134eef3df38e6a05223fecc233b053",
           "relocation_count": 4,
-          "comparison_unit": "00631210-855ee3e3d576",
+          "comparison_unit": "00631210-fa335e1751e5",
           "objdiff_percent": 100.0
         }
       ],
@@ -248117,19 +248117,19 @@
       "symbol": "_FmvRelease",
       "address": "0x00631230",
       "units": [
-        "src/nu2api/pc_fmv_control.cpp"
+        "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp"
       ],
       "target_size": 21,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_fmv_control.cpp",
+          "unit": "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp",
           "base_size": 21,
           "exact_match": true,
           "target_sha256": "343b267d9494c23409ab865aa3318b4aebaa71635138e4573e171479d354c0ae",
           "base_sha256": "343b267d9494c23409ab865aa3318b4aebaa71635138e4573e171479d354c0ae",
           "relocation_count": 3,
-          "comparison_unit": "00631230-1a78c81adaae",
+          "comparison_unit": "00631230-bbf2e33dfa8b",
           "objdiff_percent": 100.0
         }
       ],
@@ -248141,19 +248141,19 @@
       "symbol": "_FmvRestore",
       "address": "0x00631250",
       "units": [
-        "src/nu2api/pc_fmv_control.cpp"
+        "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp"
       ],
       "target_size": 21,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_fmv_control.cpp",
+          "unit": "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp",
           "base_size": 21,
           "exact_match": true,
           "target_sha256": "2e2147ed1af85d952ed83938cf92789d91162e00e025ca9487bd0d42449c8c4b",
           "base_sha256": "2e2147ed1af85d952ed83938cf92789d91162e00e025ca9487bd0d42449c8c4b",
           "relocation_count": 3,
-          "comparison_unit": "00631250-f924e4324331",
+          "comparison_unit": "00631250-e5a89b4e2a59",
           "objdiff_percent": 100.0
         }
       ],
@@ -248165,19 +248165,19 @@
       "symbol": "_FmvSkip",
       "address": "0x00631270",
       "units": [
-        "src/nu2api/pc_fmv_control.cpp"
+        "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp"
       ],
       "target_size": 24,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_fmv_control.cpp",
+          "unit": "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp",
           "base_size": 24,
           "exact_match": true,
           "target_sha256": "bdcdd72c9d1aa8b80189d6bc094b37eb8bceefea2a824dcf5946801c452cdf3d",
           "base_sha256": "bdcdd72c9d1aa8b80189d6bc094b37eb8bceefea2a824dcf5946801c452cdf3d",
           "relocation_count": 3,
-          "comparison_unit": "00631270-b3f29761181b",
+          "comparison_unit": "00631270-11263c51a1f0",
           "objdiff_percent": 100.0
         }
       ],
@@ -248189,19 +248189,19 @@
       "symbol": "_FmvMtxSetIdentity",
       "address": "0x00631290",
       "units": [
-        "src/nu2api/pc_fmv_control.cpp"
+        "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp"
       ],
       "target_size": 56,
       "exact_match": true,
       "objects": [
         {
-          "unit": "src/nu2api/pc_fmv_control.cpp",
+          "unit": "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp",
           "base_size": 56,
           "exact_match": true,
           "target_sha256": "b57d26e9b9e379c84398e784bd310218c249eaa34ae7934f8c3625efb4db09f6",
           "base_sha256": "b57d26e9b9e379c84398e784bd310218c249eaa34ae7934f8c3625efb4db09f6",
           "relocation_count": 0,
-          "comparison_unit": "00631290-742c12f2ca55",
+          "comparison_unit": "00631290-0cb341f0110a",
           "objdiff_percent": 100.0
         }
       ],
@@ -388440,7 +388440,6 @@
         "src/nu2api/nuwind.c",
         "src/nu2api/pc_device.cpp",
         "src/nu2api/pc_fmv.cpp",
-        "src/nu2api/pc_fmv_control.cpp",
         "src/nu2api/pc_fmv_player.cpp",
         "src/nu2api/pc_fmv_texture.cpp",
         "src/nu2api/pc_window.cpp",
@@ -389878,14 +389877,6 @@
         },
         {
           "unit": "src/nu2api/pc_fmv.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c",
-          "base_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
-        },
-        {
-          "unit": "src/nu2api/pc_fmv_control.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -393409,7 +393400,6 @@
         "src/nu2api/nuwin32/d3dApiCalls.cpp",
         "src/nu2api/nuwind.c",
         "src/nu2api/pc_device.cpp",
-        "src/nu2api/pc_fmv_control.cpp",
         "src/nu2api/pc_fmv_player.cpp",
         "src/nu2api/pc_fmv_texture.cpp",
         "src/nu2api/pc_window.cpp",
@@ -395048,14 +395038,6 @@
         },
         {
           "unit": "src/nu2api/pc_device.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
-          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
-        },
-        {
-          "unit": "src/nu2api/pc_fmv_control.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -428731,7 +428713,6 @@
         "src/nu2api/numouse.cpp",
         "src/nu2api/nunetemu.cpp",
         "src/nu2api/pc_device.cpp",
-        "src/nu2api/pc_fmv_control.cpp",
         "src/nu2api/pc_fmv_player.cpp",
         "src/nu2api/pc_window.cpp",
         "src/nu2api/wavreader.cpp"
@@ -428917,14 +428898,6 @@
         },
         {
           "unit": "src/nu2api/pc_device.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "9d459b445179d46efc315fd7ef9a5c8185bd7f3e2860dc6d325ab1b85acf6a96",
-          "base_sha256": "9d459b445179d46efc315fd7ef9a5c8185bd7f3e2860dc6d325ab1b85acf6a96"
-        },
-        {
-          "unit": "src/nu2api/pc_fmv_control.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -553655,9 +553628,9 @@
         "src/gameapi/rtl.c",
         "src/legoapi/rtlhelper.cpp",
         "src/nu2api/nu3d_includes.cpp",
+        "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp",
         "src/nu2api/numath_includes.c",
-        "src/nu2api/pc_device.cpp",
-        "src/nu2api/pc_fmv_control.cpp"
+        "src/nu2api/pc_device.cpp"
       ],
       "target_size": 4,
       "exact_match": true,
@@ -553703,6 +553676,14 @@
           "base_sha256": "07883481b5c147464597d44401db095d88c2a6b049fbbcd7b278de98a5ceeb71"
         },
         {
+          "unit": "src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "07883481b5c147464597d44401db095d88c2a6b049fbbcd7b278de98a5ceeb71",
+          "base_sha256": "07883481b5c147464597d44401db095d88c2a6b049fbbcd7b278de98a5ceeb71"
+        },
+        {
           "unit": "src/nu2api/numath_includes.c",
           "exact_match": true,
           "target_size": 4,
@@ -553712,14 +553693,6 @@
         },
         {
           "unit": "src/nu2api/pc_device.cpp",
-          "exact_match": true,
-          "target_size": 4,
-          "base_size": 4,
-          "target_sha256": "07883481b5c147464597d44401db095d88c2a6b049fbbcd7b278de98a5ceeb71",
-          "base_sha256": "07883481b5c147464597d44401db095d88c2a6b049fbbcd7b278de98a5ceeb71"
-        },
-        {
-          "unit": "src/nu2api/pc_fmv_control.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -901732,7 +901705,7 @@
       "metadata_sha256": "525d436eee3d48951222f1fd54574554983d228c3d06f19a545ba7cab50fe057",
       "header_path": "build/data-members/all_headers.h",
       "header_sha256": "b58dae3564d22c79f01f0eeed195498c4c83b1078a3e14fe9584774fe85e8c42",
-      "geometry_object_sha256": "ac5db23e1af56f6182866e1722d6970bc4d2179a9cd69117ae8448554c65505b",
+      "geometry_object_sha256": "c1dae5f8132cf6eb732457265293910c87fdf80ba6fd51fa0c5e316789c54688",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "09a234779457c340c9a6154c36d7236aa389cd92724de84a1a1f2d726d3da4f5",
       "headers": {
