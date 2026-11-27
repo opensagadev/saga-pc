@@ -57,6 +57,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if not __package__:
     sys.path.insert(0, str(ROOT))
 
+from tools import langscan  # noqa: E402
+
 TABLE = ROOT / "config/layout-target.csv"
 ANDROID_UNITS = ROOT / "config/layout-android-units.csv"
 COLUMNS = ("start", "end", "compiland", "inner_file", "language", "evidence", "confidence",
@@ -109,8 +111,10 @@ REVIEW = {
     0x405d70: dict(name="batman_gameai", conf="low",
                    why="Batman batman_gameai block after batarang, no marker between; fits the alphabetical "
                    "order (batarang < batman_gameai < bolt)"),
-    0x4087a0: dict(name="cable", conf="medium",
-                   why="CableFdiv is called only by the cable code (UpdateCables, DrawCables), so cable starts with it"),
+    0x408760: dict(name="cable", conf="medium",
+                   why="cable opens with the COMDAT copies of the C++ <math.h> inlines ceilf and ceil(float) that "
+                   "its float ceil emits, then CableFdiv, which only the cable code calls"),
+    0x4087a0: dict(name="cable", join=True, why="continues 0x408760"),
     0x408800: dict(name="cable", join=True, why="continues 0x4087a0"),
     0x40e700: dict(name="chris", conf="medium",
                    why="TCS only (no Batman counterpart); marker; Android chris.c fits between camera and config"),
@@ -744,7 +748,7 @@ def language(fs, ext_votes, retail, unity, cxx=None):
     return "c?", "no C++ construct; TCS game/legoapi code assumed C (Batman converted to .cpp)"
 
 
-def build(functions, units, markers, batman, retail, cxx=None):
+def build(functions, units, markers, batman, retail, cxx=None, communals=None):
     atoms, labels = segment(functions, units, markers, batman)
     groups = []
     for atom in atoms:
@@ -761,6 +765,9 @@ def build(functions, units, markers, batman, retail, cxx=None):
         else:
             groups.append([atom])
     seen = collections.Counter((area_of(g[0].start), g[0].label) for g in groups if g[0].label)
+    ranges = [(g[0].start, max(f["va"] + f["size"] for a in g for f in a.functions)) for g in groups
+              if any(a.functions for a in g)]
+    owned = langscan.owners(communals, ranges) if communals else {}
     comps = []
     for g in groups:
         fs = [f for a in g for f in a.functions]
@@ -776,6 +783,7 @@ def build(functions, units, markers, batman, retail, cxx=None):
         review = head.review or {}
         if review.get("lang"):
             lang, lang_why = review["lang"], "review: " + review.get("why", "")
+        lang, lang_why = langscan.language_rule(lang, lang_why, area, owned.get(head.start, []))
         evidence = sorted({a.evidence for a in g if a.evidence} | ({"marker"} if head.marker else set())
                           | ({"file"} if files else set())
                           | ({"code"} if lang_why.startswith("retail code") else set()))
@@ -1068,12 +1076,13 @@ def main(argv=None):
     batman = load_batman(args.batman) if args.batman else None
     retail = retail_files(args.exe, functions) if Path(args.exe).is_file() else {}
     cxx = retail_cxx(args.exe, functions) if Path(args.exe).is_file() else {}
-    comps = build(functions, units, markers, batman, retail, cxx)
+    communals = langscan.communal_refs(args.exe, langscan.symbols(args.symbols)) if Path(args.exe).is_file() else {}
+    comps = build(functions, units, markers, batman, retail, cxx, communals)
     if from_exe:
         repeats = repeated_helper_markers(comps, functions)
         if repeats:
             markers = {**markers, **repeats}
-            comps = build(functions, units, markers, batman, retail, cxx)
+            comps = build(functions, units, markers, batman, retail, cxx, communals)
     if args.show:
         va = int(args.show, 16)
         for c in comps:

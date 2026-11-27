@@ -31,14 +31,14 @@ address,symbol,size,ctype
 0x4027a0,_AITriggerSysAutoSetUp,237,
 0x402890,_AITriggerSetSysCreate,36,"void * __cdecl (VARIPTR *, VARIPTR *)"
 0x4028c0,_AttractoNuError,1,
-0x4028d0,_AttractoFabs,18,"f32 __cdecl (f32)"
+0x4028d0,?AttractoFabs@@YAMM@Z,18,"f32 __cdecl (f32)"
 0x4028f0,_AttractoVuVecMake,28,
 0x402910,_Attractos_Load,203,"i32 __cdecl(WORLDINFO *,void *)"
 0x4029e0,_Attractos_InitTerrain,69,void __cdecl(WORLDINFO *)
 0x402a30,_Attractos_ReserveBufferSpace,77,void * __cdecl(WORLDINFO *)
 0x402a80,_Attracto_Activate,28,"void __cdecl(GIZMO *,i32)"
 0x402aa0,_Attracto_SetVisibility,220,"void __cdecl(GIZMO *,i32)"
-0x402b80,_AttractoInitRecord,173,
+0x402b80,?AttractoInitRecord@@YAXPAUattracto_s@@@Z,173,
 0x402c30,_Attractos_Reset,173,"void __cdecl(WORLDINFO *,void *,void *)"
 0x402ce0,_Attractos_Update,279,"void __cdecl(WORLDINFO *,void *,f32)"
 0x00402e00,_Attracto_FindNearest,168,"ATTRACTO * __cdecl(WORLDINFO *,NUVEC *,GAMEOBJECT *,f32 *)"
@@ -55,8 +55,8 @@ address,symbol,size,ctype
 0x4032f0,_Attracto_GetPos,15,NUVEC * __cdecl(GIZMO *)
 0x00403300,_Attracto_GetPos_Top,46,"void __cdecl(ATTRACTO *,NUVEC *)"
 0x403330,_Attractos_RegisterGizmo,278,ADDGIZMOTYPE * __cdecl(i32)
-0x403450,_AttractoSelectShard,471,
-0x403630,_AttractoStartSuction,105,
+0x403450,?AttractoSelectShard@@YAPAUSHARD_s@@PAUWORLDINFO_s@@PAUgameobject_s@@@Z,471,
+0x403630,?AttractoStartSuction@@YAXPAUgameobject_s@@@Z,105,
 0x4036a0,_Attracto_MoveCode,1457,"void __cdecl(WORLDINFO *,GAMEOBJECT *)"
 0x403c60,_Attracto_GetSuctionPos,35,"void __cdecl(GAMEOBJECT *,NUVEC *)"
 0x403c90,_BatarangFabs,18,
@@ -113,15 +113,15 @@ address,symbol,size,ctype
 0x408640,_Bolt_AlternateFire_LSW,185,
 0x00408700,_EndBolt_EwokTorpedo,21,void __cdecl (BOLT *)
 0x408720,_UpdateBolt_Geonosian,64,void __cdecl(BOLT *)
-0x408760,_fun_00408760,27,
-0x408780,_fun_00408780,27,
-0x4087a0,_CableFdiv,54,"f32 __cdecl(f32, f32)"
+0x408760,_ceilf,27,float __cdecl ceilf(float)
+0x408780,?ceil@@YAMM@Z,27,float __cdecl ceil(float)
+0x4087a0,?CableFdiv@@YAMMM@Z,54,"f32 __cdecl(f32, f32)"
 0x4087e0,_CableVuVecMake,28,
 0x00408800,_InitCables,127,void __cdecl (WORLDINFO *)
 0x408880,_CreateCable,147,"CABLE_RECORD *__cdecl(GAMEOBJECT*,GAMEOBJECT*,i32)"
 0x408920,_DestroyCable,49,
-0x408960,_ReleaseCable,213,"void __cdecl(CABLE_RECORD *, i32)"
-0x408a40,_CableAtstToppled,175,void __cdecl(GAMEOBJECT *)
+0x408960,?ReleaseCable@@YAXPAUCABLE_s@@H@Z,213,"void __cdecl(CABLE_RECORD *, i32)"
+0x408a40,?CableAtstToppled@@YAXPAUgameobject_s@@@Z,175,void __cdecl(GAMEOBJECT *)
 0x408af0,_UpdateCables,3725,void __cdecl(void)
 0x409980,_DrawCables,2326,void __cdecl(void)
 0x40a2a0,_CableTargetGameObject,517,"GAMEOBJECT *__cdecl(GAMEOBJECT*,NUVEC*,f32)"
@@ -243,7 +243,7 @@ address,symbol,size,ctype
 0x413aa0,_ChrisDogFightAUpdate,107,void __cdecl (WORLDINFO *)
 0x413b10,_ChrisDogFightADraw,64,void __cdecl (WORLDINFO *)
 0x413b50,_ConfigVuVecMake,28,
-0x413b70,_CC_variant,910,
+0x413b70,?CC_variant@@YAXPAUnufpar_s@@@Z,910,
 0x413f00,_PlayersFabs,18,static f32 __cdecl(f32)
 0x413f20,_CreatureMtxSetRotationXY,28,
 0x413f40,_CreatureVuVecCopy,23,
@@ -1228,12 +1228,12 @@ address,symbol,size,ctype
 0x465e00,_GizBombGens_Load,147,
 0x465ea0,_GizBombGens_ReserveBufferSpace,183,void * __cdecl(void *)
 0x465f60,_GizmoBombGen_Activate,30,"void __cdecl(GIZMO *, i32)"
-0x465f80,_BombGeneratorSetVisibility,37,
+0x465f80,?BombGeneratorSetVisibility@@YAXPAUGIZBOMBGEN_s@@H@Z,37,
 0x465fb0,_GizmoBombGen_SetVisibility,55,"void __cdecl(GIZMO *, i32)"
 0x465ff0,_GizmoBombGen_GetPos,21,NUVEC * __cdecl(GIZMO *)
-0x466010,_BombGeneratorReset,77,
+0x466010,?BombGeneratorReset@@YAXPAUGIZBOMBGEN_s@@PAUGIZBOMBGENSYS_s@@@Z,77,
 0x466060,_GizBombGens_SetResetFlag,69,"void __cdecl(void *, void *, void *)"
-0x4660b0,_BombGeneratorsApplyReset,629,
+0x4660b0,?BombGeneratorsApplyReset@@YAXPAUGIZBOMBGENSYS_s@@PAUbomb_generator_progress_s@@@Z,629,
 0x466330,_GizBombGens_Update,449,"void __cdecl(void *, void *, f32)"
 0x466500,_GizBombGens_GetMaxGizmos,25,i32 __cdecl(void *)
 0x466520,_GizBombGens_AddGizmos,89,"void __cdecl(GIZMOSYS *, i32, void *, void *)"
@@ -1400,7 +1400,7 @@ address,symbol,size,ctype
 0x46f990,_GizTorps_ReserveBufferSpace,174,void * __cdecl(void *)
 0x46fa40,_GizTorp_SetVisibility,30,"void __cdecl(GIZMO *, i32)"
 0x46fa60,_GizTorp_Activate,28,"void __cdecl(GIZMO *, i32)"
-0x46fa80,_GizTorpReset,5,
+0x46fa80,?GizTorpReset@@YAXPAUTORPEDO_MACHINE@@@Z,5,
 0x46fa90,_GizTorps_Reset,55,"void __cdecl(void *, void *, void *)"
 0x46fad0,_GizTorpMachine_FindNearest,171,"void *__cdecl(WORLDINFO*,NUVEC*,f32*)"
 0x46fb80,_GizTorp_Update,94,"void __cdecl(void *, void *, f32)"
@@ -2127,7 +2127,7 @@ address,symbol,size,ctype
 0x004bc0b0,?Tag_DrawIcon_LSW@@YAXPAUgameobject_s@@@Z,491,
 0x4bc2a0,_PursuitVuVecMake,28,
 0x4bc2c0,_fun_004bc2c0,42,
-0x4bc2f0,_UpdateZamArrow,436,private same-TU void (WORLDINFO *)
+0x4bc2f0,?UpdateZamArrow@@YAXPAUWORLDINFO_s@@@Z,436,private same-TU void (WORLDINFO *)
 0x004bc4b0,_BountyHunterPursuitA_Init,1,void __cdecl(WORLDINFO *)
 0x004bc4c0,_BountyHunterPursuitA_Reset,42,void __cdecl(WORLDINFO *)
 0x004bc4f0,_BountyHunterPursuitA_Update,5,void __cdecl(WORLDINFO *)
@@ -2146,13 +2146,13 @@ address,symbol,size,ctype
 0x4bccc0,_PlayRadio,353,
 0x4bce30,_SecuritydoorNuError,1,
 0x4bce40,_SecuritydoorVuVecMake,28,
-0x4bce60,_SecurityDoorUpdateMatrices,146,"static void(SECURITY_DOOR_RECORD *, u16)"
+0x4bce60,?SecurityDoorUpdateMatrices@@YAXPAUsecurity_door_record_s@@G@Z,146,"static void(SECURITY_DOOR_RECORD *, u16)"
 0x4bcf00,_SecurityDoors_Load,109,"i32 __cdecl(WORLDINFO *, void *)"
 0x4bcf70,_SecurityDoors_InitTerrain,105,void __cdecl(WORLDINFO *)
 0x4bcfe0,_SecurityDoors_ReserveBufferSpace,80,void *__cdecl(WORLDINFO *)
 0x4bd030,_SecurityDoor_Activate,34,"void __cdecl(GIZMO *, i32)"
 0x4bd060,_SecurityDoor_SetVisibility,36,"void __cdecl(GIZMO *, i32)"
-0x4bd090,_SecurityDoorInitRecord,244,static void(SECURITY_DOOR_RECORD *)
+0x4bd090,?SecurityDoorInitRecord@@YAXPAUsecurity_door_record_s@@@Z,244,static void(SECURITY_DOOR_RECORD *)
 0x4bd190,_SecurityDoors_Reset,230,"void __cdecl(WORLDINFO *, void *, SECURITY_DOOR_PROGRESS *)"
 0x4bd280,_SecurityDoors_Update,321,"void __cdecl(WORLDINFO *, void *, f32)"
 0x4bd3d0,_SecurityDoor_FindNearest,207,"SECURITY_DOOR_RECORD *__cdecl(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *)"
@@ -2168,7 +2168,7 @@ address,symbol,size,ctype
 0x4bd870,_SecurityDoors_StoreProgress,150,"void __cdecl(WORLDINFO *, void *, SECURITY_DOOR_PROGRESS *)"
 0x4bd910,_SecurityDoor_GetPos,17,NUVEC *__cdecl(GIZMO *)
 0x4bd930,_SecurityDoors_RegisterGizmo,278,ADDGIZMOTYPE *__cdecl(i32)
-0x4bda50,_SecurityDoorStart,160,"static void(GAMEOBJECT *, SECURITY_DOOR_RECORD *, i32)"
+0x4bda50,?SecurityDoorStart@@YAXPAUgameobject_s@@PAUsecurity_door_record_s@@H@Z,160,"static void(GAMEOBJECT *, SECURITY_DOOR_RECORD *, i32)"
 0x4bdaf0,_SecurityDoor_MoveCode,436,"void __cdecl(WORLDINFO *, GAMEOBJECT *)"
 0x4bdcb0,_SfxVuVecMake,28,
 0x4bdcd0,_GameAudio_OverrideFootStep_LSW,243,
@@ -2490,7 +2490,7 @@ address,symbol,size,ctype
 0x4d4980,_TrafficAnimSys_Update,373,
 0x4d4b00,_TrafficAnimSys_Draw,434,
 0x4d4cc0,_TransformVuVecMake,28,
-0x4d4ce0,_RotateTargetMatrix,215,"void __cdecl(NUMTX *, i32)"
+0x4d4ce0,?RotateTargetMatrix@@YAXPAUnumtx_s@@H@Z,215,"void __cdecl(NUMTX *, i32)"
 0x4d4dc0,_Transform_MoveCode,1102,"void __cdecl(WORLDINFO *, GAMEOBJECT *)"
 0x4d5210,_TransformDrawTarget,685,"void __cdecl(NUVEC *, f32, f32)"
 0x4d54c0,_Transform_TargettedByObj,131,GAMEOBJECT *__cdecl(void *)

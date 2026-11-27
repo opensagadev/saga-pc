@@ -40,7 +40,7 @@ static f32 pursuit_laser_wobble = 0.01f;
 static f32 pursuit_laser_end_width = 1.5f;
 static f32 zamarrow_message_size = 0.05f;
 static f32 zamarrow_height = 1.0f;
-f32 traffic_test_z = -360.0f;
+extern "C" f32 traffic_test_z = -360.0f;
 static i32 pursuit_c_hack = 1;
 
 /* Zam Wesell locator arrow. */
@@ -49,7 +49,7 @@ static ZAMARROW zamarrow;
 static i32 pursuit_laser_type;
 
 /* Clears the locator arrow and points it at Zam Wesell again. */
-void fun_004bc2c0(WORLDINFO *world) {
+extern "C" void fun_004bc2c0(WORLDINFO *world) {
     memset(&zamarrow, 0, sizeof(zamarrow));
     zamarrow.object = GetNamedGameObject(world->ai_sys, "ai_zam");
 }
@@ -83,22 +83,22 @@ static void UpdateZamArrow(WORLDINFO *world) {
     }
 }
 
-void BountyHunterPursuitA_Init(WORLDINFO *world) {
+extern "C" void BountyHunterPursuitA_Init(WORLDINFO *world) {
 }
 
-void BountyHunterPursuitA_Reset(WORLDINFO *world) {
+extern "C" void BountyHunterPursuitA_Reset(WORLDINFO *world) {
     memset(&zamarrow, 0, sizeof(zamarrow));
     zamarrow.object = GetNamedGameObject(world->ai_sys, "ai_zam");
 }
 
-void BountyHunterPursuitA_Update(WORLDINFO *world) {
+extern "C" void BountyHunterPursuitA_Update(WORLDINFO *world) {
     UpdateZamArrow(world);
 }
 
-void BountyHunterPursuitB_Init(WORLDINFO *world) {
+extern "C" void BountyHunterPursuitB_Init(WORLDINFO *world) {
 }
 
-void BountyHunterPursuitB_Reset(WORLDINFO *world) {
+extern "C" void BountyHunterPursuitB_Reset(WORLDINFO *world) {
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "generator1");
     LevGizmo[1] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "generator2");
     LevGizmo[2] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "generator3");
@@ -111,16 +111,16 @@ void BountyHunterPursuitB_Reset(WORLDINFO *world) {
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "CompletedB", NULL);
 }
 
-void BountyHunterPursuitB_Update(WORLDINFO *world) {
+extern "C" void BountyHunterPursuitB_Update(WORLDINFO *world) {
     if (LevAIMessage[0] != NULL && LevAIMessage[0]->value == 1.0f) {
         UpdateZamArrow(world);
     }
 }
 
-void BountyHunterPursuitC_Init(WORLDINFO *world) {
+extern "C" void BountyHunterPursuitC_Init(WORLDINFO *world) {
 }
 
-void BountyHunterPursuitC_Reset(WORLDINFO *world) {
+extern "C" void BountyHunterPursuitC_Reset(WORLDINFO *world) {
     TRAFFICANIMSYS_s *traffic;
     TRAFFICANIM_s *entry;
     NUMTX first;
@@ -152,7 +152,7 @@ void BountyHunterPursuitC_Reset(WORLDINFO *world) {
     }
 }
 
-void BountyHunterPursuitC_Update(WORLDINFO *world) {
+extern "C" void BountyHunterPursuitC_Update(WORLDINFO *world) {
     TRAFFICANIMSYS_s *traffic;
     TRAFFICANIM_s *entry;
     i32 i;
@@ -182,10 +182,10 @@ void BountyHunterPursuitC_Update(WORLDINFO *world) {
     }
 }
 
-void BountyHunterPursuitD_Init(WORLDINFO *world) {
+extern "C" void BountyHunterPursuitD_Init(WORLDINFO *world) {
 }
 
-void BountyHunterPursuitD_Reset(WORLDINFO *world) {
+extern "C" void BountyHunterPursuitD_Reset(WORLDINFO *world) {
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "generator1");
     LevGizmo[1] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "generator2");
     LevGizmo[2] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "generator3");
@@ -201,7 +201,7 @@ void BountyHunterPursuitD_Reset(WORLDINFO *world) {
     LevGameObject[0] = GetNamedGameObject(world->ai_sys, "ai_zam");
 }
 
-void BountyHunterPursuitD_Update(WORLDINFO *world) {
+extern "C" void BountyHunterPursuitD_Update(WORLDINFO *world) {
     f32 nearest_distance_sq;
     f32 distance_sq;
     f32 distance;
@@ -216,7 +216,7 @@ void BountyHunterPursuitD_Update(WORLDINFO *world) {
     nearest = NULL;
     for (i = 0; i < 12; i++) {
         if (LevGizmo[i] != NULL) {
-            generator = LevGizmo[i]->object;
+            generator = (GIZMOBLOWUP *)LevGizmo[i]->object;
             if ((generator->status_flags & BLOWUP_STATUS_BLOWN_UP) == 0) {
                 distance_sq = NuVecDistSqr(&generator->position, &LevGameObject[0]->collision_position, NULL);
                 if (distance_sq < nearest_distance_sq) {

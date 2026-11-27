@@ -17,11 +17,11 @@
 #include "nu2api/numath/nuvec.h"
 #include "legoapi/misc/utilities.h"
 
-void GiztorpedoNuError(void) {
+extern "C" void GiztorpedoNuError(void) {
 }
 
-i32 GizTorp_Load(void *world_pointer, void *unused) {
-    WORLDINFO *world = world_pointer;
+extern "C" i32 GizTorp_Load(void *world_pointer, void *unused) {
+    WORLDINFO *world = (WORLDINFO *)world_pointer;
     TORPEDO_MACHINE_SYS *system;
     i32 version;
     i32 index;
@@ -56,15 +56,15 @@ i32 GizTorp_Load(void *world_pointer, void *unused) {
 /* MATCH-EXCEPTION: the original re-reads world->torpedo_machine_sys at each use; the casts stand in for its
  * GIZTORPMACHINESYS_s type (the header has the narrower TORPEDO_MACHINE_SYS view). */
 void *GizTorps_ReserveBufferSpace(void *pointer) {
-    WORLDINFO *world = pointer;
+    WORLDINFO *world = (WORLDINFO *)pointer;
     world->torpedo_machine_sys = NULL;
     if (world->current_level->max_torpmachines > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        world->torpedo_machine_sys = world->giz_buffer.void_ptr;
+        world->torpedo_machine_sys = (TORPEDO_MACHINE_SYS *)world->giz_buffer.void_ptr;
         world->giz_buffer.addr += sizeof(GIZTORPMACHINESYS_s);
         memset(world->torpedo_machine_sys, 0, sizeof(GIZTORPMACHINESYS_s));
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        ((GIZTORPMACHINESYS_s *)world->torpedo_machine_sys)->machines = world->giz_buffer.void_ptr;
+        ((GIZTORPMACHINESYS_s *)world->torpedo_machine_sys)->machines = (GIZTORPMACHINE_s *)world->giz_buffer.void_ptr;
         world->giz_buffer.addr += world->current_level->max_torpmachines * sizeof(GIZTORPMACHINE_s);
         memset(((GIZTORPMACHINESYS_s *)world->torpedo_machine_sys)->machines, 0,
                world->current_level->max_torpmachines * sizeof(GIZTORPMACHINE_s));
@@ -74,19 +74,19 @@ void *GizTorps_ReserveBufferSpace(void *pointer) {
 }
 
 void GizTorp_SetVisibility(void *input, i32 visible) {
-    GIZMO *gizmo = input;
+    GIZMO *gizmo = (GIZMO *)input;
     TORPEDO_MACHINE *machine;
     if (gizmo != NULL) {
-        machine = gizmo->object;
+        machine = (TORPEDO_MACHINE *)gizmo->object;
         machine->visible = visible != 0;
     }
 }
 
 void GizTorp_Activate(void *input, i32 active) {
-    GIZMO *gizmo = input;
+    GIZMO *gizmo = (GIZMO *)input;
     TORPEDO_MACHINE *machine;
     if (gizmo != NULL) {
-        machine = gizmo->object;
+        machine = (TORPEDO_MACHINE *)gizmo->object;
         machine->active = active != 0;
     }
 }
@@ -97,7 +97,7 @@ static void GizTorpReset(TORPEDO_MACHINE *torp) {
 }
 
 void GizTorps_Reset(void *world_ptr, void *data, void *progress) {
-    WORLDINFO *w = world_ptr;
+    WORLDINFO *w = (WORLDINFO *)world_ptr;
     TORPEDO_MACHINE_SYS *s;
     i32 i;
     if (w == NULL || w->torpedo_machine_sys == NULL) {
@@ -138,7 +138,7 @@ void *GizTorpMachine_FindNearest(WORLDINFO *world, NUVEC *position, f32 *distanc
 }
 
 void GizTorp_Update(void *world_ptr, void *unused, f32 elapsed) {
-    WORLDINFO *world = world_ptr;
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
     TORPEDO_MACHINE_SYS *system = world->torpedo_machine_sys;
     i32 index;
     if (system == NULL) {
@@ -157,7 +157,7 @@ void GizTorp_Update(void *world_ptr, void *unused, f32 elapsed) {
 }
 
 void GizTorp_Draw(void *world_ptr, void *unused, f32 elapsed) {
-    WORLDINFO *world = world_ptr;
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
     TORPEDO_MACHINE_SYS *system;
     NUMTX matrix;
     i32 index;
@@ -198,7 +198,7 @@ void GizTorp_Draw(void *world_ptr, void *unused, f32 elapsed) {
 }
 
 i32 GizTorp_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world = world_ptr;
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
     if (world != NULL) {
         return world->current_level->max_torpmachines;
     }
@@ -206,7 +206,7 @@ i32 GizTorp_GetMaxGizmos(void *world_ptr) {
 }
 
 void GizTorp_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
-    WORLDINFO *w = world_ptr;
+    WORLDINFO *w = (WORLDINFO *)world_ptr;
     TORPEDO_MACHINE_SYS *s;
     i32 i;
     if (w == NULL || w->torpedo_machine_sys == NULL) {
@@ -222,7 +222,7 @@ void GizTorp_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
 }
 
 char *GizTorp_GetGizmoName(void *input) {
-    GIZMO *gizmo = input;
+    GIZMO *gizmo = (GIZMO *)input;
     if (gizmo != NULL && gizmo->object != NULL) {
         return ((TORPEDO_MACHINE *)gizmo->object)->name;
     }

@@ -851,7 +851,7 @@ assert:-#595,assert,,3091,3091,2,legoapi/items/objects/objectsall.h,follow-type,
 assert:-#596,assert,,3092,3092,1,legoapi/items/objects/objectsall.h,follow-type,PARTDEBRISSYS
 assert:-#597,assert,,3093,3093,1,legoapi/items/objects/objectsall.h,follow-type,PARTDEBRISSYS
 assert:-#598,assert,,3094,3094,1,legoapi/items/objects/objectsall.h,follow-type,PARTDEBRISSYS
-struct:GAMEDEBRISENTRY,struct,GAMEDEBRISENTRY,3096,3099,5,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.c (2) android-path
+struct:GAMEDEBRISENTRY,struct,GAMEDEBRISENTRY,3096,3099,5,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.cpp (2) android-path
 assert:-#599,assert,,3101,3101,2,legoapi/items/collect/bolt.h,follow-type,GAMEDEBRISENTRY
 assert:-#600,assert,,3102,3102,1,legoapi/items/collect/bolt.h,follow-type,GAMEDEBRISENTRY
 struct:APIDEBRISSYS,struct,APIDEBRISSYS,3104,3108,6,legoapi/items/base/apiobject.h,rule,used most in gameapi/apiobject.c (12) android-path
@@ -1448,7 +1448,7 @@ assert:-#1121,assert,,4986,4986,1,legoapi/characters/core/customiser.h,follow-ty
 struct:CUSTOMISER_LAYERS,struct,CUSTOMISER_LAYERS,4988,4993,7,legoapi/menus/screens/customise.h,rule,used most in legogame/customise.c (16) android-path
 assert:-#1122,assert,,4995,4995,2,legoapi/menus/screens/customise.h,follow-type,CUSTOMISER_LAYERS
 assert:-#1123,assert,,4996,4996,1,legoapi/menus/screens/customise.h,follow-type,CUSTOMISER_LAYERS
-struct:SUIT_LAYERS,struct,SUIT_LAYERS,4998,5001,5,legoapi/actions/character/suit.h,rule,used most in legogame/suit.c (6) android-path
+struct:SUIT_LAYERS,struct,SUIT_LAYERS,4998,5001,5,legoapi/actions/character/suit.h,rule,used most in legogame/suit.cpp (6) android-path
 assert:-#1124,assert,,5003,5003,2,legoapi/actions/character/suit.h,follow-type,SUIT_LAYERS
 struct:CHARACTERANIM_CONFIG,struct,CHARACTERANIM_CONFIG,5005,5037,34,legoapi/items/base/apiobject.h,rule,used most in gameapi/apiobject.c (13) android-path
 assert:-#1125,assert,,5039,5039,2,legoapi/items/base/apiobject.h,follow-type,CHARACTERANIM_CONFIG
@@ -3428,7 +3428,7 @@ struct:gizforce_s,struct,gizforce_s,10906,10963,59,legoapi/legoapi_types.h,andro
 struct:vehicle_weapon_item_s,struct,vehicle_weapon_item_s VEHICLE_WEAPON_ITEM,10966,10970,7,legoapi/items/collect/bolt.h,rule,"used in saga.h only, most by legoapi/items/collect/bolt.h (1)"
 assert:-#2881,assert,,10972,10972,2,legoapi/items/collect/bolt.h,follow-type,VEHICLE_WEAPON_ITEM
 assert:-#2882,assert,,10973,10973,1,legoapi/items/collect/bolt.h,follow-type,VEHICLE_WEAPON_ITEM
-struct:weapon_ammo_s,struct,weapon_ammo_s WEAPON_AMMO,10975,10978,5,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.c (2) android-path
+struct:weapon_ammo_s,struct,weapon_ammo_s WEAPON_AMMO,10975,10978,5,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.cpp (2) android-path
 assert:-#2883,assert,,10980,10980,2,legoapi/items/collect/bolt.h,follow-type,WEAPON_AMMO
 struct:awkward_shape_sphere_s,struct,awkward_shape_sphere_s AWKWARD_SHAPE_SPHERE,10982,10987,7,legoapi/characters/motion/move.h,users,AWKWARD_SHAPE_SPHERE: only legogame/move.c android-path
 assert:-#2884,assert,,10989,10989,2,legoapi/characters/motion/move.h,follow-type,AWKWARD_SHAPE_SPHERE
@@ -3470,7 +3470,7 @@ struct:NUPADMAPPING,struct,NUPADMAPPING,11098,11102,6,nu2api/nucore/nupad.h,andr
 assert:-#2907,assert,,11104,11104,2,nu2api/nucore/nupad.h,follow-type,NUPADMAPPING
 assert:-#2908,assert,,11105,11105,1,nu2api/nucore/nupad.h,follow-type,NUPADMAPPING
 assert:-#2909,assert,,11106,11106,1,nu2api/nucore/nupad.h,follow-type,NUPADMAPPING
-forward:CABLE_RECORD,forward,CABLE_RECORD,11108,11108,2,legoapi/items/objects/cable.h,rule,used most in legogame/cable.c (12) android-path
+forward:CABLE_RECORD,forward,CABLE_RECORD,11108,11108,2,legoapi/items/objects/cable.h,rule,used most in legogame/cable.cpp (12) android-path
 forward:CUT_LOAD_SYS,forward,CUT_LOAD_SYS,11110,11110,2,legoapi/cutscenes/cutscenes.h,users,CUT_LOAD_SYS: only legoapi/cutscenes.cpp android-path
 forward:CUT_LOAD_LIST_ENTRY,forward,CUT_LOAD_LIST_ENTRY,11111,11111,1,legoapi/cutscenes/cutscenes.h,users,CUT_LOAD_LIST_ENTRY: only legoapi/cutscenes.cpp android-path
 function:NuDisplayListRndrSpecial,function,NuDisplayListRndrSpecial,11117,11117,2,nu2api/nu3d/nudlist.h,android,NuDisplayListRndrSpecial
@@ -3615,7 +3615,7 @@ function:ZapTarget,function,ZapTarget,11280,11280,1,legoapi/characters/motion/mo
 variable:id_INDIANAJONES,variable,id_INDIANAJONES,11281,11281,1,legoapi/misc/legoapi_status.h,rule,used most in legogame/legoapi_status.cpp (2) android-path
 variable:id_HANSOLOINDY,variable,id_HANSOLOINDY,11282,11282,1,legoapi/menus/screens/shop.h,rule,used most in legogame/shop.c (4) android-path
 variable:id_PROBEDROID,variable,id_PROBEDROID,11283,11283,1,legoapi/world/levels/episodeV.h,rule,used most in legogame/episodeV.c (5) android-path
-variable:id_FOURLOM,variable,id_FOURLOM,11284,11284,1,legoapi/items/collect/bolt.h,users,id_FOURLOM: only legogame/bolt.c android-path
+variable:id_FOURLOM,variable,id_FOURLOM,11284,11284,1,legoapi/items/collect/bolt.h,users,id_FOURLOM: only legogame/bolt.cpp android-path
 variable:id_TRAININGREMOTE,variable,id_TRAININGREMOTE,11285,11285,1,legoapi/ai/game/lsw_hub_ai.h,rule,used most in legogame/lsw_hub_ai.c (2) android-path
 variable:id_EWOK,variable,id_EWOK,11286,11286,1,legoapi/characters/core/character.h,data-order,retail 0x7f1924 between 0x7f1920 and 0x7f192c
 variable:id_WICKET,variable,id_WICKET,11287,11287,1,legoapi/characters/core/character.h,data-order,retail 0x7f1928 between 0x7f1920 and 0x7f192c
@@ -3630,18 +3630,18 @@ variable:id_SNOWSPEEDER,variable,id_SNOWSPEEDER,11295,11295,1,legoapi/characters
 variable:id_TIEINTERCEPTOR,variable,id_TIEINTERCEPTOR,11296,11296,1,legoapi/characters/core/character.h,data-order,retail 0x7f1a28 between 0x7f1a20 and 0x7f1a30
 variable:id_IMPERIALSHUTTLE,variable,id_IMPERIALSHUTTLE,11297,11297,1,legoapi/characters/core/character.h,data-order,retail 0x7f1a2c between 0x7f1a20 and 0x7f1a30
 variable:id_SENTRYDROID,variable,id_SENTRYDROID,11298,11298,1,legoapi/characters/core/character.h,android,id_SENTRYDROID
-variable:id_KAMINO_DROID,variable,id_KAMINO_DROID,11299,11299,1,legoapi/items/collect/bolt.h,users,id_KAMINO_DROID: only legogame/bolt.c android-path
-variable:id_NABOOSTARFIGHTER,variable,id_NABOOSTARFIGHTER,11300,11300,1,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.c (1) android-path
-variable:id_NABOOSTARFIGHTERLIME,variable,id_NABOOSTARFIGHTERLIME,11301,11301,1,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.c (1) android-path
-variable:id_SATIPO,variable,id_SATIPO,11302,11302,1,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.c (1) android-path
+variable:id_KAMINO_DROID,variable,id_KAMINO_DROID,11299,11299,1,legoapi/items/collect/bolt.h,users,id_KAMINO_DROID: only legogame/bolt.cpp android-path
+variable:id_NABOOSTARFIGHTER,variable,id_NABOOSTARFIGHTER,11300,11300,1,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.cpp (1) android-path
+variable:id_NABOOSTARFIGHTERLIME,variable,id_NABOOSTARFIGHTERLIME,11301,11301,1,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.cpp (1) android-path
+variable:id_SATIPO,variable,id_SATIPO,11302,11302,1,legoapi/items/collect/bolt.h,rule,used most in legogame/bolt.cpp (1) android-path
 variable:VehicleSpecialShooterId,variable,VehicleSpecialShooterId,11303,11303,1,legoapi/world/levels.h,data-order,retail 0x7f1ab8 between 0x7f1ab4 and 0x7f1abc
-variable:id_MINITIEINTERCEPTOR,variable,id_MINITIEINTERCEPTOR,11304,11304,1,legoapi/items/collect/bolt.h,users,id_MINITIEINTERCEPTOR: only legogame/bolt.c android-path
-variable:id_MINIIMPERIALSHUTTLE,variable,id_MINIIMPERIALSHUTTLE,11305,11305,1,legoapi/items/collect/bolt.h,users,id_MINIIMPERIALSHUTTLE: only legogame/bolt.c android-path
-variable:id_MINIMILLENNIUMFALCON,variable,id_MINIMILLENNIUMFALCON,11306,11306,1,legoapi/items/collect/bolt.h,users,id_MINIMILLENNIUMFALCON: only legogame/bolt.c android-path
-variable:id_MINITIEFIGHTER,variable,id_MINITIEFIGHTER,11307,11307,1,legoapi/items/collect/bolt.h,users,id_MINITIEFIGHTER: only legogame/bolt.c android-path
-variable:id_MINITIEADVANCED,variable,id_MINITIEADVANCED,11308,11308,1,legoapi/items/collect/bolt.h,users,id_MINITIEADVANCED: only legogame/bolt.c android-path
-variable:id_MINISITHINFILTRATOR,variable,id_MINISITHINFILTRATOR,11309,11309,1,legoapi/items/collect/bolt.h,users,id_MINISITHINFILTRATOR: only legogame/bolt.c android-path
-variable:id_MINISOLARSAILOR,variable,id_MINISOLARSAILOR,11310,11310,1,legoapi/items/collect/bolt.h,users,id_MINISOLARSAILOR: only legogame/bolt.c android-path
+variable:id_MINITIEINTERCEPTOR,variable,id_MINITIEINTERCEPTOR,11304,11304,1,legoapi/items/collect/bolt.h,users,id_MINITIEINTERCEPTOR: only legogame/bolt.cpp android-path
+variable:id_MINIIMPERIALSHUTTLE,variable,id_MINIIMPERIALSHUTTLE,11305,11305,1,legoapi/items/collect/bolt.h,users,id_MINIIMPERIALSHUTTLE: only legogame/bolt.cpp android-path
+variable:id_MINIMILLENNIUMFALCON,variable,id_MINIMILLENNIUMFALCON,11306,11306,1,legoapi/items/collect/bolt.h,users,id_MINIMILLENNIUMFALCON: only legogame/bolt.cpp android-path
+variable:id_MINITIEFIGHTER,variable,id_MINITIEFIGHTER,11307,11307,1,legoapi/items/collect/bolt.h,users,id_MINITIEFIGHTER: only legogame/bolt.cpp android-path
+variable:id_MINITIEADVANCED,variable,id_MINITIEADVANCED,11308,11308,1,legoapi/items/collect/bolt.h,users,id_MINITIEADVANCED: only legogame/bolt.cpp android-path
+variable:id_MINISITHINFILTRATOR,variable,id_MINISITHINFILTRATOR,11309,11309,1,legoapi/items/collect/bolt.h,users,id_MINISITHINFILTRATOR: only legogame/bolt.cpp android-path
+variable:id_MINISOLARSAILOR,variable,id_MINISOLARSAILOR,11310,11310,1,legoapi/items/collect/bolt.h,users,id_MINISOLARSAILOR: only legogame/bolt.cpp android-path
 variable:id_ANAKINSSPEEDER,variable,id_ANAKINSSPEEDER,11311,11311,1,legoapi/characters/core/character.h,data-order,retail 0x7f1b34 between 0x7f1b30 and 0x7f1b3c
 variable:id_ANAKINSSPEEDERGREEN,variable,id_ANAKINSSPEEDERGREEN,11312,11312,1,legoapi/characters/core/character.h,data-order,retail 0x7f1b38 between 0x7f1b30 and 0x7f1b3c
 variable:id_ZAMSSPEEDER,variable,id_ZAMSSPEEDER,11313,11313,1,legoapi/characters/core/character.h,android,id_ZAMSSPEEDER
@@ -3827,8 +3827,8 @@ function:PlaySfxByIdAndSetPitch,function,PlaySfxByIdAndSetPitch,11504,11504,1,le
 function:CableCode,function,CableCode,11505,11505,1,legoapi/characters/motion/move.h,android,CableCode
 function:TerrainPlayer,function,TerrainPlayer,11506,11506,1,legoapi/ai/game/creature.h,android,TerrainPlayer
 function:PostResetCode,function,PostResetCode,11507,11507,1,legoapi/characters/core/players.h,android,PostResetCode
-function:CableTargetGameObject,function,CableTargetGameObject,11508,11508,1,legoapi/items/objects/cable.h,symbol,legogame/cable.c android-path
-function:CreateCable,function,CreateCable,11509,11509,1,legoapi/items/objects/cable.h,symbol,legogame/cable.c android-path
+function:CableTargetGameObject,function,CableTargetGameObject,11508,11508,1,legoapi/items/objects/cable.h,symbol,legogame/cable.cpp android-path
+function:CreateCable,function,CreateCable,11509,11509,1,legoapi/items/objects/cable.h,symbol,legogame/cable.cpp android-path
 variable:CutList,variable,CutList,11511,11511,2,legoapi/cutscenes/cutscenes.h,users,CutList: only legoapi/cutscenes.cpp android-path
 variable:CUTCOUNT,variable,CUTCOUNT,11512,11512,1,legoapi/cutscenes/cutscenes.h,users,CUTCOUNT: only legoapi/cutscenes.cpp android-path
 variable:CutScene_OverrideConfigFileNameFn,variable,CutScene_OverrideConfigFileNameFn,11513,11513,1,legoapi/cutscenes/cutscenes.h,data-order,retail 0x951cc0 between 0x951ca8 and 0x951cc4
@@ -6169,7 +6169,7 @@ function:GetShootOrigin_LSW,function,GetShootOrigin_LSW,14331,14331,1,legoapi/ch
 function:GetShootDirection_LSW,function,GetShootDirection_LSW,14332,14332,1,legoapi/characters/motion.h,android,GetShootDirection_LSW
 function:GetShootDirection_Batman,function,GetShootDirection_Batman,14333,14333,1,legoapi/characters/motion/move.h,symbol,legogame/move.c android-path
 function:Bolt_Debris_LSW,function,Bolt_Debris_LSW,14334,14334,1,legoapi/items/collect/bolt.h,android,Bolt_Debris_LSW
-function:UpdateBolt_Geonosian,function,UpdateBolt_Geonosian,14335,14335,1,legoapi/items/collect/bolt.h,symbol,legogame/bolt.c android-path
+function:UpdateBolt_Geonosian,function,UpdateBolt_Geonosian,14335,14335,1,legoapi/items/collect/bolt.h,symbol,legogame/bolt.cpp android-path
 function:Torpedo_InitRicochet,function,Torpedo_InitRicochet,14336,14336,1,legoapi/items/collect/torpedo.h,android,Torpedo_InitRicochet
 function:Torpedo_EndBolt,function,Torpedo_EndBolt,14337,14337,1,legoapi/items/collect/torpedo.h,android,Torpedo_EndBolt
 function:Bolt_AlternateFire_LSW,function,Bolt_AlternateFire_LSW,14338,14338,1,legoapi/items/collect/bolt.h,android,Bolt_AlternateFire_LSW
@@ -6825,7 +6825,7 @@ function:AISysProcess,function,AISysProcess,15103,15103,1,gameapi/ai/aisys/aisys
 function:Arcade_GetMode,function,Arcade_GetMode,15104,15104,1,legoapi/menus/screens/arcade.h,android,Arcade_GetMode
 variable:v001,variable,v001,15105,15105,1,nu2api/numath/nuvec.h,android,v001
 variable:VADER_ADATA,variable,VADER_ADATA,15106,15106,1,legoapi/world/area.h,android,VADER_ADATA
-function:EndBolt_EwokTorpedo,function,EndBolt_EwokTorpedo,15107,15107,1,legoapi/items/collect/bolt.h,symbol,legogame/bolt.c android-path
+function:EndBolt_EwokTorpedo,function,EndBolt_EwokTorpedo,15107,15107,1,legoapi/items/collect/bolt.h,symbol,legogame/bolt.cpp android-path
 function:BoltType_FindByID,function,BoltType_FindByID,15108,15108,1,legoapi/world/level.h,android,BoltType_FindByID
 function:FindGameObject,function,FindGameObject,15109,15109,1,legoapi/items/objects/gameobjects.h,symbol,legoapi/gameobjects.c android-path
 function:MakeBaddiesForgetAboutParty,function,MakeBaddiesForgetAboutParty,15110,15110,1,legoapi/ai/core/gameai.h,android,MakeBaddiesForgetAboutParty
@@ -7193,7 +7193,7 @@ function:PCDeviceCreateTextureFromMemory,function,PCDeviceCreateTextureFromMemor
 variable:NuTextureCapacityPC,variable,NuTextureCapacityPC,15738,15738,1,nu2api/nu3d/nu3d_includes.h,users,NuTextureCapacityPC: only nu2api/nu3d_includes.cpp android-path
 variable:NuTextureLoadCountPC,variable,NuTextureLoadCountPC,15739,15739,1,nu2api/nu3d/nu3d_includes.h,users,NuTextureLoadCountPC: only nu2api/nu3d_includes.cpp android-path
 variable:NuTextureLoadOrderPC,variable,NuTextureLoadOrderPC,15740,15740,1,nu2api/nu3d/nu3d_includes.h,users,NuTextureLoadOrderPC: only nu2api/nu3d_includes.cpp android-path
-variable:AIPositionUnset,variable,AIPositionUnset,15741,15741,1,legoapi/items/objects/cable.h,rule,used most in legogame/cable.c (2) android-path
+variable:AIPositionUnset,variable,AIPositionUnset,15741,15741,1,legoapi/items/objects/cable.h,rule,used most in legogame/cable.cpp (2) android-path
 function:AddGameDebris,function,AddGameDebris,15742,15742,1,legoapi/render/fx.h,android,AddGameDebris
 struct:debris_render_chunk_s,struct,debris_render_chunk_s DEBRIS_RENDER_CHUNK,15744,15754,12,gameapi/edptl.h,rule,used most in gameapi/gameliball.cpp[edptl.c] (11) pc-path
 assert:-#3435,assert,,15756,15756,2,gameapi/edptl.h,follow-type,DEBRIS_RENDER_CHUNK
@@ -7436,17 +7436,17 @@ variable:debris_object_switches,variable,debris_object_switches,16006,16006,1,ga
 function:DebrisRegisterCutoffCameraVec,function,DebrisRegisterCutoffCameraVec,16007,16007,1,legoapi/render/core/gameliball.h,android,DebrisRegisterCutoffCameraVec
 function:DebrisSetRenderGroup,function,DebrisSetRenderGroup,16008,16008,1,legoapi/render/core/gameliball.h,android,DebrisSetRenderGroup
 function:ResetFrameCounters,function,ResetFrameCounters,16009,16009,1,legoapi/core/input/timing.h,android,ResetFrameCounters (also batman.h)
-function:InitCables,function,InitCables,16010,16010,1,legoapi/items/objects/cable.h,symbol,legogame/cable.c android-path
+function:InitCables,function,InitCables,16010,16010,1,legoapi/items/objects/cable.h,symbol,legogame/cable.cpp android-path
 function:InitSnakes,function,InitSnakes,16011,16011,1,legoapi/actions/character/snake.h,android,InitSnakes (also batman.h)
 function:NuSpecialFind,function,NuSpecialFind,16012,16012,1,nu2api/nu3d/nugscn.h,android,NuSpecialFind (also legoapi/world/world_shared.h)
 variable:cables,variable,cables,16013,16013,1,legoapi/items/objects/cable.h,android,cables
-variable:default_targetmomf,variable,default_targetmomf,16014,16014,1,legoapi/items/objects/cable.h,users,default_targetmomf: only legogame/cable.c android-path
-variable:targetmomf,variable,targetmomf,16015,16015,1,legoapi/items/objects/cable.h,users,targetmomf: only legogame/cable.c android-path
-variable:default_ownermomf,variable,default_ownermomf,16016,16016,1,legoapi/items/objects/cable.h,users,default_ownermomf: only legogame/cable.c android-path
-variable:ownermomf,variable,ownermomf,16017,16017,1,legoapi/items/objects/cable.h,users,ownermomf: only legogame/cable.c android-path
-variable:default_max_cable_length,variable,default_max_cable_length,16018,16018,1,legoapi/items/objects/cable.h,users,default_max_cable_length: only legogame/cable.c android-path
+variable:default_targetmomf,variable,default_targetmomf,16014,16014,1,legoapi/items/objects/cable.h,users,default_targetmomf: only legogame/cable.cpp android-path
+variable:targetmomf,variable,targetmomf,16015,16015,1,legoapi/items/objects/cable.h,users,targetmomf: only legogame/cable.cpp android-path
+variable:default_ownermomf,variable,default_ownermomf,16016,16016,1,legoapi/items/objects/cable.h,users,default_ownermomf: only legogame/cable.cpp android-path
+variable:ownermomf,variable,ownermomf,16017,16017,1,legoapi/items/objects/cable.h,users,ownermomf: only legogame/cable.cpp android-path
+variable:default_max_cable_length,variable,default_max_cable_length,16018,16018,1,legoapi/items/objects/cable.h,users,default_max_cable_length: only legogame/cable.cpp android-path
 variable:max_cable_length,variable,max_cable_length,16019,16019,1,legoapi/items/objects/cable.h,android,max_cable_length
-variable:default_tow_length,variable,default_tow_length,16020,16020,1,legoapi/items/objects/cable.h,users,default_tow_length: only legogame/cable.c android-path
+variable:default_tow_length,variable,default_tow_length,16020,16020,1,legoapi/items/objects/cable.h,users,default_tow_length: only legogame/cable.cpp android-path
 variable:tow_length,variable,tow_length,16021,16021,1,legoapi/items/objects/cable.h,android,tow_length
 variable:GUNSHIP_ADATA#2,variable,GUNSHIP_ADATA,16022,16022,1,legoapi/world/levels/levels.h,data-order,retail 0x87af98 between 0x87af94 and 0x87af9c
 function:UpdateFrameCounters,function,UpdateFrameCounters,16023,16023,1,legoapi/core/input/timing.h,android,UpdateFrameCounters (also batman.h)
@@ -9254,7 +9254,7 @@ variable:default_mover_extra,variable,default_mover_extra,18145,18145,1,legoapi/
 variable:id_MOSEISLEYCITIZEN,variable,id_MOSEISLEYCITIZEN,18146,18146,1,legoapi/characters/core/character.h,android,id_MOSEISLEYCITIZEN
 variable:id_CANTINAALIEN,variable,id_CANTINAALIEN,18147,18147,1,legoapi/characters/core/character.h,android,id_CANTINAALIEN
 variable:id_CLOUDCITYCITIZEN,variable,id_CLOUDCITYCITIZEN,18148,18148,1,legoapi/characters/core/character.h,android,id_CLOUDCITYCITIZEN
-variable:SuitRecordInit,variable,SuitRecordInit,18149,18149,1,legoapi/actions/character/suit.h,rule,used most in legogame/suit.c (11) android-path
+variable:SuitRecordInit,variable,SuitRecordInit,18149,18149,1,legoapi/actions/character/suit.h,rule,used most in legogame/suit.cpp (11) android-path
 variable:PlayerStart,variable,PlayerStart,18150,18150,1,legoapi/characters/core/players.h,android,PlayerStart
 variable:PodPacemaker,variable,PodPacemaker,18152,18152,2,legoapi/world/levels/episodeI.h,users,PodPacemaker: only legogame/episodeI.c android-path
 variable:PodRaceSplineIncrement,variable,PodRaceSplineIncrement,18153,18153,1,legoapi/world/levels/episodeI.h,rule,used most in legogame/episodeI.c (2) android-path
@@ -11963,7 +11963,7 @@ variable:dat_0087b1c0,variable,dat_0087b1c0,23599,23599,1,legoapi/world/levels.h
 variable:dat_0087b1d0,variable,dat_0087b1d0,23600,23600,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
 variable:dat_0087b200,variable,dat_0087b200,23601,23601,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (1) android-path
 variable:dat_0087b204,variable,dat_0087b204,23602,23602,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (5) android-path
-variable:dat_0087b208,variable,dat_0087b208,23603,23603,1,legoapi/items/objects/cable.h,rule,used most in legogame/cable.c (1) android-path
+variable:dat_0087b208,variable,dat_0087b208,23603,23603,1,legoapi/items/objects/cable.h,rule,used most in legogame/cable.cpp (1) android-path
 variable:dat_0087b210,variable,dat_0087b210,23604,23604,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (1) android-path
 variable:dat_0087b218,variable,dat_0087b218,23605,23605,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (4) android-path
 variable:dat_0087b220,variable,dat_0087b220,23606,23606,1,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (4) android-path
@@ -14761,18 +14761,18 @@ function:GizTimer_GetOutputName,function,GizTimer_GetOutputName,30525,30525,1,le
 function:GizTimer_Load,function,GizTimer_Load,30526,30526,1,legoapi/gizmos/trigger/giztimer.h,android,GizTimer_Load
 function:GizTimer_ReserveBufferSpace,function,GizTimer_ReserveBufferSpace,30527,30527,1,legoapi/gizmos/trigger/giztimer.h,android,GizTimer_ReserveBufferSpace
 function:GizTimer_Update,function,GizTimer_Update,30528,30528,1,legoapi/gizmos/trigger/giztimer.h,android,GizTimer_Update
-function:GizTorp_Activate,function,GizTorp_Activate,30529,30529,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.c android-path
-function:GizTorp_AddGizmos,function,GizTorp_AddGizmos,30530,30530,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.c android-path
-function:GizTorp_Draw,function,GizTorp_Draw,30531,30531,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.c android-path
-function:GizTorp_GetGizmoName,function,GizTorp_GetGizmoName,30532,30532,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.c android-path
-function:GizTorp_GetMaxGizmos,function,GizTorp_GetMaxGizmos,30533,30533,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.c android-path
-function:GizTorp_GetNumOutputs,function,GizTorp_GetNumOutputs,30534,30534,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.c android-path
-function:GizTorp_GetOutput,function,GizTorp_GetOutput,30535,30535,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.c android-path
-function:GizTorp_GetOutputName,function,GizTorp_GetOutputName,30536,30536,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.c android-path
-function:GizTorp_SetVisibility,function,GizTorp_SetVisibility,30537,30537,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.c android-path
-function:GizTorp_Update,function,GizTorp_Update,30538,30538,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.c android-path
-function:GizTorps_ReserveBufferSpace,function,GizTorps_ReserveBufferSpace,30539,30539,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.c android-path
-function:GizTorps_Reset,function,GizTorps_Reset,30540,30540,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.c android-path
+function:GizTorp_Activate,function,GizTorp_Activate,30529,30529,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.cpp android-path
+function:GizTorp_AddGizmos,function,GizTorp_AddGizmos,30530,30530,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.cpp android-path
+function:GizTorp_Draw,function,GizTorp_Draw,30531,30531,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.cpp android-path
+function:GizTorp_GetGizmoName,function,GizTorp_GetGizmoName,30532,30532,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.cpp android-path
+function:GizTorp_GetMaxGizmos,function,GizTorp_GetMaxGizmos,30533,30533,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.cpp android-path
+function:GizTorp_GetNumOutputs,function,GizTorp_GetNumOutputs,30534,30534,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.cpp android-path
+function:GizTorp_GetOutput,function,GizTorp_GetOutput,30535,30535,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.cpp android-path
+function:GizTorp_GetOutputName,function,GizTorp_GetOutputName,30536,30536,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.cpp android-path
+function:GizTorp_SetVisibility,function,GizTorp_SetVisibility,30537,30537,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.cpp android-path
+function:GizTorp_Update,function,GizTorp_Update,30538,30538,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.cpp android-path
+function:GizTorps_ReserveBufferSpace,function,GizTorps_ReserveBufferSpace,30539,30539,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.cpp android-path
+function:GizTorps_Reset,function,GizTorps_Reset,30540,30540,1,legoapi/gizmo/object/giztorpedo.h,symbol,legogame/giztorpedo.cpp android-path
 variable:giztorpmachine_gizmotype_id,variable,giztorpmachine_gizmotype_id,30541,30541,1,legoapi/gizmo/object/giztorpedo.h,android,giztorpmachine_gizmotype_id
 variable:HothBattleC_BombGenerator,variable,HothBattleC_BombGenerator,30542,30542,1,legoapi/world/levels/episodeV.h,users,HothBattleC_BombGenerator: only legogame/episodeV.c android-path
 function:HothBattleE_UpdateWave,function,HothBattleE_UpdateWave,30543,30543,1,legoapi/world/levels/episodeV.h,android,HothBattleE_UpdateWave
@@ -14805,11 +14805,11 @@ function:DestroyCable,function,DestroyCable,30571,30571,1,legoapi/items/objects/
 variable:HOTHBATTLED_LDATA,variable,HOTHBATTLED_LDATA,30572,30572,1,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to globals.h (android-weak)
 function:IncrementMinikitCounter,function,IncrementMinikitCounter,30573,30573,1,legoapi/items/collect/minikits.h,android,IncrementMinikitCounter
 variable:TERRAINMASK_NONDROID,variable,TERRAINMASK_NONDROID,30574,30574,1,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to legoapi/render/core/terrain_internal.h (android)
-variable:atat_locators,variable,atat_locators,30575,30575,1,legoapi/items/objects/cable.h,users,atat_locators: only legogame/cable.c android-path
-variable:cable_damping,variable,cable_damping,30576,30576,1,legoapi/items/objects/cable.h,users,cable_damping: only legogame/cable.c android-path
-variable:cable_gravity,variable,cable_gravity,30577,30577,1,legoapi/items/objects/cable.h,users,cable_gravity: only legogame/cable.c android-path
-variable:cable_ground_damping,variable,cable_ground_damping,30578,30578,1,legoapi/items/objects/cable.h,users,cable_ground_damping: only legogame/cable.c android-path
-variable:cable_speed,variable,cable_speed,30579,30579,1,legoapi/items/objects/cable.h,users,cable_speed: only legogame/cable.c android-path
+variable:atat_locators,variable,atat_locators,30575,30575,1,legoapi/items/objects/cable.h,users,atat_locators: only legogame/cable.cpp android-path
+variable:cable_damping,variable,cable_damping,30576,30576,1,legoapi/items/objects/cable.h,users,cable_damping: only legogame/cable.cpp android-path
+variable:cable_gravity,variable,cable_gravity,30577,30577,1,legoapi/items/objects/cable.h,users,cable_gravity: only legogame/cable.cpp android-path
+variable:cable_ground_damping,variable,cable_ground_damping,30578,30578,1,legoapi/items/objects/cable.h,users,cable_ground_damping: only legogame/cable.cpp android-path
+variable:cable_speed,variable,cable_speed,30579,30579,1,legoapi/items/objects/cable.h,users,cable_speed: only legogame/cable.cpp android-path
 function:CreateAIGroup,function,CreateAIGroup,30580,30580,1,legoapi/ai/core/aisysall.h,android,CreateAIGroup
 function:Hub_GetRandomCharType,function,Hub_GetRandomCharType,30581,30581,1,legoapi/ai/game/lsw_hub_ai.h,android,Hub_GetRandomCharType
 function:LocalGetNearestLocator,function,LocalGetNearestLocator,30582,30583,2,gameapi/ai/aisys/gameaiscript.h,android,LocalGetNearestLocator
@@ -15038,7 +15038,7 @@ function:edpartInstanceSettingsMenu,function,edpartInstanceSettingsMenu,30811,30
 function:do_maya_mouse_camera,function,do_maya_mouse_camera,30812,30812,1,gameapi/edtools/edtoolsall.h,android,do_maya_mouse_camera
 function:NuKeyGet,function,NuKeyGet,30813,30813,1,nu2api/nucore/nukeyboard.h,android,NuKeyGet
 function:cbInteractMenuScrollTo,function,cbInteractMenuScrollTo,30814,30814,1,gameapi/edtools/edui.h,android,cbInteractMenuScrollTo
-variable:AttractoBackPackCountPos,variable,AttractoBackPackCountPos,30815,30815,1,legoapi/gizmos/traps/attracto.h,definition,legogame/attracto.c android-path
+variable:AttractoBackPackCountPos,variable,AttractoBackPackCountPos,30815,30815,1,legoapi/gizmos/traps/attracto.h,definition,legogame/attracto.cpp android-path
 variable:tCHEAT_SELFDESTRUCT,variable,tCHEAT_SELFDESTRUCT,30816,30816,1,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to legoapi/gizmos/traps/attracto.h (saga.h neighbour)
 variable:Detonator,variable,Detonator,30817,30817,1,globals.h,android-weak,catch-all (needs a module owner); Detonator
 function:Detonator_Detonate,function,Detonator_Detonate,30818,30818,1,legoapi/items/collect/detonator.h,android,Detonator_Detonate
@@ -15079,11 +15079,11 @@ function:cbPtlChangePriority,function,cbPtlChangePriority,30853,30853,1,gameapi/
 function:cbPtlToggleDynamicPriority,function,cbPtlToggleDynamicPriority,30854,30854,1,gameapi/edtools/edgra.h,symbol,gameapi/gameliball.cpp[edgra.c] android-path
 variable:edptl_instancesettings_menu,variable,edptl_instancesettings_menu,30855,30855,1,legoapi/render/core/gameliball.h,android,edptl_instancesettings_menu
 function:edptlcbScaleEffectMenu,function,edptlcbScaleEffectMenu,30856,30856,1,gameapi/edtools/edgra.h,symbol,gameapi/gameliball.cpp[edgra.c] android-path
-variable:cable_slack,variable,cable_slack,30857,30857,1,legoapi/items/objects/cable.h,users,cable_slack: only legogame/cable.c android-path
-variable:nsegments_drawn,variable,nsegments_drawn,30858,30858,1,legoapi/items/objects/cable.h,users,nsegments_drawn: only legogame/cable.c android-path
-variable:nsegments_per_unit,variable,nsegments_per_unit,30859,30859,1,legoapi/items/objects/cable.h,users,nsegments_per_unit: only legogame/cable.c android-path
-variable:slack_factor,variable,slack_factor,30860,30860,1,legoapi/items/objects/cable.h,users,slack_factor: only legogame/cable.c android-path
-variable:solid_cable,variable,solid_cable,30861,30861,1,legoapi/items/objects/cable.h,users,solid_cable: only legogame/cable.c android-path
+variable:cable_slack,variable,cable_slack,30857,30857,1,legoapi/items/objects/cable.h,users,cable_slack: only legogame/cable.cpp android-path
+variable:nsegments_drawn,variable,nsegments_drawn,30858,30858,1,legoapi/items/objects/cable.h,users,nsegments_drawn: only legogame/cable.cpp android-path
+variable:nsegments_per_unit,variable,nsegments_per_unit,30859,30859,1,legoapi/items/objects/cable.h,users,nsegments_per_unit: only legogame/cable.cpp android-path
+variable:slack_factor,variable,slack_factor,30860,30860,1,legoapi/items/objects/cable.h,users,slack_factor: only legogame/cable.cpp android-path
+variable:solid_cable,variable,solid_cable,30861,30861,1,legoapi/items/objects/cable.h,users,solid_cable: only legogame/cable.cpp android-path
 function:edanimParamDestroy,function,edanimParamDestroy,30862,30862,1,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to gameapi/edtools/edanim_internal.h (android)
 function:edanimParticleCreate,function,edanimParticleCreate,30863,30863,1,gameapi/edtools/edanim_internal.h,android,edanimParticleCreate
 function:edanimParticlePlace,function,edanimParticlePlace,30864,30864,1,gameapi/edtools/edanim_internal.h,android,edanimParticlePlace

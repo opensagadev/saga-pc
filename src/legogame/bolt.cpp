@@ -30,7 +30,6 @@
 #include "legoapi/world/levels/levels.h"
 #include "legoapi/world/world.h"
 #include "nu2api/numath/nuvec.h"
-#include <math.h>
 
 i16 id_FOURLOM = -1;
 i16 id_TRAININGREMOTE = -1;
@@ -296,12 +295,4 @@ void UpdateBolt_Geonosian(BOLT *bolt) {
     if (effect != -1) {
         AddVariableShotDebrisEffectTimed1(effect, &bolt->position, 60, FRAMETIME, 0, 0, NULL);
     }
-}
-
-f32 fun_00408760(f32 value) {
-    return ceilf(value);
-}
-
-f32 fun_00408780(f32 value) {
-    return ceilf(value);
 }

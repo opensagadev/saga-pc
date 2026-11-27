@@ -20,7 +20,7 @@
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/nuvec.h"
 
-void GizbombgenNuError(void) {
+extern "C" void GizbombgenNuError(void) {
 }
 
 typedef struct bomb_generator_progress_s {
@@ -28,9 +28,9 @@ typedef struct bomb_generator_progress_s {
     u32 visible[3];
 } BOMB_GENERATOR_PROGRESS;
 
-i32 GizBombGens_Load(void *world_ptr, void *system_ptr) {
+extern "C" i32 GizBombGens_Load(void *world_ptr, void *system_ptr) {
     const u8 version = (u8)(EdFileReadChar());
-    GIZBOMBGENSYS_s *system = system_ptr;
+    GIZBOMBGENSYS_s *system = (GIZBOMBGENSYS_s *)system_ptr;
     system->count = (u16)(EdFileReadShort());
     if (system->count != 0) {
         GIZBOMBGEN_s *bomb_generator = system->bomb_generators;
@@ -46,27 +46,28 @@ i32 GizBombGens_Load(void *world_ptr, void *system_ptr) {
     return 1;
 }
 
-void *GizBombGens_ReserveBufferSpace(void *pointer) {
-    WORLDINFO *world = pointer;
+extern "C" void *GizBombGens_ReserveBufferSpace(void *pointer) {
+    WORLDINFO *world = (WORLDINFO *)pointer;
     GIZBOMBGENSYS_s *system;
     i32 i;
-    system = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(*system));
+    system = (GIZBOMBGENSYS_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(*system));
     system->capacity = world->current_level->max_bombgens;
-    system->bomb_generators = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, system->capacity * sizeof(*system->bomb_generators));
+    system->bomb_generators =
+        (GIZBOMBGEN_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, system->capacity * sizeof(*system->bomb_generators));
     system->anim_object_pool =
         GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 0, (u16)world->current_level->max_bombgen_objects);
     for (i = 0; i < system->capacity; ++i) {
         system->bomb_generators[i].anim_set =
-            GameAnimSet_Create(&world->giz_buffer, &world->buffer_end, system->anim_object_pool, world->game_anim_sys);
+            GameAnimSet_Create(&world->giz_buffer, &world->buffer_end, (GAMEANIMOBJPOOL *)system->anim_object_pool, world->game_anim_sys);
     }
     world->giz_bombgen_sys = system;
     return system;
 }
 
-void GizmoBombGen_Activate(GIZMO *gizmo, i32 active) {
+extern "C" void GizmoBombGen_Activate(GIZMO *gizmo, i32 active) {
     GIZBOMBGEN_s *generator;
     if (gizmo != NULL) {
-        generator = gizmo->object;
+        generator = (GIZBOMBGEN_s *)gizmo->object;
         generator->active = active != 0;
     }
 }
@@ -78,22 +79,22 @@ static void BombGeneratorSetVisibility(GIZBOMBGEN_s *generator, i32 visible) {
     }
 }
 
-void GizmoBombGen_SetVisibility(GIZMO *gizmo, i32 visible) {
+extern "C" void GizmoBombGen_SetVisibility(GIZMO *gizmo, i32 visible) {
     if (gizmo != NULL) {
-        BombGeneratorSetVisibility(gizmo->object, visible);
+        BombGeneratorSetVisibility((GIZBOMBGEN_s *)gizmo->object, visible);
     }
 }
 
-NUVEC *GizmoBombGen_GetPos(GIZMO *gizmo) {
+extern "C" NUVEC *GizmoBombGen_GetPos(GIZMO *gizmo) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
     }
     return &gizmo->bomb_generator->position;
 }
 
-void GizBombGens_SetResetFlag(void *world_ptr, void *data, void *progress) {
-    WORLDINFO *w = world_ptr;
-    GIZBOMBGENSYS_s *s = data;
+extern "C" void GizBombGens_SetResetFlag(void *world_ptr, void *data, void *progress) {
+    WORLDINFO *w = (WORLDINFO *)world_ptr;
+    GIZBOMBGENSYS_s *s = (GIZBOMBGENSYS_s *)data;
     s->reset = 1;
     if (come_from_an_editor != 0) {
         s->reset_saved = 0;
@@ -172,9 +173,9 @@ static void BombGeneratorsApplyReset(GIZBOMBGENSYS_s *system, BOMB_GENERATOR_PRO
     }
 }
 
-void GizBombGens_Update(void *world_pointer, void *system_pointer, f32 delta_time) {
-    WORLDINFO *world = world_pointer;
-    GIZBOMBGENSYS_s *system = system_pointer;
+extern "C" void GizBombGens_Update(void *world_pointer, void *system_pointer, f32 delta_time) {
+    WORLDINFO *world = (WORLDINFO *)world_pointer;
+    GIZBOMBGENSYS_s *system = (GIZBOMBGENSYS_s *)system_pointer;
     u16 model;
     GAMEOBJECT *player;
     CABLE_s *cable;
@@ -182,7 +183,7 @@ void GizBombGens_Update(void *world_pointer, void *system_pointer, f32 delta_tim
         GIZBOMBGEN_s *generator;
         i32 index;
         if ((system->flags & 1) != 0) {
-            BombGeneratorsApplyReset(system, system->progress);
+            BombGeneratorsApplyReset(system, (BOMB_GENERATOR_PROGRESS *)system->progress);
             system->flags &= (u16)~1u;
         }
         generator = system->bomb_generators;
@@ -237,16 +238,16 @@ void GizBombGens_Update(void *world_pointer, void *system_pointer, f32 delta_tim
     }
 }
 
-i32 GizBombGens_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world = world_ptr;
+extern "C" i32 GizBombGens_GetMaxGizmos(void *world_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
     if (world != NULL) {
         return world->current_level->max_bombgens;
     }
     return 0;
 }
 
-void GizBombGens_AddGizmos(GIZMOSYS *giz, i32 type, void *world, void *data) {
-    GIZBOMBGENSYS_s *s = data;
+extern "C" void GizBombGens_AddGizmos(GIZMOSYS *giz, i32 type, void *world, void *data) {
+    GIZBOMBGENSYS_s *s = (GIZBOMBGENSYS_s *)data;
     i32 i;
     if (s == NULL) {
         return;
@@ -258,31 +259,31 @@ void GizBombGens_AddGizmos(GIZMOSYS *giz, i32 type, void *world, void *data) {
     }
 }
 
-char *GizmoBombGen_GetGizmoName(GIZMO *gizmo) {
+extern "C" char *GizmoBombGen_GetGizmoName(GIZMO *gizmo) {
     if (gizmo != NULL) {
         return gizmo->bomb_generator->name;
     }
     return NULL;
 }
 
-i32 GizmoBombGen_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
+extern "C" i32 GizmoBombGen_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     return gizmo->bomb_generator->flags & GIZBOMBGEN_FLAG_ACTIVE;
 }
 
-char *GizmoBombGen_GetOutputName(GIZMO *gizmo, i32 output) {
+extern "C" char *GizmoBombGen_GetOutputName(GIZMO *gizmo, i32 output) {
     return "Active";
 }
 
-i32 GizmoBombGen_GetNumOutputs(GIZMO *gizmo) {
+extern "C" i32 GizmoBombGen_GetNumOutputs(GIZMO *gizmo) {
     return 1;
 }
 
-void *GizBombGens_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+extern "C" void *GizBombGens_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
     return GizmoBufferAlloc(buffer, end, 0x18);
 }
 
-void GizBombGens_ClearProgress(void *owner, void *progress_ptr) {
-    BOMB_PROGRESS *progress = progress_ptr;
+extern "C" void GizBombGens_ClearProgress(void *owner, void *progress_ptr) {
+    BOMB_PROGRESS *progress = (BOMB_PROGRESS *)progress_ptr;
     if (progress == NULL) {
         return;
     }
@@ -290,7 +291,7 @@ void GizBombGens_ClearProgress(void *owner, void *progress_ptr) {
     memset(progress->visible, -1, sizeof(progress->visible));
 }
 
-GIZBOMBGEN_s *GizBombGen_FindByName(GIZBOMBGENSYS_s *system, char *name) {
+extern "C" GIZBOMBGEN_s *GizBombGen_FindByName(GIZBOMBGENSYS_s *system, char *name) {
     GIZBOMBGEN_s *generator = NULL;
     i32 index;
     if (system != NULL && name != NULL) {
@@ -305,9 +306,9 @@ GIZBOMBGEN_s *GizBombGen_FindByName(GIZBOMBGENSYS_s *system, char *name) {
     return generator;
 }
 
-void GizBombGens_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    BOMB_PROGRESS *progress = progress_ptr;
-    BOMB_PROGRESS_SYSTEM *system = data;
+extern "C" void GizBombGens_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
+    BOMB_PROGRESS *progress = (BOMB_PROGRESS *)progress_ptr;
+    BOMB_PROGRESS_SYSTEM *system = (BOMB_PROGRESS_SYSTEM *)data;
     BOMB_PROGRESS_RECORD *record;
     i32 index;
     i32 word;
@@ -335,7 +336,7 @@ void GizBombGens_StoreProgress(void *world_ptr, void *data, void *progress_ptr) 
 }
 
 i32 bombgen_gizmotype_id = -1;
-char *GizmoRegistryGizBombGenNamePtr = "BombGenerator";
+extern "C" char *GizmoRegistryGizBombGenNamePtr = "BombGenerator";
 GAMEOBJECT *BombGenerator_PlayerBomb[2] = {0};
 static ADDGIZMOTYPE GizmoRegistryGizBombGenAddType = {0};
 

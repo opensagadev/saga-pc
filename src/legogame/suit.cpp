@@ -28,12 +28,12 @@ SUIT_INITIALIZER_RECORD *Suit_GetDefault(i32 character_id) {
     return NULL;
 }
 
-void fun_004cca40(void) {
+extern "C" void fun_004cca40(void) {
     Game.initial_store_pack_flags = 0xffffffff;
     areaSuitBits = 0xffffffff;
 }
 
-void fun_004cca50(void) {
+extern "C" void fun_004cca50(void) {
 }
 
 i32 Suit_GetIndex(SUIT_INITIALIZER_RECORD *suit) {
@@ -56,7 +56,7 @@ SUIT_INITIALIZER_RECORD *Suit_FindFromLetter(char letter) {
     return NULL;
 }
 
-SUIT_INITIALIZER_RECORD *fun_004cc980(SUIT_INITIALIZER_RECORD *suit) {
+extern "C" SUIT_INITIALIZER_RECORD *fun_004cc980(SUIT_INITIALIZER_RECORD *suit) {
     return &SuitRecordInit[(suit->index + 1) % 10];
 }
 
