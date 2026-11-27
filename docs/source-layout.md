@@ -577,7 +577,7 @@ What depends on names:
   `src/gameapi/shop_persistence.cpp`), `tools/check_compiler_witnesses.py` (6
   witness files: `aisysall.c`, `gameaiscript.c`, `gameobjects.c`, `move.c`,
   `parts.c`, `numath_includes.c`), `tools/altbuild.py` (`bgproc.c`,
-  `crc16.cpp`, `numath_includes.c`) and the example in `tools/globals.py`.
+  `CRC16.cpp`, `numath_includes.c`) and the example in `tools/globals.py`.
   Grep for the old path before each rename. Also: a quoted `#include` of a
   header next to the old file (`pc_fmv_native.h`) and the per-object header
   dependencies in `Makefile` follow the file's directory, and

@@ -243,7 +243,7 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x6e4530,0x6e4fe5,src/nu2api/?0x6e4530,,nu2api,code+marker+android,none,,72,2295,2267,2267,0,0,nu2api/pc_device.cpp:2267
 0x6e4ff0,0x6e6734,src/nu2api/nuwin32/d3dCalls.cpp,,nu2api,file+review,medium,,101,5442,5414,4853,17,0,nu2api/nuwin32/d3dCalls.cpp:5401 data.cpp:12 nu2api/pc_device.cpp:1
 0x740f00,0x7412d4,src/gamelib/util/VirtualStackAllocator.cpp,,gamelib,review,medium,,40,592,469,469,0,0,gamelib/util/VirtualStackAllocator.cpp:469
-0x7412e0,0x7418ef,src/nu2api/nushadermanager_gen.cpp,,nu2api,batman+code,medium,,39,1317,1193,941,24,13,nu2api/nushadermanager_gen.cpp:1026 nu2api/nushadermanager.cpp:124 nu2api/nushader.cpp:40 nu2api/ShaderObjectKey_pc.cpp:3
+0x7412e0,0x7418ef,src/nu2api/nushadermanager_gen.cpp,,nu2api,batman+code,medium,,39,1317,1193,941,24,0,nu2api/nushadermanager_gen.cpp:1190 nu2api/ShaderObjectKey_pc.cpp:3
 0x7418f0,0x741962,src/nu2api/?0x7418f0,,nu2api,marker+android,none,,2,110,82,82,0,0,nu2api/nuvertexdecl.c:82
 0x741970,0x742003,src/nu2api/VertexDeclarations.cpp,,nu2api,batman,medium,,1,1684,1684,0,404,0,nu2api/VertexDeclarations.cpp:1684
 0x742010,0x743990,src/nu2api/nushaderobject.cpp,,nu2api,batman+code,low,,34,6257,6197,983,309,0,nu2api/nushaderobject.cpp:6195 nu2api/nushaderobject_pc.cpp:2
