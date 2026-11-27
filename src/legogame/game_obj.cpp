@@ -3553,7 +3553,7 @@ impact:
     }
     Player_ClearContext(target, 0);
     ReleaseForce(target, 1);
-    if (target->helmet && 1) {
+    if (target->helmet != HELMET_NONE) {
         LoseHelmet(target, 0, 0);
     }
     if (damage != -1) {

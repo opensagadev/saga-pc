@@ -84,6 +84,8 @@ extern "C" void GameaiNuError(void) {
 
 extern "C" void *CutScene_FindInst(void *, char *);
 
+// The VC8 intrinsic declaration (<intrin.h>), with its own types.
+// NOLINTNEXTLINE(google-runtime-int)
 extern "C" void __movsd(unsigned long *, unsigned long const *, unsigned int);
 
 extern "C" char AIGizmoNameBuffer[16];
@@ -2742,6 +2744,7 @@ void GameAIProcess(void) {
     active_neutral_count = neutral_count;
     los_count = baddy_count;
     if (neutral_count > 0) {
+        // NOLINTNEXTLINE(google-runtime-int)
         __movsd((unsigned long *)&baddies[baddy_count], (unsigned long *)neutral_objects, neutral_count);
         los_count = neutral_count + baddy_count;
     }
