@@ -413,26 +413,6 @@ void PC_WINDOW_OPTIONS::Load() {
 extern "C" void PcapiNuError(void) {
 }
 
-u32 PC_DEVICE_BACKEND::GetShaderFlags() {
-    return shader_flags;
-}
-
-u32 PC_DEVICE_BACKEND::GetRenderTargetFlags() {
-    return render_target_flags;
-}
-
-void PC_DEVICE_BACKEND::SetRequestedWindowed(u8 windowed) {
-    requested_windowed = windowed;
-}
-
-extern "C" i32 PcOptionsGetHardwareVertexProcessing(void) {
-    return PCDeviceHardwareVertexProcessingPC;
-}
-
-extern "C" i32 fun_006dbb20(void) {
-    return 0;
-}
-
 void PC_WINDOW_OPTIONS::SetDesiredBloomMethod(i32 value) {
     desiredbloommethod = value;
 }
