@@ -15,19 +15,6 @@
 #include "legoapi/characters/motion/move.h"
 
 extern "C" i32 special_debug;
-extern "C" {
-    SOCK *FindSock(SOCKSYS *sys, char *name) {
-        if (sys != NULL) {
-            SOCK *sock = sys->socks;
-            for (i32 index = 0; index < 64; ++index, ++sock) {
-                if (sock->valid && NuStrICmp(name, sock->name) == 0) {
-                    return sock;
-                }
-            }
-        }
-        return NULL;
-    }
-}
 
 static i32 NuSpecialFindMultiDisplay(NUGSCN *scene, nuhspecial_s *dest, char *name, i32 capacity, i32 flags) {
     i32 count = 0;

@@ -82,7 +82,7 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x512850,0x53d129,src/gameapi/aisysall.cpp,aiscript.c ? aisys.c aiterr.cpp ? AIBugPit.cpp,gameapi,marker+review,high,ret ret ret fabs 54 22,567,170206,170178,104646,2285,0,gameapi/aisysall.c:170177 gameapi/aisys_empty.c:1
 0x53d130,0x53d1a9,src/gamelib/net/?0x53d130,,gamelib,marker+review+android,none,ret ret 28,7,67,39,39,0,0,gameapi/message.cpp:32 gameapi/aisysall.c:7
 0x53d1b0,0x53db4a,src/gamelib/net/?0x53d1b0,,gamelib,code+review+android,none,,42,2093,2011,1283,15,0,gameapi/message.cpp:1952 legoapi/bolts.cpp:59
-0x53db50,0x543ed0,src/nu2api/socksysall.c,utilities.cpp socksys.c saveload.cpp,nu2api,marker+review,high,ret ret fabs 54,133,24512,24512,17912,20,0,legoapi/socksys.c:22400 gameapi/shop_persistence.cpp:1154 gameapi/saveload.cpp:831 legoapi/aiactions_transfer.cpp:71 legoapi/menu_pause.cpp:54 legoapi/socksys_diagnostic.c:2
+0x53db50,0x543ed0,src/nu2api/socksysall.c,utilities.cpp socksys.c saveload.cpp,nu2api,marker+review,high,ret ret fabs 54,133,24512,24512,17912,20,0,nu2api/socksysall.c:24510 legoapi/socksys_diagnostic.c:2
 0x543ed0,0x545531,src/nu2api/nubridge.c,,nu2api,marker+review,medium,ret ret fabs,13,5616,5616,2543,46,0,nu2api/nubridge.c:5616
 0x545540,0x545e01,src/nu2api/nuobject.c,,nu2api,batman,medium,,15,2119,2119,2119,0,0,nu2api/nuobject.c:2119
 0x545e10,0x546fc3,src/nu2api/nuwind.c,,nu2api,batman,medium,,9,4488,4488,4488,0,0,nu2api/nuwind.c:4488

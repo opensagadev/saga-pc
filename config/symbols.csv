@@ -39127,7 +39127,7 @@ address,symbol,size,ctype
 0x00827610,_SoundVoiceEnabledGate,4,i32
 0x827614,_NuHwDefaultParameter,4,const char *
 0x827618,?PcCompanyName@@3PBDB,4,const char *
-0x82761c,?PcProductName@@3PBDB,4,const char *
+0x82761c,_PcProductName,4,const char *
 0x827620,?PcUsePersonalFolder@@3HA,4,i32
 0x827630,_PcClientWidth,4,u32
 0x827634,_PcClientHeight,4,u32
