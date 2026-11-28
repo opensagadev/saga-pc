@@ -7444,7 +7444,7 @@ address,symbol,size,ctype
 0x5c6360,_PcUnregisterDynamicGeometry,258,
 0x5c6470,_PcGeometryRegistryFind,60,
 0x5c64b0,_fun_005c64b0,400,"i32 __cdecl(PC_GEOMETRY_FORMAT *,NUMTX *,PC_GEOMETRY_MORPH_WEIGHTS *)"
-0x5c6640,_fun_005c6640,60,
+0x5c6640,_fun_005c6640,60,PC_DYNAMIC_GEOMETRY *__cdecl(PC_GEOMETRY_FORMAT *)
 0x5c6680,_NuDisplayList2dGet,6,
 0x5c6690,_NuDisplayListStreamAlign16,21,
 0x5c66b0,?Nu3dIncludesItemSetNext@@YAXPAUnudisplaylistitem_s@@PAX@Z,4,
@@ -8205,7 +8205,7 @@ address,symbol,size,ctype
 0x5e84b0,_NuOcclusionManagerAddOccluderSphere,24,"void __cdecl (const NUVEC *, f32)"
 0x5e84d0,_NuOcclusionManagerAddOccluderOBB,26,"void __cdecl (const NUVEC *, const NUVEC *, const NUMTX *)"
 0x5e84f0,_NuOcclusionManagerRenderZPass,32,void __cdecl (void)
-0x5e8510,_fun_005e8510,577,
+0x5e8510,_fun_005e8510,577,"i32 __cdecl(PC_GEOMETRY_FORMAT *,ANI3_HEADER *,f32)"
 0x5e8760,?VectorLength@PC_POST_SHADOW_VECTOR@@QBEMXZ,46,
 0x5e8790,?Normalize@PC_POST_SHADOW_VECTOR@@QBEPAUnuvec_s@@PAU2@@Z,89,"NUVEC *__thiscall(NUVEC *)"
 0x5e87f0,_NuDynamicLightTestShadowExtrusions,89,
@@ -38545,6 +38545,7 @@ address,symbol,size,ctype
 0x806b8c,_dat_00806b8c,4,i32
 0x806b90,_dat_00806b90,4,i32
 0x806b94,_NuDebugGeometrySortOutput,4,i32
+0x00806b98,_dat_00806b98,4,i32
 0x00806b9c,_nuspecial_const_alpha,4,f32
 0x806ba0,_PostShadowCubeFaceIndices,96,i32[6][4]
 0x00806c00,_cubeEdgeIndices,96,i32[12][2]

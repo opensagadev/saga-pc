@@ -2860,6 +2860,7 @@ extern "C" {
     i32 dat_00806b8c = 1;
     i32 dat_00806b90 = 1;
     i32 NuDebugGeometrySortOutput = 1;
+    i32 dat_00806b98 = 1;
     i32 NuDebugDisabled = 0;
 
     void NuDebugToggle(void) {
@@ -3050,6 +3051,73 @@ extern "C" {
         geometry->frame_stamp = nuapi.frame_count;
         return 1;
     }
+}
+
+extern "C" PC_DYNAMIC_GEOMETRY *fun_005c6640(PC_GEOMETRY_FORMAT *format) {
+    for (i32 index = 0; index < PcGeometryRegistryCount; ++index) {
+        if (format == PcGeometryRegistry[index].format) {
+            return &PcGeometryRegistry[index];
+        }
+    }
+    return NULL;
+}
+
+extern "C" i32 fun_005e8510(PC_GEOMETRY_FORMAT *format, ANI3_HEADER *animation, f32 frame) {
+    if (format == NULL) {
+        return 0;
+    }
+    i32 matrix_count = 1;
+    if (animation != NULL) {
+        matrix_count = (i16)animation->node_count + 1;
+    }
+    PC_DYNAMIC_GEOMETRY *geometry = PcGeometryRegistryFind(format);
+    if (geometry == NULL) {
+        return 0;
+    }
+    if (matrix_count > (i32)geometry->matrix_count) {
+        if (geometry->matrices != NULL) {
+            NuFree(geometry->matrices, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0x109);
+        }
+        geometry->matrix_count = matrix_count;
+        geometry->matrices =
+            (NUMTX *)NuAlloc(matrix_count * 3 * sizeof(NUMTX), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0x10c);
+        if (geometry->matrices == NULL) {
+            geometry->matrix_count = 0;
+            return 0;
+        }
+    }
+    NuMtxSetIdentity(&geometry->matrices[0]);
+    NuMtxSetIdentity(&geometry->matrices[1]);
+    NuMtxSetIdentity(&geometry->matrices[2]);
+    if (dat_00806b98 != 0 && geometry->frame_stamp < nuapi.frame_count && animation != NULL) {
+        for (i32 node = 0; node < (i16)animation->node_count; ++node) {
+            f32 curves[9];
+            ANI_Ani3ExtractAllNodeCurves(animation, frame, curves, node, NULL);
+            for (i32 axis = 0; axis < 3; ++axis) {
+                NUVEC basis[3];
+                basis[2].x = curves[axis * 3];
+                basis[2].y = curves[axis * 3 + 1];
+                basis[2].z = curves[axis * 3 + 2];
+                basis[0].x = 1.0f;
+                basis[0].y = basis[0].z = 0.0f;
+                NuVecNorm(&basis[2], &basis[2]);
+                NuVecCross(&basis[1], &basis[2], &basis[0]);
+                NuVecNorm(&basis[1], &basis[1]);
+                NuVecCross(&basis[0], &basis[1], &basis[2]);
+                NuMtxSetIdentity(&geometry->matrices[(node + 1) * 3 + axis]);
+                geometry->matrices[(node + 1) * 3 + axis].m00 = basis[0].x;
+                geometry->matrices[(node + 1) * 3 + axis].m01 = basis[0].y;
+                geometry->matrices[(node + 1) * 3 + axis].m02 = basis[0].z;
+                geometry->matrices[(node + 1) * 3 + axis].m10 = basis[1].x;
+                geometry->matrices[(node + 1) * 3 + axis].m11 = basis[1].y;
+                geometry->matrices[(node + 1) * 3 + axis].m12 = basis[1].z;
+                geometry->matrices[(node + 1) * 3 + axis].m20 = basis[2].x;
+                geometry->matrices[(node + 1) * 3 + axis].m21 = basis[2].y;
+                geometry->matrices[(node + 1) * 3 + axis].m22 = basis[2].z;
+            }
+        }
+    }
+    return 1;
 }
 
 NUDISPLAYLIST PCDisplayList2d = {0};
