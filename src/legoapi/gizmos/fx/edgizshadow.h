@@ -5,10 +5,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern const char *ShadowGizmoName;
-    extern const char *ShadowOutputName;
-    extern const char *ShadowGizmoName;
-    extern const char *ShadowOutputName;
+    extern char *ShadowGizmoName;
+    extern char *ShadowOutputName;
+    extern char *ShadowGizmoName;
+    extern char *ShadowOutputName;
 #ifdef __cplusplus
 }
 #endif

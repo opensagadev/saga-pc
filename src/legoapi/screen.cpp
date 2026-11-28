@@ -990,6 +990,3 @@ extern "C" {
         }
     }
 }
-
-void ChallangeCash_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-}

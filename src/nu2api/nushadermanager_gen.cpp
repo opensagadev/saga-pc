@@ -1,3 +1,13 @@
+#include <new>
+#include <string.h>
+#include "nu2api/nuwin32/pcapi.h"
+#include "nu2api/nuwin32/d3dCore.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/nu3d/shaderSemantics.h"
+#include "nu2api/nu3d/nushader.h"
+#include "nu2api/nu3d/ShaderObjectKey.h"
+#include "gamelib/util/gamelib_util_types.h"
+#include "gamelib/util/CRC16.h"
 /* Shader manager front end: the slot table template, Retrieve and the
  * NuShaderManager C entry points. The material filter view and
  * ShaderManagerHLSL live in other units, so calls into them stay real calls
@@ -13,24 +23,52 @@
 template <> bool ShaderManagerTemplate<NuShaderObject>::CreateShader(const PC_SHADER_MATERIAL_FILTER *, bool, NuShaderObject *, i32);
 template <> void ShaderManagerTemplate<NuShaderObject>::AdaptDescriptor(const NUSHADERMTLDESC *, const NUMTL *);
 
-template <> NuShaderObject *ShaderManagerTemplate<NuShaderObject>::AllocateSlot(i32 *index) {
-    i32 i;
-    for (i = last_allocated + 1; i < 400; ++i) {
-        if (slots[i].ref_count <= 0) {
-            goto found;
-        }
-    }
-    for (i = 0; i < last_allocated; ++i) {
-        if (slots[i].ref_count <= 0) {
-            goto found;
-        }
-    }
-    return NULL;
-found:
-    last_allocated = i;
-    PCShaderNativeUnInit(&slots[i]);
-    *index = i;
-    return &slots[i];
+extern "C" f32 PCShaderShininessFactorStorage;
+
+extern "C" {
+    PC_SHADER_SLOT_VIEW *PCShaderSlots = 0;
+}
+
+extern "C" void NuShaderManagerInit(VARIPTR *arena, VARIPTR arena_end) {
+    VirtualStackAllocator allocator;
+    allocator.setExternalMemoryPool(arena->void_ptr, arena_end.addr - arena->addr);
+    void *memory = allocator.cursor;
+    allocator.cursor += sizeof(ShaderManagerHLSL);
+    PCShaderSlots = reinterpret_cast<PC_SHADER_SLOT_VIEW *>(new (memory) ShaderManagerHLSL(allocator));
+    arena->addr += allocator.cursor - allocator.base;
+}
+
+extern "C" void NuShaderManagerBuildPrecompiledShader(i32 flags, i32 selector, const char *vertex_text, i32 vertex_length,
+                                                      const char *pixel_text, i32 pixel_length) {
+    ((ShaderManagerHLSL *)PCShaderSlots)->BuildPrecompiledShader(flags, selector, vertex_text, vertex_length, pixel_text, pixel_length);
+}
+
+extern "C" void NuShaderManagerSetfv(i32 semantic, const f32 *values) {
+    ((ShaderManagerHLSL *)PCShaderSlots)->SetUniformValues(semantic, values);
+}
+
+extern "C" void NuShaderManagerSetElementfv(i32 semantic, i32 element, const f32 *values) {
+    ((ShaderManagerHLSL *)PCShaderSlots)->setElementfv(semantic, element, values);
+}
+
+extern "C" void NuShaderManagerSetElementsfv(i32 semantic, i32 first_element, i32 count, const f32 *values) {
+    ((ShaderManagerHLSL *)PCShaderSlots)->setElementsfv(semantic, first_element, count, values);
+}
+
+extern "C" void NuShaderManagerSetElementsfv_transpose(i32 semantic, i32 first_element, i32 count, const f32 *values) {
+    ((ShaderManagerHLSL *)PCShaderSlots)->setElementsfv_transpose(semantic, first_element, count, values);
+}
+
+extern "C" void *NuShaderManagerGetInstance(void) {
+    return PCShaderSlots;
+}
+
+extern "C" {
+    char g_shaderSaveFolder[256] = "shaders";
+}
+
+extern "C" void NuShaderManagerSetShaderSaveFolder(const char *folder) {
+    strcpy(g_shaderSaveFolder, folder);
 }
 
 template <> void ShaderManagerTemplate<NuShaderObject>::ReleaseShader(NuShaderObject *slot) {
@@ -74,7 +112,6 @@ template <> void ShaderManagerTemplate<NuShaderObject>::BindShader(NuShaderObjec
 }
 
 extern "C" {
-    char g_shaderSaveFolder[256] = "shaders";
     f32 PCShaderShininessFactorStorage = 1.0f;
 }
 
@@ -93,6 +130,73 @@ template <> NuShaderObject *ShaderManagerTemplate<NuShaderObject>::FindShader(co
         }
     }
     return NULL;
+}
+
+template <> NuShaderObject *ShaderManagerTemplate<NuShaderObject>::AllocateSlot(i32 *index) {
+    i32 i;
+    for (i = last_allocated + 1; i < 400; ++i) {
+        if (slots[i].ref_count <= 0) {
+            goto found;
+        }
+    }
+    for (i = 0; i < last_allocated; ++i) {
+        if (slots[i].ref_count <= 0) {
+            goto found;
+        }
+    }
+    return NULL;
+found:
+    last_allocated = i;
+    PCShaderNativeUnInit(&slots[i]);
+    *index = i;
+    return &slots[i];
+}
+
+extern "C" void NuShaderManagerDestroy(void) {
+    reinterpret_cast<ShaderManagerTemplate<NuShaderObject> *>(PCShaderSlots)->DestroyShaders();
+    PCShaderSlots = NULL;
+}
+
+void NuShaderManagerReleaseShader(PC_SHADER_RECORD_VIEW *shader) {
+    --shader->ref_count;
+}
+
+extern "C" void NuShaderManagerDestroyShaders(void) {
+    reinterpret_cast<ShaderManagerTemplate<NuShaderObject> *>(PCShaderSlots)->DestroyShaders();
+}
+
+extern "C" void NuShaderManagerSetCurrentShader(NuShaderObject *slot) {
+    reinterpret_cast<ShaderManagerTemplate<NuShaderObject> *>(PCShaderSlots)->SetCurrentShader(slot);
+}
+
+extern "C" NuShaderObject *PCShaderCurrentObject(void) {
+    return reinterpret_cast<ShaderManagerTemplate<NuShaderObject> *>(PCShaderSlots)->bound_slot;
+}
+
+PC_SHADER_RECORD_VIEW *PCShaderRecordFromHandle(u32 handle) {
+    if (handle <= 400) {
+        return &PCShaderSlots[handle].record;
+    }
+    return NULL;
+}
+
+extern "C" void NuShaderManagerBindShader(NuShaderObject *shader) {
+    ShaderManagerTemplate<NuShaderObject> *manager = reinterpret_cast<ShaderManagerTemplate<NuShaderObject> *>(PCShaderSlots);
+    if (manager->bound_slot != shader) {
+        manager->bound_slot = shader;
+        if (shader != NULL) {
+            PCDeviceSetVertexShader(shader->vertex_shader);
+            PCDeviceSetPixelShader(shader->pixel_shader);
+        }
+    }
+}
+
+extern "C" void NuShaderManagerSetShininessFactor(f32 shininess) {
+    ShaderManagerTemplate<NuShaderObject>::SetShininessFactor(shininess);
+}
+
+extern "C" f32 NuShaderManagerGetShininessFactor(void) {
+    return PCShaderShininessFactorStorage;
 }
 
 template <>
@@ -124,10 +228,6 @@ NuShaderObject *ShaderManagerTemplate<NuShaderObject>::Retrieve(const NUSHADERMT
     return NULL;
 }
 
-extern "C" {
-    PC_SHADER_SLOT_VIEW *PCShaderSlots = 0;
-}
-
 extern "C" NuShaderObject *NuShaderManagerRetrieveShader(const NUSHADERMTLDESC *desc, const NUMTL *material) {
     return reinterpret_cast<ShaderManagerTemplate<NuShaderObject> *>(PCShaderSlots)->Retrieve(desc, material, 0, 0, false);
 }
@@ -140,72 +240,5 @@ extern "C" i32 NuShaderManagerGenGetHardwareVertexProcessing(void) {
     return PCDeviceHardwareVertexProcessingPC;
 }
 
-extern "C" NuShaderObject *PCShaderCurrentObject(void) {
-    return reinterpret_cast<ShaderManagerTemplate<NuShaderObject> *>(PCShaderSlots)->bound_slot;
-}
-
-extern "C" void NuShaderManagerBuildPrecompiledShader(i32 flags, i32 selector, const char *vertex_text, i32 vertex_length,
-                                                      const char *pixel_text, i32 pixel_length) {
-    ((ShaderManagerHLSL *)PCShaderSlots)->BuildPrecompiledShader(flags, selector, vertex_text, vertex_length, pixel_text, pixel_length);
-}
-
-extern "C" void NuShaderManagerSetfv(i32 semantic, const f32 *values) {
-    ((ShaderManagerHLSL *)PCShaderSlots)->SetUniformValues(semantic, values);
-}
-
-extern "C" void NuShaderManagerSetElementfv(i32 semantic, i32 element, const f32 *values) {
-    ((ShaderManagerHLSL *)PCShaderSlots)->setElementfv(semantic, element, values);
-}
-
-extern "C" void NuShaderManagerSetElementsfv_transpose(i32 semantic, i32 first_element, i32 count, const f32 *values) {
-    ((ShaderManagerHLSL *)PCShaderSlots)->setElementsfv_transpose(semantic, first_element, count, values);
-}
-
-extern "C" void NuShaderManagerSetElementsfv(i32 semantic, i32 first_element, i32 count, const f32 *values) {
-    ((ShaderManagerHLSL *)PCShaderSlots)->setElementsfv(semantic, first_element, count, values);
-}
-
-extern "C" void NuShaderManagerBindShader(NuShaderObject *shader) {
-    ShaderManagerTemplate<NuShaderObject> *manager = reinterpret_cast<ShaderManagerTemplate<NuShaderObject> *>(PCShaderSlots);
-    if (manager->bound_slot != shader) {
-        manager->bound_slot = shader;
-        if (shader != NULL) {
-            PCDeviceSetVertexShader(shader->vertex_shader);
-            PCDeviceSetPixelShader(shader->pixel_shader);
-        }
-    }
-}
-
-extern "C" f32 PCShaderShininessFactorStorage;
-
-extern "C" f32 NuShaderManagerGetShininessFactor(void) {
-    return PCShaderShininessFactorStorage;
-}
-
-extern "C" void *NuShaderManagerGetInstance(void) {
-    return PCShaderSlots;
-}
-
-extern "C" void NuShaderManagerSetShaderSaveFolder(const char *folder) {
-    strcpy(g_shaderSaveFolder, folder);
-}
-
-extern "C" void NuShaderManagerDestroy(void) {
-    reinterpret_cast<ShaderManagerTemplate<NuShaderObject> *>(PCShaderSlots)->DestroyShaders();
-    PCShaderSlots = NULL;
-}
-
 extern "C" void NuShaderManagerLoadCompiledShaders(void) {
-}
-
-extern "C" void NuShaderManagerDestroyShaders(void) {
-    reinterpret_cast<ShaderManagerTemplate<NuShaderObject> *>(PCShaderSlots)->DestroyShaders();
-}
-
-extern "C" void NuShaderManagerSetCurrentShader(NuShaderObject *slot) {
-    reinterpret_cast<ShaderManagerTemplate<NuShaderObject> *>(PCShaderSlots)->SetCurrentShader(slot);
-}
-
-extern "C" void NuShaderManagerSetShininessFactor(f32 shininess) {
-    ShaderManagerTemplate<NuShaderObject>::SetShininessFactor(shininess);
 }

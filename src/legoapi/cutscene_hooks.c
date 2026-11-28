@@ -10,9 +10,6 @@
 
 #include <string.h>
 
-void CutScene_PostUpdateFn_LSW(void) {
-}
-
 i32 PCCutAni3CurveInteger(ANI3_HEADER *animation, f32 *values, i32 index) {
     i32 raw;
     if (animation->curve_types[index] != 10) {

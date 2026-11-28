@@ -497,26 +497,6 @@ extern "C" {
     void PcControlDraw(void) {
         PcControlScreen.Draw();
     }
-
-    void PcControlPlaySound(i32 sound) {
-        switch (sound) {
-            case 6:
-                GameAudio_PlaySfx(0x32, NULL, 0, 0);
-                break;
-            case 0:
-                GameAudio_PlaySfx(0x31, NULL, 0, 0);
-                break;
-            case 1:
-            case 2:
-                GameAudio_PlaySfx(0x30, NULL, 0, 0);
-                break;
-            case 3:
-            case 4:
-            case 5:
-                GameAudio_PlaySfx(0x2f, NULL, 0, 0);
-                break;
-        }
-    }
 }
 
 /* Native421720; append to ControlSetup source after API declarations. */
@@ -1559,63 +1539,4 @@ void PC_CONTROL_SCREEN::Draw(void) {
     NuQFntPopPrintMode();
     TextScaleX = old_x;
     TextScaleY = old_y;
-}
-
-extern "C" i32 PcControlWrapText(char *string, f32 max_width) {
-    u8 *text = (u8 *)string;
-    i32 line_start = 0;
-    i32 line_count = 1;
-    i32 position = 0;
-    i32 previous_break = 0;
-    u8 substring[512];
-    u8 decoded[512];
-    u16 encoded[512];
-    f32 width;
-    if (max_width <= 0.0f) {
-        return -1;
-    }
-    for (;;) {
-        i32 stop = 0;
-        width = 0.0f;
-        while (width < max_width && !stop) {
-            previous_break = position;
-            position = SplitTextFindNextWS(text, position);
-            i32 length = position - line_start;
-            if (length > 511) {
-                length = 511;
-            }
-            PCByteCopy(substring, text + line_start, length);
-            substring[length] = 0;
-            TextDecode((char *)substring, decoded);
-            Text3DStringEncodeFont(decoded, encoded, SmartTextFont ? SmartTextFont : QFont2D);
-            width = NuQFntPrintLenW(QFont2D, encoded);
-            while (text[position] == ' ') {
-                ++position;
-            }
-            if (!text[position]) {
-                stop = 1;
-            }
-            if (text[position] == '\\' && text[position + 1] == 'n') {
-                stop = 1;
-            }
-        }
-        if (!text[position]) {
-            break;
-        }
-        if (text[position] == '\\' && text[position + 1] == 'n') {
-            text[position + 1] = ' ';
-            previous_break = position + 1;
-        }
-        if (previous_break == line_start) {
-            previous_break = position;
-        }
-        ++line_count;
-        text[previous_break - 1] = '\n';
-        line_start = previous_break;
-    }
-    if (width >= max_width) {
-        ++line_count;
-        text[previous_break - 1] = '\n';
-    }
-    return line_count;
 }

@@ -77,6 +77,13 @@ typedef struct CHARACTER_PACK_ANIMATION { // size 0x8
 
 static f32 APIObjectFabs(f32 value);
 
+/* Float fabs by clearing the sign bit. */
+static f32 APIObjectFabs(f32 value) {
+    f32 result;
+    *(u32 *)&result = *(u32 *)&value & 0x7fffffff;
+    return result;
+}
+
 static f32 APIObjectSafeDivide(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
         return 0.0f;
@@ -160,8 +167,6 @@ void AnimList_RequestAnimGroupForCreatures(i32 group_id, ...) {
 }
 
 static i32 AnimBlendMode = 1;
-i32 (*MakeLayerList)(CHARACTER_MODEL_LAYERS *, i16 *, u32) = PCBuildModelLayerList;
-char RedirectAnimDir[64] = "chars\\commonanims\\";
 
 void SetAnimBlendMode(i32 mode) {
     AnimBlendMode = mode;
@@ -937,6 +942,8 @@ i32 AddGameDebrisMom(APIDEBRISSYS *system, i32 type, NUVEC *position, i32 count,
     return 0;
 }
 
+void (*APIObjPlaySfxByIdFn)(i32, NUVEC *) = 0;
+
 void SetAPIObjPlaySfxByIdFn(void (*play_sfx)(i32, NUVEC *)) {
     APIObjPlaySfxByIdFn = play_sfx;
 }
@@ -1266,6 +1273,8 @@ void *LoadAnim(char *path, i32 area_animation, VARIPTR *cursor, VARIPTR end) {
     return NULL;
 }
 
+char RedirectAnimDir[64] = "chars\\commonanims\\";
+
 void APIObjectRegisterAnimRedirect(i32 (*callback)(char *, void *, CHARACTERANIM_CONFIG *, char *), void *list, char *directory) {
     i32 length = NuStrLen(directory);
     RedirectAnimFn = callback;
@@ -1551,10 +1560,7 @@ i16 FindAnimIX(CHARACTERDATA *character, char *name) {
     return -1;
 }
 
-NUHGOBJ_EVAL *Temphgobj = 0;
 f32 animduration_blendouttime = 0;
-NUMTL *APITrans_Mtl[2] = {0};
-void (*APIObjPlaySfxByIdFn)(i32, NUVEC *) = 0;
 
 f32 AnimDuration(i32 character_id, i32 animation, f32 start_frame, f32 end_frame, i32 subtract_blend_out) {
     i16 model_id;
@@ -1632,6 +1638,8 @@ void PCStoreModelLocatorCoordinates(CHARACTER_MODEL_LAYERS *model, NUMTX *world_
         }
     }
 }
+
+i32 (*MakeLayerList)(CHARACTER_MODEL_LAYERS *, i16 *, u32) = PCBuildModelLayerList;
 
 void EvalModelAnim(CHARACTER_MODEL_LAYERS *model, ANIMPACKET *packet, NUMTX *world_matrix, NUMTX *joint_matrices,
                    DWA_WEIGHT_BLOCK ***dwa_output, NUVEC *locator_positions, NUMTX *locator_matrices, u32 layer_mask) {
@@ -2330,6 +2338,8 @@ void BlendRootFn(NUMTX *matrix, void *data, NUVEC *source_root, NUVEC *target_ro
     }
 }
 
+NUHGOBJ_EVAL *Temphgobj = 0;
+
 void NuHGobjRestrictEvaluation(NUHGOBJ_EVAL *object) {
     Temphgobj = object;
     if (object != NULL) {
@@ -2344,6 +2354,8 @@ void NuHGobjRestoreEvaluation(void) {
         Temphgobj = NULL;
     }
 }
+
+NUMTL *APITrans_Mtl[2] = {0};
 
 void APITransparentInit(void) {
     APITrans_Mtl[0] = NuMtlCreate3D(1);
@@ -2904,39 +2916,4 @@ void APICharacterSysInit(VARIPTR *cursor, VARIPTR end, i32 character_count, i32 
 
 /* Table sine and cosine of an angle in radians; the cosine negates the angle. */
 
-static void WindShearComponentsPC(f32 *shear_x, f32 *shear_z, i32 wind_scale, i32 wind_speed) {
-    f32 amplitude = (f32)(((f64)wind_scale / 65535.0) * global_windscale);
-    f32 speed = (f32)(((f64)wind_speed / 65535.0) * global_windspeed);
-    u32 seed = (u32)wind_speed;
-    f32 random_phase = (f32)((f64)NuRandFloatSeeded(&seed) * (f64)3.142f * 2.0);
-    f32 phase = (f32)PCWindFrameCount * speed + random_phase;
-    f32 cos_half = (f32)(NuTrigTable[((0x4000 - (i32)(((f32)(phase * (f64)2.3f)) * -10430.3779296875)) >> 1) & 0x7fff] * 0.5);
-    f32 cos_quarter = (f32)(NuTrigTable[((0x4000 - (i32)(((f32)(phase * (f64)4.4f)) * -10430.3779296875)) >> 1) & 0x7fff] * 0.25);
-    f64 sin_sum = (f32)(NuTrigTable[((i32)(((f32)(phase * (f64)2.1f)) * 10430.3779296875) >> 1) & 0x7fff] * 0.5) +
-                  NuTrigTable[((i32)(phase * 10430.3779296875) >> 1) & 0x7fff];
-    *shear_x =
-        (f32)((sin_sum + (f32)(0.25 * NuTrigTable[((i32)(((f32)(phase * (f64)4.2f)) * 10430.3779296875) >> 1) & 0x7fff])) * amplitude);
-    *shear_z = (f32)(((f64)NuTrigTable[((0x4000 - (i32)(((f32)(phase * (f64)1.1f)) * -10430.3779296875)) >> 1) & 0x7fff] + cos_half +
-                      cos_quarter) *
-                     amplitude);
-}
-
-void WindShear(NUMTX *output, NUMTX *input, i32 wind_scale, i32 wind_speed) {
-    f32 shear_x;
-    f32 shear_z;
-    WindShearComponentsPC(&shear_x, &shear_z, wind_scale, wind_speed);
-    *output = *input;
-    output->m10 = input->m00 * shear_x + input->m10 + input->m20 * shear_z;
-    output->m11 = input->m01 * shear_x + input->m11 + input->m21 * shear_z;
-    output->m12 = input->m02 * shear_x + input->m12 + input->m22 * shear_z;
-    output->m13 = shear_x * input->m03 + input->m13 + shear_z * input->m23;
-}
-
 // extern "C"
-
-/* Float fabs by clearing the sign bit. */
-static f32 APIObjectFabs(f32 value) {
-    f32 result;
-    *(u32 *)&result = *(u32 *)&value & 0x7fffffff;
-    return result;
-}

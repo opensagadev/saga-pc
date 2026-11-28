@@ -1,0 +1,998 @@
+#include "gameapi/ai/aisys/aisys.h"
+#include "gameapi/edptl.h"
+#include "globals.h"
+#include "legoapi/characters/core/character.h"
+#include "legoapi/characters/core/players.h"
+#include "legoapi/characters/motion.h"
+#include "legoapi/characters/motion/animlist.h"
+#include "legoapi/characters/motion/gameanim.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/core/config/cheat.h"
+#include "legoapi/core/input/gamepads.h"
+#include "legoapi/core/input/qrand.h"
+#include "legoapi/core/input/timer.h"
+#include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/gizmo/object/gizmoblowups.h"
+#include "legoapi/gizmo/object/gizmopickup.h"
+#include "legoapi/gizmos/fx/gizmopickups.h"
+#include "legoapi/gizmos/object/gizobstacles.h"
+#include "legoapi/items/base/animpacket.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/collect/bolts.h"
+#include "legoapi/items/collect/minikits.h"
+#include "legoapi/items/fx/explosions.h"
+#include "legoapi/items/objects/game_obj.h"
+#include "legoapi/items/objects/gameobjects.h"
+#include "legoapi/items/objects/grabber.h"
+#include "legoapi/items/objects/objectsall.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/menus/core/hint.h"
+#include "legoapi/misc/gamemain.h"
+#include "legoapi/misc/utilities.h"
+#include "legoapi/props/objects/techno.h"
+#include "legoapi/render/core/gameliball.h"
+#include "legoapi/render/core/rtl.h"
+#include "legoapi/render/core/terrain.h"
+#include "legoapi/render/fx.h"
+#include "legoapi/render/fx/parts.h"
+#include "legoapi/render/light/shadow.h"
+#include "legoapi/render/light/surfaces.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/levels.h"
+#include "legoapi/world/levels/levels.h"
+#include "legoapi/world/world.h"
+#include "legoapi/world/world_shared.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nu3d/nurndr.h"
+#include "nu2api/nuanimation_gen.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufpar.h"
+#include "nu2api/numath/nuang.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/numath_includes.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
+
+typedef struct grab_config_data_s { // size 0x4c
+    f32 level_y_offset;             // 0x00
+    NUFPCOMJMP keywords[9];         // 0x04
+} GRAB_CONFIG_DATA;
+
+static void GrabberVuVecCopy(NUVEC4 *destination, const NUVEC4 *source) {
+    destination->x = source->x;
+    destination->y = source->y;
+    destination->z = source->z;
+    destination->w = source->w;
+}
+
+static NUVEC4 GrabberVuVecMake(f32 x, f32 y, f32 z, f32 w) {
+    NUVEC4 v;
+    v.x = x;
+    v.y = y;
+    v.z = z;
+    v.w = w;
+    return v;
+}
+
+static void GrabberMtxSetRotationZ(NUMTX *m, NUANG a) {
+    f32 cosz;
+    f32 sinz;
+    NUVEC4 row;
+
+    cosz = NU_COS_LUT(a);
+    sinz = NU_SIN_LUT(a);
+    row = GrabberVuVecMake(cosz, sinz, 0.0f, 0.0f);
+    GrabberVuVecCopy(&m->rows[0], &row);
+    m->m10 = -sinz;
+    m->m11 = cosz;
+    m->m12 = 0.0f;
+    m->m13 = 0.0f;
+    GrabberVuVecCopy(&m->rows[2], &ANI3_EVAL_IDENTITY_MATRIX.rows[2]);
+    GrabberVuVecCopy(&m->rows[3], &ANI3_EVAL_IDENTITY_MATRIX.rows[3]);
+}
+
+static void GrabberMtxRotateX(NUMTX *m, NUANG a) {
+    f32 cosx;
+    f32 sinx;
+    f32 m01;
+    f32 m11;
+    f32 m21;
+    f32 m31;
+
+    cosx = NU_COS_LUT(a);
+    sinx = NU_SIN_LUT(a);
+    m01 = m->m01;
+    m11 = m->m11;
+    m21 = m->m21;
+    m31 = m->m31;
+
+    m->m01 = (m01 * cosx) - (m->m02 * sinx);
+    m->m02 = (m01 * sinx) + (m->m02 * cosx);
+    m->m11 = (m11 * cosx) - (m->m12 * sinx);
+    m->m12 = (m11 * sinx) + (m->m12 * cosx);
+    m->m21 = (m21 * cosx) - (m->m22 * sinx);
+    m->m22 = (m21 * sinx) + (m->m22 * cosx);
+    m->m31 = (m31 * cosx) - (m->m32 * sinx);
+    m->m32 = (m31 * sinx) + (m->m32 * cosx);
+}
+
+extern "C" GRABBER *Grab_grabber = 0;
+
+static void Grab_radius(NUFPAR *parser) {
+    Grab_grabber->radius = NuFParGetFloat(parser);
+}
+
+static void Grab_speed(NUFPAR *parser) {
+    Grab_grabber->speed = NuFParGetFloat(parser);
+}
+
+static void Grab_rotate(NUFPAR *parser) {
+    Grab_grabber->bits.rotate = NuFParGetInt(parser);
+}
+
+static void Grab_scale(NUFPAR *parser) {
+    Grab_grabber->scale = NuFParGetFloat(parser);
+}
+
+static void Grab_move_xy(NUFPAR *parser) {
+    if (NuFParGetInt(parser) != 0) {
+        Grab_grabber->move_xy = 1;
+    }
+}
+
+static void Grab_invert_x(NUFPAR *parser) {
+    Grab_grabber->invert_x = 1;
+}
+
+static void Grab_type(NUFPAR *parser) {
+    if (NuFParGetWord(parser) == 0) {
+        return;
+    }
+    if (NuStrICmp(parser->word_buffer_ptr, "GRABMAGNET") == 0) {
+        Grab_grabber->character_id = GrabMagnetId;
+    } else if (NuStrICmp(parser->word_buffer_ptr, "ROBOTBASE") == 0) {
+        Grab_grabber->character_id = RobotBaseId;
+    } else {
+        Grab_grabber->character_id = GrabMachineId;
+    }
+}
+
+static void Grab_shadow(NUFPAR *parser) {
+    Grab_grabber->flags |= GRABBER_SHADOW;
+    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
+        Grab_grabber->flags &= ~GRABBER_SHADOW;
+    }
+}
+
+i16 GrabMachineId = -1;
+i16 GrabMagnetId = -1;
+i16 RobotBaseId = -1;
+static GRAB_CONFIG_DATA GrabConfigData = {-0.3f,
+                                          {{"radius", Grab_radius},
+                                           {"speed", Grab_speed},
+                                           {"rotate", Grab_rotate},
+                                           {"scale", Grab_scale},
+                                           {"move_xy", Grab_move_xy},
+                                           {"type", Grab_type},
+                                           {"invert_x", Grab_invert_x},
+                                           {"shadow", Grab_shadow},
+                                           {NULL, NULL}}};
+
+void Grabber_Configure(WORLDINFO *world, char *config) {
+    nuhspecial_s special;
+    NUFPAR *parser;
+    u8 active;
+    if (VehicleArea != 0 || (world->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) != 0 || world->grabber != NULL) {
+        return;
+    }
+    if (NuSpecialFind(world->current_gscn, &special, "grabber", 1) == 0) {
+        return;
+    }
+    world->grabber = (GRABBER *)((world->giz_buffer.addr + 15) & ~15u);
+    world->giz_buffer.void_ptr = world->grabber + 1;
+    Grab_grabber = world->grabber;
+    Grab_grabber->special = special;
+    parser = NuFParCreateMem("grabbers", config, 0xffff);
+    if (parser == NULL) {
+        return;
+    }
+    NuFParPushCom(parser, GrabConfigData.keywords);
+    active = 0;
+    while (NuFParGetLine(parser) != 0) {
+        if (NuFParGetWord(parser) != 0) {
+            if (NuStrICmp(parser->word_buffer_ptr, "grabber_start") == 0) {
+                Grab_grabber->move_xy = 0;
+                Grab_grabber->radius = 0.5f;
+                Grab_grabber->speed = 1.0f;
+                Grab_grabber->flags &= ~GRABBER_ROTATE;
+                Grab_grabber->scale = 1.0f;
+                Grab_grabber->invert_x = 0;
+                Grab_grabber->flags |= GRABBER_SHADOW;
+                Grab_grabber->character_id = GrabMachineId;
+                active = 1;
+            } else if (NuStrICmp(parser->word_buffer_ptr, "grabber_end") == 0) {
+                break;
+            } else if (active != 0) {
+                NuFParInterpretWord(parser);
+            }
+        }
+    }
+    NuFParDestroy(parser);
+    if (Grab_grabber->character_id != -1) {
+        Grab_grabber->character_model = APICharacterLoaded(Grab_grabber->character_id);
+    } else {
+        Grab_grabber->character_model = NULL;
+    }
+    if (Grab_grabber->character_model != NULL) {
+        NuSpecialSetVisibility(&Grab_grabber->special, 0);
+    } else {
+        NuSpecialSetVisibility(&Grab_grabber->special, 1);
+        Grab_grabber->character_id = -1;
+    }
+    Grab_grabber->matrix = *NuSpecialGetDrawMtx(&Grab_grabber->special);
+    if (world->current_level == DEATHSTARRESCUEA_LDATA) {
+        Grab_grabber->matrix.m31 += GrabConfigData.level_y_offset;
+    }
+    PCByteCopy(&Grab_grabber->initial_position, &Grab_grabber->matrix.m30, sizeof(NUVEC));
+    NuSpecialFind(world->current_gscn, &Grab_grabber->shadow_special, "grabber_shadow", 1);
+    world->grabber->platform_id = -1;
+}
+
+static i32 GrabberFindShadow(NUVEC *position, GRABBER *grabber) {
+    NUVEC probe;
+    f32 height;
+    i32 surface;
+
+    probe.x = position->x;
+    probe.y = position->y + 0.25f;
+    probe.z = position->z;
+    if (WORLD->current_level != CLOUDCITYTRAPA_LDATA) {
+        NewTerrPlatformsOff();
+    }
+    height = GameShadow(NULL, &probe, 5.0f, -1);
+    if (height != 2000000.0f) {
+        surface = ShadowInfo();
+        if ((u32)surface <= 31 && (TerSurface[surface].flags & 0x200) != 0) {
+            grabber->shadow_height = height;
+            FindAnglesZX(&ShadNorm, &grabber->shadow_z_angle, &grabber->shadow_x_angle);
+            if ((TerSurface[surface].flags & TERSURFACE_REFLECTIVE) != 0) {
+                grabber->floor_height = height;
+            } else {
+                grabber->floor_height = 2000000.0f;
+            }
+            return 1;
+        }
+    }
+    return 0;
+}
+
+static void GrabberGrabVictim(GAMEOBJECT *victim) {
+    victim->player.character_context = CHARACTER_CONTEXT_GRABBED;
+    victim->player.context_animation = ACTION_GRABBED;
+    if (victim->character_model->model_data_b[104] == NULL) {
+        victim->player.context_animation = ACTION_FALL;
+    }
+    NewRumbleAllPlayers(0.0f, 0.1f, 0, 0);
+    victim->player.context_timer = 0.0f;
+    victim->player.context_duration = 0.75f;
+    victim->player.external_force = victim->start_position;
+    victim->player.context_phase = 0;
+    Hint_SetComplete(0x28b);
+}
+
+NUVEC *Grabber_GetGrabPos(void *context, NUMTX *matrix) {
+    GRABBER *grabber = (GRABBER *)context;
+    if (grabber->character_model != NULL && (grabber->flags & GRABBER_DRAWN) != 0 &&
+        grabber->character_model->points_of_interest[0] != NULL) {
+        if (matrix != NULL) {
+            *matrix = grabber->grab_matrix;
+        }
+        return &grabber->grab_matrix.translation;
+    }
+    if (matrix != NULL) {
+        *matrix = NuMtxSetIdentityTemplate;
+    }
+    return &grabber->grab_position;
+}
+
+extern "C" void PartKill_Grabber(PART *part, i32 unused1) {
+    GIZMOBLOWUP *blowup = part->carried_blowup;
+    NUVEC *position = &part->position;
+    i32 i;
+    PlaySfx("Explode2", position);
+    GameCam_Judder(GameCam, 0.5f, 0, position);
+    for (i = 4; i < 7; ++i) {
+        if (blowup->type->particle_types[i] != -1) {
+            AddGameDebris(WORLD->game_debris_sys, blowup->type->particle_types[i], position);
+        }
+    }
+    for (i = 0; i < 2; ++i) {
+        if (blowup->type->particle_types[i] != -1) {
+            AddFiniteShotPART(blowup->type->particle_types[i], position, 1);
+        }
+    }
+    AddExplosion(position, 0.6f, 0.3f, NULL, -1,
+                 EXPLOSION_HITS_CHARACTERS | EXPLOSION_HITS_BLOWUPS | EXPLOSION_HITS_PARTS | EXPLOSION_KILLS);
+    GameCam_NewShake(GameCam, 0.5f, 0.5f, 1.0f);
+    NewRumbleAllPlayers(0.7f, 0.0f, 0, 0);
+}
+
+static i32 IsGrabbable(GAMEOBJECT *object) {
+    return (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) == 0;
+}
+
+void Grabber_Draw(WORLDINFO *world) {
+    GRABBER *grabber;
+    NUVEC *grab_position;
+    NUMTX matrix;
+    NUMTX reflection;
+    NUVEC position;
+    RTL_DATA lights;
+    NUMTX joints[256];
+    f32 distance;
+
+    grabber = world->grabber;
+    grab_position = NULL;
+    if (grabber == NULL) {
+        return;
+    }
+    if (grabber->character_model != NULL) {
+        grab_position = Grabber_GetGrabPos(grabber, NULL);
+        rtlResetEx(&lights, 1);
+        rtlApplySetScale(WORLD->rtl_set, &lights, grab_position, NULL, -1, 1.0f);
+        rtlSetLights(&lights);
+    } else if (NuSpecialGetVisibilityFn(&grabber->special) == 0) {
+        return;
+    }
+    matrix = *NuSpecialGetDrawMtx(&grabber->special);
+    if (world->current_level == ObstacleReturnLevel) {
+        distance = NuVecXZDist(&GameCam->position, &matrix.translation, NULL);
+        if (distance < 2.0f) {
+            matrix.m31 += (1.0f - (NU_SIN_LUT((i32)((1.0f - distance * 0.5f) * 32768.0f + 16384.0f)) + 1.0f) * 0.5f) * 1.25f;
+        }
+    }
+    if (grabber->shadow_height != 2000000.0f) {
+        if ((grabber->flags & GRABBER_SHADOW) != 0 && CharacterBlobShadowsOn != 0 &&
+            (grabber->character_model == NULL || grabber->character_model->hierarchy->shadow_groups == 0)) {
+            position.x = grabber->grab_position.x;
+            position.y = grabber->shadow_height + 0.005f;
+            if (WORLD->current_level == CLOUDCITYTRAPA_LDATA) {
+                position.y += 0.005f;
+            }
+            position.z = grabber->grab_position.z;
+            if (NuSpecialExistsFn(&grabber->shadow_special) != 0) {
+                GrabberMtxSetRotationZ(&reflection, grabber->shadow_x_angle);
+                GrabberMtxRotateX(&reflection, grabber->shadow_z_angle);
+                NuMtxTranslate(&reflection, &position);
+                NuSpecialDrawAt(&grabber->shadow_special, &reflection);
+            } else {
+                NuRndrAddShadow(&position, grabber->radius, 0x80, grabber->shadow_z_angle, 0, grabber->shadow_x_angle);
+            }
+        }
+        if (grabber->floor_height != 2000000.0f) {
+            MatrixReflectionVU0_AXISY(&matrix, grabber->floor_height, WORLD->current_level->reflection_y, &reflection);
+        }
+    }
+    if (grabber->character_model != NULL) {
+        grabber->flags &= ~GRABBER_DRAWN;
+        MakeLayerList = GCDataList[grabber->character_model->model_id].make_layer_list;
+        if ((grabber->flags & GRABBER_SHADOW) != 0) {
+            grabber->character_model->hierarchy->suppress_shadow_points = 0;
+            EnableShadowMapRendering(0);
+        } else {
+            grabber->character_model->hierarchy->suppress_shadow_points = 1;
+            ResetShadowMapRendering();
+        }
+        if (APIDrawCharacterModel(grabber->character_model, (APICHARACTERDATA *)&CDataList[grabber->character_model->model_id],
+                                  &grabber->animation, &matrix, NULL, grabber->floor_height != 2000000.0f ? &reflection : NULL, NULL,
+                                  &grabber->grab_matrix, NULL, 0xffff, NULL, 0, Paused, FRAMETIME, joints, NULL,
+                                  WORLD->game_debris_sys) != 0) {
+            grabber->flags |= GRABBER_DRAWN;
+        }
+        if ((grabber->flags & GRABBER_SHADOW) != 0) {
+            ResetShadowMapRendering();
+        }
+        grabber->character_model->hierarchy->suppress_shadow_points = 0;
+    } else if (grabber->floor_height != 2000000.0f) {
+        NuSpecialDrawAt(&grabber->special, &reflection);
+    }
+    if (grabber->carried_blowup != NULL && grab_position != NULL) {
+        matrix = grabber->carried_matrix;
+        matrix.translation = *grab_position;
+        matrix.m31 += grabber->carried_height_offset;
+        NuSpecialDrawAt(&grabber->carried_blowup->type->animated_special, &matrix);
+        if (grabber->floor_height != 2000000.0f &&
+            MatrixReflection(&matrix, 2, grabber->floor_height, WORLD->current_level->reflection_y, &reflection) != 0) {
+            NuSpecialDrawAt(&grabber->carried_blowup->type->animated_special, &reflection);
+        }
+    }
+}
+
+void Grabber_StoreProgress(WORLDINFO *world, LEVEL_PROGRESS *progress) {
+    if (world != NULL && progress != NULL) {
+        GRABBER *grabber = world->grabber;
+        if (grabber != NULL) {
+            progress->grabber_position.x = grabber->grab_position.x;
+            progress->grabber_position.y = grabber->initial_position.y;
+            progress->grabber_position.z = grabber->grab_position.z;
+        } else {
+            progress->grabber_position.y = 2000000.0f;
+        }
+    }
+}
+
+static void Grabber_SetVictimPos(GRABBER *grabber) {
+    GAMEOBJECT *victim;
+    NUVEC position;
+    NUVEC start;
+    f32 fraction;
+
+    victim = grabber->victim;
+    if (victim == NULL) {
+        return;
+    }
+    position = *Grabber_GetGrabPos(grabber, NULL);
+    if (grabber->character_id == GrabMagnetId) {
+        fraction = victim->player.context_timer / victim->player.context_duration;
+        start = victim->player.external_force;
+        if (fraction > 1.0f) {
+            fraction = 1.0f;
+        }
+        grabber->victim->position.x = start.x + (position.x - start.x) * fraction;
+        grabber->victim->position.y = start.y + (position.y - start.y) * fraction;
+        grabber->victim->position.z = start.z + (position.z - start.z) * fraction;
+        victim = grabber->victim;
+        victim->position.x -= NU_SIN_LUT(victim->movement_angle) * victim->bounds_half_height * fraction;
+        victim = grabber->victim;
+        victim->position.z -= NU_COS_LUT(victim->movement_angle) * victim->bounds_half_height * fraction;
+        if (grabber->victim->player.context_phase == 0 && fraction == 1.0f) {
+            PlaySfx("imp_C3PO_magnet", &position);
+            grabber->victim->player.context_phase = 1;
+        }
+    } else if (victim->player.context_animation == ACTION_FALL) {
+        victim->position.x = position.x - NU_SIN_LUT(victim->movement_angle) * victim->bounds_half_height;
+        grabber->victim->position.y = position.y;
+        victim = grabber->victim;
+        victim->position.z = position.z - NU_COS_LUT(victim->movement_angle) * victim->bounds_half_height;
+    } else {
+        victim->position = position;
+    }
+    grabber->victim->flags_ef0 &= ~0x2000000;
+    grabber->victim->ai_update_position = grabber->victim->position;
+}
+
+void Grabber_Reset(WORLDINFO *world) {
+    GRABBER *grabber;
+    GIZMO *gizmo;
+
+    grabber = world->grabber;
+    if (grabber == NULL) {
+        return;
+    }
+    gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "pad_drop");
+    if (gizmo != NULL) {
+        Grab_grabber->action_switch = gizmo->obstacle;
+        if (Grab_grabber->action_switch != NULL && Grab_grabber->action_switch->anim_set == NULL) {
+            Grab_grabber->action_switch = NULL;
+        }
+    } else {
+        Grab_grabber->action_switch = NULL;
+    }
+    gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "pad_n");
+    if (gizmo != NULL) {
+        Grab_grabber->direction_switches[0] = gizmo->obstacle;
+        if (Grab_grabber->direction_switches[0] != NULL && Grab_grabber->direction_switches[0]->anim_set == NULL) {
+            Grab_grabber->direction_switches[0] = NULL;
+        }
+    } else {
+        Grab_grabber->direction_switches[0] = NULL;
+    }
+    gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "pad_s");
+    if (gizmo != NULL) {
+        Grab_grabber->direction_switches[1] = gizmo->obstacle;
+        if (Grab_grabber->direction_switches[1] != NULL && Grab_grabber->direction_switches[1]->anim_set == NULL) {
+            Grab_grabber->direction_switches[1] = NULL;
+        }
+    } else {
+        Grab_grabber->direction_switches[1] = NULL;
+    }
+    gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "pad_e");
+    if (gizmo != NULL) {
+        Grab_grabber->direction_switches[2] = gizmo->obstacle;
+        if (Grab_grabber->direction_switches[2] != NULL && Grab_grabber->direction_switches[2]->anim_set == NULL) {
+            Grab_grabber->direction_switches[2] = NULL;
+        }
+    } else {
+        Grab_grabber->direction_switches[2] = NULL;
+    }
+    gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "pad_w");
+    if (gizmo != NULL) {
+        Grab_grabber->direction_switches[3] = gizmo->obstacle;
+        if (Grab_grabber->direction_switches[3] != NULL && Grab_grabber->direction_switches[3]->anim_set == NULL) {
+            Grab_grabber->direction_switches[3] = NULL;
+        }
+    } else {
+        Grab_grabber->direction_switches[3] = NULL;
+    }
+    grabber->grab_position.y = grabber->initial_position.y;
+    if (world->level_progress != NULL && world->level_progress->grabber_position.y != 2000000.0f) {
+        grabber->grab_position.x = world->level_progress->grabber_position.x;
+        grabber->grab_position.z = world->level_progress->grabber_position.z;
+    } else {
+        grabber->grab_position.x = grabber->initial_position.x;
+        grabber->grab_position.z = grabber->initial_position.z;
+    }
+    grabber->floor_height = grabber->shadow_height = 2000000.0f;
+    ResetAnimPacket(&grabber->animation, -1);
+    grabber->state = 0;
+    if (grabber->victim != NULL) {
+        Grabber_SetVictimPos(grabber);
+        grabber->victim->player.character_context = CHARACTER_CONTEXT_NONE;
+    }
+    grabber->victim = NULL;
+    grabber->carried_blowup = NULL;
+    GrabberFindShadow(&grabber->grab_position, grabber);
+    grabber->flags &= 0xfa;
+    grabber->target_velocity.x = grabber->target_velocity.y = grabber->target_velocity.z = 0.0f;
+    grabber->target_yaw = 0;
+    grabber->yaw = 0;
+    grabber->platform_contact_timer = 0.0f;
+    grabber->velocity = grabber->target_velocity;
+    if (world->terrain != NULL) {
+        grabber->platform_id = (i16)FindPlatInst(NuSpecialGetInstanceix(&grabber->special));
+    }
+}
+
+extern "C" void Grabber_Drop(GRABBER *grabber, NUVEC *previous) {
+    ADDPART params;
+    NUMTX matrix;
+    NUVEC velocity;
+    NUVEC centre;
+    PART *part;
+
+    grabber->flags |= GRABBER_LIFTED;
+    if (grabber->victim != NULL) {
+        if (grabber->character_id == GrabMagnetId && grabber->victim->player.context_phase != 0) {
+            PlaySfx("imp_C3PO_magnet_drop", Grabber_GetGrabPos(grabber, NULL));
+        }
+        Grabber_SetVictimPos(grabber);
+        grabber->victim->velocity.x = (grabber->grab_position.x - previous->x) / FRAMETIME * 0.5f;
+        if (grabber->character_id == GrabMagnetId) {
+            grabber->victim->velocity.y = -1.0f;
+        }
+        grabber->victim->velocity.z = (grabber->grab_position.z - previous->z) / FRAMETIME * 0.5f;
+        grabber->victim->player.character_context = CHARACTER_CONTEXT_NONE;
+        grabber->victim = NULL;
+    } else if (grabber->carried_blowup != NULL) {
+        params = Default_ADDPART;
+        matrix = grabber->carried_matrix;
+        matrix.translation = *Grabber_GetGrabPos(grabber, NULL);
+        matrix.m31 += grabber->carried_height_offset;
+        params.matrix = &matrix;
+        velocity.x = (grabber->grab_position.x - previous->x) / FRAMETIME * 0.5f;
+        velocity.y = -0.1f;
+        velocity.z = (grabber->grab_position.z - previous->z) / FRAMETIME * 0.5f;
+        params.velocity = &velocity;
+        NuSpecialGetRadius(&grabber->carried_blowup->type->animated_special, &centre, &params.start_radius);
+        params.end_radius = params.start_radius;
+        params.gravity = -6.0f;
+        params.special = &grabber->carried_blowup->type->animated_special;
+        params.time_step = FRAMETIME;
+        params.fade_time = 3.0f;
+        params.flags = PART_FLAG_DIE_WHEN_STOPPED | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_NO_BOUNCE | PART_FLAG_SLOT_CANNOT_BE_STOLEN;
+        params.kill_fn = PartKill_Grabber;
+        part = AddPart(&params);
+        if (part != NULL) {
+            part->carried_blowup = grabber->carried_blowup;
+        }
+        grabber->carried_blowup = NULL;
+    }
+}
+
+void Grabber_Update(WORLDINFO *world) {
+    GRABBER *grabber;
+    GAMEOBJECT *control;
+    GAMEOBJECT *object;
+    GAMEPAD *pad;
+    GIZMOPICKUP *pickup;
+    AIANTINODE *node;
+    NUVEC *position;
+    NUVEC next;
+    NUVEC previous;
+    NUMTX matrix;
+    f32 *frame;
+    f32 value;
+    i32 moved;
+    i32 minus;
+    i32 plus;
+    i32 found;
+    i32 mask;
+    i32 i;
+    u16 angle;
+
+    pad = NULL;
+    control = NULL;
+    grabber = world->grabber;
+    if (grabber == NULL) {
+        return;
+    }
+    if (grabber->victim != NULL && ((grabber->victim->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
+                                    (grabber->victim->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || grabber->victim->dead != 0)) {
+        grabber->victim = NULL;
+    }
+    if (grabber->platform_contact_timer > 0.0f) {
+        grabber->platform_contact_timer -= FRAMETIME;
+    }
+    next = grabber->grab_position;
+    grabber->target_velocity.x = grabber->target_velocity.y = grabber->target_velocity.z = 0.0f;
+    previous = grabber->grab_position;
+    moved = 0;
+    control = FindGameObject(id_GRABCONTROL, 0, 0, 1, 0);
+    if (id_GRABR2CONTROL != -1 && control == NULL && StartupGameFlag1 != 0) {
+        FindGameObject(id_GRABR2CONTROL, 0, 0, 1, 0);
+    }
+    if (control == NULL) {
+        if (StartupGameFlag1 == 0) {
+            Techno_FindOperator(&grabber->special, &pad, &control);
+        }
+    } else {
+        pad = control->player.pad;
+    }
+    if (control != NULL && (control->player.takeover_source != NULL || StartupGameFlag1 == 0) &&
+        (control->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
+        if (pad->input_magnitude > 0.0f) {
+            if (Grab_grabber->move_xy != 0) {
+                grabber->target_velocity.x = 0.0f;
+                grabber->target_velocity.y = pad->input_direction_x * grabber->speed;
+                if (Grab_grabber->invert_x != 0) {
+                    grabber->target_velocity.z = pad->input_direction_z * grabber->speed * -1.0f;
+                } else {
+                    grabber->target_velocity.z = pad->input_direction_z * grabber->speed;
+                }
+            } else {
+                angle = GamePad_InputAngle(control, pad);
+                if (Grab_grabber->invert_x != 0) {
+                    grabber->target_velocity.x = NU_SIN_LUT(angle) * grabber->speed * -1.0f;
+                } else {
+                    grabber->target_velocity.x = NU_SIN_LUT(angle) * grabber->speed;
+                }
+                grabber->target_velocity.z = NU_COS_LUT(angle) * grabber->speed;
+            }
+        }
+    } else {
+        minus = (grabber->direction_switches[0] != NULL && (grabber->direction_switches[0]->progress_flags & OBSTACLE_VISIBLE) != 0 &&
+                 grabber->direction_switches[0]->anim_set->state == 2);
+        plus = (grabber->direction_switches[1] != NULL && (grabber->direction_switches[1]->progress_flags & OBSTACLE_VISIBLE) != 0 &&
+                grabber->direction_switches[1]->anim_set->state == 2);
+        if (minus != 0) {
+            if (plus == 0) {
+                grabber->target_velocity.x = -grabber->speed;
+            }
+        } else if (plus != 0) {
+            grabber->target_velocity.x = grabber->speed;
+        }
+        plus = (grabber->direction_switches[2] != NULL && (grabber->direction_switches[2]->progress_flags & OBSTACLE_VISIBLE) != 0 &&
+                grabber->direction_switches[2]->anim_set->state == 2);
+        minus = (grabber->direction_switches[3] != NULL && (grabber->direction_switches[3]->progress_flags & OBSTACLE_VISIBLE) != 0 &&
+                 grabber->direction_switches[3]->anim_set->state == 2);
+        if (plus != 0) {
+            if (minus == 0) {
+                grabber->target_velocity.z = grabber->speed;
+            }
+        } else if (minus != 0) {
+            grabber->target_velocity.z = -grabber->speed;
+        }
+        if (NuSpecialGetVisibilityFn(&grabber->special) == 0) {
+            grabber->target_velocity.x = grabber->target_velocity.z = 0.0f;
+        }
+    }
+    grabber->velocity.x = SeekValF(grabber->velocity.x, grabber->target_velocity.x, 5.0f);
+    grabber->velocity.y = SeekValF(grabber->velocity.y, grabber->target_velocity.y, 5.0f);
+    grabber->velocity.z = SeekValF(grabber->velocity.z, grabber->target_velocity.z, 5.0f);
+    if ((grabber->flags & GRABBER_ROTATE) != 0 && (grabber->target_velocity.x != 0.0f || grabber->target_velocity.z != 0.0f)) {
+        grabber->target_yaw = NuAtan2D(grabber->target_velocity.x, grabber->target_velocity.z);
+    }
+    next.x += FRAMETIME * grabber->velocity.x;
+    next.y += grabber->velocity.y * FRAMETIME;
+    next.z += FRAMETIME * grabber->velocity.z;
+    if (world->current_level == DEATHSTARESCAPEB_LDATA) {
+        if (next.z >= 11.84f) {
+            next.z = 11.84f;
+            grabber->velocity.z = grabber->target_velocity.z = 0.0f;
+        } else if (next.z < 10.125f) {
+            next.z = 10.125f;
+            grabber->velocity.z = grabber->target_velocity.z = 0.0f;
+        }
+        if (next.y < -4.85f) {
+            next.y = -4.85f;
+            grabber->velocity.y = grabber->target_velocity.y = 0.0f;
+        } else if (next.y > -3.9f) {
+            next.y = -3.9f;
+            grabber->velocity.y = grabber->target_velocity.y = 0.0f;
+        }
+    } else if (world->current_level == JABBASPALACEB_LDATA) {
+        value = NuVecMag(&grabber->velocity) / grabber->speed * 0.25f + 0.5f;
+        if (value > 1.0f) {
+            value = 1.0f;
+        }
+        PlaySfxAndSetPitch("env_hover_box_lp", &next, value);
+        next.y = NU_SIN_LUT((u16)(NuFmod(GameTimer.time_elapsed, 2.0f) * 0.5f * 65536.0f)) * 0.0125f + grabber->initial_position.y;
+        grabber->velocity.y = grabber->target_velocity.y = 0.0f;
+        if (grabber->platform_contact_timer > 0.0f) {
+            next.y -= (1.0f - NU_SIN_LUT((i32)(grabber->platform_contact_timer * 4.0f * 65536.0f + 16384.0f))) * 0.5f * 0.02f;
+        }
+    }
+    if (next.x != grabber->grab_position.x || next.y != grabber->grab_position.y || next.z != grabber->grab_position.z) {
+        if (world->current_level != JABBASPALACEB_LDATA &&
+            (grabber->target_velocity.x != 0.0f || grabber->target_velocity.y != 0.0f || grabber->target_velocity.z != 0.0f)) {
+            if (world->current_level == CLOUDCITYTRAPA_LDATA) {
+                PlaySfx("CarbonFreezeCraneLp", &grabber->grab_position);
+            } else {
+                PlaySfx("env_crane_mvt_lp", &grabber->grab_position);
+            }
+        }
+        if (GrabberFindShadow(&next, grabber) != 0) {
+            moved = 1;
+            grabber->grab_position.x = next.x;
+            grabber->grab_position.y = next.y;
+            grabber->grab_position.z = next.z;
+            if ((grabber->target_velocity.x != 0.0f || grabber->target_velocity.y != 0.0f || grabber->target_velocity.z != 0.0f) &&
+                Cheat_PowerUpActive(-1) == 0) {
+                ConstantRumble(NULL, (f32)qrand() * PlayerRandomScale * 0.4f * (NuVecMag(&grabber->velocity) / grabber->speed), 0.15f);
+            }
+        } else {
+            grabber->target_velocity = v000;
+            grabber->velocity = grabber->target_velocity;
+            if (world->current_level == JABBASPALACEB_LDATA) {
+                grabber->grab_position.y = next.y;
+            }
+        }
+    }
+    if ((grabber->flags & GRABBER_ROTATE) != 0) {
+        grabber->yaw = SeekRot(grabber->yaw, grabber->target_yaw, 3.0f);
+    }
+    matrix = grabber->matrix;
+    if ((grabber->flags & GRABBER_ROTATE) != 0) {
+        NuMtxPreRotateY(&matrix, grabber->yaw);
+    }
+    if (grabber->scale != 1.0f) {
+        NUVEC scale;
+        scale.x = scale.y = scale.z = grabber->scale;
+        NuMtxPreScale(&matrix, &scale);
+    }
+    matrix.translation = grabber->grab_position;
+    NuSpecialSetDrawMtx(&grabber->special, &matrix);
+    NuSpecialUpdate(&grabber->special);
+    switch (grabber->state) {
+        case 1: {
+            NUVEC low;
+            NUVEC high;
+
+            frame = AnimPlaying(&grabber->animation, ACTION_PICKUP, 1, 0);
+            if (frame == NULL) {
+                break;
+            }
+            value = grabber->animation_timer - FRAMETIME;
+            grabber->animation_timer = value;
+            if (value <= 0.0f) {
+                if (grabber->victim != NULL || grabber->carried_blowup != NULL) {
+                    grabber->stuck_timer = 0.0f;
+                    grabber->state = 2;
+                } else {
+                    grabber->state = 0;
+                }
+                break;
+            }
+            if ((grabber->flags & GRABBER_LIFTED) != 0) {
+                break;
+            }
+            value = AnimListFrame(grabber->character_model, ACTION_PICKUP, 0);
+            if (!(value > 0.0f) || !(*frame >= value)) {
+                break;
+            }
+            grabber->flags |= GRABBER_LIFTED;
+            position = Grabber_GetGrabPos(grabber, NULL);
+            low.x = position->x - 0.5f;
+            high.x = position->x + 0.5f;
+            low.y = position->y - 0.5f;
+            high.y = position->y + 0.5f;
+            low.z = position->z - 0.5f;
+            high.z = position->z + 0.5f;
+            pickup = GizmoPickup_InBox(world, 4, &low, &high);
+            if (pickup != NULL) {
+                pickup->flags = (pickup->flags & 0xf9) | GIZMOPICKUP_STATE_COLLECTED;
+                if ((pickup->flags & GIZMOPICKUP_STATE_ALTERNATE_TYPE) != 0) {
+                    Pup_CollectCoin(world, pickup, 2, control, 1);
+                } else {
+                    CollectMinikit(&pickup->position, "m_pup1", 1);
+                }
+            } else {
+                grabber->victim = FindNearestGameObject(position, NULL, 0, 0.5f, 0.0f, -1, -1, -1, NULL, 0, IsGrabbable);
+                if (grabber->victim != NULL) {
+                    GrabberGrabVictim(grabber->victim);
+                    goto grabbed;
+                }
+                grabber->carried_blowup = FindNearestGizmoBlowUp(world, position, 0.25f);
+                if (grabber->carried_blowup == NULL) {
+                    goto lifted;
+                }
+                grabber->carried_matrix = grabber->carried_blowup->transform;
+                GizmoBlowupBlowup(grabber->carried_blowup, 0, -1, -1, NULL, 1);
+                grabber->carried_height_offset = grabber->carried_blowup->transform.m31 - grabber->carried_blowup->mid_position.y;
+            }
+            NewRumbleAllPlayers(0.0f, 0.1f, 0, 0);
+            Hint_SetComplete(0x28b);
+        grabbed:
+            PlaySfx("env_grabber_down", position);
+        lifted:
+            PlaySfx("env_grabber_up", position);
+            break;
+        }
+        case 3:
+            frame = AnimPlaying(&grabber->animation, ACTION_DROP, 1, 0);
+            if (frame == NULL) {
+                break;
+            }
+            value = grabber->animation_timer - FRAMETIME;
+            grabber->animation_timer = value;
+            if (value <= 0.0f) {
+                grabber->state = 0;
+                if ((grabber->flags & GRABBER_LIFTED) != 0) {
+                    break;
+                }
+            } else {
+                if ((grabber->flags & GRABBER_LIFTED) != 0) {
+                    break;
+                }
+                value = AnimListFrame(grabber->character_model, ACTION_DROP, 0);
+                if (!(value > 0.0f) || !(*frame >= value)) {
+                    break;
+                }
+            }
+            Grabber_Drop(grabber, &previous);
+            break;
+        case 2:
+            if (moved == 0 && grabber->victim != NULL && (grabber->victim->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
+                grabber->stuck_timer += FRAMETIME;
+                if (!(grabber->stuck_timer >= 3.0f)) {
+                    goto waiting;
+                }
+                goto release;
+            }
+            grabber->stuck_timer = 0.0f;
+        waiting:
+            if (control != NULL) {
+                if (grabber->victim == NULL && grabber->carried_blowup == NULL) {
+                    grabber->state = 0;
+                    break;
+                }
+                if ((pad->buttons_pressed & (GAMEPAD_ACTION | GAMEPAD_SPECIAL)) == 0) {
+                    break;
+                }
+            } else {
+                if ((grabber->flags & GRABBER_SWITCH_LATCHED) != 0 && grabber->action_switch != NULL &&
+                    (grabber->action_switch->progress_flags & OBSTACLE_VISIBLE) != 0 &&
+                    GameAnimSet_IsAnimationReset(grabber->action_switch->anim_set) != 0) {
+                    grabber->flags &= ~GRABBER_SWITCH_LATCHED;
+                }
+                if (grabber->victim == NULL && grabber->carried_blowup == NULL) {
+                    grabber->state = 0;
+                    break;
+                }
+                if ((grabber->flags & GRABBER_SWITCH_LATCHED) != 0 || grabber->action_switch == NULL ||
+                    (grabber->action_switch->progress_flags & OBSTACLE_VISIBLE) == 0 ||
+                    (grabber->action_switch->anim_set->flags & GAMEANIMSET_PLAYING) != 0) {
+                    break;
+                }
+            }
+        release:
+            if (grabber->character_model != NULL && grabber->character_model->model_data_b[103] != NULL) {
+                grabber->state = 3;
+                grabber->animation_timer = AnimDuration(grabber->character_model->model_id, 0x67, 0.0f, 0.0f, 1);
+                grabber->flags &= ~GRABBER_LIFTED;
+                if (control == NULL) {
+                    grabber->flags |= GRABBER_SWITCH_LATCHED;
+                }
+                NewRumbleAllPlayers(0.0f, 0.0f, 2, 0);
+            } else {
+                Grabber_Drop(grabber, &previous);
+                if (control == NULL) {
+                    grabber->flags |= GRABBER_SWITCH_LATCHED;
+                }
+            }
+            PlaySfx("env_grabber_down", Grabber_GetGrabPos(grabber, NULL));
+            break;
+        case 0:
+            if (pad != NULL) {
+                if ((pad->buttons_pressed & (GAMEPAD_ACTION | GAMEPAD_SPECIAL)) == 0) {
+                    break;
+                }
+            } else {
+                if ((grabber->flags & GRABBER_SWITCH_LATCHED) != 0 && grabber->action_switch != NULL &&
+                    (grabber->action_switch->progress_flags & OBSTACLE_VISIBLE) != 0 &&
+                    GameAnimSet_IsAnimationReset(grabber->action_switch->anim_set) != 0) {
+                    grabber->flags &= ~GRABBER_SWITCH_LATCHED;
+                }
+                if ((grabber->flags & GRABBER_SWITCH_LATCHED) != 0) {
+                    break;
+                }
+                if (grabber->action_switch == NULL || (grabber->action_switch->progress_flags & OBSTACLE_VISIBLE) == 0 ||
+                    (grabber->action_switch->anim_set->flags & GAMEANIMSET_PLAYING) != 0) {
+                    break;
+                }
+            }
+            if (grabber->character_model != NULL && grabber->character_model->model_data_b[102] != NULL) {
+                grabber->state = 1;
+                grabber->animation_timer = AnimDuration(grabber->character_model->model_id, 0x66, 0.0f, 0.0f, 1);
+                grabber->flags &= ~GRABBER_LIFTED;
+                if (control == NULL) {
+                    grabber->flags |= GRABBER_SWITCH_LATCHED;
+                }
+                NewRumbleAllPlayers(0.0f, 0.0f, 2, 0);
+            } else if (grabber->character_id == GrabMagnetId) {
+                grabber->victim = FindNearestGameObject(Grabber_GetGrabPos(grabber, NULL), NULL, CHARACTER_MODEL_DROID, 0.5f, 0.0f, -1, -1,
+                                                        -1, NULL, 1, IsGrabbable);
+                if (grabber->victim != NULL) {
+                    GrabberGrabVictim(grabber->victim);
+                    grabber->stuck_timer = 0.0f;
+                    grabber->state = 2;
+                    if (control == NULL) {
+                        grabber->flags |= GRABBER_SWITCH_LATCHED;
+                    }
+                }
+            }
+            PlaySfx("env_grabber_pickup", Grabber_GetGrabPos(grabber, NULL));
+            break;
+    }
+    if (grabber->character_model != NULL) {
+        grabber->animation.previous_animation = grabber->animation.animation_index;
+        switch (grabber->state) {
+            case 1:
+                grabber->animation.requested_animation = ACTION_PICKUP;
+                break;
+            case 2:
+                grabber->animation.requested_animation = ACTION_IDLE2;
+                break;
+            case 3:
+                grabber->animation.requested_animation = ACTION_DROP;
+                break;
+            default:
+                grabber->animation.requested_animation = ACTION_IDLE;
+                break;
+        }
+        UpdateAnimPacket(grabber->character_model, &grabber->animation, FRAMETIME * 30.0f, grabber->speed, FRAMETIME, 0.0f);
+    }
+    if (grabber->victim != NULL) {
+        grabber->victim->player.context_timer += FRAMETIME;
+        Grabber_SetVictimPos(grabber);
+        grabber->victim->velocity.z = 0.0f;
+        grabber->victim->velocity.x = 0.0f;
+        grabber->victim->velocity.y = -0.1f;
+        grabber->victim->ground_flags = 0;
+    }
+    if (grabber->character_id == GrabMachineId) {
+        mask = 0;
+        found = 0;
+        object = Obj;
+        for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
+            if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0) {
+                continue;
+            }
+            if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) == 0) {
+                mask |= (i32)((i64)1 << object->object_id);
+            } else {
+                found = 1;
+            }
+        }
+        if (found != 0) {
+            node = AIAntinodeCreateSingleFrame(&grabber->grab_position, 0.25f);
+            if (node != NULL) {
+                node->min_y = node->position.y - 4.0f;
+                node->object_mask = mask;
+            }
+        }
+    }
+}

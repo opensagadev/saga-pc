@@ -2729,6 +2729,9 @@ extern "C" {
         GameCam_NewShake(GameCam, intensity, 0.1f, 1.25f);
     }
 
+    void CutScene_PostUpdateFn_LSW(void) {
+    }
+
     void CutScene_StoppedFn_LSW(CUTINFO *cut) {
         if (cut == game_cutscenes_cutscene) {
             if (NuSpecialExistsFn(&LevHSpecial[50])) {

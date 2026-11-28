@@ -1,0 +1,1999 @@
+#include "globals.h"
+#include "legoapi/characters/core/character.h"
+#include "legoapi/characters/core/charconfig.h"
+#include "legoapi/characters/core/players.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/gizmo/base/gizactions.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/collect/bolts.h"
+#include "legoapi/misc/buffers.h"
+#include "legoapi/render/core/gameliball.h"
+#include "legoapi/render/fx.h"
+#include "legoapi/render/light/surfaces.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/levels/levels.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/nufile/nufilepak.h"
+#include "nu2api/nufile/nufpar.h"
+#include "nu2api/numusic/sfx.h"
+
+CHARCONFIG charconfig = {0};
+
+/* Defined at the end of this file; called with and without a path. */
+/* MATCH-EXCEPTION: it is also called with no arguments or with a number first; those calls go through a type
+ * without a prototype, as C allows no other way. */
+#define CHARCONFIG_PAK_DIAGNOSTIC_UNPROTOTYPED ((void (*)(...))CharConfigPakDiagnostic)
+
+extern "C" f32 CharConfigAbsFloat(f32 value) {
+    u32 bits = *(u32 *)&value & 0x7fffffffu;
+    return *(f32 *)&bits;
+}
+
+static i32 CC_ReadNumericLayerMask(NUFPAR *parser, u32 *mask) {
+    i32 count = 0;
+    *mask = 0;
+    while (NuFParGetWord(parser) != 0) {
+        u32 layer = (u32)NuAToI(parser->word_buffer_ptr);
+        if (layer <= 31) {
+            *mask |= 1u << layer;
+            ++count;
+        }
+    }
+    return count;
+}
+
+static i32 CC_ReadNamedLayerMask(NUFPAR *parser, u32 *mask) {
+    i32 count = 0;
+    *mask = 0;
+    while (NuFParGetWord(parser) != 0) {
+        i32 layer = LayerFromName(charconfig.runtime, parser->word_buffer_ptr);
+        if (layer != -1) {
+            *mask |= 1u << layer;
+            ++count;
+        }
+    }
+    return count;
+}
+
+static i32 CC_ReadLayerMask(NUFPAR *parser, u32 *mask) {
+    if (charconfig.named_layers == 0) {
+        return CC_ReadNumericLayerMask(parser, mask);
+    }
+    return CC_ReadNamedLayerMask(parser, mask);
+}
+
+static void CC_ReadJoint(NUFPAR *parser, i8 *joint) {
+    if (NuFParGetWord(parser) != 0) {
+        i32 index = NuAToI(parser->word_buffer_ptr);
+        if (index >= 0) {
+            *joint = (i8)index;
+        }
+    }
+}
+
+static void CC_ReadLocator(NUFPAR *parser, i8 *locator) {
+    if (NuFParGetWord(parser) != 0) {
+        i32 index = NuAToI(parser->word_buffer_ptr);
+        if (index >= -1 && index <= 15) {
+            *locator = (i8)index;
+        }
+    }
+}
+
+static i32 CC_ReadOnOff(NUFPAR *parser) {
+    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
+        return 0;
+    }
+    return 1;
+}
+
+static void CC_ReadSfx(NUFPAR *parser, i16 *sfx) {
+    if (NuFParGetWord(parser) != 0) {
+        *sfx = (i16)GetSfxId(parser->word_buffer_ptr);
+    }
+}
+
+static void CC_ReadStreakLocators(NUFPAR *parser, i8 *locators) {
+    i32 i;
+    for (i = 0; i < 2; ++i) {
+        locators[i] = -1;
+        if (NuFParGetWord(parser) != 0) {
+            u32 locator = (u32)NuAToI(parser->word_buffer_ptr);
+            if (locator <= 15) {
+                locators[i] = (i8)locator;
+            }
+        }
+    }
+}
+
+static void CC_SetTimebase(NUFPAR *parser, i32 index) {
+    if (NuFParGetWord(parser) != 0) {
+        f32 distance = NuAToF(parser->word_buffer_ptr);
+        if (NuFParGetWord(parser) != 0) {
+            i32 frames = NuAToI(parser->word_buffer_ptr);
+            charconfig.runtime->ai_update_distances[index] = distance;
+            charconfig.runtime->ai_update_intervals[index] = (u8)frames;
+            charconfig.flags |= CHARCONFIG_TIMEBASE;
+        }
+    }
+}
+
+static void CC_name_id(NUFPAR *parser) {
+    charconfig.character->name_id = NuFParGetInt(parser);
+}
+
+static void CC_mass(NUFPAR *parser) {
+    charconfig.character->scaled_radius = NuFParGetFloat(parser);
+}
+
+static void CC_radius(NUFPAR *parser) {
+    charconfig.character->collision_radius = NuFParGetFloat(parser);
+}
+
+static void CC_miny(NUFPAR *parser) {
+    charconfig.character->bottom = NuFParGetFloat(parser);
+}
+
+static void CC_maxy(NUFPAR *parser) {
+    charconfig.character->top = NuFParGetFloat(parser);
+}
+
+static void CC_scale(NUFPAR *parser) {
+    charconfig.character->model_scale = NuFParGetFloat(parser);
+}
+
+static void CC_layer(NUFPAR *parser) {
+    u32 bit;
+    i32 i;
+    if ((charconfig.flags & CHARCONFIG_LAYERS) == 0 || charconfig.runtime->layer_count >= 32) {
+        return;
+    }
+    if (NuFParGetWord(parser) == 0 || NuStrLen(parser->word_buffer_ptr) >= 24) {
+        return;
+    }
+    NuStrCpy(charconfig.runtime->layers[charconfig.runtime->layer_count].name, parser->word_buffer_ptr);
+    bit = NuFParGetInt(parser);
+    if (bit > 31) {
+        return;
+    }
+    for (i = 0; i < charconfig.runtime->layer_count; ++i) {
+        if (charconfig.runtime->layers[i].mask_bit == (i32)bit) {
+            return;
+        }
+    }
+    charconfig.runtime->layers[charconfig.runtime->layer_count].mask_bit = (i16)bit;
+    charconfig.runtime->layers[charconfig.runtime->layer_count].hierarchy_layer_index = -1;
+    charconfig.runtime->layer_count++;
+    charconfig.named_layers = 1;
+    charconfig.runtime->make_layer_list = MakeLayerList_Name;
+}
+
+static void CC_fixed_layers(NUFPAR *parser) {
+    charconfig.runtime->fixed_layers = CC_ReadOnOff(parser);
+}
+
+static void CC_hair_layer_index(NUFPAR *parser) {
+    if (NuFParGetWord(parser) != 0) {
+        const i32 locator = NuAToI(parser->word_buffer_ptr);
+        charconfig.runtime->hair_layer = (i8)(locator);
+    }
+}
+
+static void CC_cape_layer_index(NUFPAR *parser) {
+    if (NuFParGetWord(parser) != 0) {
+        const i32 locator = NuAToI(parser->word_buffer_ptr);
+        charconfig.runtime->cape_layer = (i8)(locator);
+    }
+}
+
+static void CC_hair_layer(NUFPAR *parser) {
+    if (NuFParGetWord(parser) != 0) {
+        charconfig.runtime->hair_layer = (i8)(LayerFromName(charconfig.runtime, parser->word_buffer_ptr));
+    }
+}
+
+static void CC_cape_layer(NUFPAR *parser) {
+    if (NuFParGetWord(parser) != 0) {
+        charconfig.runtime->cape_layer = (i8)(LayerFromName(charconfig.runtime, parser->word_buffer_ptr));
+    }
+}
+
+static void CC_layers_special(NUFPAR *parser) {
+    u32 *mask = &charconfig.runtime->layer_mask_special;
+    i32 count = CC_ReadLayerMask(parser, mask);
+    if (count != 0) {
+        charconfig.runtime->layer_mask = charconfig.runtime->layer_mask_medium = charconfig.runtime->layer_mask_low =
+            charconfig.runtime->layer_mask_dead = charconfig.runtime->layer_mask_special;
+    }
+}
+
+static void CC_layers_high(NUFPAR *parser) {
+    u32 *mask = &charconfig.runtime->layer_mask;
+    i32 count = CC_ReadLayerMask(parser, mask);
+    if (count != 0) {
+        charconfig.runtime->layer_mask_medium = charconfig.runtime->layer_mask_low = charconfig.runtime->layer_mask;
+    }
+}
+
+static void CC_layers_medium(NUFPAR *parser) {
+    u32 *mask = &charconfig.runtime->layer_mask_medium;
+    i32 count = CC_ReadLayerMask(parser, mask);
+    if (count != 0) {
+        charconfig.runtime->layer_mask_low = charconfig.runtime->layer_mask_medium;
+    }
+}
+
+static void CC_layers_low(NUFPAR *parser) {
+    u32 *mask = &charconfig.runtime->layer_mask_low;
+    i32 count = CC_ReadLayerMask(parser, mask);
+}
+
+static void CC_layers_dead(NUFPAR *parser) {
+    u32 *mask = &charconfig.runtime->layer_mask_dead;
+    i32 count = CC_ReadLayerMask(parser, mask);
+}
+
+static void CC_ride_layersoff(NUFPAR *parser) {
+    u32 *mask = &charconfig.runtime->ride_layers_off;
+    i32 count = CC_ReadLayerMask(parser, mask);
+}
+
+static void CC_bsa_default(NUFPAR *parser) {
+    if (NuFParGetWord(parser) != 0) {
+        if (NuStrICmp(parser->word_buffer_ptr, "on") == 0) {
+            charconfig.flags |= CHARCONFIG_BSA_DEFAULT;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
+            charconfig.flags &= ~CHARCONFIG_BSA_DEFAULT;
+        }
+    }
+}
+
+static void CC_SetAnimFlags(NUFPAR *parser, CHARACTERANIM_CONFIG *animation, u32 flags) {
+    animation->flags |= flags;
+    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
+        animation->flags &= ~flags;
+    }
+}
+
+static void CC_SetAnimMiscFlags(NUFPAR *parser, CHARACTERANIM_CONFIG *animation, u16 flags) {
+    animation->misc_flags |= flags;
+    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
+        animation->misc_flags &= ~flags;
+    }
+}
+
+APIDEBRISSYS *perm_debrissys = 0;
+
+static void CC_ReadAnimEffect(NUFPAR *parser, CHARACTERANIM_CONFIG *animation, i32 character_id, CHARACTER_EFFECT_CONFIG *effects,
+                              i32 *effect_count) {
+    CHARACTER_EFFECT_CONFIG *effect;
+    if (animation->action_id == -1) {
+        return;
+    }
+    effect = &effects[*effect_count];
+    effect->character_id = character_id;
+    effect->debris_id = -1;
+    effect->action_id = animation->action_id;
+    effect->flags = CHAREFFECT_SFX_3D;
+    effect->locators = 0;
+    effect->random = 0;
+    effect->particle_count = 0;
+    effect->sound_id = -1;
+    effect->surfaces = 0xffff;
+    effect->bits_on = 0;
+    effect->bits_off = 0;
+    effect->frame[0] = 1.0f;
+    effect->frame[1] = 1.0f;
+    effect->rumble = 0.0f;
+    effect->shake = 0.0f;
+    effect->judder = 0.0f;
+    effect->minimum = 0.0f;
+    effect->maximum = 0.0f;
+    while (NuFParGetLine(parser) != 0) {
+        if (NuFParGetWord(parser) == 0) {
+            continue;
+        }
+        if (NuStrICmp(parser->word_buffer_ptr, "deb_name") == 0) {
+            if (NuFParGetWord(parser) != 0) {
+                if (perm_debrissys != NULL) {
+                    effect->debris_id = (i16)FindGameDebris(perm_debrissys, parser->word_buffer_ptr);
+                } else {
+                    effect->debris_id = -1;
+                }
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "condition") == 0) {
+            if (NuFParGetWord(parser) != 0) {
+                if (NuStrICmp(parser->word_buffer_ptr, "on_ground") == 0) {
+                    effect->flags |= CHAREFFECT_ON_GROUND;
+                } else if (NuStrICmp(parser->word_buffer_ptr, "under_water") == 0) {
+                    effect->flags |= CHAREFFECT_UNDER_WATER;
+                } else if (NuStrICmp(parser->word_buffer_ptr, "above_water") == 0) {
+                    effect->flags |= CHAREFFECT_ABOVE_WATER;
+                } else if (NuStrICmp(parser->word_buffer_ptr, "intersect_water") == 0) {
+                    effect->flags |= CHAREFFECT_INTERSECT_WATER;
+                }
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "in_only") == 0) {
+            effect->flags |= CHAREFFECT_IN_ONLY;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "not_in") == 0) {
+            effect->flags |= CHAREFFECT_NOT_IN;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "player_only") == 0) {
+            effect->flags |= CHAREFFECT_PLAYER_ONLY;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "num_particles") == 0) {
+            const i32 count = NuFParGetInt(parser);
+            if (count > 0) {
+                effect->particle_count = (u8)(count);
+                effect->flags |= CHAREFFECT_PARTICLE_COUNT;
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "frame") == 0 || NuStrICmp(parser->word_buffer_ptr, "frame1") == 0) {
+            effect->frame[0] = NuFParGetFloat(parser);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "frame2") == 0) {
+            effect->frame[1] = NuFParGetFloat(parser);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "random") == 0) {
+            effect->random = (u8)(NuFParGetFloat(parser) * 255.0f);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "rumble") == 0) {
+            effect->rumble = CharConfigAbsFloat(NuFParGetFloat(parser));
+        } else if (NuStrICmp(parser->word_buffer_ptr, "buzz") == 0) {
+            effect->shake = CharConfigAbsFloat(NuFParGetFloat(parser));
+        } else if (NuStrICmp(parser->word_buffer_ptr, "judder") == 0) {
+            effect->judder = NuFParGetFloat(parser);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "timing") == 0) {
+            if (NuFParGetWord(parser) != 0) {
+                if (NuStrICmp(parser->word_buffer_ptr, "constant") == 0) {
+                    effect->flags |= CHAREFFECT_TIMING_CONSTANT;
+                } else if (NuStrICmp(parser->word_buffer_ptr, "between") == 0) {
+                    effect->flags |= CHAREFFECT_TIMING_BETWEEN;
+                }
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "particles_per_frame") == 0) {
+            const f32 rate = CharConfigAbsFloat(NuFParGetFloat(parser));
+            effect->particle_rate = rate;
+            effect->flags |= CHAREFFECT_PARTICLE_COUNT;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "particles_per_second") == 0) {
+            const f32 rate = CharConfigAbsFloat(NuFParGetFloat(parser));
+            effect->particle_rate = rate;
+            effect->flags |= CHAREFFECT_PARTICLE_COUNT | CHAREFFECT_PARTICLES_PER_SECOND;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "locators") == 0) {
+            while (NuFParGetWord(parser) != 0) {
+                const u32 locator = NuAToI(parser->word_buffer_ptr);
+                if (locator <= 15) {
+                    effect->locators |= 1u << locator;
+                }
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "sfx") == 0) {
+            if (NuFParGetWord(parser) != 0) {
+                effect->sound_id = (i16)(GetSfxId(parser->word_buffer_ptr));
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "sfx_2d") == 0) {
+            effect->flags &= ~CHAREFFECT_SFX_3D;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "volume") == 0) {
+            effect->minimum = CharConfigAbsFloat(NuFParGetFloat(parser));
+            effect->flags |= CHAREFFECT_VOLUME;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "surfaces") == 0) {
+            if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "non_solid") == 0) {
+                effect->surfaces = ~SURFACEBITS_DUST;
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "at_ter_surface") == 0) {
+            effect->flags |= CHAREFFECT_AT_TER_SURFACE;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "at_obj_bottom") == 0) {
+            effect->flags |= CHAREFFECT_AT_OBJ_BOTTOM;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "at_locator_average") == 0) {
+            effect->flags |= CHAREFFECT_AT_LOCATOR_AVERAGE;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "at_ter_layer") == 0) {
+            effect->flags |= CHAREFFECT_AT_TER_LAYER;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "min_mode") == 0) {
+            if (NuFParGetWord(parser) != 0) {
+                if (NuStrICmp(parser->word_buffer_ptr, "xz_speed") == 0) {
+                    effect->flags |= CHAREFFECT_MIN_XZ_SPEED;
+                } else if (NuStrICmp(parser->word_buffer_ptr, "xyz_speed") == 0) {
+                    effect->flags |= CHAREFFECT_MIN_XYZ_SPEED;
+                }
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "max_mode") == 0) {
+            if (NuFParGetWord(parser) != 0) {
+                if (NuStrICmp(parser->word_buffer_ptr, "xz_speed") == 0) {
+                    effect->flags |= CHAREFFECT_MAX_XZ_SPEED;
+                } else if (NuStrICmp(parser->word_buffer_ptr, "xyz_speed") == 0) {
+                    effect->flags |= CHAREFFECT_MAX_XYZ_SPEED;
+                }
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "min_val") == 0) {
+            effect->minimum = NuFParGetFloat(parser);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "max_val") == 0) {
+            effect->maximum = NuFParGetFloat(parser);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "at_obj_speed") == 0) {
+            effect->flags |= CHAREFFECT_AT_OBJ_SPEED;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "left_footprint") == 0) {
+            effect->flags |= CHAREFFECT_LEFT_FOOTPRINT;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "right_footprint") == 0) {
+            effect->flags |= CHAREFFECT_RIGHT_FOOTPRINT;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "use_locator_matrix") == 0) {
+            effect->flags |= CHAREFFECT_USE_LOCATOR_MATRIX;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "bits_on") == 0) {
+            while (NuFParGetWord(parser) != 0) {
+                const u32 bit = NuAToI(parser->word_buffer_ptr);
+                if (bit <= 7) {
+                    effect->bits_on |= 1u << bit;
+                }
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "bits_off") == 0) {
+            while (NuFParGetWord(parser) != 0) {
+                const u32 bit = NuAToI(parser->word_buffer_ptr);
+                if (bit <= 7) {
+                    effect->bits_off |= 1u << bit;
+                }
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "effect_end") == 0) {
+            ++*effect_count;
+            break;
+        }
+    }
+}
+
+static void CC_anim_start(NUFPAR *parser) {
+    char name[40];
+    CHARACTERANIM_CONFIG animation;
+    if (charconfig.animation_count >= 100) {
+        while (NuFParGetLine(parser) != 0) {
+            if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "anim_end") == 0) {
+                return;
+            }
+        }
+        CHARCONFIG_PAK_DIAGNOSTIC_UNPROTOTYPED(100, charconfig.character->name);
+        return;
+    }
+    if (NuFParGetWord(parser) == 0 || NuStrLen(parser->word_buffer_ptr) >= 40) {
+        return;
+    }
+
+    NuStrCpy(name, parser->word_buffer_ptr);
+
+    memset(&animation, 0, sizeof(animation));
+    animation.action_id = -1;
+    animation.flags = CHARANIM_CYCLE | CHARANIM_LOAD;
+    if ((charconfig.flags & CHARCONFIG_BSA_DEFAULT) != 0) {
+        animation.flags = CHARANIM_CYCLE | CHARANIM_LOAD | CHARANIM_BSA;
+    }
+    animation.blend_in_time = 0.2f;
+    animation.blend_out_time = 0.2f;
+    animation.playback_rate = 30.0f;
+    animation.locator = 0xff;
+    while (NuFParGetLine(parser) != 0) {
+        if (NuFParGetWord(parser) == 0) {
+            continue;
+        }
+        if (NuStrICmp(parser->word_buffer_ptr, "action") == 0) {
+            if (NuFParGetWord(parser) != 0) {
+                animation.action_id = (i16)(ActionFromName(parser->word_buffer_ptr));
+            }
+            if (animation.action_id == -1) {
+                return;
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "bsa") == 0) {
+            if (NuFParGetWord(parser) != 0) {
+                if (NuStrICmp(parser->word_buffer_ptr, "on") == 0) {
+                    animation.flags |= CHARANIM_BSA;
+                } else if (NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
+                    animation.flags &= ~CHARANIM_BSA;
+                }
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "cycle") == 0) {
+            if (NuFParGetWord(parser) != 0) {
+                if (NuStrICmp(parser->word_buffer_ptr, "on") == 0) {
+                    animation.flags |= CHARANIM_CYCLE;
+                } else if (NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
+                    animation.flags &= ~CHARANIM_CYCLE;
+                }
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "type") == 0) {
+            if (NuFParGetWord(parser) != 0) {
+                if (NuStrICmp(parser->word_buffer_ptr, "idle") == 0) {
+                    animation.flags |= CHARANIM_IDLE;
+                } else {
+                    animation.flags &= ~CHARANIM_IDLE;
+                }
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "fpsec") == 0) {
+            animation.playback_rate = NuFParGetFloat(parser);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "blend_in") == 0) {
+            animation.blend_in_time = NuFParGetFloat(parser);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "blend_out") == 0) {
+            animation.blend_out_time = NuFParGetFloat(parser);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "speedmul_speed") == 0) {
+            animation.movement_speed = NuFParGetFloat(parser);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "speedmul_maxfps") == 0) {
+            animation.movement_rate_cap = NuFParGetFloat(parser);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "translate") == 0) {
+            CC_SetAnimFlags(parser, &animation, CHARANIM_TRANSLATE);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "can_play_backwards") == 0) {
+            CC_SetAnimFlags(parser, &animation, CHARANIM_CAN_PLAY_BACKWARDS);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "footsteps") == 0) {
+            animation.flags |= CHARANIM_FOOTSTEPS;
+            while (NuFParGetWord(parser) != 0) {
+                if (NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
+                    animation.flags &=
+                        ~(CHARANIM_FOOTSTEPS | CHARANIM_FOOTSTEPS_4FRAMES | CHARANIM_FOOTSTEPS_JUDDER | CHARANIM_FOOTSTEPS_SHAKE);
+                    break;
+                } else if (NuStrICmp(parser->word_buffer_ptr, "4frames") == 0) {
+                    animation.flags |= CHARANIM_FOOTSTEPS_4FRAMES;
+                } else if (NuStrICmp(parser->word_buffer_ptr, "judder") == 0) {
+                    animation.flags |= CHARANIM_FOOTSTEPS_JUDDER;
+                } else if (NuStrICmp(parser->word_buffer_ptr, "shake") == 0) {
+                    animation.flags |= CHARANIM_FOOTSTEPS_SHAKE;
+                }
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "no_headturn") == 0 || NuStrICmp(parser->word_buffer_ptr, "headturn_off") == 0) {
+            animation.flags |= CHARANIM_NO_HEADTURN;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "headturn") == 0) {
+            if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
+                animation.flags |= CHARANIM_NO_HEADTURN;
+            } else {
+                animation.flags &= ~CHARANIM_NO_HEADTURN;
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "minreps") == 0) {
+            animation.minimum_repetitions = (u8)(abs(NuFParGetInt(parser)));
+        } else if (NuStrICmp(parser->word_buffer_ptr, "maxreps") == 0) {
+            animation.maximum_repetitions = (u8)(abs(NuFParGetInt(parser)));
+        } else if (NuStrICmp(parser->word_buffer_ptr, "speed") == 0) {
+            animation.action_speed = NuFParGetFloat(parser);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "frame") == 0 || NuStrICmp(parser->word_buffer_ptr, "frame1") == 0 ||
+                   NuStrICmp(parser->word_buffer_ptr, "frame_hit") == 0) {
+            animation.event_frame_1 = NuFParGetFloat(parser);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "frame2") == 0 || NuStrICmp(parser->word_buffer_ptr, "frame_end") == 0) {
+            animation.event_frame_2 = NuFParGetFloat(parser);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "frame3") == 0) {
+            animation.event_frame_3 = NuFParGetFloat(parser);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "frame4") == 0) {
+            animation.event_frame_4 = NuFParGetFloat(parser);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "frame_stop") == 0) {
+            animation.stop_frame = NuFParGetFloat(parser);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "priority") == 0) {
+            animation.priority = (u8)(NuFParGetInt(parser));
+        } else if (NuStrICmp(parser->word_buffer_ptr, "gun_off") == 0) {
+            animation.flags |= CHARANIM_GUN_OFF;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "gun_on") == 0) {
+            animation.flags |= CHARANIM_GUN_ON;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "gun") == 0) {
+            if (NuFParGetWord(parser) != 0) {
+                if (NuStrICmp(parser->word_buffer_ptr, "on") == 0) {
+                    animation.flags |= CHARANIM_GUN_ON;
+                } else if (NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
+                    animation.flags |= CHARANIM_GUN_OFF;
+                }
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "locator") == 0) {
+            if (NuFParGetWord(parser) != 0) {
+                const u32 locator = NuAToI(parser->word_buffer_ptr);
+                if (locator <= 15) {
+                    animation.locator = (u8)(locator);
+                }
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "is_punch") == 0) {
+            CC_SetAnimMiscFlags(parser, &animation, CHARANIM_MISC_IS_PUNCH);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "is_kick") == 0) {
+            CC_SetAnimMiscFlags(parser, &animation, CHARANIM_MISC_IS_KICK);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "is_whip") == 0) {
+            CC_SetAnimMiscFlags(parser, &animation, CHARANIM_MISC_IS_WHIP);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "extra_character_off") == 0) {
+            CC_SetAnimMiscFlags(parser, &animation, CHARANIM_MISC_EXTRA_CHARACTER_OFF);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "effect_start") == 0) {
+            if ((charconfig.flags & CHARCONFIG_PERMANENT) != 0 && (charconfig.flags & CHARCONFIG_ANIMATIONS) != 0) {
+                if (charconfig.effect_count < 32) {
+                    CC_ReadAnimEffect(parser, &animation, charconfig.character_id, charconfig.effect_scratch, &charconfig.effect_count);
+                }
+            } else {
+                while (NuFParGetLine(parser) != 0) {
+                    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "effect_end") == 0) {
+                        break;
+                    }
+                }
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "anim_end") == 0) {
+            if (animation.action_id == -1) {
+                return;
+            }
+            if ((charconfig.flags & CHARCONFIG_ANIMATIONS) != 0) {
+                NuStrCpy(charconfig.animation_names[charconfig.animation_count], name);
+                charconfig.character->animations[charconfig.animation_count++] = animation;
+                charconfig.arena->addr += sizeof(animation);
+                return;
+            }
+            if (charconfig.character->animations == NULL) {
+                return;
+            }
+            {
+                i32 index = 0;
+                while (charconfig.character->animations[index].name != NULL &&
+                       NuStrICmp(charconfig.character->animations[index].name, name) != 0) {
+                    ++index;
+                }
+                if (index < charconfig.character->animation_count && charconfig.character->animations[index].name != NULL) {
+                    CHARACTERANIM_CONFIG *existing = &charconfig.character->animations[index];
+                    existing->blend_in_time = animation.blend_in_time;
+                    existing->blend_out_time = animation.blend_out_time;
+                    existing->playback_rate = animation.playback_rate;
+                    existing->movement_speed = animation.movement_speed;
+                    existing->movement_rate_cap = animation.movement_rate_cap;
+                    existing->action_speed = animation.action_speed;
+                    existing->priority = animation.priority;
+                    existing->minimum_repetitions = animation.minimum_repetitions;
+                    existing->maximum_repetitions = animation.maximum_repetitions;
+                    existing->flags = animation.flags;
+                    memcpy(existing->event_frames, animation.event_frames, sizeof(animation.event_frames));
+                    existing->stop_frame = animation.stop_frame;
+                    existing->misc_flags = animation.misc_flags;
+                    existing->locator = animation.locator;
+                }
+                return;
+            }
+        }
+    }
+}
+
+static void CC_collision_locator(NUFPAR *parser) {
+    CC_ReadLocator(parser, &charconfig.runtime->collision_locator);
+}
+
+static void CC_weapon_locator_1(NUFPAR *parser) {
+    CC_ReadLocator(parser, &charconfig.runtime->weapon_joints[0]);
+}
+
+static void CC_weapon_locator_2(NUFPAR *parser) {
+    CC_ReadLocator(parser, &charconfig.runtime->weapon_joints[1]);
+}
+
+static void CC_weapon_locator_3(NUFPAR *parser) {
+    CC_ReadLocator(parser, &charconfig.runtime->weapon_joints[2]);
+}
+
+static void CC_weapon_locator_4(NUFPAR *parser) {
+    CC_ReadLocator(parser, &charconfig.runtime->weapon_joints[3]);
+}
+
+static void CC_weapon_shoot_locator_1(NUFPAR *parser) {
+    CC_ReadLocator(parser, &charconfig.runtime->weapon_shoot_joints[0]);
+}
+
+static void CC_weapon_shoot_locator_2(NUFPAR *parser) {
+    CC_ReadLocator(parser, &charconfig.runtime->weapon_shoot_joints[1]);
+}
+
+static void CC_weapon_shoot_locator_3(NUFPAR *parser) {
+    CC_ReadLocator(parser, &charconfig.runtime->weapon_shoot_joints[2]);
+}
+
+static void CC_weapon_shoot_locator_4(NUFPAR *parser) {
+    CC_ReadLocator(parser, &charconfig.runtime->weapon_shoot_joints[3]);
+}
+
+static void CC_shield_locator(NUFPAR *parser) {
+    CC_ReadLocator(parser, &charconfig.runtime->shield_locator);
+}
+
+static void CC_throw_locator(NUFPAR *parser) {
+    CC_ReadLocator(parser, &charconfig.runtime->throw_locator);
+}
+
+static void CC_place_locator(NUFPAR *parser) {
+    CC_ReadLocator(parser, &charconfig.runtime->place_locator);
+}
+
+static void CC_grapple_locator(NUFPAR *parser) {
+    CC_ReadLocator(parser, &charconfig.runtime->grapple_locators[0]);
+    CC_ReadLocator(parser, &charconfig.runtime->grapple_locators[1]);
+}
+
+static void CC_extra_character_locator(NUFPAR *parser) {
+    CC_ReadLocator(parser, &charconfig.runtime->extra_character_locator);
+}
+
+static void CC_ride_locator(NUFPAR *parser) {
+    CC_ReadLocator(parser, &charconfig.runtime->ride_locator);
+}
+
+static void CC_poo_locator(NUFPAR *parser) {
+    CC_ReadLocator(parser, &charconfig.runtime->poo_locator);
+}
+
+static void CC_head_locator(NUFPAR *parser) {
+    CC_ReadLocator(parser, &charconfig.runtime->head_locator);
+}
+
+static void CC_rocket_locator(NUFPAR *parser) {
+    CC_ReadLocator(parser, &charconfig.runtime->rocket_locator);
+}
+
+static void CC_thingy_locator(NUFPAR *parser) {
+    CC_ReadLocator(parser, &charconfig.runtime->thingy_locator);
+}
+
+static void CC_helmet_locator(NUFPAR *parser) {
+    CC_ReadLocator(parser, &charconfig.runtime->helmet_locator);
+}
+
+/* Reads the next word as a locator index; zero when the line has no more words. */
+// MATCH-EXCEPTION: the original inlines this reader into both callers with no out-of-line copy and without
+// rotating the loop; a static inline function leaves a COMDAT in the object, so it is written as a macro.
+#define CC_READ_LOCATOR_INDEX(parser, locator) (NuFParGetWord(parser) == 0 ? 0 : (*(locator) = NuAToI((parser)->word_buffer_ptr), 1))
+
+static void CC_shadow_locators(NUFPAR *parser) {
+    u32 locator;
+    charconfig.runtime->shadow_locators = 0;
+    while (CC_READ_LOCATOR_INDEX(parser, &locator)) {
+        if (locator <= 15) {
+            charconfig.runtime->shadow_locators |= 1u << locator;
+        }
+    }
+}
+
+static void CC_thrust_locators(NUFPAR *parser) {
+    u32 locator;
+    charconfig.runtime->thrust_locators = 0;
+    while (CC_READ_LOCATOR_INDEX(parser, &locator)) {
+        if (locator <= 15) {
+            charconfig.runtime->thrust_locators |= 1u << locator;
+        }
+    }
+}
+
+static void CC_hand_locators(NUFPAR *parser) {
+    i32 i;
+    for (i = 0; i < 2; ++i) {
+        charconfig.runtime->hand_locators[i] = -1;
+        if (NuFParGetWord(parser) != 0) {
+            u32 locator = (u32)NuAToI(parser->word_buffer_ptr);
+            if (locator <= 15) {
+                charconfig.runtime->hand_locators[i] = (i8)locator;
+            }
+        }
+    }
+}
+
+static void CC_streak_1_locators(NUFPAR *parser) {
+    CC_ReadStreakLocators(parser, charconfig.runtime->streak_joints[0]);
+}
+
+static void CC_streak_2_locators(NUFPAR *parser) {
+    CC_ReadStreakLocators(parser, charconfig.runtime->streak_joints[1]);
+}
+
+static void CC_streak_3_locators(NUFPAR *parser) {
+    CC_ReadStreakLocators(parser, charconfig.runtime->streak_joints[2]);
+}
+
+static void CC_streak_4_locators(NUFPAR *parser) {
+    CC_ReadStreakLocators(parser, charconfig.runtime->streak_joints[3]);
+}
+
+static void CC_head_joint(NUFPAR *parser) {
+    CC_ReadJoint(parser, &charconfig.runtime->head_joint);
+}
+
+static void CC_cloak_joint(NUFPAR *parser) {
+    CC_ReadJoint(parser, &charconfig.runtime->cloak_joint);
+}
+
+static void CC_cloak_joint2(NUFPAR *parser) {
+    CC_ReadJoint(parser, &charconfig.runtime->cloak_joint_2);
+}
+
+static void CC_sfx_die(NUFPAR *parser) {
+    CC_ReadSfx(parser, &charconfig.runtime->sfx_die);
+}
+
+static void CC_sfx_hurt(NUFPAR *parser) {
+    CC_ReadSfx(parser, &charconfig.runtime->sfx_hurt);
+}
+
+static void CC_sfx_grunt(NUFPAR *parser) {
+    CC_ReadSfx(parser, &charconfig.runtime->sfx_grunt);
+}
+
+static void CC_sfx_engine(NUFPAR *parser) {
+    CC_ReadSfx(parser, &charconfig.runtime->sfx_engine);
+}
+
+static void CC_sfx_shoot(NUFPAR *parser) {
+    CC_ReadSfx(parser, &charconfig.runtime->sfx_shoot);
+}
+
+static void CC_sfx_footstep(NUFPAR *parser) {
+    CC_ReadSfx(parser, &charconfig.runtime->sfx_footstep);
+}
+
+static void CC_sfx_chatter(NUFPAR *parser) {
+    CC_ReadSfx(parser, &charconfig.runtime->sfx_chatter);
+}
+
+static void CC_chatter_delay(NUFPAR *parser) {
+    charconfig.runtime->flags_11e = (u8)(NuFParGetInt(parser));
+}
+
+static void CC_sfx_sabre(NUFPAR *parser) {
+    CC_ReadSfx(parser, &charconfig.runtime->sfx_sabre);
+}
+
+static void CC_sfx_misc(NUFPAR *parser) {
+    i32 index = 0;
+    while (index < 6 && charconfig.runtime->sfx_misc[index] != -1) {
+        ++index;
+    }
+    if (index < 6 && NuFParGetWord(parser) != 0) {
+        charconfig.runtime->sfx_misc[index] = (i16)(GetSfxId(parser->word_buffer_ptr));
+    }
+    index++;
+    if (index < 6) {
+        charconfig.runtime->sfx_misc[index] = -1;
+    }
+}
+
+static void CC_clear_sfx_misc(NUFPAR *parser) {
+    charconfig.runtime->sfx_misc[0] = -1;
+}
+
+static void CC_cloak_up_angle(NUFPAR *parser) {
+    charconfig.runtime->lean_max = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
+}
+
+static void CC_cloak_down_angle(NUFPAR *parser) {
+    charconfig.runtime->lean_min = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
+}
+
+static void CC_viewrange(NUFPAR *parser) {
+    charconfig.runtime->viewdistance = NuFParGetFloat(parser);
+}
+
+static void CC_heardistance(NUFPAR *parser) {
+    charconfig.runtime->heardistance = NuFParGetFloat(parser);
+}
+
+static void CC_max_viewheight(NUFPAR *parser) {
+    charconfig.runtime->maxviewheight = NuFParGetFloat(parser);
+}
+
+static void CC_min_viewheight(NUFPAR *parser) {
+    charconfig.runtime->minviewheight = NuFParGetFloat(parser);
+}
+
+static void CC_mediumres_swapdist(NUFPAR *parser) {
+    charconfig.runtime->layer_distance_medium = NuFParGetFloat(parser);
+}
+
+static void CC_lowres_swapdist(NUFPAR *parser) {
+    charconfig.runtime->layer_distance_low = NuFParGetFloat(parser);
+}
+
+static void CC_turn_rate(NUFPAR *parser) {
+    const f32 rate = NuFParGetFloat(parser);
+    if (rate > 0.0f) {
+        charconfig.runtime->turn_rate = rate;
+        charconfig.flags |= CHARCONFIG_TURN_RATE;
+    }
+}
+
+static void CC_turn_rate_2(NUFPAR *parser) {
+    const f32 rate = NuFParGetFloat(parser);
+    if (rate > 0.0f) {
+        charconfig.runtime->turn_rate_2 = rate;
+        charconfig.flags |= CHARCONFIG_TURN_RATE_2;
+    }
+}
+
+static void CC_SetRuntimeFlag(NUFPAR *parser, u32 flag) {
+    charconfig.runtime->flags_090 |= flag;
+    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
+        charconfig.runtime->flags_090 &= ~flag;
+    }
+}
+
+static void CC_banking(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_BANKING);
+}
+
+static void CC_choke(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_CHOKE);
+}
+
+static void CC_lightning(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_LIGHTNING);
+}
+
+static void CC_resist_zap(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_RESIST_ZAP);
+}
+
+static void CC_ghost(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_GHOST);
+}
+
+static void CC_has_no_turn(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_HAS_NO_TURN);
+}
+
+static void CC_speed_up_time(NUFPAR *parser) {
+    charconfig.runtime->speed_up_time = NuFParGetFloat(parser);
+}
+
+static void CC_slow_down_time(NUFPAR *parser) {
+    charconfig.runtime->slow_down_time = NuFParGetFloat(parser);
+}
+
+static void CC_jump_move_speed_scale(NUFPAR *parser) {
+    charconfig.runtime->jump_move_speed_scale = NuFParGetFloat(parser);
+}
+
+static void CC_loop_height(NUFPAR *parser) {
+    charconfig.runtime->text_height = NuFParGetFloat(parser);
+}
+
+static void CC_no_tiptoe(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_NO_TIPTOE);
+}
+
+static void CC_already_got_hat(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_ALREADY_GOT_HAT);
+}
+
+static void CC_not_got_hat(NUFPAR *parser) {
+    charconfig.runtime->flags_090 &= ~CHARACTER_RUNTIME_ALREADY_GOT_HAT;
+}
+
+static void CC_punch_weapon_out(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_PUNCH_WEAPON_OUT);
+}
+
+static void CC_can_take_over(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_CAN_TAKE_OVER);
+}
+
+static void CC_turning_circle(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_TURNING_CIRCLE);
+}
+
+static void CC_slide_orientation(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_SLIDE_ORIENTATION);
+}
+
+static void CC_can_drag_bombs(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_CAN_DRAG_BOMBS);
+}
+
+static void CC_extra_toggle(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_EXTRA_TOGGLE);
+}
+
+static void CC_can_flatten(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_CAN_FLATTEN);
+}
+
+static void CC_tightrope_walk(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_TIGHTROPE_WALK);
+}
+
+static void CC_car_wheels(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_CAR_WHEELS);
+}
+
+static void CC_is_a_girl(NUFPAR *parser) {
+    charconfig.runtime->flags_090 |= CHARACTER_RUNTIME_IS_A_GIRL;
+}
+
+static void CC_is_a_boy(NUFPAR *parser) {
+    charconfig.runtime->flags_090 &= ~CHARACTER_RUNTIME_IS_A_GIRL;
+}
+
+static void CC_icon(NUFPAR *parser) {
+    if (NuFParGetWord(parser) != 0) {
+        charconfig.character->icon_model = (i16)(LevelObject_FindIndexFromName(parser->word_buffer_ptr));
+        if (charconfig.character->icon_model == -1 && configureallcharacters_perm != 0) {
+            if (LevelObject_AddExtra(parser->word_buffer_ptr, 3) != 0) {
+                charconfig.character->icon_model = (i16)(LevelObject_FindIndexFromName(parser->word_buffer_ptr));
+                NuStrCat(parser->word_buffer_ptr, "1");
+                LevelObject_AddExtra(parser->word_buffer_ptr, 3);
+            }
+        }
+    }
+}
+
+static void CC_weapon(NUFPAR *parser) {
+    if (NuFParGetWord(parser) != 0) {
+        charconfig.runtime->weapon_model = (i16)(LevelObject_FindIndexFromName(parser->word_buffer_ptr));
+    }
+}
+
+static void CC_shield_hit_points(NUFPAR *parser) {
+    charconfig.runtime->shield_hitpoints = (u8)(NuFParGetInt(parser));
+}
+
+static void CC_stop_speed(NUFPAR *parser) {
+    charconfig.runtime->stop_speed = NuFParGetFloat(parser);
+}
+
+static void CC_idle_speed(NUFPAR *parser) {
+    charconfig.runtime->idle_speed = NuFParGetFloat(parser);
+}
+
+static void CC_tiptoe_speed(NUFPAR *parser) {
+    charconfig.runtime->tiptoe_speed = NuFParGetFloat(parser);
+}
+
+static void CC_walk_speed(NUFPAR *parser) {
+    charconfig.runtime->walk_speed = NuFParGetFloat(parser);
+}
+
+static void CC_run_speed(NUFPAR *parser) {
+    charconfig.runtime->run_speed = NuFParGetFloat(parser);
+}
+
+static void CC_backwards_factor(NUFPAR *parser) {
+    charconfig.runtime->backwards_factor = NuFParGetFloat(parser);
+}
+
+static void CC_air_gravity(NUFPAR *parser) {
+    charconfig.runtime->gravity = NuFParGetFloat(parser);
+}
+
+static void CC_jump_speed(NUFPAR *parser) {
+    charconfig.runtime->jump_speed = NuFParGetFloat(parser);
+}
+
+static void CC_jump_2_speed(NUFPAR *parser) {
+    charconfig.runtime->second_jump_speed = NuFParGetFloat(parser);
+}
+
+static void CC_acceleration(NUFPAR *parser) {
+    charconfig.runtime->acceleration = NuFParGetFloat(parser);
+}
+
+static void CC_streak(NUFPAR *parser) {
+    if (NuFParGetWord(parser) != 0) {
+        if (NuStrICmp(parser->word_buffer_ptr, "red") == 0) {
+            charconfig.runtime->streak_color = 0;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "green") == 0) {
+            charconfig.runtime->streak_color = 1;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "blue") == 0) {
+            charconfig.runtime->streak_color = 2;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "purple") == 0) {
+            charconfig.runtime->streak_color = 3;
+        }
+    }
+}
+
+static void CC_hit_points(NUFPAR *parser) {
+    charconfig.runtime->hitpoints = (u8)(NuFParGetInt(parser));
+}
+
+static void CC_SetModelFlag(NUFPAR *parser, u32 flag) {
+    charconfig.character->model_flags |= flag;
+    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
+        charconfig.character->model_flags &= ~flag;
+    }
+}
+
+static void CC_baddie(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_BADDIE);
+}
+
+static void CC_jedi(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_JEDI);
+}
+
+static void CC_droid(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_DROID);
+}
+
+static void CC_protocol(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_DROID | CHARACTER_MODEL_PROTOCOL);
+}
+
+static void CC_astromech(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_DROID | CHARACTER_MODEL_ASTROMECH);
+}
+
+static void CC_cannon(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_CANNON);
+}
+
+static void CC_bounty_hunter(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_BOUNTY_HUNTER);
+}
+
+static void CC_blaster(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_BLASTER | CHARACTER_MODEL_CAN_FIRE);
+}
+
+static void CC_teleport(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_TELEPORT);
+}
+
+static void CC_zipup(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_ZIPUP);
+}
+
+static void CC_untargetable(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_UNTARGETABLE);
+}
+
+static void CC_orientate(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_ORIENTATE);
+}
+
+static void CC_neutral(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_NEUTRAL);
+}
+
+static void CC_complex_shadow(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_COMPLEX_SHADOW);
+}
+
+static void CC_shadow_orientation(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_SHADOW_ORIENTATION);
+}
+
+static void CC_can_open_doors(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_CAN_OPEN_DOORS);
+}
+
+static void CC_non_stick(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_NON_STICK);
+}
+
+static void CC_can_shoot_offscreen(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_CAN_SHOOT_OFFSCREEN);
+}
+
+static void CC_can_fire(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_CAN_FIRE);
+}
+
+static void CC_can_poo(NUFPAR *parser) {
+    charconfig.runtime->can_poo = CC_ReadOnOff(parser);
+}
+
+static void CC_can_zap(NUFPAR *parser) {
+    charconfig.runtime->can_zap = CC_ReadOnOff(parser);
+}
+
+static void CC_put_weapon_away_on_shoot(NUFPAR *parser) {
+    charconfig.runtime->put_weapon_away_on_shoot = CC_ReadOnOff(parser);
+}
+
+static void CC_always_stop_to_shoot(NUFPAR *parser) {
+    charconfig.runtime->always_stop_to_shoot = CC_ReadOnOff(parser);
+}
+
+static void CC_second_shot_only(NUFPAR *parser) {
+    charconfig.runtime->second_shot_only = CC_ReadOnOff(parser);
+}
+
+static void CC_no_start_punch_sfx(NUFPAR *parser) {
+    charconfig.runtime->no_start_punch_sfx = CC_ReadOnOff(parser);
+}
+
+static void CC_single_jump_slam(NUFPAR *parser) {
+    charconfig.runtime->single_jump_slam = CC_ReadOnOff(parser);
+}
+
+static void CC_dont_draw_rider(NUFPAR *parser) {
+    charconfig.runtime->dont_draw_rider = CC_ReadOnOff(parser);
+}
+
+static void CC_minikit(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_MINIKIT);
+}
+
+static void CC_minikit_with_scene(NUFPAR *parser) {
+    charconfig.character->model_flags |= CHARACTER_MODEL_MINIKIT;
+    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
+        charconfig.character->model_flags &= ~CHARACTER_MODEL_MINIKIT;
+    }
+    charconfig.runtime->minikit_with_scene = charconfig.character->model_flags >> 26;
+}
+
+static void CC_minikit_noscenewhenplayable(NUFPAR *parser) {
+    charconfig.runtime->minikit_noscenewhenplayable = CC_ReadOnOff(parser);
+}
+
+static void CC_lift_hover(NUFPAR *parser) {
+    charconfig.runtime->lift_hover = CC_ReadOnOff(parser);
+}
+
+static void CC_glide_anytime(NUFPAR *parser) {
+    charconfig.runtime->glide_anytime = CC_ReadOnOff(parser);
+}
+
+static void CC_can_communicate(NUFPAR *parser) {
+    charconfig.runtime->can_communicate = CC_ReadOnOff(parser);
+}
+
+static void CC_immune_to_magnets(NUFPAR *parser) {
+    charconfig.runtime->immune_to_magnets = CC_ReadOnOff(parser);
+}
+
+static void CC_immune_to_forcepush(NUFPAR *parser) {
+    charconfig.runtime->immune_to_forcepush = CC_ReadOnOff(parser);
+}
+
+static void CC_cannot_kill(NUFPAR *parser) {
+    charconfig.runtime->cannot_kill = CC_ReadOnOff(parser);
+}
+
+static void CC_wait_for_weapon_in_out(NUFPAR *parser) {
+    charconfig.runtime->wait_for_weapon_in_out = CC_ReadOnOff(parser);
+}
+
+static void CC_double_jump_hover(NUFPAR *parser) {
+    charconfig.runtime->double_jump_hover = CC_ReadOnOff(parser);
+}
+
+static void CC_no_category(NUFPAR *parser) {
+    charconfig.runtime->no_category = CC_ReadOnOff(parser);
+}
+
+static void CC_no_force(NUFPAR *parser) {
+    charconfig.runtime->no_force = CC_ReadOnOff(parser);
+}
+
+static void CC_white_lightning(NUFPAR *parser) {
+    charconfig.runtime->white_lightning = CC_ReadOnOff(parser);
+}
+
+static void CC_buck_rider(NUFPAR *parser) {
+    charconfig.runtime->buck_rider = CC_ReadOnOff(parser);
+}
+
+static void CC_die_usecurrentlayers(NUFPAR *parser) {
+    charconfig.runtime->die_usecurrentlayers = CC_ReadOnOff(parser);
+}
+
+static void CC_no_weapon_draw(NUFPAR *parser) {
+    charconfig.runtime->no_weapon_draw = CC_ReadOnOff(parser);
+}
+
+static void CC_no_jump_fire(NUFPAR *parser) {
+    charconfig.runtime->no_jump_fire = CC_ReadOnOff(parser);
+}
+
+static void CC_hover_over_mud(NUFPAR *parser) {
+    charconfig.runtime->hover_over_mud = CC_ReadOnOff(parser);
+}
+
+static void CC_toggle_if_not_in_collection(NUFPAR *parser) {
+    charconfig.runtime->toggle_if_not_in_collection = CC_ReadOnOff(parser);
+}
+
+static void CC_toggle_if_in_minikit_bonus(NUFPAR *parser) {
+    charconfig.runtime->toggle_if_in_minikit_bonus = CC_ReadOnOff(parser);
+}
+
+static void CC_deflect_bolts_in_minikit_bonus(NUFPAR *parser) {
+    charconfig.runtime->deflect_bolts_in_minikit_bonus = CC_ReadOnOff(parser);
+}
+
+static void CC_has_grapple(NUFPAR *parser) {
+    charconfig.runtime->has_grapple = CC_ReadOnOff(parser);
+}
+
+static void CC_hover_wings(NUFPAR *parser) {
+    charconfig.runtime->hover_wings = CC_ReadOnOff(parser);
+}
+
+static void CC_has_whip(NUFPAR *parser) {
+    charconfig.runtime->has_whip = CC_ReadOnOff(parser);
+}
+
+static void CC_respawn(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_RESPAWN);
+}
+
+static void CC_vehicle(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_VEHICLE);
+}
+
+static void CC_only_active_when_taken_over(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_ONLY_ACTIVE_WHEN_TAKEN_OVER);
+}
+
+static void CC_beast(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_BEAST);
+}
+
+static void CC_prefers_brawling(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_PREFERS_BRAWLING);
+}
+
+static void CC_dontpush(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_DONT_PUSH);
+}
+
+static void CC_dont_move_out_of_way(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_DONT_MOVE_OUT_OF_WAY);
+}
+
+static void CC_dontmove(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_DONT_MOVE);
+}
+
+static void CC_jetpack(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_JETPACK);
+}
+
+static void CC_oldheadmovement(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_OLD_HEAD_MOVEMENT);
+}
+
+static void CC_atatheadmovement(NUFPAR *parser) {
+    charconfig.runtime->atatheadmovement = 1;
+}
+
+static void CC_cannotbigjump(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_CANNOT_BIG_JUMP);
+}
+
+static void CC_no_offpath_teleport(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_NO_OFFPATH_TELEPORT);
+}
+
+static void CC_no_kill_parts(NUFPAR *parser) {
+    CC_SetModelFlag(parser, CHARACTER_MODEL_NO_KILL_PARTS);
+}
+
+static void CC_high_jump(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_HIGH_JUMP);
+}
+
+static void CC_super_strength(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_SUPER_STRENGTH);
+}
+
+static void CC_transformatron(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_TRANSFORMATRON);
+}
+
+static void CC_bypass_security(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_BYPASS_SECURITY);
+}
+
+static void CC_hazard_protection(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_HAZARD_PROTECTION);
+}
+
+static void CC_wall_jump(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_WALL_JUMP);
+}
+
+static void CC_got_batarang(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_GOT_BATARANG);
+}
+
+static void CC_tightrope_tilt(NUFPAR *parser) {
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_TIGHTROPE_TILT);
+}
+
+static void CC_combat_roll(NUFPAR *parser) {
+    charconfig.runtime->flags_090 |= CHARACTER_RUNTIME_COMBAT_ROLL;
+    charconfig.runtime->combat_roll_can_get_up = 0;
+    charconfig.runtime->combat_roll_can_direct_land = 0;
+    while (NuFParGetWord(parser) != 0) {
+        if (NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
+            charconfig.runtime->flags_090 &= ~CHARACTER_RUNTIME_COMBAT_ROLL;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "can_get_up") == 0) {
+            charconfig.runtime->combat_roll_can_get_up = 1;
+        } else if (NuStrICmp(parser->word_buffer_ptr, "can_direct_land") == 0) {
+            charconfig.runtime->combat_roll_can_direct_land = 1;
+        }
+    }
+}
+
+static void CC_has_scene_element(NUFPAR *parser) {
+    charconfig.character->flags |= 1;
+}
+
+static void CC_dont_turn(NUFPAR *parser) {
+    charconfig.runtime->dont_turn = CC_ReadOnOff(parser);
+}
+
+static void CC_no_jump(NUFPAR *parser) {
+    charconfig.runtime->no_jump = CC_ReadOnOff(parser);
+}
+
+static void CC_no_shoot(NUFPAR *parser) {
+    charconfig.runtime->no_shoot = CC_ReadOnOff(parser);
+}
+
+static void CC_blobshadow_size(NUFPAR *parser) {
+    charconfig.runtime->shadow_radius = CharConfigAbsFloat(NuFParGetFloat(parser));
+}
+
+static void CC_blobshadow_alpha(NUFPAR *parser) {
+    charconfig.runtime->blob_shadow_alpha = (u8)(NuFParGetInt(parser));
+}
+
+static void CC_hover_height(NUFPAR *parser) {
+    charconfig.runtime->hover_height = NuFParGetFloat(parser);
+}
+
+static void CC_hover_time(NUFPAR *parser) {
+    charconfig.runtime->jump_hold_duration = CharConfigAbsFloat(NuFParGetFloat(parser));
+}
+
+static void CC_maxheadturn(NUFPAR *parser) {
+    charconfig.runtime->head_yaw_limit = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
+}
+
+static void CC_maxheadtilt(NUFPAR *parser) {
+    charconfig.runtime->head_pitch_limit = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
+}
+
+static void CC_headrotrate(NUFPAR *parser) {
+    charconfig.runtime->head_turn_rate = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
+}
+
+static void CC_coin_value(NUFPAR *parser) {
+    i32 value = NuFParGetInt(parser);
+    if (value > 10000) {
+        value = 10000;
+    } else if (value < 0) {
+        value = 0;
+    }
+    charconfig.runtime->coin_value = (i16)(value / 10) * 10;
+}
+
+static void CC_set_timebaseupdate1(NUFPAR *parser) {
+    CC_SetTimebase(parser, 0);
+}
+
+static void CC_set_timebaseupdate2(NUFPAR *parser) {
+    CC_SetTimebase(parser, 0);
+}
+
+static void CC_set_timebaseupdate3(NUFPAR *parser) {
+    CC_SetTimebase(parser, 0);
+}
+
+static void CC_set_timebaseupdate4(NUFPAR *parser) {
+    CC_SetTimebase(parser, 0);
+}
+
+// Four explicit PC scalar accesses establish each array's extent.
+f32 vehicle_timebase_dist[4] = {50.0f, 25.0f, 0.0f, 0.0f};
+i32 vehicle_timebase_nframes[4] = {4, 2, 0, 0};
+static NUFPCOMJMP ConfigChar_Keywords[] = {{"name_id", CC_name_id},
+                                           {"name", CC_name_id},
+                                           {"mass", CC_mass},
+                                           {"radius", CC_radius},
+                                           {"miny", CC_miny},
+                                           {"maxy", CC_maxy},
+                                           {"scale", CC_scale},
+                                           {"layer", CC_layer},
+                                           {"fixed_layers", CC_fixed_layers},
+                                           {"hair_layer_index", CC_hair_layer_index},
+                                           {"cape_layer_index", CC_cape_layer_index},
+                                           {"hair_layer", CC_hair_layer},
+                                           {"cape_layer", CC_cape_layer},
+                                           {"layers_special", CC_layers_special},
+                                           {"layers_high", CC_layers_high},
+                                           {"layers_medium", CC_layers_medium},
+                                           {"layers_low", CC_layers_low},
+                                           {"layers_dead", CC_layers_dead},
+                                           {"ride_layersoff", CC_ride_layersoff},
+                                           {"bsa_default", CC_bsa_default},
+                                           {"anim_start", CC_anim_start},
+                                           {"collision_locator", CC_collision_locator},
+                                           {"weapon_locator", CC_weapon_locator_1},
+                                           {"weapon_locator_1", CC_weapon_locator_1},
+                                           {"weapon_locator_2", CC_weapon_locator_2},
+                                           {"weapon_locator_3", CC_weapon_locator_3},
+                                           {"weapon_locator_4", CC_weapon_locator_4},
+                                           {"weapon_shoot_locator", CC_weapon_shoot_locator_1},
+                                           {"weapon_shoot_locator_1", CC_weapon_shoot_locator_1},
+                                           {"weapon_shoot_locator_2", CC_weapon_shoot_locator_2},
+                                           {"weapon_shoot_locator_3", CC_weapon_shoot_locator_3},
+                                           {"weapon_shoot_locator_4", CC_weapon_shoot_locator_4},
+                                           {"shield_locator", CC_shield_locator},
+                                           {"throw_locator", CC_throw_locator},
+                                           {"place_locator", CC_place_locator},
+                                           {"grapple_locator", CC_grapple_locator},
+                                           {"grapple_locators", CC_grapple_locator},
+                                           {"extra_character_locator", CC_extra_character_locator},
+                                           {"ride_locator", CC_ride_locator},
+                                           {"poo_locator", CC_poo_locator},
+                                           {"head_locator", CC_head_locator},
+                                           {"rocket_locator", CC_rocket_locator},
+                                           {"thingy_locator", CC_thingy_locator},
+                                           {"helmet_locator", CC_helmet_locator},
+                                           {"shadow_locators", CC_shadow_locators},
+                                           {"thrust_locators", CC_thrust_locators},
+                                           {"hand_locators", CC_hand_locators},
+                                           {"streak_locators", CC_streak_1_locators},
+                                           {"streak_1_locators", CC_streak_1_locators},
+                                           {"streak_2_locators", CC_streak_2_locators},
+                                           {"streak_3_locators", CC_streak_3_locators},
+                                           {"streak_4_locators", CC_streak_4_locators},
+                                           {"head_joint", CC_head_joint},
+                                           {"cloak_joint", CC_cloak_joint},
+                                           {"cloak_joint2", CC_cloak_joint2},
+                                           {"sfx_die", CC_sfx_die},
+                                           {"sfx_hurt", CC_sfx_hurt},
+                                           {"sfx_grunt", CC_sfx_grunt},
+                                           {"sfx_engine", CC_sfx_engine},
+                                           {"sfx_shoot", CC_sfx_shoot},
+                                           {"sfx_footstep", CC_sfx_footstep},
+                                           {"sfx_chatter", CC_sfx_chatter},
+                                           {"chatter_delay", CC_chatter_delay},
+                                           {"sfx_sabre", CC_sfx_sabre},
+                                           {"sfx_misc", CC_sfx_misc},
+                                           {"clear_sfx_misc", CC_clear_sfx_misc},
+                                           {"cloak_up_angle", CC_cloak_up_angle},
+                                           {"cloak_down_angle", CC_cloak_down_angle},
+                                           {"viewrange", CC_viewrange},
+                                           {"heardistance", CC_heardistance},
+                                           {"max_viewheight", CC_max_viewheight},
+                                           {"min_viewheight", CC_min_viewheight},
+                                           {"mediumres_swapdist", CC_mediumres_swapdist},
+                                           {"lowres_swapdist", CC_lowres_swapdist},
+                                           {"turn_rate", CC_turn_rate},
+                                           {"turn_rate_2", CC_turn_rate_2},
+                                           {"banking", CC_banking},
+                                           {"choke", CC_choke},
+                                           {"lightning", CC_lightning},
+                                           {"resist_zap", CC_resist_zap},
+                                           {"ghost", CC_ghost},
+                                           {"has_no_turn", CC_has_no_turn},
+                                           {"speed_up_time", CC_speed_up_time},
+                                           {"slow_down_time", CC_slow_down_time},
+                                           {"jump_move_speed_scale", CC_jump_move_speed_scale},
+                                           {"loop_height", CC_loop_height},
+                                           {"no_tiptoe", CC_no_tiptoe},
+                                           {"already_got_hat", CC_already_got_hat},
+                                           {"not_got_hat", CC_not_got_hat},
+                                           {"punch_weapon_out", CC_punch_weapon_out},
+                                           {"can_take_over", CC_can_take_over},
+                                           {"turning_circle", CC_turning_circle},
+                                           {"slide_orientation", CC_slide_orientation},
+                                           {"can_drag_bombs", CC_can_drag_bombs},
+                                           {"extra_toggle", CC_extra_toggle},
+                                           {"can_flatten", CC_can_flatten},
+                                           {"tightrope_walk", CC_tightrope_walk},
+                                           {"car_wheels", CC_car_wheels},
+                                           {"is_a_girl", CC_is_a_girl},
+                                           {"is_a_boy", CC_is_a_boy},
+                                           {"icon", CC_icon},
+                                           {"weapon", CC_weapon},
+                                           {"shield_hit_points", CC_shield_hit_points},
+                                           {"stop_speed", CC_stop_speed},
+                                           {"idle_speed", CC_idle_speed},
+                                           {"tiptoe_speed", CC_tiptoe_speed},
+                                           {"walk_speed", CC_walk_speed},
+                                           {"run_speed", CC_run_speed},
+                                           {"backwards_factor", CC_backwards_factor},
+                                           {"air_gravity", CC_air_gravity},
+                                           {"jump_speed", CC_jump_speed},
+                                           {"jump_2_speed", CC_jump_2_speed},
+                                           {"acceleration", CC_acceleration},
+                                           {"streak", CC_streak},
+                                           {"hit_points", CC_hit_points},
+                                           {"baddie", CC_baddie},
+                                           {"jedi", CC_jedi},
+                                           {"droid", CC_droid},
+                                           {"protocol", CC_protocol},
+                                           {"astromech", CC_astromech},
+                                           {"cannon", CC_cannon},
+                                           {"bounty_hunter", CC_bounty_hunter},
+                                           {"blaster", CC_blaster},
+                                           {"teleport", CC_teleport},
+                                           {"zipup", CC_zipup},
+                                           {"untargetable", CC_untargetable},
+                                           {"orientate", CC_orientate},
+                                           {"neutral", CC_neutral},
+                                           {"complex_shadow", CC_complex_shadow},
+                                           {"shadow_orientation", CC_shadow_orientation},
+                                           {"can_open_doors", CC_can_open_doors},
+                                           {"non_stick", CC_non_stick},
+                                           {"can_shoot_offscreen", CC_can_shoot_offscreen},
+                                           {"can_fire", CC_can_fire},
+                                           {"can_poo", CC_can_poo},
+                                           {"can_zap", CC_can_zap},
+                                           {"put_weapon_away_on_shoot", CC_put_weapon_away_on_shoot},
+                                           {"always_stop_to_shoot", CC_always_stop_to_shoot},
+                                           {"second_shot_only", CC_second_shot_only},
+                                           {"no_start_punch_sfx", CC_no_start_punch_sfx},
+                                           {"single_jump_slam", CC_single_jump_slam},
+                                           {"dont_draw_rider", CC_dont_draw_rider},
+                                           {"minikit", CC_minikit},
+                                           {"minikit_with_scene", CC_minikit_with_scene},
+                                           {"minikit_noscenewhenplayable", CC_minikit_noscenewhenplayable},
+                                           {"lift_hover", CC_lift_hover},
+                                           {"glide_anytime", CC_glide_anytime},
+                                           {"can_communicate", CC_can_communicate},
+                                           {"immune_to_magnets", CC_immune_to_magnets},
+                                           {"immune_to_forcepush", CC_immune_to_forcepush},
+                                           {"cannot_kill", CC_cannot_kill},
+                                           {"wait_for_weapon_in_out", CC_wait_for_weapon_in_out},
+                                           {"double_jump_hover", CC_double_jump_hover},
+                                           {"no_category", CC_no_category},
+                                           {"no_force", CC_no_force},
+                                           {"white_lightning", CC_white_lightning},
+                                           {"buck_rider", CC_buck_rider},
+                                           {"die_usecurrentlayers", CC_die_usecurrentlayers},
+                                           {"no_weapon_draw", CC_no_weapon_draw},
+                                           {"no_jump_fire", CC_no_jump_fire},
+                                           {"hover_over_mud", CC_hover_over_mud},
+                                           {"toggle_if_not_in_collection", CC_toggle_if_not_in_collection},
+                                           {"toggle_if_in_minikit_bonus", CC_toggle_if_in_minikit_bonus},
+                                           {"deflect_bolts_in_minikit_bonus", CC_deflect_bolts_in_minikit_bonus},
+                                           {"has_grapple", CC_has_grapple},
+                                           {"hover_wings", CC_hover_wings},
+                                           {"has_whip", CC_has_whip},
+                                           {"respawn", CC_respawn},
+                                           {"vehicle", CC_vehicle},
+                                           {"only_active_when_taken_over", CC_only_active_when_taken_over},
+                                           {"beast", CC_beast},
+                                           {"prefers_brawling", CC_prefers_brawling},
+                                           {"dontpush", CC_dontpush},
+                                           {"dont_move_out_of_way", CC_dont_move_out_of_way},
+                                           {"dontmove", CC_dontmove},
+                                           {"jetpack", CC_jetpack},
+                                           {"oldheadmovement", CC_oldheadmovement},
+                                           {"atatheadmovement", CC_atatheadmovement},
+                                           {"cannotbigjump", CC_cannotbigjump},
+                                           {"no_offpath_teleport", CC_no_offpath_teleport},
+                                           {"no_kill_parts", CC_no_kill_parts},
+                                           {"high_jump", CC_high_jump},
+                                           {"super_strength", CC_super_strength},
+                                           {"transformatron", CC_transformatron},
+                                           {"bypass_security", CC_bypass_security},
+                                           {"hazard_protection", CC_hazard_protection},
+                                           {"wall_jump", CC_wall_jump},
+                                           {"got_batarang", CC_got_batarang},
+                                           {"tightrope_tilt", CC_tightrope_tilt},
+                                           {"combat_roll", CC_combat_roll},
+                                           {"has_scene_element", CC_has_scene_element},
+                                           {"dont_turn", CC_dont_turn},
+                                           {"no_jump", CC_no_jump},
+                                           {"no_shoot", CC_no_shoot},
+                                           {"blobshadow_size", CC_blobshadow_size},
+                                           {"blobshadow_alpha", CC_blobshadow_alpha},
+                                           {"hover_height", CC_hover_height},
+                                           {"hover_time", CC_hover_time},
+                                           {"maxheadturn", CC_maxheadturn},
+                                           {"maxheadtilt", CC_maxheadtilt},
+                                           {"headrotrate", CC_headrotrate},
+                                           {"coinvalue", CC_coin_value},
+                                           {"coin_value", CC_coin_value},
+                                           {"timebaseupdate1", CC_set_timebaseupdate1},
+                                           {"timebaseupdate2", CC_set_timebaseupdate2},
+                                           {"timebaseupdate3", CC_set_timebaseupdate3},
+                                           {"timebaseupdate4", CC_set_timebaseupdate4},
+                                           {NULL, NULL}};
+
+extern "C" i32 SecondCharConfigure = 0;
+i32 configureallcharacters_perm = 0;
+i32 CHARPAK = 0;
+extern "C" char MiniBuffer[0x4000] = {0};
+// Includes the utility WORD at +0x10000.
+CONFIG_BUFFER ConfigBuffer = {0};
+
+static f32 CharConfigFdiv(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f) {
+        return 0.0f;
+    }
+    return a / b;
+}
+
+static i32 RedirectTextFile(char *text, char *filename, i32 filename_capacity) {
+    i32 result = 0;
+    NUFPAR *parser = NuFParCreateMem("redirect", text, 0xffff);
+    if (parser != NULL) {
+        while (NuFParGetLine(parser) != 0) {
+            if (Text_StripComments(parser->line_buffer_ptr, parser->line_buffer_ptr, 1) == 0) {
+                continue;
+            }
+            if (NuFParGetWord(parser) == 0) {
+                continue;
+            }
+            if (NuStrICmp(parser->word_buffer_ptr, "txt_file") == 0) {
+                if (result == 0 && NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < filename_capacity) {
+                    NuStrCpy(filename, parser->word_buffer_ptr);
+                    result = 1;
+                }
+            } else if (result != 0) {
+                NuFParDestroy(parser);
+                return 2;
+            }
+        }
+        NuFParDestroy(parser);
+    }
+    return result;
+}
+
+extern "C" i32 fun_00584730(void) {
+    return 0;
+}
+
+void CharConfig_CalculateJumpStats(float jump_speed, float gravity, float *duration, float *height) {
+    f32 ascent_time = CharConfigFdiv(0.0f - jump_speed, gravity);
+    if (duration != NULL) {
+        *duration = ascent_time * 2.0f;
+    }
+    if (height != NULL) {
+        *height = jump_speed * ascent_time + gravity * 0.5 * ascent_time * ascent_time;
+    }
+}
+
+static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR *arena, VARIPTR *arena_end, i32 permanent, char *text,
+                      i32 text_length, i32 redirect, NUFPCOMJMP *game_keywords) {
+    CHARACTERDATA *character = (CHARACTERDATA *)&apicharsys->char_data[character_id];
+    char redirected_name[64];
+    char path[128];
+    i32 redirected = 0;
+    GAMECHARACTERLAYER layers[32];
+    CHARACTER_EFFECT_CONFIG effects[33];
+    PLAYERCHARACTERCONFIG *data;
+    NUFPAR *parser;
+    char *buffer;
+    i32 length;
+    i32 size;
+    i32 i;
+    i32 bit;
+    i32 layer;
+    if (text != NULL) {
+        buffer = text;
+        length = text_length;
+    } else {
+        if (directory == NULL) {
+            goto done;
+        }
+        NuStrCpy(path, directory);
+        NuStrCat(path, filename);
+        buffer = MiniBuffer;
+        size = NuFileLoadBuffer(path, MiniBuffer, sizeof(MiniBuffer));
+        if (size <= 0) {
+            goto done;
+        }
+        MiniBuffer[size] = 0;
+        length = Text_StripComments(MiniBuffer, MiniBuffer, 1);
+        if (length <= 0) {
+            goto done;
+        }
+        if (redirect != 0) {
+            redirected = RedirectTextFile(MiniBuffer, redirected_name, sizeof(redirected_name));
+            if (redirected != 0) {
+                NuStrCpy(path, directory);
+                NuStrCat(path, redirected_name);
+                NuStrCat(path, ".txt");
+                length = NuFileLoadBuffer(path, MiniBuffer, sizeof(MiniBuffer));
+                if (length > 0) {
+                    MiniBuffer[length] = 0;
+                    length = Text_StripComments(MiniBuffer, MiniBuffer, 1);
+                } else {
+                    redirected = 0;
+                }
+            }
+        }
+    }
+    if (length <= 0) {
+        goto done;
+    }
+
+    memset(&charconfig, 0, sizeof(charconfig));
+    charconfig.character_id = (i16)(character_id);
+    charconfig.character = character;
+    charconfig.runtime = character->game_character;
+    charconfig.permanent = permanent;
+    charconfig.named_layers = 0;
+    charconfig.effect_scratch = effects;
+    charconfig.arena = arena;
+    charconfig.arena_end = arena_end;
+    charconfig.layer_scratch = layers;
+    memset(effects, 0, sizeof(effects));
+    data = charconfig.runtime;
+    if (data->layers == NULL && (character->model_flags & CHARACTER_MODEL_CONFIGURED) == 0 && arena != NULL && arena_end != NULL) {
+        data->layers = layers;
+        charconfig.runtime->layer_count = 0;
+        charconfig.flags |= CHARCONFIG_LAYERS;
+    } else {
+        charconfig.named_layers = data->layer_count > 0;
+    }
+    if (charconfig.character->animations == NULL && charconfig.arena != NULL && charconfig.arena_end != NULL) {
+        charconfig.arena->addr = (charconfig.arena->addr + 3) & ~3u;
+        charconfig.character->animations = (CHARACTERANIM_CONFIG *)charconfig.arena->void_ptr;
+        charconfig.flags |= CHARCONFIG_ANIMATIONS;
+    }
+    parser = NuFParCreateMem("character", buffer, 0xffff);
+    if (parser != NULL) {
+        NuFParPushCom2(parser, ConfigChar_Keywords, game_keywords);
+        while (NuFParGetLine(parser) != 0) {
+            if (NuFParGetWord(parser) != 0) {
+                NuFParInterpretWord(parser);
+            }
+        }
+        NuFParDestroy(parser);
+    }
+    charconfig.character->model_flags |= CHARACTER_MODEL_CONFIGURED;
+    if ((charconfig.flags & CHARCONFIG_TURN_RATE) != 0 && (charconfig.flags & CHARCONFIG_TURN_RATE_2) == 0) {
+        charconfig.runtime->turn_rate_2 = charconfig.runtime->turn_rate;
+    }
+    if ((charconfig.flags & CHARCONFIG_TIMEBASE) == 0 && (charconfig.character->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
+        for (i = 0; i < 4; ++i) {
+            charconfig.runtime->ai_update_distances[i] = vehicle_timebase_dist[i];
+            charconfig.runtime->ai_update_intervals[i] = (u8)vehicle_timebase_nframes[i];
+        }
+    }
+    CharConfig_CalculateJumpStats(charconfig.runtime->jump_speed, charconfig.runtime->gravity, &charconfig.runtime->jump_duration,
+                                  &charconfig.runtime->jump_height);
+    CharConfig_CalculateJumpStats(charconfig.runtime->second_jump_speed, charconfig.runtime->gravity,
+                                  &charconfig.runtime->second_jump_duration, &charconfig.runtime->second_jump_height);
+    if ((charconfig.flags & CHARCONFIG_ANIMATIONS) != 0) {
+        charconfig.character->animation_count = charconfig.animation_count;
+        charconfig.character->animations[charconfig.animation_count].name = NULL;
+        charconfig.character->animations[charconfig.animation_count].action_id = -1;
+        charconfig.animation_count++;
+        charconfig.arena->void_ptr = character->animations + charconfig.animation_count;
+        for (i = 0; i < charconfig.animation_count - 1; ++i) {
+            NuStrCpy(charconfig.arena->char_ptr, charconfig.animation_names[i]);
+            charconfig.character->animations[i].name = charconfig.arena->char_ptr;
+            charconfig.arena->addr += NuStrLen(charconfig.character->animations[i].name) + 1;
+        }
+        if (charconfig.effect_count > 0) {
+            effects[charconfig.effect_count++].character_id = -1;
+            charconfig.arena->addr = (charconfig.arena->addr + 3) & ~3u;
+            charconfig.character->effects = (CHARACTER_EFFECT_CONFIG *)charconfig.arena->void_ptr;
+            PCByteCopy(charconfig.character->effects, effects, charconfig.effect_count * sizeof(*effects));
+            charconfig.arena->addr += charconfig.effect_count * sizeof(*effects);
+        }
+    }
+    if ((charconfig.flags & CHARCONFIG_LAYERS) != 0) {
+        if (charconfig.runtime->layer_count <= 0) {
+            charconfig.runtime->layers = NULL;
+            charconfig.runtime->layer_count = 0;
+        } else {
+            charconfig.arena->addr = (charconfig.arena->addr + 3) & ~3u;
+            charconfig.runtime->layers = (GAMECHARACTERLAYER *)charconfig.arena->void_ptr;
+            charconfig.arena->addr += charconfig.runtime->layer_count * sizeof(GAMECHARACTERLAYER);
+            PCByteCopy(charconfig.runtime->layers, charconfig.layer_scratch, charconfig.runtime->layer_count * sizeof(GAMECHARACTERLAYER));
+            charconfig.runtime->layer_lookup = (i8 *)charconfig.arena->void_ptr;
+            charconfig.arena->addr += 32;
+            for (bit = 0; bit < 32; ++bit) {
+                for (layer = 0; layer < charconfig.runtime->layer_count; ++layer) {
+                    if (charconfig.runtime->layers[layer].mask_bit == bit) {
+                        charconfig.runtime->layer_lookup[bit] = (i8)layer;
+                    }
+                }
+            }
+        }
+    }
+done:
+    SecondCharConfigure = 0;
+    return redirected;
+}
+
+void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
+    i32 size;
+    void *address;
+    void *pak;
+    char path[256];
+    char filename[256];
+    char directory[256];
+    char original_path[256];
+    CHARACTERDATA *character;
+    i32 id;
+    configureallcharacters_perm = permanent;
+    if (CHARPAK != 0 && permanent != 0) {
+        VARIPTR cursor;
+        cursor.addr = superbuffer_end.addr - 0x100000;
+        pak = NuFilePakLoad("chars\\charstxt.fpk", &cursor, superbuffer_end, 4);
+    } else {
+        pak = NULL;
+    }
+    for (id = 0, character = CDataList; id < CHARCOUNT; ++id, ++character) {
+        i32 item;
+        i32 result;
+        i32 end;
+        char saved;
+        if (permanent == 0 && apicharsys->playermodelids[id] == -1) {
+            continue;
+        }
+        NuStrCpy(path, "chars\\");
+        NuStrCat(path, character->dir);
+        NuStrCat(path, "\\");
+        NuStrCpy(directory, path);
+        NuStrCat(path, character->name);
+        NuStrCat(path, ".txt");
+        NuStrCpy(filename, character->name);
+        NuStrCat(filename, ".txt");
+        NuStrCpy(original_path, path);
+        if (pak != NULL) {
+            CharConfigPakDiagnostic(path);
+            item = NuFilePakGetItem(pak, path);
+            if (item != 0) {
+                CHARCONFIG_PAK_DIAGNOSTIC_UNPROTOTYPED();
+                if (NuFilePakGetItemInfo(pak, item, &address, &size) != 0 && size > 0) {
+                    end = size;
+                    saved = ((char *)address)[end];
+                    ((char *)address)[end] = 0;
+                    size = Text_StripComments((char *)address, ConfigBuffer.bytes, 1);
+                    ((char *)address)[end] = saved;
+                    if (size <= 0) {
+                        continue;
+                    }
+                    result = RedirectTextFile((char *)address, filename, 64);
+                    if (result != 0) {
+                        NuStrCat(filename, ".txt");
+                        NuStrCpy(path, directory);
+                        NuStrCat(path, filename);
+                        item = NuFilePakGetItem(pak, path);
+                        if (item == 0 || NuFilePakGetItemInfo(pak, item, &address, &size) == 0 || size <= 0) {
+                            result = 0;
+                        } else {
+                            end = size;
+                            saved = ((char *)address)[end];
+                            ((char *)address)[end] = 0;
+                            size = Text_StripComments((char *)address, ConfigBuffer.bytes, 1);
+                            ((char *)address)[end] = saved;
+                            if (size <= 0) {
+                                result = 0;
+                            }
+                        }
+                    }
+                    if (size > 0) {
+                        CharConfig(id, NULL, NULL, &permbuffer_ptr, &permbuffer_end, 1, ConfigBuffer.bytes, size, 0, game_keywords);
+                    }
+                } else {
+                    CHARCONFIG_PAK_DIAGNOSTIC_UNPROTOTYPED();
+                    continue;
+                }
+            } else {
+                CharConfigPakDiagnostic(path);
+                continue;
+            }
+        } else {
+            if (permanent != 0) {
+                result = CharConfig(id, directory, filename, &permbuffer_ptr, &permbuffer_end, 1, NULL, 0, 1, game_keywords);
+            } else {
+                result = CharConfig(id, directory, filename, NULL, NULL, 0, NULL, 0, 1, game_keywords);
+            }
+        }
+        if (result != 2) {
+            continue;
+        }
+        if (pak != NULL) {
+            item = NuFilePakGetItem(pak, original_path);
+            if (item == 0 || NuFilePakGetItemInfo(pak, item, &address, &size) == 0 || size <= 0) {
+                continue;
+            }
+            end = size;
+            saved = ((char *)address)[end];
+            ((char *)address)[end] = 0;
+            size = Text_StripComments((char *)address, ConfigBuffer.bytes, 1);
+            ((char *)address)[end] = saved;
+            if (size <= 0) {
+                continue;
+            }
+            SecondCharConfigure = 1;
+            CharConfig(id, NULL, NULL, &permbuffer_ptr, &permbuffer_end, 0, ConfigBuffer.bytes, size, 0, game_keywords);
+        } else {
+            SecondCharConfigure = 1;
+            if (permanent != 0) {
+                CharConfig(id, directory, filename, &permbuffer_ptr, &permbuffer_end, 1, NULL, 0, 0, game_keywords);
+            } else {
+                CharConfig(id, directory, filename, NULL, NULL, 0, NULL, 0, 0, game_keywords);
+            }
+        }
+    }
+}
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+extern "C" void fun_005845a0() {
+}
+
+/* Empty on PC. Defined after its callers and variadic, so CharConfig_ConfigureAll keeps the calls. */
+void CharConfigPakDiagnostic(const char *format, ...) {
+}
