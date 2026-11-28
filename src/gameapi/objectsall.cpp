@@ -2635,6 +2635,20 @@ extern "C" {
         part_page_on[(i8)page] = 0;
     }
 
+    i32 edpart_instances_used = 0;
+
+    void edpartParticleReset(void) {
+        // MATCH-EXCEPTION: retail resets 512 emitter slots although the PC array has only 40 entries.
+        for (i32 index = 0; index < 512; ++index) {
+            part_emits[index].instance_id = -1;
+        }
+        for (i32 index = 0; index < 8; ++index) {
+            part_page_used[index] = 0;
+            part_page_on[index] = 0;
+        }
+        edpart_instances_used = 0;
+    }
+
     void edpartMoveList(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         struct eduimenu_s *parent;
         parent = NULL;

@@ -407,3 +407,13 @@ config/castscan-budget.json declaration-type 853 gameliball is a C++ unity: the 
 config/castscan-budget.json void-pointer-cpp 1300 gameliball is a C++ unity: the C code it gathers needs explicit casts on NuAlloc and void * results
 config/oddscan-budget.json noinline 63 nu3d_includes.cpp: NuHtmlEnd is called out of line from NuDisplayListHtmlEnd but inlined into NuDisplayListDrawRenderScenes; VC8 inlines it at both once nuhtml shares the unity
 config/declscan-budget.json C 466 nu3d_includes is one retail unity now: the nurndr, nucamera, nutexanim and nuhtml parts it gathers keep forward declarations of helpers defined later in address order
+config/oddscan-budget.json comment-retail 18 edpartParticleReset (0x64a1a0) preserves the retail 512-emitter reset bound despite the PC array containing only 40 entries.
+config/oddscan-budget.json match-exception 82 edpartParticleReset (0x64a1a0): PC instructions and the Android body both retain the 512-emitter reset bound; document that native overrun instead of adding a guard.
+config/oddscan-budget.json address-name 4689 Recover the 129-byte specular-light state wrapper at 0x5c1570 as fun_005c1570; its original name is unknown and its C linkage keeps the existing address-name classification.
+config/oddscan-budget.json address-name 4693 Recover fun_005c64b0 and its three tests of existing unnamed renderer control globals (dat_00806b84/dat_00806b88); retain their unknown names instead of inventing original identifiers.
+config/oddscan-budget.json dense-function 1181 fun_005c64b0 is one native 400-byte geometry publishing routine: preserve its skin lookup, transform, sort and buffer failure paths together.
+config/castscan-budget.json void-pointer-cpp 1301 fun_005c64b0 converts the void buffer returned by PCDynamicGeometryLock to PC_GEOMETRY_OUTPUT * for the native output copy; retain this SDK buffer conversion.
+config/castscan-budget.json signedness 1817 fun_005e8510 reads ANI3 node counts as signed 16-bit values and compares cached capacity as signed 32-bit, matching the PC loads and branches while retaining the shared unsigned field declarations.
+config/castscan-budget.json void-pointer-cpp 1302 fun_005e8510 converts the NuAlloc result to the NUMTX matrix palette pointer stored by the native geometry cache.
+config/oddscan-budget.json address-name 4698 Recover fun_005c6640, fun_005e8510 and the missing renderer flag dat_00806b98, preserving unknown native names and the flag binding.
+config/oddscan-budget.json dense-function 1182 fun_005e8510 is the single native 577-byte palette builder; preserve its allocation, animation extraction and three-axis basis construction together.

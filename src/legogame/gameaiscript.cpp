@@ -214,6 +214,13 @@ GAMEOBJECT *GetNamedGameObject(void *sys, char *name) {
     return NULL;
 }
 
+static f32 GameaiscriptFdiv(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f) {
+        return 0.0f;
+    }
+    return a / b;
+}
+
 static i32 PartyMemberInWay(GAMEOBJECT *object, GAMEOBJECT *opponent) {
     NUVEC difference;
     NUVEC direction;
@@ -229,11 +236,7 @@ static i32 PartyMemberInWay(GAMEOBJECT *object, GAMEOBJECT *opponent) {
     }
     target_distance = NuVecDistSqr(&opponent->collision_position, &object->collision_position, &difference);
     length = NuFsqrt(target_distance);
-    if (length != 0.0f) {
-        inverse = 1.0f / length;
-    } else {
-        inverse = 0.0f;
-    }
+    inverse = GameaiscriptFdiv(1.0f, length);
     NuVecScale(&direction, &difference, inverse);
     for (index = 0; index < 8; index++) {
         member = Player[index];
@@ -11833,8 +11836,6 @@ extern "C" i32 Action_CreateCreatures(AISYS *sys, AISCRIPTPROCESS *processor, AI
     }
     return 1;
 }
-
-/* Forward declarations for functions used before their definition. */
 
 AIACTIONDEF lego_aiactiondefs[208] = {
     {"Activate", Action_Activate, 1, 0, 0},

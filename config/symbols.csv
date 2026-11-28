@@ -146,7 +146,7 @@ address,symbol,size,ctype
 0x40e690,_GoingForwardsAlongNarrowSock,106,i32 __cdecl (GAMEOBJECT *)
 0x40e700,_FlightSplineCapacityDiagnostic,1,void __cdecl (char *)
 0x40e710,?ChrisFabs@@YAMM@Z,18,
-0x40e730,?ChrisVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
+0x40e730,?ChrisVuVecSet@@YAXPAUNUVEC4@@MMMM@Z,28,"void __cdecl(NUVEC4 *,f32,f32,f32,f32)"
 0x40e750,?ChrisVuVecSetOrigin@@YAXAAUNUVEC4@@@Z,16,"void __cdecl (NUVEC4 &)"
 0x40e760,?ChrisVuVecAdd@@YAXAAUNUVEC4@@ABU1@1@Z,29,"void __cdecl (NUVEC4 &, const NUVEC4 &, const NUVEC4 &)"
 0x40e780,?ChrisVuVecSub@@YAXAAUNUVEC4@@ABU1@1@Z,29,"void __cdecl (NUVEC4 &, const NUVEC4 &, const NUVEC4 &)"
@@ -642,7 +642,7 @@ address,symbol,size,ctype
 0x43ff30,_AIPathCnxControlSysCreate,97,"void * __cdecl (VARIPTR *, VARIPTR *, i32)"
 0x43ffa0,_GameaiscriptNuError,1,
 0x43ffb0,?GameaiscriptFabs@@YAMM@Z,18,
-0x43ffd0,_GameaiscriptFdiv,54,
+0x43ffd0,?GameaiscriptFdiv@@YAMMM@Z,54,"f32 __cdecl(f32,f32)"
 0x440010,_GameaiscriptVuVecMake,28,
 0x440030,_GetGenericGoon,226,
 0x00440120,_GetNamedGameObject,34,"GAMEOBJECT *__cdecl (void *, char *)"
@@ -2534,7 +2534,7 @@ address,symbol,size,ctype
 0x4d7930,_DrawRopeSingle,1675,"void __cdecl(NUVEC *,NUVEC *,f32,NUMTL *,f32,f32,f32,f32)"
 0x4d7fc0,_ZipUps_DrawLines,453,void __cdecl(void)
 0x4d8190,_EpisodeINuError,1,
-0x4d81a0,_EpisodeIVuVecMake,28,
+0x4d81a0,?EpisodeIVuVecSet@@YAXPAUNUVEC4@@MMMM@Z,28,"void __cdecl(NUVEC4 *,f32,f32,f32,f32)"
 0x4d81c0,?EpisodeIVuVecSetOrigin@@YAXPAUNUVEC4@@@Z,16,
 0x4d81d0,?EpisodeIVuVecAdd@@YAXPAUNUVEC4@@PBU1@1@Z,29,
 0x4d81f0,?EpisodeIVuVecSub@@YAXPAUNUVEC4@@PBU1@1@Z,29,
@@ -7206,7 +7206,7 @@ address,symbol,size,ctype
 0x5c1500,?Nu3dIncludesACos@@YAMM@Z,27,
 0x5c1520,?Nu3dIncludesVecZero@@YAXPAUnuvec_s@@@Z,11,
 0x5c1530,?Nu3dIncludesMtxFlipZ@@YAXPAUnumtx_s@@@Z,49,
-0x5c1570,_fun_005c1570,129,
+0x5c1570,_fun_005c1570,129,"void __cdecl(NUVEC *,NUVEC4 *)"
 0x5c1600,_VisibilityAbsoluteFour,90,
 0x5c1660,?Nu3dIncludesVuVecCopy@@YAXAAUVuVec@@ABU1@@Z,23,
 0x5c1680,?OccluderVertexSet@@YAXPAUNUVEC4@@MMMM@Z,28,"void private (NUVEC4 *vertex EAX, f32 x, f32 y, f32 z, f32 w)"
@@ -7440,11 +7440,11 @@ address,symbol,size,ctype
 0x5c60f0,_NuOcclusionManagerSetOccluderScreenSpaceThreshold,11,
 0x005c6100,_NuFrameEndLeaf,1,void __cdecl(void)
 0x5c6110,_NuDebugToggle,58,
-0x5c6150,_PcRegisterDynamicGeometry,522,i32 __cdecl(PC_GEOMETRY_PUBLISH_FORMAT*)
+0x5c6150,_PcRegisterDynamicGeometry,522,i32 __cdecl(PC_GEOMETRY_FORMAT*)
 0x5c6360,_PcUnregisterDynamicGeometry,258,
 0x5c6470,_PcGeometryRegistryFind,60,
-0x5c64b0,_fun_005c64b0,400,
-0x5c6640,_fun_005c6640,60,
+0x5c64b0,_fun_005c64b0,400,"i32 __cdecl(PC_GEOMETRY_FORMAT *,NUMTX *,PC_GEOMETRY_MORPH_WEIGHTS *)"
+0x5c6640,_fun_005c6640,60,PC_DYNAMIC_GEOMETRY *__cdecl(PC_GEOMETRY_FORMAT *)
 0x5c6680,_NuDisplayList2dGet,6,
 0x5c6690,_NuDisplayListStreamAlign16,21,
 0x5c66b0,?Nu3dIncludesItemSetNext@@YAXPAUnudisplaylistitem_s@@PAX@Z,4,
@@ -8205,7 +8205,7 @@ address,symbol,size,ctype
 0x5e84b0,_NuOcclusionManagerAddOccluderSphere,24,"void __cdecl (const NUVEC *, f32)"
 0x5e84d0,_NuOcclusionManagerAddOccluderOBB,26,"void __cdecl (const NUVEC *, const NUVEC *, const NUMTX *)"
 0x5e84f0,_NuOcclusionManagerRenderZPass,32,void __cdecl (void)
-0x5e8510,_fun_005e8510,577,
+0x5e8510,_fun_005e8510,577,"i32 __cdecl(PC_GEOMETRY_FORMAT *,ANI3_HEADER *,f32)"
 0x5e8760,?VectorLength@PC_POST_SHADOW_VECTOR@@QBEMXZ,46,
 0x5e8790,?Normalize@PC_POST_SHADOW_VECTOR@@QBEPAUnuvec_s@@PAU2@@Z,89,"NUVEC *__thiscall(NUVEC *)"
 0x5e87f0,_NuDynamicLightTestShadowExtrusions,89,
@@ -8614,7 +8614,7 @@ address,symbol,size,ctype
 0x5fbcf0,_PCDynamicGeometryLock,36,
 0x5fbd20,_PCDynamicGeometryUnlock,22,
 0x5fbd40,_PCDynamicGeometryRelease,63,
-0x5fbd80,_PcTransformDynamicGeometry,1704,"u8 __cdecl (PC_GEOMETRY_SKIN *, PC_GEOMETRY_MESH *, u32 *)"
+0x5fbd80,_PcTransformDynamicGeometry,1704,"u8 __cdecl (PC_DYNAMIC_GEOMETRY *, PC_GEOMETRY_MESH *, u32 *)"
 0x5fc430,_PcUpdateGeometryDistances,601,"i32 __cdecl (PC_GEOMETRY_OUTPUT *, PC_GEOMETRY_SORT_ITEM *, i32)"
 0x5fc690,_PCGeometrySortItems,454,
 0x5fc860,_PCDynamicGeometryCopyOutput,82,
@@ -10713,7 +10713,7 @@ address,symbol,size,ctype
 0x649e20,_edpartDebrisSettingsMenu,456,
 0x649ff0,_edpartCancelEmitMenu,25,
 0x64a010,_edpartEmitMenu,398,
-0x64a1a0,_fun_0064a1a0,120,
+0x64a1a0,_edpartParticleReset,120,void __cdecl(void)
 0x64a220,_edpartToggleFilter,18,
 0x64a240,_edpartChangeFilterName,32,
 0x64a260,_edpartCancelOptMenu,13,
@@ -38545,6 +38545,7 @@ address,symbol,size,ctype
 0x806b8c,_dat_00806b8c,4,i32
 0x806b90,_dat_00806b90,4,i32
 0x806b94,_NuDebugGeometrySortOutput,4,i32
+0x00806b98,_dat_00806b98,4,i32
 0x00806b9c,_nuspecial_const_alpha,4,f32
 0x806ba0,_PostShadowCubeFaceIndices,96,i32[6][4]
 0x00806c00,_cubeEdgeIndices,96,i32[12][2]
@@ -42233,7 +42234,7 @@ address,symbol,size,ctype
 0x00973864,?ms_pAlphaMtl2D@OccluderSet@@2PAUnumtl_s@@A,4,NUMTL*; working scalar view; original owning extent unknown
 0x973868,_NuDebugDisabled,4,i32
 0x97386c,_PcGeometryRegistryCount,4,i32
-0x973870,_PcGeometryRegistry,4,PC_GEOMETRY_PUBLISH_RECORD *
+0x973870,_PcGeometryRegistry,4,PC_DYNAMIC_GEOMETRY *
 0x973874,_PcGeometryMatrixCapacity,4,i32
 0x973878,_PcGeometryTransforms,4,PC_GEOMETRY_BASIS *
 0x97387c,_PcGeometryOutputCapacity,4,i32
@@ -42638,7 +42639,7 @@ address,symbol,size,ctype
 0x2912e8c,_ed_main_menu,4,struct eduimenu_s *
 0x2912e90,_ed_cfg_menu,4,struct eduimenu_s *
 0x2912e94,_edinternalcam,4,NUCAMERA *
-0x2912e98,_EdMainCurrentCamera,4,genuine native data owner
+0x2912e98,_EdMainCurrentCamera,4,NUCAMERA *
 0x2912e9c,_ed_loc,4,NUVEC *
 0x2912ea0,_ed_fnt,4,void *
 0x2912ea4,_edmain_render_interacts,4,i32
@@ -42913,6 +42914,7 @@ address,symbol,size,ctype
 0x292098c,_edpart_nearest_emit,4,PART_EMIT*
 0x2920990,_edpart_nearest_type,4,PARTTYPE_LOOKUP*
 0x2920994,_edpart_effect_list,1,i8
+0x2920998,_edpart_instances_used,4,i32
 0x292099c,_edpart_copy_mode,4,i32
 0x29209a0,_edpart_copy_enclosed,4,i32
 0x29209a4,_edpart_copy_source_count,4,i32

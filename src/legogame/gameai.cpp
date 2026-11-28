@@ -2184,6 +2184,7 @@ void GameAIProcess(void) {
     GAMEOBJECT *object;
     f32 frame_time;
     f32 follow_offset;
+    f32 follow_spacing;
     i32 all_under_cover;
     APIOBJECT *object_lists[4][64];
     APIOBJECT **neutral_objects;
@@ -2309,7 +2310,8 @@ void GameAIProcess(void) {
     }
     AITriggerSetSysProcess(WORLD->ai_trigger_set);
 
-    follow_offset = 0.0f * GameAiPartyFollowSpacing + 0.0f;
+    follow_spacing = GameAiPartyFollowSpacing;
+    follow_offset = 0.0f * follow_spacing + 0.0f;
     for (index = 0; index < 8; ++index) {
         if (index < 2 && player == (object = Player[1])) {
             if (index != 0) {
@@ -2351,7 +2353,7 @@ void GameAIProcess(void) {
             (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && (object->dead == 0 || object->invulnerable_timer > 0.0f) &&
             0 == (object->flags_ef3 & 1) && (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
             party_follow_offsets[object->player_index] = follow_offset;
-            follow_offset += GameAiPartyFollowSpacing;
+            follow_offset += follow_spacing;
         }
     }
     object = Obj;

@@ -201,46 +201,12 @@ extern "C" {
         PC_GEOMETRY_BASIS_VECTOR *vectors; // 0x8
     };
 
-    struct PC_GEOMETRY_BASIS_SOURCE {            // size 0x1c
-        u32 unknown_00;                          // 0x00
-        i32 record_count;                        // 0x04
-        u32 unknown_08;                          // 0x08
-        i32 morph_count;                         // 0x0c
-        u32 unknown_10;                          // 0x10
-        PC_GEOMETRY_BASIS_INPUT_RECORD *records; // 0x14
-        PC_GEOMETRY_MORPH_DELTA *morph_deltas;   // 0x18
-    };
-
     struct PC_GEOMETRY_MORPH_WEIGHTS { // size 0x4
         f32 *weight_words;             // 0x0
     };
 }
 extern "C" i32 PcGeometryMatrixCapacity;
 extern "C" {
-    typedef struct PC_GEOMETRY_FORMAT_RECORD { // size 0x78
-        u8 unknown_00[0x18];                   // 0x00
-        i32 strip_segments;                    // 0x18
-        u8 unknown_1c[0x5c];                   // 0x1c
-    } PC_GEOMETRY_FORMAT_RECORD;
-
-    typedef struct PC_GEOMETRY_FORMAT {     // size 0x10
-        u32 unknown_00;                     // 0x0
-        u32 record_count;                   // 0x4
-        u32 unknown_08;                     // 0x8
-        PC_GEOMETRY_FORMAT_RECORD *records; // 0xc
-    } PC_GEOMETRY_FORMAT;
-
-    typedef struct PC_DYNAMIC_GEOMETRY {         // size 0x20
-        PC_GEOMETRY_FORMAT *format;              // 0x00
-        i32 element_count;                       // 0x04
-        u32 unknown_08;                          // 0x08
-        PC_GEOMETRY_SORT_ITEM *sort_items;       // 0x0c
-        u32 unknown_10;                          // 0x10
-        PC_BUFFER_RESOURCE *vertex_buffer;       // 0x14
-        PC_BUFFER_RESOURCE *strip_vertex_buffer; // 0x18
-        PC_BUFFER_RESOURCE *strip_index_buffer;  // 0x1c
-    } PC_DYNAMIC_GEOMETRY;
-
     typedef struct PC_GEOMETRY_STRIP_VERTEX { // size 0x10
         f32 fraction;                         // 0x0
         f32 side;                             // 0x4
@@ -257,12 +223,6 @@ extern "C" {
         NUVEC basis_axis;               // 0x40
         f32 distance_squared;           // 0x4c
     } PC_GEOMETRY_OUTPUT;
-
-    typedef struct PC_GEOMETRY_SORT_ITEM { // size 0xc
-        u32 output_index;                  // 0x0
-        f32 distance_squared;              // 0x4
-        u32 unknown_08;                    // 0x8
-    } PC_GEOMETRY_SORT_ITEM;
 }
 extern "C" NUVEC4 PcGeometryDistanceOrigin;
 extern "C" i32 NuDebugGeometrySortOutput;
@@ -282,20 +242,6 @@ extern "C" {
         u32 first_element;             // 0x4
         u32 transform_index;           // 0x8
     } PC_GEOMETRY_GROUP;
-
-    typedef struct PC_GEOMETRY_MESH { // size 0x14
-        u8 unknown_00[8];             // 0x00
-        u32 group_count;              // 0x08
-        PC_GEOMETRY_INPUT *elements;  // 0x0c
-        PC_GEOMETRY_GROUP *groups;    // 0x10
-    } PC_GEOMETRY_MESH;
-
-    typedef struct PC_GEOMETRY_SKIN { // size 0x14
-        u8 unknown_00[8];             // 0x00
-        u32 matrix_group_count;       // 0x08
-        u32 unknown_0c;               // 0x0c
-        NUMTX *matrices;              // 0x10
-    } PC_GEOMETRY_SKIN;
 
     typedef struct PC_GEOMETRY_BASIS_MATRIX {
         PC_GEOMETRY_BASIS_VECTOR rows[4];
@@ -3433,7 +3379,7 @@ extern "C" {
         return 1;
     }
 
-    u8 PcTransformDynamicGeometry(PC_GEOMETRY_SKIN *skin, PC_GEOMETRY_MESH *mesh, u32 *output_index) {
+    u8 PcTransformDynamicGeometry(PC_DYNAMIC_GEOMETRY *geometry, PC_GEOMETRY_MESH *mesh, u32 *output_index) {
         for (u32 group_index = 0; group_index < mesh->group_count; ++group_index) {
             PC_GEOMETRY_GROUP *group = &mesh->groups[group_index];
             PC_GEOMETRY_BASIS *basis = (PC_GEOMETRY_BASIS *)&PcGeometryTransforms[group->transform_index * 3];
@@ -3530,7 +3476,7 @@ extern "C" {
                 PC_GEOMETRY_BASIS_VECTOR cross;
                 PcVecCross(&cross.xyz, &row1.xyz, &row2.xyz);
                 PC_GEOMETRY_CORNER *corners = output->corners;
-                if (input->skin_indices[0] >= 0 && skin->matrix_group_count > 1) {
+                if (input->skin_indices[0] >= 0 && geometry->matrix_count > 1) {
                     corners[0] = input->corners[0];
                     for (i32 corner = 1; corner < 4; ++corner) {
                         NUVEC delta;
@@ -3538,10 +3484,10 @@ extern "C" {
                         corners[corner] = corners[corner - 1];
                         for (i32 j = 0; j < 3; ++j) {
                             i32 index = input->skin_indices[j];
-                            if (index >= 0 && index < (i32)skin->matrix_group_count) {
+                            if (index >= 0 && index < (i32)geometry->matrix_count) {
                                 NUVEC transformed;
                                 f32 weight = (f32)((f64)input->skin_weights[j] * (f64)(1.0f / 255.0f));
-                                PcVecMtxTransform(&transformed, &delta, &skin->matrices[index * 3 + corner - 1]);
+                                PcVecMtxTransform(&transformed, &delta, &geometry->matrices[index * 3 + corner - 1]);
                                 NuVecScale(&transformed, &transformed, weight);
                                 NuVecAdd(&corners[corner].position, &corners[corner].position, &transformed);
                             }
