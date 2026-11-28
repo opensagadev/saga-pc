@@ -201,7 +201,6 @@ struct PC_GEOMETRY_OUTPUT;
  * Private PC field cohorts and their offset assertions remain in the owners. */
 struct PC_DYNAMIC_GEOMETRY;
 struct PC_GEOMETRY_SORT_ITEM;
-struct PC_GEOMETRY_SKIN;
 struct PC_GEOMETRY_MESH;
 #ifdef __cplusplus
 extern "C" {

@@ -410,3 +410,6 @@ config/declscan-budget.json C 466 nu3d_includes is one retail unity now: the nur
 config/oddscan-budget.json comment-retail 18 edpartParticleReset (0x64a1a0) preserves the retail 512-emitter reset bound despite the PC array containing only 40 entries.
 config/oddscan-budget.json match-exception 82 edpartParticleReset (0x64a1a0): PC instructions and the Android body both retain the 512-emitter reset bound; document that native overrun instead of adding a guard.
 config/oddscan-budget.json address-name 4689 Recover the 129-byte specular-light state wrapper at 0x5c1570 as fun_005c1570; its original name is unknown and its C linkage keeps the existing address-name classification.
+config/oddscan-budget.json address-name 4693 Recover fun_005c64b0 and its three tests of existing unnamed renderer control globals (dat_00806b84/dat_00806b88); retain their unknown names instead of inventing original identifiers.
+config/oddscan-budget.json dense-function 1181 fun_005c64b0 is one native 400-byte geometry publishing routine: preserve its skin lookup, transform, sort and buffer failure paths together.
+config/castscan-budget.json void-pointer-cpp 1301 fun_005c64b0 converts the void buffer returned by PCDynamicGeometryLock to PC_GEOMETRY_OUTPUT * for the native output copy; retain this SDK buffer conversion.

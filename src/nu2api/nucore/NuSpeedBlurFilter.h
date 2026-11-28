@@ -8,7 +8,6 @@
 struct PC_DYNAMIC_GEOMETRY;
 struct PC_GEOMETRY_MESH;
 struct PC_GEOMETRY_OUTPUT;
-struct PC_GEOMETRY_SKIN;
 struct PC_GEOMETRY_SORT_ITEM;
 
 #ifdef __cplusplus
@@ -17,7 +16,7 @@ extern "C" {
     void NuDisplayListResetStateCache(NURNDRLIBSTATE *state);
     i32 PcInitializeDynamicGeometryBuffers(struct PC_DYNAMIC_GEOMETRY *, i32);
     i32 PcUpdateGeometryDistances(struct PC_GEOMETRY_OUTPUT *, struct PC_GEOMETRY_SORT_ITEM *, i32);
-    u8 PcTransformDynamicGeometry(struct PC_GEOMETRY_SKIN *, struct PC_GEOMETRY_MESH *, u32 *);
+    u8 PcTransformDynamicGeometry(struct PC_DYNAMIC_GEOMETRY *, struct PC_GEOMETRY_MESH *, u32 *);
     i32 PcGeometryBackendAvailable(void);
 #ifdef __cplusplus
 }
