@@ -218,7 +218,7 @@ void BlowUpSnakeBody(GAMEOBJECT *object) {
             NuMtxPreScale(&matrix, &scale);
         }
         matrix.m30 = matrix.m30 + object->snake_body->segments[index].position.x;
-        matrix.m31 = object->snake_body->scale * SnakeSegmentHeight + object->snake_body->segments[index].position.y + matrix.m31;
+        matrix.m31 = (object->snake_body->scale * SnakeSegmentHeight) + object->snake_body->segments[index].position.y + matrix.m31;
         matrix.m32 = object->snake_body->segments[index].position.z + matrix.m32;
         special_index = index == object->snake_body->segment_count - 1 ? 2 : index % 2;
         special = &snake_hspecials[special_index];

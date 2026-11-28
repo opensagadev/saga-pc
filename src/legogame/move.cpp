@@ -11215,7 +11215,7 @@ static void CommunicateCode(GAMEOBJECT *object, i32 pressed, i32 mode) {
                 } else if (*frame < events[2]) {
                     object->player.communicate_blend = 1.0f;
                 } else if (*frame < events[3]) {
-                    object->player.communicate_blend = 1.0f - (*frame - events[2]) / (events[3] - events[2]);
+                    object->player.communicate_blend = 1.0f - ((*frame - events[2]) / (events[3] - events[2]));
                 } else {
                     object->player.communicate_blend = 0.0f;
                 }

@@ -11359,7 +11359,7 @@ address,symbol,size,ctype
 0x66fea0,_DeRotatePoint,254,void __cdecl(NUVEC *)
 0x66ffa0,_InsideLineF,68,"i16 __cdecl(f32,f32,f32,f32,f32,f32)"
 0x66fff0,_InsidePolLines,1320,"i16 __cdecl(f32,f32,f32,f32,f32,f32,f32,f32,f32,NUVEC *)"
-0x670520,_ScanTerrId,51,
+0x670520,_ScanTerrId,51,TERRAIN_TRACK_SLOT *__cdecl(void *)
 0x00670560,_ScanTerrIDRemovePlat,57,void __cdecl (i32)
 0x6705a0,_AllocTerrId,45,TERRAIN_TRACK_SLOT *__cdecl(void)
 0x6705d0,_TerrainFreeId,60,
@@ -11418,7 +11418,7 @@ address,symbol,size,ctype
 0x67ac40,_TerrShapeSideStep,701,"i32 __cdecl(NUVEC *,NUVEC *,u8 *)"
 0x67af00,_CubeImpact,405,"void __cdecl(NUMTX *,NUMTX *,NUVEC *,f32,NUVEC *)"
 0x67b0a0,_TerrainWallSideSlide,270,"void __cdecl(NUVEC *,void *,f32,f32,NUANG)"
-0x67b1b0,_NewTerrainOnAPlatform,65,
+0x67b1b0,_NewTerrainOnAPlatform,65,i32 __cdecl(void *)
 0x67b200,_NewRayCastGetTOFI,12,f32 __cdecl (void)
 0x67b210,_NewRayCastGetImpactTerrainType,23,i32 __cdecl (void)
 0x67b230,_NewRayCastGetImpactNormal,40,void __cdecl(NUVEC *)
@@ -41051,10 +41051,10 @@ address,symbol,size,ctype
 0x00916ff8,_implode_freq,4,u16 *
 0x00916ffc,_implode_len_cnt,34,u16[17]
 0x917020,_g_nupadScannedPads,2112,FRAME_SCANNED_PAD[16]
-0x00917860,_read_buffer_size,4,i32
+0x00917860,_read_buffer_size,4,volatile i32
 0x00917864,_unpack_file_odi,4,NUDATOPENFILEINFO *
 0x00917868,_NuApiTextLine,4,i32
-0x0091786c,_read_buffer_decoded_size,4,i32
+0x0091786c,_read_buffer_decoded_size,4,volatile i32
 0x00917870,_NuFParRecords,5648,NUFPAR[4]
 0x00918e80,_nufile_wblkinfo,16384,NUFILE_WRITEBLOCK[1024]
 0x0091ce80,_unpack_file_info,4,PC_NUDATFILEINFO *
@@ -42638,7 +42638,7 @@ address,symbol,size,ctype
 0x2912e8c,_ed_main_menu,4,struct eduimenu_s *
 0x2912e90,_ed_cfg_menu,4,struct eduimenu_s *
 0x2912e94,_edinternalcam,4,NUCAMERA *
-0x2912e98,_EdMainCurrentCamera,4,genuine native data owner
+0x2912e98,_EdMainCurrentCamera,4,NUCAMERA *
 0x2912e9c,_ed_loc,4,NUVEC *
 0x2912ea0,_ed_fnt,4,void *
 0x2912ea4,_edmain_render_interacts,4,i32
@@ -43223,7 +43223,7 @@ address,symbol,size,ctype
 0x29620dc,_debris_sort_this_stack,4,i32
 0x29620e0,_debris_update_this_stack,4,i32
 0x29620e4,_g_renderingDebris,4,i32
-0x029620e8,_DebrisGlassCopyMaterial,4,void *
+0x029620e8,_DebrisGlassCopyMaterial,4,NUMTL *
 0x029620ec,_DebrisGlassInitialized,4,i32
 0x29620f0,_edanim_active_menu,4,struct eduimenu_s *
 0x29620f4,_edanim_options_menu,4,struct eduimenu_s *

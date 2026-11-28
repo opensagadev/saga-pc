@@ -1397,13 +1397,13 @@ static inline void VuMtxRotateZ(VuMtx &matrix, i32 angle) {
     f32 x1 = matrix.matrix.m10;
     f32 x2 = matrix.matrix.m20;
     f32 x3 = matrix.matrix.m30;
-    matrix.matrix.m00 = x0 * cosine - matrix.matrix.m01 * sine;
-    matrix.matrix.m01 = x0 * sine + matrix.matrix.m01 * cosine;
+    matrix.matrix.m00 = (x0 * cosine) - (matrix.matrix.m01 * sine);
+    matrix.matrix.m01 = (x0 * sine) + (matrix.matrix.m01 * cosine);
     matrix.matrix.m10 = x1 * cosine - matrix.matrix.m11 * sine;
     matrix.matrix.m11 = x1 * sine + matrix.matrix.m11 * cosine;
     matrix.matrix.m20 = x2 * cosine - matrix.matrix.m21 * sine;
     matrix.matrix.m21 = x2 * sine + matrix.matrix.m21 * cosine;
-    matrix.matrix.m30 = x3 * cosine - matrix.matrix.m31 * sine;
+    matrix.matrix.m30 = (x3 * cosine) - (matrix.matrix.m31 * sine);
     matrix.matrix.m31 = x3 * sine + matrix.matrix.m31 * cosine;
 }
 

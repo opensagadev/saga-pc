@@ -4210,13 +4210,13 @@ extern "C" {
     }
 
     i32 debris_rt = 0;
-    void *DebrisGlassCopyMaterial = 0;
+    static NUMTL *DebrisGlassCopyMaterial = 0;
     i32 DebrisGlassInitialized = 0;
 
     void DebrisGlassClose(void) {
         if (DebrisGlassInitialized != 0) {
             if (DebrisGlassCopyMaterial != NULL) {
-                NuMtlDestroy((NUMTL *)DebrisGlassCopyMaterial);
+                NuMtlDestroy(DebrisGlassCopyMaterial);
                 DebrisGlassCopyMaterial = NULL;
             }
             if (debris_rt != 0) {
@@ -4254,7 +4254,7 @@ extern "C" {
             material->diffuse_g = 1.0f;
             material->diffuse_b = 1.0f;
             material->opacity = 0.999f;
-            material->texture_id = 1;
+            DebrisGlassCopyMaterial = material;
             material->attribs.u_address = NUMTL_ADDRESS_CLAMP;
             material->attribs.v_address = NUMTL_ADDRESS_CLAMP;
             material->attribs.cull_mode = NUMTL_CULL_NONE;
@@ -4263,7 +4263,7 @@ extern "C" {
             material->attribs.filter_mode = 0;
             material->attribs.lighting = NUMTL_LIGHTING_NONE;
             material->attribs.vertex_colour = 1;
-            DebrisGlassCopyMaterial = material;
+            material->texture_id = 1;
             NuMtlUpdate(material);
         }
         DebrisGlassInitialized = 1;
@@ -15780,6 +15780,30 @@ extern "C" {
     f32 wallover = 0;
 }
 
+extern "C" TERRAIN_TRACK_SLOT *ScanTerrId(void *id) {
+    i32 slot_index;
+    if (CurrentTerrain == NULL) {
+        return NULL;
+    }
+    for (slot_index = 0; slot_index < TERRAIN_TRACK_SLOT_COUNT; ++slot_index) {
+        if (CurrentTerrain->track_slots[slot_index].id == id) {
+            return &CurrentTerrain->track_slots[slot_index];
+        }
+    }
+    return NULL;
+}
+
+extern "C" i32 NewTerrainOnAPlatform(void *id) {
+    if (CurrentTerrain == NULL) {
+        return 0;
+    }
+    CurTrackInfo = ScanTerrId(id);
+    if (CurTrackInfo == NULL) {
+        return 0;
+    }
+    return CurTrackInfo->platform_contact_state;
+}
+
 extern "C" void TerrainSetWallOver(f32 value) {
     wallover = value;
 }
@@ -19805,8 +19829,8 @@ extern "C" {
         particle->inverse_lifetime = 64.0 / effect->particle_lifetime;
 
         NUVEC vector;
-        vector.x = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->emitter_random_extent.x - effect->emitter_random_extent.x);
-        vector.y = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->emitter_random_extent.y - effect->emitter_random_extent.y);
+        vector.x = ((NuRandFloatSeeded(&debrisseed) * 2.0f * effect->emitter_random_extent.x) - effect->emitter_random_extent.x);
+        vector.y = ((NuRandFloatSeeded(&debrisseed) * 2.0f * effect->emitter_random_extent.y) - effect->emitter_random_extent.y);
         vector.z = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->emitter_random_extent.z - effect->emitter_random_extent.z);
         NuVecMtxTransformVU0(&vector, &vector, &key->emitter_orientation);
         particle->position.x = vector.x;

@@ -317,6 +317,7 @@ extern "C" {
         return EdMainCurrentCamera;
     }
 
+    NUCAMERA *EdMainCurrentCamera = 0;
     NUCAMERA *edinternalcam = 0;
 
     void edmainExtCamera(NUCAMERA *camera) {

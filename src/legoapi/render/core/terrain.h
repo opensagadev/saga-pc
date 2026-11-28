@@ -40,6 +40,8 @@ extern "C" {
     void NewTerrainScaleYMask(NUVEC *, NUVEC *, u8 *, i32, f32, f32, f32, i32, i32, i32);
     i32 HitTerrain(void);
     TERRAIN_TRACK_SLOT *AllocTerrId(void);
+    TERRAIN_TRACK_SLOT *ScanTerrId(void *id);
+    i32 NewTerrainOnAPlatform(void *id);
     void FullDeflect(NUVEC *, NUVEC *, NUVEC *);
     void FullDeflectSmallY(NUVEC *, NUVEC *, NUVEC *);
     void PlatformConnect(char *, NUVEC *, NUVEC *, i32);

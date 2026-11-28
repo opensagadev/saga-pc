@@ -358,7 +358,7 @@ void NetPredictor2::PredictValue(const EdClass *, void *, PredictorTime *time, P
     for (i32 i = 0; i < count; i++) {
         f32 delta = samples[i]->values[2] - samples[i]->values[1];
         f32 velocity = delta * interval_scale;
-        f32 predicted = velocity * elapsed + samples[i]->values[2];
+        f32 predicted = (velocity * elapsed) + samples[i]->values[2];
         if (replication_group & 0x10) {
             predicted = predicted > minimum_value ? predicted : minimum_value;
         }

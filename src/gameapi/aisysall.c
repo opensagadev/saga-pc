@@ -3297,7 +3297,7 @@ static void AISysCheckAntinode_Ellipse(APIOBJECT *object, AIANTINODE *antinode, 
     i32 absolute_turn;
     f32 scale;
     f32 outer_distance;
-    distance_squared = difference->x * difference->x + difference->z * difference->z;
+    distance_squared = (difference->x * difference->x) + (difference->z * difference->z);
     if (distance_squared < radius * radius) {
         aspect = antinode->base_height / antinode->base_radius;
 

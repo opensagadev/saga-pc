@@ -977,7 +977,6 @@ extern "C" {
     extern f32 DebrisGlassU1;
     extern f32 DebrisGlassV1;
     extern i32 DebrisGlassInitialized;
-    extern void *DebrisGlassCopyMaterial;
     void DebrisReleaseResources(void);
     void DebrisRestoreResources(void);
     void DebrisDrawGlass(void);
