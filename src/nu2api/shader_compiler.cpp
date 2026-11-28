@@ -154,12 +154,6 @@ i32 PC_SHADER_MATERIAL_FILTER::HasSelector1() const {
     return (descriptor->selectors & 2) != 0;
 }
 
-void ShaderCompilerBase::Prepare(const NUSHADERMTLDESC *descriptor, ShaderCompilerDictionary *dictionary) {
-    PC_SHADER_MATERIAL_FILTER filter;
-    filter.Initialize(descriptor, NULL, 0, 0);
-    Configure(&filter, dictionary);
-}
-
 void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER *filter, ShaderCompilerDictionary *definitions) {
     u8 used_uvs[4] = {0, 0, 0, 0};
     const NUSHADERMTLDESC *descriptor = filter->descriptor;
@@ -506,42 +500,7 @@ ShaderBuilderGen::ShaderBuilderGen(VirtualStackAllocator &parent, i32 mode)
     save_directory[0] = 0;
 }
 
-ShaderBuilderGen::~ShaderBuilderGen() {
-    parsed_source = NULL;
-}
-
 extern "C" void ShaderManagerHLSLNuError(void) {
-}
-
-HLSLShaderBuilder::HLSLShaderBuilder(VirtualStackAllocator &allocator) : ShaderCompilerBase(allocator, 0) {
-}
-
-void ShaderCompilerBase::SetIncludeDirectories(const char *paths) {
-    strcpy(include_directories, paths);
-}
-
-void ShaderCompilerBase::SetSaveDirectory(const char *path) {
-    strcpy(save_directory, path);
-}
-
-void ShaderCompilerBase::SetProfile(i32 profile, i32 first, i32 second) {
-    dictionary.SetProfile(profile, first, second);
-}
-
-void ShaderCompilerBase::AddDictionaryRegisterBlock(const char *name, i32 count) {
-    dictionary.AddRegisterBlock(name, count);
-}
-
-void ShaderCompilerBase::SetForceMode(bool force) {
-    dictionary.force_mode = force;
-}
-
-bool ShaderCompilerBase::GetDictionaryForceMode() {
-    return dictionary.force_mode;
-}
-
-i32 ShaderCompilerBase::GetDictionaryProfile() {
-    return dictionary.profile;
 }
 
 void *ShaderCompilerBase::ParseSource(const char *source, i32 length, ShaderCompilerBufferAllocator *buffer, i32 prefix,

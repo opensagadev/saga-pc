@@ -17,6 +17,17 @@ extern "C" {
 #endif
 #ifdef __cplusplus
 
+union PC_SHADER_KEY_BLOCK {
+    u8 bytes[104];
+
+    struct {
+        u32 vertex_flags;
+        u32 layer_flags;
+        u32 layer_flags_copy;
+        u32 program_hash[2];
+    } words;
+};
+
 class ShaderBuilderGen { // size 0xbd0
   public:
     char save_directory[0x100];                  // 0x004
@@ -27,7 +38,11 @@ class ShaderBuilderGen { // size 0xbd0
     ShaderCompilerBufferAllocator source_buffer; // 0xbb0
     VirtualStackAllocator parser_memory;         // 0xbc0
     ShaderBuilderGen(VirtualStackAllocator &, i32);
-    virtual ~ShaderBuilderGen();
+
+    virtual ~ShaderBuilderGen() {
+        parsed_source = NULL;
+    }
+
     virtual void SetIncludeDirectories(const char *);
     virtual void SetSaveDirectory(const char *);
     virtual void SetProfile(i32, i32, i32);

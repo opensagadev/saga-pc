@@ -158,12 +158,6 @@ extern "C" i32 CreateGameWindow(HINSTANCE instance, i32 show, u16 icon_resource)
     return 1;
 }
 
-extern "C" void fun_006de680(void) {
-}
-
-extern "C" void fun_006de690(void) {
-}
-
 extern "C" void SetAccessibility(u8 restore) {
     if (restore) {
         SystemParametersInfoA(SPI_SETSTICKYKEYS, sizeof(PcStickyKeys), &PcStickyKeys, 0);

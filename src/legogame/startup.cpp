@@ -94,13 +94,6 @@
 extern "C" char *lsw_memcard_objname;
 extern "C" void Alt_registerStatusScreen(void);
 
-static i32 PcInputCommandAllowed(i32 port, i32 command) {
-    if (PcInput_PortIsKeyboard(port) && ((command >= 4 && command <= 7) || (u32)(command - 8) <= 3)) {
-        return 0;
-    }
-    return 1;
-}
-
 extern "C" {
     extern FADEINFO_s *pFadeInfo;
 }

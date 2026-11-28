@@ -101,14 +101,35 @@ Our mangled names are our own choice, not evidence. Evidence used:
   with a `__CxxFrameHandler` handler), or a vtable operand. This makes 14
   game compilands `cpp` (`chris`, `hub`, `legoapi_status`, both `levels`, the
   `0x491b90` helpers, `menu`, `panel`, `startup`, `audio`, `gamestructure`,
-  `worldinfo`, `screen`, `cutscenes`, `lighting`, `credits`). The remaining
-  game compilands have no such construct and stay `c?`.
+  `worldinfo`, `screen`, `cutscenes`, `lighting`, `credits`). The other game
+  compilands have no such construct; the Rich header and the communals below
+  make them `cpp` too.
+- `cpp`, C++ inline COMDAT copies: VC8 emits the `<math.h>` C++ inlines
+  (`ceilf` plus `float ceil(float)`, `fabsf` plus `float fabs(float)`,
+  `long abs(long)`) as COMDAT copies at the start of the first object that
+  calls them out of line. Retail 0x408760/0x408780 are such a pair, so
+  `cable` is C++ and starts at 0x408760, not at `CableFdiv` (0x4087a0).
+  The same pattern at 0x6e1800 (`d3dCore`) and 0x696a60 (`nusound`) is a
+  lead for those boundaries.
 - `c`: a retail `.c` `__FILE__` naming the primary file (`rtl.c`,
-  `listman.c`), or Batman still a `.c` file (`apiobject.c`).
-- `c?`: no C++ construct in the block. TT's 2007 game and legoapi code was
-  largely C, Batman converted it to `.cpp` a year later, so C is the default,
-  but this is not proof. Do not flip an existing `.cpp` to C (or back) only
-  because of this column; see the migration plan.
+  `listman.c`), or a C communal owner (below).
+- Rich header (`tools/langscan.py`): retail links 199 objects compiled as C
+  (product 0x6d, build 50727) and 282 as C++ (0x6e). Our EXE's Rich header
+  minus the `@comp.id` of our own objects gives what the pinned libraries
+  add (160 C, 54 C++), which leaves 39 C and 228 C++ game objects. 22 of the
+  C objects are Ogg Vorbis, so the game itself has only 17 C objects.
+- C communals (`tools/langscan.py`): an uninitialised, non-static file-scope
+  variable in a C file is a tentative definition, which VC8 emits as a COFF
+  common; the linker places all commons after every object's `.bss`, at the
+  end of `.data` (retail 0x297dbe0-0x29a9a40). C++ has no tentative
+  definitions. Only engine globals are in that block. A compiland that is
+  the only reader of one (or has 75% of five or more reads) defines it and
+  is C: `nucore_includes`, `socksysall`, `nubridge`, `nuobject`, `nuwind`,
+  `numaths`, `apiobject`, `nurain` and the nuwin32 unit at 0x6dc6c0
+  (`PcExecutableFilename`). No game or legoapi global is a communal, so all
+  game and legoapi compilands are `cpp`.
+- `c?`: an engine compiland with no C++ construct and no communal. Together
+  with the `c` rows they come to about the 17 C objects of the Rich header.
 - `cpp?`: unity files, which Batman builds as `.cpp`. TCS includes `.c` files
   in them (`nufile.c`, `nugraph.c`), so a `.c` unity is equally possible.
 
@@ -121,7 +142,7 @@ Our mangled names are our own choice, not evidence. Evidence used:
 | named | 200: 103 high, 89 medium, 8 low confidence |
 | undetermined | 43 (631 functions, 115 KB) |
 | unity compilands | 14 (nucore, nucore_pc, numath, nu3d, nu3d_pc, cutscene, gamemenu, aisys, socksys, edtools, objects, gamelib, nusound3, edlevel) |
-| language | 47 `cpp`, 3 `c` with evidence; 10 `cpp?` (unity), 140 `c?` |
+| language (2026-11, `tools/langscan.py`) | 228 `cpp`, 11 `c` with evidence; 12 `cpp?` (unity), 22 `c?` |
 
 Our functions against the target:
 
@@ -229,9 +250,11 @@ name or boundary; `config/units.csv` now follows this table instead (below).
   unity nests includes, or the block is several marker-free compilands. Same
   pattern in edtools (`edui.cpp` around `edfile.c` and `fileselect.c`). Rows
   marked `file-conflict`.
-- Unity or not: nu3d PC (0x5f7490) and nucore PC (0x4fe640) are `*_pc_includes`
-  only in Batman (Feral's Mac build). TCS has no marker inside either block,
-  which fits a unity, but separate files without helpers are possible.
+- Unity or not: nu3d PC (0x5f7490) and nucore PC (0x4fe630) are `*_pc_includes`
+  only in Batman (Feral's Mac build). TCS has no marker inside either block.
+  Both are now built as one unity each with no function lost, and the nucore
+  PC block opens with the `strstr` COMDAT only that unit calls, which fits a
+  unity.
 - Unity language: `.cpp` (Batman) or `.c`.
 - `nufloat_pc`/`numaths` (0x5c0240) may be part of `numath_includes`; Batman
   builds them separately and TCS has no marker there.
@@ -245,6 +268,92 @@ name or boundary; `config/units.csv` now follows this table instead (below).
   `nufmv_gen`; the game library directory (`saga\`, proposed `src/legogame/`).
 - Static data order (.data/.rdata/.bss per compiland) is not used yet; it would
   confirm boundaries without markers.
+
+## Codegen evidence found while gathering units
+
+Gathering each compiland into its target file (`tools/unitize.py apply`, then
+build, check-objects and `match.py --update`, kept only when no function is
+lost and no score changes) turned up codegen rules that place a function in
+a unit, or a boundary between two:
+
+- **Register-convention statics.** A `static` function that takes its
+  arguments in ECX/EAX (VC8's custom convention for local functions) was
+  compiled in the same unit as its caller. A boundary between the two is
+  wrong, even when Batman's map puts one there.
+- **Inlined copy plus out-of-line copy.** When a caller inlines a function
+  whose never-called out-of-line copy also exists, both are plain definitions
+  in one unit. A function inlined in one unit and emitted out of line in
+  another needs an inline header definition (`ShaderCloneArenaString`, open).
+- **Calls into another unit.** A call that keeps the full thiscall register
+  save and does not reuse ECX after the call goes to a function the compiler
+  could not see, so the callee is in another unit.
+- **Unit openers.** Bare-`ret` stubs and the 28-byte copies of header statics
+  (`VuVecMake` style) open a unit. A bare-`ret` stub stays in the file of its
+  callers only when retail calls it directly from inside that range; VC8 drops
+  calls to an empty body it can see, so such a call means the caller's unit
+  was compiled without the body. Otherwise the stub belongs to the unit whose
+  range holds it.
+- **Same name, two ranges.** When Batman names two retail ranges after the
+  same file and a unit-start marker separates them, they are two compilands.
+  The PC-only half takes a `_pc` suffix (`ShaderObjectKey_pc.cpp`,
+  `nushaderobject_pc.cpp`).
+- **Empty varargs hooks** (`EdsplinesNuError`, the `CutScene*` and AI
+  `*NuError` hooks). VC8 drops a call with only the format argument whenever
+  the empty body is visible: in C and C++, `static` or not, with or without
+  `va_start`, `inline` or not, defined before or after the callers. Only calls
+  with further variadic arguments stay. Retail keeps one-argument calls, so the
+  hook body was in another compiland; such hooks stay in their own
+  `*_diagnostic` files, and the cutscene (0x4fff00) and aisys unities stay
+  split until the original mechanism is known.
+  The `gameliball` unity starts the same way: its opening group (three
+  bare-`ret` hooks, a 54-byte divide that retail calls 29 times instead of
+  inlining it) stays in `terrain_diagnostic.c`, and the unity is built from
+  0x64ff60.
+- **COMDAT members and register choice.** VC8 does not use the register
+  usage of an `inline` member (a select-any COMDAT) when it allocates the
+  callee-saved registers of the caller. A plain member in the same unit
+  changes that choice: `PC_DEVICE_BACKEND::SupportsMultisample` had to become
+  an `inline` header member for `MenuUpdateEffects` to match. Function order in
+  the file does not matter here.
+- **Inline base destructors.** Retail inlines `NuPostFilterGen`'s destructor
+  into every derived destructor, so it is an inline member in the class header,
+  not an out-of-line definition in one unit.
+- **COMDAT openers.** A COMDAT that only one unit calls opens that unit: the
+  `strstr` C++ overload at 0x4fe630 starts `nucore_pc_includes.cpp`.
+- **Per-call inlining.** VC8 inlines a visible helper at every call site,
+  while retail sometimes calls the same helper out of line from one caller
+  and inlines it into another (`NuHtmlEnd`: called from
+  `NuDisplayListHtmlEnd`, inlined into `NuDisplayListDrawRenderScenes`).
+  Definition order in the unity does not change this. Such helpers keep a
+  commented `__declspec(noinline)`, or a second static copy for the callers
+  that inline it (`NuRndrPrimSetColourLocal`). A unity that builds from the
+  start of its range instead fails on these first.
+- **No ICF.** Retail keeps identical function bodies at separate addresses
+  (the `ShaderBuilderGen` destructor at 0x745150 and 0x745310), so two equal
+  bodies are two definitions.
+- **Single-user types stay local.** Moving a typedef into a widely included
+  header changed the code of unrelated functions (`FixUpLevels`,
+  `BlockadeRunnerDEjectCreature`), so a type used by one unit stays in it.
+  One extra prototype in `edfile.h` does the same to `FixUpLevels`, so a
+  declaration that only a unity needs goes into a header the other units do
+  not include (`edpart_internal.h` for `EdFileWriteUnsignedInt`).
+- **C to C++.** A C file gathered into a C++ unity takes casts on `NuAlloc`
+  and `void *` results and on string literals passed as `char *`, and its
+  function-local statics take C++ names in `config/symbols.csv`
+  (`?x@?1??f@@9@9` becomes `?x@?1??f@@9@4<type>A`). C++ code gathered into a C
+  unity is written as C89, and globals both languages share get C linkage.
+
+### Link order
+
+The retail linker laid out .text in command-line order and kept the first
+COMDAT copy in that order. The Makefile links in `config/units.csv` order
+(`tools/linkorder.py`, objects without a row last in their old order), so
+inline class members land in the same object as in retail.
+
+`match.py` scores the least similar copy of a COMDAT that several objects
+emit, not the one the linker kept. A unit whose discarded copy differs (the
+`supportall` copy of ThingManager's operator delete) therefore reads as a
+score loss although the linked code is unchanged.
 
 ## Migration plan
 
@@ -460,16 +569,39 @@ into a target file in retail order and rewrites `config/*.json` owners.
      (`ShopMtxCopy`), `grabber` at 0x470050 (`GrabberMtx*` helpers),
      `startup` owns the `LoadPerm*` statics from 0x4c9a40, `gizturret` likely
      starts at 0x5ab2d0, `edgizshadow` at 0x5af4f0 (`Shadow_*`), and `cable`
-     at 0x4087a0 (`CableFdiv`).
+     at 0x408760 (its C++ `ceilf`/`ceil` COMDAT copies, then `CableFdiv`).
 4. **Unity files**: turn `nu3d_includes.cpp`, `nucore_includes.c`, ... into a
    unity file that `#include`s the inner files of the table, in table order,
    only where inner files are `file`/`high` (numath: `nugraph.c`, `nutrig.c`;
    nu3d PC: `nutex_pc.cpp`, `nustream.c`, `nugscn_dlist.c`, `nugobj.c`;
    gamelib: `edgra.c`, `edptl.c`). Risk: low for code (one object either way),
    but `__FILE__` strings and static names must stay unique per unity.
-5. **Language flips**, only where the language column has evidence (`c`/`cpp`)
-   and differs from ours, one file per commit, with `config/symbols.csv`
-   updated for the changed mangling. Leave `c?`/`cpp?` as they are.
+5. **Language flips**: done for every game and legoapi file and for the
+   engine files whose compiland is `cpp`: 138 files went from `.c` to
+   `.cpp` (`tools/langscan.py --apply` set the language column first).
+   Each file got the casts C++ needs (from `void *`, from string literals)
+   and `extern "C"` on definitions that other C objects reference;
+   `config/symbols.csv` and the other config follow the new mangled names
+   of statics and function-local statics. Most functions compile to the same
+   bytes; `BlockadeRunnerDEjectCreature` became exact, `ZapCode` (two stack
+   slots swap) and `BoulderSpawn` (a pointer local is folded into an array
+   index) left exact. Rules learnt:
+   - A `?:` between two `short` or byte lvalues is a `short` lvalue in C++,
+     so VC8 widens once after the branch; retail widens in each branch,
+     which is an `if`/`else` in the source (`DrawShopPrompts`,
+     `JediBStartPhase`, `GameDrawCharacterModel`). Replacing every such
+     `?:` is not a general win: it lost five exact functions elsewhere.
+   - A `const float` local initialised from a call is spilled and reloaded
+     in C++ (`LocalGetRandomLocator`); a plain local is not.
+   - A C tentative definition repeated in two files (`id_WOMPRAT`,
+     `LEGO_AIPATHCNX_BIGJUMP`) became a second, separate C++ variable; the
+     non-defining file declares it `extern` instead.
+   - A static defined in two files under one C name (the
+     `NuRndrPrimSetColourPrivate` copies of `nu3d_includes` and `nurndr`)
+     gets a C++ name in the C++ file; `config/symbols.csv` lists both names
+     at the one retail address, as for other identical-code-folded copies.
+   Still open: merging the files that were kept apart only because their
+   languages differed (the language-blocked list above).
 6. **Undetermined compilands** stay where they are until a name is found.
 
 ### `config/units.csv` and the tools
@@ -533,7 +665,7 @@ What depends on names:
   `src/gameapi/shop_persistence.cpp`), `tools/check_compiler_witnesses.py` (6
   witness files: `aisysall.c`, `gameaiscript.c`, `gameobjects.c`, `move.c`,
   `parts.c`, `numath_includes.c`), `tools/altbuild.py` (`bgproc.c`,
-  `crc16.cpp`, `numath_includes.c`) and the example in `tools/globals.py`.
+  `CRC16.cpp`, `numath_includes.c`) and the example in `tools/globals.py`.
   Grep for the old path before each rename. Also: a quoted `#include` of a
   header next to the old file (`pc_fmv_native.h`) and the per-object header
   dependencies in `Makefile` follow the file's directory, and

@@ -235,7 +235,7 @@ extern "C" {
     extern LEVELDATA *TITLES_LDATA;
     struct cutinfo_s *NewCutScene(struct cutinfo_s *cutscene, struct cutsys_s *system, char *name, i32 unused_4);
     void Levels_FixUp(struct level_fixup_s *levels);
-    LEVELDATA *Level_FindByName(char *name, i32 *index);
+    LEVELDATA *Level_FindByName(const char *name, i32 *index);
     extern LEVELDATA *LDataList;
     extern LEVELDATA *NEWGAME_LDATA;
     extern LEVELDATA *LOADGAME_LDATA;

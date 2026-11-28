@@ -96,13 +96,6 @@ static f32 ***distance_tables = NULL;
 NUVEC edpath_addoffset = {0};
 void (*AiEditorMovePlayersCallback)(NUVEC *) = NULL;
 
-static f32 NuFdiv(f32 a, f32 b) {
-    if (a == 0.0f || b == 0.0f) {
-        return 0.0f;
-    }
-    return a / b;
-}
-
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 AIPathFabs(f32 f) {
     f32 rv;
@@ -15837,24 +15830,24 @@ void AISysProcessCharacter(AISYS *system, APIOBJECT *object, AIPACKET *packet, i
     if (use_three_dimensions != 0) {
         distance = NuVecDist(&packet->movement_destination, &object->position, &delta);
         if (distance > packet->mover_height + clearance + packet->movement_stopping_distance) {
-            scale = NuFdiv(packet->mover_height, distance);
+            scale = AIPathSafeDivide(packet->mover_height, distance);
             NuVecScale(&delta, &delta, scale);
             NuVecAdd(&packet->movement_position, &object->position, &delta);
         } else {
             stopping_clearance = clearance + packet->movement_stopping_distance;
-            scale = NuFdiv(stopping_clearance, distance);
+            scale = AIPathSafeDivide(stopping_clearance, distance);
             NuVecScale(&delta, &delta, scale);
             NuVecSub(&packet->movement_position, &packet->movement_destination, &delta);
         }
     } else {
         distance = NuVecXZDist(&packet->movement_destination, &object->position, &delta);
         if (distance > packet->mover_height + clearance + packet->movement_stopping_distance) {
-            scale = NuFdiv(packet->mover_height, distance);
+            scale = AIPathSafeDivide(packet->mover_height, distance);
             NuVecScale(&delta, &delta, scale);
             NuVecAdd(&packet->movement_position, &object->position, &delta);
         } else {
             stopping_clearance = clearance + packet->movement_stopping_distance;
-            scale = NuFdiv(stopping_clearance, distance);
+            scale = AIPathSafeDivide(stopping_clearance, distance);
             NuVecScale(&delta, &delta, scale);
             NuVecSub(&packet->movement_position, &packet->movement_destination, &delta);
         }

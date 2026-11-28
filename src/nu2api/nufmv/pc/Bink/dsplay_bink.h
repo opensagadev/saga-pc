@@ -160,6 +160,24 @@ typedef struct GRAPHICS_FACTORY GRAPHICS_FACTORY;
 
 typedef struct PC_FMV_REALTIME PC_FMV_REALTIME;
 
+/* Bink's BINKREALTIME. */
+struct PC_FMV_REALTIME {   // size 0x38
+    u32 frame_number;      // 0x00
+    u32 frame_rate;        // 0x04
+    u32 frame_rate_div;    // 0x08
+    u32 frames;            // 0x0c
+    u32 frames_time;       // 0x10
+    u32 video_decomp_time; // 0x14
+    u32 audio_decomp_time; // 0x18
+    u32 read_time;         // 0x1c
+    u32 idle_time;         // 0x20
+    u32 thread_read_time;  // 0x24
+    u32 blit_time;         // 0x28
+    u32 read_buffer_size;  // 0x2c
+    u32 read_buffer_used;  // 0x30
+    u32 data_rate;         // 0x34
+};
+
 typedef struct GRAPHICS_FACTORY_METHODS {          // size 0x44
     void *unknown_000[2];                          // 0x00
     ULONG(__stdcall *release)(GRAPHICS_FACTORY *); // 0x08

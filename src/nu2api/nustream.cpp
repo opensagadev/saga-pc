@@ -13,58 +13,6 @@
 #include <stdio.h>
 #include "nu2api/nu3d/nushaderobject.h"
 
-extern "C" void NuSound3GetStreamInfo(i32 stream_index, void *info) {
-}
-
-extern "C" i32 NuStreamGetStatusText(i32 stream, i32 alternate, char *text, i32 size) {
-    i32 status;
-    if (alternate) {
-        stream += 0x18;
-    }
-    if (stream != 0) {
-        stream = 1;
-    }
-    status = NuSound3StereoStreams[stream]->GetStatus();
-    if (status == 0) {
-        NuStrNCpy(text, "Free", size);
-        return 1;
-    }
-    if (status == 1) {
-        NuStrNCpy(text, "Playing", size);
-        return 2;
-    }
-    if (status == 2) {
-        NuStrNCpy(text, "Busy", size);
-        return 2;
-    }
-    NuStrNCpy(text, "unknown status", size);
-    return 2;
-}
-
-extern "C" i32 fun_00698b00(void) {
-    return 0;
-}
-
-extern "C" i32 fun_00698b10(void) {
-    return 0;
-}
-
-extern "C" i32 fun_00698b20(void) {
-    return 0;
-}
-
-extern "C" i32 fun_00698b30(void) {
-    return 0;
-}
-
-extern "C" i32 fun_00698b40(void) {
-    return 0;
-}
-
-extern "C" i32 fun_00698b50(void) {
-    return 0;
-}
-
 SoundVoiceManagerPC::~SoundVoiceManagerPC() {
     i32 i;
     NuSound3ShutdownStreams();
@@ -92,26 +40,6 @@ SoundVoiceManagerPC::~SoundVoiceManagerPC() {
         factory->vtable->release(factory);
         factory = NULL;
     }
-}
-
-extern "C" void NuSound3DestroyStereoStreams(void) {
-    NuSound3StereoStreams[0]->~SoundQueue();
-    NuSound3StereoStreams[1]->~SoundQueue();
-}
-
-extern "C" f32 NuSound3VolumeTable[0x4000];
-extern "C" i32 NuSound3VolumeOffset;
-
-extern "C" void NuSound3KillAllAudio(void) {
-    NuSound3StereoStreams[0]->Stop();
-    NuSound3StereoStreams[1]->Stop();
-    SoundVoiceManager.StopAllVoices();
-}
-
-extern "C" void NuSound3KillAllAudioWaitEx(void) {
-    NuSound3StereoStreams[0]->Stop();
-    NuSound3StereoStreams[1]->Stop();
-    SoundVoiceManager.StopAllVoices();
 }
 
 i32 SoundQueue::SendCommand(i32 command_value, i32 argument_value) {
@@ -265,62 +193,6 @@ i32 SoundQueue::SetStreamFlags(i32 flags) {
         return 0;
     }
     return SendCommand(SOUNDQUEUE_CMD_PLAY, flags);
-}
-
-extern "C" void NuSound3StopStereoStream(i32 index) {
-    if (index != 0) {
-        index = 1;
-    }
-    NuSound3StereoStreams[index]->Stop();
-}
-
-extern "C" void NuSound3ResumeStereoStream(i32 index) {
-    if (index != 0) {
-        index = 1;
-    }
-    NuSound3StereoStreams[index]->Resume();
-}
-
-extern "C" void NuSound3PauseStereoStream(i32 index) {
-    if (index != 0) {
-        index = 1;
-    }
-    NuSound3StereoStreams[index]->Pause();
-}
-
-extern "C" {
-    i32 NuSound3VolumeOffset = -300;
-}
-
-extern "C" i32 NuSound3SetStreamVolume(i32 index, i32 volume) {
-    if (index != 0) {
-        index = 1;
-    }
-    if (volume > 0x3fff) {
-        volume = 0;
-    }
-    i32 level = (i32)NuSound3VolumeTable[volume] + NuSound3VolumeOffset;
-    if (level < -10000) {
-        level = -10000;
-    }
-    return NuSound3StereoStreams[index]->SetVolume(level);
-}
-
-extern "C" void fun_006984b0(void) {
-}
-
-extern "C" i32 NuSound3GetStereoStreamStatus(i32 index) {
-    if (index != 0) {
-        index = 1;
-    }
-    return NuSound3StereoStreams[index]->GetStatus();
-}
-
-extern "C" i32 NuSoundGetStereoStreamStatus(i32 stream) {
-    if (stream == 0) {
-        return NuSound3GetStereoStreamStatus(PCStereoChannel0A);
-    }
-    return NuSound3GetStereoStreamStatus(PCStereoChannel1A);
 }
 
 void SoundQueue::CancelPause(void) {
@@ -845,14 +717,6 @@ void SoundQueue::SuspendForFocus(void) {
     stream_running = 1;
 }
 
-extern "C" void NuSound3SuspendForFocus(void) {
-    if (NuSound3Initialized != 0) {
-        SoundVoiceManager.StopAllVoices();
-        NuSound3StereoStreams[0]->SuspendForFocus();
-        NuSound3StereoStreams[1]->SuspendForFocus();
-    }
-}
-
 extern "C" void fun_00698fe0(void) {
 }
 
@@ -864,36 +728,4 @@ i32 SoundQueue::FormatDiffers(const WAVEFORMATEX *format) {
         return 1;
     }
     return wave_format.nChannels != format->nChannels;
-}
-
-extern "C" void NuSound3ResumeAfterFocus(void) {
-    if (NuSound3Initialized != 0) {
-        NuSound3StereoStreams[0]->CancelPause();
-        NuSound3StereoStreams[1]->CancelPause();
-    }
-}
-
-extern "C" void PCSoundStopStereoChannel(i32 channel) {
-    char message[64];
-    sprintf(message, ">>> NuSoundStopStereo %d", channel);
-    SoundQueue *stream = NuSound3StereoStreams[0];
-    if (channel != PCStereoChannel0A) {
-        stream = NuSound3StereoStreams[1];
-    }
-    stream->Stop();
-}
-
-extern "C" void NuFmvStopSound(i32 wait) {
-    SoundVoiceManager.StopAllVoices();
-    if (wait != 0) {
-        PCSoundStopStereoChannel(PCStereoChannel0A);
-        PCSoundStopStereoChannel(PCStereoChannel1A);
-        while (NuSound3GetStereoStreamStatus(PCStereoChannel0A) != 0 || NuSound3GetStereoStreamStatus(PCStereoChannel1A) != 0) {
-            Sleep(10);
-        }
-    }
-}
-
-extern "C" IDirectSound8 *NuFmvGetSoundFactory(void) {
-    return SoundVoiceManager.factory;
 }

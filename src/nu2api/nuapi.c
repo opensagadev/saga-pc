@@ -7,23 +7,3 @@
 i32 StartupParseArgument(i32 count, char **arguments) {
     return 0;
 }
-
-void NuVideoSetBrightnessPS(void) {
-}
-
-void NuVideoSetSwapModePS(i32 mode) {
-}
-
-void MenuSetPlatformState(i32 state) {
-}
-
-/* Empty; its presentation caller consumes no return value. */
-void PCPresentationPlatformLeaf(void) {
-}
-
-void NuMainTrailerLeaf(void) {
-}
-
-i32 NuKeyboard(i32 key) {
-    return (i8)nu_keyboard_pages[nu_keyboard_page_index * 0x100 + key];
-}

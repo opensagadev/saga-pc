@@ -85,12 +85,12 @@ typedef struct techno_config_s { // size 0x4c
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern const char *TechnoRegistrationName;
+    extern char *TechnoRegistrationName;
     extern TECHNO_CONFIG TechnoSys;
     extern i32 techno_gizmotype_id;
     struct addgizmotype_s *Technos_RegisterGizmo(i32 type_id);
     extern TECHNO_CONFIG TechnoSys;
-    extern const char *TechnoRegistrationName;
+    extern char *TechnoRegistrationName;
     extern i32 techno_gizmotype_id;
 #ifdef __cplusplus
 }
