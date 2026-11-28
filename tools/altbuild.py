@@ -2,7 +2,7 @@
 """Compile one unit with alternative compiler flags and compare it per function.
 
     python3 tools/altbuild.py src/nu2api/numath_includes.c /Oy-            # add a flag
-    python3 tools/altbuild.py src/nu2api/crc16.cpp -/GS /GS-       # drop /GS, add /GS-
+    python3 tools/altbuild.py src/nu2api/CRC16.cpp -/GS /GS-       # drop /GS, add /GS-
     python3 tools/altbuild.py src/nu2api/bgproc.c --cxx            # compile a C unit as C++
 
 `-/FLAG` (or `-//FLAG`) removes FLAG from the default `/O2 /Gy /GS /MT` set. Each
@@ -56,7 +56,7 @@ def similarity(target, base, va):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("unit", help="Source file, e.g. src/nu2api/crc16.cpp")
+    parser.add_argument("unit", help="Source file, e.g. src/nu2api/CRC16.cpp")
     parser.add_argument("--cxx", action="store_true", help="Compile a C unit through a C++ wrapper")
     args, extra = parser.parse_known_args()
     if not diffclass.available():

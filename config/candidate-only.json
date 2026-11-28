@@ -2,12 +2,12 @@
  "description": "Compiler-generated definitions with no original PC address (STL/CRT helpers, private SDK scalars). They may stay unmapped and earn no credit.",
  "entries": [
   {
-   "unit": "src/nu2api/nushadermanager.cpp",
+   "unit": "src/nu2api/nushadermanager_gen.cpp",
    "symbol": "??2@YAPAXIPAX@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nushadermanager.cpp",
+   "unit": "src/nu2api/nushadermanager_gen.cpp",
    "symbol": "__bad_alloc_Message",
    "kind": "data"
   },
@@ -57,7 +57,7 @@
    "kind": "data"
   },
   {
-   "unit": "src/legoapi/episodeV.c",
+   "unit": "src/legogame/episodeV.cpp",
    "symbol": "_AsteroidChaseD_SetTurretTarget",
    "kind": "function"
   },
@@ -77,152 +77,152 @@
    "kind": "data"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "?assign@?$char_traits@D@std@@SAXAADABD@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "?length@?$char_traits@D@std@@SAIPBD@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??2@YAPAXIPAX@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??0?$_Ranit@UPOST_PIXEL_SHADER_CACHE_ENTRY@@HPBU1@ABU1@@std@@QAE@XZ",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??$_Destroy@UPOST_VERTEX_SHADER_CACHE_ENTRY@@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY@@@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??$_Destroy@UPOST_PIXEL_SHADER_CACHE_ENTRY@@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY@@@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??D?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY@@@std@@@std@@QBEAAUPOST_PIXEL_SHADER_CACHE_ENTRY@@XZ",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??C?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY@@@std@@@std@@QBEPAUPOST_PIXEL_SHADER_CACHE_ENTRY@@XZ",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??$copy_s@U?$char_traits@D@std@@@_Traits_helper@std@@YAPADPADIPBDI@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??$move_s@U?$char_traits@D@std@@@_Traits_helper@std@@YAPADPADIPBDI@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??$_Destroy_range@UPOST_VERTEX_SHADER_CACHE_ENTRY@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY@@@std@@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY@@0AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??$_Destroy_range@UPOST_PIXEL_SHADER_CACHE_ENTRY@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY@@@std@@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY@@0AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??$_Destroy_range@UPOST_VERTEX_SHADER_CACHE_ENTRY@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY@@@std@@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY@@0AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY@@@0@@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "??$_Destroy_range@UPOST_PIXEL_SHADER_CACHE_ENTRY@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY@@@std@@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY@@0AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY@@@0@@Z",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppDebrisClearRoomID",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppDebrisEmitterPos",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppDebrisSetDetailLevels",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppDebrisSetGroupID",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppDebrisSetPriority",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppFabs",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppDebrisStatusNormal",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edgra.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edgraSliderSetValue",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edgrass.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edgrassSliderSetValue",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp_load.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppLoadDebrisSetGroupID",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp_load.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppLoadDebrisSetTrigger",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppDebrisSetTrigger",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edpp.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_edppDebrisReflectionOrientation",
    "kind": "function"
   },
   {
-   "unit": "src/legogame/gamestatus.c",
-   "symbol": "_StatusLerp",
+   "unit": "src/legogame/gamestatus.cpp",
+   "symbol": "?StatusLerp@@YAMMMM@Z",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edanim_update.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_EdAnimFabs",
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/edui_widget_render.cpp",
+   "unit": "src/gameapi/edtoolsall.cpp",
    "symbol": "?EduiFabs@@YAMM@Z",
    "kind": "function"
   },
@@ -237,12 +237,12 @@
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nu3d_platform.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "_NuQFntColumnOpaque32Inline",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nu3d_platform.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "_PCGraphicsAllocRenderTexture",
    "kind": "function"
   },
@@ -337,12 +337,12 @@
    "kind": "data"
   },
   {
-   "unit": "src/legoapi/lighting_unit.cpp",
+   "unit": "src/legoapi/lighting.cpp",
    "symbol": "_EnableShadowLight",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/input_runtime.cpp",
+   "unit": "src/nu2api/PCInput.cpp",
    "symbol": "?EndFrame@PC_INPUT_RUNTIME@@QAEXXZ",
    "kind": "function"
   },
@@ -362,37 +362,37 @@
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nudlist_material.cpp",
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
    "symbol": "?PostBlurLowSetOffset@@YAXAAUPOST_BLUR_LOW_OFFSET@@MM@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nurndr.c",
-   "symbol": "_NuRndrPrimUV",
+   "unit": "src/nu2api/nu3d_includes.cpp",
+   "symbol": "?NuRndrPrimUV@@YAXMM@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nushaderkey.cpp",
+   "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
    "symbol": "?IsAlternateType@PC_SHADER_MATERIAL_FILTER@@QBE_NXZ",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nushaderkey.cpp",
+   "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
    "symbol": "?IsPlainType@PC_SHADER_MATERIAL_FILTER@@QBE_NXZ",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nushaderkey.cpp",
+   "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
    "symbol": "?LayerBit@PC_SHADER_MATERIAL_FILTER@@QBEEH@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nuterrain.c",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "_TerrDrawEdgeLines",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nuvertexdecl.c",
+   "unit": "src/nu2api/VertexDeclarations.cpp",
    "symbol": "_PCVertexElementSet",
    "kind": "function"
   },
@@ -407,22 +407,22 @@
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/terrain_scan.cpp",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "?TerrainComputeScanBounds@@YAMAAM00000@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/terrain_scan.cpp",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "?TerrainFinishScanGroup@@YAXAAPAEAAPAPAUTERRAIN_POLYGON_INFO@@AAHH@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/terrain_scan.cpp",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "?TerrainScaleNormal@@YAXAAUnuvec_s@@ABU1@@Z",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/terrain_scan.cpp",
+   "unit": "src/gameapi/gameliball.cpp",
    "symbol": "?TerrainStoreScanShape@@YAXAAPAPAUTERRAIN_POLYGON_INFO@@AAH1PAU1@ABUTERRAIN_GROUP@@@Z",
    "kind": "function"
   },
@@ -430,6 +430,31 @@
    "unit": "src/nu2api/shader_dictionary.cpp",
    "symbol": "?ShaderAddDefinition@@YAXPAUShaderCompilerDictionary@@PBD1H@Z",
    "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/ShaderObjectKey.cpp",
+   "symbol": "__bad_alloc_Message",
+   "kind": "data"
+  },
+  {
+   "unit": "src/nu2api/ShaderManagerHLSL.cpp",
+   "symbol": "??2@YAPAXIPAX@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/ShaderManagerHLSL.cpp",
+   "symbol": "__bad_alloc_Message",
+   "kind": "data"
+  },
+  {
+   "unit": "src/nu2api/ShaderObjectKey_pc.cpp",
+   "symbol": "__bad_alloc_Message",
+   "kind": "data"
+  },
+  {
+   "unit": "src/nu2api/nu3d_pc_includes.cpp",
+   "symbol": "__bad_alloc_Message",
+   "kind": "data"
   }
  ]
 }

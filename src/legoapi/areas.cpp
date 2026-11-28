@@ -220,6 +220,9 @@ extern "C" {
     u16 AREA_DEFAULTCHALLENGETIME = 600;
 }
 
+extern "C" void fun_00572ac0(void) {
+}
+
 AREA_DATA *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out) {
     NUFPAR *parser;
     i32 index;

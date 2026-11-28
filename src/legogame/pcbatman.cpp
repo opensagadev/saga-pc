@@ -14,16 +14,19 @@
 #include "nu2api/nufile/nufile.h"
 #include "nu2api/nuwin32/d3dCore.h"
 #include "nu2api/nuwin32/pcapi.h"
+#include "legoapi/core/input/gamepads.h"
+#include "editor/aieditor_state.h"
+#include "nu2api/nucore/nustring.h"
+
+extern "C" {
+    i32 CHARACTERBUFFERSIZE = 0x02800000;
+}
 
 extern "C" void PcbatmanNuError(void) {
 }
 
 extern "C" {
     i32 SUPERBUFFERSIZE = 0x09600000;
-    i32 CHARACTERBUFFERSIZE = 0x02800000;
-}
-
-extern "C" {
     VARIPTR original_permbuffer_base = {0};
 }
 
@@ -35,6 +38,7 @@ extern "C" void fun_004010c0(void) {
 }
 
 extern "C" {
+
     static void StartupParseArguments(i32 count, char **arguments) {
         while (count > 0) {
             StartupParseArgument(count, arguments);
@@ -44,6 +48,33 @@ extern "C" {
         StartupGameFlag1 = 1;
         StartupGameFlag0 = 0;
     }
+
+    void PcControlPlaySound(i32 sound) {
+        switch (sound) {
+            case 6:
+                GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                break;
+            case 0:
+                GameAudio_PlaySfx(0x31, NULL, 0, 0);
+                break;
+            case 1:
+            case 2:
+                GameAudio_PlaySfx(0x30, NULL, 0, 0);
+                break;
+            case 3:
+            case 4:
+            case 5:
+                GameAudio_PlaySfx(0x2f, NULL, 0, 0);
+                break;
+        }
+    }
+}
+
+i32 PcInputCommandAllowed(i32 port, i32 command) {
+    if (PcInput_PortIsKeyboard(port) && ((command >= 4 && command <= 7) || (u32)(command - 8) <= 3)) {
+        return 0;
+    }
+    return 1;
 }
 
 extern "C" {
@@ -53,9 +84,6 @@ extern "C" {
     };
     const char *SaveIconName = "lego.ico";
     char SaveUnicodeName[20] = "LEGO Star Wars Saga";
-}
-
-extern "C" {
     i32 InitOnceSelector34 = 0;
     char InitOnceCurrentDirectory[1] = {0};
     i32 InitOnceDvd = 0;
@@ -129,4 +157,44 @@ extern "C" void InitOnce(i32 argc, char **argv) {
     GameSetSoundVolume(&Game.options_save);
     GameSetMusicVolume(&Game.options_save);
     saveloadInit(&permbuffer_base, permbuffer_end, 0x7e4c, SaveProductCode, SaveIconName, SaveUnicodeName, 4);
+}
+
+extern "C" i32 Text_ExpandButtonString(char *command, char *output) {
+    if (NuStrICmp(command, "[TAG]") == 0 || NuStrICmp(command, "[TRIANGLE]") == 0 || NuStrICmp(command, "[T]") == 0) {
+        NuStrCpy(output, TextButtonString(12, TTab[816], TTab[817]));
+        return 1;
+    } else if (NuStrICmp(command, "[ACTION]") == 0 || NuStrICmp(command, "[SQUARE]") == 0 || NuStrICmp(command, "[S]") == 0) {
+        NuStrCpy(output, TextButtonString(15, TTab[816], TTab[817]));
+        return 1;
+    } else if (NuStrICmp(command, "[SPECIAL]") == 0 || NuStrICmp(command, "[CIRCLE]") == 0 || NuStrICmp(command, "[O]") == 0) {
+        NuStrCpy(output, TextButtonString(13, TTab[816], TTab[817]));
+        return 1;
+    } else if (NuStrICmp(command, "[JUMP]") == 0 || NuStrICmp(command, "[CROSS]") == 0 || NuStrICmp(command, "[X]") == 0) {
+        NuStrCpy(output, TextButtonString(14, TTab[816], TTab[817]));
+        return 1;
+    } else if (NuStrICmp(command, "[TOGGLELEFT]") == 0) {
+        NuStrCpy(output, TextButtonString(16, TTab[816], TTab[817]));
+        return 1;
+    } else if (NuStrICmp(command, "[TOGGLERIGHT]") == 0) {
+        NuStrCpy(output, TextButtonString(18, TTab[816], TTab[817]));
+        return 1;
+    }
+    return 0;
+}
+
+/* Empty hook; NuMainRenderWorld calls it after SetDepthOfField. */
+void NuMainRenderLeaf(void) {
+}
+
+u32 GAMEPAD_TAG = PAD_BUTTON_TRIANGLE;
+u32 GAMEPAD_MENUCANCEL = PAD_BUTTON_TRIANGLE;
+
+void GamePad_InitButtons(void) {
+    GAMEPAD_JUMP = PAD_BUTTON_CROSS;
+    GAMEPAD_ACTION = PAD_BUTTON_SQUARE;
+    GAMEPAD_SPECIAL = PAD_BUTTON_CIRCLE;
+    GAMEPAD_TAG = PAD_BUTTON_TRIANGLE;
+    GAMEPAD_SKIP = PAD_BUTTON_CROSS | PAD_BUTTON_START;
+    GAMEPAD_MENUSELECT = PAD_BUTTON_CROSS;
+    GAMEPAD_MENUCANCEL = PAD_BUTTON_CIRCLE | PAD_BUTTON_SELECT;
 }

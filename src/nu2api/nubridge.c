@@ -15,6 +15,9 @@
 #include "nu2api/numath/nuvec4.h"
 #include <stdio.h>
 
+void fun_00543ed0(void) {
+}
+
 void NubridgeNuError(void) {
 }
 

@@ -83,6 +83,9 @@ extern "C" {
     static ADDGIZMOTYPE GizmoRegistrySpinnerAddType = {0};
 }
 
+extern "C" void fun_00553700(void) {
+}
+
 extern "C" void SpinnerMissingSpecial(char *format, ...) {
 }
 

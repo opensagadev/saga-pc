@@ -581,3 +581,67 @@ extern "C" void RadFmvDestroyImage(RADFMV_IMAGE *image) {
 
 extern "C" void fun_00633390(void) {
 }
+
+extern "C" void DsplayBinkNuError(void) {
+}
+
+/* Uncalled. Seconds played of the current movie. */
+extern "C" f32 FmvGetTime(void) {
+    PC_FMV_REALTIME realtime;
+    BinkGetRealtime(FmvMovie.bink, &realtime, 0);
+    return (f32)(realtime.frame_number * realtime.frame_rate_div) / (f32)realtime.frame_rate;
+}
+
+extern "C" void FmvStop(void) {
+    FmvClose(&FmvMovie);
+}
+
+extern "C" i32 FmvStart(const char *path, f32 volume, i32 option) {
+    FmvState2 = 0;
+    FmvState1 = 0;
+    if (FmvInitialized == 0) {
+        PC_D3D9_DEVICE *device = PCDeviceBackend.device;
+        GRAPHICS_FACTORY *factory = PCDeviceBackend.factory;
+        if (FmvInitialize(PCInputInstance, factory, device, NuFmvGetSoundFactory()) == 0) {
+            FmvClose(&FmvMovie);
+            return 0;
+        }
+        FmvInitialized = 1;
+    }
+    i32 result = FmvOpen(&FmvMovie, path, 0, volume, option);
+    if (result == 1) {
+        FmvMovie.playing = 1;
+        return result;
+    }
+    FmvMovie.playing = 0;
+    FmvClose(&FmvMovie);
+    return 0;
+}
+
+extern "C" i32 FmvStep(void) {
+    Sleep(1);
+    FmvFrame(&FmvMovie);
+    return FmvMovie.playing;
+}
+
+extern "C" void FmvRelease(void) {
+    if (FmvInitialized != 0) {
+        FmvReleaseImage(&FmvMovie);
+    }
+}
+
+extern "C" void FmvRestore(void) {
+    if (FmvInitialized != 0) {
+        FmvRestoreImage(&FmvMovie);
+    }
+}
+
+extern "C" void FmvSkip(void) {
+    FmvFade(&FmvMovie, 1000.0f);
+}
+
+extern "C" void FmvMtxSetIdentity(NUMTX *matrix) {
+    matrix->m01 = matrix->m02 = matrix->m03 = matrix->m10 = matrix->m12 = matrix->m13 = matrix->m20 = matrix->m21 = matrix->m23 =
+        matrix->m30 = matrix->m31 = matrix->m32 = 0.0f;
+    matrix->m00 = matrix->m11 = matrix->m22 = matrix->m33 = 1.0f;
+}

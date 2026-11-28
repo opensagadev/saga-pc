@@ -13,7 +13,9 @@ class NuPostFilterGen { // size 0xc
     NuPostFilterGen() : enabled(false), input_fbo(NULL) {
     }
 
-    virtual ~NuPostFilterGen();
+    virtual ~NuPostFilterGen() {
+    }
+
     virtual void initResources();
     virtual void destroyResources();
     virtual void initTextureResources(i32, i32);

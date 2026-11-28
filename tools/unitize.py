@@ -367,6 +367,27 @@ class Plan:
         self.renames = {}        # helper name -> equivalent helper kept
 
 
+_TEXT = None
+
+
+def called_from(address, lo, hi):
+    """True when retail code in [lo, hi] has a direct call or jump (rel32) to `address`."""
+    global _TEXT
+    if _TEXT is None:
+        from tools.lib import project, retail
+        target = project()["target"]
+        pe = retail(target)
+        text_va = int(str(target["text_va"]), 0)
+        _TEXT = (text_va, pe.read_va(text_va, int(str(target["text_size"]), 0)))
+    text_va, code = _TEXT
+    start, end = max(lo, text_va), min(hi + 1, text_va + len(code))
+    for offset in range(start - text_va, end - text_va - 4):
+        if code[offset] in (0xE8, 0xE9) and \
+                text_va + offset + 5 + int.from_bytes(code[offset + 1:offset + 5], "little", signed=True) == address:
+            return True
+    return False
+
+
 def build_plan(lo, hi, target):
     plan = Plan(lo, hi, target)
     rows = range_symbols(lo, hi)
@@ -381,9 +402,10 @@ def build_plan(lo, hi, target):
             continue
         if not found[0].startswith("src/"):
             continue
-        if r["size"] == 1:
-            # A bare-RET stub: VC8 drops calls to an empty body it can see, so
-            # retail callers that still call it were compiled in another unit
+        if r["size"] == 1 and Path(found[0]).with_suffix("") != Path(target).with_suffix("") \
+                and called_from(r["address"], lo, hi):
+            # A bare-RET stub called from inside the range: VC8 drops calls to an
+            # empty body it can see, so those callers were compiled without it
             # (the linker folded the stub into this unit's copy).
             plan.notes.append(f"left bare-ret stub {r['symbol']} in {found[0]}")
             continue
@@ -415,7 +437,7 @@ def build_plan(lo, hi, target):
             left = [i for i in plan.sources[other].items if i.function and id(i) not in moved_ids] \
                 if other in plan.sources else [True]
             if left:
-                raise SystemExit(f"{other} keeps definitions outside the range and would share the object "
+                raise SystemExit(f"{other} keeps definitions outside the range ({', '.join(sorted(n for i in left if i is not True for n in i.names))}) and would share the object "
                                  f"name with {target}; move them first or pick another target name")
     if (ROOT / target).is_file():
         tsrc = plan.sources[target]
@@ -513,6 +535,18 @@ class Copy:
 
 
 # ---------------------------------------------------------------- emitting
+
+def rebase_include(line, path, target):
+    """Rewrite a quoted include that names a file next to `path` as a src/-rooted path for `target`."""
+    match = re.match(r'#\s*include\s+"([^"]+)"', line)
+    if not match or Path(path).parent == Path(target).parent:
+        return line
+    local = ROOT / Path(path).parent / match.group(1)
+    if not local.is_file():
+        return line
+    rooted = local.resolve().relative_to((ROOT / "src").resolve()).as_posix()
+    return line.replace(f'"{match.group(1)}"', f'"{rooted}"', 1)
+
 
 def wrap_c(item, target_cxx):
     """Does this item need an extern "C" block in the target?"""
@@ -718,9 +752,13 @@ def apply_plan(plan, note=None, write=True):
     includes = []
     for path, source in plan.sources.items():
         for item in source.items:
-            if item.kind == "include" and item.text.strip() not in includes:
-                if path == target or any(i.source is source for _, i in plan.moved):
-                    includes.append(item.text.strip())
+            if item.kind != "include" or not (path == target or any(i.source is source for _, i in plan.moved)):
+                continue
+            line = rebase_include(item.text.strip(), path, target)
+            if not target.endswith(".cpp") and re.match(r"#\s*include\s*<[^.>]+>", line):
+                continue  # a C++ standard header such as <new> does not compile in a C target
+            if line not in includes:
+                includes.append(line)
     header = f"/* Retail unit 0x{plan.lo:06x}-0x{plan.hi:06x}" + (f" ({note})" if note else "") + \
         ": definitions in retail address order. */\n"
     section = (render_items(preamble, target_cxx) + render_items(copies, target_cxx) + ("\n" if copies else "")
@@ -1060,6 +1098,8 @@ def cast_void_conversions(log):
         lines = path.read_text(encoding="latin-1").split("\n")
         for number, cast in items:
             line = lines[number - 1]
+            if f"= ({cast})" in line:
+                continue  # already cast on an earlier pass; the error is elsewhere on the line
             fixed = re.sub(r"(?<![=!<>])=\s*(?!=)", lambda m: f"= ({cast})", line, count=1)
             if fixed != line:
                 lines[number - 1], count = fixed, count + 1

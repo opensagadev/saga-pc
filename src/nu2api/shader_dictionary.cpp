@@ -75,22 +75,6 @@ extern "C" i32 fun_00746560(u32 flags) {
     return (flags >> 12) & 1;
 }
 
-PC_SHADER_MATERIAL_FILTER::PC_SHADER_MATERIAL_FILTER(const NUSHADERMTLDESC *descriptor, i32 flags, i32 parameter) {
-    Initialize(descriptor, NULL, flags, parameter);
-}
-
-void ShaderCompilerDictionary::SetForceMode(bool force) {
-    force_mode = force;
-}
-
-bool ShaderCompilerDictionary::GetForceMode() const {
-    return force_mode;
-}
-
-i32 ShaderCompilerDictionary::GetProfile() const {
-    return profile;
-}
-
 void ShaderCompilerDictionary::AddRegisterBlock(const char *name, i32 count) {
     ShaderRegisterBlock *block = &register_blocks[register_block_count++];
     PCByteCopy(block->name, name, NuStrLen(name) + 1);

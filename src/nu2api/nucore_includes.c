@@ -4800,6 +4800,12 @@ void NuStringTableSaveCharacterList(char *filepath, char *scratch, i32 report_mi
     }
 }
 
+void fun_004ef7a0(void) {
+}
+
+void fun_004ef7c0(void) {
+}
+
 /* Block helpers of the heap manager. Every call is inlined, but VC8 keeps a copy of each static that is
    defined before its callers. */
 static void NuAllocManagerSetUsed(NUALLOC_MANAGER_BLOCK *block, i32 used) {
@@ -7289,10 +7295,6 @@ void NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
         NuFileClose(file);
     }
     NumBadWords = i;
-}
-
-char *NuStrFind(const char *text, const char *pattern) {
-    return strstr(text, pattern);
 }
 
 static i32 NuStringCharEquivalent(u16 a, u16 b) {

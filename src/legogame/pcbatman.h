@@ -41,3 +41,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#ifdef __cplusplus
+i32 PcInputCommandAllowed(i32 port, i32 command);
+#endif

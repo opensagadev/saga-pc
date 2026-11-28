@@ -60,42 +60,39 @@ extern "C" void BoltsNuError(void) {
    private helpers inline into their callers. C entry points keep C linkage
    via extern "C". */
 
-static void BoltsMtxSetRotationXY(NUMTX *matrix, NUANG x, NUANG y) {
-    NUANGVEC angles;
-    angles.x = x;
-    angles.y = y;
-    NuMtxSetRotationXYVU0(matrix, &angles);
+extern "C" {
+    typedef i32 (*BOLT_HIT_PART_FN)(BOLT *, PART *);
 }
-
-/* The SDK's inline NuFdiv: a quotient that is 0 when either operand is 0. */
-static f32 BoltsFdiv(f32 a, f32 b) {
-    if (a == 0.0f || b == 0.0f) {
-        return 0.0f;
-    }
-    return a / b;
-}
+extern "C" i32 i_temp_xrot;
 
 extern "C" {
-
-    typedef i32 (*BOLT_HIT_PART_FN)(BOLT *, PART *);
-
-    static BOLTTYPE *BT_bolttype = 0;
-    i32 (*Bolt_HitPlatFn)(BOLT *bolt) = 0;
-    i32 i_bolt = 0;
-    i32 (*Bolt_HitCustomFn)(void *bolt, void *points) = 0;
-    static WORLDINFO *BT_worldinfo = 0;
-    NUVEC BoltShootPositionScratch = {0};
-    BOLT Bolt[32] = {0};
-    i32 BoltNoSfx = 0;
-    i32 BoltNoObjectMomentum = 0;
-    i32 (*InitBolt_AddMomentumType)(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum) = 0;
-    f32 BOLT_OVERRIDE_PLAYERBOLTSPEED = 0;
-    f32 BOLT_OVERRIDE_PLAYERBOLTDURATION = 0;
-    i32 (*BoltInitSfxFn)(GAMEOBJECT *) = 0;
-    static NUGSCN *BT_scene = 0;
-    i32 BoltShootIdScratch = 0;
-    static i32 BT_gdeb_moving_count = 0;
-
+    static void BT_canonlyhitplayers(NUFPAR *parser);
+    static void BT_converge(NUFPAR *parser);
+    static void BT_damage(NUFPAR *parser);
+    static void BT_debris(NUFPAR *parser);
+    static void BT_debris_moving(NUFPAR *parser);
+    static void BT_duration(NUFPAR *parser);
+    static void BT_glow_obj(NUFPAR *parser);
+    static void BT_name(NUFPAR *parser);
+    static void BT_no_collide(NUFPAR *parser);
+    static void BT_no_terrain(NUFPAR *parser);
+    static void BT_nodeflect(NUFPAR *parser);
+    static void BT_obj(NUFPAR *parser);
+    static void BT_part_hit(NUFPAR *parser);
+    static void BT_radius(NUFPAR *parser);
+    static void BT_rand_angle(NUFPAR *parser);
+    static void BT_ref_glow_obj(NUFPAR *parser);
+    static void BT_ref_obj(NUFPAR *parser);
+    static void BT_scale(NUFPAR *parser);
+    static void BT_sceneconfig(NUFPAR *parser);
+    static void BT_sfx_hit(NUFPAR *parser);
+    static void BT_sfx_shoot(NUFPAR *parser);
+    static void BT_shadow_obj(NUFPAR *parser);
+    static void BT_single_debris(NUFPAR *parser);
+    static void BT_speed(NUFPAR *parser);
+    static void BT_trooper_bolt(NUFPAR *parser);
+}
+extern "C" {
     /* 44 records; the configuration is published in InitGameAfterConfig. */
     BOLTTYPE GlobalBoltType[44] = {
         {"red",
@@ -1199,19 +1196,32 @@ extern "C" {
          {0},
          {0}},
     };
-
     BOLTSYS BoltSys_LSW = {
         GlobalBoltType,        44, AlertSurroundingCreatures, Bolt_Debris_LSW, GetShootOrigin_LSW, GetShootDirection_LSW, Bolt_HitPart_LSW,
         Bolt_AlternateFire_LSW};
     BOLTSYS BoltSys_Batman = {GlobalBoltType, 44, AlertSurroundingCreatures, NULL, NULL, GetShootDirection_Batman, NULL, NULL};
+    BOLTSYS GlobalBoltSystem_Default = {
+        &GlobalBoltType_Default, 1, NULL, Bolt_Debris_Default, Bolt_GetShootOrigin_Default, Bolt_GetShootDirection_Default, NULL, NULL,
+    };
 }
 
-/* Private collision helpers and callers retain their original translation-unit group. */
-static i32 Bolt_HitPlatPrivate(BOLT *, u8 *);
+/* The SDK's inline NuFdiv: a quotient that is 0 when either operand is 0. */
+static f32 BoltsFdiv(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f) {
+        return 0.0f;
+    }
+    return a / b;
+}
 
-extern "C" i32 i_temp_xrot;
+static void BoltsMtxSetRotationXY(NUMTX *matrix, NUANG x, NUANG y) {
+    NUANGVEC angles;
+    angles.x = x;
+    angles.y = y;
+    NuMtxSetRotationXYVU0(matrix, &angles);
+}
 
 extern "C" {
+
     static void NuMtxSetRotationYInline(NUMTX *matrix, NUANG angle) {
         f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
         f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
@@ -1232,10 +1242,7 @@ extern "C" {
         matrix->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
         matrix->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
     }
-}
 
-// Private rotation leaves take the matrix in EAX and angle in ECX (VC8 internal ABI).
-extern "C" {
     static NUMTX *BoltDrawRotateXPrivate(NUMTX *m, i32 angle) {
         f32 cos_x = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
         f32 sin_x = NuTrigTable[(angle >> 1) & 0x7fff];
@@ -1273,6 +1280,11 @@ extern "C" {
         m->m31 = m30 * sin_z + m->m31 * cos_z;
         return m;
     }
+
+    i32 i_bolt = 0;
+    BOLT Bolt[32] = {0};
+    f32 BOLT_OVERRIDE_PLAYERBOLTSPEED = 0;
+    f32 BOLT_OVERRIDE_PLAYERBOLTDURATION = 0;
 }
 
 extern "C" void Bolts_Reset() {
@@ -1332,6 +1344,7 @@ static void Bolt_OrientationPrivate(BOLT *bolt) {
 }
 
 extern "C" {
+
     BOLT *Bolt_Alloc(void) {
         BOLT *bolt = NULL;
         i32 attempts = 0;
@@ -1358,6 +1371,11 @@ extern "C" void Bolt_Reflect(NUVEC *normal, NUVEC *incoming, NUVEC *out) {
     out->x = incoming->x - normal->x * twice_dot;
     out->y = incoming->y - normal->y * twice_dot;
     out->z = incoming->z - normal->z * twice_dot;
+}
+
+extern "C" {
+    i32 BoltNoSfx = 0;
+    BOLTSYS *BoltSys = &GlobalBoltSystem_Default;
 }
 
 extern "C" void Bolt_AddDeflectedBolt(BOLT *bolt, NUVEC *incoming, NUVEC *normal, u8 *processed) {
@@ -1402,6 +1420,7 @@ extern "C" void Bolt_AddDeflectedBolt(BOLT *bolt, NUVEC *incoming, NUVEC *normal
 }
 
 extern "C" {
+
     void Bolt_PlayHitSfx(BOLT *bolt) {
         if (bolt->type->fly_sfx != -1) {
             GameAudio_PlaySfxById(bolt->type->fly_sfx, &bolt->position, 0, 0);
@@ -1483,6 +1502,7 @@ extern "C" void Bolt_End(BOLT *bolt, i32 run_callback) {
 }
 
 extern "C" {
+
     static void BoltTypeStoreConfigPrivate(BOLTTYPE *type, WORLDINFO *world) {
         i32 index;
         if (type == NULL) {
@@ -1495,6 +1515,8 @@ extern "C" {
             }
         }
     }
+
+    static BOLTTYPE *BT_bolttype = 0;
 
     static void BT_name(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < 15) {
@@ -1521,6 +1543,9 @@ extern "C" {
     static void BT_rand_angle(NUFPAR *parser) {
         BT_bolttype->spread = (i32)((f64)NuFParGetFloat(parser) * (f64)(65536.0f / 360.0f));
     }
+
+    static WORLDINFO *BT_worldinfo = 0;
+    static NUGSCN *BT_scene = 0;
 
     static void BT_sceneconfig(NUFPAR *parser) {
         if (NuFParGetWord(parser) == 0) {
@@ -1576,6 +1601,8 @@ extern "C" {
             BT_bolttype->debris_id = (i16)(FindGameDebris(BT_worldinfo->game_debris_sys, parser->word_buffer_ptr));
         }
     }
+
+    static i32 BT_gdeb_moving_count = 0;
 
     static void BT_debris_moving(NUFPAR *parser) {
         if (BT_gdeb_moving_count < 2 && NuFParGetWord(parser) != 0) {
@@ -1634,42 +1661,6 @@ extern "C" {
     static void BT_single_debris(NUFPAR *parser) {
         BT_bolttype->flags_60 |= BOLT_SINGLE_DEBRIS;
     }
-
-    f32 BoltShootParameter = 0.1f;
-    BOLTTYPE GlobalBoltType_Default = {
-        "null", 4.0f,   2.0f,   0.0f, 0.125f, 1.0f, 0.1f, {{-1, -1, -1, 0}}, -1, 0, 1, -1, 0, 0, NULL, NULL, NULL, NULL,
-        NULL,   {NULL}, {NULL}, 0,    {-1},   {-1}, {0}};
-    BOLTSYS *BoltSys = &GlobalBoltSystem_Default;
-    static NUFPCOMJMP BoltType_ConfigKeywords[] = {
-        {("name"), BT_name},
-        {("speed"), BT_speed},
-        {("duration"), BT_duration},
-        {("radius"), BT_radius},
-        {("scale"), BT_scale},
-        {("rand_angle"), BT_rand_angle},
-        {("scene"), BT_sceneconfig},
-        {("obj"), BT_obj},
-        {("ref_obj"), BT_ref_obj},
-        {("glow_obj"), BT_glow_obj},
-        {("ref_glow_obj"), BT_ref_glow_obj},
-        {("shadow_obj"), BT_shadow_obj},
-        {("debris"), BT_debris},
-        {("debris_moving"), BT_debris_moving},
-        {("part_hit"), BT_part_hit},
-        {("sfx"), BT_sfx_shoot},
-        {("sfx_shoot"), BT_sfx_shoot},
-        {("sfx_hit"), BT_sfx_hit},
-        {("damage"), BT_damage},
-        {("nodeflect"), BT_nodeflect},
-        {("converge"), BT_converge},
-        {("canonlyhitplayers"), BT_canonlyhitplayers},
-        {("no_terrain"), BT_no_terrain},
-        {("no_collide"), BT_no_collide},
-        {("trooper_bolt"), BT_trooper_bolt},
-        {("single_debris"), BT_single_debris},
-        {NULL, NULL},
-    };
-    f32 DEACTIVATEDTIME = 8.0f;
 
     BOLTTYPE *BoltType_FindByID(i32 id, WORLDINFO *world) {
         BOLTSYS *system = BoltSys;
@@ -1837,10 +1828,6 @@ extern "C" {
         }
     }
 
-    BOLTSYS GlobalBoltSystem_Default = {
-        &GlobalBoltType_Default, 1, NULL, Bolt_Debris_Default, Bolt_GetShootOrigin_Default, Bolt_GetShootDirection_Default, NULL, NULL,
-    };
-
     void BoltSys_Init(BOLTSYS *system) {
         i32 i;
         for (i = 0; i < system->count; ++i) {
@@ -1927,6 +1914,7 @@ static i32 Bolt_HitBlowupPrivate(BOLT *bolt, NUVEC *points, NUVEC *minimum, NUVE
 }
 
 extern "C" {
+    f32 DEACTIVATEDTIME = 8.0f;
     GAMEOBJECT *Obj = 0;
 }
 
@@ -2147,6 +2135,39 @@ extern "C" void Bolts_Draw(WORLDINFO *world) {
 }
 
 extern "C" {
+    BOLTTYPE GlobalBoltType_Default = {
+        "null", 4.0f,   2.0f,   0.0f, 0.125f, 1.0f, 0.1f, {{-1, -1, -1, 0}}, -1, 0, 1, -1, 0, 0, NULL, NULL, NULL, NULL,
+        NULL,   {NULL}, {NULL}, 0,    {-1},   {-1}, {0}};
+    static NUFPCOMJMP BoltType_ConfigKeywords[] = {
+        {("name"), BT_name},
+        {("speed"), BT_speed},
+        {("duration"), BT_duration},
+        {("radius"), BT_radius},
+        {("scale"), BT_scale},
+        {("rand_angle"), BT_rand_angle},
+        {("scene"), BT_sceneconfig},
+        {("obj"), BT_obj},
+        {("ref_obj"), BT_ref_obj},
+        {("glow_obj"), BT_glow_obj},
+        {("ref_glow_obj"), BT_ref_glow_obj},
+        {("shadow_obj"), BT_shadow_obj},
+        {("debris"), BT_debris},
+        {("debris_moving"), BT_debris_moving},
+        {("part_hit"), BT_part_hit},
+        {("sfx"), BT_sfx_shoot},
+        {("sfx_shoot"), BT_sfx_shoot},
+        {("sfx_hit"), BT_sfx_hit},
+        {("damage"), BT_damage},
+        {("nodeflect"), BT_nodeflect},
+        {("converge"), BT_converge},
+        {("canonlyhitplayers"), BT_canonlyhitplayers},
+        {("no_terrain"), BT_no_terrain},
+        {("no_collide"), BT_no_collide},
+        {("trooper_bolt"), BT_trooper_bolt},
+        {("single_debris"), BT_single_debris},
+        {NULL, NULL},
+    };
+
     void BoltTypes_Configure(WORLDINFO *world, char *config) {
         memset(world->bolt_types, 0, sizeof(world->bolt_types));
         NUFPAR *parser = NuFParCreateMem("bolttypes", config, 0xffff);
@@ -2266,6 +2287,14 @@ extern "C" i32 Bolt_HitGameObjects(BOLT *bolt, NUVEC *points, NUVEC *minimum, NU
         }
     }
     return 0;
+}
+
+extern "C" {
+    NUVEC BoltShootPositionScratch = {0};
+    i32 BoltNoObjectMomentum = 0;
+    i32 (*InitBolt_AddMomentumType)(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum) = 0;
+    i32 (*BoltInitSfxFn)(GAMEOBJECT *) = 0;
+    i32 BoltShootIdScratch = 0;
 }
 
 extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
@@ -2515,6 +2544,11 @@ extern "C" BOLT *Bolt_Add(GAMEOBJECT *owner, NUVEC *position, NUMTX *matrix, i32
     return bolt;
 }
 
+extern "C" {
+    i32 (*Bolt_HitPlatFn)(BOLT *bolt) = 0;
+    i32 (*Bolt_HitCustomFn)(void *bolt, void *points) = 0;
+}
+
 extern "C" void Bolts_Update(WORLDINFO *world) {
     NUVEC offset;
     NUVEC points[3];
@@ -2726,6 +2760,8 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
 }
 
 extern "C" {
+    f32 BoltShootParameter = 0.1f;
+
     void Bolt_Shoot(GAMEOBJECT *object, i32 type_id, i32 fire_flags) {
         i32 bolts[5];
         i32 bolt_count = 0;
@@ -2916,7 +2952,8 @@ extern "C" {
             }
         }
     }
-
-    void fun_005845a0() {
-    }
 }
+
+// Private rotation leaves take the matrix in EAX and angle in ECX (VC8 internal ABI).
+
+extern "C" {}

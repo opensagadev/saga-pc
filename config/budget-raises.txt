@@ -370,3 +370,40 @@ config/castscan-budget.json scalar-pun 292 impl/engine: SockFabs and PartsFabs t
 config/oddscan-budget.json magic-bound 1580 slip/legogame: LightSabreStreakCode tests use_model_origin < 2 (retail cmp 2 / jb), where the port had <= 1
 config/castscan-budget.json declaration-type 742 slip/legogame: LightSabreStreakCode compares object->id with the (u16) ids, as retail does (16-bit cmp), like the rest of move.c
 config/castscan-budget.json declaration-type 734 the legogame slip fixes (LightSabreStreakCode) compare (u16)id_* as retail does, merged with the nu2api slip branch's lower count
+config/castscan-budget.json bool 6 compiling 138 game/legoapi/engine files as C++, the retail language (Rich header, communals; tools/langscan.py): C++ needs explicit casts from void * and string literals, and casts in C++ files change class
+config/castscan-budget.json const 878 compiling 138 game/legoapi/engine files as C++, the retail language (Rich header, communals; tools/langscan.py): C++ needs explicit casts from void * and string literals, and casts in C++ files change class
+config/castscan-budget.json declaration-type 822 compiling 138 game/legoapi/engine files as C++, the retail language (Rich header, communals; tools/langscan.py): C++ needs explicit casts from void * and string literals, and casts in C++ files change class
+config/castscan-budget.json duplicate-type 54 compiling 138 game/legoapi/engine files as C++, the retail language (Rich header, communals; tools/langscan.py): C++ needs explicit casts from void * and string literals, and casts in C++ files change class
+config/castscan-budget.json record-pun 353 compiling 138 game/legoapi/engine files as C++, the retail language (Rich header, communals; tools/langscan.py): C++ needs explicit casts from void * and string literals, and casts in C++ files change class
+config/castscan-budget.json void-pointer-cpp 1220 compiling 138 game/legoapi/engine files as C++, the retail language (Rich header, communals; tools/langscan.py): C++ needs explicit casts from void * and string literals, and casts in C++ files change class
+config/oddscan-budget.json nolint 66 gameai.cpp is C++ now: the VC8 __movsd intrinsic declaration and its call keep the intrinsic's unsigned long types (google-runtime-int)
+config/castscan-budget.json declaration-type 827 gathering retail compilands moves code from C files into its C++ unit, where void * and string literal conversions need explicit casts
+config/castscan-budget.json void-pointer-cpp 1239 gathering retail compilands moves code from C files into its C++ unit, where void * and string literal conversions need explicit casts
+config/castscan-budget.json layout-compatible 48 PC_SURFACE is one shared type in d3dCalls.h now instead of a per-file copy, so PCDeviceSaveSurfaceBmp casts it to the texture resource it wraps
+config/declscan-budget.json C 365 gathering retail compilands turns cross-unit declarations into forward declarations inside the unit (docs/declarations.md: classes C and D wait for the layout move to finish)
+config/declscan-budget.json D 30 gathering retail compilands moves a cross-unit declaration with its code (docs/declarations.md: classes C and D wait for the layout move to finish)
+config/declscan-budget.json C 366 gathering retail compiland nushaderobject turns a cross-unit declaration into a forward declaration inside the unit (docs/declarations.md: classes C and D wait for the layout move to finish)
+config/declscan-budget.json D 31 VertexDeclarations.cpp is its own compiland and keeps the declaration of PCVertexDeclarationFindSlot, which nuvertexdecl.c defines (docs/declarations.md: classes C and D wait for the layout move to finish)
+config/castscan-budget.json record-pun 356 gathering retail compilands moves code between C and C++ units, where the same record conversions are counted per unit and language
+config/castscan-budget.json declaration-type 828 specialsfx and whip are C++ compilands now (retail language): their void * conversions need explicit casts
+config/castscan-budget.json void-pointer-cpp 1249 specialsfx and whip are C++ compilands now (retail language): their void * conversions need explicit casts
+config/oddscan-budget.json long-file 11 PCInput.cpp is one retail compiland and passes 5,000 lines once the empty input stubs retail compiled in it move back
+config/castscan-budget.json void-pointer-cpp 1250 nucore_pc_includes is a C++ unity, so the NuAlloc result FileDirectoryHostOpen took from nupsfile.c needs an explicit cast
+config/declscan-budget.json C 375 gamemenuall is one retail unity now and keeps the local declarations its apisave, menu and text parts had for functions other units define (docs/declarations.md: classes C and D wait for the layout move to finish)
+config/declscan-budget.json C 431 socksysall is one retail unity now: its camera tuning data and helpers are defined after their first use in address order, so the unit keeps forward declarations of them
+config/declscan-budget.json D 32 socksysall gathers saveload and socksys; one local declaration of a function another unit defines moves with them
+config/castscan-budget.json const 886 edtoolsall is a C++ unity (retail edui.cpp): the C edfile.c code it gathers passes string literals and const buffers where C took them implicitly
+config/castscan-budget.json void-pointer-cpp 1283 edtoolsall is a C++ unity (retail edui.cpp): the C edfile.c code it gathers needs explicit casts on NuAlloc and void * results
+config/oddscan-budget.json nolint 68 edtoolsall.cpp: the texture picker snaps UVs to the 1/256 grid with (i32)(x * 256.0 + 0.5), which clang-tidy flags once the code is C++
+config/oddscan-budget.json long-file 12 objectsall.cpp is one retail unity (partterr.cpp, edpart.cpp and part.cpp gathered in address order)
+config/castscan-budget.json const 888 objectsall is a C++ unity (retail partterr.cpp/edpart.cpp/part.cpp): the edpart menu titles it gathers from C pass string literals as char *
+config/castscan-budget.json void-pointer-cpp 1284 objectsall is a C++ unity: the C parts code it gathers needs an explicit cast on its buffer allocation
+config/oddscan-budget.json long-file 13 gameliball.cpp is one retail unity (audio.c, debris.c, edanim.c, edbits.c, edgra.c, terrain.c, edptl.c gathered in address order)
+config/oddscan-budget.json dense-function 1180 gameliball gathers the terrain code; one of its functions counts as dense once it shares the unity's declarations
+config/oddscan-budget.json nolint 70 gameliball.cpp: edgra rounds grass weights to eighths and tenths with (i32)(x * n + 0.5), which clang-tidy flags once the code is C++
+config/declscan-budget.json C 447 gameliball is one retail unity: its audio, debris, editor and terrain parts keep forward declarations of helpers defined later in address order
+config/castscan-budget.json const 982 gameliball is a C++ unity (retail audio.c, debris.c, edanim.c, edbits.c, edgra.c, terrain.c, edptl.c): the C editor code it gathers passes string literals as char *
+config/castscan-budget.json declaration-type 853 gameliball is a C++ unity: the C code it gathers passes pointers to the declared types C converted implicitly
+config/castscan-budget.json void-pointer-cpp 1300 gameliball is a C++ unity: the C code it gathers needs explicit casts on NuAlloc and void * results
+config/oddscan-budget.json noinline 63 nu3d_includes.cpp: NuHtmlEnd is called out of line from NuDisplayListHtmlEnd but inlined into NuDisplayListDrawRenderScenes; VC8 inlines it at both once nuhtml shares the unity
+config/declscan-budget.json C 466 nu3d_includes is one retail unity now: the nurndr, nucamera, nutexanim and nuhtml parts it gathers keep forward declarations of helpers defined later in address order

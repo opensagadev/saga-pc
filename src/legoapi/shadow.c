@@ -6,13 +6,6 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
-void SetDepthOfField(void) {
-}
-
-f32 NewShadow(NUVEC *position, f32 unused, f32 height, i32 mask) {
-    return NewShadowEx(position, unused, height, height, mask);
-}
-
 static void Shards_Draw(void *context, void *unused1, float unused2) {
     i32 i;
     NUMTX matrix;

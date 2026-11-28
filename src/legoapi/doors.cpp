@@ -1,0 +1,660 @@
+#include "globals.h"
+#include "legoapi/characters/core/character.h"
+#include "legoapi/characters/core/players.h"
+#include "legoapi/characters/motion/contexts.h"
+#include "legoapi/cutscenes/cutscenes.h"
+#include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/menus/screens/gamestructure.h"
+#include "legoapi/props/doors/door.h"
+#include "legoapi/props/doors/doors.h"
+#include "legoapi/props/system/socksys.h"
+#include "legoapi/world/area.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/levels/hub.h"
+#include "legoapi/world/mission.h"
+#include "legoapi/world/world.h"
+#include "legoapi/world/world_shared.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nu3d/nuspline.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufpar.h"
+#include "nu2api/numath/nuang.h"
+#include "nu2api/numath/nuplane.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/numath/numath_includes.h"
+
+extern "C" void DoorsNuError(void) {
+}
+
+void Door_Reset(void) {
+    DoorExitName[0] = '\0';
+    Door_Start = 0;
+    Door_NextSock = -1;
+}
+
+void Doors_Init(WORLDINFO *world) {
+    DOOR_s *door;
+    i32 index;
+    LastDoorPointer = NULL;
+    world->start_door = NULL;
+    door = world->doors;
+    if (door == NULL) {
+        return;
+    }
+    for (index = 0; index < world->door_count; ++index, ++door) {
+        f32 distance;
+        NuVecAdd(&door->pos, &door->spline->pts[0], &door->spline->pts[1]);
+        NuVecAdd(&door->pos, &door->pos, &door->spline->pts[2]);
+        NuVecAdd(&door->pos, &door->pos, &door->spline->pts[3]);
+        NuVecScale(&door->pos, &door->pos, 0.25f);
+        door->radius = NuVecDist(&door->pos, &door->spline->pts[0], NULL);
+        distance = NuVecDist(&door->pos, &door->spline->pts[1], NULL);
+        if (distance > door->radius) {
+            door->radius = distance;
+        }
+        distance = NuVecDist(&door->pos, &door->spline->pts[2], NULL);
+        if (distance > door->radius) {
+            door->radius = distance;
+        }
+        distance = NuVecDist(&door->pos, &door->spline->pts[3], NULL);
+        if (distance > door->radius) {
+            door->radius = distance;
+        }
+        door->radius *= 1.01f;
+        NuVecSurfaceNormal(&door->normal, &door->spline->pts[0], &door->spline->pts[1], &door->spline->pts[3]);
+        door->point0 = door->spline->pts[0];
+        door->point1 = door->spline->pts[1];
+        door->point3 = door->spline->pts[3];
+        NuVecAdd(&door->opposite_midpoint, &door->point1, &door->point3);
+        NuVecScale(&door->opposite_midpoint, &door->opposite_midpoint, 0.5f);
+        NuVecSub(&door->opposite_midpoint, &door->opposite_midpoint, &door->point0);
+        NuVecScale(&door->opposite_midpoint, &door->opposite_midpoint, 2.0f);
+        NuVecAdd(&door->opposite_midpoint, &door->opposite_midpoint, &door->point0);
+        NuVecSurfaceNormal(&door->normal, &door->point0, &door->point1, &door->point3);
+        NuPlnEqn(&door->plane, &door->point0, &door->point1, &door->point3);
+        if (world->start_door == NULL && (door->flags & DOOR_FLAG_USE_AS_START) != 0 && door->spline->length >= 6) {
+            world->start_door = door;
+        }
+    }
+}
+
+void *Door_FindByName(WORLDINFO *world, char *name) {
+    DOOR_s *door = world->doors;
+    i32 index;
+    if (door != NULL) {
+        for (index = 0; index < world->door_count; ++index, ++door) {
+            if (NuStrICmp(name, door->name) == 0) {
+                return door;
+            }
+        }
+    }
+    return NULL;
+}
+
+i16 PlayerList[8] = {0};
+
+i32 StartDoorPositions(void) {
+    DOOR_s *door;
+    i32 index;
+    i32 player;
+    Door_Start = 0;
+    if (DoorExitName[0] != '\0') {
+        door = WORLD->doors;
+        if (door != NULL) {
+            for (index = 0; index < WORLD->door_count; ++index, ++door) {
+                if (door->spline != NULL && NuStrICmp(door->name, DoorExitName) == 0) {
+                    for (player = 0; player < 8; ++player) {
+                        if (door->spline->length > player * 2 + 5) {
+                            NUVEC direction;
+                            PlayerStart[player].position = &door->spline->pts[player * 2 + 4];
+                            NuVecSub(&direction, &door->spline->pts[player * 2 + 5], PlayerStart[player].position);
+                            PlayerStart[player].angle = NuAtan2D(direction.x, direction.z);
+                        } else {
+                            /* A spline too short for the first start reads PlayerStart[-1], the
+                               PlayerList words before PlayerStart. */
+                            PlayerStart[player].position = PlayerStart[player - 1].position;
+                            PlayerStart[player].angle = PlayerStart[player - 1].angle;
+                        }
+                    }
+                    Door_Start = 1;
+                    return 1;
+                }
+            }
+        }
+        DoorExitName[0] = '\0';
+    }
+    return 0;
+}
+
+void *Door_FindByIndex(WORLDINFO *world, i32 area, i32 level, NUVEC *position) {
+    DOOR_s *door = world->doors;
+    DOOR_s *nearest;
+    f32 nearest_distance;
+    f32 distance;
+    i32 index;
+    if (door == NULL) {
+        return NULL;
+    }
+    nearest_distance = 1000000.0f;
+    nearest = NULL;
+    for (index = 0; index < world->door_count; ++index, ++door) {
+        if ((door->flags & DOOR_FLAG_DO_NOT_USE) == 0 && door->level != -1 &&
+            ((level != -1 && door->level == level) || (area != -1 && LDataList[door->level].area_index == area))) {
+            if (position == NULL) {
+                return door;
+            }
+            distance = NuVecDistSqr(position, &door->pos, NULL);
+            if (distance < nearest_distance) {
+                nearest_distance = distance;
+                nearest = door;
+            }
+        }
+    }
+    return nearest;
+}
+
+static i32 Door_GetMaxGizmos(void *door) {
+    WORLDINFO *world = (WORLDINFO *)door;
+    if (world != NULL) {
+        return world->current_level->max_doors;
+    }
+    return 0;
+}
+
+static void Door_AddGizmos(GIZMOSYS *gizmo_sys, i32 type_id, void *world_ptr, void *unused3) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    if (world != NULL && world->doors != NULL) {
+        i32 i;
+        for (i = 0; i < world->door_count; ++i) {
+            GizmoGetUniqueName(world->gizmo_sys, ((char *)("Door_")), world->doors[i].name, world->doors[i].gizmo_name,
+                               sizeof(world->doors[i].gizmo_name));
+            AddGizmo(gizmo_sys, type_id, NULL, &world->doors[i]);
+        }
+    }
+}
+
+static char *Door_GetGizmoName(GIZMO *gizmo) {
+    struct DOOR_s *door;
+    if (gizmo == NULL || gizmo->object == NULL) {
+        return NULL;
+    }
+    door = (DOOR_s *)gizmo->object;
+    return door->gizmo_name;
+}
+
+static i32 Door_GetOutput(GIZMO *gizmo, i32 unused1, i32 unused2) {
+    struct DOOR_s *door;
+    if (gizmo == NULL || gizmo->object == NULL) {
+        return 0;
+    }
+    door = (DOOR_s *)gizmo->object;
+    return door->active == 0;
+}
+
+static i32 Door_GetNumOutputs(GIZMO *unused0) {
+    return 1;
+}
+
+char *Door_GetOutputName(GIZMO *unused0, i32 unused1) {
+    return ((char *)("Active"));
+}
+
+void Door_Activate(GIZMO *gizmo, i32 value) {
+    struct DOOR_s *door;
+    if (gizmo == NULL || gizmo->object == NULL) {
+        return;
+    }
+    door = (DOOR_s *)gizmo->object;
+    door->active = value == 0;
+}
+
+ADDGIZMOTYPE *Door_RegisterGizmo(i32 type_id) {
+    static ADDGIZMOTYPE addtype = {0};
+
+    addtype = Default_ADDGIZMOTYPE;
+    addtype.name = "Door";
+    addtype.prefix = "";
+    addtype.fns.options = 0;
+    addtype.fns.get_max_gizmos_fn = Door_GetMaxGizmos;
+    addtype.fns.add_gizmos_fn = Door_AddGizmos;
+    addtype.fns.early_update_fn = NULL;
+    addtype.fns.late_update_fn = NULL;
+    addtype.fns.draw_fn = NULL;
+    addtype.fns.panel_draw_fn = NULL;
+    addtype.fns.get_gizmo_name_fn = Door_GetGizmoName;
+    addtype.fns.get_output_fn = Door_GetOutput;
+    addtype.fns.get_output_name_fn = Door_GetOutputName;
+    addtype.fns.get_num_outputs_fn = Door_GetNumOutputs;
+    addtype.fns.activate_fn = Door_Activate;
+    addtype.fns.activate_rev_fn = NULL;
+    addtype.fns.set_visibility_fn = NULL;
+    addtype.fns.get_visibility_fn = NULL;
+    addtype.fns.get_pos_fn = NULL;
+    addtype.fns.using_special_fn = NULL;
+    addtype.fns.bolt_hit_plat_fn = NULL;
+    addtype.fns.get_best_bolt_target_fn = NULL;
+    addtype.fns.bolt_hit_fn = NULL;
+    addtype.fns.allocate_progress_data_fn = NULL;
+    addtype.fns.clear_progress_fn = NULL;
+    addtype.fns.store_progress_fn = NULL;
+    addtype.fns.reset_fn = NULL;
+    addtype.fns.reserve_buffer_space_fn = NULL;
+    addtype.fns.load_fn = NULL;
+    addtype.fns.post_load_fn = NULL;
+    addtype.fns.add_level_sfx_fn = NULL;
+    door_gizmotype_id = (char)type_id;
+
+    return &addtype;
+}
+
+static WORLDINFO *D_worldinfo = 0;
+f32 Door_CutCamWaitTime = 0;
+i32 door_cutscenesnap = 0;
+i32 gone_through_door_to_new_level = 0;
+NUVEC DoorCutCameraPosition0 = {0};
+char DoorExitName[64] = {0};
+char DoorExitCameraSplineName[32] = {0};
+i32 Door_Start = 0;
+NUGSPLINE *DoorCutSpline = 0;
+i32 Door_UseCutCam = 0;
+i32 Door_CutLookAtPlayers = 0;
+i32 gone_through_door_to_new_mode = 0;
+void *LastDoorPointer = 0;
+void (*Door_GoThrough_ExtraCodeFn)(WORLDINFO *world, struct DOOR_s *door) = NULL;
+static DOOR_s *D_door = 0;
+f32 Door_CutCamWait = 0;
+NUVEC DoorCutCameraPosition1 = {0};
+f32 Door_CutCamBlendTime = 0;
+struct DOOR_s *Door_Last = 0;
+
+static void D_spline(NUFPAR *parser) {
+    i32 i;
+    if (NuFParGetWord(parser) == 0 || NuStrLen(parser->word_buffer_ptr) >= 64) {
+        return;
+    }
+    NuStrCpy(D_door->name, parser->word_buffer_ptr);
+    D_door->spline = NuSplineFind(D_worldinfo->current_gscn, D_door->name);
+    if (D_door->spline != NULL && D_door->spline->length >= 4) {
+        for (i = 0; i < D_worldinfo->door_count; ++i) {
+            if (D_worldinfo->doors[i].spline == D_door->spline) {
+                break;
+            }
+        }
+        if (i < D_worldinfo->door_count) {
+            D_door->spline = NULL;
+        }
+    } else {
+        D_door->spline = NULL;
+    }
+    if (D_door->spline == NULL) {
+        D_door->name[0] = '\0';
+    }
+}
+
+static void D_level(NUFPAR *parser) {
+    i32 index;
+    if (NuFParGetWord(parser) != 0) {
+        Level_FindByName(parser->word_buffer_ptr, &index);
+        if (index != -1) {
+            D_door->level = (i16)index;
+        }
+    }
+}
+
+static void D_level_freeplay(NUFPAR *parser) {
+    i32 index;
+    if (NuFParGetWord(parser) != 0) {
+        Level_FindByName(parser->word_buffer_ptr, &index);
+        if (index != -1 && !(LDataList[index].flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO))) {
+            D_door->freeplay_level = (i16)index;
+        }
+    }
+}
+
+static void D_cam_spline(NUFPAR *parser) {
+    if (NuFParGetWord(parser) == 0 || NuStrLen(parser->word_buffer_ptr) >= 32) {
+        return;
+    }
+    NuStrCpy(D_door->camera_spline_name, parser->word_buffer_ptr);
+    D_door->camera_spline = NuSplineFind(D_worldinfo->current_gscn, D_door->camera_spline_name);
+    if (D_door->camera_spline != NULL && D_door->camera_spline->length != 2) {
+        D_door->camera_spline = NULL;
+        D_door->camera_spline_name[0] = '\0';
+    }
+}
+
+static void D_cam_wait(NUFPAR *parser) {
+    D_door->camera_wait = NuFParGetFloat(parser);
+}
+
+static void D_cam_blend_time(NUFPAR *parser) {
+    D_door->camera_blend_time = NuFParGetFloat(parser);
+}
+
+static void D_cam_lookatplayers(NUFPAR *parser) {
+    D_door->flags |= DOOR_FLAG_CAMERA_LOOK_AT_PLAYERS;
+}
+
+static void D_one_way(NUFPAR *parser) {
+    D_door->flags |= DOOR_FLAG_ONE_WAY;
+}
+
+static void D_two_player_only(NUFPAR *parser) {
+    D_door->flags |= DOOR_FLAG_TWO_PLAYERS_ONLY;
+}
+
+static void D_do_not_use(NUFPAR *parser) {
+    D_door->flags |= DOOR_FLAG_DO_NOT_USE;
+}
+
+static void D_next_sock(NUFPAR *parser) {
+    i32 index = NuFParGetInt(parser);
+    if ((u32)index <= 63) {
+        D_door->next_sock = (i8)index;
+    }
+}
+
+static void D_vehicle(NUFPAR *parser) {
+    if (NuFParGetWord(parser) != 0) {
+        if (NuStrICmp(parser->word_buffer_ptr, "all") == 0) {
+            D_door->takeover_mask_low = 0xffff;
+            D_door->takeover_mask_high = 0;
+        } else {
+            i32 type = LevelCharacterTypeIDFn(parser->word_buffer_ptr);
+            if (type < 64) {
+                D_door->takeover_mask_low |= 1 << type;
+            }
+        }
+    }
+}
+
+static void D_use_as_start(NUFPAR *parser) {
+    D_door->flags |= DOOR_FLAG_USE_AS_START;
+}
+
+static void D_cut_scene(NUFPAR *parser) {
+    if (NuFParGetWord(parser) != 0) {
+        D_door->cutscene = CutScene_Find(WorldInfo_CurrentlyLoading()->cutscene_sys, parser->word_buffer_ptr);
+    }
+}
+
+i32 Door_NextSock = -1;
+static NUFPCOMJMP Door_ConfigKeywords[] = {{"spline", D_spline},
+                                           {"level", D_level},
+                                           {"level_freeplay", D_level_freeplay},
+                                           {"cam_spline", D_cam_spline},
+                                           {"cam_wait", D_cam_wait},
+                                           {"cam_blend_time", D_cam_blend_time},
+                                           {"cam_lookatplayers", D_cam_lookatplayers},
+                                           {"1_way", D_one_way},
+                                           {"one_way", D_one_way},
+                                           {"2_player_only", D_two_player_only},
+                                           {"2_players_only", D_two_player_only},
+                                           {"two_player_only", D_two_player_only},
+                                           {"two_players_only", D_two_player_only},
+                                           {"do_not_use", D_do_not_use},
+                                           {"next_sock", D_next_sock},
+                                           {"vehicle", D_vehicle},
+                                           {"use_as_start", D_use_as_start},
+                                           {"cut_scene", D_cut_scene},
+                                           {"cutscene", D_cut_scene},
+                                           {NULL, NULL}};
+char door_gizmotype_id = -1;
+
+void Doors_Configure(WORLDINFO *world, char *config) {
+    NUFPAR *parser;
+    DOOR_s *door;
+    i32 in_door;
+    world->doors = NULL;
+    if (world->current_gscn == NULL) {
+        return;
+    }
+    parser = NuFParCreateMem("doors", config, 0xffff);
+    if (parser == NULL) {
+        return;
+    }
+    world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
+    world->doors = door = (DOOR_s *)world->giz_buffer.void_ptr;
+    NuFParPushCom(parser, Door_ConfigKeywords);
+    in_door = 0;
+    while (NuFParGetLine(parser) != 0) {
+        if (NuFParGetWord(parser) == 0) {
+            continue;
+        }
+        if (in_door) {
+            if (NuStrICmp(parser->word_buffer_ptr, "door_end") == 0) {
+                in_door = 0;
+                if (door->spline != NULL && door->level != -1) {
+                    if (door->freeplay_level == -1) {
+                        door->freeplay_level = door->level;
+                    }
+                    ++door;
+                    ++world->door_count;
+                }
+            } else {
+                NuFParInterpretWord(parser);
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "door_start") == 0) {
+            in_door = 1;
+            D_worldinfo = world;
+            D_door = door;
+            door->name[0] = '\0';
+            door->camera_spline_name[0] = '\0';
+            door->spline = NULL;
+            door->pos = v000;
+            door->radius = 1.0f;
+            door->normal = v001;
+            door->level = -1;
+            door->freeplay_level = -1;
+            door->next_sock = -1;
+            door->flags = 0;
+            door->vehicle = -1;
+            door->active = 0;
+            door->camera_spline = NULL;
+            door->camera_wait = 0.0f;
+            door->camera_blend_time = 1.0f;
+            door->takeover_mask_low = 0;
+            door->takeover_mask_high = 0;
+        }
+    }
+    NuFParDestroy(parser);
+    if (world->door_count > 0) {
+        world->giz_buffer.addr = ((u32)door + 15) & ~15u;
+    } else {
+        world->doors = NULL;
+    }
+}
+
+extern "C" void Door_SetCutCam(DOOR_s *door) {
+    Door_UseCutCam = 0;
+    if (door->camera_spline != NULL) {
+        Door_UseCutCam = 1;
+        DoorCutCameraPosition0 = door->camera_spline->pts[0];
+        DoorCutCameraPosition1 = door->camera_spline->pts[1];
+    } else {
+        if (door->camera_spline_name[0] == '\0' || door->level == WORLD->level_idx) {
+            return;
+        }
+        Door_UseCutCam = 1;
+        NuStrCpy(DoorExitCameraSplineName, door->camera_spline_name);
+    }
+    Door_CutCamWaitTime = door->camera_wait;
+    Door_CutCamWait = Door_CutCamWaitTime;
+    Door_CutCamBlendTime = door->camera_blend_time;
+    Door_CutLookAtPlayers = door->flags & DOOR_FLAG_CAMERA_LOOK_AT_PLAYERS;
+}
+
+// Startup and main-loop state; defaults follow the PC executable.
+i32 ChallengeMode = 0;
+
+/* The door's cut scene while it has not played yet; a played one also cancels the snap. */
+static void *Door_UnplayedCutScene(DOOR_s *door) {
+    if (door->cutscene != NULL && CutScene_HasPlayed((CUTINFO *)door->cutscene) == 0) {
+        return door->cutscene;
+    }
+    door_cutscenesnap = 0;
+    return NULL;
+}
+
+void Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
+    void *cutscene;
+    i32 destination;
+    i32 index;
+    if ((door->flags & DOOR_FLAG_TWO_PLAYERS_ONLY) != 0 &&
+        (Player[0] == NULL || (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || Player[1] == NULL ||
+         (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0)) {
+        return;
+    }
+    if (NewLData != NULL) {
+        return;
+    }
+    if (door->level != -1) {
+        NuStrCpy(DoorExitName, door->name);
+        cutscene = Door_UnplayedCutScene(door);
+        if (cutscene != NULL) {
+            if (door_cutscenesnap != 0) {
+                NewCutScene((CUTINFO *)cutscene, WorldInfo_CurrentlyActive()->cutscene_sys, NULL, 0);
+            } else {
+                newmode_cutinfo = cutscene;
+                StartDoorPositions();
+                NewGameMode();
+            }
+        } else if ((InStory() != 0 && (destination = door->level) != world->level_idx) ||
+                   (InStory() == 0 && (destination = door->freeplay_level) != world->level_idx)) {
+            NewLData = &LDataList[destination];
+            if (FreePlay != 0 && (NewLData->flags & LEVEL_OUTRO) != 0) {
+                NewLData = Area_FindStatusLevel(WORLD->area, NULL);
+                if (NewLData != NULL) {
+                    if (ChallengeMode != CHALLENGE_OFF) {
+                        ChallengeMode = 4;
+                    }
+                } else {
+                    NewLData = &LDataList[destination];
+                }
+            }
+        } else {
+            StartDoorPositions();
+            NewGameMode();
+            for (index = 0; index < 8; ++index) {
+                GAMEOBJECT *object = Player[index];
+                if (object != NULL) {
+                    PlayerProgress[index].jump_variant = object->player.jump_variant_state == 1;
+                    PlayerProgress[index].saved_hitpoints = object->dead != 0 ? 4 : object->player.saved_hitpoints;
+                }
+            }
+            gone_through_door_to_new_mode = 1;
+        }
+        Door_NextSock = door->next_sock;
+        Door_SetCutCam(door);
+    }
+    ResetBits |= 8;
+    if (NewLData != NULL && NewLData != world->current_level) {
+        if (world->area == HUB_ADATA) {
+            Hub_ActivateDoorMenu(&NewLData);
+        } else if (NewLData->area_index == world->area_index) {
+            gone_through_door_to_new_level = 1;
+        }
+    }
+    Door_Last = door;
+    if (Door_GoThrough_ExtraCodeFn != NULL) {
+        Door_GoThrough_ExtraCodeFn(world, door);
+    }
+}
+
+static __inline f32 DoorsFabs(f32 value) {
+    u32 bits = *(u32 *)&value & 0x7fffffff;
+    return *(f32 *)&bits;
+}
+
+void Doors_Check(WORLDINFO *world, GAMEOBJECT *object) {
+    DOOR_s *door;
+    NUVEC previous;
+    NUVEC current;
+    NUVEC previous_offset;
+    NUVEC current_offset;
+    NUVEC intersection;
+    NUVEC block_normal;
+    f32 centre_height;
+    f32 previous_distance;
+    f32 current_distance;
+    f32 ratio;
+    i32 index;
+    i32 direction;
+    i32 two_players;
+    f32 previous_abs;
+    f32 current_abs;
+    if (object->dead != 0 || (LEGOCONTEXT_DOOMED != -1 && object->player.character_context == LEGOCONTEXT_DOOMED) || NewLData != NULL) {
+        return;
+    }
+    door = WORLD->doors;
+    if (door == NULL || (object->flags_1f8 & 0x40000) != 0) {
+        return;
+    }
+    two_players = Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player[1] != NULL &&
+                  (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0;
+    centre_height = (f32)(((f64)object->character_top + object->character_bottom) * object->origin_scale * 0.5);
+    previous.x = object->start_position.x;
+    previous.y = object->start_position.y + centre_height;
+    previous.z = object->start_position.z;
+    current.x = object->position.x;
+    current.y = object->position.y + centre_height;
+    current.z = object->position.z;
+    for (index = 0; index < WORLD->door_count; ++index, ++door) {
+        if ((door->flags & DOOR_FLAG_DO_NOT_USE) != 0 || door->active != 0) {
+            continue;
+        }
+        if (Mission_Active(NULL) != NULL && door->level != world->level_idx) {
+            continue;
+        }
+        NuVecSub(&previous_offset, &previous, &door->pos);
+        NuVecSub(&current_offset, &current, &door->pos);
+        previous_distance = NuVecDot(&door->normal, &previous_offset);
+        current_distance = NuVecDot(&door->normal, &current_offset);
+        direction = 0;
+        if (previous_distance < 0.0f && current_distance >= 0.0f) {
+            direction = 1;
+        } else if ((door->flags & DOOR_FLAG_ONE_WAY) == 0 && previous_distance >= 0.0f && current_distance < 0.0f) {
+            direction = 2;
+        }
+        if (direction == 0) {
+            continue;
+        }
+        previous_abs = DoorsFabs(previous_distance);
+        current_abs = DoorsFabs(current_distance);
+        ratio = (f32)((f64)previous_abs / ((f64)current_abs + previous_abs));
+        intersection.x = (f32)((f64)previous.x + ((f64)current.x - previous.x) * ratio);
+        intersection.y = (f32)((f64)previous.y + ((f64)current.y - previous.y) * ratio);
+        intersection.z = (f32)((f64)previous.z + ((f64)current.z - previous.z) * ratio);
+        if (NuPtInPoly(&intersection, &door->point0, &door->point1, &door->point3, &door->plane) == 0 &&
+            NuPtInPoly(&intersection, &door->point1, &door->opposite_midpoint, &door->point3, &door->plane) == 0) {
+            continue;
+        }
+        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && ((door->flags & DOOR_FLAG_TWO_PLAYERS_ONLY) == 0 || two_players)) {
+            Door_GoThrough(world, door, 1);
+            return;
+        }
+        if (!(DoorsFabs(door->normal.y) < NuTrigTable[0xaaa])) {
+            return;
+        }
+        object->position = object->start_position;
+        block_normal = door->normal;
+        if (direction == 2) {
+            NuVecRotateY(&block_normal, &block_normal, 0x8000);
+        }
+        object->movement_direction_x = (f32)((f64)object->movement_direction_x - (f64)block_normal.x * 10.0);
+        object->movement_direction_z = (f32)((f64)object->movement_direction_z - (f64)block_normal.z * 10.0);
+        return;
+    }
+}
+
+void Doors_SetLastDoor(DOOR_s *door) {
+    if (door != NULL && door != LastDoorPointer) {
+        NuStrCpy(DoorExitName, door->name);
+        StartDoorPositions();
+        LastDoorPointer = door;
+        Door_Last = door;
+    }
+}

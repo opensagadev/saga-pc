@@ -1,0 +1,497 @@
+#include <stdio.h>
+#include "legoapi/audio/audio.h"
+#include "legoapi/characters/motion.h"
+#include "legoapi/core/input/gamepads.h"
+#include "legoapi/gizmo/object/gizmopickup.h"
+#include "legoapi/gizmos/fx/gizmopickups.h"
+#include "legoapi/menus/core/gamemessage.h"
+#include "legoapi/menus/core/gamemessages.h"
+#include "legoapi/menus/core/text.h"
+#include "legoapi/misc/gamemain.h"
+#include "legoapi/render/core/render.h"
+#include "legoapi/world/levels/levels.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nuanimation_gen.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
+
+#include <string.h>
+
+/* Out-of-line copies of the SDK's static float helpers (nufloat.h). */
+static f32 GameMessagesFabs(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
+static f32 GameMessagesFdiv(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f) {
+        return 0.0f;
+    }
+    return a / b;
+}
+
+GAME_MESSAGE GameMessage[128] = {0};
+
+void ResetGameMessages(void) {
+    i32 i;
+    for (i = 0; i < 128; ++i) {
+        GameMessage[i].active = 0;
+    }
+}
+
+i32 GameMessageIndex = 0;
+
+GAME_MESSAGE *AddGameMsg(ADD_GAME_MESSAGE *message) {
+    GAME_MESSAGE *slot;
+    GAME_MESSAGE fallback;
+    i32 temporary = 0;
+    f32 best = 1000000.0f;
+    f32 value;
+    i32 index = GameMessageIndex;
+    i32 slot_index = -1;
+    i32 count;
+    i32 text_index;
+    i32 length;
+    for (count = 0; count < 128; ++count) {
+        slot = &GameMessage[index];
+        if (slot->active == 0) {
+            GameMessageIndex = index;
+            goto found;
+        }
+        if (!(slot->flags & GAMEMSG_KEEP)) {
+            if (slot->expired != 0) {
+                value = 1.0f;
+            } else {
+                value = GameMessagesFdiv(slot->elapsed, slot->duration);
+            }
+            if (slot_index == -1 || value > best) {
+                best = value;
+                slot_index = index;
+            }
+        }
+        ++index;
+        if (index == 128) {
+            index = 0;
+        }
+    }
+    if (slot_index == -1 && message->allow_temporary != 0) {
+        slot = &fallback;
+        memset(slot, 0, sizeof(GAME_MESSAGE));
+        temporary = 1;
+    } else {
+        if (slot_index != -1) {
+            GameMessageIndex = slot_index;
+        }
+        slot = &GameMessage[GameMessageIndex];
+    }
+found:
+    if (slot->active != 0 && slot->score > 0 && (slot->player_index == 0 || slot->player_index == 1) && slot->end_fn != NULL) {
+        slot->end_fn(slot);
+    }
+    slot->text = NULL;
+    text_index = 0;
+    if (message->special != NULL) {
+        if (!NuSpecialExistsFn((nuhspecial_s *)message->special)) {
+            return NULL;
+        }
+    } else {
+        if (message->text == NULL) {
+            return NULL;
+        }
+        length = NuStrLen(message->text);
+        if (message->flags & GAMEMSG_TEXT_POINTER) {
+            if (length < 1) {
+                return NULL;
+            }
+            slot->text = message->text;
+        } else {
+            for (; text_index < 0x77 && text_index < length; ++text_index) {
+                slot->text_buffer[text_index] = message->text[text_index];
+            }
+            if (text_index == 0) {
+                return NULL;
+            }
+        }
+    }
+    slot->text_buffer[text_index] = 0;
+    slot->parameter_d4 = 0.0f;
+    slot->position = *message->position;
+    slot->position_a = slot->position;
+    slot->scale_start = slot->scale_initial = message->scale;
+    slot->elapsed = 0.0f;
+    if (message->flags & GAMEMSG_ONE_FRAME) {
+        slot->duration = 0.0f;
+    } else {
+        slot->duration = message->duration;
+    }
+    slot->red = message->red;
+    slot->green = message->green;
+    slot->blue = message->blue;
+    slot->alpha = message->alpha;
+    slot->flags = message->flags;
+    if (message->target_position != NULL) {
+        slot->target_position = *message->target_position;
+    } else {
+        slot->target_position = *message->position;
+    }
+    slot->target_scale = message->target_scale;
+    if (slot->flags & GAMEMSG_WORLD_POSITION) {
+        slot->has_start_position = 0;
+    } else {
+        slot->scale_current = slot->scale_initial;
+        slot->start_position = slot->position;
+        slot->has_start_position = 1;
+        slot->parameter_fb = 0;
+    }
+    slot->expired = 0;
+    slot->active = 1;
+    slot->parameter_fc = message->slot_flags;
+    slot->icon = (u16)message->icon;
+    if (message->special != NULL) {
+        slot->special = *(nuhspecial_s *)message->special;
+    } else {
+        memset(&slot->special, 0, sizeof(slot->special));
+    }
+    slot->player_index = message->player_index;
+    slot->score = message->score;
+    slot->parameter_c4 = message->parameter_c4;
+    slot->parameter_c8 = message->drift;
+    slot->parameter_e0 = 0;
+    slot->parameter_e2 = 0;
+    slot->parameter_e4 = 0;
+    slot->delay_fn = message->delay_fn;
+    slot->tick_fn = message->tick_fn;
+    slot->update_fn = message->update_fn;
+    slot->end_fn = message->end_fn;
+    slot->parameter_10c = message->draw_fn;
+    slot->allow_temporary = message->allow_temporary;
+    slot->target_is_coin_total = message->target_is_coin_total;
+    slot->delay = message->delay;
+    slot->scale_multiplier = 1.0f;
+    if (temporary) {
+        if (slot->end_fn != NULL) {
+            slot->end_fn(slot);
+        }
+        return NULL;
+    }
+    return slot;
+}
+
+GAME_MESSAGE *AddGameMessage(char *text, NUVEC *position, f32 scale, NUVEC *target_position, f32 target_scale, u8 red, u8 green, u8 blue,
+                             u32 flags, f32 duration) {
+    ADD_GAME_MESSAGE message = AddGameMsg_Default;
+    message.text = text;
+    message.position = position;
+    message.scale = scale;
+    message.target_position = target_position;
+    message.target_scale = target_scale;
+    message.red = red;
+    message.green = green;
+    message.blue = blue;
+    message.flags = flags;
+    message.duration = duration;
+    return AddGameMsg(&message);
+}
+
+void UpdateGameMessages(void) {
+    GAME_MESSAGE *message = GameMessage;
+    GAME_MESSAGE_CALLBACK callback;
+    f32 rounded_time;
+    f32 ratio;
+    f32 progress;
+    u32 flags;
+    i32 index;
+    i32 angle;
+    for (index = 0; index < 128; ++index, ++message) {
+        if (message->active == 0) {
+            continue;
+        }
+        if (message->expired != 0) {
+            callback = message->end_fn;
+            message->active = 0;
+            if (callback != NULL && message->allow_temporary == 0) {
+                callback(message);
+            }
+            continue;
+        }
+        if ((message->flags & GAMEMSG_ONE_FRAME) != 0) {
+            message->expired = 1;
+            message->duration = 1.0f;
+            message->elapsed = 1.0f;
+        }
+        if (message->delay > 0.0f) {
+            rounded_time = message->delay - FRAMETIME;
+            message->delay = rounded_time;
+            if (rounded_time <= 0.0f) {
+                callback = message->delay_fn;
+                if (callback != NULL) {
+                    callback(message);
+                }
+            }
+            continue;
+        }
+        if (!(message->elapsed < message->duration)) {
+            continue;
+        }
+        rounded_time = message->elapsed + FRAMETIME;
+        message->elapsed = rounded_time;
+        if (message->elapsed >= message->duration) {
+            callback = message->end_fn;
+            message->elapsed = message->duration;
+            message->expired = 1;
+            if (callback != NULL && message->allow_temporary != 0) {
+                callback(message);
+            }
+        }
+        flags = message->flags;
+        if ((flags & (GAMEMSG_MOVE | GAMEMSG_SCALE)) != 0) {
+            ratio = (f32)((f64)message->elapsed / (f64)message->duration);
+            if ((flags & GAMEMSG_EASE_IN) != 0) {
+                angle = (i32)((f64)ratio * 16384.0 + 16384.0);
+                progress = (f32)(1.0 - (f64)NuTrigTable[(angle >> 1) & 0x7fff]);
+            } else if ((flags & GAMEMSG_EASE_OUT) != 0) {
+                angle = (i32)((f64)ratio * 16384.0);
+                progress = NuTrigTable[(angle >> 1) & 0x7fff];
+            } else if ((flags & GAMEMSG_ARC) != 0) {
+                angle = (i32)((f64)ratio * 32768.0);
+                progress = NuTrigTable[(angle >> 1) & 0x7fff];
+            } else if ((flags & GAMEMSG_DIP) != 0) {
+                angle = (i32)((f64)ratio * 32768.0);
+                progress = (f32)(1.0 - (f64)NuTrigTable[(angle >> 1) & 0x7fff]);
+            } else {
+                progress = ratio;
+            }
+            if ((flags & GAMEMSG_MOVE) != 0) {
+                message->position.x =
+                    (f32)(((f64)message->target_position.x - (f64)message->position_a.x) * (f64)progress + (f64)message->position_a.x);
+                message->position.y =
+                    (f32)(((f64)message->target_position.y - (f64)message->position_a.y) * (f64)progress + (f64)message->position_a.y);
+                message->position.z =
+                    (f32)(((f64)message->target_position.z - (f64)message->position_a.z) * (f64)progress + (f64)message->position_a.z);
+            }
+            if ((flags & GAMEMSG_SCALE) != 0) {
+                message->scale_initial =
+                    (f32)(((f64)message->target_scale - (f64)message->scale_start) * (f64)progress + (f64)message->scale_start);
+            }
+        }
+        if ((flags & GAMEMSG_FADE_SMOOTH) != 0) {
+            angle = (i32)(((f64)message->elapsed / (f64)message->duration) * 16384.0 + 16384.0);
+            message->alpha = (u8)(i32)((f64)NuTrigTable[(angle >> 1) & 0x7fff] * 128.0);
+        } else if ((flags & GAMEMSG_FADE) != 0) {
+            message->alpha = (u8)(i32)((1.0 - (f64)message->elapsed / (f64)message->duration) * 128.0);
+        }
+        callback = message->tick_fn;
+        if (callback != NULL) {
+            callback(message);
+        }
+    }
+}
+
+void TransformGameMessages(NUVEC *camera_position, NUVEC *camera_right, NUVEC *camera_direction) {
+    GAME_MESSAGE *message = GameMessage;
+    GAME_MESSAGE *end = message + 128;
+    for (; message != end; ++message) {
+        f32 width;
+        NUVEC target;
+        NUVEC transformed;
+        if (message->active == 0 || message->has_start_position != 0) {
+            continue;
+        }
+        NuCameraTransformScreenClip(&message->start_position, &message->position, 1, NULL);
+        if ((message->position.x - camera_position->x) * camera_direction->x +
+                (message->position.y - camera_position->y) * camera_direction->y +
+                (message->position.z - camera_position->z) * camera_direction->z <=
+            0.0) {
+            message->parameter_fb = 1;
+        } else {
+            message->parameter_fb = 0;
+            if ((message->flags & GAMEMSG_WORLD_SCALE) != 0) {
+                target.x = message->position.x + camera_right->x * message->scale_initial;
+                target.y = message->position.y + camera_right->y * message->scale_initial;
+                target.z = message->position.z + camera_right->z * message->scale_initial;
+                NuCameraTransformScreenClip(&transformed, &target, 1, NULL);
+                width = GameMessagesFabs(message->start_position.x - transformed.x);
+                message->scale_current = (f32)(width * 0.5249999761581421);
+            }
+        }
+        if ((message->flags & GAMEMSG_FOLLOW) == 0) {
+            message->has_start_position = 1;
+        }
+        message->start_position.z = 1.0f;
+    }
+}
+
+nuhspecial_s *(*GameMsg_GetExtraObjFn)(GAME_MESSAGE *message) = NULL;
+
+void DrawGameMessages(void) {
+    GAME_MESSAGE *message;
+    i32 index;
+    for (index = 0; index < 128; ++index) {
+        u32 flags;
+        f32 progress;
+        f32 scale;
+        NUVEC position;
+        message = &GameMessage[index];
+        if (message->active == 0) {
+            continue;
+        }
+        if (message->parameter_fb != 0 && (message->flags & GAMEMSG_BEHIND_CAMERA) == 0) {
+            continue;
+        }
+        if (message->delay > 0.0f) {
+            continue;
+        }
+        if (!(message->elapsed < message->duration) && message->expired == 0) {
+            continue;
+        }
+
+        flags = message->flags;
+        progress = message->elapsed / message->duration;
+        if ((flags & GAMEMSG_EASE_IN) != 0) {
+            progress = 1.0f - NuTrigTable[((i32)(progress * 16384.0 + 16384.0) >> 1) & 0x7fff];
+        } else if ((flags & GAMEMSG_EASE_OUT) != 0) {
+            progress = NuTrigTable[((i32)(progress * 16384.0) >> 1) & 0x7fff];
+        } else if ((flags & GAMEMSG_ARC) != 0) {
+            progress = NuTrigTable[((i32)(progress * 32768.0) >> 1) & 0x7fff];
+        } else if ((flags & GAMEMSG_DIP) != 0) {
+            progress = 1.0f - NuTrigTable[((i32)(progress * 32768.0) >> 1) & 0x7fff];
+        }
+
+        scale = (flags & (GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE)) == (GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE)
+                    ? message->scale_current
+                    : message->scale_initial;
+        position = message->start_position;
+        if (message->parameter_d4 != 0.0f && message->parameter_fb == 0) {
+            const f32 limit = message->parameter_d4;
+            if (position.x < -limit) {
+                position.x = -limit;
+            } else if (position.x > limit) {
+                position.x = limit;
+            }
+            if (position.y < -limit) {
+                position.y = -limit;
+            } else if (position.y > limit) {
+                position.y = limit;
+            }
+        }
+
+        if ((flags & GAMEMSG_DRAW_MOVE) != 0) {
+            if (message->update_fn != NULL) {
+                message->update_fn(message);
+                flags = message->flags;
+            }
+            position.x = position.x + (message->target_position.x - position.x) * progress;
+            position.y = position.y + (message->target_position.y - position.y) * progress;
+            position.z = position.z + (message->target_position.z - position.z) * progress;
+        }
+        if ((flags & GAMEMSG_DRAW_SCALE) != 0) {
+            scale += (message->target_scale - scale) * progress;
+        }
+        position.z += message->parameter_c8;
+        position.x += message->parameter_c4;
+
+        if (message->draw_fn != NULL) {
+            message->draw_fn(message, &position, scale);
+            continue;
+        }
+
+        if (NuSpecialExistsFn(&message->special) != 0) {
+            const u32 draw_flags = message->flags;
+            if ((draw_flags & GAMEMSG_OBJECT_NO_ALPHA) != 0) {
+                DrawPanel3DObjectNoAlpha(position.x, position.y, position.z, scale, scale, scale, message->parameter_e0,
+                                         message->parameter_e2, message->parameter_e4, &message->special, 2);
+            } else {
+                const f32 alpha = (draw_flags & GAMEMSG_OBJECT_ALPHA) != 0 ? (f32)(message->alpha * 0.0078125) : 1.0f;
+                DrawPanel3DObject(position.x, position.y, position.z, scale, scale, scale, message->parameter_e0, message->parameter_e2,
+                                  message->parameter_e4, &message->special, 2, alpha);
+            }
+            if (GameMsg_GetExtraObjFn != NULL) {
+                nuhspecial_s *extra = GameMsg_GetExtraObjFn(message);
+                if (extra != NULL && NuSpecialExistsFn(extra) != 0) {
+                    const u32 draw_flags = message->flags;
+                    if ((draw_flags & GAMEMSG_OBJECT_NO_ALPHA) != 0) {
+                        DrawPanel3DObjectNoAlpha(position.x, position.y, position.z, scale, scale, scale, message->parameter_e0,
+                                                 message->parameter_e2, message->parameter_e4, extra, 2);
+                    } else {
+                        const f32 alpha = (draw_flags & GAMEMSG_OBJECT_ALPHA) != 0 ? (f32)(message->alpha * 0.0078125) : 1.0f;
+                        DrawPanel3DObject(position.x, position.y, position.z, scale, scale, scale, message->parameter_e0,
+                                          message->parameter_e2, message->parameter_e4, extra, 2, alpha);
+                    }
+                }
+            }
+        } else {
+            const char *text = message->text != NULL ? message->text : message->text_buffer;
+            Text3DEx((char *)text, position.x, position.y, position.z, scale, scale, scale, message->parameter_fc, message->red,
+                     message->green, message->blue, message->alpha);
+        }
+    }
+}
+
+i32 FindGameMsgsWithID(i32 id, i32 remove, i32 player, GAME_MESSAGE *exclude) {
+    GAME_MESSAGE *message = GameMessage;
+    i32 count = 0;
+    i32 index;
+    for (index = 0; index < 128; ++index, ++message) {
+        if (message->active != 0 && (i8)message->target_is_coin_total == id && message != exclude &&
+            (player == -1 || message->player_index == player)) {
+            ++count;
+            if (remove != 0) {
+                message->active = 0;
+            }
+        }
+    }
+    return count;
+}
+
+void AddGameMsgCount(NUVEC *position, i32 count, i32 total, unsigned char red, unsigned char green, unsigned char blue, float value) {
+    GAME_MESSAGE *message;
+    char text[32];
+    sprintf(text, "%i/%i", count, total);
+
+    message = position != NULL ? AddGameMessage(text, position, 0.6f, NULL, 0.8f, red, green, blue,
+                                                GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_DRAW_SCALE | GAMEMSG_FADE, 1.0f)
+                               : AddGameMessage(text, &v001, 0.6f, NULL, 0.8f, red, green, blue, GAMEMSG_DRAW_SCALE | GAMEMSG_FADE, 1.0f);
+    if (message != NULL) {
+        message->parameter_d4 = value;
+    }
+}
+
+void AddFancyMessageRGB(char *text, f32 x, f32 y, f32 scale, f32 duration, i32 message_id, u8 red, u8 green, u8 blue) {
+    NUVEC position;
+    f32 doubled_scale;
+    f64 half_scale;
+    if (message_id != 0) {
+        GameAudio_PlaySfx(0x2c, NULL, 0, 0);
+        GameAudio_PlaySfx(0x26, NULL, 0, 0);
+        NewRumbleAllPlayers(0.7f, 0.0f, 0, 0);
+        GameCam_NewShake(GameCam, 1.0f, 1.0f, 1.0f);
+    }
+    doubled_scale = (f64)scale + (f64)scale;
+    position.x = x;
+    position.y = y;
+    position.z = 1.0f;
+    half_scale = (f64)doubled_scale * 0.5;
+    AddGameMessage(text, &position, doubled_scale, &position, (f32)((f64)doubled_scale + half_scale), red, green, blue,
+                   GAMEMSG_DRAW_SCALE | GAMEMSG_FADE, duration);
+    AddGameMessage(text, &position, doubled_scale, &position, (f32)((f64)doubled_scale - half_scale), red, green, blue,
+                   GAMEMSG_DRAW_SCALE | GAMEMSG_FADE, duration);
+}
+
+void AddFancyMessage(char *text, float x, float y, float scale, float duration, i32 message_id, i32 colour_type) {
+    u8 red;
+    u8 green;
+    u8 blue;
+    red = 0xff;
+    if (colour_type != 0) {
+        blue = 0xff;
+        green = 0xff;
+    } else {
+        green = 0xbf;
+        blue = 0;
+    }
+    AddFancyMessageRGB(text, x, y, scale, duration, message_id, red, green, blue);
+}

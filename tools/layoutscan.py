@@ -57,6 +57,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if not __package__:
     sys.path.insert(0, str(ROOT))
 
+from tools import langscan  # noqa: E402
+
 TABLE = ROOT / "config/layout-target.csv"
 ANDROID_UNITS = ROOT / "config/layout-android-units.csv"
 COLUMNS = ("start", "end", "compiland", "inner_file", "language", "evidence", "confidence",
@@ -109,8 +111,10 @@ REVIEW = {
     0x405d70: dict(name="batman_gameai", conf="low",
                    why="Batman batman_gameai block after batarang, no marker between; fits the alphabetical "
                    "order (batarang < batman_gameai < bolt)"),
-    0x4087a0: dict(name="cable", conf="medium",
-                   why="CableFdiv is called only by the cable code (UpdateCables, DrawCables), so cable starts with it"),
+    0x408760: dict(name="cable", conf="medium",
+                   why="cable opens with the COMDAT copies of the C++ <math.h> inlines ceilf and ceil(float) that "
+                   "its float ceil emits, then CableFdiv, which only the cable code calls"),
+    0x4087a0: dict(name="cable", join=True, why="continues 0x408760"),
     0x408800: dict(name="cable", join=True, why="continues 0x4087a0"),
     0x40e700: dict(name="chris", conf="medium",
                    why="TCS only (no Batman counterpart); marker; Android chris.c fits between camera and config"),
@@ -143,7 +147,10 @@ REVIEW = {
     0x4b7080: dict(name="panel", conf="medium",
                    why="NuRndrPrimSetColour opens panel: PanelRender calls it, and its retail register use is "
                    "that of a static compiled with its only caller (exact only when it shares PanelRender's file)"),
-    0x4bc2f0: dict(name="pursuit", conf="medium", why="TCS only; Android pursuit.c fits panel < pursuit < radio"),
+    0x4bc2a0: dict(name="pursuit", conf="medium",
+                   why="its static header copy PursuitVuVecMake opens it, and the function at 0x4bc2c0 resets the "
+                   "static zamarrow of UpdateZamArrow; TCS only; Android pursuit.c fits panel < pursuit < radio"),
+    0x4bc2f0: dict(name="pursuit", join=True, why="continues 0x4bc2a0"),
     0x4c00c0: dict(name=None, join=True, why="one function between sfx and shard"),
     0x4c0d50: dict(name="shop", conf="medium",
                    why="ShopMtxCopy, the NuMtxRotate*Inline copies, Shop_CharacterUnlocked and Shop_GetInput are "
@@ -160,13 +167,16 @@ REVIEW = {
     0x4ddc80: dict(name="episodeII", conf="high", why="marker"),
     0x4e2cf0: dict(name="episodeIII", conf="medium", why="no marker; Android episodeIII.c"),
     0x4e4a40: dict(name="episodeIV", conf="medium", why="no marker; Android episodeIV.c"),
-    0x4e5f10: dict(name="episodeV", conf="medium", why="no marker; Android episodeV.c"),
+    0x4e5eb0: dict(name="episodeV", conf="medium",
+                   why="RET marker, then AsteroidMtxSetRotateXYZ and EpisodeVVuVecMake, which only episodeV code calls; Android episodeV.c"),
     0x4e9f30: dict(name="episodeVI", conf="medium", why="no marker; Android episodeVI.c"),
     0x4eeae0: dict(name=None, why="marker; DrawRopeCurved (Batman legoapi utilities) and Win32 imports thunks"),
     0x4ef6e0: dict(name="nucore_includes", conf="high",
                    why="Batman nucore_includes.cpp; retail numem.c, nufile.c, numemblk.c, nupad.cpp inside"),
-    0x4fe640: dict(name="nucore_pc_includes", conf="medium",
-                   why="marker; Batman pc/nucore_pc_includes.cpp; retail nucore\\pc\\nufile_pc.c inside"),
+    0x4fe630: dict(name="nucore_pc_includes", conf="medium",
+                   why="its C++ strstr(char *, const char *) inline copy opens it (the only inlined call is in this "
+                   "unit); marker; Batman pc/nucore_pc_includes.cpp; retail nucore\\pc\\nufile_pc.c inside"),
+    0x4fe640: dict(name="nucore_pc_includes", join=True, why="continues 0x4fe630"),
     0x4fff00: dict(name="cutscene_include", conf="medium",
                    why="marker; Batman cutscene_include.cpp (gcutscn+trigger+script); the PS2 sibling dump "
                    "has them as separate files"),
@@ -183,6 +193,12 @@ REVIEW = {
     0x547060: dict(name="listman", lang="c", conf="high", why="retail gamelib\\listman.c"),
     0x56cdb0: dict(name="guidelines", conf="medium", why="marker at 0x56cd80; Android guidelines; Batman has none"),
     0x5925c0: dict(name="customiser", conf="medium", why="marker; TCS only; Android customiser.c"),
+    0x5950e0: dict(name="lighting", conf="medium",
+                   why="a bare RET after Collection_Draw opens it; lighting code inlines PC_SPECIAL_SHADOW_LIGHT::BeginCapture "
+                   "and SetParameterf, whose never-called out-of-line copies sit before SetLights, so the shadow light "
+                   "methods and lighting are one unit"),
+    0x595200: dict(name="lighting", join=True, why="continues 0x5950e0"),
+    0x5954f0: dict(name="lighting", join=True, why="continues 0x595200"),
     0x5a86d0: dict(name="simpletons", conf="medium", why="marker; TCS only; Android simpletons.c"),
     0x59cb90: dict(name="credits", conf="medium",
                    why="CreditsFindType, CreditsReadColour and CreditsInitCredit are called only by "
@@ -195,8 +211,15 @@ REVIEW = {
                    why="the Shadow_* gizmo callbacks are referenced only by EdGizShadowMachine_RegisterGizmo, so "
                    "edgizshadow starts with them"),
     0x5af850: dict(name="edgizshadow", join=True, why="continues 0x5af4f0"),
+    0x5b15c0: dict(name="things", conf="medium",
+                   why="a 28-byte static header copy opens it; CreateThingManager inlines operator new and the "
+                   "GameThingManager constructor, whose never-called out-of-line copies follow, so they are one unit"),
+    0x5b16c0: dict(name="things", join=True, why="continues 0x5b15c0"),
+    0x5b1750: dict(name="specialsfx", conf="medium", why="its static header copy SpecialsfxVuVecMake opens it; Batman specialsfx"),
     0x5b2da0: dict(name="numath_includes", conf="high", why="marker; Batman numath_includes; retail nugraph.c, nutrig.c"),
-    0x5c1360: dict(name="nu3d_includes", conf="high", why="marker; Batman nu3d_includes; retail nuanim.c, nutexanm.c ..."),
+    0x5c12e0: dict(name="nu3d_includes", conf="high",
+                   why="three bare-RET stubs open it; the static at 0x5c1330 takes arguments in EAX and ECX as compiled "
+                   "with its nu3d_includes caller; marker at 0x5c1360; Batman nu3d_includes; retail nuanim.c, nutexanm.c ..."),
     0x5e4600: dict(name="nu3d_includes", join=True, why="inside nu3d_includes, no marker"),
     0x5e4b00: dict(name="nu3d_includes", join=True, why="inside nu3d_includes, no marker"),
     0x5f7490: dict(name="nu3d_pc_includes", conf="medium",
@@ -214,8 +237,9 @@ REVIEW = {
                    why="Batman pc/numaths.cpp is its own object; no marker here, may be part of numath_includes"),
     0x60ed30: dict(name=None, why="C++ members that Batman has in supportall; probably COMDAT inlines placed "
                    "with the first network object that uses them"),
-    0x630e00: dict(name="nufmv_gen", area="nu2api/nufmv", conf="low",
-                   why="one function, Batman nufmv/nufmv_gen.cpp; TCS spelling unknown"),
+    0x630d60: dict(name="nufmv_gen", area="nu2api/nufmv", conf="low",
+                   why="bare-RET FmvOptionError opens it, then the Fmv overlay and poll helpers before NuFmv; Batman "
+                   "nufmv/nufmv_gen.cpp; TCS spelling unknown"),
     0x6310c0: dict(name="dsplay_bink", area="nu2api/nufmv/pc/Bink", lang="cpp", conf="high",
                    why="marker; retail .\\pc\\Bink\\dsplay_bink.cpp from FmvInitialize"),
     0x633390: dict(name="supportall", lang="cpp", conf="medium", why="marker; Batman supportall (C++ classes)"),
@@ -242,6 +266,16 @@ REVIEW = {
     0x740f00: dict(name="VirtualStackAllocator", area="gamelib/util", lang="cpp", conf="medium",
                    why="C++ class after the CRT; Batman includes VirtualStackAllocator_gen.cpp in nucore_includes"),
     0x740f60: dict(name="VirtualStackAllocator", join=True, why="continues 0x740f00"),
+    0x742010: dict(name="nushaderobject", conf="medium",
+                   why="the static helpers from 0x742010 take an argument in ECX (VC8 custom convention of a static) and "
+                   "only PCShaderSetMaterialParameters (0x7427e0) calls them, so the unit starts after NuGetVertexDeclaration"),
+    0x743de0: dict(name="nushaderobject_pc", conf="low",
+                   why="RET marker after nushaderobjectbase; Batman names it nushaderobject like 0x742010, but a second "
+                   "compiland of one name is not possible, and its code (HLSL init, native uninit) is PC-only"),
+    0x744ba0: dict(name="ShaderObjectKey_pc", conf="low",
+                   why="RET marker after the ShaderObjectKey block, and its code calls PC_SHADER_MATERIAL_FILTER::Initialize "
+                   "(0x7443d0) with the full thiscall register save, so Initialize was not compiled in this unit; Batman "
+                   "names both ranges ShaderObjectKey, and the HLSL builder code here is PC-only"),
 }
 
 # ------------------------------------------------------------------ inputs
@@ -744,7 +778,7 @@ def language(fs, ext_votes, retail, unity, cxx=None):
     return "c?", "no C++ construct; TCS game/legoapi code assumed C (Batman converted to .cpp)"
 
 
-def build(functions, units, markers, batman, retail, cxx=None):
+def build(functions, units, markers, batman, retail, cxx=None, communals=None):
     atoms, labels = segment(functions, units, markers, batman)
     groups = []
     for atom in atoms:
@@ -761,6 +795,9 @@ def build(functions, units, markers, batman, retail, cxx=None):
         else:
             groups.append([atom])
     seen = collections.Counter((area_of(g[0].start), g[0].label) for g in groups if g[0].label)
+    ranges = [(g[0].start, max(f["va"] + f["size"] for a in g for f in a.functions)) for g in groups
+              if any(a.functions for a in g)]
+    owned = langscan.owners(communals, ranges) if communals else {}
     comps = []
     for g in groups:
         fs = [f for a in g for f in a.functions]
@@ -776,6 +813,7 @@ def build(functions, units, markers, batman, retail, cxx=None):
         review = head.review or {}
         if review.get("lang"):
             lang, lang_why = review["lang"], "review: " + review.get("why", "")
+        lang, lang_why = langscan.language_rule(lang, lang_why, area, owned.get(head.start, []))
         evidence = sorted({a.evidence for a in g if a.evidence} | ({"marker"} if head.marker else set())
                           | ({"file"} if files else set())
                           | ({"code"} if lang_why.startswith("retail code") else set()))
@@ -1068,12 +1106,13 @@ def main(argv=None):
     batman = load_batman(args.batman) if args.batman else None
     retail = retail_files(args.exe, functions) if Path(args.exe).is_file() else {}
     cxx = retail_cxx(args.exe, functions) if Path(args.exe).is_file() else {}
-    comps = build(functions, units, markers, batman, retail, cxx)
+    communals = langscan.communal_refs(args.exe, langscan.symbols(args.symbols)) if Path(args.exe).is_file() else {}
+    comps = build(functions, units, markers, batman, retail, cxx, communals)
     if from_exe:
         repeats = repeated_helper_markers(comps, functions)
         if repeats:
             markers = {**markers, **repeats}
-            comps = build(functions, units, markers, batman, retail, cxx)
+            comps = build(functions, units, markers, batman, retail, cxx, communals)
     if args.show:
         va = int(args.show, 16)
         for c in comps:

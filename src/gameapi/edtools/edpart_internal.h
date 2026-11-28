@@ -8,6 +8,7 @@
 extern "C" {
 #endif
     extern PARTTYPE_LOOKUP *edpart_nearest_type;
+    void EdFileWriteUnsignedInt(u32 value);
     extern struct parttype_lookup_s *edpart_nearest_type;
 #ifdef __cplusplus
 }
